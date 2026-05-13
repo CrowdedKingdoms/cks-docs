@@ -1,0 +1,178 @@
+---
+id: udp-error-code
+title: UdpErrorCode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Error codes returned by UDP game servers in response messages. NO&#x005F;ERROR (0) indicates success, all other values indicate various error conditions.
+
+
+```graphql
+enum UdpErrorCode {
+  NO_ERROR
+  UNKNOWN_ERROR
+  EMAIL_NOT_FOUND
+  BAD_PASSWORD
+  EMAIL_ALREADY_EXISTS
+  INVALID_TOKEN
+  APP_NOT_FOUND
+  UNAUTHORIZED
+  APP_NOT_LOADED
+  EMAIL_TOO_SHORT
+  EMAIL_TOO_LONG
+  PASSWORD_TOO_SHORT
+  PASSWORD_TOO_LONG
+  GAME_TOKEN_WRONG_SIZE
+  NAME_TOO_LONG
+  INVALID_REQUEST
+  EMAIL_INVALID
+  INVALID_TOKEN_LENGTH
+  INVALID_APP_ID
+  CHUNK_NOT_FOUND
+  USER_NOT_AUTHENTICATED
+  INVALID_STATE_DATA
+  USER_NOT_APP_ADMIN
+  GRID_OUTSIDE_ASSIGNMENT
+  NO_MATCHING_GRID_ASSIGNMENT
+  INVALID_GRID_COORDINATES
+  GRID_ALREADY_EXISTS
+  GRID_OVERLAPS_EXISTING
+  GAMERTAG_ALREADY_EXISTS
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>NO&#x005F;ERROR</b></code>](#no-error) \{#no-error\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>UNKNOWN&#x005F;ERROR</b></code>](#unknown-error) \{#unknown-error\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>EMAIL&#x005F;NOT&#x005F;FOUND</b></code>](#email-not-found) \{#email-not-found\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>BAD&#x005F;PASSWORD</b></code>](#bad-password) \{#bad-password\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>EMAIL&#x005F;ALREADY&#x005F;EXISTS</b></code>](#email-already-exists) \{#email-already-exists\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>INVALID&#x005F;TOKEN</b></code>](#invalid-token) \{#invalid-token\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>APP&#x005F;NOT&#x005F;FOUND</b></code>](#app-not-found) \{#app-not-found\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>UNAUTHORIZED</b></code>](#unauthorized) \{#unauthorized\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>APP&#x005F;NOT&#x005F;LOADED</b></code>](#app-not-loaded) \{#app-not-loaded\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>EMAIL&#x005F;TOO&#x005F;SHORT</b></code>](#email-too-short) \{#email-too-short\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>EMAIL&#x005F;TOO&#x005F;LONG</b></code>](#email-too-long) \{#email-too-long\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>PASSWORD&#x005F;TOO&#x005F;SHORT</b></code>](#password-too-short) \{#password-too-short\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>PASSWORD&#x005F;TOO&#x005F;LONG</b></code>](#password-too-long) \{#password-too-long\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>GAME&#x005F;TOKEN&#x005F;WRONG&#x005F;SIZE</b></code>](#game-token-wrong-size) \{#game-token-wrong-size\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>NAME&#x005F;TOO&#x005F;LONG</b></code>](#name-too-long) \{#name-too-long\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>INVALID&#x005F;REQUEST</b></code>](#invalid-request) \{#invalid-request\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>EMAIL&#x005F;INVALID</b></code>](#email-invalid) \{#email-invalid\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>INVALID&#x005F;TOKEN&#x005F;LENGTH</b></code>](#invalid-token-length) \{#invalid-token-length\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>INVALID&#x005F;APP&#x005F;ID</b></code>](#invalid-app-id) \{#invalid-app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>CHUNK&#x005F;NOT&#x005F;FOUND</b></code>](#chunk-not-found) \{#chunk-not-found\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>USER&#x005F;NOT&#x005F;AUTHENTICATED</b></code>](#user-not-authenticated) \{#user-not-authenticated\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>INVALID&#x005F;STATE&#x005F;DATA</b></code>](#invalid-state-data) \{#invalid-state-data\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>USER&#x005F;NOT&#x005F;APP&#x005F;ADMIN</b></code>](#user-not-app-admin) \{#user-not-app-admin\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>GRID&#x005F;OUTSIDE&#x005F;ASSIGNMENT</b></code>](#grid-outside-assignment) \{#grid-outside-assignment\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>NO&#x005F;MATCHING&#x005F;GRID&#x005F;ASSIGNMENT</b></code>](#no-matching-grid-assignment) \{#no-matching-grid-assignment\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>INVALID&#x005F;GRID&#x005F;COORDINATES</b></code>](#invalid-grid-coordinates) \{#invalid-grid-coordinates\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>GRID&#x005F;ALREADY&#x005F;EXISTS</b></code>](#grid-already-exists) \{#grid-already-exists\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>GRID&#x005F;OVERLAPS&#x005F;EXISTING</b></code>](#grid-overlaps-existing) \{#grid-overlaps-existing\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>GAMERTAG&#x005F;ALREADY&#x005F;EXISTS</b></code>](#gamertag-already-exists) \{#gamertag-already-exists\} 
+
+
+
+
+
+### Member Of
+
+[`GenericErrorResponse`](/reference/graphql/types/objects/generic-error-response.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`TeleportResponse`](/reference/graphql/types/objects/teleport-response.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,39 @@
+---
+id: environment-flavors
+title: environmentFlavors
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Customer-selectable instance flavors in the datacenter with current availability and customer pricing.
+
+
+```graphql
+environmentFlavors(
+  datacenter: String!
+): [CksOvhFlavor!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>environmentFlavors.<b>datacenter</b></code>](#datacenter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#datacenter\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CksOvhFlavor</b></code>](/reference/graphql/types/objects/cks-ovh-flavor.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Customer-selectable catalog instance flavor. Hidden, unavailable, or unpriced rows are omitted from environmentFlavors.

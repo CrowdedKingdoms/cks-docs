@@ -1,0 +1,73 @@
+---
+id: rollback-voxel-event-result
+title: RollbackVoxelEventResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type RollbackVoxelEventResult {
+  appId: BigInt!
+  coordinates: ChunkCoordinates!
+  location: VoxelCoordinates!
+  fromVoxelType: Int
+  toVoxelType: Int
+  plannedAction: String!
+  applied: Boolean!
+  reason: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#coordinates\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>location</b></code>](#location)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinates!</b></code>](/reference/graphql/types/objects/voxel-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#location\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>fromVoxelType</b></code>](#from-voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#from-voxel-type\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>toVoxelType</b></code>](#to-voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#to-voxel-type\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>plannedAction</b></code>](#planned-action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#planned-action\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>applied</b></code>](#applied)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#applied\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+
+
+
+
+
+### Returned By
+
+[`rollbackVoxelUpdates`](/reference/graphql/operations/mutations/rollback-voxel-updates.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

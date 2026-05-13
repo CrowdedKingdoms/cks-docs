@@ -1,0 +1,38 @@
+---
+id: create-access-tier
+title: createAccessTier
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+createAccessTier(
+  input: CreateAccessTierInput!
+): AppAccessTier!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createAccessTier.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateAccessTierInput!</b></code>](/reference/graphql/types/inputs/create-access-tier-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppAccessTier</b></code>](/reference/graphql/types/objects/app-access-tier.mdx) <Badge class="badge badge--secondary " text="object"/>

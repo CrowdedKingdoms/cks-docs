@@ -1,0 +1,53 @@
+---
+id: voxel-updates-by-distance-response
+title: VoxelUpdatesByDistanceResponse
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type VoxelUpdatesByDistanceResponse {
+  chunks: [ChunkVoxelUpdatesResponse!]!
+  centerCoordinate: ChunkCoordinates!
+  limit: Int
+  skip: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>chunks</b></code>](#chunks)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ChunkVoxelUpdatesResponse!]!</b></code>](/reference/graphql/types/objects/chunk-voxel-updates-response.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#chunks\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>centerCoordinate</b></code>](#center-coordinate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#center-coordinate\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>skip</b></code>](#skip)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#skip\} 
+
+
+
+
+
+### Returned By
+
+[`listVoxelUpdatesByDistance`](/reference/graphql/operations/queries/list-voxel-updates-by-distance.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,103 @@
+---
+id: graph-qlserver
+title: GraphQLServer
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type GraphQLServer {
+  graphqlServerId: ID!
+  ip4: String
+  ip6: String
+  runtimeServerId: String
+  providerInstanceId: String
+  publicIp4: String
+  publicIp6: String
+  apiPort: Int!
+  status: ServerState!
+  cpuUsagePct: Float
+  memoryUsagePct: Float
+  loadAverage1m: Float
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>graphqlServerId</b></code>](#graphql-server-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-server-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>ip4</b></code>](#ip-4)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ip-4\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>ip6</b></code>](#ip-6)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ip-6\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>runtimeServerId</b></code>](#runtime-server-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#runtime-server-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>providerInstanceId</b></code>](#provider-instance-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provider-instance-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>publicIp4</b></code>](#public-ip-4)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#public-ip-4\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>publicIp6</b></code>](#public-ip-6)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#public-ip-6\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>apiPort</b></code>](#api-port)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#api-port\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ServerState!</b></code>](/reference/graphql/types/enums/server-state.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>cpuUsagePct</b></code>](#cpu-usage-pct)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cpu-usage-pct\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>memoryUsagePct</b></code>](#memory-usage-pct)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#memory-usage-pct\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>loadAverage1m</b></code>](#load-average-1-m)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#load-average-1-m\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+
+
+
+
+
+### Returned By
+
+[`activeGraphQLServers`](/reference/graphql/operations/queries/active-graph-qlservers.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`graphqlServers`](/reference/graphql/operations/queries/graphql-servers.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

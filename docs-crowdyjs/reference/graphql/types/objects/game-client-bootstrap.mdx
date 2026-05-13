@@ -1,0 +1,78 @@
+---
+id: game-client-bootstrap
+title: GameClientBootstrap
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Startup contract for browser game clients. Fetch this after login to initialize protocol/version checks and UDP proxy state in one round trip.
+
+
+```graphql
+type GameClientBootstrap {
+  appId: BigInt!
+  me: User!
+  versionInfo: ServerVersionInfo!
+  udpProxyConnectionStatus: UdpProxyConnectionStatus!
+  realtimeProtocol: String!
+  subscriptionName: String!
+  maxReplicationDistance: Int!
+  maxDecayRate: Int!
+  sequenceNumberModulo: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>me</b></code>](#me)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>User!</b></code>](/reference/graphql/types/objects/user.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#me\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>versionInfo</b></code>](#version-info)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ServerVersionInfo!</b></code>](/reference/graphql/types/objects/server-version-info.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#version-info\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>udpProxyConnectionStatus</b></code>](#udp-proxy-connection-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UdpProxyConnectionStatus!</b></code>](/reference/graphql/types/objects/udp-proxy-connection-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#udp-proxy-connection-status\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>realtimeProtocol</b></code>](#realtime-protocol)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#realtime-protocol\} 
+GraphQL WebSocket subprotocol expected by udpNotifications.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>subscriptionName</b></code>](#subscription-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#subscription-name\} 
+GraphQL subscription field that carries UDP proxy notifications.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>maxReplicationDistance</b></code>](#max-replication-distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-replication-distance\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>maxDecayRate</b></code>](#max-decay-rate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-decay-rate\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>sequenceNumberModulo</b></code>](#sequence-number-modulo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number-modulo\} 
+
+
+
+
+
+### Returned By
+
+[`gameClientBootstrap`](/reference/graphql/operations/queries/game-client-bootstrap.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

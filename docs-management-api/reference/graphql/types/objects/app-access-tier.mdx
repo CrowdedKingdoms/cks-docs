@@ -1,0 +1,103 @@
+---
+id: app-access-tier
+title: AppAccessTier
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type AppAccessTier {
+  tierId: BigInt!
+  appId: BigInt!
+  name: String!
+  tierOrder: Float!
+  isFree: Boolean!
+  isDefault: Boolean!
+  priceCents: BigInt
+  currency: String
+  billingPeriod: String
+  description: String
+  permissionKeys: [String!]!
+  status: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>tierOrder</b></code>](#tier-order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tier-order\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>isFree</b></code>](#is-free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-free\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>isDefault</b></code>](#is-default)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-default\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#price-cents\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>billingPeriod</b></code>](#billing-period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#billing-period\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-keys\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+
+
+
+
+
+### Returned By
+
+[`appAccessTiers`](/reference/graphql/operations/queries/app-access-tiers.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`archiveAccessTier`](/reference/graphql/operations/mutations/archive-access-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`createAccessTier`](/reference/graphql/operations/mutations/create-access-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateAccessTier`](/reference/graphql/operations/mutations/update-access-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

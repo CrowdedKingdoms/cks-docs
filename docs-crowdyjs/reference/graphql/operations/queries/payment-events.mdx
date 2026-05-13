@@ -1,0 +1,43 @@
+---
+id: payment-events
+title: paymentEvents
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Super admin only. Inbound payment webhook audit log.
+
+
+```graphql
+paymentEvents(
+  limit: Int = 50
+  offset: Int = 0
+): PaymentEventsPage!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>paymentEvents.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>paymentEvents.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PaymentEventsPage</b></code>](/reference/graphql/types/objects/payment-events-page.mdx) <Badge class="badge badge--secondary " text="object"/>

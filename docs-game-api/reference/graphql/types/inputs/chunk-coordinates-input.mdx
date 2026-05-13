@@ -1,0 +1,48 @@
+---
+id: chunk-coordinates-input
+title: ChunkCoordinatesInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input ChunkCoordinatesInput {
+  x: BigInt!
+  y: BigInt!
+  z: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkCoordinatesInput.<b>x</b></code>](#x)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#x\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkCoordinatesInput.<b>y</b></code>](#y)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#y\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkCoordinatesInput.<b>z</b></code>](#z)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#z\} 
+
+
+
+
+
+### Member Of
+
+[`ActorFilterInput`](/reference/graphql/types/inputs/actor-filter-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ActorUpdateRequestInput`](/reference/graphql/types/inputs/actor-update-request-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ChunkUpdateInput`](/reference/graphql/types/inputs/chunk-update-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ClientAudioPacketInput`](/reference/graphql/types/inputs/client-audio-packet-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ClientEventNotificationInput`](/reference/graphql/types/inputs/client-event-notification-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ClientTextPacketInput`](/reference/graphql/types/inputs/client-text-packet-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`CreateActorInput`](/reference/graphql/types/inputs/create-actor-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`GetChunkInput`](/reference/graphql/types/inputs/get-chunk-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`GetChunkLodsInput`](/reference/graphql/types/inputs/get-chunk-lods-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`GetChunksByDistanceInput`](/reference/graphql/types/inputs/get-chunks-by-distance-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`GetVoxelListInput`](/reference/graphql/types/inputs/get-voxel-list-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ListVoxelsInput`](/reference/graphql/types/inputs/list-voxels-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ListVoxelUpdatesByDistanceInput`](/reference/graphql/types/inputs/list-voxel-updates-by-distance-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`TeleportRequestInput`](/reference/graphql/types/inputs/teleport-request-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpdateActorInput`](/reference/graphql/types/inputs/update-actor-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpdateChunkLodsInput`](/reference/graphql/types/inputs/update-chunk-lods-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpdateChunkStateInput`](/reference/graphql/types/inputs/update-chunk-state-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpdateVoxelInput`](/reference/graphql/types/inputs/update-voxel-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`VoxelUpdateRequestInput`](/reference/graphql/types/inputs/voxel-update-request-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

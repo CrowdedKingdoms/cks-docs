@@ -1,0 +1,53 @@
+---
+id: cks-environment-version
+title: CksEnvironmentVersion
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type CksEnvironmentVersion {
+  version: String!
+  releasedAt: DateTime!
+  status: String!
+  notes: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentVersion.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentVersion.<b>releasedAt</b></code>](#released-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#released-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentVersion.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentVersion.<b>notes</b></code>](#notes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#notes\} 
+
+
+
+
+
+### Returned By
+
+[`environmentVersions`](/reference/graphql/operations/queries/environment-versions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

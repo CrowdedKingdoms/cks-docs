@@ -1,0 +1,48 @@
+---
+id: org-permission
+title: OrgPermission
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type OrgPermission {
+  permissionKey: ID!
+  description: String
+  category: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgPermission.<b>permissionKey</b></code>](#permission-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-key\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgPermission.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgPermission.<b>category</b></code>](#category)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#category\} 
+
+
+
+
+
+### Returned By
+
+[`orgPermissions`](/reference/graphql/operations/queries/org-permissions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

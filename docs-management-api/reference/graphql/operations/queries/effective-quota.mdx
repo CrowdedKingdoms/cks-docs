@@ -1,0 +1,53 @@
+---
+id: effective-quota
+title: effectiveQuota
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The most-specific quota that applies to (orgId, appId, tierId, metric). Walks tier -&#x003E; app -&#x003E; org -&#x003E; free&#x005F;tier&#x005F;defaults. Returns null if nothing matches.
+
+
+```graphql
+effectiveQuota(
+  metric: String!
+  orgId: BigInt
+  appId: BigInt
+  tierId: BigInt
+): ServiceQuota
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>effectiveQuota.<b>metric</b></code>](#metric)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#metric\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>effectiveQuota.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>effectiveQuota.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>effectiveQuota.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ServiceQuota</b></code>](/reference/graphql/types/objects/service-quota.mdx) <Badge class="badge badge--secondary " text="object"/>

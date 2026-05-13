@@ -1,0 +1,88 @@
+---
+id: update-access-tier-input
+title: UpdateAccessTierInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input UpdateAccessTierInput {
+  name: String
+  tierOrder: Int
+  isFree: Boolean
+  isDefault: Boolean
+  priceCents: BigInt
+  currency: String
+  billingPeriod: String
+  description: String
+  stripePriceId: String
+  paypalPlanId: String
+  permissionKeys: [String!]
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAccessTierInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAccessTierInput.<b>tierOrder</b></code>](#tier-order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-order\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAccessTierInput.<b>isFree</b></code>](#is-free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#is-free\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAccessTierInput.<b>isDefault</b></code>](#is-default)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#is-default\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAccessTierInput.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#price-cents\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAccessTierInput.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAccessTierInput.<b>billingPeriod</b></code>](#billing-period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#billing-period\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAccessTierInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAccessTierInput.<b>stripePriceId</b></code>](#stripe-price-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#stripe-price-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAccessTierInput.<b>paypalPlanId</b></code>](#paypal-plan-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#paypal-plan-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAccessTierInput.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-keys\} 
+
+
+
+
+
+### Member Of
+
+[`updateAccessTier`](/reference/graphql/operations/mutations/update-access-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

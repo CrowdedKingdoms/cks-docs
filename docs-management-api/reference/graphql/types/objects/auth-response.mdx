@@ -1,0 +1,48 @@
+---
+id: auth-response
+title: AuthResponse
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type AuthResponse {
+  token: String!
+  gameTokenId: String!
+  user: User!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AuthResponse.<b>token</b></code>](#token)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#token\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuthResponse.<b>gameTokenId</b></code>](#game-token-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#game-token-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuthResponse.<b>user</b></code>](#user)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>User!</b></code>](/reference/graphql/types/objects/user.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#user\} 
+
+
+
+
+
+### Returned By
+
+[`login`](/reference/graphql/operations/mutations/login.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`register`](/reference/graphql/operations/mutations/register.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

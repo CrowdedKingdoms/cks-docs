@@ -1,0 +1,72 @@
+---
+id: org-role
+title: OrgRole
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type OrgRole {
+  orgRoleId: BigInt!
+  orgId: BigInt!
+  roleName: String!
+  description: String
+  isSystem: Boolean!
+  createdAt: DateTime!
+  permissions: [String!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRole.<b>orgRoleId</b></code>](#org-role-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-role-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRole.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRole.<b>roleName</b></code>](#role-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#role-name\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRole.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRole.<b>isSystem</b></code>](#is-system)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-system\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRole.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRole.<b>permissions</b></code>](#permissions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permissions\} 
+
+
+
+
+
+### Returned By
+
+[`createOrgRole`](/reference/graphql/operations/mutations/create-org-role.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`memberRoles`](/reference/graphql/operations/queries/member-roles.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`orgRoles`](/reference/graphql/operations/queries/org-roles.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`updateOrgRole`](/reference/graphql/operations/mutations/update-org-role.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`OrgMembership`](/reference/graphql/types/objects/org-membership.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

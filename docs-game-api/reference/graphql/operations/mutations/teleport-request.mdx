@@ -1,0 +1,38 @@
+---
+id: teleport-request
+title: teleportRequest
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+teleportRequest(
+  input: TeleportRequestInput!
+): TeleportResponse!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>teleportRequest.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TeleportRequestInput!</b></code>](/reference/graphql/types/inputs/teleport-request-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>TeleportResponse</b></code>](/reference/graphql/types/objects/teleport-response.mdx) <Badge class="badge badge--secondary " text="object"/>

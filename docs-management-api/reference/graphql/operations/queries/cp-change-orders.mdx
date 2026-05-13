@@ -1,0 +1,48 @@
+---
+id: cp-change-orders
+title: cpChangeOrders
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+cpChangeOrders(
+  environmentId: String
+  page: Int! = 1
+  pageSize: Int! = 50
+): CpChangeOrdersPage!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>cpChangeOrders.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#environment-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>cpChangeOrders.<b>page</b></code>](#page)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#page\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>cpChangeOrders.<b>pageSize</b></code>](#page-size)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#page-size\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CpChangeOrdersPage</b></code>](/reference/graphql/types/objects/cp-change-orders-page.mdx) <Badge class="badge badge--secondary " text="object"/>

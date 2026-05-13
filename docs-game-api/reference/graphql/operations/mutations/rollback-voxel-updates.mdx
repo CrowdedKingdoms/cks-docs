@@ -1,0 +1,38 @@
+---
+id: rollback-voxel-updates
+title: rollbackVoxelUpdates
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Reverts every voxel edit by `userId` in `appId` between `from` and `to`. Gated by the org permission `manage_apps`. Defaults to dryRun=true; pass dryRun=false to apply.
+
+
+```graphql
+rollbackVoxelUpdates(
+  input: RollbackVoxelUpdatesInput!
+): [RollbackVoxelEventResult!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>rollbackVoxelUpdates.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RollbackVoxelUpdatesInput!</b></code>](/reference/graphql/types/inputs/rollback-voxel-updates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>RollbackVoxelEventResult</b></code>](/reference/graphql/types/objects/rollback-voxel-event-result.mdx) <Badge class="badge badge--secondary " text="object"/>

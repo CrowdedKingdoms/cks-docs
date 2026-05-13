@@ -1,0 +1,103 @@
+---
+id: create-environment-input
+title: CreateEnvironmentInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input CreateEnvironmentInput {
+  orgId: BigInt!
+  displayName: String!
+  slug: String!
+  x25519PublicKeyBase64: String!
+  datacenter: String!
+  databaseFlavor: String!
+  graphqlFlavor: String!
+  udpBuddyFlavor: String!
+  graphqlMinServers: Int!
+  graphqlMaxServers: Int!
+  udpBuddyMinServers: Int!
+  udpBuddyMaxServers: Int!
+  graphqlLoadBalancerCount: Int!
+  graphqlLoadBalancerFlavor: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>displayName</b></code>](#display-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#display-name\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>x25519PublicKeyBase64</b></code>](#x-25519-public-key-base-64)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#x-25519-public-key-base-64\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>datacenter</b></code>](#datacenter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#datacenter\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>databaseFlavor</b></code>](#database-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#database-flavor\} 
+Flavor name from environmentFlavors(datacenter); must have a published hourly price.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>graphqlFlavor</b></code>](#graphql-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-flavor\} 
+Flavor name from environmentFlavors(datacenter); must have a published hourly price.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>udpBuddyFlavor</b></code>](#udp-buddy-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-flavor\} 
+Flavor name from environmentFlavors(datacenter); must have a published hourly price.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>graphqlMinServers</b></code>](#graphql-min-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-min-servers\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>graphqlMaxServers</b></code>](#graphql-max-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-max-servers\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>udpBuddyMinServers</b></code>](#udp-buddy-min-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-min-servers\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>udpBuddyMaxServers</b></code>](#udp-buddy-max-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-max-servers\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>graphqlLoadBalancerCount</b></code>](#graphql-load-balancer-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-load-balancer-count\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateEnvironmentInput.<b>graphqlLoadBalancerFlavor</b></code>](#graphql-load-balancer-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-load-balancer-flavor\} 
+Flavor name from environmentFlavors(datacenter) for GraphQL software load balancer VMs; must have a published hourly price.
+
+
+
+
+### Member Of
+
+[`createEnvironment`](/reference/graphql/operations/mutations/create-environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

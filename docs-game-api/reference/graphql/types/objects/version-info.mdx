@@ -1,0 +1,53 @@
+---
+id: version-info
+title: VersionInfo
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type VersionInfo {
+  major: Int!
+  minor: Int!
+  patch: Int!
+  build: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>VersionInfo.<b>major</b></code>](#major)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#major\} 
+Major version number
+
+
+#### [<code style={{ fontWeight: 'normal' }}>VersionInfo.<b>minor</b></code>](#minor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#minor\} 
+Minor version number
+
+
+#### [<code style={{ fontWeight: 'normal' }}>VersionInfo.<b>patch</b></code>](#patch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#patch\} 
+Patch version number
+
+
+#### [<code style={{ fontWeight: 'normal' }}>VersionInfo.<b>build</b></code>](#build)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#build\} 
+Build number
+
+
+
+
+### Member Of
+
+[`ServerVersionInfo`](/reference/graphql/types/objects/server-version-info.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

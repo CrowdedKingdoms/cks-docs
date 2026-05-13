@@ -1,0 +1,68 @@
+---
+id: cks-environment-detail
+title: CksEnvironmentDetail
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type CksEnvironmentDetail {
+  environment: CksEnvironment!
+  components: [CksEnvironmentComponent!]!
+  changeOrders: [CksEnvironmentChangeOrder!]!
+  audit: [CksEnvironmentAudit!]!
+  secrets: [CksEnvironmentSecretValue!]!
+  outputs: [CksEnvironmentOutput!]!
+  billingResources: [CksEnvironmentBillingResource!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentDetail.<b>environment</b></code>](#environment)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CksEnvironment!</b></code>](/reference/graphql/types/objects/cks-environment.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#environment\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentDetail.<b>components</b></code>](#components)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CksEnvironmentComponent!]!</b></code>](/reference/graphql/types/objects/cks-environment-component.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#components\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentDetail.<b>changeOrders</b></code>](#change-orders)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CksEnvironmentChangeOrder!]!</b></code>](/reference/graphql/types/objects/cks-environment-change-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#change-orders\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentDetail.<b>audit</b></code>](#audit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CksEnvironmentAudit!]!</b></code>](/reference/graphql/types/objects/cks-environment-audit.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#audit\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentDetail.<b>secrets</b></code>](#secrets)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CksEnvironmentSecretValue!]!</b></code>](/reference/graphql/types/objects/cks-environment-secret-value.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#secrets\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentDetail.<b>outputs</b></code>](#outputs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CksEnvironmentOutput!]!</b></code>](/reference/graphql/types/objects/cks-environment-output.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#outputs\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentDetail.<b>billingResources</b></code>](#billing-resources)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CksEnvironmentBillingResource!]!</b></code>](/reference/graphql/types/objects/cks-environment-billing-resource.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#billing-resources\} 
+
+
+
+
+
+### Returned By
+
+[`createEnvironment`](/reference/graphql/operations/mutations/create-environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`orgEnvironment`](/reference/graphql/operations/queries/org-environment.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

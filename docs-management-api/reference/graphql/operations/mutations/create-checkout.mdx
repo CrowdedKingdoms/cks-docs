@@ -1,0 +1,38 @@
+---
+id: create-checkout
+title: createCheckout
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Creates a Checkout row, opens the provider session, and returns the row with externalUrl set. Redirect the user to externalUrl. Status starts PENDING and updates via webhook.
+
+
+```graphql
+createCheckout(
+  input: CreateCheckoutInput!
+): Checkout!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createCheckout.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateCheckoutInput!</b></code>](/reference/graphql/types/inputs/create-checkout-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Checkout</b></code>](/reference/graphql/types/objects/checkout.mdx) <Badge class="badge badge--secondary " text="object"/>

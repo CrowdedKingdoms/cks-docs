@@ -1,0 +1,48 @@
+---
+id: chunk-coordinates-input
+title: ChunkCoordinatesInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input ChunkCoordinatesInput {
+  x: BigInt!
+  y: BigInt!
+  z: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkCoordinatesInput.<b>x</b></code>](#x)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#x\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkCoordinatesInput.<b>y</b></code>](#y)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#y\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkCoordinatesInput.<b>z</b></code>](#z)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#z\} 
+
+
+
+
+
+### Member Of
+
+[`CreateGridInput`](/reference/graphql/types/inputs/create-grid-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`NearbyGridPermissionsInput`](/reference/graphql/types/inputs/nearby-grid-permissions-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

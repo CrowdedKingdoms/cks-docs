@@ -1,0 +1,157 @@
+---
+id: cks-environment
+title: CksEnvironment
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type CksEnvironment {
+  id: String!
+  orgId: BigInt!
+  slug: String!
+  displayName: String!
+  primaryCloud: String!
+  primaryRegion: String!
+  status: String!
+  subdomainHandle: String
+  desiredEnvironmentVersion: String
+  observedEnvironmentVersion: String
+  databaseFlavor: String
+  graphqlFlavor: String
+  udpBuddyFlavor: String
+  graphqlMinServers: Int!
+  graphqlMaxServers: Int!
+  udpBuddyMinServers: Int!
+  udpBuddyMaxServers: Int!
+  graphqlLoadBalancerCount: Int!
+  graphqlLoadBalancerFlavor: String
+  billingStatus: String!
+  billingGraceDeadline: DateTime
+  suspendedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>displayName</b></code>](#display-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#display-name\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>primaryCloud</b></code>](#primary-cloud)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#primary-cloud\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>primaryRegion</b></code>](#primary-region)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#primary-region\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>subdomainHandle</b></code>](#subdomain-handle)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#subdomain-handle\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>desiredEnvironmentVersion</b></code>](#desired-environment-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#desired-environment-version\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>observedEnvironmentVersion</b></code>](#observed-environment-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#observed-environment-version\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>databaseFlavor</b></code>](#database-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#database-flavor\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>graphqlFlavor</b></code>](#graphql-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-flavor\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>udpBuddyFlavor</b></code>](#udp-buddy-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-flavor\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>graphqlMinServers</b></code>](#graphql-min-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-min-servers\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>graphqlMaxServers</b></code>](#graphql-max-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-max-servers\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>udpBuddyMinServers</b></code>](#udp-buddy-min-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-min-servers\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>udpBuddyMaxServers</b></code>](#udp-buddy-max-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-max-servers\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>graphqlLoadBalancerCount</b></code>](#graphql-load-balancer-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-load-balancer-count\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>graphqlLoadBalancerFlavor</b></code>](#graphql-load-balancer-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-load-balancer-flavor\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>billingStatus</b></code>](#billing-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#billing-status\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>billingGraceDeadline</b></code>](#billing-grace-deadline)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#billing-grace-deadline\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>suspendedAt</b></code>](#suspended-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#suspended-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironment.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+
+
+
+
+
+### Returned By
+
+[`orgEnvironments`](/reference/graphql/operations/queries/org-environments.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`CksEnvironmentDetail`](/reference/graphql/types/objects/cks-environment-detail.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

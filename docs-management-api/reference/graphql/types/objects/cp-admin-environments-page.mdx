@@ -1,0 +1,53 @@
+---
+id: cp-admin-environments-page
+title: CpAdminEnvironmentsPage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type CpAdminEnvironmentsPage {
+  rows: [CpAdminEnvironment!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CpAdminEnvironmentsPage.<b>rows</b></code>](#rows)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CpAdminEnvironment!]!</b></code>](/reference/graphql/types/objects/cp-admin-environment.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#rows\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpAdminEnvironmentsPage.<b>total</b></code>](#total)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpAdminEnvironmentsPage.<b>page</b></code>](#page)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#page\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpAdminEnvironmentsPage.<b>pageSize</b></code>](#page-size)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#page-size\} 
+
+
+
+
+
+### Returned By
+
+[`cpEnvironments`](/reference/graphql/operations/queries/cp-environments.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

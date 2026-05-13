@@ -1,0 +1,73 @@
+---
+id: cks-ovh-datacenter
+title: CksOvhDatacenter
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type CksOvhDatacenter {
+  region: String!
+  name: String
+  city: String
+  continent: String
+  status: String!
+  isAvailable: Boolean!
+  syncedAt: DateTime!
+  selectableInstanceCount: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CksOvhDatacenter.<b>region</b></code>](#region)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#region\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksOvhDatacenter.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksOvhDatacenter.<b>city</b></code>](#city)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#city\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksOvhDatacenter.<b>continent</b></code>](#continent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#continent\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksOvhDatacenter.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksOvhDatacenter.<b>isAvailable</b></code>](#is-available)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-available\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksOvhDatacenter.<b>syncedAt</b></code>](#synced-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#synced-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksOvhDatacenter.<b>selectableInstanceCount</b></code>](#selectable-instance-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#selectable-instance-count\} 
+Number of customer-selectable instances in this datacenter after availability, pricing, and admin visibility filters.
+
+
+
+
+### Returned By
+
+[`environmentDatacenters`](/reference/graphql/operations/queries/environment-datacenters.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

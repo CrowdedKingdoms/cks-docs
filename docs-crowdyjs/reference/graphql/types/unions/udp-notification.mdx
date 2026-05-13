@@ -1,0 +1,72 @@
+---
+id: udp-notification
+title: UdpNotification
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+All game-server messages delivered over the UDP proxy as GraphQL payloads. Subscribe to udpNotifications before or with sending mutations so responses and GenericErrorResponse (correlate via sequenceNumber) are not missed.
+
+
+```graphql
+union UdpNotification = ActorUpdateResponse | ActorUpdateNotification | VoxelUpdateResponse | VoxelUpdateNotification | ClientAudioNotification | ClientTextNotification | ClientEventNotification | ServerEventNotification | GenericErrorResponse | RealtimeConnectionEvent
+```
+
+
+### Possible types
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ActorUpdateResponse</b></code>](/reference/graphql/types/objects/actor-update-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Response from the UDP game server for an actor update request. Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ActorUpdateNotification</b></code>](/reference/graphql/types/objects/actor-update-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when an actor (player or NPC) state is updated by another client or the server. Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>VoxelUpdateResponse</b></code>](/reference/graphql/types/objects/voxel-update-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Response from the UDP game server for a voxel update request. Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>VoxelUpdateNotification</b></code>](/reference/graphql/types/objects/voxel-update-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when a voxel (block) is updated by another client or the server. Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ClientAudioNotification</b></code>](/reference/graphql/types/objects/client-audio-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when another client sends an audio packet (voice chat). Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ClientTextNotification</b></code>](/reference/graphql/types/objects/client-text-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when another client sends a text message (chat). Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ClientEventNotification</b></code>](/reference/graphql/types/objects/client-event-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when another client sends a custom event. Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ServerEventNotification</b></code>](/reference/graphql/types/objects/server-event-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when the server sends a custom event. Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>GenericErrorResponse</b></code>](/reference/graphql/types/objects/generic-error-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Generic error response from the UDP game server. Uses the sequence number to match the original request that failed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>RealtimeConnectionEvent</b></code>](/reference/graphql/types/objects/realtime-connection-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+SDK-facing realtime lifecycle event emitted on udpNotifications when the subscription cannot open a UDP proxy session.
+
+
+
+
+### Returned By
+
+[`udpNotifications`](/reference/graphql/operations/subscriptions/udp-notifications.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>

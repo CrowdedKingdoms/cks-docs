@@ -1,0 +1,38 @@
+---
+id: update-user-app-state
+title: updateUserAppState
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+updateUserAppState(
+  input: CreateUserAppStateInput!
+): UserAppState!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateUserAppState.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateUserAppStateInput!</b></code>](/reference/graphql/types/inputs/create-user-app-state-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UserAppState</b></code>](/reference/graphql/types/objects/user-app-state.mdx) <Badge class="badge badge--secondary " text="object"/>

@@ -1,0 +1,38 @@
+---
+id: create-environment
+title: createEnvironment
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Creates an environment only if each selected instance flavor is available and customer-priced in the catalog (same rule as environmentQuote). Use environmentFlavors / environmentDatacenters for valid options.
+
+
+```graphql
+createEnvironment(
+  input: CreateEnvironmentInput!
+): CksEnvironmentDetail!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createEnvironment.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateEnvironmentInput!</b></code>](/reference/graphql/types/inputs/create-environment-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CksEnvironmentDetail</b></code>](/reference/graphql/types/objects/cks-environment-detail.mdx) <Badge class="badge badge--secondary " text="object"/>

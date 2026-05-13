@@ -1,0 +1,113 @@
+---
+id: cks-environment-quote
+title: CksEnvironmentQuote
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type CksEnvironmentQuote {
+  datacenter: String!
+  databaseFlavor: String!
+  graphqlFlavor: String!
+  udpBuddyFlavor: String!
+  graphqlMinServers: Int!
+  graphqlMaxServers: Int!
+  udpBuddyMinServers: Int!
+  udpBuddyMaxServers: Int!
+  graphqlLoadBalancerCount: Int!
+  graphqlLoadBalancerFlavor: String!
+  hourlyCostCents: BigInt!
+  firstDayReserveCents: BigInt!
+  walletBalanceCents: BigInt!
+  availableBalanceCents: BigInt!
+  currency: String!
+  canCreate: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>datacenter</b></code>](#datacenter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#datacenter\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>databaseFlavor</b></code>](#database-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#database-flavor\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>graphqlFlavor</b></code>](#graphql-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-flavor\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>udpBuddyFlavor</b></code>](#udp-buddy-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-flavor\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>graphqlMinServers</b></code>](#graphql-min-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-min-servers\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>graphqlMaxServers</b></code>](#graphql-max-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-max-servers\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>udpBuddyMinServers</b></code>](#udp-buddy-min-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-min-servers\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>udpBuddyMaxServers</b></code>](#udp-buddy-max-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-max-servers\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>graphqlLoadBalancerCount</b></code>](#graphql-load-balancer-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-load-balancer-count\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>graphqlLoadBalancerFlavor</b></code>](#graphql-load-balancer-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-load-balancer-flavor\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>hourlyCostCents</b></code>](#hourly-cost-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#hourly-cost-cents\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>firstDayReserveCents</b></code>](#first-day-reserve-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#first-day-reserve-cents\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>walletBalanceCents</b></code>](#wallet-balance-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wallet-balance-cents\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>availableBalanceCents</b></code>](#available-balance-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#available-balance-cents\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentQuote.<b>canCreate</b></code>](#can-create)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#can-create\} 
+
+
+
+
+
+### Returned By
+
+[`environmentQuote`](/reference/graphql/operations/queries/environment-quote.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

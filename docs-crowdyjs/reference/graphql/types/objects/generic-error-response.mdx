@@ -1,0 +1,43 @@
+---
+id: generic-error-response
+title: GenericErrorResponse
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Generic error response from the UDP game server. Uses the sequence number to match the original request that failed.
+
+
+```graphql
+type GenericErrorResponse {
+  sequenceNumber: Int!
+  errorCode: UdpErrorCode!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GenericErrorResponse.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number\} 
+The sequence number from the original request, used to correlate this error with the request that caused it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GenericErrorResponse.<b>errorCode</b></code>](#error-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UdpErrorCode!</b></code>](/reference/graphql/types/enums/udp-error-code.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#error-code\} 
+Error code indicating the reason for the failure.
+
+
+
+
+### Implemented By
+
+[`UdpNotification`](/reference/graphql/types/unions/udp-notification.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/>

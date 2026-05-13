@@ -1,0 +1,116 @@
+---
+id: user
+title: User
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type User {
+  userId: BigInt!
+  email: String
+  gamertag: String
+  disambiguation: String
+  state: String
+  isConfirmed: Boolean!
+  createdAt: DateTime!
+  grantEarlyAccess: Boolean!
+  grantEarlyAccessOverride: Boolean!
+  orgId: BigInt
+  externalId: String
+  userType: String!
+  isSuperAdmin: Boolean!
+  isOperator: Boolean!
+  permissionsForOrg(
+    orgId: BigInt!
+  ): [String!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>gamertag</b></code>](#gamertag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#gamertag\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>disambiguation</b></code>](#disambiguation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#disambiguation\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>isConfirmed</b></code>](#is-confirmed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-confirmed\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>grantEarlyAccess</b></code>](#grant-early-access)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grant-early-access\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>grantEarlyAccessOverride</b></code>](#grant-early-access-override)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grant-early-access-override\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>externalId</b></code>](#external-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#external-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>userType</b></code>](#user-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-type\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>isSuperAdmin</b></code>](#is-super-admin)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-super-admin\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>isOperator</b></code>](#is-operator)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-operator\} 
+Company-employee flag that grants access to control-plane / operator features. Independent from is&#x005F;super&#x005F;admin.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>permissionsForOrg</b></code>](#permissions-for-org)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permissions-for-org\} 
+The current user's effective permission keys on the given org. Empty if not a member. Always full set if super admin.
+##### [<code style={{ fontWeight: 'normal' }}>User.permissionsForOrg.<b>orgId</b></code>](#user-permissions-for-org-org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-permissions-for-org-org-id\} 
+
+
+
+
+
+### Returned By
+
+[`me`](/reference/graphql/operations/queries/me.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setEarlyAccessOverride`](/reference/graphql/operations/mutations/set-early-access-override.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setOperator`](/reference/graphql/operations/mutations/set-operator.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setSuperAdmin`](/reference/graphql/operations/mutations/set-super-admin.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateGamertag`](/reference/graphql/operations/mutations/update-gamertag.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateUserType`](/reference/graphql/operations/mutations/update-user-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`user`](/reference/graphql/operations/queries/user.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`AuthResponse`](/reference/graphql/types/objects/auth-response.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`UsersPage`](/reference/graphql/types/objects/users-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

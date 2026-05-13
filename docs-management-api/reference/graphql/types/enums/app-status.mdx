@@ -1,0 +1,48 @@
+---
+id: app-status
+title: AppStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+DRAFT = invisible to non-members, LIVE = purchasable/playable, ARCHIVED = read-only
+
+
+```graphql
+enum AppStatus {
+  DRAFT
+  LIVE
+  ARCHIVED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>AppStatus.<b>DRAFT</b></code>](#draft) \{#draft\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppStatus.<b>LIVE</b></code>](#live) \{#live\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppStatus.<b>ARCHIVED</b></code>](#archived) \{#archived\} 
+
+
+
+
+
+### Member Of
+
+[`App`](/reference/graphql/types/objects/app.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CreateAppInput`](/reference/graphql/types/inputs/create-app-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpdateAppInput`](/reference/graphql/types/inputs/update-app-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

@@ -1,0 +1,48 @@
+---
+id: user-property-token-data
+title: UserPropertyTokenData
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type UserPropertyTokenData {
+  available: String!
+  inUse: String!
+  total: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UserPropertyTokenData.<b>available</b></code>](#available)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#available\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserPropertyTokenData.<b>inUse</b></code>](#in-use)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#in-use\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserPropertyTokenData.<b>total</b></code>](#total)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total\} 
+
+
+
+
+
+### Returned By
+
+[`myPropertyTokens`](/reference/graphql/operations/queries/my-property-tokens.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

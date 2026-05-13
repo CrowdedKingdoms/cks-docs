@@ -1,0 +1,43 @@
+---
+id: chunk-voxel-updates-response
+title: ChunkVoxelUpdatesResponse
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type ChunkVoxelUpdatesResponse {
+  coordinates: ChunkCoordinates!
+  voxels: [Voxel!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkVoxelUpdatesResponse.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#coordinates\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunkVoxelUpdatesResponse.<b>voxels</b></code>](#voxels)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Voxel!]!</b></code>](/reference/graphql/types/objects/voxel.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#voxels\} 
+
+
+
+
+
+### Member Of
+
+[`VoxelUpdatesByDistanceResponse`](/reference/graphql/types/objects/voxel-updates-by-distance-response.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

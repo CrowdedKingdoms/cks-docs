@@ -1,0 +1,48 @@
+---
+id: page-info
+title: PageInfo
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type PageInfo {
+  totalCount: Int!
+  limit: Int!
+  offset: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PageInfo.<b>totalCount</b></code>](#total-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total-count\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PageInfo.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PageInfo.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+
+
+
+
+
+### Member Of
+
+[`AppsPage`](/reference/graphql/types/objects/apps-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CheckoutsPage`](/reference/graphql/types/objects/checkouts-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PaymentEventsPage`](/reference/graphql/types/objects/payment-events-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`UsersPage`](/reference/graphql/types/objects/users-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

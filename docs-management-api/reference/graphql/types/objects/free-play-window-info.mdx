@@ -1,0 +1,48 @@
+---
+id: free-play-window-info
+title: FreePlayWindowInfo
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type FreePlayWindowInfo {
+  isCurrentlyActive: Boolean!
+  description: String!
+  nextWindowStart: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>FreePlayWindowInfo.<b>isCurrentlyActive</b></code>](#is-currently-active)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-currently-active\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreePlayWindowInfo.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreePlayWindowInfo.<b>nextWindowStart</b></code>](#next-window-start)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#next-window-start\} 
+
+
+
+
+
+### Returned By
+
+[`freePlayWindowInfo`](/reference/graphql/operations/queries/free-play-window-info.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
