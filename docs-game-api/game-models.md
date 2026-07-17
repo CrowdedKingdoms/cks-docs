@@ -319,6 +319,84 @@ ping carries no authoritative state — the model API stays the source of truth.
 Both paths are wrapped by CrowdyJS; see
 [CrowdyJS → Game Models](/crowdyjs/game-model) for the SDK pattern.
 
+## Permission effects: functions that write grid permissions
+
+Invoke policies let model logic *read* the permission systems; **permission
+effects** let a function *write* one of them — the runtime
+[grid permissions](grids-and-permissions) that govern movement, voxel edits,
+teleports, and voice on regions of the world. Declare `permissionEffects` on a
+function and every successful invocation grants (or revokes) grid permissions
+**in the same transaction** as its property mutations: "pay 100 gold AND get
+access to the plot" either both happen or neither does.
+
+```graphql
+mutation {
+  gameModelUpsertFunction(input: {
+    appId: "1",
+    name: "buy_plot",
+    containerTypeName: "Plot",
+    parameters: [
+      { name: "wallet_id", valueType: "container_ref", required: true }
+    ],
+    mutations: [
+      # The policy has already verified ownership and price; spend the gold.
+      { target: "ref($wallet_id)", property: "gold",
+        expression: "ref($wallet_id).gold - self.price" },
+      { target: "self", property: "owner_user_id", expression: "$caller_user_id" }
+    ],
+    permissionEffects: [
+      {
+        action: "grant",
+        permissionKeys: ["access", "update_voxel_data"],
+        userExpression: "$caller_user_id",
+        gridIdExpression: "self.grid_id"
+      }
+    ],
+    invokePolicyJson: "{\"type\":\"condition\",\"expression\":\"ref($wallet_id).owner_user_id == $caller_user_id && ref($wallet_id).gold >= self.price\"}"
+  }) { name permissionEffects { action permissionKeys } }
+}
+```
+
+Each effect declares:
+
+- **`action`** — `grant` (upsert direct grants) or `revoke` (delete them).
+- **`permissionKeys`** — runtime permission keys (`access`, `teleport`,
+  `update_voxel_data`, `use_voice_chat`), validated against the
+  `runtime_permissions` catalog.
+- **`userExpression`** / **`gridIdExpression`** — model expressions resolving
+  the target user id and grid id, evaluated in the invocation's (post-mutation)
+  context.
+- **`ttlSecondsExpression`** — grant only, optional: an expiry in seconds
+  (rentals and leases; e.g. `"86400"` for a day).
+
+Semantics and safety:
+
+- **Transactional.** Effects apply after the mutations succeed, on the same
+  transaction; a failing effect (unknown key, wrong-app grid, grantee without
+  app access, non-integer user/grid) rolls the whole invocation back with
+  `success: false`. Contrast with
+  [notifications](model-driven-notifications), which are post-commit and
+  best-effort.
+- **Immediately enforced.** The effect writes the direct-grant input table and
+  recomputes the materialized ACL, so Buddy's movement/voxel enforcement and
+  every `grid_permission` policy check see the change at commit.
+- **System params.** `$caller_user_id`, `$current_turn_user_id`,
+  `$self_owner_id`, and `$session_id` are injected into function-body and
+  effect expressions (they cannot be spoofed by a same-named caller param), so
+  "grant to whoever invoked" is just `$caller_user_id`. This applies to your
+  `mutations` expressions too.
+- **Bounded.** At most 4 effects per function, each charged against the
+  invocation's gas budget; the target user must hold active app access to
+  receive a grant; per-grid `grid_permission_limits` still cap what is
+  effective.
+- **Audited.** Applied effects are recorded on the event
+  (`gameModelEvents` → `permissionEffectsAppliedJson`), so every model-driven
+  grant/revoke is attributable — including automation-driven ones (an NPC
+  quartermaster can grant with `runAsUserId` resolving `$caller_user_id`).
+
+For the worked land-purchase mapping, see
+[Modeling game concepts](modeling-game-concepts#custom-permissions-on-game-objects).
+
 ## Tier-gated features
 
 Sell or gate abilities by access tier. Define a feature key for your app, then

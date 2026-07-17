@@ -33,6 +33,7 @@ type GmFunction {
   invokePolicyJson: String
   autonomousInvocable: Boolean!
   notifications: [GmFunctionNotification!]!
+  permissionEffects: [GmFunctionPermissionEffect!]!
   warnings: [String!]!
 }
 ```
@@ -90,6 +91,10 @@ Whether an autonomous process (automation/NPC) may use this function as an entry
 
 #### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>notifications</b></code>](#notifications)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmFunctionNotification!]!</b></code>](/reference/graphql/types/objects/gm-function-notification.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#notifications\} 
 Declarative realtime notifications the function emits via Buddy after it commits.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>permissionEffects</b></code>](#permission-effects)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmFunctionPermissionEffect!]!</b></code>](/reference/graphql/types/objects/gm-function-permission-effect.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#permission-effects\} 
+Declarative grid-permission effects (grant/revoke runtime grid ACL rows) applied atomically with the function's mutations.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>warnings</b></code>](#warnings)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#warnings\} 

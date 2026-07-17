@@ -12,7 +12,38 @@ deprecation window — deprecated fields keep working and are marked `@deprecate
 schema (visible in the [reference](/management-api/reference/graphql-overview) and the
 downloadable SDL) until the stated removal date.
 
-## 2026-07-10 (latest)
+## 2026-07-17 (latest)
+
+**Game API -- model permission effects (additive)**
+
+Game-model functions can now **write runtime grid permissions** as declared,
+transactional effects. A new `permissionEffects` array on
+`gameModelUpsertFunction` / `gameModelSeed` functions declares grants/revokes
+(`{ action, permissionKeys, userExpression, gridIdExpression,
+ttlSecondsExpression? }`) that apply **in the same transaction** as the
+function's property mutations — "pay gold AND get plot access" is one atomic
+invoke, immediately enforced by the replication layer on movement/voxel writes.
+Details:
+
+- Expressions are compiled server-side and evaluated in the invocation context;
+  the system params `$caller_user_id`, `$current_turn_user_id`,
+  `$self_owner_id`, and `$session_id` are now injected into **function-body**
+  evaluation as well (previously policy `condition` expressions only) and
+  cannot be spoofed by same-named caller params.
+- Effects are capped at 4 per function, gas-charged, validated against the
+  `runtime_permissions` catalog, and require the grantee to hold app access; a
+  failing effect rolls back the whole invocation (`success: false`).
+- New audit field `GmEvent.permissionEffectsAppliedJson` records every applied
+  effect (player- and automation-driven alike).
+- New types: `FunctionPermissionEffectInput`, `GmFunctionPermissionEffect`
+  (returned on `GmFunction.permissionEffects`).
+
+See [Game Models → Permission effects](/game-api/game-models#permission-effects-functions-that-write-grid-permissions)
+and the worked land-purchase example in
+[Modeling game concepts](/game-api/modeling-game-concepts#custom-permissions-on-game-objects).
+Requires `cks-game-api` with the `2026-07-17-model-permission-effects` migration.
+
+## 2026-07-10
 
 **Unreal SDK 2.1.0 -- Crowdy State, replicated subsystems, and host authority**
 

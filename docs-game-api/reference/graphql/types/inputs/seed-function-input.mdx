@@ -31,6 +31,7 @@ input SeedFunctionInput {
   invokePolicyJson: String
   autonomousInvocable: Boolean
   notifications: [FunctionNotificationInput!]
+  permissionEffects: [FunctionPermissionEffectInput!]
 }
 ```
 
@@ -79,6 +80,10 @@ Opt-in: allow an autonomous process (automation/NPC) to use this function as an 
 
 #### [<code style={{ fontWeight: 'normal' }}>SeedFunctionInput.<b>notifications</b></code>](#notifications)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[FunctionNotificationInput!]</b></code>](/reference/graphql/types/inputs/function-notification-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#notifications\} 
 Declarative realtime notifications the function emits via Buddy after it commits (see notify&#x005F;&#x002A; effects).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedFunctionInput.<b>permissionEffects</b></code>](#permission-effects)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[FunctionPermissionEffectInput!]</b></code>](/reference/graphql/types/inputs/function-permission-effect-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#permission-effects\} 
+Declarative grid-permission effects (grant/revoke runtime grid ACL rows) applied atomically with the function's mutations. Max 4 per function.
 
 
 

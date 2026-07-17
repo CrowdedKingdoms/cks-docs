@@ -126,6 +126,14 @@ grids for the app), call `deleteGrid` on the mistaken peer, then run
 There are two ways to give players permissions on a grid. Both contribute to a
 player's **effective** permissions, and both take effect immediately.
 
+:::tip[Grants driven by game logic]
+A [game model function](game-models) can also grant or revoke direct grid
+permissions itself, transactionally with its state mutations — buying land,
+earning access, banishment — via
+[permission effects](game-models#permission-effects-functions-that-write-grid-permissions).
+Those grants land in the same direct-grant layer as `grantGridPermissions`.
+:::
+
 ### Direct grants (per player)
 
 ```graphql

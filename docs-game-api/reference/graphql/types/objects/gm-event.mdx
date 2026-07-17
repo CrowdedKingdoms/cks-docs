@@ -29,6 +29,7 @@ type GmEvent {
   automationId: String
   paramsJson: String!
   mutationsAppliedJson: String!
+  permissionEffectsAppliedJson: String!
   returnValueJson: String
   success: Boolean!
   errorMessage: String
@@ -73,6 +74,10 @@ JSON object of params.
 
 #### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>mutationsAppliedJson</b></code>](#mutations-applied-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#mutations-applied-json\} 
 JSON array of applied mutations.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>permissionEffectsAppliedJson</b></code>](#permission-effects-applied-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-effects-applied-json\} 
+JSON array of grid-permission effects this invocation applied (audit trail for model-driven grants/revokes): [&#x007B; action, permission&#x005F;keys, user&#x005F;id, grid&#x005F;id, expires&#x005F;at &#x007D;].
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>returnValueJson</b></code>](#return-value-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#return-value-json\} 

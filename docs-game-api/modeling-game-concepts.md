@@ -229,6 +229,41 @@ Grant the permission once (`grantGridPermissions`, or a group grant with
 `assignGroupToGrid`) and the player can both enter the region and open its
 doors. Omit `gridId` to accept the permission on *any* grid.
 
+Game logic can also *produce* those grants itself. With
+[permission effects](game-models#permission-effects-functions-that-write-grid-permissions)
+a function grants (or revokes) grid permissions transactionally with its
+mutations — the canonical "buy this plot of land" flow, with the price and the
+access grant in one atomic invoke:
+
+```graphql
+mutation {
+  gameModelUpsertFunction(input: {
+    appId: "1",
+    name: "buy_plot",
+    containerTypeName: "Plot",
+    parameters: [{ name: "wallet_id", valueType: "container_ref", required: true }],
+    mutations: [
+      { target: "ref($wallet_id)", property: "gold",
+        expression: "ref($wallet_id).gold - self.price" },
+      { target: "self", property: "owner_user_id", expression: "$caller_user_id" }
+    ],
+    # Pay AND get access atomically: if either fails, neither happens. The
+    # grant is enforced by Buddy on movement/voxel writes at commit.
+    permissionEffects: [
+      { action: "grant",
+        permissionKeys: ["access", "update_voxel_data"],
+        userExpression: "$caller_user_id",
+        gridIdExpression: "self.grid_id" }
+    ],
+    invokePolicyJson: "{\"type\":\"condition\",\"expression\":\"ref($wallet_id).owner_user_id == $caller_user_id && ref($wallet_id).gold >= self.price\"}"
+  }) { name }
+}
+```
+
+The same mechanism handles rentals (`ttlSecondsExpression` puts an expiry on
+the grant) and banishment (`action: "revoke"`). Every applied effect is
+audited on the invocation event (`permissionEffectsAppliedJson`).
+
 ### "Only the owner of this chest can open it"
 
 Ownership is built in: containers carry an `ownerUserId`, and the
