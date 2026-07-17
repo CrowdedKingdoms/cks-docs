@@ -49,6 +49,14 @@ ownership) via the Game API. See
 
 > The first message to a brand-new chunk region may briefly return `UNAUTHORIZED`
 > while the server loads that region's grid permissions; retry and it succeeds.
+>
+> Permission denials are **transient and self-healing** in general: the server
+> periodically re-pulls a denied session's cached permission state (a few
+> seconds of backoff between refreshes), so an entitlement granted *after* you
+> connected — or one that reached the game database late — starts working
+> without re-authenticating or reassigning. If you receive a stream of
+> `UNAUTHORIZED` replies, keep sending at a reduced rate for ~10-15 seconds
+> before falling back to a fresh `serverWithLeastClients` assignment.
 
 ## App suspended or over budget
 
