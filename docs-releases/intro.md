@@ -12,7 +12,37 @@ deprecation window — deprecated fields keep working and are marked `@deprecate
 schema (visible in the [reference](/management-api/reference/graphql-overview) and the
 downloadable SDL) until the stated removal date.
 
-## 2026-07-17 (latest)
+## 2026-07-18 (latest)
+
+**Game API -- permission-read builtins + selector permission predicates (additive)**
+
+Game-model logic can now **read** the runtime grid ACL and grid layout,
+completing the read+write loop that permission effects opened:
+
+- **Six new expression builtins**, usable in mutations, return expressions,
+  notification args, permission-effect expressions, and policy `condition`
+  rules: `has_grid_permission(user, key[, grid])`,
+  `grid_at(cx, cy, cz[, mode])` (overlap modes `first` | `smallest` |
+  `largest`), `has_chunk_permission(user, key, cx, cy, cz[, mode])`,
+  `grid_contains`, `grid_min`, `grid_max`. Reads are app-scoped, cached per
+  invocation, charged 25 gas per uncached lookup, and observe grants applied
+  by the same invocation's permission effects (read-your-writes).
+- **Automation selector permission predicates**: `selfPermissionWhere` /
+  `candidatePermissionWhere` filter automation targets by whether the user
+  behind a container has/lacks a grid permission (owner- or property-derived
+  user id; literal, property-derived, or any-grid scope) — one batched ACL
+  query per predicate. Validated at `gameModelUpsertAutomation` time.
+- Upload static analysis warns on wrong builtin arity, invalid `mode`/axis
+  literals, and unknown permission keys.
+
+Read-only feature: no schema migration and no wire change. See
+[Game Models → Reading permissions from expressions](/game-api/game-models#reading-permissions-from-expressions)
+and [Autonomous processes → Permission predicates](/game-api/autonomous-processes#permission-predicates).
+CrowdyJS 8.2.0 ships the matching Game Kit surface (`plotBlueprint`,
+chunk-permission lock authority, typed selector predicates). Requires
+`cks-game-api` v0.13.12+.
+
+## 2026-07-17
 
 **Game API -- model permission effects (additive)**
 

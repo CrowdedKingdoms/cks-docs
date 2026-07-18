@@ -90,7 +90,7 @@ JSON object of static params.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>selectorJson</b></code>](#selector-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#selector-json\} 
-JSON selector resolving candidate refs/scalars over model data into params (e.g. &#x007B;"pick":"nearest","ofType":"Unit","where":[...],"by":"manhattan","bindAs":&#x007B;...&#x007D;&#x007D;).
+JSON selector resolving candidate refs/scalars over model data into params (e.g. &#x007B;"pick":"nearest","ofType":"Unit","where":[...],"by":"manhattan","bindAs":&#x007B;...&#x007D;&#x007D;). Also supports grid-permission filters "selfPermissionWhere"/"candidatePermissionWhere": arrays of &#x007B;"userFrom":"owner"|&#x007B;"property":k&#x007D;,"op":"has"|"lacks","key":&#x003C;runtime permission key&#x003E;,"grid":&#x003C;id&#x003E;|&#x007B;"property":k&#x007D;&#x007D; checked against the live grid ACL (omit "grid" for any-grid).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>runAsUserId</b></code>](#run-as-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-as-user-id\} 

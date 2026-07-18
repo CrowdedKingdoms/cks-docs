@@ -229,6 +229,24 @@ Grant the permission once (`grantGridPermissions`, or a group grant with
 `assignGroupToGrid`) and the player can both enter the region and open its
 doors. Omit `gridId` to accept the permission on *any* grid.
 
+Even better: with the
+[permission-read builtins](game-models#reading-permissions-from-expressions)
+the door doesn't need a hand-pinned grid id at all — it checks the ACL **for
+the chunk it stands in**, so one function serves every door in the world:
+
+```graphql
+mutation {
+  gameModelUpsertFunction(input: {
+    appId: "1",
+    name: "open_door",
+    containerTypeName: "Door",
+    # cx/cy/cz are int properties set when the door is placed.
+    mutations: [{ target: "self", property: "is_open", expression: "true" }],
+    invokePolicyJson: "{\"type\":\"condition\",\"expression\":\"has_chunk_permission($caller_user_id, \\\"access\\\", self.cx, self.cy, self.cz, \\\"smallest\\\")\"}"
+  }) { name }
+}
+```
+
 Game logic can also *produce* those grants itself. With
 [permission effects](game-models#permission-effects-functions-that-write-grid-permissions)
 a function grants (or revokes) grid permissions transactionally with its
@@ -263,6 +281,14 @@ mutation {
 The same mechanism handles rentals (`ttlSecondsExpression` puts an expiry on
 the grant) and banishment (`action: "revoke"`). Every applied effect is
 audited on the invocation event (`permissionEffectsAppliedJson`).
+
+Together with the
+[permission-read builtins](game-models#reading-permissions-from-expressions),
+this closes the full loop inside the model: `buy_plot` **writes** the grant,
+`open_door`/`place_block` logic **reads** it back (`has_chunk_permission`),
+and [guard NPCs](autonomous-processes#permission-predicates) target players
+who lack it — all against the same live ACL the replication layer enforces on
+movement and voxel writes.
 
 ### "Only the owner of this chest can open it"
 

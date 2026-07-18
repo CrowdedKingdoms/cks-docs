@@ -146,6 +146,84 @@ if (!result.success) {
 Several lockable types can coexist; use `kit.objectsFor('Chest')` for helpers
 bound to another deployed type name.
 
+A fifth authority, `{ kind: 'chunkPermission', key, mode? }` (game-api
+v0.13.12+), gates the object by **where it stands**: the open/close policy
+compiles to
+[`has_chunk_permission`](/game-api/game-models#reading-permissions-from-expressions)
+over the object's own `cx`/`cy`/`cz` properties (seed them with
+`objects.create({ chunk: {x,y,z} })`), so one deployed function serves every
+door in the world and automatically honors grid grants. `mode` picks the
+covering grid when several overlap (`'first'` default, `'smallest'` for plot
+logic, `'largest'`).
+
+## Plots: sell and rent land
+
+`plotBlueprint()` + `kit.plots` (game-api v0.13.11+) close the permission loop
+end to end: buying a plot spends wallet currency AND grants
+replication-enforced grid permissions **in one transaction** (via
+[permission effects](/game-api/game-models#permission-effects-functions-that-write-grid-permissions)).
+
+```ts
+// Studio: deploy, create a grid for the plot, then the plot over it.
+await adminKit.deploy([plotBlueprint({ rentable: true })]);
+const grid = await admin.gameApps.createGrid({ appId, corner1, corner2 });
+await adminKit.plots.create({
+  displayName: 'Lakeside Plot',
+  gridId: grid.grid.gridId,
+  price: 100,
+  rentPrice: 10,
+  rentTtlSeconds: 86_400,
+});
+
+// Game client: buy (or rent — the grant expires after rent_ttl_seconds).
+const plots = await kit.plots.list();
+const result = await kit.plots.buy(plots[0].containerId, myWalletId);
+if (result.success) {
+  // Buddy now enforces access/update_voxel_data on the plot's grid,
+  // chunk-permission doors on it open, and the HUD can show:
+  const keys = await kit.plots.accessOf(myUserId, plots[0].gridId);
+}
+
+// The plot's owner (or an admin) can revoke:
+await kit.plots.evict(plotId, intruderUserId);
+```
+
+The wallet is any container following the kit convention: an `owner_user_id`
+property mirroring its owner plus a currency property (default `gold`) —
+`inventoryBlueprint`'s stacks or your own type both work. The server verifies
+wallet ownership and price in the invoke policy; an underfunded or foreign
+wallet resolves `success: false`.
+
+## NPC selectors that read permissions
+
+`NpcBehaviorSpec.selector` is now typed (`KitSelectorSpec`) and supports
+grid-permission predicates — e.g. a guard that only targets **intruders**:
+
+```ts
+npcBlueprint({
+  behaviors: [{
+    name: 'guard-response',
+    role: 'guard',
+    trigger: { intervalMs: 30_000 },
+    selector: {
+      pick: 'nearest',
+      ofType: 'PlayerAvatar',
+      candidatePermissionWhere: [{
+        userFrom: { property: 'owner_user_id' },
+        op: 'lacks',
+        key: 'access',
+        grid: { property: 'grid_id' },
+      }],
+      bindAs: { ref: 'target_id' },
+    },
+    mutations: [{ target: 'self', property: 'behavior_state', expression: '"alert"' }],
+  }],
+});
+```
+
+See [Autonomous processes → Permission predicates](/game-api/autonomous-processes#permission-predicates)
+for the predicate semantics.
+
 ## NPCs
 
 Runtime helpers assuming `npcBlueprint`'s conventions. Behaviors run **in the
