@@ -55,7 +55,7 @@
 ## SDKs
 
 - [CrowdyJS (browser-first TypeScript SDK) overview](https://docs.crowdedkingdoms.com/crowdyjs/readme)
-- CrowdyJS guides: [Channels](https://docs.crowdedkingdoms.com/crowdyjs/channels) · [Teams](https://docs.crowdedkingdoms.com/crowdyjs/teams) · [Grids](https://docs.crowdedkingdoms.com/crowdyjs/grids) · [Game model](https://docs.crowdedkingdoms.com/crowdyjs/game-model) · [Automations (NPCs)](https://docs.crowdedkingdoms.com/crowdyjs/automations) · [Model-driven notifications](https://docs.crowdedkingdoms.com/crowdyjs/model-notifications) · [Game Kit (inventory, object permissions, NPCs)](https://docs.crowdedkingdoms.com/crowdyjs/game-kit)
+- CrowdyJS guides: [Channels](https://docs.crowdedkingdoms.com/crowdyjs/channels) · [Teams](https://docs.crowdedkingdoms.com/crowdyjs/teams) · [Grids](https://docs.crowdedkingdoms.com/crowdyjs/grids) · [Game model](https://docs.crowdedkingdoms.com/crowdyjs/game-model) · [Automations (NPCs)](https://docs.crowdedkingdoms.com/crowdyjs/automations) · [Model-driven notifications](https://docs.crowdedkingdoms.com/crowdyjs/model-notifications) · [Game Kit (inventory, object permissions, NPCs, genre layers)](https://docs.crowdedkingdoms.com/crowdyjs/game-kit) · [World Stores (SDK-managed actor/chunk/message state)](https://docs.crowdedkingdoms.com/crowdyjs/stores)
 - [Build a game (tutorial)](https://docs.crowdedkingdoms.com/build-a-game/intro)
 - [Unreal SDK](https://docs.crowdedkingdoms.com/unreal-sdk/intro)
 
