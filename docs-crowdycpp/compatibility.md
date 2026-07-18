@@ -48,9 +48,27 @@ The guarantees:
 The matrix is regenerated after any surface change; **missing methods: 0,
 missing root fields: 0** is the maintained invariant.
 
+## Testing your integration
+
+CrowdyCPP ships an extensive **black-box end-to-end suite** you can point at
+any deployment (including your own dev tier) to validate an integration
+end to end. It provisions like a real integrator through the public
+Management API — sign in, ensure an access tier, grant access — with no
+privileged or database access, and it drives replication over the **native
+UDP** path, so it exercises the exact shipping client. Coverage spans the
+replication surface (fan-out, distance/decay, negative auth, cross-app
+isolation, cross-server, soak), the world-data and management surfaces, the
+[WorldSession](/crowdycpp/world-session) data structures, and all 15
+[Game Kit](/crowdycpp/game-kit) layers. See
+[`tests/e2e/`](https://github.com/CrowdedKingdoms/CrowdyCPP/tree/main/tests/e2e)
+(configure with `CROWDY_E2E_*` environment variables) and the
+[coverage matrix](https://github.com/CrowdedKingdoms/CrowdyCPP/blob/main/docs/e2e-coverage.md),
+which accounts for every scenario in the platform's other e2e suites. The
+suites double as runnable, real-world usage examples for each surface.
+
 ## Versioning
 
-The current release is **v0.1.0** (the `v0.1.0` tag in the
+The current release is **v0.2.1** (tagged in the
 [repository](https://github.com/CrowdedKingdoms/CrowdyCPP)). The CMake
 package config enforces `SameMajorVersion` compatibility for
 `find_package(CrowdyCPP)` consumers. Consumer-facing platform changes land in
