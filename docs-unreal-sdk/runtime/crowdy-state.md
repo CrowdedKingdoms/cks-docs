@@ -18,6 +18,8 @@ Crowdy State is the fast, client-authoritative **view plane**. It exists to make
 
 Crowdy State is not truth, and it is not enforced. It is a sibling to [Actor State](/unreal-sdk/runtime/continuous-state), the executor-based snapshot channel. It is a view plane only: authoritative, cheat-sensitive, or persistent state is out of scope for Crowdy State and is handled by a separate server-authoritative path that is not yet documented.
 
+(Building a browser/TypeScript client instead? The adjacent problem — typed, SDK-managed actor/chunk/message state over the platform's standard replication surfaces — is covered by CrowdyJS [World Stores](/crowdyjs/stores).)
+
 Use this rule to decide where a value belongs:
 
 - Would a cheater changing this value matter? Or does the value need to survive a reconnect? It does not belong on this plane. Keep it on the server-authoritative path instead.

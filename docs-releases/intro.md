@@ -14,6 +14,51 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-18 (latest)
 
+**CrowdyJS 8.4.0 -- World Stores: SDK-managed game state (additive)**
+
+A new opt-in layer, `@crowdedkingdoms/crowdyjs/stores`, moves the client-side
+bookkeeping every game hand-writes (actor registries, pose codecs, chunk
+caches, chat rings, host polling — ~1,600+ LOC in the reference MMO) into the
+SDK as typed, queryable, source-of-truth stores fed by ONE shared
+`udpNotifications` subscription:
+
+- **Codecs**: `StateCodec<T>` with `jsonCodec` / `textCodec` / `rawCodec` and
+  `structCodec` — a declarative fixed-layout binary DSL for replication
+  state (the 48-byte pose in ~10 lines). Developers register their custom
+  types + encoders/decoders once; stores speak typed values everywhere.
+- **`session.self`** (LocalActorStore): minted + persisted actor uuid, typed
+  state, a **5 Hz send loop** with send-on-change dedup + periodic
+  keyframes, and queryable `lastSent` / `lastAck` (the applied self-echo) /
+  `lastError` / `status`.
+- **`session.actors`** (RemoteActorStore): decode-once registry with
+  self-echo filtering, timestamped sample history for interpolation,
+  read-time staleness + reaping, join/update/leave events, and **lanes**
+  (players vs mobs from one stream).
+- **`session.errors`**: `GenericErrorResponse`s attributed to the tracked
+  sends that caused them (per-actor lookup, ring buffer).
+- **`session.chunks`** (ChunkStore): deduped `getChunksByDistance` loading
+  with automatic sparse-voxel-state hydration, realtime `voxelUpdate` merge,
+  typed voxel/chunk-state codecs, optimistic `setVoxel`, and the
+  deterministic-worldgen write-back pattern (`onMissing` + throttled queue).
+- **Messaging**: `channelInbox` (per-channel typed history — inbound channel
+  fan-out at last), `actorInbox` (typed direct messages), `events`
+  (per-eventType codecs for client/server events + `lastEvent`).
+- **Durable**: `host` (heartbeat tracker), `save` (typed app save blob with
+  debounced autosave), `avatar` (typed public/private/app state), `model`
+  (ContainerMirror — typed game-model snapshots with notify-to-pull channel
+  binding).
+
+Ergonomics: **compile-time toggles** — the core client never imports the
+layer (`"sideEffects": false`; unimported stores tree-shake away) and the
+session's TypeScript type is conditional on the config, so unconfigured
+stores don't exist. **Background-tab safe** — writes ride unthrottled
+WebSocket events; timer-driven work runs on an injectable `Ticker` with a
+`workerTicker()` (dedicated Web Worker, exempt from background-tab timer
+throttling). SDK-only: no schema or wire change. See
+[CrowdyJS → World Stores](/crowdyjs/stores).
+
+## 2026-07-18
+
 **CrowdyJS 8.3.0 -- Game Kit genre layers (additive)**
 
 The Game Kit grows from four building blocks to a genre-covering catalog —

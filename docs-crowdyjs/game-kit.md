@@ -598,7 +598,9 @@ world-anchored state); (b) declare a `notifications` entry on each mutating
 function (emitted via Buddy post-commit) or send a client ping after runtime
 mutations; (c) subscribers re-read the model on each ping.
 `kit.matches.onMatchChanged` and the worldsim clock's spatial ping are the
-two shipped examples.
+two shipped examples. The client half is packaged as the
+[World Stores](/crowdyjs/stores) `ContainerMirror`: watch containers, bind
+the channel, and typed snapshots refresh themselves.
 
 ### Cooldowns and timers without a clock
 
