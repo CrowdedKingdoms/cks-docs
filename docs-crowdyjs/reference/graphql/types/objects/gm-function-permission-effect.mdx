@@ -1,0 +1,58 @@
+---
+id: gm-function-permission-effect
+title: GmFunctionPermissionEffect
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A declarative grid-permission effect applied transactionally with the function's mutations: grant or revoke runtime grid permissions (the ACL Buddy enforces) driven by game logic.
+
+
+```graphql
+type GmFunctionPermissionEffect {
+  action: String!
+  permissionKeys: [String!]!
+  userExpression: String!
+  gridIdExpression: String!
+  ttlSecondsExpression: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionPermissionEffect.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action\} 
+'grant' or 'revoke'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionPermissionEffect.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-keys\} 
+Runtime permission keys granted/revoked.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionPermissionEffect.<b>userExpression</b></code>](#user-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-expression\} 
+The expression (source) resolving the target user id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionPermissionEffect.<b>gridIdExpression</b></code>](#grid-id-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id-expression\} 
+The expression (source) resolving the grid id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionPermissionEffect.<b>ttlSecondsExpression</b></code>](#ttl-seconds-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ttl-seconds-expression\} 
+Grant only: optional expression resolving a TTL in seconds.
+
+
+
+
+### Member Of
+
+[`GmFunction`](/reference/graphql/types/objects/gm-function.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
