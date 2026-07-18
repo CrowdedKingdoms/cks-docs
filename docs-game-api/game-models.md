@@ -113,6 +113,10 @@ only through a function's `mutations` list, never inside an expression.
 - Conditional: `if(self.hp > 0, self.hp - $dmg, 0)`
 - Builtins: `max min abs floor ceil round clamp pow sqrt len concat to_int
   to_float to_string rand rand_int not is_null coalesce`
+- Permission/grid reads (see
+  [Reading permissions from expressions](#reading-permissions-from-expressions)):
+  `has_grid_permission has_chunk_permission grid_at grid_contains grid_min
+  grid_max`
 - Call another function's return value (read-only): `fn:level_bonus(self.level)`
 
 Within one invocation, a later mutation sees the values written by earlier
@@ -318,6 +322,64 @@ ping carries no authoritative state — the model API stays the source of truth.
 
 Both paths are wrapped by CrowdyJS; see
 [CrowdyJS → Game Models](/crowdyjs/game-model) for the SDK pattern.
+
+## Reading permissions from expressions
+
+Expressions can also **read** the runtime grid ACL and the grid layout, so a
+single function can branch on where a player may act — not just be
+allowed/denied as a whole by the invoke policy. Six DB-backed builtins are
+available everywhere expressions run (mutations, `returnExpression`,
+notification args, permission-effect expressions, and policy `condition`
+rules), always scoped to your own app:
+
+| Builtin | Returns | Meaning |
+| --- | --- | --- |
+| `has_grid_permission(user_id, key)` | bool | The user holds an unexpired runtime permission `key` on **any** grid. |
+| `has_grid_permission(user_id, key, grid_id)` | bool | …on that specific grid. |
+| `grid_at(cx, cy, cz [, mode])` | int \| null | The grid covering a chunk (null when none does). |
+| `has_chunk_permission(user_id, key, cx, cy, cz [, mode])` | bool | Sugar for `has_grid_permission(user, key, grid_at(...))`; false when no grid covers the chunk. |
+| `grid_contains(grid_id, cx, cy, cz)` | bool | Whether the grid's box covers the chunk. |
+| `grid_min(grid_id, axis)` / `grid_max(grid_id, axis)` | int | The grid's inclusive chunk bounds on `"x"` \| `"y"` \| `"z"`. |
+
+Several grids may cover one chunk (a plot nested inside the world grid), so
+`grid_at`/`has_chunk_permission` take an optional **`mode`** choosing the
+overlap-resolution algorithm:
+
+- `"first"` (default) — lowest `grid_id`, exact parity with how the
+  replication layer picks the enforcing grid.
+- `"smallest"` — the innermost, most specific grid (natural for plot logic).
+- `"largest"` — the outermost grid.
+
+```graphql
+# One door function that decides per-caller, per-location:
+mutation {
+  gameModelUpsertFunction(input: {
+    appId: "1",
+    name: "open_door",
+    containerTypeName: "Door",
+    mutations: [
+      { target: "self", property: "is_open",
+        expression: "has_chunk_permission($caller_user_id, \"access\", self.cx, self.cy, self.cz, \"smallest\")" }
+    ],
+    returnExpression: "self.is_open"
+  }) { name warnings }
+}
+```
+
+Semantics worth knowing:
+
+- **Live and transactional.** Reads hit the same materialized ACL the
+  replication layer enforces, on the invocation's transaction — and after a
+  [permission effect](#permission-effects-functions-that-write-grid-permissions)
+  applies inside the same invocation, later expressions observe the new grant
+  (read-your-writes).
+- **Metered.** Each *uncached* lookup charges an extra 25 gas on top of the
+  normal per-node cost; repeats within one invocation are cached and cheap.
+  A runaway lookup loop fails the invocation like any other budget breach.
+- **Checked at upload.** `gameModelUpsertFunction`/`gameModelSeed` return
+  non-fatal `warnings` for wrong argument counts, invalid `mode`/axis
+  literals, and permission keys missing from the `runtime_permissions`
+  catalog.
 
 ## Permission effects: functions that write grid permissions
 

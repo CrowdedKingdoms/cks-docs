@@ -171,6 +171,46 @@ result into the entry point's params:
 
 Predicate values may reference the acting unit with `"self.<key>"`.
 
+### Permission predicates
+
+Selectors can also filter by the **runtime grid permissions** of the user
+behind each container — `selfPermissionWhere` gates which fan-out targets act,
+`candidatePermissionWhere` gates which candidates qualify. This is how a guard
+NPC targets intruders ("players standing in my plot who *lack* `access` on
+it") declaratively:
+
+```json
+{
+  "selfWhere": [{ "key": "role", "op": "==", "value": "guard" }],
+  "pick": "nearest",
+  "ofType": "PlayerAvatar",
+  "candidatePermissionWhere": [
+    { "userFrom": { "property": "owner_user_id" }, "op": "lacks",
+      "key": "access", "grid": { "property": "grid_id" } }
+  ],
+  "by": "manhattan",
+  "bindAs": { "ref": "target_id" }
+}
+```
+
+Each predicate names:
+
+- **`userFrom`** — where the container's user id comes from: `"owner"` (the
+  container's `ownerUserId`) or `{ "property": "<key>" }` (a user id stored as
+  a property).
+- **`op`** — `"has"` or `"lacks"`.
+- **`key`** — a runtime permission key (validated against the
+  `runtime_permissions` catalog at `gameModelUpsertAutomation` time).
+- **`grid`** — a literal grid id, `{ "property": "<key>" }`, or omitted to
+  mean "on **any** grid".
+
+Multiple predicates AND together; each runs as one batched ACL query per run,
+never per-container. A container whose user id can't be resolved fails `has`
+and passes `lacks` (an unowned container can't hold a permission). For
+permission checks inside the entry function's *logic*, use the
+[expression builtins](game-models#reading-permissions-from-expressions)
+instead.
+
 ## Safety: loops and circuit breakers
 
 Autonomous processes are bounded by **layered** circuit breakers, so a buggy

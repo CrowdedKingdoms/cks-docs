@@ -119,3 +119,7 @@ players. See **[Model-driven notifications](model-notifications)**.
 
 For ready-made NPC archetypes (behavior functions + automations deployed
 together, plus spawn/read helpers), see the [Game Kit](/crowdyjs/game-kit).
+Selectors can also filter targets by **runtime grid permissions**
+(`selfPermissionWhere` / `candidatePermissionWhere`, game-api v0.13.12+) —
+see [Autonomous processes → Permission predicates](/game-api/autonomous-processes#permission-predicates)
+and the typed `KitSelectorSpec` in the Game Kit.
