@@ -14,6 +14,35 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-18 (latest)
 
+**Game API v0.13.12.2 + CrowdyJS 8.4.1 -- schema hygiene + plot owner-mirror kinds (additive)**
+
+A description-only hygiene pass on the Game API schema (no wire, DDL, or
+behavior change) plus a small CrowdyJS Game Kit patch:
+
+- **`ActorUpdateResponse` / `VoxelUpdateResponse` are formally marked
+  legacy.** These `UdpNotification` union members are never emitted — the
+  game server retired their dedicated opcodes; an applied update arrives as
+  your own `*Notification` self-echo and failures arrive as
+  `GenericErrorResponse`. Their type descriptions, the union description,
+  and the [UDP proxy guide](/game-api/graphql-udp-proxy-api) now say so
+  explicitly, and the guide's example subscription no longer selects them.
+  They remain in the union for backward compatibility and will be removed in
+  a future major version.
+- **Deprecation reasons now carry removal dates** (per the agent-readiness
+  checklist): the offset-pagination `limit`/`offset` args on
+  `voxelUpdateHistory`/`gameModelEvents` (and their `*Connection` variants,
+  where they are ignored) state removal no earlier than 2027-01-01.
+- **CrowdyJS 8.4.1**: `plotBlueprint` gains `ownerIdKind: 'int' | 'string'`
+  — string owner mirrors (the Blocks-with-Friends convention) now work with
+  kit plots: guards compare via `to_string($caller_user_id)`, buying writes
+  the owner as a string, and `""` is the for-sale sentinel. The bundled
+  schema/reference pick up the hygiene descriptions.
+
+Published SDL + GraphQL reference regenerated. Requires nothing — additive
+documentation; clients need no changes.
+
+## 2026-07-18
+
 **CrowdyJS 8.4.0 -- World Stores: SDK-managed game state (additive)**
 
 A new opt-in layer, `@crowdedkingdoms/crowdyjs/stores`, moves the client-side
