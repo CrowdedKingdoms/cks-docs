@@ -440,11 +440,100 @@ Automation activity is billed per run and visible in `gameModelAutomationRuns`
 `automationId`, so NPC actions are distinguishable from player actions in the
 [event log](game-models#reacting-to-changes).
 
+## More concept mappings
+
+The same primitives cover most genre staples. Each row below is a model
+design; the [CrowdyJS Game Kit](/crowdyjs/game-kit) ships every one as a
+blueprint + runtime helpers.
+
+### Economy and trading
+
+Wallets are containers with an `owner_user_id` mirror plus one int property
+per currency. **Every movement of value is one function invocation**: a shop
+purchase debits the wallet, decrements the listing's stock, and grants the
+item stack in a single transaction (all reachable through `container_ref`
+params); a player-to-player trade swaps two stack pairs atomically after
+guards verify ownership mirrors, item ids, and quantities; a market purchase
+pays the seller's wallet and transfers the stack in one invoke. Trusted mints
+(`earn`) are `invokeScope: "server"` or automation-driven — never plain
+player calls. The injected `$self_owner_id` pins an offer/listing to its
+server-truth creator, so forged offers over other players' stacks can never
+be accepted.
+
+### Quests and objectives
+
+An admin `QuestDef` catalog (objective count, reward spec, daily flag) plus
+per-player `QuestProgress` rows. Progress advances via **event automations**
+attached to your gameplay functions (`function_invoked` on `consume_stack`,
+`mob_died`, …) or trusted server calls; turn-in is one atomic invoke that
+marks the row claimed AND grants item + currency rewards through
+`container_ref` params; dailies reset with a **cron automation** over
+`daily == true` rows.
+
+### Matches, turns, and scoring
+
+Sessions ARE the match primitive — participants and `currentTurnUserId`
+(set through `gameModelSetSessionTurn`, whose authority the service
+enforces). Add a session-scoped `MatchMeta` container (lobby state, round,
+winner, notification channel) and per-player `Score` rows written by a
+host/server/automation-gated function. Lifecycle functions declare a
+**channel notification** so every participant gets a `"match_changed"` ping
+post-commit and re-pulls (notify-to-pull). Turn timeouts use tick counters
+bumped by an interval automation — expressions have no `now()`.
+
+### Decks and hidden information
+
+Hidden state is **property visibility**, not client discipline: a
+`CardInstance` carries an owner-visible `card_id` plus a public
+`revealed_card_id` that stays empty until the play function copies it over in
+the same transaction. Shuffling works within the platform's limits (no array
+permutation in expressions): a manual type-fan-out automation deals each
+deck-zone card a `rand_int` position, and drawing takes the caller's
+lowest-position card with the zone transition enforced server-side.
+
+### World simulation
+
+Interval automations run the world with no client online: a `WorldState`
+singleton advances `time_of_day` (`% hours_per_day`) and re-rolls weather —
+emitting a **spatial notification** at its anchor chunk so nearby clients
+update the sky without polling; `ResourceNode`s regenerate toward
+`max_amount` (selector `where amount < self.max_amount`); crops advance
+`stage` and are harvested by an owner-gated atomic function; wave spawners
+bump counters that the elected host reads to spawn actual entities on the
+replication plane.
+
+### Leaderboards and seasons
+
+Per-player `LeaderboardEntry` rows (`board_id`, `score`, `season`) written
+only by a trusted `submit_score` (host-gated, server scope, or an event
+automation on `end_match`). There is no server-side ORDER BY on container
+lists, so clients fetch a board and sort locally (bounded populations);
+selector `pick: "highest"` covers automation-side top-1. Seasons roll with a
+cron automation that bumps `season` and resets scores.
+
+### Genre map
+
+| Genre | Core needs | Model mappings (kit layers) |
+| --- | --- | --- |
+| RPG / MMORPG | stats, quests, XP/levels, vendors, loot, parties, guilds | progression, quests, economy, combat, loot, social, NPCs, inventory |
+| Survival / sandbox | land, build rights, crafting, farming, regen, mobs | plots, worldsim, inventory, locks, host-sim pattern |
+| Turn-based tactics / board / card | matches, turn order, hidden info, decks, ELO | matches, decks, progression (rating), sessions |
+| FPS / battle royale / racing | lobbies, rounds, scoring, loadouts, leaderboards | matches, inventory (loadouts), leaderboards, host-sim + replication |
+| MOBA / team arena | teams, matches, abilities with cooldowns | matches, social, combat, timer patterns |
+| Tycoon / city / farming sims | plots, production chains, timers, markets | plots, worldsim (production ticks), economy (market) |
+| Tower defense / idle | waves, upgrades, offline progress | worldsim (waves), progression, interval accrual |
+| Roguelike / dungeon | runs, procedural loot, meta-progression | matches (run = session), loot, progression |
+| Social / party / creative | rooms, chat, cosmetics, moderation | social, matches (rooms), monetization features, revoke effects |
+| Trading / collection (TCG, pets) | collections, rarity, trading, breeding ticks | economy (trade/market), inventory, worldsim, decks |
+
 ## Using the SDK instead
 
 Every mapping above ships in CrowdyJS as a blueprint + runtime helpers:
 `client.kit(appId).deploy(...)` seeds the types/functions/automations, and
-`kit.inventory` / `kit.objects` / `kit.npcs` wrap the runtime calls. See
+the runtime facades (`kit.inventory`, `kit.objects`, `kit.npcs`,
+`kit.plots`, `kit.economy`, `kit.progression`, `kit.loot`, `kit.quests`,
+`kit.combat`, `kit.matches`, `kit.decks`, `kit.worldsim`, `kit.social`,
+`kit.leaderboards`, `kit.features`) wrap the runtime calls. See
 [CrowdyJS → Game Kit](/crowdyjs/game-kit).
 
 ## See also
