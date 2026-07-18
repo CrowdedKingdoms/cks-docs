@@ -14,6 +14,51 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-18 (latest)
 
+**CrowdyJS 8.3.0 -- Game Kit genre layers (additive)**
+
+The Game Kit grows from four building blocks to a genre-covering catalog —
+eleven new layers, each a blueprint builder + typed runtime helper, all pure
+composition over the existing GraphQL surface (no schema change):
+
+- **Economy** (`economyBlueprint` / `kit.economy`): multi-currency wallets,
+  atomic shop buys, `$self_owner_id`-pinned escrow trades and player market,
+  optional restock automation. Trusted mints default to server scope.
+- **Progression** (`kit.progression`): xp/levels via the `fn:` curve-helper
+  pattern, skill prerequisite chains, threshold achievements, host-gated
+  rating for match results.
+- **Loot** (`kit.loot`): weighted tables unrolled into seed-driven expression
+  chains at build time, atomic single-claim grants, event-triggered pooled
+  drops.
+- **Quests** (`kit.quests`): event-automation progress, atomic
+  claim-into-stack+wallet, cron daily resets.
+- **Combat** (`kit.combat`): server-side damage/death, status-effect ticks
+  via the selector-join pattern, `turnBased` / `hostSynced` / `reviveGroup`
+  options.
+- **Matches** (`kit.matches`): session-backed lobbies/rounds/turns/scores
+  with a per-match notification channel (notify-to-pull; `onMatchChanged`)
+  and counter-based turn ticks.
+- **Decks** (`kit.decks`): hidden hands via owner-visibility properties (the
+  two-property reveal trick) and shuffle-by-position automations.
+- **World simulation** (`kit.worldsim`): day/night clock with a spatial
+  notification, regenerating nodes, crops, host-read wave counters.
+- **Social** (`kit.social` + `guildBlueprint`): parties/guilds/chat over
+  teams + channels, grid territory grants, and a composite guild-hall + bank
+  blueprint.
+- **Leaderboards** (`kit.leaderboards`): trusted keep-best submits,
+  client-side ranking, cron season rolls.
+- **Monetization** (`kit.features` + `featureGate`): feature keys, tier
+  grants, and `*policyExtra` gating options on the plot/lock builders.
+
+Cross-cutting: `blueprints.ts` split into per-concept modules (import paths
+unchanged), shared `KitTrustedAuthority` / `ownerIdKind` conventions, and a
+new pattern guide (simulation tiers, notify-to-pull, timers without a clock,
+hidden information, anti-cheat checklist). See
+[CrowdyJS → Game Kit](/crowdyjs/game-kit) and the expanded
+[genre map](/game-api/modeling-game-concepts#genre-map). Requires
+`cks-game-api` v0.13.12.1+.
+
+## 2026-07-18
+
 **Game API -- permission-read builtins + selector permission predicates (additive)**
 
 Game-model logic can now **read** the runtime grid ACL and grid layout,
