@@ -14,6 +14,30 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-18 (latest)
 
+**CrowdyCPP v0.1.0 -- initial public release of the native C++ SDK**
+
+[CrowdyCPP](https://github.com/CrowdedKingdoms/CrowdyCPP) is the official
+portable C++ SDK (C++20, CMake, Linux/Windows/macOS), now documented in the
+new [CrowdyCPP](/crowdycpp/intro) docs tab:
+
+- **Native UDP replication.** Unlike browser-first CrowdyJS, replication goes
+  directly to the replication servers over the
+  [Replication API wire protocol](/replication-api/wire-formats) — zero-copy
+  framing, HMAC-signed sends, verified receives, automatic token refresh and
+  reconnect. See [Replication client](/crowdycpp/replication-client).
+- **Full GraphQL surface parity with CrowdyJS** (same domains, two-token
+  model, and error codes), a [WorldSession](/crowdycpp/world-session) layer
+  mirroring World Stores, and the full 15-layer
+  [Game Kit](/crowdycpp/game-kit) with blueprint equivalence — worlds
+  deployed from either SDK are playable from both.
+- **Engine-wrappable by design**: pluggable HTTP/crypto/clock/log interfaces
+  and a thread-free manual-pump mode for engine plugins. See
+  [Engine integration](/crowdycpp/engine-integration).
+
+SDK-only: no schema or wire change; servers need no changes.
+
+## 2026-07-18
+
 **Game API v0.13.12.2 + CrowdyJS 8.4.1 -- schema hygiene + plot owner-mirror kinds (additive)**
 
 A description-only hygiene pass on the Game API schema (no wire, DDL, or

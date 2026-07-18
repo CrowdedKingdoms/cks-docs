@@ -61,6 +61,7 @@ const config: Config = {
           '/game-api',
           '/replication-api',
           '/crowdyjs',
+          '/crowdycpp',
           '/unreal-sdk',
           '/management-ui',
           '/build-a-game',
@@ -72,6 +73,7 @@ const config: Config = {
           'docs-game-api',
           'docs-udp-api',
           'docs-crowdyjs',
+          'docs-crowdycpp',
           'docs-unreal-sdk',
           'docs-management-ui',
           'docs-build-a-game',
@@ -117,6 +119,15 @@ const config: Config = {
         path: 'docs-crowdyjs',
         routeBasePath: '/crowdyjs',
         sidebarPath: './sidebars/crowdyjs.ts',
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'crowdycpp',
+        path: 'docs-crowdycpp',
+        routeBasePath: '/crowdycpp',
+        sidebarPath: './sidebars/crowdycpp.ts',
       },
     ],
     [
@@ -261,6 +272,12 @@ const config: Config = {
             },
             {
               type: 'docSidebar',
+              docsPluginId: 'crowdycpp',
+              sidebarId: 'sidebar',
+              label: 'CrowdyCPP',
+            },
+            {
+              type: 'docSidebar',
               docsPluginId: 'unreal-sdk',
               sidebarId: 'sidebar',
               label: 'Unreal SDK',
@@ -301,6 +318,7 @@ const config: Config = {
           title: 'SDKs',
           items: [
             {label: 'CrowdyJS', to: '/crowdyjs/intro'},
+            {label: 'CrowdyCPP', to: '/crowdycpp/intro'},
             {label: 'Build a game', to: '/build-a-game/intro'},
             {label: 'Unreal SDK', to: '/unreal-sdk/intro'},
           ],
