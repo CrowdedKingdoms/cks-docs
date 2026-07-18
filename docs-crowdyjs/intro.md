@@ -6,7 +6,9 @@ title: Introduction
 
 # CrowdyJS SDK
 
-Browser-first TypeScript SDK: **`@crowdedkingdoms/crowdyjs`**.
+Browser-first TypeScript SDK: **`@crowdedkingdoms/crowdyjs`**. (Building a
+native client? [CrowdyCPP](/crowdycpp/intro) mirrors this API surface in
+portable C++ and replicates natively over UDP.)
 
 - **Management API** — authentication, profiles, app routing reads (`client.apps`), and public platform config (`client.platform`).
 - **Game API** — world synchronization, teleport, the GraphQL UDP proxy (browsers), [channels](/crowdyjs/channels) & [teams](/crowdyjs/teams), [game models](/crowdyjs/game-model), and Replication API server assignment.

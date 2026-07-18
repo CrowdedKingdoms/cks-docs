@@ -22,7 +22,9 @@ running in your environment. The wire protocol, handshake, and operational guide
 in this section describe how to speak to Buddy over UDP.
 
 This section documents native UDP integrations—handshake timing, wire payloads,
-sequencing, HMAC, and failure modes.
+sequencing, HMAC, and failure modes. If you'd rather not implement the wire
+protocol by hand, the official [CrowdyCPP SDK](/crowdycpp/intro) implements it
+natively in portable C++.
 
 :::note[Browsers and the GraphQL UDP proxy]
 
