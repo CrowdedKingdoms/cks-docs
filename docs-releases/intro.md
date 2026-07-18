@@ -14,6 +14,32 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-18 (latest)
 
+**Game API v0.13.13 -- invoke policy denials return results; `userAppState` round-trip fix**
+
+Two consumer-facing behavior fixes in `gameModelInvoke` and the per-user app
+state store (no schema shape or wire change):
+
+- **Invoke policy denials are results, not errors.** A `gameModelInvoke`
+  rejected by the function's invoke policy (`owner_of_self`, `condition`,
+  `is_host`, ...) now resolves with `success: false` and an `errorMessage`,
+  and writes a failure event visible in `gameModelEvents` — matching the
+  documented kit contract ("authority denials are not exceptions — check
+  `success`"). Scope violations (an `invokeScope: "server"` function called
+  without app-admin rights) still throw `FORBIDDEN`. If your client caught
+  `FORBIDDEN` to detect gameplay denials, check `success` instead;
+  `@crowdedkingdoms/crowdyjs@8.4.6` and CrowdyCPP handle both server
+  generations transparently in their kit helpers.
+- **`updateUserAppState` stores what you send.** The mutation now decodes its
+  base64 `state` input before storage, so `userAppState` / `userAppStates`
+  return exactly the base64 that was written. Previously reads returned a
+  double-encoded value; rows written through older servers return the correct
+  encoding after their next write.
+
+**CrowdyJS 8.4.5 / 8.4.6 (npm)** — `kitInvoke` maps `FORBIDDEN` policy
+denials from older Game API builds onto the documented
+`{ success: false, errorMessage }` result (8.4.6 republishes 8.4.5 with the
+runtime `VERSION` constant synced).
+
 **CrowdyCPP v0.1.0 -- initial public release of the native C++ SDK**
 
 [CrowdyCPP](https://github.com/CrowdedKingdoms/CrowdyCPP) is the official
