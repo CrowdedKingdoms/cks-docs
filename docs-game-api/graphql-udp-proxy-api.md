@@ -65,8 +65,6 @@ subscription {
     ... on ActorUpdateNotification  { appId chunkX chunkY chunkZ distance decayRate uuid state sequenceNumber epochMillis }
     ... on VoxelUpdateNotification  { appId chunkX chunkY chunkZ distance decayRate uuid voxelX voxelY voxelZ voxelType voxelState sequenceNumber epochMillis }
     ... on GenericErrorResponse     { sequenceNumber errorCode }
-    ... on ActorUpdateResponse      { appId chunkX chunkY chunkZ distance decayRate uuid sequenceNumber epochMillis }
-    ... on VoxelUpdateResponse      { appId chunkX chunkY chunkZ distance decayRate uuid sequenceNumber epochMillis }
     ... on ClientAudioNotification  { appId chunkX chunkY chunkZ distance decayRate uuid audioData sequenceNumber epochMillis }
     ... on ClientTextNotification   { appId chunkX chunkY chunkZ distance decayRate uuid text sequenceNumber epochMillis }
     ... on ClientEventNotification  { appId chunkX chunkY chunkZ distance decayRate uuid eventType state sequenceNumber epochMillis }
@@ -83,11 +81,13 @@ All spatial types include the full header fields (`appId`, `chunkX/Y/Z`,
 (server-generated UTC timestamp in milliseconds since epoch).  Only
 `GenericErrorResponse` has a minimal 3-field format (no spatial header).
 
-> **`ActorUpdateResponse` / `VoxelUpdateResponse` are legacy.** Current game
-> servers do not emit per-request success responses for actor/voxel sends — treat
-> a send as fire-and-forward and watch for a `GenericErrorResponse` (correlated by
-> `sequenceNumber`) only if it fails. The two response fragments remain in the
-> union for backward compatibility.
+> **`ActorUpdateResponse` / `VoxelUpdateResponse` are legacy — never emitted.**
+> The game server retired their dedicated response opcodes: an applied update
+> arrives as your own `*Notification` self-echo (the sender is included in the
+> chunk fan-out), and failures arrive as `GenericErrorResponse` (correlated by
+> `sequenceNumber`). The two types remain in the union for backward
+> compatibility only — do not select them in new code; they will be removed in
+> a future major version.
 >
 > `ChannelMessageNotification` is delivered on this same subscription but is
 > **not** spatial (it has no chunk header) — see [Channels](/game-api/channels).
