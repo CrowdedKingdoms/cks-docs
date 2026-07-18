@@ -1,0 +1,63 @@
+---
+id: server-state
+title: ServerState
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lifecycle/capacity state of a game/GraphQL server in the fleet. Only ReadyForClients servers should receive new client connections; serverWithLeastClients and activeGraphQLServers already filter to healthy, non-overloaded servers.
+
+
+```graphql
+enum ServerState {
+  Starting
+  ReadyForClients
+  Stopping
+  Offline
+  NearCapacity
+  Full
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Starting</b></code>](#starting) \{#starting\} 
+The server is booting and not yet accepting clients. Do not route new connections here; wait for ReadyForClients.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>ReadyForClients</b></code>](#ready-for-clients) \{#ready-for-clients\} 
+The server is healthy and accepting clients. This is the only state safe to route new connections to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Stopping</b></code>](#stopping) \{#stopping\} 
+The server is draining and shutting down: existing sessions may continue briefly but no new clients should be routed here.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Offline</b></code>](#offline) \{#offline\} 
+The server is down or unreachable (failed health checks). Do not route any traffic here.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>NearCapacity</b></code>](#near-capacity) \{#near-capacity\} 
+Soft resource overload (a CPU core or system memory has been high for several seconds). Existing sessions continue, but the server is excluded from serverWithLeastClients so no new clients are routed here until it recovers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Full</b></code>](#full) \{#full\} 
+Hard resource overload. Like NearCapacity (excluded from new-client selection), and the server is also actively shedding clients: it sends each affected client a reconnect command and drops their session after a short grace period so they migrate to another server.
+
+
+
+
+### Member Of
+
+[`GraphQLServer`](/reference/graphql/types/objects/graph-qlserver.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ServerStatus`](/reference/graphql/types/objects/server-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

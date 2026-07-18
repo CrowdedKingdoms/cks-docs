@@ -1,0 +1,39 @@
+---
+id: grant-grid-permissions
+title: grantGridPermissions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Grant one or more runtime permission keys directly to a single user on a grid (writes the `grid_user_direct_grants` input table), then recompute that user's materialized effective ACL on the grid. The target user must already have active app access (otherwise this fails). Requires app-admin ('manage&#x005F;apps'). Returns the user's full effective permission-key set on the grid. To grant by group/role instead of per-user, use `assignGroupToGrid`.
+
+
+```graphql
+grantGridPermissions(
+  input: GrantGridPermissionsInput!
+): GridUserPermissions!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>grantGridPermissions.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GrantGridPermissionsInput!</b></code>](/reference/graphql/types/inputs/grant-grid-permissions-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, grid, and target user, the runtime permission keys to grant, and an optional expiry timestamp.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridUserPermissions</b></code>](/reference/graphql/types/objects/grid-user-permissions.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's effective (materialized) runtime permissions on one grid: the flattened union of direct + group grants, with expired grants excluded, that Buddy enforces.

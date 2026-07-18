@@ -1,0 +1,44 @@
+---
+id: cancel-shared-subscription
+title: cancelSharedSubscription
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+DESTRUCTIVE. Cancels an app's paid shared-environment subscription. The app loses its paid shared slot (typically at currentPeriodEnd) and may be denied runtime once the period lapses unless a free slot covers it. Returns the updated subscription. Requires the 'manage&#x005F;billing' permission on the app's org.
+
+
+```graphql
+cancelSharedSubscription(
+  appId: BigInt!
+  idempotencyKey: String
+): AppSharedSubscription!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>cancelSharedSubscription.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App id (BigInt) whose subscription to cancel.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>cancelSharedSubscription.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key. Recommended for retries: replaying with the same key and identical arguments returns the first result instead of re-applying; the same key with different arguments returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppSharedSubscription</b></code>](/reference/graphql/types/objects/app-shared-subscription.mdx) <Badge class="badge badge--secondary " text="object"/> 
+@deprecated Legacy paid shared-environment subscription for an app slot. Null when the app has none.

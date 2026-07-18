@@ -1,0 +1,43 @@
+---
+id: user-donation-data
+title: UserDonationData
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Aggregated lifetime donation totals for a user. LEGACY: donations are no longer purchasable. Returned by the deprecated myDonationData query.
+
+
+```graphql
+type UserDonationData {
+  totalAmountCents: String!
+  currency: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UserDonationData.<b>totalAmountCents</b></code>](#total-amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total-amount-cents\} 
+Lifetime donated amount in minor currency units (cents), as a String to avoid precision loss. E.g. '500' = $5.00.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserDonationData.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+ISO 4217 currency code for totalAmountCents (e.g. 'usd').
+
+
+
+
+### Returned By
+
+[`myDonationData`](/reference/graphql/operations/queries/my-donation-data.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

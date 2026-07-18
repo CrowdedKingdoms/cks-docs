@@ -1,0 +1,43 @@
+---
+id: checkouts-page
+title: CheckoutsPage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A page of checkouts with offset/limit pagination metadata.
+
+
+```graphql
+type CheckoutsPage {
+  items: [Checkout!]!
+  pageInfo: PageInfo!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutsPage.<b>items</b></code>](#items)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Checkout!]!</b></code>](/reference/graphql/types/objects/checkout.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#items\} 
+The checkouts on this page, ordered newest first.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutsPage.<b>pageInfo</b></code>](#page-info)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PageInfo!</b></code>](/reference/graphql/types/objects/page-info.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#page-info\} 
+Offset/limit pagination metadata (totalCount, limit, offset) for this result set.
+
+
+
+
+### Returned By
+
+[`checkouts`](/reference/graphql/operations/queries/checkouts.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`myCheckouts`](/reference/graphql/operations/queries/my-checkouts.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

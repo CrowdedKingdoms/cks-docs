@@ -1,0 +1,58 @@
+---
+id: grid
+title: Grid
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A grid: a 3D box of chunks within an app that runtime/world (voxel) permissions are scoped to. Its bounds lie inside one of the app's grid assignments and never overlap another grid.
+
+
+```graphql
+type Grid {
+  grid_id: BigInt!
+  app_id: BigInt!
+  low_chunk: ChunkCoordinates!
+  high_chunk: ChunkCoordinates!
+  created_at: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Grid.<b>grid&#x005F;id</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Unique grid id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Grid.<b>app&#x005F;id</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Grid.<b>low&#x005F;chunk</b></code>](#low-chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#low-chunk\} 
+Low (minimum x/y/z) corner chunk of the box.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Grid.<b>high&#x005F;chunk</b></code>](#high-chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#high-chunk\} 
+High (maximum x/y/z) corner chunk of the box.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Grid.<b>created&#x005F;at</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the grid was created.
+
+
+
+
+### Member Of
+
+[`CreateGridResponse`](/reference/graphql/types/objects/create-grid-response.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

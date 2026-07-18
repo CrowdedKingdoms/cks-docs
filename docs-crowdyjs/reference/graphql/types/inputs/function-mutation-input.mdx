@@ -1,0 +1,48 @@
+---
+id: function-mutation-input
+title: FunctionMutationInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One property write a function performs.
+
+
+```graphql
+input FunctionMutationInput {
+  target: String!
+  property: String!
+  expression: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>FunctionMutationInput.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#target\} 
+Container target: self | ref("uuid") | ref($param).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FunctionMutationInput.<b>property</b></code>](#property)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#property\} 
+The property key to write.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FunctionMutationInput.<b>expression</b></code>](#expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expression\} 
+Expression string (compiled to AST server-side).
+
+
+
+
+### Member Of
+
+[`SeedFunctionInput`](/reference/graphql/types/inputs/seed-function-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpsertFunctionInput`](/reference/graphql/types/inputs/upsert-function-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

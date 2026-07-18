@@ -1,0 +1,58 @@
+---
+id: grant-grid-permissions-input
+title: GrantGridPermissionsInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Grant runtime permission keys directly to one user on one grid (writes the grid&#x005F;user&#x005F;direct&#x005F;grants input table).
+
+
+```graphql
+input GrantGridPermissionsInput {
+  appId: BigInt!
+  gridId: BigInt!
+  userId: BigInt!
+  permissionKeys: [String!]!
+  expiresAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GrantGridPermissionsInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GrantGridPermissionsInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid to grant on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GrantGridPermissionsInput.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The user receiving the grant. Must already have active app access for this app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GrantGridPermissionsInput.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-keys\} 
+Runtime permission key strings to grant (e.g. update&#x005F;voxel&#x005F;data). Each must be a known key in runtime&#x005F;permissions, unique, and at most 64 chars.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GrantGridPermissionsInput.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+Optional expiry; after this time the grant stops contributing to the effective ACL. Null/omitted means it never expires.
+
+
+
+
+### Member Of
+
+[`grantGridPermissions`](/reference/graphql/operations/mutations/grant-grid-permissions.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

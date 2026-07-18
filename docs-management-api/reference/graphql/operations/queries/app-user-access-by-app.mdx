@@ -1,0 +1,66 @@
+---
+id: app-user-access-by-app
+title: appUserAccessByApp
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Admin view of the user access records for an app (who has been granted/revoked access and on which tier). Requires the 'manage&#x005F;access&#x005F;tiers' permission on the app; super admins bypass. Ordered by most recently updated. Paginated via limit/offset.
+
+
+```graphql
+appUserAccessByApp(
+  appId: BigInt!
+  status: String
+  limit: Int = 50
+  offset: Int = 0
+): [AppUserAccess!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appUserAccessByApp.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric id of the app whose access records to list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>appUserAccessByApp.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+Optional exact-match filter on access status (e.g. "active" or "revoked"). Omit to return records of all statuses.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>appUserAccessByApp.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+:::warning[DEPRECATED]
+
+Use appUserAccessConnection(first:, after:) instead. See /overview/pagination.
+
+:::
+
+Maximum number of records to return. Defaults to 50; clamped to the range 1-200.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>appUserAccessByApp.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+:::warning[DEPRECATED]
+
+Use appUserAccessConnection(first:, after:) instead. See /overview/pagination.
+
+:::
+
+Number of records to skip for pagination. Defaults to 0; negative values are treated as 0.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppUserAccess</b></code>](/reference/graphql/types/objects/app-user-access.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's entitlement to a specific app: whether (and via which tier) they may access it. At most one row per (app, user).

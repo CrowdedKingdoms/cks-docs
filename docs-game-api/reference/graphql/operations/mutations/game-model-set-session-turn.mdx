@@ -1,0 +1,39 @@
+---
+id: game-model-set-session-turn
+title: gameModelSetSessionTurn
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set or clear the session's current-turn user, for turn-based play (authority enforced by the service). Pass userId null to clear the turn. Requires a valid token.
+
+
+```graphql
+gameModelSetSessionTurn(
+  input: SetSessionTurnInput!
+): GmSession!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSetSessionTurn.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetSessionTurnInput!</b></code>](/reference/graphql/types/inputs/set-session-turn-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, the session id, and the user whose turn it now is (null clears it).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmSession</b></code>](/reference/graphql/types/objects/gm-session.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A runtime session: an isolated instance scope (e.g. a match or room) for containers.

@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crowded Kingdoms — Black / White / Ember Brand Guidelines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#030405;
+    --soft-black:#111315;
+    --white:#ffffff;
+    --bone:#f6f3ea;
+    --gray:#70757d;
+    --border:#e4e6e8;
+    --ember:#ed8b00;         /* Pantone 144 C — primary accent (v2.1) */
+    --ember-hover:#d97706;   /* darker interaction/hover state */
+    --ember-deep:#d96e1c;    /* white-on-ember companion */
+    --ember-text:#9a5300;    /* AA-safe ember on light */
+    --blue:#ed8b00;
+    --blue-hover:#d97706;
+    --gold:#ed8b00;
+
+    --font-display:'Montserrat', system-ui, sans-serif;
+    --font-body:'Inter', system-ui, sans-serif;
+
+    --radius-sm:10px;
+    --radius-md:18px;
+    --radius-lg:26px;
+    --radius-pill:999px;
+
+    --container-max:1240px;
+    --pad-desktop:120px;
+    --pad-tablet:88px;
+    --pad-mobile:56px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--white);
+    color:var(--black);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  img,svg{display:block;max-width:100%;}
+
+  .container{
+    max-width:var(--container-max);
+    margin:0 auto;
+    padding-left:56px;
+    padding-right:56px;
+  }
+
+  .page{
+    position:relative;
+    padding-top:var(--pad-desktop);
+    padding-bottom:var(--pad-desktop);
+    border-bottom:1px solid var(--border);
+  }
+  .page.dark{
+    background:var(--black);
+    color:var(--white);
+    border-bottom:1px solid rgba(255,255,255,0.1);
+  }
+  .page.bone{ background:var(--bone); }
+
+  .kicker{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-family:var(--font-body);
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gray);
+    margin-bottom:56px;
+  }
+  .page.dark .kicker{ color:rgba(255,255,255,0.5); }
+  .kicker .rule{
+    flex:1;
+    height:1px;
+    background:var(--border);
+    margin:0 20px;
+  }
+  .page.dark .kicker .rule{ background:rgba(255,255,255,0.14); }
+  .kicker .num{ color:var(--blue); font-weight:800; }
+
+  h1,h2,h3,h4{
+    font-family:var(--font-display);
+    font-weight:800;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+
+  .section-title{
+    font-size:clamp(34px, 4.4vw, 56px);
+    font-weight:900;
+    line-height:1.02;
+    text-transform:uppercase;
+    letter-spacing:-0.01em;
+    max-width:900px;
+    margin-bottom:22px;
+  }
+  .section-sub{
+    font-size:18px;
+    line-height:1.6;
+    color:var(--gray);
+    max-width:640px;
+    margin-bottom:64px;
+    font-weight:400;
+  }
+  .page.dark .section-sub{ color:rgba(255,255,255,0.62); }
+
+  .eyebrow-accent{ color:var(--blue); }
+  .gold-accent{ color:var(--gold); }
+
+  /* ---------- COVER ---------- */
+  .cover{
+    background:var(--black);
+    color:var(--white);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    position:relative;
+    overflow:hidden;
+    padding:64px 56px;
+  }
+  .dotfield{
+    position:absolute;
+    inset:0;
+    background-image:radial-gradient(rgba(255,255,255,0.16) 1.2px, transparent 1.2px);
+    background-size:26px 26px;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 45%, black 0%, black 30%, transparent 78%);
+    mask-image:radial-gradient(ellipse 70% 60% at 50% 45%, black 0%, black 30%, transparent 78%);
+    opacity:0.9;
+  }
+  .cover-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    position:relative;
+    z-index:2;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.55);
+  }
+  .cover-top span.tag{
+    border:1px solid rgba(255,255,255,0.25);
+    padding:6px 14px;
+    border-radius:var(--radius-pill);
+    color:var(--white);
+  }
+  .cover-mid{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    margin:auto 0;
+  }
+  .cover-wordmark{
+    font-family:var(--font-display);
+    font-weight:900;
+    line-height:0.86;
+    letter-spacing:-0.01em;
+    font-size:clamp(64px, 13vw, 165px);
+    text-transform:uppercase;
+  }
+  .cover-wordmark .k2{ color:var(--gold); }
+  .cover-tagline{
+    margin-top:34px;
+    font-family:var(--font-body);
+    font-size:clamp(15px, 1.6vw, 20px);
+    color:rgba(255,255,255,0.68);
+    max-width:520px;
+    margin-left:auto;
+    margin-right:auto;
+    font-weight:400;
+    line-height:1.6;
+  }
+  .cover-bottom{
+    position:relative;
+    z-index:2;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    font-size:12.5px;
+    font-weight:600;
+    color:rgba(255,255,255,0.5);
+    letter-spacing:0.04em;
+  }
+  .cover-bottom strong{ color:var(--white); font-weight:700; }
+  .cover-swatch-row{ display:flex; gap:8px; }
+  .cover-swatch{ width:16px; height:16px; border-radius:4px; }
+
+  /* ---------- QUOTE ---------- */
+  .brand-quote{
+    font-family:var(--font-display);
+    font-weight:900;
+    font-size:clamp(30px, 4.6vw, 58px);
+    line-height:1.08;
+    letter-spacing:-0.01em;
+    margin-bottom:72px;
+    max-width:980px;
+  }
+  .brand-quote .line-accent{ color:var(--blue); }
+
+  .grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .grid-2{ display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+  .grid-4{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+
+  .personality-card{
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:28px 24px;
+    background:var(--white);
+  }
+  .personality-card .n{
+    font-family:var(--font-body);
+    font-size:12px;
+    font-weight:700;
+    color:var(--blue);
+    letter-spacing:0.08em;
+    margin-bottom:18px;
+    display:block;
+  }
+  .personality-card h4{
+    font-size:20px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .personality-card p{
+    font-size:14.5px;
+    color:var(--gray);
+    line-height:1.55;
+    margin:0;
+  }
+
+  /* ---------- LOGO ---------- */
+  .lockup-box{
+    border-radius:var(--radius-lg);
+    padding:80px 40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+  }
+  .lockup-box.light{ background:var(--white); border:1px solid var(--border); }
+  .lockup-box.dark{ background:var(--black); }
+  .lockup-box .label{
+    position:absolute;
+    top:24px;
+    left:28px;
+    font-size:11.5px;
+    font-weight:700;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--gray);
+  }
+  .lockup-box.dark .label{ color:rgba(255,255,255,0.45); }
+  .stack-mark{
+    font-family:var(--font-display);
+    font-weight:900;
+    text-transform:uppercase;
+    line-height:0.9;
+    font-size:clamp(30px, 4vw, 48px);
+    text-align:center;
+  }
+  .lockup-box.light .stack-mark{ color:var(--black); }
+  .lockup-box.dark .stack-mark{ color:var(--white); }
+  .stack-mark .k2{ color:var(--gold); }
+
+  .clearspace-diagram{
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:56px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    background:var(--white);
+  }
+  .clearspace-box{
+    border:1.5px dashed var(--blue);
+    padding:44px 60px;
+    position:relative;
+  }
+  .clearspace-box .cap{
+    position:absolute;
+    font-size:11px;
+    font-weight:700;
+    color:var(--blue);
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+  }
+  .clearspace-box .cap.top{ top:-24px; left:50%; transform:translateX(-50%); }
+  .clearspace-box .cap.side{ top:50%; left:-8px; transform:translate(-100%,-50%) rotate(-90deg); transform-origin:right center; }
+  .clearspace-box .stack-mark{ font-size:34px; }
+
+  .misuse-card{
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:36px 20px;
+    text-align:center;
+    background:var(--white);
+    position:relative;
+  }
+  .misuse-card .x{
+    position:absolute;
+    top:14px;
+    right:16px;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    border:1.5px solid #b3261e;
+    color:#b3261e;
+    font-size:13px;
+    font-weight:800;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .misuse-card .mm{
+    font-family:var(--font-display);
+    font-weight:900;
+    font-size:22px;
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .misuse-card p{
+    font-size:13px;
+    color:var(--gray);
+    margin:0;
+    line-height:1.5;
+  }
+  .misuse-grad .mm{ background:linear-gradient(90deg,#ed8b00,#f5b84a,#9a5300); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .misuse-shadow .mm{ text-shadow:4px 4px 0 rgba(0,0,0,0.25), 8px 8px 12px rgba(0,0,0,0.3); }
+  .misuse-rotate .mm{ display:inline-block; transform:rotate(-8deg) skew(-6deg); }
+  .misuse-goldboth .mm{ color:var(--gold); }
+  .misuse-serif .mm{ font-family:Georgia,'Times New Roman',serif; letter-spacing:0.02em; }
+  .misuse-tight .mm{ letter-spacing:-0.06em; }
+
+  /* ---------- COLOR ---------- */
+  .swatch-card{
+    border-radius:var(--radius-md);
+    overflow:hidden;
+    border:1px solid var(--border);
+    background:var(--white);
+  }
+  .swatch-fill{
+    height:120px;
+    position:relative;
+  }
+  .swatch-fill .hex{
+    position:absolute;
+    bottom:14px;
+    left:18px;
+    font-family:var(--font-body);
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:0.03em;
+  }
+  .swatch-meta{ padding:18px 18px 22px; }
+  .swatch-meta h4{
+    font-size:15px;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    margin-bottom:8px;
+  }
+  .swatch-meta p{
+    font-size:13.5px;
+    color:var(--gray);
+    line-height:1.55;
+    margin:0;
+  }
+  .swatch-tag{
+    display:inline-block;
+    margin-top:12px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:5px 10px;
+    border-radius:var(--radius-pill);
+  }
+  .tag-functional{ background:rgba(237,139,0,0.10); color:var(--ember); }
+  .tag-symbolic{ background:rgba(237,139,0,0.14); color:#9a5300; }
+  .tag-foundation{ background:rgba(5,5,5,0.06); color:var(--soft-black); }
+
+  .ratio-bar{
+    display:flex;
+    height:56px;
+    border-radius:var(--radius-sm);
+    overflow:hidden;
+    margin-bottom:18px;
+    border:1px solid var(--border);
+  }
+  .ratio-bar div{ display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--white); }
+  .ratio-legend{ display:flex; gap:28px; flex-wrap:wrap; font-size:13.5px; color:var(--gray); }
+  .ratio-legend span.dot{ width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:8px; }
+
+  /* ---------- TYPE SPECIMEN ---------- */
+  .type-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding:34px 0;
+    border-bottom:1px solid var(--border);
+    gap:40px;
+  }
+  .type-row:last-child{ border-bottom:none; }
+  .type-label{
+    font-size:11.5px;
+    font-weight:700;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--blue);
+    width:140px;
+    flex-shrink:0;
+  }
+  .type-sample{ flex:1; }
+  .t-hero{ font-family:var(--font-display); font-weight:900; font-size:clamp(30px,4.4vw,54px); line-height:1.02; text-transform:uppercase; letter-spacing:-0.01em; }
+  .t-section{ font-family:var(--font-display); font-weight:800; font-size:32px; text-transform:uppercase; }
+  .t-subhead{ font-family:var(--font-display); font-weight:700; font-size:20px; color:var(--soft-black); }
+  .t-body{ font-family:var(--font-body); font-size:16.5px; line-height:1.7; max-width:520px; color:#2b2b2b; }
+  .t-label{ font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gray); }
+  .t-button{ display:inline-flex; align-items:center; background:var(--black); color:var(--white); font-weight:600; font-size:14.5px; padding:12px 24px; border-radius:var(--radius-pill); }
+
+  /* ---------- VISUAL MOTIFS ---------- */
+  .motif-card{
+    border-radius:var(--radius-md);
+    border:1px solid var(--border);
+    overflow:hidden;
+    background:var(--white);
+  }
+  .motif-visual{
+    height:180px;
+    position:relative;
+    background:var(--bone);
+    overflow:hidden;
+  }
+  .motif-caption{
+    padding:16px 18px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .motif-caption span{ font-size:13.5px; font-weight:600; }
+  .pill{
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:4px 9px;
+    border-radius:var(--radius-pill);
+  }
+  .pill-good{ background:rgba(237,139,0,0.1); color:var(--blue); }
+  .pill-avoid{ background:rgba(192,57,43,0.1); color:#b3261e; }
+
+  .motif-dots{ background-image:radial-gradient(rgba(5,5,5,0.55) 1.6px, transparent 1.6px); background-size:16px 16px; -webkit-mask-image:radial-gradient(circle at 30% 40%, black 0%, black 25%, transparent 70%); mask-image:radial-gradient(circle at 30% 40%, black 0%, black 25%, transparent 70%); }
+  .motif-grid{ background-image:linear-gradient(rgba(5,5,5,0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(5,5,5,0.14) 1px, transparent 1px); background-size:22px 22px; }
+  .motif-topo{ background: repeating-radial-gradient(circle at 50% 120%, transparent 0 14px, rgba(5,5,5,0.12) 14px 16px); }
+  .motif-cluster{ background-image:radial-gradient(rgba(237,139,0,0.5) 1.6px, transparent 1.6px); background-size:14px 14px; -webkit-mask-image:radial-gradient(circle at 70% 30%, black 0%, black 20%, transparent 65%); mask-image:radial-gradient(circle at 70% 30%, black 0%, black 20%, transparent 65%); }
+  .motif-noise{ background-image:radial-gradient(rgba(5,5,5,0.5) 2px, transparent 2px); background-size:9px 7px; opacity:0.9; }
+  .motif-chaos{ background:
+      radial-gradient(circle at 15% 20%, rgba(237,139,0,0.5) 10px, transparent 11px),
+      radial-gradient(circle at 40% 70%, rgba(192,57,43,0.4) 16px, transparent 17px),
+      radial-gradient(circle at 70% 30%, rgba(5,5,5,0.3) 20px, transparent 21px),
+      radial-gradient(circle at 85% 80%, rgba(47,128,255,0.4) 14px, transparent 15px),
+      radial-gradient(circle at 55% 45%, rgba(237,139,0,0.4) 8px, transparent 9px);
+  }
+  .motif-overlap{ display:flex; align-items:center; justify-content:center; }
+  .motif-overlap span{ position:absolute; font-family:var(--font-display); font-weight:900; font-size:26px; text-transform:uppercase; opacity:0.6; }
+  .motif-overlap span:nth-child(1){ top:40px; left:20px; }
+  .motif-overlap span:nth-child(2){ top:70px; left:60px; color:var(--gold); }
+  .motif-overlap span:nth-child(3){ top:100px; left:30px; color:var(--blue); }
+
+  /* ---------- COMPONENTS ---------- */
+  .btn{
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:14.5px;
+    padding:13px 26px;
+    border-radius:var(--radius-pill);
+    border:1.5px solid transparent;
+    cursor:default;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn-primary{ background:var(--black); color:var(--white); }
+  .btn-secondary{ background:transparent; color:var(--black); border-color:var(--black); }
+  .btn-blue{ background:var(--ember); color:var(--white); }
+  .btn-gold{ background:var(--ember); color:var(--white); }
+  .btn-row{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
+  .btn-caption{ font-size:12.5px; color:var(--gray); margin-bottom:36px; }
+
+  .ui-card{
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:26px;
+    background:var(--white);
+  }
+  .ui-card.dark{ background:var(--soft-black); border-color:rgba(255,255,255,0.12); color:var(--white); }
+  .ui-card .accent-line{ width:28px; height:3px; background:var(--gold); border-radius:2px; margin-bottom:16px; }
+  .ui-card h4{ font-size:16px; margin-bottom:8px; text-transform:uppercase; }
+  .ui-card p{ font-size:13.5px; color:var(--gray); line-height:1.55; margin:0; }
+  .ui-card.dark p{ color:rgba(255,255,255,0.6); }
+
+  .form-sample{ border:1px solid var(--border); border-radius:var(--radius-md); padding:28px; background:var(--white); }
+  .form-field{ margin-bottom:18px; }
+  .form-field label{ display:block; font-size:11.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--gray); margin-bottom:8px; }
+  .form-field input{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:12px 14px;
+    font-family:var(--font-body);
+    font-size:14.5px;
+    color:var(--black);
+  }
+  .form-field input.focused{ border-color:var(--gold); box-shadow:0 0 0 3px rgba(237,139,0,0.15); }
+  .form-field.error input{ border-color:#b3261e; }
+  .form-field.error .err{ color:#b3261e; font-size:12px; margin-top:6px; display:block; }
+
+  .nav-sample{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:16px 24px;
+    background:var(--white);
+  }
+  .nav-sample .nav-logo{ font-family:var(--font-display); font-weight:900; font-size:15px; text-transform:uppercase; letter-spacing:0.02em; }
+  .nav-sample .nav-logo span{ color:var(--gold); }
+  .nav-links{ display:flex; gap:26px; font-size:13.5px; font-weight:500; }
+  .nav-links a{ color:var(--soft-black); text-decoration:none; position:relative; }
+  .nav-links a.active{ color:var(--black); font-weight:700; }
+  .nav-links a.active::after{ content:''; position:absolute; left:0; right:0; bottom:-19px; height:2px; background:var(--gold); }
+
+  .divider-row{ display:flex; flex-direction:column; gap:22px; margin-top:8px; }
+  .divider-row .d-item{ display:flex; align-items:center; gap:16px; }
+  .divider-row .d-label{ width:170px; font-size:12.5px; color:var(--gray); flex-shrink:0; }
+  .divider-line{ height:1px; flex:1; background:var(--border); }
+  .divider-line.gold{ background:var(--gold); height:2px; }
+  .divider-line.blue{ background:var(--blue); height:2px; }
+
+  /* ---------- APPLICATIONS ---------- */
+  .app-card{ border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--white); }
+  .app-visual{ height:200px; position:relative; padding:22px; display:flex; flex-direction:column; justify-content:center; }
+  .app-visual.dark{ background:var(--black); color:var(--white); }
+  .app-visual.bone{ background:var(--bone); }
+  .app-label{ padding:16px 20px 20px; font-size:13px; font-weight:600; border-top:1px solid var(--border); }
+
+  .app-hero h3{ font-family:var(--font-display); font-weight:900; font-size:26px; text-transform:uppercase; line-height:1.05; margin-bottom:10px; }
+  .app-hero .g{ color:var(--gold); }
+  .app-hero p{ font-size:12px; color:rgba(255,255,255,0.55); margin:0 0 14px; }
+
+  .app-ui .row{ display:flex; gap:8px; margin-bottom:10px; }
+  .app-ui .chip{ font-size:10.5px; padding:5px 10px; border-radius:var(--radius-pill); border:1px solid var(--border); background:var(--white); }
+  .app-ui .chip.on{ background:var(--black); color:var(--white); border-color:var(--black); }
+  .app-ui .bar{ height:8px; border-radius:4px; background:var(--border); margin-bottom:8px; }
+  .app-ui .bar.fill{ background:var(--blue); width:64%; }
+
+  .app-docs code{ font-family:'SFMono-Regular',Consolas,monospace; font-size:11.5px; color:var(--blue); display:block; background:var(--soft-black); padding:12px 14px; border-radius:8px; line-height:1.6; }
+  .app-docs .doc-title{ font-size:11px; color:rgba(255,255,255,0.5); margin-bottom:8px; letter-spacing:0.06em; text-transform:uppercase; }
+
+  .app-deck{ display:flex; align-items:center; justify-content:center; text-align:center; }
+  .app-deck h3{ font-family:var(--font-display); font-weight:900; font-size:22px; text-transform:uppercase; line-height:1.1; }
+  .app-deck .stat{ font-family:var(--font-display); font-weight:900; font-size:44px; color:var(--gold); margin-top:10px; }
+
+  .app-social{ align-items:flex-start; justify-content:flex-end; }
+  .app-social h3{ font-family:var(--font-display); font-weight:900; font-size:30px; text-transform:uppercase; line-height:1; }
+
+  /* ---------- VOICE ---------- */
+  .voice-list{ list-style:none; padding:0; margin:0 0 8px; display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .voice-list li{ font-size:13.5px; font-weight:600; border:1px solid var(--border); border-radius:var(--radius-pill); padding:10px 18px; text-align:center; }
+
+  .tagline-block{ border-left:2px solid var(--blue); padding-left:22px; margin:14px 0; }
+  .tagline-block p{ font-family:var(--font-display); font-weight:800; font-size:20px; text-transform:uppercase; margin:0; letter-spacing:-0.005em; }
+
+  .say-card{ border-radius:var(--radius-md); padding:24px; }
+  .say-yes{ background:rgba(237,139,0,0.06); border:1px solid rgba(237,139,0,0.25); }
+  .say-no{ background:rgba(192,57,43,0.05); border:1px solid rgba(192,57,43,0.2); }
+  .say-card .tag{ font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:12px; display:block; }
+  .say-yes .tag{ color:var(--blue); }
+  .say-no .tag{ color:#b3261e; }
+  .say-card p{ font-size:15px; margin:0 0 10px; line-height:1.5; }
+  .say-card p:last-child{ margin-bottom:0; }
+
+  /* ---------- DO / DONT ---------- */
+  .dd-card{ border-radius:var(--radius-md); padding:32px; }
+  .dd-do{ background:var(--black); color:var(--white); }
+  .dd-dont{ background:var(--white); border:1px solid var(--border); }
+  .dd-card h4{ font-size:13px; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:22px; }
+  .dd-do h4{ color:var(--gold); }
+  .dd-dont h4{ color:#b3261e; }
+  .dd-card ul{ list-style:none; padding:0; margin:0; }
+  .dd-card li{ font-size:14.5px; line-height:1.5; padding:10px 0; border-top:1px solid rgba(255,255,255,0.1); display:flex; gap:12px; }
+  .dd-dont li{ border-top:1px solid var(--border); }
+  .dd-card li:first-child{ border-top:none; }
+  .dd-card li::before{ content:'—'; color:var(--gold); flex-shrink:0; }
+  .dd-dont li::before{ content:'—'; color:#b3261e; }
+
+  /* ---------- CHECKLIST ---------- */
+  .checklist{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+  .check-pill{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:16px 20px;
+    background:var(--white);
+  }
+  .check-pill .mark{
+    width:22px; height:22px; border-radius:50%;
+    border:1.5px solid var(--blue);
+    color:var(--blue);
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:800; flex-shrink:0;
+  }
+  .check-pill span.txt{ font-size:14px; font-weight:500; }
+
+  /* ---------- CLOSING ---------- */
+  .closing{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .closing .statement{
+    font-family:var(--font-display);
+    font-weight:900;
+    font-size:clamp(28px, 4.6vw, 52px);
+    line-height:1.12;
+    text-transform:uppercase;
+    max-width:920px;
+    position:relative;
+    z-index:2;
+  }
+  .closing .statement .g{ color:var(--gold); }
+  .closing .foot{
+    margin-top:56px;
+    font-size:12.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.5);
+    position:relative;
+    z-index:2;
+  }
+
+  /* ---------- MISC ---------- */
+  .footer-meta{
+    display:flex;
+    justify-content:space-between;
+    padding:28px 56px;
+    font-size:11.5px;
+    color:var(--gray);
+    letter-spacing:0.04em;
+  }
+
+  @media (max-width: 900px){
+    .container{ padding-left:28px; padding-right:28px; }
+    .page{ padding-top:var(--pad-mobile); padding-bottom:var(--pad-mobile); }
+    .grid-3,.grid-4{ grid-template-columns:repeat(2,1fr); }
+    .checklist{ grid-template-columns:1fr; }
+    .voice-list{ grid-template-columns:1fr; }
+    .type-row{ flex-direction:column; gap:10px; }
+    .type-label{ width:auto; }
+  }
+  @media (max-width: 560px){
+    .grid-3,.grid-4,.grid-2{ grid-template-columns:1fr; }
+  }
+
+  @media print{
+    body{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .page{ page-break-after:always; border-bottom:none; }
+    .cover, .closing{ min-height:100vh; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 1. COVER ============ -->
+<section class="cover page">
+  <div class="dotfield"></div>
+  <div class="cover-top">
+    <span>Brand &amp; Visual Identity System</span>
+    <span class="tag">v2.0 — Internal</span>
+  </div>
+  <div class="cover-mid">
+    <div class="cover-wordmark">CROWDED<br><span class="k2">KINGDOMS</span></div>
+    <p class="cover-tagline">Single-shard infrastructure for massive persistent worlds — one shared universe, no meaningful ceiling.</p>
+  </div>
+  <div class="cover-bottom">
+    <div>Prepared for internal &amp; partner use<br><strong>Black / White / Ember Edition — 2026</strong></div>
+    <div class="cover-swatch-row">
+      <span class="cover-swatch" style="background:#030405;border:1px solid rgba(255,255,255,0.2)"></span>
+      <span class="cover-swatch" style="background:#ffffff"></span>
+      <span class="cover-swatch" style="background:#ed8b00"></span>
+      <span class="cover-swatch" style="background:#111315"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. BRAND ESSENCE ============ -->
+<section class="page" id="essence">
+  <div class="container">
+    <div class="kicker"><span>01 — Brand Essence</span><span class="rule"></span><span class="num">Foundation</span></div>
+    <h2 class="section-title">What Crowded<br>Kingdoms <span class="eyebrow-accent">is.</span></h2>
+    <p class="section-sub">A platform, not a fantasy game. The identity should read like a serious next‑generation multiplayer infrastructure brand — one that has earned the right to be simple.</p>
+
+    <div class="brand-quote">"One world.<br><span class="line-accent">Everyone</span> in it."</div>
+
+    <p class="section-sub" style="margin-top:-42px;margin-bottom:64px;">Brand rule: black and white are the substrate. Ember appears only when the system ignites.</p>
+
+    <div class="grid-3">
+      <div class="personality-card"><span class="n">01</span><h4>Bold</h4><p>Direct claims, large type, no hedging language.</p></div>
+      <div class="personality-card"><span class="n">02</span><h4>Minimal</h4><p>Every element earns its place. Nothing decorative.</p></div>
+      <div class="personality-card"><span class="n">03</span><h4>Premium</h4><p>Space and restraint signal confidence, not cost‑cutting.</p></div>
+      <div class="personality-card"><span class="n">04</span><h4>Technical</h4><p>Feels engineered — precise, structured, credible to builders.</p></div>
+      <div class="personality-card"><span class="n">05</span><h4>Spacious</h4><p>Whitespace is identity. The brand can afford to breathe.</p></div>
+      <div class="personality-card"><span class="n">06</span><h4>Confident</h4><p>Says one thing clearly per surface — never overhyped.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. LOGO / WORDMARK ============ -->
+<section class="page bone" id="logo">
+  <div class="container">
+    <div class="kicker"><span>02 — Logo &amp; Wordmark</span><span class="rule"></span><span class="num">Identity</span></div>
+    <h2 class="section-title">The stacked<br>wordmark.</h2>
+    <p class="section-sub">CROWDED sits in the dominant surface color. KINGDOMS may carry the single ember accent — the one moment of ignition in the lockup.</p>
+
+    <div class="grid-2" style="margin-bottom:20px;">
+      <div class="lockup-box light"><span class="label">On Light</span><div class="stack-mark">CROWDED<br><span class="k2">KINGDOMS</span></div></div>
+      <div class="lockup-box dark"><span class="label">On Dark</span><div class="stack-mark">CROWDED<br><span class="k2">KINGDOMS</span></div></div>
+    </div>
+
+    <h3 style="font-family:var(--font-display);font-size:15px;text-transform:uppercase;letter-spacing:0.06em;margin:56px 0 20px;">Clear Space</h3>
+    <div class="clearspace-diagram">
+      <div class="clearspace-box">
+        <span class="cap top">Clear space = cap height of "C"</span>
+        <span class="cap side">Clear space</span>
+        <div class="stack-mark">CROWDED<br><span class="k2">KINGDOMS</span></div>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-display);font-size:15px;text-transform:uppercase;letter-spacing:0.06em;margin:56px 0 20px;">Misuse</h3>
+    <div class="grid-3">
+      <div class="misuse-card misuse-grad"><span class="x">×</span><div class="mm">KINGDOMS</div><p>Metallic or gradient fills. Ember stays flat and intentional.</p></div>
+      <div class="misuse-card misuse-shadow"><span class="x">×</span><div class="mm">KINGDOMS</div><p>Drop shadows or bevels. No faux‑dimensional effects.</p></div>
+      <div class="misuse-card misuse-rotate"><span class="x">×</span><div class="mm">KINGDOMS</div><p>Rotation, skew, or perspective distortion.</p></div>
+      <div class="misuse-card misuse-goldboth"><span class="x">×</span><div class="mm">CROWDED</div><p>Ember on both words dilutes the signal. One word only.</p></div>
+      <div class="misuse-card misuse-serif"><span class="x">×</span><div class="mm">Kingdoms</div><p>Serif or decorative fantasy typefaces of any kind.</p></div>
+      <div class="misuse-card misuse-tight"><span class="x">×</span><div class="mm">KINGDOMS</div><p>Overly tight or condensed letter‑spacing.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. COLOR SYSTEM ============ -->
+<section class="page" id="color">
+  <div class="container">
+    <div class="kicker"><span>03 — Color System</span><span class="rule"></span><span class="num">Foundation</span></div>
+    <h2 class="section-title">Black, white,<br>and ember.</h2>
+    <p class="section-sub">Black and white carry the brand. Ember is the single ignition color — rare, flat, printable, and reserved for moments where the system comes alive.</p>
+
+    <div class="grid-3" style="margin-bottom:56px;">
+      <div class="swatch-card">
+        <div class="swatch-fill" style="background:#030405;"><span class="hex" style="color:#fff;">#030405</span></div>
+        <div class="swatch-meta"><h4>Void Black</h4><p>Primary text, navigation, dark hero moments, footers.</p><span class="swatch-tag tag-foundation">Foundation</span></div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-fill" style="background:#ffffff;border-bottom:1px solid var(--border);"><span class="hex" style="color:#030405;">#FFFFFF</span></div>
+        <div class="swatch-meta"><h4>Pure White</h4><p>Dominant background. Clean, direct, spacious default.</p><span class="swatch-tag tag-foundation">Foundation</span></div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-fill" style="background:#111315;"><span class="hex" style="color:#fff;">#111315</span></div>
+        <div class="swatch-meta"><h4>Soft Black</h4><p>Secondary dark surfaces, cards on dark backgrounds.</p><span class="swatch-tag tag-foundation">Foundation</span></div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-fill" style="background:#f6f3ea;"><span class="hex" style="color:#030405;">#F6F3EA</span></div>
+        <div class="swatch-meta"><h4>Bone White</h4><p>Occasional warm off‑white for subtle section separation.</p><span class="swatch-tag tag-foundation">Foundation</span></div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-fill" style="background:#70757D;"><span class="hex" style="color:#fff;">#70757D</span></div>
+        <div class="swatch-meta"><h4>Steel Gray</h4><p>Captions, secondary copy, metadata, helper text.</p><span class="swatch-tag tag-foundation">Foundation</span></div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-fill" style="background:#E4E6E8;"><span class="hex" style="color:#030405;">#E4E6E8</span></div>
+        <div class="swatch-meta"><h4>Border Gray</h4><p>Hairline dividers, card borders, table rules.</p><span class="swatch-tag tag-foundation">Foundation</span></div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-fill" style="background:#ed8b00;"><span class="hex" style="color:#030405;">#ED8B00</span></div>
+        <div class="swatch-meta"><h4>Ember Signal</h4><p>Logo accent, large ignition CTAs, dark-theme accents (Pantone 144 C).</p><span class="swatch-tag tag-functional">Functional</span></div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-fill" style="background:#d97706;"><span class="hex" style="color:#030405;">#D97706</span></div>
+        <div class="swatch-meta"><h4>Ember Signal Hover</h4><p>Hover / pressed state for ember fills.</p><span class="swatch-tag tag-functional">Functional</span></div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-fill" style="background:#d96e1c;"><span class="hex" style="color:#030405;">#D96E1C</span></div>
+        <div class="swatch-meta"><h4>Ember Deep</h4><p>Accessibility companion when white-on-ember is required.</p><span class="swatch-tag tag-functional">Functional</span></div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-fill" style="background:#9a5300;"><span class="hex" style="color:#fff;">#9A5300</span></div>
+        <div class="swatch-meta"><h4>Ember Text</h4><p>AA-safe ember for small labels and links on light backgrounds.</p><span class="swatch-tag tag-functional">Functional</span></div>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-display);font-size:15px;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:20px;">Recommended Ratio</h3>
+    <div class="ratio-bar">
+      <div style="width:82%;background:#030405;">82% Black / White</div>
+      <div style="width:12%;background:#70757d;">12% Gray</div>
+      <div style="width:4%;background:#ed8b00;">4% Ember</div>
+      <div style="width:2%;background:#9a5300;">2% Deep Ember</div>
+    </div>
+    <div class="ratio-legend">
+      <span><span class="dot" style="background:#030405"></span>Black and white carry the brand</span>
+      <span><span class="dot" style="background:#70757d"></span>Gray supports structure and metadata</span>
+      <span><span class="dot" style="background:#ed8b00"></span>Ember marks ignition, action, and major claims</span>
+    </div>
+    <div style="margin-top:38px;border:1px solid var(--border);border-radius:var(--radius-md);padding:24px;background:var(--white);">
+      <h4 style="font-size:15px;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Print Rule</h4>
+      <p style="font-size:14.5px;line-height:1.6;color:var(--gray);max-width:760px;margin:0;">Every asset must survive in black and white first. Ember may be printed as a flat spot-like accent when available, but never as a gradient, metallic effect, glow, or dependent contrast cue. If color drops out, hierarchy must still work.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. TYPOGRAPHY ============ -->
+<section class="page bone" id="type">
+  <div class="container">
+    <div class="kicker"><span>04 — Typography</span><span class="rule"></span><span class="num">Specimen</span></div>
+    <h2 class="section-title">Type carries<br>the brand.</h2>
+    <p class="section-sub">Montserrat ExtraBold / Black stands in for Avenir Next Heavy across display moments. Inter handles every word the user actually reads.</p>
+
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:44px;">
+      <div class="type-row"><div class="type-label">Hero</div><div class="type-sample t-hero">MULTIPLAYER<br>WITHOUT THE <span style="color:var(--blue)">CEILING.</span></div></div>
+      <div class="type-row"><div class="type-label">Section Head</div><div class="type-sample t-section">Density, Handled.</div></div>
+      <div class="type-row"><div class="type-label">Subhead</div><div class="type-sample t-subhead">Built for developers and players alike.</div></div>
+      <div class="type-row"><div class="type-label">Body</div><div class="type-sample t-body">Crowded Kingdoms enables massive shared worlds with no meaningful ceiling on player density. The system stays legible at any scale, on any surface, without competing with the wordmark.</div></div>
+      <div class="type-row"><div class="type-label">Label / UI</div><div class="type-sample t-label">Population Density — Live</div></div>
+      <div class="type-row"><div class="type-label">Button</div><div class="type-sample"><span class="t-button">Request Access</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. VISUAL IDENTITY SYSTEM ============ -->
+<section class="page" id="motifs">
+  <div class="container">
+    <div class="kicker"><span>05 — Visual Identity System</span><span class="rule"></span><span class="num">Pattern Language</span></div>
+    <h2 class="section-title">Scale, made<br>legible.</h2>
+    <p class="section-sub">Density should feel organized, never chaotic. Ordered systems — dot fields, grids, clusters — make massive scale tangible without becoming noise.</p>
+
+    <div class="grid-3" style="margin-bottom:20px;">
+      <div class="motif-card"><div class="motif-visual motif-dots"></div><div class="motif-caption"><span>Dot Field</span><span class="pill pill-good">Good</span></div></div>
+      <div class="motif-card"><div class="motif-visual motif-grid"></div><div class="motif-caption"><span>Grid System</span><span class="pill pill-good">Good</span></div></div>
+      <div class="motif-card"><div class="motif-visual motif-cluster"></div><div class="motif-caption"><span>Population Cluster</span><span class="pill pill-good">Good</span></div></div>
+    </div>
+    <div class="grid-3">
+      <div class="motif-card"><div class="motif-visual motif-topo"></div><div class="motif-caption"><span>Topographic Layer</span><span class="pill pill-good">Good</span></div></div>
+      <div class="motif-card"><div class="motif-visual motif-chaos"></div><div class="motif-caption"><span>Particle Explosion</span><span class="pill pill-avoid">Avoid</span></div></div>
+      <div class="motif-card"><div class="motif-visual motif-overlap" style="position:relative;"><span>WORLD</span><span>SCALE</span><span>DENSE</span></div><div class="motif-caption"><span>Overlapping Text Blocks</span><span class="pill pill-avoid">Avoid</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. LAYOUT & COMPONENTS ============ -->
+<section class="page bone" id="components">
+  <div class="container">
+    <div class="kicker"><span>06 — Layout &amp; Components</span><span class="rule"></span><span class="num">System</span></div>
+    <h2 class="section-title">A working<br>component set.</h2>
+    <p class="section-sub">Consistent radius, spacing, and ember restraint across every surface — website, product, and documentation alike.</p>
+
+    <h3 style="font-family:var(--font-display);font-size:14px;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:16px;">Buttons</h3>
+    <div class="btn-row">
+      <span class="btn btn-primary">Download Now</span>
+      <span class="btn btn-secondary">Learn More</span>
+      <span class="btn btn-secondary">View Documentation</span>
+      <span class="btn btn-gold">Request Access</span>
+    </div>
+    <p class="btn-caption">Primary is black‑fill. Secondary is outline. Black and white handle most actions. Ember is reserved for the single most important action or active system moment on a page.</p>
+
+    <div class="grid-2" style="margin-bottom:40px;">
+      <div class="ui-card"><div class="accent-line"></div><h4>Editorial Card</h4><p>Clean surface, hairline border, ember accent line used sparingly to mark importance.</p></div>
+      <div class="ui-card dark"><div class="accent-line"></div><h4>Dark Surface Card</h4><p>Soft Black background, translucent border, same restrained ember accent.</p></div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:40px;">
+      <div class="form-sample">
+        <div class="form-field"><label>Email Address</label><input type="text" placeholder="you@studio.com" readonly></div>
+        <div class="form-field"><label>Focused State</label><input class="focused" type="text" value="Ember focus ring" readonly></div>
+        <div class="form-field error"><label>Error State</label><input type="text" value="Invalid access code" readonly><span class="err">Access code not recognized.</span></div>
+      </div>
+      <div class="nav-sample" style="align-self:start;">
+        <div class="nav-logo">CROWDED <span>KINGDOMS</span></div>
+        <div class="nav-links"><a class="active" href="#">Platform</a><a href="#">Density</a><a href="#">Developers</a></div>
+        <span class="btn btn-primary" style="padding:9px 18px;font-size:13px;">Download</span>
+      </div>
+    </div>
+
+    <h3 style="font-family:var(--font-display);font-size:14px;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:20px;">Dividers &amp; Rules</h3>
+    <div class="divider-row">
+      <div class="d-item"><span class="d-label">Light divider</span><div class="divider-line"></div></div>
+      <div class="d-item"><span class="d-label">Dark divider</span><div class="divider-line" style="background:rgba(5,5,5,0.3);"></div></div>
+      <div class="d-item"><span class="d-label">Ember signal rule</span><div class="divider-line blue"></div></div>
+      <div class="d-item"><span class="d-label">Ember accent rule</span><div class="divider-line gold"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. BRAND APPLICATIONS ============ -->
+<section class="page" id="applications">
+  <div class="container">
+    <div class="kicker"><span>07 — Brand Applications</span><span class="rule"></span><span class="num">In Practice</span></div>
+    <h2 class="section-title">One system,<br>every surface.</h2>
+    <p class="section-sub">The identity should be immediately recognizable whether it appears on the website, in product UI, in developer docs, or on a pitch deck slide.</p>
+
+    <div class="grid-3" style="margin-bottom:20px;">
+      <div class="app-card">
+        <div class="app-visual dark app-hero"><h3>ONE WORLD.<br><span class="g">EVERYONE</span> IN IT.</h3><p>Massive worlds. No shards. No ceilings.</p><span class="btn btn-primary" style="width:fit-content;padding:8px 16px;font-size:12px;background:#fff;color:#030405;">Download</span></div>
+        <div class="app-label">Website Hero</div>
+      </div>
+      <div class="app-card">
+        <div class="app-visual app-ui">
+          <div class="row"><span class="chip on">Live Shard</span><span class="chip">Diagnostics</span><span class="chip">Settings</span></div>
+          <div class="t-label" style="margin-bottom:8px;">Population Density</div>
+          <div class="bar fill"></div><div class="bar" style="width:38%;"></div><div class="bar" style="width:52%;"></div>
+        </div>
+        <div class="app-label">Product UI</div>
+      </div>
+      <div class="app-card">
+        <div class="app-visual dark app-docs"><div class="doc-title">Quickstart</div><code>POST /v1/shards/join<br>{ "region": "global" }</code></div>
+        <div class="app-label">Developer Documentation</div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="app-card">
+        <div class="app-visual bone app-deck"><div><h3>Density Without Limits</h3><div class="stat">1.2M</div><div class="t-label">Concurrent Players, One Shard</div></div></div>
+        <div class="app-label">Pitch Deck Slide</div>
+      </div>
+      <div class="app-card">
+        <div class="app-visual dark app-social"><h3>MORE PLAYERS.<br>MORE <span class="g">PRESENCE.</span></h3></div>
+        <div class="app-label">Social Graphic</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9. VOICE & MESSAGING ============ -->
+<section class="page bone" id="voice">
+  <div class="container">
+    <div class="kicker"><span>08 — Voice &amp; Messaging</span><span class="rule"></span><span class="num">Tone</span></div>
+    <h2 class="section-title">Confident.<br>Not overhyped.</h2>
+    <p class="section-sub">The voice is direct and technically credible — closer to an infrastructure manifesto than a game trailer.</p>
+
+    <ul class="voice-list">
+      <li>Bold</li><li>Clear</li><li>Ambitious</li>
+      <li>Premium</li><li>Not childish</li><li>Not overhyped</li>
+    </ul>
+
+    <div style="margin:44px 0 48px;">
+      <div class="tagline-block"><p>Massive worlds. No shards. No ceilings.</p></div>
+      <div class="tagline-block"><p>A multiplayer platform built for density.</p></div>
+      <div class="tagline-block"><p>The infrastructure layer for truly crowded games.</p></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="say-card say-yes"><span class="tag">Say This</span><p>"One world. Everyone in it."</p><p>"Built for density. Designed for presence."</p></div>
+      <div class="say-card say-no"><span class="tag">Not This</span><p>"Enter the ultimate fantasy kingdom!"</p><p>"Join millions in an epic medieval adventure!"</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10. DO / DON'T ============ -->
+<section class="page" id="dodont">
+  <div class="container">
+    <div class="kicker"><span>09 — Do &amp; Don't</span><span class="rule"></span><span class="num">Checklist</span></div>
+    <h2 class="section-title">Guardrails,<br>not restrictions.</h2>
+    <p class="section-sub">A fast reference for anyone shipping a new asset under the Crowded Kingdoms name.</p>
+
+    <div class="grid-2">
+      <div class="dd-card dd-do">
+        <h4>Do</h4>
+        <ul>
+          <li>Use white space aggressively</li>
+          <li>Let typography do most of the work</li>
+          <li>Keep ember rare and intentional</li>
+          <li>Default to black‑on‑white</li>
+          <li>Use ember for ignition, action, and major signal</li>
+          <li>Build every surface from the same system</li>
+        </ul>
+      </div>
+      <div class="dd-card dd-dont">
+        <h4>Don't</h4>
+        <ul>
+          <li>Reach for fantasy RPG styling</li>
+          <li>Overuse gold gradients or metallic effects</li>
+          <li>Stack more than two font weights per section</li>
+          <li>Make every section dark</li>
+          <li>Add clutter to communicate "crowded"</li>
+          <li>Use long paragraphs in hero moments</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11. DESIGN REVIEW CHECKLIST ============ -->
+<section class="page bone" id="checklist">
+  <div class="container">
+    <div class="kicker"><span>10 — Design Review Checklist</span><span class="rule"></span><span class="num">QA</span></div>
+    <h2 class="section-title">Before you<br>ship it.</h2>
+    <p class="section-sub">Run any new asset — page, deck slide, social post, UI screen — against this list.</p>
+
+    <div class="checklist">
+      <div class="check-pill"><span class="mark">✓</span><span class="txt">Feels bold, minimal, premium, technically powerful</span></div>
+      <div class="check-pill"><span class="mark">✓</span><span class="txt">Uses black, white, and space as the primary identity</span></div>
+      <div class="check-pill"><span class="mark">✓</span><span class="txt">Ember appears rarely, and it means ignition</span></div>
+      <div class="check-pill"><span class="mark">✓</span><span class="txt">Ember is the only bold color</span></div>
+      <div class="check-pill"><span class="mark">✓</span><span class="txt">Communicates scale without becoming cluttered</span></div>
+      <div class="check-pill"><span class="mark">✓</span><span class="txt">No crowns, castles, dragons, swords, or parchment</span></div>
+      <div class="check-pill"><span class="mark">✓</span><span class="txt">Has a clear hierarchy, one primary message</span></div>
+      <div class="check-pill"><span class="mark">✓</span><span class="txt">Credible to developers, exciting to players</span></div>
+      <div class="check-pill"><span class="mark">✓</span><span class="txt">Looks like part of a repeatable system</span></div>
+      <div class="check-pill"><span class="mark">✓</span><span class="txt">Could not be mistaken for a generic SaaS template</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12. FINAL SUMMARY ============ -->
+<section class="page dark closing" id="summary">
+  <div class="dotfield"></div>
+  <div class="statement">
+    Crowded Kingdoms is a premium infrastructure platform for single-shard universe-scale worlds — <span class="g">bold, minimal,</span> and mostly black‑on‑white, with ember used only when the system ignites.
+  </div>
+  <div class="foot">Crowded Kingdoms — Black / White / Ember Brand Guidelines — v1.0</div>
+</section>
+
+<div class="footer-meta">
+  <span>Crowded Kingdoms — Internal Brand System</span>
+  <span>Guidelines v2.0 — 2026</span>
+</div>
+
+</body>
+</html>

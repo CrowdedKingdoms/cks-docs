@@ -1,0 +1,43 @@
+---
+id: users-page
+title: UsersPage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type UsersPage {
+  items: [User!]!
+  pageInfo: PageInfo!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UsersPage.<b>items</b></code>](#items)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[User!]!</b></code>](/reference/graphql/types/objects/user.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#items\} 
+Users on the current page, ordered by ascending user id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UsersPage.<b>pageInfo</b></code>](#page-info)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PageInfo!</b></code>](/reference/graphql/types/objects/page-info.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#page-info\} 
+Pagination metadata: totalCount, applied limit, and applied offset.
+
+
+
+
+### Returned By
+
+[`usersPaginated`](/reference/graphql/operations/queries/users-paginated.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

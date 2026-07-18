@@ -1,0 +1,39 @@
+---
+id: game-model-upsert-container-type
+title: gameModelUpsertContainerType
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create or update a container type: the studio-defined schema for a kind of runtime entity (like a class). Idempotent on (app, typeName). Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelUpsertContainerType(
+  input: UpsertContainerTypeInput!
+): GmContainerType!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelUpsertContainerType.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpsertContainerTypeInput!</b></code>](/reference/graphql/types/inputs/upsert-container-type-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, type name, display name, and optional instantiableBy / default property visibility / metadata.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmContainerType</b></code>](/reference/graphql/types/objects/gm-container-type.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A studio-defined container type: the schema for a kind of runtime entity (like a class).

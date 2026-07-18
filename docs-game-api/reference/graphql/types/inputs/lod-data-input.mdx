@@ -1,0 +1,43 @@
+---
+id: lod-data-input
+title: LodDataInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A single LOD level and its encoded data for a chunk.
+
+
+```graphql
+input LodDataInput {
+  level: Int!
+  data: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>LodDataInput.<b>level</b></code>](#level)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#level\} 
+LOD level (&#x003E;= 0; 0 is the finest / highest detail).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LodDataInput.<b>data</b></code>](#data)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#data\} 
+BASE64-encoded binary LOD data for this level.
+
+
+
+
+### Member Of
+
+[`UpdateChunkLodsInput`](/reference/graphql/types/inputs/update-chunk-lods-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

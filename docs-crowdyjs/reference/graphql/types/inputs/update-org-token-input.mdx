@@ -1,0 +1,48 @@
+---
+id: update-org-token-input
+title: UpdateOrgTokenInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input UpdateOrgTokenInput {
+  label: String
+  expiresAt: DateTime
+  isActive: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateOrgTokenInput.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#label\} 
+New label; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateOrgTokenInput.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+New expiry timestamp; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateOrgTokenInput.<b>isActive</b></code>](#is-active)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#is-active\} 
+Set false to deactivate the token; omit to leave unchanged. Revoked tokens cannot be re-minted.
+
+
+
+
+### Member Of
+
+[`updateOrgToken`](/reference/graphql/operations/mutations/update-org-token.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

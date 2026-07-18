@@ -1,0 +1,48 @@
+---
+id: update-chunk-lods-input
+title: UpdateChunkLodsInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Payload for updateChunkLods: replaces the chunk's entire LOD set. Only LODs are written; voxels, voxel states, chunk state and owner are preserved.
+
+
+```graphql
+input UpdateChunkLodsInput {
+  appId: BigInt!
+  coordinates: ChunkCoordinatesInput!
+  lods: [LodDataInput!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateChunkLodsInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Id of the app that owns the chunk (decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateChunkLodsInput.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#coordinates\} 
+Address of the chunk whose LODs to replace.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateChunkLodsInput.<b>lods</b></code>](#lods)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[LodDataInput!]!</b></code>](/reference/graphql/types/inputs/lod-data-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#lods\} 
+Full set of LOD levels to store for the chunk; this REPLACES any existing LODs.
+
+
+
+
+### Member Of
+
+[`updateChunkLods`](/reference/graphql/operations/mutations/update-chunk-lods.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

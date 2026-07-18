@@ -1,0 +1,39 @@
+---
+id: get-chunk-lods
+title: getChunkLods
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Fetches only the requested level-of-detail (LOD) meshes for one chunk, identified by app id and coordinates. Returns null if the chunk does not exist. Cheaper than getChunk when you only need LODs. Requires a valid bearer token; app-scoped tokens are limited to their own app. Read-only.
+
+
+```graphql
+getChunkLods(
+  input: GetChunkLodsInput!
+): ChunkLodsResponse
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>getChunkLods.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GetChunkLodsInput!</b></code>](/reference/graphql/types/inputs/get-chunk-lods-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ChunkLodsResponse</b></code>](/reference/graphql/types/objects/chunk-lods-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Result of getChunkLods: identifying info for a chunk plus the LOD levels that were requested.

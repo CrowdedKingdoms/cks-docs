@@ -1,0 +1,49 @@
+---
+id: grid-group-grants
+title: gridGroupGrants
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List the group/role -&#x003E; permission-key grants configured on a grid for one group (rows of the `grid_group_grants` input table). These are inputs to the effective ACL, not the materialized result — use `gridUserPermissions` for a specific user's effective keys. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gridGroupGrants(
+  appId: BigInt!
+  gridId: BigInt!
+  groupId: BigInt!
+): [GridGroupGrant!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gridGroupGrants.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gridGroupGrants.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid to list group grants on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gridGroupGrants.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The group whose grants on the grid to list.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridGroupGrant</b></code>](/reference/graphql/types/objects/grid-group-grant.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A single group/role -&#x003E; permission-key grant on a grid (one row of the grid&#x005F;group&#x005F;grants input table).

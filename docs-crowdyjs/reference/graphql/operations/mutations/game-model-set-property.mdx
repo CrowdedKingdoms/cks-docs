@@ -1,0 +1,39 @@
+---
+id: game-model-set-property
+title: gameModelSetProperty
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set a single property value on a container directly (outside a function). Allowed only when the property's writability (function | owner | admin) permits the caller. The value is JSON-encoded and coerced to the property's value type. Requires a valid token. For game-logic changes prefer gameModelInvoke.
+
+
+```graphql
+gameModelSetProperty(
+  input: SetContainerPropertyInput!
+): GmContainer!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSetProperty.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetContainerPropertyInput!</b></code>](/reference/graphql/types/inputs/set-container-property-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, container id, property key, value type, and JSON-encoded value.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmContainer</b></code>](/reference/graphql/types/objects/gm-container.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A container: a runtime instance of a container type (optionally scoped to a session).

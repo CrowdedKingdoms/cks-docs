@@ -1,0 +1,39 @@
+---
+id: send-text-packet
+title: sendTextPacket
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Send a spatial text/chat packet, fanned out to nearby actors as a ClientTextNotification. Requires a bearer game token; opens a UDP proxy session automatically if none exists. Returns Boolean! that is true only when the datagram was ACCEPTED FOR SENDING to the game server — NOT confirmation of delivery. The sender receives no echo; failures arrive ASYNCHRONOUSLY as GenericErrorResponse on udpNotifications, correlated by the request sequenceNumber (correlation only — not an idempotency key; the server does not dedupe replays).
+
+
+```graphql
+sendTextPacket(
+  input: ClientTextPacketInput!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>sendTextPacket.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ClientTextPacketInput!</b></code>](/reference/graphql/types/inputs/client-text-packet-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The text/chat packet to send: target appId, chunk coordinates, 32-byte source uuid, UTF-8 text, and optional distance/decayRate/sequenceNumber. See ClientTextPacketInput.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

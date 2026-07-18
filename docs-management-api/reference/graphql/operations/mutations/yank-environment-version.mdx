@@ -1,0 +1,39 @@
+---
+id: yank-environment-version
+title: yankEnvironmentVersion
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only (is&#x005F;operator). Yanks (withdraws) an environment version so it can no longer be deployed; existing environments are unaffected. Writes an audit entry. Returns true on success.
+
+
+```graphql
+yankEnvironmentVersion(
+  version: String!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>yankEnvironmentVersion.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
+Environment version to yank, e.g. 'v0.1.4'.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

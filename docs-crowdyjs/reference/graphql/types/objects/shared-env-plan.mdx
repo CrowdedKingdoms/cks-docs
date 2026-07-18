@@ -1,0 +1,73 @@
+---
+id: shared-env-plan
+title: SharedEnvPlan
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+@deprecated Legacy monthly app-slot subscription plan. New shared publishes use wallet usage billing.
+
+
+```graphql
+type SharedEnvPlan {
+  planId: BigInt!
+  code: String!
+  name: String!
+  description: String
+  priceCents: BigInt!
+  currency: String!
+  billingInterval: String!
+  status: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SharedEnvPlan.<b>planId</b></code>](#plan-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#plan-id\} 
+Plan id (BigInt).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SharedEnvPlan.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code\} 
+Stable machine-readable plan code.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SharedEnvPlan.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Human-readable plan name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SharedEnvPlan.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SharedEnvPlan.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#price-cents\} 
+Recurring price per billing interval, in cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SharedEnvPlan.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+ISO-4217 currency for priceCents, e.g. 'USD'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SharedEnvPlan.<b>billingInterval</b></code>](#billing-interval)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#billing-interval\} 
+Billing cadence, e.g. 'month' or 'year'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SharedEnvPlan.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+Plan status, e.g. 'active' (offered) or 'archived'.
+
+
+
+
+### Returned By
+
+[`sharedEnvPlans`](/reference/graphql/operations/queries/shared-env-plans.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,53 @@
+---
+id: create-group-role-input
+title: CreateGroupRoleInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a custom role within a group (team or channel), granting group permission keys.
+
+
+```graphql
+input CreateGroupRoleInput {
+  groupId: BigInt!
+  roleName: String!
+  permissions: [String!]
+  rank: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateGroupRoleInput.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The group (team/channel) the role belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateGroupRoleInput.<b>roleName</b></code>](#role-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#role-name\} 
+Role display name (max 128 chars; unique within the group).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateGroupRoleInput.<b>permissions</b></code>](#permissions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permissions\} 
+Group permission key strings this role grants (e.g. manage&#x005F;members, manage&#x005F;roles, manage&#x005F;group, send&#x005F;messages). Must be valid keys for the group type; each max 64 chars, unique. Defaults to none.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateGroupRoleInput.<b>rank</b></code>](#rank)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#rank\} 
+Sort/precedence rank (higher = more senior). Defaults to 0.
+
+
+
+
+### Member Of
+
+[`createChannelRole`](/reference/graphql/operations/mutations/create-channel-role.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`createTeamRole`](/reference/graphql/operations/mutations/create-team-role.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

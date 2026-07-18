@@ -1,0 +1,39 @@
+---
+id: revoke-group-from-grid
+title: revokeGroupFromGrid
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Revoke group/role grants on a grid (deletes from the `grid_group_grants` input table) and recompute the materialized effective ACL. Omit `permissionKeys` to revoke ALL of the group/role's grants on the grid; pass a subset to revoke only those keys. Requires app-admin ('manage&#x005F;apps'). DESTRUCTIVE: removes the granted permissions from every affected member. Returns the group's remaining grants on the grid.
+
+
+```graphql
+revokeGroupFromGrid(
+  input: RevokeGroupFromGridInput!
+): [GridGroupGrant!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>revokeGroupFromGrid.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RevokeGroupFromGridInput!</b></code>](/reference/graphql/types/inputs/revoke-group-from-grid-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, grid, and target group, plus an optional group role; optionally the subset of permission keys to revoke (omit to revoke all of the group/role's grants).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridGroupGrant</b></code>](/reference/graphql/types/objects/grid-group-grant.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A single group/role -&#x003E; permission-key grant on a grid (one row of the grid&#x005F;group&#x005F;grants input table).

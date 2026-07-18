@@ -1,0 +1,39 @@
+---
+id: org-usage-projection
+title: orgUsageProjection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Org rollup of per-app monthly egress projections for all shared apps, with upgrade prompts when on track to exceed free tier. Requires the 'view&#x005F;usage' org permission.
+
+
+```graphql
+orgUsageProjection(
+  orgId: BigInt!
+): OrgUsageProjection!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>orgUsageProjection.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt) to roll up projections for.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgUsageProjection</b></code>](/reference/graphql/types/objects/org-usage-projection.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Org-level rollup of per-app monthly egress projections for all shared apps.

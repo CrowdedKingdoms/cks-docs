@@ -1,0 +1,39 @@
+---
+id: create-channel
+title: createChannel
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a channel. Whether the caller may create one is governed by the per-app channel policy (app&#x005F;group&#x005F;policies: admin | member | anyone). The caller becomes the owner with a system 'leader' role. When membersCanSend is true (default) a default 'member' role granting send&#x005F;messages is created and auto-assigned to joiners (open chat channel); when false only roles you grant may post (announce/read-only channel).
+
+
+```graphql
+createChannel(
+  input: CreateChannelInput!
+): Group!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createChannel.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateChannelInput!</b></code>](/reference/graphql/types/inputs/create-channel-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, the channel name, optional description / membership policy, and the membersCanSend flag.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Group</b></code>](/reference/graphql/types/objects/group.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A generic group. `groupType` discriminates teams ('team'), channels ('channel'), and grid-access groups ('grid').

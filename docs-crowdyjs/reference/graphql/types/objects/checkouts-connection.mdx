@@ -1,0 +1,48 @@
+---
+id: checkouts-connection
+title: CheckoutsConnection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A Relay cursor connection over Checkout records. Page with first/after; pass pageInfo.endCursor back as after for the next page.
+
+
+```graphql
+type CheckoutsConnection {
+  edges: [CheckoutEdge!]!
+  pageInfo: ConnectionPageInfo!
+  totalCount: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutsConnection.<b>edges</b></code>](#edges)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CheckoutEdge!]!</b></code>](/reference/graphql/types/objects/checkout-edge.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#edges\} 
+Edges on this page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutsConnection.<b>pageInfo</b></code>](#page-info)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ConnectionPageInfo!</b></code>](/reference/graphql/types/objects/connection-page-info.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#page-info\} 
+Pagination metadata.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutsConnection.<b>totalCount</b></code>](#total-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#total-count\} 
+Total matching records across all pages, when known (null for sources that do not compute a total).
+
+
+
+
+### Returned By
+
+[`checkoutsConnection`](/reference/graphql/operations/queries/checkouts-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`myCheckoutsConnection`](/reference/graphql/operations/queries/my-checkouts-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

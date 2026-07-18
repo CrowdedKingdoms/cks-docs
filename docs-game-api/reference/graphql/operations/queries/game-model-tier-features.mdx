@@ -1,0 +1,44 @@
+---
+id: game-model-tier-features
+title: gameModelTierFeatures
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List tier -&#x003E; feature grants for an app, optionally filtered to one tier. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelTierFeatures(
+  appId: BigInt!
+  tierId: BigInt
+): [GmTierFeature!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelTierFeatures.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose tier grants to list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelTierFeatures.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\} 
+Optional: only grants for this access tier. Omit for all tiers.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmTierFeature</b></code>](/reference/graphql/types/objects/gm-tier-feature.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A grant of a feature key to an access tier.

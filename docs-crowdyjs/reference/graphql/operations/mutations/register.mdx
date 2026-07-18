@@ -1,0 +1,39 @@
+---
+id: register
+title: register
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Registers a new email + password account: creates the (initially unconfirmed) account, emails a confirmation link, and returns an AuthResponse with a session `token` for immediate use (send as `Authorization: Bearer <token>`). If an account already exists for the email (e.g. created via magic link/social), the password is attached pending email confirmation and no session is returned (throws CONFLICT). Public.
+
+
+```graphql
+register(
+  registerUserInput: RegisterUserInput!
+): AuthResponse!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>register.<b>registerUserInput</b></code>](#register-user-input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RegisterUserInput!</b></code>](/reference/graphql/types/inputs/register-user-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#register-user-input\} 
+Wraps the new-account credentials (email, password, optional gamertag). (Argument name is non-standard but required.)
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AuthResponse</b></code>](/reference/graphql/types/objects/auth-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Result of a successful login or registration: a session token plus the authenticated user.

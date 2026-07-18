@@ -1,0 +1,88 @@
+---
+id: create-checkout-input
+title: CreateCheckoutInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input CreateCheckoutInput {
+  provider: PaymentProvider!
+  purpose: CheckoutPurpose!
+  orgId: BigInt
+  appId: BigInt
+  tierId: BigInt
+  planId: BigInt
+  amountCents: BigInt
+  currency: String
+  successUrl: String
+  cancelUrl: String
+  idempotencyKey: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCheckoutInput.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaymentProvider!</b></code>](/reference/graphql/types/enums/payment-provider.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#provider\} 
+Payment processor to use for this checkout (STRIPE or PAYPAL).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCheckoutInput.<b>purpose</b></code>](#purpose)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CheckoutPurpose!</b></code>](/reference/graphql/types/enums/checkout-purpose.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#purpose\} 
+What the checkout is for; determines which other fields are required and the side effect applied on completion. DONATION and PROPERTY&#x005F;TOKENS are rejected.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCheckoutInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Target organization (BigInt as a decimal string). Required for ORG&#x005F;WALLET&#x005F;TOPUP; ignored for other purposes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCheckoutInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Target app (BigInt as a decimal string). Required for APP&#x005F;ACCESS&#x005F;PURCHASE and SHARED&#x005F;APP&#x005F;SUBSCRIPTION.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCheckoutInput.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\} 
+Access tier to purchase (BigInt as a decimal string). Required for APP&#x005F;ACCESS&#x005F;PURCHASE.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCheckoutInput.<b>planId</b></code>](#plan-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#plan-id\} 
+Shared-environment plan id (a shared&#x005F;env&#x005F;plans.plan&#x005F;id, BigInt as a decimal string). Required for SHARED&#x005F;APP&#x005F;SUBSCRIPTION.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCheckoutInput.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#amount-cents\} 
+Charge amount in minor currency units (cents) of `currency`, as a BigInt decimal string. Required for ORG&#x005F;WALLET&#x005F;TOPUP.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCheckoutInput.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+ISO-4217 currency code, lowercase (e.g. "usd"). Defaults to "usd".
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCheckoutInput.<b>successUrl</b></code>](#success-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#success-url\} 
+Absolute URL the provider redirects to after a successful payment. Optional; a server default is used if omitted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCheckoutInput.<b>cancelUrl</b></code>](#cancel-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cancel-url\} 
+Absolute URL the provider redirects to if the user cancels. Optional; a server default is used if omitted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateCheckoutInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key. Recommended for retries: replaying with the same key and identical input returns the first checkout instead of opening a second provider session; the same key with different input returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
+
+
+
+
+### Member Of
+
+[`createCheckout`](/reference/graphql/operations/mutations/create-checkout.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

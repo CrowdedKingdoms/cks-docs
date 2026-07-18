@@ -1,0 +1,48 @@
+---
+id: social-login-complete-input
+title: SocialLoginCompleteInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Complete a federated sign-in from the provider callback.
+
+
+```graphql
+input SocialLoginCompleteInput {
+  provider: String!
+  code: String!
+  state: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SocialLoginCompleteInput.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SocialLoginCompleteInput.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code\} 
+The authorization code returned by the provider.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SocialLoginCompleteInput.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 
+The opaque state value from socialLoginStart (CSRF binding).
+
+
+
+
+### Member Of
+
+[`socialLoginComplete`](/reference/graphql/operations/mutations/social-login-complete.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

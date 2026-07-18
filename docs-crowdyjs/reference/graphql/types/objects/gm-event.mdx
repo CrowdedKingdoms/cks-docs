@@ -1,0 +1,102 @@
+---
+id: gm-event
+title: GmEvent
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An audit-log entry recording one function invocation and its outcome.
+
+
+```graphql
+type GmEvent {
+  eventId: String!
+  sessionId: String
+  functionName: String!
+  selfContainerId: String
+  callerUserId: BigInt
+  callerKind: String!
+  automationId: String
+  paramsJson: String!
+  mutationsAppliedJson: String!
+  returnValueJson: String
+  success: Boolean!
+  errorMessage: String
+  executedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\} 
+Unique event id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+The session the invocation ran in, if any.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+The function that was invoked.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>selfContainerId</b></code>](#self-container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#self-container-id\} 
+The self container id the function ran against.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>callerUserId</b></code>](#caller-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#caller-user-id\} 
+The user who invoked the function.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>callerKind</b></code>](#caller-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#caller-kind\} 
+Who invoked: player | automation | system. Distinguishes NPC/autonomous-process actions from player actions.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>automationId</b></code>](#automation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#automation-id\} 
+The automation (autonomous process) that drove this invocation, if any.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>paramsJson</b></code>](#params-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#params-json\} 
+JSON object of params.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>mutationsAppliedJson</b></code>](#mutations-applied-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#mutations-applied-json\} 
+JSON array of applied mutations.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>returnValueJson</b></code>](#return-value-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#return-value-json\} 
+JSON-encoded return value.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#success\} 
+True if the invocation succeeded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>errorMessage</b></code>](#error-message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-message\} 
+Error message when the invocation failed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>executedAt</b></code>](#executed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#executed-at\} 
+When the invocation executed.
+
+
+
+
+### Returned By
+
+[`gameModelEvents`](/reference/graphql/operations/queries/game-model-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`GmEventEdge`](/reference/graphql/types/objects/gm-event-edge.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

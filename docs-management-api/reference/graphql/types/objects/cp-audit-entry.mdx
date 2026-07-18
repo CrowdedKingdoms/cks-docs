@@ -1,0 +1,78 @@
+---
+id: cp-audit-entry
+title: CpAuditEntry
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type CpAuditEntry {
+  id: ID!
+  actorUserId: String
+  actorKind: String!
+  action: String!
+  entityKind: String
+  entityId: String
+  environmentId: String
+  payloadJson: String
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CpAuditEntry.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpAuditEntry.<b>actorUserId</b></code>](#actor-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#actor-user-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpAuditEntry.<b>actorKind</b></code>](#actor-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#actor-kind\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpAuditEntry.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpAuditEntry.<b>entityKind</b></code>](#entity-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#entity-kind\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpAuditEntry.<b>entityId</b></code>](#entity-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#entity-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpAuditEntry.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#environment-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpAuditEntry.<b>payloadJson</b></code>](#payload-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#payload-json\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpAuditEntry.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+
+
+
+
+
+### Returned By
+
+[`cpAudit`](/reference/graphql/operations/queries/cp-audit.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

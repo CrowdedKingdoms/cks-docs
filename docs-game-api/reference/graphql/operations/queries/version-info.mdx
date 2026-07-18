@@ -1,0 +1,29 @@
+---
+id: version-info
+title: versionInfo
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Current server version and the minimum client version the server accepts. No authentication required. Compare your client build against minimumClientVersion before connecting and prompt an update if it is too old.
+
+
+```graphql
+versionInfo: ServerVersionInfo!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ServerVersionInfo</b></code>](/reference/graphql/types/objects/server-version-info.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Server version plus the minimum client version the server will accept. A client whose build is older than minimumClientVersion should prompt the user to update before connecting.

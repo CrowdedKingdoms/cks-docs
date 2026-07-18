@@ -1,0 +1,48 @@
+---
+id: set-member-roles-input
+title: SetMemberRolesInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Replace a member's roles in a group (the listed roles become their full set).
+
+
+```graphql
+input SetMemberRolesInput {
+  groupId: BigInt!
+  userId: BigInt!
+  roleIds: [BigInt!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetMemberRolesInput.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The group (team/channel) id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetMemberRolesInput.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The member (user) whose roles to set.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetMemberRolesInput.<b>roleIds</b></code>](#role-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#role-ids\} 
+The complete set of group role ids the member should have. Roles not listed are removed; unknown ids or ids from other groups are ignored.
+
+
+
+
+### Member Of
+
+[`setChannelMemberRoles`](/reference/graphql/operations/mutations/set-channel-member-roles.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setTeamMemberRoles`](/reference/graphql/operations/mutations/set-team-member-roles.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

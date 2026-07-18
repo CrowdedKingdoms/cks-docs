@@ -1,0 +1,81 @@
+---
+id: game-model-events
+title: gameModelEvents
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Query the function-invocation event log (audit trail) with optional filters and pagination. Useful for debugging functions or showing recent activity. Requires a valid token.
+
+
+```graphql
+gameModelEvents(
+  appId: BigInt!
+  sessionId: String
+  selfContainerId: String
+  functionName: String
+  success: Boolean
+  limit: Int
+  offset: Int
+): [GmEvent!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEvents.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose events to query.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEvents.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+Optional: only events in this session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEvents.<b>selfContainerId</b></code>](#self-container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#self-container-id\} 
+Optional: only events whose self container was this UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEvents.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+Optional: only events for this function name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEvents.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#success\} 
+Optional: filter by outcome (true = succeeded, false = failed).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEvents.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+:::warning[DEPRECATED]
+
+Use gameModelEventsConnection(first:, after:) instead. See /overview/pagination.
+
+:::
+
+Max number of events to return (page size).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEvents.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+:::warning[DEPRECATED]
+
+Use gameModelEventsConnection(first:, after:) instead. See /overview/pagination.
+
+:::
+
+Number of events to skip (for pagination).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmEvent</b></code>](/reference/graphql/types/objects/gm-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An audit-log entry recording one function invocation and its outcome.

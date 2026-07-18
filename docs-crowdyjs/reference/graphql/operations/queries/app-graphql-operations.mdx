@@ -1,0 +1,54 @@
+---
+id: app-graphql-operations
+title: appGraphqlOperations
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Top GraphQL operations for an app ranked by bytes over the time range. Read-only reporting; the app must be linked to an environment in the org. Requires the 'view&#x005F;usage' org permission.
+
+
+```graphql
+appGraphqlOperations(
+  orgId: BigInt!
+  appId: BigInt!
+  since: DateTime!
+  limit: Int = 20
+): [GraphqlOperationUsageRow!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appGraphqlOperations.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt) that owns the app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>appGraphqlOperations.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App id (BigInt) to report operations for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>appGraphqlOperations.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#since\} 
+Start of the time range (ISO-8601 DateTime or relative duration such as 1d, 7d, 1h) up to now.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>appGraphqlOperations.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Max number of operations to return (default 20).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GraphqlOperationUsageRow</b></code>](/reference/graphql/types/objects/graphql-operation-usage-row.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Usage totals for a single GraphQL operation over the window.

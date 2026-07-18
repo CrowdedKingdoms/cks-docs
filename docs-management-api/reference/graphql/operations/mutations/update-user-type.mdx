@@ -1,0 +1,43 @@
+---
+id: update-user-type
+title: updateUserType
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Super-admin only. Sets the user's account type (users.user&#x005F;type, e.g. 'direct'). Requires the caller to be a super admin.
+
+
+```graphql
+updateUserType(
+  userId: BigInt!
+  value: String!
+): User!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateUserType.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+Target user id (BigInt as string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updateUserType.<b>value</b></code>](#value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#value\} 
+New user&#x005F;type value (e.g. 'direct').
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>User</b></code>](/reference/graphql/types/objects/user.mdx) <Badge class="badge badge--secondary " text="object"/>

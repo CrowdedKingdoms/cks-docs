@@ -1,0 +1,49 @@
+---
+id: checkouts-connection
+title: checkoutsConnection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Cross-tenant payments audit across all users, orgs, and apps (newest first), with optional filtering. Restricted to super admins; requests from non-super-admins are rejected. For a caller's own history use `myCheckoutsConnection` instead. Relay cursor connection; prefer this over the offset-based checkouts.
+
+
+```graphql
+checkoutsConnection(
+  first: Int
+  after: String
+  filter: CheckoutFilterInput
+): CheckoutsConnection!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>checkoutsConnection.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\} 
+Return the first N edges after `after`. Default 50; clamped to 1..200.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>checkoutsConnection.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\} 
+Opaque cursor: return edges after this one. Pass a previous page's `pageInfo.endCursor`. Omit for the first page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>checkoutsConnection.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CheckoutFilterInput</b></code>](/reference/graphql/types/inputs/checkout-filter-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+Optional filters (provider, purpose, status, userId, orgId, appId), AND-combined. Omit to return all checkouts.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CheckoutsConnection</b></code>](/reference/graphql/types/objects/checkouts-connection.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A Relay cursor connection over Checkout records. Page with first/after; pass pageInfo.endCursor back as after for the next page.

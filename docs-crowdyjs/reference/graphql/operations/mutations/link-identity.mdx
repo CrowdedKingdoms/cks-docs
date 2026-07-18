@@ -1,0 +1,39 @@
+---
+id: link-identity
+title: linkIdentity
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Link an additional federated identity (from a socialLoginStart callback) to the signed-in account. Requires a session token; throws if the identity is already linked to another account.
+
+
+```graphql
+linkIdentity(
+  input: LinkIdentityInput!
+): UserIdentity!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>linkIdentity.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>LinkIdentityInput!</b></code>](/reference/graphql/types/inputs/link-identity-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UserIdentity</b></code>](/reference/graphql/types/objects/user-identity.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A federated / passwordless sign-in identity linked to a user account (a social provider, an emailed magic link, or the dev bypass).

@@ -1,0 +1,43 @@
+---
+id: delete-avatar
+title: deleteAvatar
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+DESTRUCTIVE: permanently deletes the avatar and returns a copy of the now-deleted row. OWNER-EXCLUSIVE: only the owner may delete (throws Unauthorized otherwise). Requires a valid game token.
+
+
+```graphql
+deleteAvatar(
+  id: BigInt!
+  idempotencyKey: String
+): Avatar!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>deleteAvatar.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+Avatar id to delete (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>deleteAvatar.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key. Recommended for retries: replaying with the same key and identical arguments returns the first result instead of re-applying; the same key with different arguments returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Avatar</b></code>](/reference/graphql/types/objects/avatar.mdx) <Badge class="badge badge--secondary " text="object"/>

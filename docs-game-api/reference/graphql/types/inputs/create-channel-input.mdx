@@ -1,0 +1,58 @@
+---
+id: create-channel-input
+title: CreateChannelInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a channel in an app.
+
+
+```graphql
+input CreateChannelInput {
+  appId: BigInt!
+  name: String!
+  description: String
+  membershipPolicy: String
+  membersCanSend: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateChannelInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) the channel belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateChannelInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Display name for the channel (max 128 chars; unique per app+type).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateChannelInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Optional free-text description of the channel.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateChannelInput.<b>membershipPolicy</b></code>](#membership-policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#membership-policy\} 
+open | request | invite | admin. Defaults to the app policy.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateChannelInput.<b>membersCanSend</b></code>](#members-can-send)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#members-can-send\} 
+When true (default), new members are auto-granted send&#x005F;messages so they can post (open chat channel). When false, only roles you grant may post (announce/read-only channel).
+
+
+
+
+### Member Of
+
+[`createChannel`](/reference/graphql/operations/mutations/create-channel.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

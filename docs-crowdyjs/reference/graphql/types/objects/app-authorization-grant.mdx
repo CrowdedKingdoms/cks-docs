@@ -1,0 +1,73 @@
+---
+id: app-authorization-grant
+title: AppAuthorizationGrant
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A user's standing consent for an app to receive app-scoped tokens via the Overworld portal (the “connected apps” list).
+
+
+```graphql
+type AppAuthorizationGrant {
+  grantId: ID!
+  userId: ID!
+  appId: ID!
+  scopes: [String!]!
+  status: String!
+  grantedAt: DateTime!
+  revokedAt: DateTime
+  appName: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAuthorizationGrant.<b>grantId</b></code>](#grant-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grant-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAuthorizationGrant.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAuthorizationGrant.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAuthorizationGrant.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scopes\} 
+The scopes the user approved for this app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAuthorizationGrant.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+'active' | 'revoked'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAuthorizationGrant.<b>grantedAt</b></code>](#granted-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#granted-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAuthorizationGrant.<b>revokedAt</b></code>](#revoked-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#revoked-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAuthorizationGrant.<b>appName</b></code>](#app-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-name\} 
+
+
+
+
+
+### Returned By
+
+[`authorizeApp`](/reference/graphql/operations/mutations/authorize-app.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`myAuthorizedApps`](/reference/graphql/operations/queries/my-authorized-apps.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

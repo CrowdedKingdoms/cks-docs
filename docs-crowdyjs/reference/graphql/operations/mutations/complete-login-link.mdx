@@ -1,0 +1,39 @@
+---
+id: complete-login-link
+title: completeLoginLink
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Complete a magic-link sign-in with the emailed token; returns a session AuthResponse. Public (the token authorizes the call); throws if invalid/expired/used.
+
+
+```graphql
+completeLoginLink(
+  input: CompleteLoginLinkInput!
+): AuthResponse!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>completeLoginLink.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CompleteLoginLinkInput!</b></code>](/reference/graphql/types/inputs/complete-login-link-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AuthResponse</b></code>](/reference/graphql/types/objects/auth-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Result of a successful login or registration: a session token plus the authenticated user.

@@ -1,0 +1,44 @@
+---
+id: game-model-automation-triggers
+title: gameModelAutomationTriggers
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List automation event triggers for an app, optionally filtered to one automation (by name). Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelAutomationTriggers(
+  appId: BigInt!
+  automationName: String
+): [GmAutomationTrigger!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationTriggers.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose triggers to list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationTriggers.<b>automationName</b></code>](#automation-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#automation-name\} 
+Optional: only triggers for this automation. Omit for all.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmAutomationTrigger</b></code>](/reference/graphql/types/objects/gm-automation-trigger.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An event subscription that fires an automation in reaction to model activity (matched in the API server, not the DB).

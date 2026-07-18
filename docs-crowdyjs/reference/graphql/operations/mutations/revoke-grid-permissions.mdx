@@ -1,0 +1,39 @@
+---
+id: revoke-grid-permissions
+title: revokeGridPermissions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Revoke a user's direct grants on a grid (deletes from the `grid_user_direct_grants` input table) and recompute their materialized effective ACL. Omit `permissionKeys` to remove ALL of the user's direct grants on the grid; pass a subset to remove only those keys. Does not affect permissions the user receives via group grants. Requires app-admin ('manage&#x005F;apps'). DESTRUCTIVE for the targeted grants. Returns the user's remaining effective permission keys on the grid.
+
+
+```graphql
+revokeGridPermissions(
+  input: RevokeGridPermissionsInput!
+): GridUserPermissions!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>revokeGridPermissions.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RevokeGridPermissionsInput!</b></code>](/reference/graphql/types/inputs/revoke-grid-permissions-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, grid, and target user; optionally the subset of permission keys to revoke (omit to revoke all of the user's direct grants).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridUserPermissions</b></code>](/reference/graphql/types/objects/grid-user-permissions.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's effective (materialized) runtime permissions on one grid: the flattened union of direct + group grants, with expired grants excluded, that Buddy enforces.

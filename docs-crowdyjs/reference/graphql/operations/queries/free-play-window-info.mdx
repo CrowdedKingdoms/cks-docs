@@ -1,0 +1,29 @@
+---
+id: free-play-window-info
+title: freePlayWindowInfo
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Reports whether a free-play window is active now, a human-readable schedule description, and the ISO-8601 start of the next window. PUBLIC: no authentication required. Takes no arguments; computed from server config and the current clock.
+
+
+```graphql
+freePlayWindowInfo: FreePlayWindowInfo!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>FreePlayWindowInfo</b></code>](/reference/graphql/types/objects/free-play-window-info.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Status of the recurring free-play window during which gameplay is open without entitlement.

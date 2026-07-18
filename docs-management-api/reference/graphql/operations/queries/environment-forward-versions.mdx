@@ -1,0 +1,44 @@
+---
+id: environment-forward-versions
+title: environmentForwardVersions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Release versions a specific environment may upgrade to: available, deployable by its environment class, and not older than the version it currently runs (forward-only — no rollback). Newest first; backs the version picker passed to redeployEnvironment. Requires the 'view&#x005F;environments' org permission.
+
+
+```graphql
+environmentForwardVersions(
+  orgId: BigInt!
+  slug: String!
+): [CksEnvironmentVersion!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>environmentForwardVersions.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt) that owns the environment.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>environmentForwardVersions.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
+Environment slug to list upgrade targets for.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CksEnvironmentVersion</b></code>](/reference/graphql/types/objects/cks-environment-version.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An environment release version in the deployable catalog.

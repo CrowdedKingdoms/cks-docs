@@ -1,0 +1,39 @@
+---
+id: set-channel-member-roles
+title: setChannelMemberRoles
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Replace a member's channel roles with the given set (not additive — roles not listed are removed). Requires the 'manage&#x005F;roles' channel permission (app admins bypass). Re-pushes the member's effective send permission to Buddy so their ability to post updates immediately.
+
+
+```graphql
+setChannelMemberRoles(
+  input: SetMemberRolesInput!
+): GroupMember!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setChannelMemberRoles.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetMemberRolesInput!</b></code>](/reference/graphql/types/inputs/set-member-roles-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The channel, the target user, and the full list of role ids the member should have.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GroupMember</b></code>](/reference/graphql/types/objects/group-member.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's membership in a group, including the roles assigned to them.

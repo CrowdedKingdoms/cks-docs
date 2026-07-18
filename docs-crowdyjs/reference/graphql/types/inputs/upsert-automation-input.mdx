@@ -1,0 +1,148 @@
+---
+id: upsert-automation-input
+title: UpsertAutomationInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create or update an autonomous process (automation / NPC). Upsert key is (app, name).
+
+
+```graphql
+input UpsertAutomationInput {
+  appId: BigInt!
+  name: String!
+  description: String
+  enabled: Boolean
+  functionName: String!
+  targetMode: String
+  selfContainerId: String
+  targetTypeName: String
+  sessionId: String
+  paramsJson: String
+  selectorJson: String
+  runAsUserId: BigInt
+  triggerType: String
+  scheduleKind: String
+  intervalMs: Int
+  cronExpr: String
+  maxTargets: Int
+  maxFnDepth: Int
+  gasLimit: Int
+  runTimeoutMs: Int
+  maxRunsPerMinute: Int
+  failureThreshold: Int
+  cooldownMs: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the automation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Automation name (unique per app). The upsert key.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Optional description.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+Whether it may run. Defaults to true.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+Entry-point function name (must be autonomous&#x005F;invocable).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>targetMode</b></code>](#target-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#target-mode\} 
+Target mode: container | type | global. Defaults to container.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>selfContainerId</b></code>](#self-container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#self-container-id\} 
+For target&#x005F;mode=container: the self container UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>targetTypeName</b></code>](#target-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#target-type-name\} 
+For target&#x005F;mode=type: the container type to fan out over.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+Optional session scope (UUID).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>paramsJson</b></code>](#params-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#params-json\} 
+JSON object of static params.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>selectorJson</b></code>](#selector-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#selector-json\} 
+JSON selector resolving candidate refs/scalars over model data into params (e.g. &#x007B;"pick":"nearest","ofType":"Unit","where":[...],"by":"manhattan","bindAs":&#x007B;...&#x007D;&#x007D;).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>runAsUserId</b></code>](#run-as-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-as-user-id\} 
+Identity to act as (drives owner&#x005F;of&#x005F;self / $caller&#x005F;user&#x005F;id). Null = trusted server caller.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>triggerType</b></code>](#trigger-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-type\} 
+Trigger type: schedule | event | manual. Defaults to schedule.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>scheduleKind</b></code>](#schedule-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#schedule-kind\} 
+For schedule triggers: interval | cron.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>intervalMs</b></code>](#interval-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#interval-ms\} 
+Interval in ms (schedule&#x005F;kind=interval).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>cronExpr</b></code>](#cron-expr)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cron-expr\} 
+Cron expression (schedule&#x005F;kind=cron).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>maxTargets</b></code>](#max-targets)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-targets\} 
+Max fan-out targets per run.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>maxFnDepth</b></code>](#max-fn-depth)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-fn-depth\} 
+Override: max fn: depth per invoke.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>gasLimit</b></code>](#gas-limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#gas-limit\} 
+Override: gas per invoke.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>runTimeoutMs</b></code>](#run-timeout-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-timeout-ms\} 
+Override: wall-clock budget per invoke (ms).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>maxRunsPerMinute</b></code>](#max-runs-per-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-runs-per-minute\} 
+Max runs per minute for this automation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>failureThreshold</b></code>](#failure-threshold)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#failure-threshold\} 
+Consecutive failures that open the circuit.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>cooldownMs</b></code>](#cooldown-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cooldown-ms\} 
+Cooldown (ms) while the circuit is open.
+
+
+
+
+### Member Of
+
+[`gameModelUpsertAutomation`](/reference/graphql/operations/mutations/game-model-upsert-automation.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -1,0 +1,53 @@
+---
+id: nearby-grid-permissions-input
+title: NearbyGridPermissionsInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Scan a region for grids and report a user's effective permissions on each.
+
+
+```graphql
+input NearbyGridPermissionsInput {
+  appId: BigInt!
+  userId: BigInt!
+  lowChunk: ChunkCoordinatesInput!
+  highChunk: ChunkCoordinatesInput!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>NearbyGridPermissionsInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) to scan within.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NearbyGridPermissionsInput.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The user whose effective permissions to report per grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NearbyGridPermissionsInput.<b>lowChunk</b></code>](#low-chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#low-chunk\} 
+Low corner of the region to scan, in chunk coordinates (normalized).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>NearbyGridPermissionsInput.<b>highChunk</b></code>](#high-chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#high-chunk\} 
+High corner of the region to scan, in chunk coordinates (normalized).
+
+
+
+
+### Member Of
+
+[`nearbyGridPermissions`](/reference/graphql/operations/queries/nearby-grid-permissions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

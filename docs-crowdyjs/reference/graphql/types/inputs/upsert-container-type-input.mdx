@@ -1,0 +1,68 @@
+---
+id: upsert-container-type-input
+title: UpsertContainerTypeInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create or update a container type (schema for a kind of entity).
+
+
+```graphql
+input UpsertContainerTypeInput {
+  appId: BigInt!
+  typeName: String!
+  displayName: String!
+  description: String
+  instantiableBy: String
+  defaultPropertyVisibility: String
+  metadataJson: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertContainerTypeInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the type.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertContainerTypeInput.<b>typeName</b></code>](#type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#type-name\} 
+Stable type name (unique per app). Acts as the upsert key.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertContainerTypeInput.<b>displayName</b></code>](#display-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#display-name\} 
+Human-friendly display name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertContainerTypeInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Optional description of the type.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertContainerTypeInput.<b>instantiableBy</b></code>](#instantiable-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#instantiable-by\} 
+admin | member | owner (who may instantiate this type).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertContainerTypeInput.<b>defaultPropertyVisibility</b></code>](#default-property-visibility)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#default-property-visibility\} 
+public | owner | hidden default for this type's properties.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertContainerTypeInput.<b>metadataJson</b></code>](#metadata-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata-json\} 
+JSON object of metadata.
+
+
+
+
+### Member Of
+
+[`gameModelUpsertContainerType`](/reference/graphql/operations/mutations/game-model-upsert-container-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

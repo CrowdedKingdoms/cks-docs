@@ -1,0 +1,43 @@
+---
+id: avatar-app-states
+title: avatarAppStates
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Batch-reads per-app state for many avatars under a single app in one call. PUBLIC READ: any authenticated user may read. Requires a valid game token. Avatars with no row for the app are omitted. `state` blobs are base64-encoded binary.
+
+
+```graphql
+avatarAppStates(
+  appId: BigInt!
+  avatarIds: [BigInt!]!
+): [AppAvatarState!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>avatarAppStates.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App (game) id the states are scoped to (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>avatarAppStates.<b>avatarIds</b></code>](#avatar-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#avatar-ids\} 
+Avatar ids to fetch, each a BigInt as a decimal string.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppAvatarState</b></code>](/reference/graphql/types/objects/app-avatar-state.mdx) <Badge class="badge badge--secondary " text="object"/>

@@ -1,0 +1,39 @@
+---
+id: game-model-invoke
+title: gameModelInvoke
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Invoke a studio-defined function against a 'self' container with JSON params. The server enforces the function's invoke policy (authority rule tree: owner&#x005F;of&#x005F;self / is&#x005F;host / is&#x005F;current&#x005F;turn / is&#x005F;participant / tier&#x005F;feature / group&#x005F;permission / grid&#x005F;permission / condition), evaluates its expressions, atomically applies its declared property mutations, logs an event, and returns the result (return value + mutations applied, or success=false with an error message). This is the primary, safe way for players to mutate game state. Requires a valid token; only player-scope functions are invocable here.
+
+
+```graphql
+gameModelInvoke(
+  input: InvokeFunctionInput!
+): GmInvokeResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelInvoke.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>InvokeFunctionInput!</b></code>](/reference/graphql/types/inputs/invoke-function-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, the function name, the self container id, an optional session, and JSON-encoded params.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmInvokeResult</b></code>](/reference/graphql/types/objects/gm-invoke-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The outcome of a gameModelInvoke call (return value, applied writes, and any error).

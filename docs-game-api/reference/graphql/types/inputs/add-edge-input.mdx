@@ -1,0 +1,63 @@
+---
+id: add-edge-input
+title: AddEdgeInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a directed edge between two containers.
+
+
+```graphql
+input AddEdgeInput {
+  appId: BigInt!
+  fromContainerId: String!
+  toContainerId: String!
+  relationshipType: String!
+  weight: Float
+  metadataJson: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AddEdgeInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the containers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AddEdgeInput.<b>fromContainerId</b></code>](#from-container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#from-container-id\} 
+Source container id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AddEdgeInput.<b>toContainerId</b></code>](#to-container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#to-container-id\} 
+Target container id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AddEdgeInput.<b>relationshipType</b></code>](#relationship-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#relationship-type\} 
+The relationship type label.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AddEdgeInput.<b>weight</b></code>](#weight)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#weight\} 
+Optional edge weight.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AddEdgeInput.<b>metadataJson</b></code>](#metadata-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata-json\} 
+JSON object of edge metadata.
+
+
+
+
+### Member Of
+
+[`gameModelAddEdge`](/reference/graphql/operations/mutations/game-model-add-edge.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

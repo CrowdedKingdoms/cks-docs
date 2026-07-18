@@ -1,0 +1,43 @@
+---
+id: capture-paypal-checkout
+title: capturePaypalCheckout
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Captures an approved PayPal order after the hosted checkout redirects back, completes the checkout (wallet credit / access grant), and returns the updated Checkout. PayPal webhooks remain a backup for idempotent reconciliation if they arrive later. Requires an authenticated user who owns the checkout.
+
+
+```graphql
+capturePaypalCheckout(
+  orderId: String!
+  idempotencyKey: String
+): Checkout!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>capturePaypalCheckout.<b>orderId</b></code>](#order-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#order-id\} 
+PayPal order id returned on the approval redirect (the `token` query parameter). Identifies the approved order to capture.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>capturePaypalCheckout.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key. Recommended for retries: replaying with the same key and identical arguments returns the first result instead of re-applying; the same key with different arguments returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Checkout</b></code>](/reference/graphql/types/objects/checkout.mdx) <Badge class="badge badge--secondary " text="object"/>

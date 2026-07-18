@@ -1,0 +1,29 @@
+---
+id: udp-notifications
+title: udpNotifications
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Realtime downlink from the game server: spatial notifications and responses, GenericErrorResponse (errors from your sends, correlated by sequenceNumber), and RealtimeConnectionEvent (lifecycle/setup failures). Requires a bearer game token AND an appId-scoped connection — the appId is read from the graphql-transport-ws connection (game tokens are app-agnostic and one UDP socket is shared across apps, so an app-agnostic subscription is rejected with a RealtimeConnectionEvent code APP&#x005F;ID&#x005F;REQUIRED, and a missing/invalid token with AUTH&#x005F;REQUIRED). On subscribe, opens a UDP proxy session if none exists (binds to the least-loaded game server); open/transport failures are delivered as RealtimeConnectionEvent (code UDP&#x005F;PROXY&#x005F;CONNECTION&#x005F;FAILED) and then the stream ends. Only this app’s spatial fan-out is delivered; appId-less control frames always pass. Subscribe before/while sending so async results are not missed. Unsubscribing stops delivery only — it does NOT close the UDP session; call disconnectUdpProxy (or rely on the server inactivity timeout) to release it.
+
+
+```graphql
+udpNotifications: UdpNotification
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UdpNotification</b></code>](/reference/graphql/types/unions/udp-notification.mdx) <Badge class="badge badge--secondary " text="union"/> 
+All game-server messages delivered over the UDP proxy as GraphQL payloads. Subscribe to udpNotifications before or with sending mutations so responses and GenericErrorResponse (correlate via sequenceNumber) are not missed.

@@ -1,0 +1,39 @@
+---
+id: update-chunk-lods
+title: updateChunkLods
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Replaces the level-of-detail (LOD) set for a chunk, preserving voxels, per-voxel states, chunk state and owner; returns the updated chunk (or null if it could not be written). WRITES world state. Requires a valid bearer token AND the `manage_apps` permission on the org that owns input.appId (super admins bypass).
+
+
+```graphql
+updateChunkLods(
+  input: UpdateChunkLodsInput!
+): Chunk
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateChunkLods.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateChunkLodsInput!</b></code>](/reference/graphql/types/inputs/update-chunk-lods-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Chunk</b></code>](/reference/graphql/types/objects/chunk.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A persisted 16x16x16-voxel chunk (4096 voxels) of an app's voxel world. Holds the packed voxel-type grid (`voxels`), sparse per-voxel state overrides (`voxelStates`), an optional opaque chunk-level state blob (`chunkState`), and level-of-detail meshes (`lods`). Returned by getChunk/getChunksByDistance and written by updateChunk/updateChunkState/updateChunkLods.

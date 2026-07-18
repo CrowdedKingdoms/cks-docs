@@ -1,0 +1,49 @@
+---
+id: users-paginated
+title: usersPaginated
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+SUPER-ADMIN ONLY paginated user search; replaces the legacy `users`/`usersByGamertag`/`usersByEmail` queries. `query` is ILIKE-prefix matched against email, gamertag, and disambiguation, plus an exact user&#x005F;id match. Requires a super-admin bearer game token. NOTE: in cks-game-api super-admin checks always fail and the users table is management-owned, so this is effectively served only by cks-management-api.
+
+
+```graphql
+usersPaginated(
+  query: String
+  limit: Int = 50
+  offset: Int = 0
+): UsersPage!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>usersPaginated.<b>query</b></code>](#query)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#query\} 
+Optional search term, ILIKE-prefix matched against email, gamertag, and disambiguation, plus an exact user&#x005F;id match. Omit to list all users.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>usersPaginated.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Max rows to return. Defaults to 50; clamped to 1–200.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>usersPaginated.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+Number of rows to skip for pagination. Defaults to 0.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UsersPage</b></code>](/reference/graphql/types/objects/users-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One page of users from usersPaginated, plus pagination metadata.

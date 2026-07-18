@@ -1,0 +1,44 @@
+---
+id: payment-events-connection
+title: paymentEventsConnection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Audit log of inbound payment-provider webhook events (used for idempotent reconciliation of checkouts), newest first. Restricted to super admins; requests from non-super-admins are rejected. Relay cursor connection; prefer this over the offset-based paymentEvents.
+
+
+```graphql
+paymentEventsConnection(
+  first: Int
+  after: String
+): PaymentEventsConnection!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>paymentEventsConnection.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\} 
+Return the first N edges after `after`. Default 50; clamped to 1..200.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>paymentEventsConnection.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\} 
+Opaque cursor: return edges after this one. Pass a previous page's `pageInfo.endCursor`. Omit for the first page.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PaymentEventsConnection</b></code>](/reference/graphql/types/objects/payment-events-connection.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A Relay cursor connection over PaymentEventRecord rows. Page with first/after; pass pageInfo.endCursor back as after for the next page.

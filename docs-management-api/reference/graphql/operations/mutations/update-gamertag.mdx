@@ -1,0 +1,38 @@
+---
+id: update-gamertag
+title: updateGamertag
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Updates the authenticated caller's gamertag and disambiguation, recording the previous values in gamertag history. Requires a valid session token. Fails if the gamertag + disambiguation pair is already taken.
+
+
+```graphql
+updateGamertag(
+  input: UpdateGamertagInput!
+): User!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateGamertag.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateGamertagInput!</b></code>](/reference/graphql/types/inputs/update-gamertag-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>User</b></code>](/reference/graphql/types/objects/user.mdx) <Badge class="badge badge--secondary " text="object"/>

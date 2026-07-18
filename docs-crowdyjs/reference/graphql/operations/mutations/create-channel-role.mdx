@@ -1,0 +1,39 @@
+---
+id: create-channel-role
+title: createChannelRole
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a custom (non-system) channel role granting the given channel permission keys (e.g. send&#x005F;messages for posting rights). Requires the 'manage&#x005F;roles' channel permission (app admins bypass).
+
+
+```graphql
+createChannelRole(
+  input: CreateGroupRoleInput!
+): GroupRole!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createChannelRole.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateGroupRoleInput!</b></code>](/reference/graphql/types/inputs/create-group-role-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The channel, the role name, the channel permission keys to grant, and an optional rank.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GroupRole</b></code>](/reference/graphql/types/objects/group-role.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A role within a group (team/channel). Carries the group-management permission keys it grants (e.g. manage&#x005F;members), NOT world/runtime grid permissions.

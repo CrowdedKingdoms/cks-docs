@@ -1,0 +1,28 @@
+---
+id: float
+title: Float
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE&#x005F;floating&#x005F;point).
+
+
+```graphql
+scalar Float
+```
+
+
+### Member Of
+
+[`AppAccessTier`](/reference/graphql/types/objects/app-access-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AppUsageProjection`](/reference/graphql/types/objects/app-usage-projection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BuddyBillingTier`](/reference/graphql/types/objects/buddy-billing-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`BuddyLiveRates`](/reference/graphql/types/objects/buddy-live-rates.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CksBuddyHealth`](/reference/graphql/types/objects/cks-buddy-health.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CpBuddyLiveRates`](/reference/graphql/types/objects/cp-buddy-live-rates.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CpUsageRatePeaks`](/reference/graphql/types/objects/cp-usage-rate-peaks.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GraphqlBillingTier`](/reference/graphql/types/objects/graphql-billing-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GraphQLServer`](/reference/graphql/types/objects/graph-qlserver.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`OrgUsageProjection`](/reference/graphql/types/objects/org-usage-projection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PlayerPulse`](/reference/graphql/types/objects/player-pulse.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PostgresBillingTier`](/reference/graphql/types/objects/postgres-billing-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`UsageRatePeaks`](/reference/graphql/types/objects/usage-rate-peaks.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

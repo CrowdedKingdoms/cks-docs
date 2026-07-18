@@ -1,0 +1,48 @@
+---
+id: gm-function-mutation
+title: GmFunctionMutation
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One declared write a function performs: set `property` on `target` to `expression`.
+
+
+```graphql
+type GmFunctionMutation {
+  target: String!
+  property: String!
+  expression: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionMutation.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#target\} 
+Container reference target: self | ref("uuid") | ref($param).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionMutation.<b>property</b></code>](#property)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#property\} 
+The property key being written.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionMutation.<b>expression</b></code>](#expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expression\} 
+The expression (source) evaluated to produce the new value.
+
+
+
+
+### Member Of
+
+[`GmFunction`](/reference/graphql/types/objects/gm-function.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,39 @@
+---
+id: app
+title: app
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Fetch a single app by its numeric id. Requires authentication (any signed-in user); does NOT enforce org/app permissions, so it can read apps the caller does not own, of any visibility/status. Returns null if the id does not exist. Prefer appBySlug for slug-based marketplace lookups.
+
+
+```graphql
+app(
+  appId: BigInt!
+): App
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>app.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric id of the app to fetch.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>App</b></code>](/reference/graphql/types/objects/app.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A publishable application (game/experience) owned by an organization. Its discoverability is controlled by visibility and its lifecycle by status.

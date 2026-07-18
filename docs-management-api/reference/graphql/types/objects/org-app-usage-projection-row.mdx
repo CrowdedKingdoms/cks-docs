@@ -1,0 +1,58 @@
+---
+id: org-app-usage-projection-row
+title: OrgAppUsageProjectionRow
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Per-app projection row within an org rollup.
+
+
+```graphql
+type OrgAppUsageProjectionRow {
+  appId: String!
+  appName: String!
+  currentEgressBytes: String!
+  projectedBytes: String
+  onTrackToExceed: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAppUsageProjectionRow.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App id (as a string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAppUsageProjectionRow.<b>appName</b></code>](#app-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-name\} 
+App display name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAppUsageProjectionRow.<b>currentEgressBytes</b></code>](#current-egress-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#current-egress-bytes\} 
+Egress bytes so far this calendar month.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAppUsageProjectionRow.<b>projectedBytes</b></code>](#projected-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#projected-bytes\} 
+Projected end-of-month egress bytes, or null when insufficient data.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAppUsageProjectionRow.<b>onTrackToExceed</b></code>](#on-track-to-exceed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#on-track-to-exceed\} 
+True when this app is on track to exceed its free allowance, or null when insufficient data.
+
+
+
+
+### Member Of
+
+[`OrgUsageProjection`](/reference/graphql/types/objects/org-usage-projection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

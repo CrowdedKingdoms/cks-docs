@@ -1,0 +1,44 @@
+---
+id: delete-quota
+title: deleteQuota
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Permanently deletes a quota enforcement rule by id. Returns true if a rule was removed, or false if no quota with that id exists. Destructive and not reversible: once removed, the metric falls back to the next-most-specific rule or the free-tier default. Requires the 'manage&#x005F;quotas' permission on the same scope (app or org) the quota belongs to, or super admin for global quotas.
+
+
+```graphql
+deleteQuota(
+  quotaId: BigInt!
+  idempotencyKey: String
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>deleteQuota.<b>quotaId</b></code>](#quota-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#quota-id\} 
+Id (BigInt as a decimal string) of the quota rule to delete.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>deleteQuota.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key. Recommended for retries: replaying with the same key and identical arguments returns the first result instead of re-applying; the same key with different arguments returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

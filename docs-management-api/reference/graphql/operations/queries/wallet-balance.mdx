@@ -1,0 +1,38 @@
+---
+id: wallet-balance
+title: walletBalance
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Returns the organization's wallet, creating an empty zero-balance wallet on first access if one does not yet exist (so it never returns null). Use it to read the current balance and currency before charging usage or topping up. Requires the 'view&#x005F;billing' org permission.
+
+
+```graphql
+walletBalance(
+  orgId: BigInt!
+): OrgWallet!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>walletBalance.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt as a decimal string) whose wallet to fetch or create.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgWallet</b></code>](/reference/graphql/types/objects/org-wallet.mdx) <Badge class="badge badge--secondary " text="object"/>

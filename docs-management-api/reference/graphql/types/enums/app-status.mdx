@@ -1,0 +1,48 @@
+---
+id: app-status
+title: AppStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lifecycle state of an app. Independent of AppVisibility; the public marketplace requires status=LIVE.
+
+
+```graphql
+enum AppStatus {
+  DRAFT
+  LIVE
+  ARCHIVED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>AppStatus.<b>DRAFT</b></code>](#draft) \{#draft\} 
+Work-in-progress: invisible to non-members and never listed in the marketplace. Selectable manually via updateApp; new apps default to LIVE.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppStatus.<b>LIVE</b></code>](#live) \{#live\} 
+Published and purchasable/playable; eligible for the public marketplace when visibility=PUBLIC.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppStatus.<b>ARCHIVED</b></code>](#archived) \{#archived\} 
+Soft-deleted via archiveApp: retained but read-only and excluded from the marketplace. Reversible by setting status back to DRAFT or LIVE.
+
+
+
+
+### Member Of
+
+[`App`](/reference/graphql/types/objects/app.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CreateAppInput`](/reference/graphql/types/inputs/create-app-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpdateAppInput`](/reference/graphql/types/inputs/update-app-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

@@ -1,0 +1,39 @@
+---
+id: confirm-email
+title: confirmEmail
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Confirms a user email address using the token from the confirmation email (also enables password sign-in for the account). Returns true on success, false if the token is invalid or expired. Public (the token authorizes the call).
+
+
+```graphql
+confirmEmail(
+  token: String!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>confirmEmail.<b>token</b></code>](#token)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#token\} 
+The confirmation token from the emailed link.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

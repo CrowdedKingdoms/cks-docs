@@ -1,0 +1,39 @@
+---
+id: update-channel
+title: updateChannel
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Update a channel's name, description, and/or membership policy. Requires the 'manage&#x005F;group' channel permission (app admins bypass).
+
+
+```graphql
+updateChannel(
+  input: UpdateChannelInput!
+): Group!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateChannel.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateChannelInput!</b></code>](/reference/graphql/types/inputs/update-channel-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The channel id plus the fields to change (omitted fields are left as-is).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Group</b></code>](/reference/graphql/types/objects/group.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A generic group. `groupType` discriminates teams ('team'), channels ('channel'), and grid-access groups ('grid').

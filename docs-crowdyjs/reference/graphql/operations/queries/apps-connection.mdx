@@ -1,0 +1,49 @@
+---
+id: apps-connection
+title: appsConnection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Public marketplace listing of apps. PUBLIC: no authentication required. Returns ONLY apps with visibility=PUBLIC AND status=LIVE (drafts, unlisted, private, and archived apps are never returned). Results are ordered newest-first. Relay cursor connection; prefer this over the offset-based apps.
+
+
+```graphql
+appsConnection(
+  first: Int
+  after: String
+  filter: AppMarketplaceFilterInput
+): AppsConnection!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appsConnection.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\} 
+Return the first N edges after `after`. Default 50; clamped to 1..200.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>appsConnection.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\} 
+Opaque cursor: return edges after this one. Pass a previous page's `pageInfo.endCursor`. Omit for the first page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>appsConnection.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppMarketplaceFilterInput</b></code>](/reference/graphql/types/inputs/app-marketplace-filter-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+Optional marketplace filters (free-text query over name/description, and/or an org slug). Omit to list all live public apps.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppsConnection</b></code>](/reference/graphql/types/objects/apps-connection.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A Relay cursor connection over App records. Page with first/after; pass pageInfo.endCursor back as after for the next page.

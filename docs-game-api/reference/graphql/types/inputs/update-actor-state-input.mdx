@@ -1,0 +1,43 @@
+---
+id: update-actor-state-input
+title: UpdateActorStateInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input UpdateActorStateInput {
+  privateState: String
+  publicState: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateActorStateInput.<b>privateState</b></code>](#private-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#private-state\} 
+New owner-only private state blob (base64-encoded binary), or omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateActorStateInput.<b>publicState</b></code>](#public-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#public-state\} 
+New public state blob (base64-encoded binary), or omit to leave unchanged.
+
+
+
+
+### Member Of
+
+[`updateActorState`](/reference/graphql/operations/mutations/update-actor-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

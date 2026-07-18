@@ -1,0 +1,39 @@
+---
+id: get-voxel-list
+title: getVoxelList
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Returns all recorded voxel edits (the voxel&#x005F;updates log) for a single chunk, newest first, as a ChunkVoxelResponse. Use getChunk instead when you want the packed voxel grid rather than the individual edit log. Requires a valid bearer token; app-scoped tokens are limited to their own app. Read-only.
+
+
+```graphql
+getVoxelList(
+  input: GetVoxelListInput!
+): ChunkVoxelResponse!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>getVoxelList.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GetVoxelListInput!</b></code>](/reference/graphql/types/inputs/get-voxel-list-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ChunkVoxelResponse</b></code>](/reference/graphql/types/objects/chunk-voxel-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Result of getVoxelList: the queried chunk address together with its recorded voxel edits.

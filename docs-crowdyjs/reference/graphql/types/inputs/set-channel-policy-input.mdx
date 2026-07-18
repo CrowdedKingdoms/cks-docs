@@ -1,0 +1,58 @@
+---
+id: set-channel-policy-input
+title: SetChannelPolicyInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set the per-app channel creation/membership policy (app-admin only).
+
+
+```graphql
+input SetChannelPolicyInput {
+  appId: BigInt!
+  creationPolicy: String
+  defaultMembershipPolicy: String
+  maxMembers: Int
+  maxGroupsPerUser: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetChannelPolicyInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose channel policy to set.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetChannelPolicyInput.<b>creationPolicy</b></code>](#creation-policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#creation-policy\} 
+admin | member | anyone. Who may create channels in this app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetChannelPolicyInput.<b>defaultMembershipPolicy</b></code>](#default-membership-policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#default-membership-policy\} 
+open | request | invite | admin. Default membership policy for new channels.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetChannelPolicyInput.<b>maxMembers</b></code>](#max-members)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-members\} 
+Optional cap on members per channel (null = unlimited).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetChannelPolicyInput.<b>maxGroupsPerUser</b></code>](#max-groups-per-user)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-groups-per-user\} 
+Optional cap on how many channels a single user may belong to (null = unlimited).
+
+
+
+
+### Member Of
+
+[`setChannelPolicy`](/reference/graphql/operations/mutations/set-channel-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

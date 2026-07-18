@@ -1,0 +1,73 @@
+---
+id: app-usage-projection
+title: AppUsageProjection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+End-of-month egress projection for one shared app from linear extrapolation of calendar-month usage so far.
+
+
+```graphql
+type AppUsageProjection {
+  appId: String!
+  currentEgressBytes: String!
+  sufficientData: Boolean!
+  daysElapsed: Float!
+  projectedBytes: String
+  freeAllowanceBytes: String!
+  projectedPctOfFree: Float
+  onTrackToExceed: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App id (as a string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>currentEgressBytes</b></code>](#current-egress-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#current-egress-bytes\} 
+Egress bytes recorded so far this calendar month (from app&#x005F;monthly&#x005F;egress).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>sufficientData</b></code>](#sufficient-data)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sufficient-data\} 
+True when at least 3 days have elapsed in the month (projection is meaningful).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>daysElapsed</b></code>](#days-elapsed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#days-elapsed\} 
+Fractional UTC days elapsed since the calendar month started.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>projectedBytes</b></code>](#projected-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#projected-bytes\} 
+Projected end-of-month egress bytes (linear extrapolation), or null when insufficient data.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>freeAllowanceBytes</b></code>](#free-allowance-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#free-allowance-bytes\} 
+Per-app free monthly egress allowance in bytes (5 decimal GB).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>projectedPctOfFree</b></code>](#projected-pct-of-free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#projected-pct-of-free\} 
+Projected usage as a percentage of the free allowance, or null when insufficient data.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>onTrackToExceed</b></code>](#on-track-to-exceed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#on-track-to-exceed\} 
+True when projected egress exceeds the free allowance, or null when insufficient data.
+
+
+
+
+### Returned By
+
+[`appUsageProjection`](/reference/graphql/operations/queries/app-usage-projection.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

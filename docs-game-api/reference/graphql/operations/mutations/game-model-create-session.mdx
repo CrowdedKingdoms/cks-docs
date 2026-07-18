@@ -1,0 +1,39 @@
+---
+id: game-model-create-session
+title: gameModelCreateSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a runtime session: an isolated instance scope for containers (e.g. a match, room, or save). Subject to the app's session creation policy. The caller becomes the creator and a participant. Requires a valid token.
+
+
+```graphql
+gameModelCreateSession(
+  input: CreateSessionInput!
+): GmSession!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelCreateSession.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateSessionInput!</b></code>](/reference/graphql/types/inputs/create-session-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, an optional name and metadata, and optional initial participant user ids.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmSession</b></code>](/reference/graphql/types/objects/gm-session.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A runtime session: an isolated instance scope (e.g. a match or room) for containers.

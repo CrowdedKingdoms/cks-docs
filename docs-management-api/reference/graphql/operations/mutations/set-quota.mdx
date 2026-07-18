@@ -1,0 +1,38 @@
+---
+id: set-quota
+title: setQuota
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Creates or updates a quota enforcement rule (idempotent upsert keyed by org/app/tier + metric + period) and returns it. Scope is inferred from the input ids: an app-scoped rule requires the 'manage&#x005F;quotas' app permission, an org-scoped rule requires the 'manage&#x005F;quotas' org permission, and a global rule (no org/app/tier) requires super admin. Changes which limit `effectiveQuota` resolves for the metric; does not retroactively alter past usage.
+
+
+```graphql
+setQuota(
+  input: SetQuotaInput!
+): ServiceQuota!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setQuota.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetQuotaInput!</b></code>](/reference/graphql/types/inputs/set-quota-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The quota rule to create or update: scope ids (orgId/appId/tierId), metric, limitValue, and optional period/actionOnExceed.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ServiceQuota</b></code>](/reference/graphql/types/objects/service-quota.mdx) <Badge class="badge badge--secondary " text="object"/>

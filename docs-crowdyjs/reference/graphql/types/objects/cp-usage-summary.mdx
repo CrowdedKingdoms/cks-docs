@@ -1,0 +1,63 @@
+---
+id: cp-usage-summary
+title: CpUsageSummary
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type CpUsageSummary {
+  environmentSlug: String!
+  orgId: String
+  replication: [CpUsageMinuteRow!]!
+  graphql: [CpUsageMinuteRow!]!
+  replicationRates: CpUsageRatePeaks!
+  buddyLive: CpBuddyLiveRates
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CpUsageSummary.<b>environmentSlug</b></code>](#environment-slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#environment-slug\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpUsageSummary.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpUsageSummary.<b>replication</b></code>](#replication)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CpUsageMinuteRow!]!</b></code>](/reference/graphql/types/objects/cp-usage-minute-row.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#replication\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpUsageSummary.<b>graphql</b></code>](#graphql)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CpUsageMinuteRow!]!</b></code>](/reference/graphql/types/objects/cp-usage-minute-row.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#graphql\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpUsageSummary.<b>replicationRates</b></code>](#replication-rates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CpUsageRatePeaks!</b></code>](/reference/graphql/types/objects/cp-usage-rate-peaks.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#replication-rates\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpUsageSummary.<b>buddyLive</b></code>](#buddy-live)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CpBuddyLiveRates</b></code>](/reference/graphql/types/objects/cp-buddy-live-rates.mdx) <Badge class="badge badge--secondary " text="object"/> \{#buddy-live\} 
+
+
+
+
+
+### Returned By
+
+[`cpUsageSummary`](/reference/graphql/operations/queries/cp-usage-summary.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

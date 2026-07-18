@@ -1,0 +1,43 @@
+---
+id: app-marketplace-filter-input
+title: AppMarketplaceFilterInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Optional filters for the public marketplace apps listing.
+
+
+```graphql
+input AppMarketplaceFilterInput {
+  query: String
+  orgSlug: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppMarketplaceFilterInput.<b>query</b></code>](#query)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#query\} 
+Free-text search applied to app name and description (case-insensitive substring match). Omit for no text filter.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppMarketplaceFilterInput.<b>orgSlug</b></code>](#org-slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-slug\} 
+Restrict results to a single organization by its slug (storefront view). Omit to search across all orgs.
+
+
+
+
+### Member Of
+
+[`apps`](/reference/graphql/operations/queries/apps.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`appsConnection`](/reference/graphql/operations/queries/apps-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

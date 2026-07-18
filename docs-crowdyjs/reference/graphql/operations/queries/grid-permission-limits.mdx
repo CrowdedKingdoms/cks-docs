@@ -1,0 +1,44 @@
+---
+id: grid-permission-limits
+title: gridPermissionLimits
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Read the permission-key whitelist configured for a grid. An empty list means there is no limit (every active runtime permission may be granted on the grid). Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gridPermissionLimits(
+  appId: BigInt!
+  gridId: BigInt!
+): GridPermissionLimits!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gridPermissionLimits.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gridPermissionLimits.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid whose limit whitelist to read.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridPermissionLimits</b></code>](/reference/graphql/types/objects/grid-permission-limits.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The permission-key whitelist configured for a grid (the grid&#x005F;permission&#x005F;limits input table).

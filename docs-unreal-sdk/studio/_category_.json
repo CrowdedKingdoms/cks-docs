@@ -1,0 +1,9 @@
+{
+  "label": "Crowdy Studio (Management)",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "title": "Crowdy Studio",
+    "description": "Connect your app to your project and author teams, channels, grids, and more from inside the editor. Start here before you write any game code."
+  }
+}

@@ -1,0 +1,62 @@
+---
+id: gm-edge
+title: GmEdge
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A directed relationship edge between two containers.
+
+
+```graphql
+type GmEdge {
+  edgeId: String!
+  fromContainerId: String!
+  toContainerId: String!
+  relationshipType: String!
+  weight: Float
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEdge.<b>edgeId</b></code>](#edge-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#edge-id\} 
+Unique edge id (UUID).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEdge.<b>fromContainerId</b></code>](#from-container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#from-container-id\} 
+Source container id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEdge.<b>toContainerId</b></code>](#to-container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#to-container-id\} 
+Target container id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEdge.<b>relationshipType</b></code>](#relationship-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#relationship-type\} 
+The relationship type label.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEdge.<b>weight</b></code>](#weight)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#weight\} 
+Optional edge weight.
+
+
+
+
+### Returned By
+
+[`gameModelAddEdge`](/reference/graphql/operations/mutations/game-model-add-edge.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`GmTraverseResult`](/reference/graphql/types/objects/gm-traverse-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

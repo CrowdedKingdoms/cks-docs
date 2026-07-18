@@ -1,0 +1,48 @@
+---
+id: gm-top-function
+title: GmTopFunction
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A function and its recent invocation counts (diagnostics).
+
+
+```graphql
+type GmTopFunction {
+  functionName: String!
+  invocations: Int!
+  failures: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTopFunction.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+The function name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTopFunction.<b>invocations</b></code>](#invocations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#invocations\} 
+Invocations in the window.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTopFunction.<b>failures</b></code>](#failures)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#failures\} 
+Failed invocations in the window.
+
+
+
+
+### Member Of
+
+[`GmAppDiagnostics`](/reference/graphql/types/objects/gm-app-diagnostics.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,39 @@
+---
+id: rollback-voxel-updates
+title: rollbackVoxelUpdates
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Reverts every voxel edit made by `userId` in `appId` between `from` and `to`, returning one RollbackVoxelEventResult per affected voxel (`applied` tells you whether each was actually changed). DEFAULTS to dryRun=true, which only PREVIEWS the planned reversions without writing; pass dryRun=false to actually apply them (DESTRUCTIVE — mutates world state). Requires a valid bearer token AND the `manage_apps` permission on the org that owns `appId` (super admins bypass).
+
+
+```graphql
+rollbackVoxelUpdates(
+  input: RollbackVoxelUpdatesInput!
+): [RollbackVoxelEventResult!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>rollbackVoxelUpdates.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RollbackVoxelUpdatesInput!</b></code>](/reference/graphql/types/inputs/rollback-voxel-updates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>RollbackVoxelEventResult</b></code>](/reference/graphql/types/objects/rollback-voxel-event-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Per-voxel outcome of a rollbackVoxelUpdates call. In dry-run mode this describes what WOULD happen; otherwise it reports what was applied. One result is returned per affected voxel.

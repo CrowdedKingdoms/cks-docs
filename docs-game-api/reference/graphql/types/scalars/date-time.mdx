@@ -1,0 +1,28 @@
+---
+id: date-time
+title: DateTime
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+
+
+```graphql
+scalar DateTime
+```
+
+
+### Member Of
+
+[`Actor`](/reference/graphql/types/objects/actor.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AppAvatarState`](/reference/graphql/types/objects/app-avatar-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AssignGroupToGridInput`](/reference/graphql/types/inputs/assign-group-to-grid-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`Avatar`](/reference/graphql/types/objects/avatar.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AvatarDTO`](/reference/graphql/types/objects/avatar-dto.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Chunk`](/reference/graphql/types/objects/chunk.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ChunkLodsResponse`](/reference/graphql/types/objects/chunk-lods-response.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GameHost`](/reference/graphql/types/objects/game-host.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GmAutomation`](/reference/graphql/types/objects/gm-automation.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GmAutomationRun`](/reference/graphql/types/objects/gm-automation-run.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GmEvent`](/reference/graphql/types/objects/gm-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GrantGridPermissionsInput`](/reference/graphql/types/inputs/grant-grid-permissions-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`GraphQLServer`](/reference/graphql/types/objects/graph-qlserver.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Grid`](/reference/graphql/types/objects/grid.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GridGroupGrant`](/reference/graphql/types/objects/grid-group-grant.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Group`](/reference/graphql/types/objects/group.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GroupMember`](/reference/graphql/types/objects/group-member.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GroupMembership`](/reference/graphql/types/objects/group-membership.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GroupRole`](/reference/graphql/types/objects/group-role.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ListVoxelsInput`](/reference/graphql/types/inputs/list-voxels-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ListVoxelUpdatesByDistanceInput`](/reference/graphql/types/inputs/list-voxel-updates-by-distance-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`RollbackVoxelUpdatesInput`](/reference/graphql/types/inputs/rollback-voxel-updates-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`ServerStatus`](/reference/graphql/types/objects/server-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`UdpProxyConnectionStatus`](/reference/graphql/types/objects/udp-proxy-connection-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`User`](/reference/graphql/types/objects/user.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`UserAppState`](/reference/graphql/types/objects/user-app-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`Voxel`](/reference/graphql/types/objects/voxel.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`voxelUpdateHistory`](/reference/graphql/operations/queries/voxel-update-history.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`voxelUpdateHistoryConnection`](/reference/graphql/operations/queries/voxel-update-history-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`VoxelUpdateHistoryEvent`](/reference/graphql/types/objects/voxel-update-history-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

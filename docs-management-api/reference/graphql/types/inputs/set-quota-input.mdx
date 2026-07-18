@@ -1,0 +1,73 @@
+---
+id: set-quota-input
+title: SetQuotaInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input SetQuotaInput {
+  orgId: BigInt
+  appId: BigInt
+  tierId: BigInt
+  metric: String!
+  limitValue: BigInt!
+  period: String
+  actionOnExceed: String
+  idempotencyKey: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetQuotaInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Scope the rule to this organization (BigInt as a decimal string). Provide one of orgId/appId/tierId to choose the scope; omit all three for a global (super-admin) rule.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetQuotaInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Scope the rule to this app (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetQuotaInput.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\} 
+Scope the rule to this access tier (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetQuotaInput.<b>metric</b></code>](#metric)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#metric\} 
+The metered resource key to limit (max 64 characters), e.g. "api&#x005F;requests".
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetQuotaInput.<b>limitValue</b></code>](#limit-value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit-value\} 
+Maximum allowed amount of the metric per `period`, as a BigInt decimal string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetQuotaInput.<b>period</b></code>](#period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#period\} 
+Time window the limit applies over. Optional; defaults to "per&#x005F;minute" (typical values: "per&#x005F;minute", "per&#x005F;hour", "per&#x005F;day"). Part of the upsert key, so different periods create separate rules.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetQuotaInput.<b>actionOnExceed</b></code>](#action-on-exceed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#action-on-exceed\} 
+What to do when the limit is exceeded. Optional; defaults to "throttle" (typical values: "throttle" to rate-limit, "block" to reject).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetQuotaInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key. Recommended for retries: replaying with the same key and identical input returns the first result instead of re-applying; the same key with different input returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
+
+
+
+
+### Member Of
+
+[`setQuota`](/reference/graphql/operations/mutations/set-quota.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

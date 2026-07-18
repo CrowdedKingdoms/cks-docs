@@ -1,0 +1,63 @@
+---
+id: avatar
+title: Avatar
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type Avatar {
+  avatarId: ID!
+  userId: BigInt!
+  name: String!
+  publicState: String
+  privateState: String
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Avatar.<b>avatarId</b></code>](#avatar-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#avatar-id\} 
+Avatar id and primary key (auto-increment). Serialized as a GraphQL ID (a numeric string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Avatar.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+Owner user id. BigInt serialized as a decimal string. NOTE: the AvatarDTO returned by `myAvatars` exposes this same value typed as a GraphQL ID instead of BigInt.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Avatar.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Human-readable avatar name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Avatar.<b>publicState</b></code>](#public-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#public-state\} 
+Public state blob, base64-encoded binary; visible to all viewers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Avatar.<b>privateState</b></code>](#private-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#private-state\} 
+Owner-only private state blob, base64-encoded binary. Stripped (returned null) for non-owners (e.g. via `userAvatars`/`avatar` when the caller is not the owner).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Avatar.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+Server timestamp (ISO-8601) when the avatar was created.
+
+
+
+
+### Returned By
+
+[`avatar`](/reference/graphql/operations/queries/avatar.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`createAvatar`](/reference/graphql/operations/mutations/create-avatar.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`deleteAvatar`](/reference/graphql/operations/mutations/delete-avatar.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateAvatar`](/reference/graphql/operations/mutations/update-avatar.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateAvatarState`](/reference/graphql/operations/mutations/update-avatar-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`userAvatars`](/reference/graphql/operations/queries/user-avatars.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

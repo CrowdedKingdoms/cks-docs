@@ -1,0 +1,44 @@
+---
+id: setup-shared-payment-method
+title: setupSharedPaymentMethod
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Begins vaulting a card for off-session auto-billing. Returns a Stripe SetupIntent client secret the browser confirms; no charge is made here. Requires the 'manage&#x005F;billing' org permission.
+
+
+```graphql
+setupSharedPaymentMethod(
+  orgId: BigInt!
+  idempotencyKey: String
+): PaymentMethodSetup!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setupSharedPaymentMethod.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt) to vault a payment method for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setupSharedPaymentMethod.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key. Recommended for retries: replaying with the same key and identical arguments returns the first result instead of re-applying; the same key with different arguments returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PaymentMethodSetup</b></code>](/reference/graphql/types/objects/payment-method-setup.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Stripe SetupIntent handle the browser uses to vault a card for auto-billing.

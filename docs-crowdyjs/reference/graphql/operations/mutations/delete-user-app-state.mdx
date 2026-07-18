@@ -1,0 +1,38 @@
+---
+id: delete-user-app-state
+title: deleteUserAppState
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+DESTRUCTIVE: deletes the authenticated user’s per-app state row for `appId` and returns the deleted row. Requires a valid game token; acts only on the caller’s own state. Throws NotFound when no row exists.
+
+
+```graphql
+deleteUserAppState(
+  appId: BigInt!
+): UserAppState!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>deleteUserAppState.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App (game) id whose state row to delete (BigInt as a decimal string).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UserAppState</b></code>](/reference/graphql/types/objects/user-app-state.mdx) <Badge class="badge badge--secondary " text="object"/>

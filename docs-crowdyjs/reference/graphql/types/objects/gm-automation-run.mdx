@@ -1,0 +1,128 @@
+---
+id: gm-automation-run
+title: GmAutomationRun
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One execution of an automation: its target/fan-out + invocation counts, timing, outcome, circuit action, and billed compute. The monitoring + billing record.
+
+
+```graphql
+type GmAutomationRun {
+  runId: String!
+  appId: BigInt!
+  automationId: String!
+  automationName: String!
+  triggerSource: String!
+  parentRunId: String
+  cascadeDepth: Int!
+  startedAt: DateTime!
+  finishedAt: DateTime
+  durationUs: Int!
+  targets: Int!
+  invocations: Int!
+  mutations: Int!
+  fnCalls: Int!
+  gasUsed: Int!
+  success: Boolean!
+  errorMessage: String
+  circuitAction: String
+  computeUnits: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\} 
+Unique run id (UUID).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>automationId</b></code>](#automation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-id\} 
+The automation that ran.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>automationName</b></code>](#automation-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-name\} 
+The automation name at run time.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>triggerSource</b></code>](#trigger-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-source\} 
+What triggered the run: schedule | event | manual | cascade.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>parentRunId</b></code>](#parent-run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#parent-run-id\} 
+Parent run id when triggered as a cascade.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>cascadeDepth</b></code>](#cascade-depth)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#cascade-depth\} 
+Cascade depth (0 = top-level).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>startedAt</b></code>](#started-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#started-at\} 
+When the run started.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>finishedAt</b></code>](#finished-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#finished-at\} 
+When the run finished.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>durationUs</b></code>](#duration-us)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#duration-us\} 
+Wall-clock duration in microseconds.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>targets</b></code>](#targets)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#targets\} 
+Number of target containers acted on (fan-out).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>invocations</b></code>](#invocations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#invocations\} 
+Number of function invocations performed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>mutations</b></code>](#mutations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#mutations\} 
+Number of property mutations applied across invocations.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>fnCalls</b></code>](#fn-calls)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#fn-calls\} 
+Number of fn: user-function calls across invocations.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>gasUsed</b></code>](#gas-used)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#gas-used\} 
+Evaluation gas consumed across invocations.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#success\} 
+Whether the run succeeded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>errorMessage</b></code>](#error-message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-message\} 
+Error message when the run failed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>circuitAction</b></code>](#circuit-action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#circuit-action\} 
+Circuit action taken (e.g. opened, half&#x005F;open&#x005F;retry, budget&#x005F;paused, cascade&#x005F;dropped, rate&#x005F;limited).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>computeUnits</b></code>](#compute-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compute-units\} 
+Billed compute units for this run.
+
+
+
+
+### Returned By
+
+[`gameModelAutomationRuns`](/reference/graphql/operations/queries/game-model-automation-runs.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`gameModelRunAutomation`](/reference/graphql/operations/mutations/game-model-run-automation.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

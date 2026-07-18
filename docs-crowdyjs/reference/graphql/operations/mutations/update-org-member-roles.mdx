@@ -1,0 +1,48 @@
+---
+id: update-org-member-roles
+title: updateOrgMemberRoles
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Replaces the full set of roles assigned to an org member. Requires the 'manage&#x005F;members' permission on the org (super admins bypass). Pass the complete desired role list; roles not included are removed.
+
+
+```graphql
+updateOrgMemberRoles(
+  orgId: BigInt!
+  userId: BigInt!
+  roleIds: [BigInt!]!
+): OrgMember!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateOrgMemberRoles.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt as string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updateOrgMemberRoles.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+user&#x005F;id of the member to update (BigInt as string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updateOrgMemberRoles.<b>roleIds</b></code>](#role-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#role-ids\} 
+Complete desired list of org&#x005F;role ids (BigInt strings) to assign; replaces the member's current roles.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgMember</b></code>](/reference/graphql/types/objects/org-member.mdx) <Badge class="badge badge--secondary " text="object"/>

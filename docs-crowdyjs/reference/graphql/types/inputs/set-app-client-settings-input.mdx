@@ -1,0 +1,53 @@
+---
+id: set-app-client-settings-input
+title: SetAppClientSettingsInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Register/update an app's OAuth client settings for the portal handoff (requires manage&#x005F;apps on the app).
+
+
+```graphql
+input SetAppClientSettingsInput {
+  appId: BigInt!
+  redirectUris: [String!]
+  clientType: String
+  launchUrl: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAppClientSettingsInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAppClientSettingsInput.<b>redirectUris</b></code>](#redirect-uris)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#redirect-uris\} 
+Allow-listed redirect URIs for the portal authorization code (origin-matched). Replaces the current list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAppClientSettingsInput.<b>clientType</b></code>](#client-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-type\} 
+OAuth client type: 'public' (browser/PKCE) or 'confidential'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAppClientSettingsInput.<b>launchUrl</b></code>](#launch-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#launch-url\} 
+Browser launch URL players are sent to when entering the app.
+
+
+
+
+### Member Of
+
+[`setAppClientSettings`](/reference/graphql/operations/mutations/set-app-client-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

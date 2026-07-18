@@ -1,0 +1,78 @@
+---
+id: org-auto-billing
+title: OrgAutoBilling
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Org off-session auto-billing configuration.
+
+
+```graphql
+type OrgAutoBilling {
+  orgId: BigInt!
+  enabled: Boolean!
+  limitCents: BigInt
+  period: String!
+  autoBilledThisPeriodCents: BigInt!
+  rechargeAmountCents: BigInt!
+  lowWaterThresholdCents: BigInt!
+  hasPaymentMethod: Boolean!
+  lastError: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAutoBilling.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAutoBilling.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+Whether off-session auto-billing is enabled.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAutoBilling.<b>limitCents</b></code>](#limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit-cents\} 
+Max auto-billed per period in cents. Null = no limit.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAutoBilling.<b>period</b></code>](#period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#period\} 
+Reset window for the per-period auto-billed total, e.g. 'month'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAutoBilling.<b>autoBilledThisPeriodCents</b></code>](#auto-billed-this-period-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#auto-billed-this-period-cents\} 
+Amount already auto-billed in the current period, in cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAutoBilling.<b>rechargeAmountCents</b></code>](#recharge-amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#recharge-amount-cents\} 
+Amount to top up the wallet by on each auto-recharge, in cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAutoBilling.<b>lowWaterThresholdCents</b></code>](#low-water-threshold-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#low-water-threshold-cents\} 
+Wallet balance at or below which an auto-recharge is triggered, in cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAutoBilling.<b>hasPaymentMethod</b></code>](#has-payment-method)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#has-payment-method\} 
+True when a vaulted payment method exists to charge off-session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgAutoBilling.<b>lastError</b></code>](#last-error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-error\} 
+Most recent auto-billing failure message, if any.
+
+
+
+
+### Returned By
+
+[`orgAutoBilling`](/reference/graphql/operations/queries/org-auto-billing.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setAutoBilling`](/reference/graphql/operations/mutations/set-auto-billing.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

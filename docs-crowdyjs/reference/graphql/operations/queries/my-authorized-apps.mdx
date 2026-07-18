@@ -1,0 +1,29 @@
+---
+id: my-authorized-apps
+title: myAuthorizedApps
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The calling user's active app authorizations ("connected apps"). Requires a SESSION token.
+
+
+```graphql
+myAuthorizedApps: [AppAuthorizationGrant!]!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppAuthorizationGrant</b></code>](/reference/graphql/types/objects/app-authorization-grant.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's standing consent for an app to receive app-scoped tokens via the Overworld portal (the “connected apps” list).

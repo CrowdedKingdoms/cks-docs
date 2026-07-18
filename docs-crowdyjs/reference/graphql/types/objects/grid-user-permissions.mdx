@@ -1,0 +1,53 @@
+---
+id: grid-user-permissions
+title: GridUserPermissions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A user's effective (materialized) runtime permissions on one grid: the flattened union of direct + group grants, with expired grants excluded, that Buddy enforces.
+
+
+```graphql
+type GridUserPermissions {
+  appId: BigInt!
+  gridId: BigInt!
+  userId: BigInt!
+  permissionKeys: [String!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GridUserPermissions.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridUserPermissions.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid these permissions apply to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridUserPermissions.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The user these permissions belong to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridUserPermissions.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-keys\} 
+The effective runtime permission key strings the user currently holds on this grid.
+
+
+
+
+### Returned By
+
+[`grantGridPermissions`](/reference/graphql/operations/mutations/grant-grid-permissions.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gridUserPermissions`](/reference/graphql/operations/queries/grid-user-permissions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`revokeGridPermissions`](/reference/graphql/operations/mutations/revoke-grid-permissions.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -1,0 +1,43 @@
+---
+id: apps-page
+title: AppsPage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A paginated page of apps returned by the marketplace listing.
+
+
+```graphql
+type AppsPage {
+  items: [App!]!
+  pageInfo: PageInfo!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppsPage.<b>items</b></code>](#items)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[App!]!</b></code>](/reference/graphql/types/objects/app.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#items\} 
+The apps on this page, ordered newest-first.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppsPage.<b>pageInfo</b></code>](#page-info)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PageInfo!</b></code>](/reference/graphql/types/objects/page-info.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#page-info\} 
+Pagination metadata: totalCount (total matches ignoring limit/offset) plus the applied limit and offset.
+
+
+
+
+### Returned By
+
+[`apps`](/reference/graphql/operations/queries/apps.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

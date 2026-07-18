@@ -1,0 +1,41 @@
+---
+id: requires-permission
+title: requiresPermission
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Machine-readable auth scope required to call this field. Enforcement is via server-side guards, not directive execution; super admins bypass org/app permission checks. The field description carries the same requirement in prose.
+
+
+```graphql
+directive @requiresPermission(
+  scope: String!
+  permission: String!
+  scopeArg: String
+) on FIELD_DEFINITION
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>requiresPermission.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scope\} 
+Permission scope: "org" | "app" | "operator" | "super&#x005F;admin" | "group" | "runtime" | "authenticated".
+
+
+#### [<code style={{ fontWeight: 'normal' }}>requiresPermission.<b>permission</b></code>](#permission)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission\} 
+The required permission key (an org/group/runtime permission key, or a platform flag like is&#x005F;operator / is&#x005F;super&#x005F;admin).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>requiresPermission.<b>scopeArg</b></code>](#scope-arg)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#scope-arg\} 
+GraphQL argument path holding the id the permission is checked against (e.g. "orgId", "input.appId", "groupId").

@@ -1,0 +1,49 @@
+---
+id: grid-user-permissions
+title: gridUserPermissions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Read one user's effective (materialized) runtime permission keys on a grid — the flattened union of direct and group-derived grants that Buddy enforces, with expired grants excluded. Use this to see what a user can actually do. To inspect the underlying inputs instead, use `gridGroupGrants` (group grants) and `gridPermissionLimits` (the whitelist). Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gridUserPermissions(
+  appId: BigInt!
+  gridId: BigInt!
+  userId: BigInt!
+): GridUserPermissions!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gridUserPermissions.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gridUserPermissions.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid to read permissions on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gridUserPermissions.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The user whose effective permissions to read.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridUserPermissions</b></code>](/reference/graphql/types/objects/grid-user-permissions.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's effective (materialized) runtime permissions on one grid: the flattened union of direct + group grants, with expired grants excluded, that Buddy enforces.

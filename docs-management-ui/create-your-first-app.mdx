@@ -1,0 +1,94 @@
+---
+slug: create-your-first-app
+sidebar_position: 2
+title: Create your first app
+---
+
+# Create your first app
+
+The **Get started** wizard is the primary path for studio owners: register your game on the **shared platform** and start connecting clients right away. Nothing is saved until you finish — closing the wizard mid-flow does not leave a half-created app in your org.
+
+Every new app runs on the managed **shared Game API** — you do not choose hosting, provision VMs, or wait for a dedicated stack. See **[Shared environment & billing](/management-api/shared-environment)** for free-tier limits and usage billing.
+
+## Prerequisites
+
+1. Sign in to the Management UI.
+2. Belong to an organization (create one from **My Orgs** if you are new).
+
+**Free tier:** each org can create up to **`platformConfig.freeAppsPerOrg`** apps (default **3**) with no wallet balance required.
+
+For usage above the free allowance, fund the org **wallet** and set up **auto-billing** (saved card) during or after onboarding. Studio billing runs through the **org wallet** only — not legacy account-level donations or property-token checkouts.
+
+## Open Get started
+
+After creating an org, you are redirected to **Get started** automatically. You can also open it from:
+
+- The org **Overview** tab — **Get started** or **Create app** in the setup checklist.
+- The sidebar **Get started** link (when you belong to one org).
+- **Apps** tab — **Create app**.
+- Direct URL: `/orgs/:orgSlug/get-started`.
+
+## Wizard steps
+
+### 1. App details
+
+Enter your game's **display name** and **identifier** (URL slug). Copy on this step explains that you are registering the product — not uploading a build. An optional short description can be added.
+
+### 2. Billing (when required)
+
+If you are within the free app quota, you can create immediately. Otherwise the wizard walks you through **auto-billing** setup (wallet + optional saved card) so metered usage can draw from your org balance.
+
+### 3. Review and create
+
+The review step summarizes your app and any wallet or billing setup. Press **Create app**.
+
+The portal calls `createApp` with `deploymentTarget: "shared"`. **No separate publish step or provisioning wait** — when create succeeds, the app is **immediately usable** on the shared Game API.
+
+### Success
+
+You see an **App created** confirmation. **Open app dashboard** navigates to `/orgs/:orgSlug/apps/:appSlug`.
+
+On the app dashboard (and in API responses):
+
+- `deploymentTarget` = **`shared`**
+- `runtimeStatus` = **`active`**
+- `gameApiUrl` points at the tier's shared endpoint (for dev: `https://game.shared.dev.cks-env.com`)
+
+Use that URL (or values returned from `mintAppToken`) to connect game clients — see **[Connecting to your app](/management-ui/connecting)**.
+
+:::info[Cosmetic UI gaps]
+The app list may still show a DRAFT badge or a "Publish to shared environment" banner while runtime is already active. Safe to ignore for connectivity — rely on `runtimeStatus` and `gameApiUrl` from the API.
+:::
+
+## Wallet and auto-billing
+
+| Situation | What to expect |
+| --------- | ---------------- |
+| **Within free app quota** | Create with no card; small hourly usage allowance per app at no cost. |
+| **Beyond free quota** | Complete auto-billing / subscription setup in the wizard before the app goes live. |
+| **Metered usage above allowance** | Debited from the org wallet; enable auto-billing so apps stay online when balance runs low. |
+
+Fund the wallet from the **Wallet** tab if creation or usage requires it.
+
+## Alternate paths
+
+| Path | When to use |
+| ---- | ----------- |
+| **Apps tab → Create app** (same wizard) | Adding another game product. |
+
+Dedicated and developer-sandbox environments are **not** offered in the customer UI. Contact Crowded Kingdoms if you need an operator-provisioned isolated stack — see **[Dedicated environments (API)](/management-api/dedicated-environments)** for the programmatic model.
+
+## Troubleshooting
+
+| Symptom | What to check |
+| ------- | ------------- |
+| **Create** disabled on review | Free quota exhausted — complete billing setup; or wallet below required reserve. |
+| App shows DRAFT but API says `active` | Known cosmetic gap — use `gameApiUrl` and `mintAppToken` to connect. |
+| `runtimeStatus` not `active` | Check wallet balance, spend caps, or subscription state — see [Shared environment & billing](/management-api/shared-environment). |
+| Game API returns `APP_TOKEN_REQUIRED` | Mint an **app-scoped token** with `mintAppToken` — the identity session token cannot drive gameplay. |
+
+## Next steps
+
+- **[Connecting to your app](/management-ui/connecting)** — endpoints, tokens, and client configuration.
+- **[Dev tier (client integration)](/management-ui/dev-tier)** — public dev hosts and copy/paste config for early testing.
+- **[Account and org basics](/management-ui/readme)** — members, tokens, budgets, and quotas.

@@ -1,0 +1,64 @@
+# Crowded Kingdoms APIs
+
+> Crowded Kingdoms is a platform for massive multiplayer worlds. There are three public APIs: the Management API (identity, organizations, apps marketplace, access tiers, billing, payments, quotas, environments — GraphQL), the Game API (runtime world/replication data and the realtime UDP-proxy subscription stream — GraphQL), and the Replication API / "Buddy" (a binary UDP wire protocol for low-latency spatial replication). Browser clients should use the CrowdyJS TypeScript SDK. All GraphQL calls use an `Authorization: Bearer <token>` header; the token comes from a Management API `login`/`register`. BigInt values are decimal strings; timestamps are ISO-8601 UTC.
+
+## Start here (for AI agents and integrators)
+
+- [For AI agents — quickstart & end-to-end workflows](https://docs.crowdedkingdoms.com/overview/for-ai-agents): get a dev-tier key, the SDL/introspection URLs, and the most common flows (register → token → host discovery → spatial send; and the studio-backend economy flow).
+- [Overview / client workflow](https://docs.crowdedkingdoms.com/overview/client-workflow): the two-endpoint model (Management API + Game API).
+- [Discord community support](https://discord.gg/x7tMKGwHf): ask questions and get help from the Crowded Kingdoms community.
+
+## Schema (downloadable SDL)
+
+- [Management API SDL](https://docs.crowdedkingdoms.com/schema/management-api.graphql)
+- [Game API SDL](https://docs.crowdedkingdoms.com/schema/game-api.graphql)
+- [CrowdyJS SDL](https://docs.crowdedkingdoms.com/schema/crowdyjs.graphql)
+- Introspection is enabled on the dev tier; the GraphQL Playground is served at each API's `/graphql` endpoint.
+
+## Conventions (read before calling)
+
+- [Error codes (GraphQL extensions.code + UDP UdpErrorCode) with remediation](https://docs.crowdedkingdoms.com/overview/error-codes)
+- [Pagination conventions](https://docs.crowdedkingdoms.com/overview/pagination)
+- [Rate limits and query cost](https://docs.crowdedkingdoms.com/overview/rate-limits)
+- [Authentication (Game API: bearer token + ws connection_init)](https://docs.crowdedkingdoms.com/game-api/authentication)
+
+## Management API (GraphQL — identity, apps, billing)
+
+- [Management API intro](https://docs.crowdedkingdoms.com/management-api/intro)
+- [Management API guide](https://docs.crowdedkingdoms.com/management-api/readme)
+- [GraphQL reference (operations & types)](https://docs.crowdedkingdoms.com/management-api/reference/graphql-overview)
+- [Dedicated environments](https://docs.crowdedkingdoms.com/management-api/dedicated-environments) · [Shared environment](https://docs.crowdedkingdoms.com/management-api/shared-environment) · [Game setup](https://docs.crowdedkingdoms.com/management-api/game-setup)
+
+## Game API (GraphQL — world data + realtime UDP proxy)
+
+- [Game API intro](https://docs.crowdedkingdoms.com/game-api/intro)
+- [Authentication](https://docs.crowdedkingdoms.com/game-api/authentication)
+- [GraphQL UDP-proxy API (subscriptions + spatial sends)](https://docs.crowdedkingdoms.com/game-api/graphql-udp-proxy-api)
+- [Host discovery](https://docs.crowdedkingdoms.com/game-api/host-discovery) · [Permissions](https://docs.crowdedkingdoms.com/game-api/permissions) · [Grids & permissions](https://docs.crowdedkingdoms.com/game-api/grids-and-permissions)
+- [Teams](https://docs.crowdedkingdoms.com/game-api/teams) · [Channels](https://docs.crowdedkingdoms.com/game-api/channels) · [Avatar state](https://docs.crowdedkingdoms.com/game-api/avatar-state) · [Actor state](https://docs.crowdedkingdoms.com/game-api/actor-state)
+- [Game models](https://docs.crowdedkingdoms.com/game-api/game-models) · [Autonomous processes (NPCs)](https://docs.crowdedkingdoms.com/game-api/autonomous-processes) · [Model-driven notifications](https://docs.crowdedkingdoms.com/game-api/model-driven-notifications)
+- [Modeling game concepts (inventory, object permissions, NPCs)](https://docs.crowdedkingdoms.com/game-api/modeling-game-concepts)
+- [GraphQL reference (operations & types)](https://docs.crowdedkingdoms.com/game-api/reference/graphql-overview)
+
+## Replication API / Buddy (binary UDP wire protocol)
+
+- [Replication API intro](https://docs.crowdedkingdoms.com/replication-api/intro)
+- [Getting started](https://docs.crowdedkingdoms.com/replication-api/getting-started)
+- [Authenticate and assign a server](https://docs.crowdedkingdoms.com/replication-api/authenticate-and-assign)
+- [Wire formats (opcodes, long-spatial layout, payloads)](https://docs.crowdedkingdoms.com/replication-api/wire-formats)
+- [Send and receive](https://docs.crowdedkingdoms.com/replication-api/send-and-receive)
+- [HMAC](https://docs.crowdedkingdoms.com/replication-api/hmac)
+- [Operations & error codes](https://docs.crowdedkingdoms.com/replication-api/operations)
+- [Troubleshooting](https://docs.crowdedkingdoms.com/replication-api/troubleshooting)
+- [Load testing (open-source cks-loadtest tool + game setup)](https://docs.crowdedkingdoms.com/replication-api/load-testing)
+
+## SDKs
+
+- [CrowdyJS (browser-first TypeScript SDK) overview](https://docs.crowdedkingdoms.com/crowdyjs/readme)
+- CrowdyJS guides: [Channels](https://docs.crowdedkingdoms.com/crowdyjs/channels) · [Teams](https://docs.crowdedkingdoms.com/crowdyjs/teams) · [Grids](https://docs.crowdedkingdoms.com/crowdyjs/grids) · [Game model](https://docs.crowdedkingdoms.com/crowdyjs/game-model) · [Automations (NPCs)](https://docs.crowdedkingdoms.com/crowdyjs/automations) · [Model-driven notifications](https://docs.crowdedkingdoms.com/crowdyjs/model-notifications) · [Game Kit (inventory, object permissions, NPCs)](https://docs.crowdedkingdoms.com/crowdyjs/game-kit)
+- [Build a game (tutorial)](https://docs.crowdedkingdoms.com/build-a-game/intro)
+- [Unreal SDK](https://docs.crowdedkingdoms.com/unreal-sdk/intro)
+
+## Changelog
+
+- [Releases & changelog](https://docs.crowdedkingdoms.com/releases/intro)

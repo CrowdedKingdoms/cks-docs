@@ -1,0 +1,73 @@
+---
+id: update-environment-scaling-input
+title: UpdateEnvironmentScalingInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input UpdateEnvironmentScalingInput {
+  orgId: BigInt!
+  slug: String!
+  gameApiMinServers: Int!
+  gameApiMaxServers: Int!
+  udpBuddyMinServers: Int!
+  udpBuddyMaxServers: Int!
+  loadBalancerCount: Int!
+  caddyFlavor: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentScalingInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt) that owns the environment.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentScalingInput.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
+Slug of the dedicated environment to rescale (rejected for 'dev&#x005F;single').
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentScalingInput.<b>gameApiMinServers</b></code>](#game-api-min-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-min-servers\} 
+Minimum game-api servers (autoscaling floor). Min 1; ≤ gameApiMaxServers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentScalingInput.<b>gameApiMaxServers</b></code>](#game-api-max-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-max-servers\} 
+Maximum game-api servers (autoscaling ceiling). Min 1; ≥ gameApiMinServers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentScalingInput.<b>udpBuddyMinServers</b></code>](#udp-buddy-min-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-min-servers\} 
+Minimum Buddy UDP servers (autoscaling floor). Min 1; ≤ udpBuddyMaxServers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentScalingInput.<b>udpBuddyMaxServers</b></code>](#udp-buddy-max-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-max-servers\} 
+Maximum Buddy UDP servers (autoscaling ceiling). Min 1; ≥ udpBuddyMinServers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentScalingInput.<b>loadBalancerCount</b></code>](#load-balancer-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#load-balancer-count\} 
+Number of Caddy load-balancer VMs in front of the game-api fleet. Min 1.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateEnvironmentScalingInput.<b>caddyFlavor</b></code>](#caddy-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#caddy-flavor\} 
+Caddy LB flavor (in front of the game-api fleet). When omitted the existing value is preserved.
+
+
+
+
+### Member Of
+
+[`updateEnvironmentScaling`](/reference/graphql/operations/mutations/update-environment-scaling.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -1,0 +1,39 @@
+---
+id: my-teams
+title: myTeams
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The caller's teams in an app, with their roles and effective team permissions. Use this to discover which teams the current user belongs to and what they may do in each.
+
+
+```graphql
+myTeams(
+  appId: BigInt!
+): [GroupMembership!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>myTeams.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) to list the caller's teams within.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GroupMembership</b></code>](/reference/graphql/types/objects/group-membership.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The caller's view of a group they belong to: the group, their roles, and their effective group permission keys.

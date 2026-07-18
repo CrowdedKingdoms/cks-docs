@@ -1,0 +1,58 @@
+---
+id: set-team-policy-input
+title: SetTeamPolicyInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set the per-app team creation/membership policy (app-admin only).
+
+
+```graphql
+input SetTeamPolicyInput {
+  appId: BigInt!
+  creationPolicy: String
+  defaultMembershipPolicy: String
+  maxMembers: Int
+  maxGroupsPerUser: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetTeamPolicyInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose team policy to set.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetTeamPolicyInput.<b>creationPolicy</b></code>](#creation-policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#creation-policy\} 
+admin | member | anyone. Who may create teams in this app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetTeamPolicyInput.<b>defaultMembershipPolicy</b></code>](#default-membership-policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#default-membership-policy\} 
+open | request | invite | admin. Default membership policy for new teams.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetTeamPolicyInput.<b>maxMembers</b></code>](#max-members)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-members\} 
+Optional cap on members per team (null = unlimited).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetTeamPolicyInput.<b>maxGroupsPerUser</b></code>](#max-groups-per-user)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-groups-per-user\} 
+Optional cap on how many teams a single user may belong to (null = unlimited).
+
+
+
+
+### Member Of
+
+[`setTeamPolicy`](/reference/graphql/operations/mutations/set-team-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

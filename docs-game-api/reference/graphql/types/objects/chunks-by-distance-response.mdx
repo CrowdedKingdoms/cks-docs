@@ -1,0 +1,48 @@
+---
+id: chunks-by-distance-response
+title: ChunksByDistanceResponse
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Paginated result of getChunksByDistance: the chunks found within the search cube plus an echo of the pagination applied.
+
+
+```graphql
+type ChunksByDistanceResponse {
+  chunks: [Chunk!]!
+  limit: Int
+  skip: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunksByDistanceResponse.<b>chunks</b></code>](#chunks)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Chunk!]!</b></code>](/reference/graphql/types/objects/chunk.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#chunks\} 
+Chunks found within the search cube.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunksByDistanceResponse.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Echo of the `limit` applied to this page, or null if none was supplied.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChunksByDistanceResponse.<b>skip</b></code>](#skip)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#skip\} 
+Echo of the `skip` applied to this page, or null if none was supplied.
+
+
+
+
+### Returned By
+
+[`getChunksByDistance`](/reference/graphql/operations/queries/get-chunks-by-distance.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

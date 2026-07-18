@@ -1,0 +1,39 @@
+---
+id: org-payment-methods
+title: orgPaymentMethods
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lists the org's saved (vaulted) off-session payment methods. Returns metadata only (brand/last4/status), never card numbers. Requires the 'view&#x005F;billing' org permission.
+
+
+```graphql
+orgPaymentMethods(
+  orgId: BigInt!
+): [SavedPaymentMethod!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>orgPaymentMethods.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt) to list payment methods for.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>SavedPaymentMethod</b></code>](/reference/graphql/types/objects/saved-payment-method.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A saved (vaulted) off-session payment method.

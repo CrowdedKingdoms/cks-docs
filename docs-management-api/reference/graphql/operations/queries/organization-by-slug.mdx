@@ -1,0 +1,38 @@
+---
+id: organization-by-slug
+title: organizationBySlug
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Fetches an organization by its unique URL slug. Requires a valid session token. Returns null if not found. Use this when you only have the slug; otherwise prefer organization(id).
+
+
+```graphql
+organizationBySlug(
+  slug: String!
+): Organization
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>organizationBySlug.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
+Unique organization slug (lowercase letters, numbers, and dashes).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Organization</b></code>](/reference/graphql/types/objects/organization.mdx) <Badge class="badge badge--secondary " text="object"/>

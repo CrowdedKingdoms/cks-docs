@@ -1,0 +1,43 @@
+---
+id: set-super-admin
+title: setSuperAdmin
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Super-admin only. Grants or revokes platform super-admin (users.is&#x005F;super&#x005F;admin), which bypasses every org permission check platform-wide. Requires the caller to be a super admin. SIDE EFFECT: changes the target user's platform privileges.
+
+
+```graphql
+setSuperAdmin(
+  userId: BigInt!
+  value: Boolean!
+): User!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setSuperAdmin.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+Target user id (BigInt as string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setSuperAdmin.<b>value</b></code>](#value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#value\} 
+true to grant super admin, false to revoke.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>User</b></code>](/reference/graphql/types/objects/user.mdx) <Badge class="badge badge--secondary " text="object"/>

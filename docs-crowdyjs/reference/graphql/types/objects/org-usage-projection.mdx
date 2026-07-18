@@ -1,0 +1,68 @@
+---
+id: org-usage-projection
+title: OrgUsageProjection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Org-level rollup of per-app monthly egress projections for all shared apps.
+
+
+```graphql
+type OrgUsageProjection {
+  sufficientData: Boolean!
+  daysElapsed: Float!
+  totalProjectedBytes: String
+  totalFreeAllowanceBytes: String!
+  apps: [OrgAppUsageProjectionRow!]!
+  onTrackToExceedAny: Boolean!
+  suggestReservedThroughput: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgUsageProjection.<b>sufficientData</b></code>](#sufficient-data)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sufficient-data\} 
+True when at least 3 days have elapsed in the month (projection is meaningful).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgUsageProjection.<b>daysElapsed</b></code>](#days-elapsed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#days-elapsed\} 
+Fractional UTC days elapsed since the calendar month started.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgUsageProjection.<b>totalProjectedBytes</b></code>](#total-projected-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#total-projected-bytes\} 
+Sum of projected end-of-month egress across shared apps, or null when insufficient data.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgUsageProjection.<b>totalFreeAllowanceBytes</b></code>](#total-free-allowance-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total-free-allowance-bytes\} 
+Total free monthly egress allowance across all shared apps in the org (apps × 5 GB).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgUsageProjection.<b>apps</b></code>](#apps)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[OrgAppUsageProjectionRow!]!</b></code>](/reference/graphql/types/objects/org-app-usage-projection-row.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#apps\} 
+Per-app projection breakdown.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgUsageProjection.<b>onTrackToExceedAny</b></code>](#on-track-to-exceed-any)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#on-track-to-exceed-any\} 
+True when any shared app is on track to exceed its free allowance.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgUsageProjection.<b>suggestReservedThroughput</b></code>](#suggest-reserved-throughput)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#suggest-reserved-throughput\} 
+True when org total projected egress exceeds the combined free tier — suggest reserved throughput.
+
+
+
+
+### Returned By
+
+[`orgUsageProjection`](/reference/graphql/operations/queries/org-usage-projection.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

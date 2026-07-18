@@ -1,0 +1,39 @@
+---
+id: set-grid-permission-limits
+title: setGridPermissionLimits
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Replace the whitelist of permission keys allowed on a grid (writes the `grid_permission_limits` input table), then recompute the grid's materialized effective ACL so any keys no longer on the whitelist are dropped for all users. Pass an empty array to remove all limits. Requires app-admin ('manage&#x005F;apps'). DESTRUCTIVE: narrowing the whitelist can strip effective permissions from existing users on the grid.
+
+
+```graphql
+setGridPermissionLimits(
+  input: SetGridPermissionLimitsInput!
+): GridPermissionLimits!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setGridPermissionLimits.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetGridPermissionLimitsInput!</b></code>](/reference/graphql/types/inputs/set-grid-permission-limits-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, grid, and the new whitelist of allowed permission keys (empty array = no limit).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridPermissionLimits</b></code>](/reference/graphql/types/objects/grid-permission-limits.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The permission-key whitelist configured for a grid (the grid&#x005F;permission&#x005F;limits input table).

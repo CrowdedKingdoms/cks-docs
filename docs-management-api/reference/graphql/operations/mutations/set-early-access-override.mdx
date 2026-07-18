@@ -1,0 +1,43 @@
+---
+id: set-early-access-override
+title: setEarlyAccessOverride
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Super-admin only. Sets the per-user early-access override (users.grant&#x005F;early&#x005F;access&#x005F;override), force-enabling early-access entitlement for the target regardless of the global early-access window. Requires the caller to be a super admin.
+
+
+```graphql
+setEarlyAccessOverride(
+  userId: BigInt!
+  value: Boolean!
+): User!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setEarlyAccessOverride.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+Target user id (BigInt as string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setEarlyAccessOverride.<b>value</b></code>](#value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#value\} 
+true to force early access on, false to clear the override.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>User</b></code>](/reference/graphql/types/objects/user.mdx) <Badge class="badge badge--secondary " text="object"/>

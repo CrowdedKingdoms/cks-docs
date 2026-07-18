@@ -1,0 +1,38 @@
+---
+id: batch-lookup-actors
+title: batchLookupActors
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Bulk-fetches actors by a list of 32-character ASCII uuids in one round-trip. Requires a valid game token. PUBLIC-STATE ONLY: `privateState` is stripped (null) for every result regardless of ownership. Unknown uuids are silently omitted. Use this to resolve many actors at once; use `actor` for a single owner-scoped fetch.
+
+
+```graphql
+batchLookupActors(
+  input: BatchActorLookupInput!
+): [Actor!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>batchLookupActors.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BatchActorLookupInput!</b></code>](/reference/graphql/types/inputs/batch-actor-lookup-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+List of actor uuids to look up (see BatchActorLookupInput).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Actor</b></code>](/reference/graphql/types/objects/actor.mdx) <Badge class="badge badge--secondary " text="object"/>

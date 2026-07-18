@@ -1,0 +1,39 @@
+---
+id: create-app
+title: createApp
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a new app within an organization. Requires the 'manage&#x005F;apps' permission on the target org (input.orgId); super admins bypass. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting full runtime permissions, and notifies the game API. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=PUBLIC and status=DRAFT unless overridden in the input.
+
+
+```graphql
+createApp(
+  input: CreateAppInput!
+): App!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createApp.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateAppInput!</b></code>](/reference/graphql/types/inputs/create-app-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Details for the app to create.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>App</b></code>](/reference/graphql/types/objects/app.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A publishable application (game/experience) owned by an organization. Its discoverability is controlled by visibility and its lifecycle by status.

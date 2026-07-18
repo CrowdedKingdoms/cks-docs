@@ -1,0 +1,38 @@
+---
+id: teleport-request
+title: teleportRequest
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Checks whether the authenticated user is allowed to teleport an actor to a destination within an app and returns the authorization result. This is an authorization check only — it does NOT itself move the actor; the UDP runtime performs the actual movement. Requires a valid bearer game token plus the app-level "teleport" runtime permission. Returns success=false with errorCode INVALID&#x005F;APP&#x005F;ID (non-positive appId), UNAUTHORIZED (reserved sentinel destination -6,-6,-6 or missing permission), or success=true / NO&#x005F;ERROR when allowed.
+
+
+```graphql
+teleportRequest(
+  input: TeleportRequestInput!
+): TeleportResponse!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>teleportRequest.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TeleportRequestInput!</b></code>](/reference/graphql/types/inputs/teleport-request-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Teleport target: appId, destination chunkAddress + voxelAddress, and the 32-character ASCII actor uuid (see TeleportRequestInput).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>TeleportResponse</b></code>](/reference/graphql/types/objects/teleport-response.mdx) <Badge class="badge badge--secondary " text="object"/>

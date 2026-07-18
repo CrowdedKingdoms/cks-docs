@@ -1,0 +1,48 @@
+---
+id: app-visibility
+title: AppVisibility
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Controls where an app can be discovered. Independent of AppStatus (the marketplace additionally requires status=LIVE).
+
+
+```graphql
+enum AppVisibility {
+  PUBLIC
+  UNLISTED
+  PRIVATE
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>AppVisibility.<b>PUBLIC</b></code>](#public) \{#public\} 
+Listed in the public marketplace (when status=LIVE) and resolvable by slug.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppVisibility.<b>UNLISTED</b></code>](#unlisted) \{#unlisted\} 
+Hidden from marketplace listings but accessible to anyone who knows the direct org/app slug link.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppVisibility.<b>PRIVATE</b></code>](#private) \{#private\} 
+Hidden from the marketplace; visible only to org members and users with an access grant.
+
+
+
+
+### Member Of
+
+[`App`](/reference/graphql/types/objects/app.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CreateAppInput`](/reference/graphql/types/inputs/create-app-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`setAppVisibility`](/reference/graphql/operations/mutations/set-app-visibility.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`UpdateAppInput`](/reference/graphql/types/inputs/update-app-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

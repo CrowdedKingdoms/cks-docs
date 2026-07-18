@@ -1,0 +1,88 @@
+---
+id: seed-function-input
+title: SeedFunctionInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A function to create as part of a seed.
+
+
+```graphql
+input SeedFunctionInput {
+  name: String!
+  containerTypeName: String
+  description: String
+  returnType: String
+  parameters: [FunctionParamInput!]
+  mutations: [FunctionMutationInput!]
+  returnExpression: String
+  invokeScope: String
+  invokePolicyJson: String
+  autonomousInvocable: Boolean
+  notifications: [FunctionNotificationInput!]
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedFunctionInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Function name (unique per app).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedFunctionInput.<b>containerTypeName</b></code>](#container-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#container-type-name\} 
+Optional container type to bind to (omit for a global function).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedFunctionInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Optional description of the function.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedFunctionInput.<b>returnType</b></code>](#return-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#return-type\} 
+Optional declared return value type.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedFunctionInput.<b>parameters</b></code>](#parameters)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[FunctionParamInput!]</b></code>](/reference/graphql/types/inputs/function-param-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#parameters\} 
+Typed parameters the function accepts.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedFunctionInput.<b>mutations</b></code>](#mutations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[FunctionMutationInput!]</b></code>](/reference/graphql/types/inputs/function-mutation-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#mutations\} 
+The property writes the function performs.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedFunctionInput.<b>returnExpression</b></code>](#return-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#return-expression\} 
+Optional expression whose value becomes the invoke result.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedFunctionInput.<b>invokeScope</b></code>](#invoke-scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-scope\} 
+player | server | internal
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedFunctionInput.<b>invokePolicyJson</b></code>](#invoke-policy-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-policy-json\} 
+JSON-encoded invoke-policy rule tree (authority requirements).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedFunctionInput.<b>autonomousInvocable</b></code>](#autonomous-invocable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#autonomous-invocable\} 
+Opt-in: allow an autonomous process (automation/NPC) to use this function as an entry point. Defaults to false.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedFunctionInput.<b>notifications</b></code>](#notifications)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[FunctionNotificationInput!]</b></code>](/reference/graphql/types/inputs/function-notification-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#notifications\} 
+Declarative realtime notifications the function emits via Buddy after it commits (see notify&#x005F;&#x002A; effects).
+
+
+
+
+### Member Of
+
+[`SeedGameModelInput`](/reference/graphql/types/inputs/seed-game-model-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

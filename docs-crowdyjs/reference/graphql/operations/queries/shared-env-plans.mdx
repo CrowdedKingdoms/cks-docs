@@ -1,0 +1,29 @@
+---
+id: shared-env-plans
+title: sharedEnvPlans
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+@deprecated Legacy monthly app-slot subscription catalog. New shared publishes use wallet usage billing only.
+
+
+```graphql
+sharedEnvPlans: [SharedEnvPlan!]!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>SharedEnvPlan</b></code>](/reference/graphql/types/objects/shared-env-plan.mdx) <Badge class="badge badge--secondary " text="object"/> 
+@deprecated Legacy monthly app-slot subscription plan. New shared publishes use wallet usage billing.

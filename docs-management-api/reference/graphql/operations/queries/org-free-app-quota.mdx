@@ -1,0 +1,39 @@
+---
+id: org-free-app-quota
+title: orgFreeAppQuota
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An org's free shared-app slot quota and how much of it is used. Apps beyond the quota still publish; metered usage is billed from the org wallet. Caller must be a member of the org.
+
+
+```graphql
+orgFreeAppQuota(
+  orgId: BigInt!
+): FreeAppQuota!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>orgFreeAppQuota.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt) to read the free quota for.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>FreeAppQuota</b></code>](/reference/graphql/types/objects/free-app-quota.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An org's free shared app slot quota usage.

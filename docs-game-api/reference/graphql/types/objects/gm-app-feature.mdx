@@ -1,0 +1,48 @@
+---
+id: gm-app-feature
+title: GmAppFeature
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An app feature key that functions can gate on and tiers can grant.
+
+
+```graphql
+type GmAppFeature {
+  appId: BigInt!
+  featureKey: String!
+  description: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAppFeature.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that defines the feature.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAppFeature.<b>featureKey</b></code>](#feature-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#feature-key\} 
+The feature key (referenced by tier&#x005F;feature authority rules).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAppFeature.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Optional description of the feature.
+
+
+
+
+### Returned By
+
+[`gameModelDefineFeature`](/reference/graphql/operations/mutations/game-model-define-feature.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gameModelFeatures`](/reference/graphql/operations/queries/game-model-features.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

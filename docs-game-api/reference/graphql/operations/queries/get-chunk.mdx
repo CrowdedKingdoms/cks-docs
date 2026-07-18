@@ -1,0 +1,39 @@
+---
+id: get-chunk
+title: getChunk
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Fetches one chunk (its base64 voxel grid, per-voxel states, chunk state and LODs) by app id and chunk coordinates. Returns null if the chunk does not exist. Use the input's LOD options to limit which LODs come back. Requires a valid bearer token in the Authorization header; a token scoped to an app may only read that app's chunks. Read-only (no world state is changed).
+
+
+```graphql
+getChunk(
+  input: GetChunkInput!
+): Chunk
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>getChunk.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GetChunkInput!</b></code>](/reference/graphql/types/inputs/get-chunk-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Chunk</b></code>](/reference/graphql/types/objects/chunk.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A persisted 16x16x16-voxel chunk (4096 voxels) of an app's voxel world. Holds the packed voxel-type grid (`voxels`), sparse per-voxel state overrides (`voxelStates`), an optional opaque chunk-level state blob (`chunkState`), and level-of-detail meshes (`lods`). Returned by getChunk/getChunksByDistance and written by updateChunk/updateChunkState/updateChunkLods.

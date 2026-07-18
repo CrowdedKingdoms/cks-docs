@@ -1,0 +1,63 @@
+---
+id: server-state
+title: ServerState
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lifecycle/capacity state of a registered server or Buddy. Only ReadyForClients servers should receive client traffic.
+
+
+```graphql
+enum ServerState {
+  Starting
+  ReadyForClients
+  Stopping
+  Offline
+  NearCapacity
+  Full
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Starting</b></code>](#starting) \{#starting\} 
+Booting / not yet ready: registered but still initializing; do not route client traffic here.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>ReadyForClients</b></code>](#ready-for-clients) \{#ready-for-clients\} 
+Healthy and accepting client traffic. The only state safe to route to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Stopping</b></code>](#stopping) \{#stopping\} 
+Draining / shutting down: finishing in-flight work; do not send new traffic.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Offline</b></code>](#offline) \{#offline\} 
+Not running or unreachable (e.g. crashed or missed heartbeats).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>NearCapacity</b></code>](#near-capacity) \{#near-capacity\} 
+Buddy soft resource overload: excluded from new-client selection until it recovers; existing sessions continue.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Full</b></code>](#full) \{#full\} 
+Buddy hard resource overload: excluded from new-client selection and actively shedding clients (sends reconnect commands so they migrate elsewhere).
+
+
+
+
+### Member Of
+
+[`GraphQLServer`](/reference/graphql/types/objects/graph-qlserver.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

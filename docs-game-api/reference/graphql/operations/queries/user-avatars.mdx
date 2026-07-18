@@ -1,0 +1,38 @@
+---
+id: user-avatars
+title: userAvatars
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lists the avatars owned by `userId`. Requires a valid game token. Owner-aware: when the caller is NOT the owner, each avatar’s `privateState` is stripped (returned null); `publicState` is always included. State blobs are base64-encoded binary.
+
+
+```graphql
+userAvatars(
+  userId: BigInt!
+): [Avatar!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>userAvatars.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+Owner user id whose avatars to list (BigInt as a decimal string).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Avatar</b></code>](/reference/graphql/types/objects/avatar.mdx) <Badge class="badge badge--secondary " text="object"/>

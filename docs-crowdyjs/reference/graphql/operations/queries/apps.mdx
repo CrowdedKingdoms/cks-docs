@@ -1,0 +1,61 @@
+---
+id: apps
+title: apps
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Public marketplace listing of apps. PUBLIC: no authentication required. Returns ONLY apps with visibility=PUBLIC AND status=LIVE (drafts, unlisted, private, and archived apps are never returned). Use myApps or appsForOrg for caller-visible or org-scoped apps. Results are ordered newest-first and paginated via pageInfo.
+
+
+```graphql
+apps(
+  filter: AppMarketplaceFilterInput
+  limit: Int = 50
+  offset: Int = 0
+): AppsPage!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>apps.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppMarketplaceFilterInput</b></code>](/reference/graphql/types/inputs/app-marketplace-filter-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+Optional marketplace filters (free-text query over name/description, and/or an org slug). Omit to list all live public apps.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>apps.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+:::warning[DEPRECATED]
+
+Use appsConnection(first:, after:) instead. See /overview/pagination.
+
+:::
+
+Maximum number of apps to return. Defaults to 50; clamped to the range 1-100.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>apps.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+:::warning[DEPRECATED]
+
+Use appsConnection(first:, after:) instead. See /overview/pagination.
+
+:::
+
+Number of apps to skip for pagination. Defaults to 0; negative values are treated as 0.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppsPage</b></code>](/reference/graphql/types/objects/apps-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A paginated page of apps returned by the marketplace listing.

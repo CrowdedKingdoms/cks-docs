@@ -1,0 +1,48 @@
+---
+id: set-session-turn-input
+title: SetSessionTurnInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set or clear the current-turn user of a session.
+
+
+```graphql
+input SetSessionTurnInput {
+  appId: BigInt!
+  sessionId: String!
+  userId: BigInt
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetSessionTurnInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetSessionTurnInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+The session id to update.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetSessionTurnInput.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The user whose turn it now is (NULL clears the turn).
+
+
+
+
+### Member Of
+
+[`gameModelSetSessionTurn`](/reference/graphql/operations/mutations/game-model-set-session-turn.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

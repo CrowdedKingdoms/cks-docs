@@ -1,0 +1,48 @@
+---
+id: join-session-input
+title: JoinSessionInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Join an existing session.
+
+
+```graphql
+input JoinSessionInput {
+  appId: BigInt!
+  sessionId: String!
+  role: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>JoinSessionInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>JoinSessionInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+The session id to join.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>JoinSessionInput.<b>role</b></code>](#role)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#role\} 
+Optional participant role to join as.
+
+
+
+
+### Member Of
+
+[`gameModelJoinSession`](/reference/graphql/operations/mutations/game-model-join-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -1,0 +1,39 @@
+---
+id: get-chunks-by-distance
+title: getChunksByDistance
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Returns all chunks for an app within a cubic (Chebyshev-distance) radius of a center chunk, paginated. The cube spans center +/- maxDistance chunks on each axis. Use this for bulk region loads; use getChunk for a single chunk. Requires a valid bearer token; app-scoped tokens are limited to their own app. Read-only.
+
+
+```graphql
+getChunksByDistance(
+  input: GetChunksByDistanceInput!
+): ChunksByDistanceResponse!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>getChunksByDistance.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GetChunksByDistanceInput!</b></code>](/reference/graphql/types/inputs/get-chunks-by-distance-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ChunksByDistanceResponse</b></code>](/reference/graphql/types/objects/chunks-by-distance-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Paginated result of getChunksByDistance: the chunks found within the search cube plus an echo of the pagination applied.

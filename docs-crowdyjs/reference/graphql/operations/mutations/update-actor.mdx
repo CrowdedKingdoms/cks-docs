@@ -1,0 +1,43 @@
+---
+id: update-actor
+title: updateActor
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Partially updates an actor (appId, avatarId, chunk, publicState, privateState); fields omitted from `input` are left unchanged. OWNER-EXCLUSIVE: only the actor’s owner may update (throws Unauthorized otherwise). Requires a valid game token. `uuid` is the 32-character ASCII actor id.
+
+
+```graphql
+updateActor(
+  uuid: String!
+  input: UpdateActorInput!
+): Actor!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateActor.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\} 
+Actor id: exactly 32 ASCII characters (the UDP-wire actor id), NOT a hyphenated RFC-4122 UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updateActor.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateActorInput!</b></code>](/reference/graphql/types/inputs/update-actor-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Fields to change; omitted fields are untouched (see UpdateActorInput).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Actor</b></code>](/reference/graphql/types/objects/actor.mdx) <Badge class="badge badge--secondary " text="object"/>

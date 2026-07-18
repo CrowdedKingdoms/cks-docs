@@ -1,0 +1,68 @@
+---
+id: gm-session
+title: GmSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A runtime session: an isolated instance scope (e.g. a match or room) for containers.
+
+
+```graphql
+type GmSession {
+  sessionId: String!
+  appId: BigInt!
+  name: String
+  status: String!
+  createdByUserId: BigInt
+  currentTurnUserId: BigInt
+  metadataJson: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+Unique session id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Optional session name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+Lifecycle status (e.g. active).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>createdByUserId</b></code>](#created-by-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#created-by-user-id\} 
+The user who created the session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>currentTurnUserId</b></code>](#current-turn-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#current-turn-user-id\} 
+The user whose turn it currently is (turn-based play), or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>metadataJson</b></code>](#metadata-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#metadata-json\} 
+JSON object of developer metadata.
+
+
+
+
+### Returned By
+
+[`gameModelCreateSession`](/reference/graphql/operations/mutations/game-model-create-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gameModelSession`](/reference/graphql/operations/queries/game-model-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`gameModelSessions`](/reference/graphql/operations/queries/game-model-sessions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`gameModelSetSessionTurn`](/reference/graphql/operations/mutations/game-model-set-session-turn.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

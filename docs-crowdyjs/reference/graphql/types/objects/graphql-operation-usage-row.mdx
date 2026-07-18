@@ -1,0 +1,57 @@
+---
+id: graphql-operation-usage-row
+title: GraphqlOperationUsageRow
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Usage totals for a single GraphQL operation over the window.
+
+
+```graphql
+type GraphqlOperationUsageRow {
+  operationName: String!
+  totalOps: String!
+  sendBytes: String!
+  recvBytes: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphqlOperationUsageRow.<b>operationName</b></code>](#operation-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#operation-name\} 
+GraphQL operation name (or '(anonymous)').
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphqlOperationUsageRow.<b>totalOps</b></code>](#total-ops)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total-ops\} 
+Total invocation count (string counter).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphqlOperationUsageRow.<b>sendBytes</b></code>](#send-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#send-bytes\} 
+Total bytes sent for this operation (string counter).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphqlOperationUsageRow.<b>recvBytes</b></code>](#recv-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#recv-bytes\} 
+Total bytes received for this operation (string counter).
+
+
+
+
+### Returned By
+
+[`appGraphqlOperations`](/reference/graphql/operations/queries/app-graphql-operations.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`AppUsageSummary`](/reference/graphql/types/objects/app-usage-summary.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

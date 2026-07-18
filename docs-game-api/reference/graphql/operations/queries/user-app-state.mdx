@@ -1,0 +1,38 @@
+---
+id: user-app-state
+title: userAppState
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Reads the authenticated user’s per-app state for `appId` (keyed by appId+userId). Requires a valid game token; only the caller’s own state is returned. Returns null when no row exists. `state` is base64-encoded binary.
+
+
+```graphql
+userAppState(
+  appId: BigInt!
+): UserAppState
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>userAppState.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App (game) id the state is scoped to (BigInt as a decimal string).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UserAppState</b></code>](/reference/graphql/types/objects/user-app-state.mdx) <Badge class="badge badge--secondary " text="object"/>

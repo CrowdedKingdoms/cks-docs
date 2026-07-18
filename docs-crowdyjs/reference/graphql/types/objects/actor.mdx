@@ -1,0 +1,82 @@
+---
+id: actor
+title: Actor
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type Actor {
+  uuid: ID!
+  appId: BigInt!
+  userId: BigInt!
+  avatarId: BigInt
+  chunk: ChunkCoordinates!
+  privateState: String
+  publicState: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Actor.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\} 
+Actor id and primary key: a 32-character ASCII identifier (exactly 32 ASCII characters / 32 raw octets on the UDP wire). This is NOT a hyphenated RFC-4122 UUID. This is the value accepted by all actor `uuid` arguments.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Actor.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App (game) this actor belongs to. BigInt serialized as a decimal string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Actor.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+Owner user id. BigInt serialized as a decimal string. Ownership gates writes and access to `privateState`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Actor.<b>avatarId</b></code>](#avatar-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#avatar-id\} 
+Avatar this actor is using, or null. BigInt serialized as a decimal string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Actor.<b>chunk</b></code>](#chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#chunk\} 
+Chunk-grid coordinates (x, y, z as int64 BigInt decimal strings) locating the actor in the world.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Actor.<b>privateState</b></code>](#private-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#private-state\} 
+Owner-only private state blob, base64-encoded binary. Stripped (returned null) for non-owners and in public/batch reads such as `batchLookupActors`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Actor.<b>publicState</b></code>](#public-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#public-state\} 
+Public state blob, base64-encoded binary; visible to all viewers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Actor.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+Server timestamp (ISO-8601) when the actor row was created. Used as the primary ordering key for host election (oldest fresh actor wins).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Actor.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+Liveness timestamp (ISO-8601), refreshed by the `actorHeartbeat` mutation. Host election treats actors with a recent `updatedAt` as fresh; stale rows age out of eligibility.
+
+
+
+
+### Returned By
+
+[`actor`](/reference/graphql/operations/queries/actor.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`actors`](/reference/graphql/operations/queries/actors.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`batchLookupActors`](/reference/graphql/operations/queries/batch-lookup-actors.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`createActor`](/reference/graphql/operations/mutations/create-actor.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`deleteActor`](/reference/graphql/operations/mutations/delete-actor.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateActor`](/reference/graphql/operations/mutations/update-actor.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateActorState`](/reference/graphql/operations/mutations/update-actor-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`ActorEdge`](/reference/graphql/types/objects/actor-edge.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

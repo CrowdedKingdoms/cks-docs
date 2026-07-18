@@ -1,0 +1,39 @@
+---
+id: send-channel-message
+title: sendChannelMessage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Publish a message to a channel, delivered to every active member of the channel (not chunk-routed) as a ChannelMessageNotification on udpNotifications. Requires a bearer game token and the channel send&#x005F;messages permission; lacking the permission the server drops the message. Opens a UDP proxy session automatically if none exists. The sender receives no echo. Returns Boolean! that is true only when the datagram was ACCEPTED FOR SENDING — NOT confirmation of delivery; failures arrive ASYNCHRONOUSLY as GenericErrorResponse on udpNotifications, correlated by the request sequenceNumber (correlation only — not an idempotency key; the server does not dedupe replays).
+
+
+```graphql
+sendChannelMessage(
+  input: ChannelMessageInput!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>sendChannelMessage.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChannelMessageInput!</b></code>](/reference/graphql/types/inputs/channel-message-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The channel message to publish: channelId (groups.group&#x005F;id), the sender’s 32-byte actor uuid, base64 payload (max 1024 bytes), and optional sequenceNumber. See ChannelMessageInput.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

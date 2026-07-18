@@ -1,0 +1,97 @@
+---
+id: app-user-access
+title: AppUserAccess
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A user's entitlement to a specific app: whether (and via which tier) they may access it. At most one row per (app, user).
+
+
+```graphql
+type AppUserAccess {
+  appUserAccessId: BigInt!
+  appId: BigInt!
+  userId: BigInt!
+  tierId: BigInt
+  status: String!
+  grantedBy: String!
+  subscriptionId: String
+  expiresAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User
+  tier: AppAccessTier
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>appUserAccessId</b></code>](#app-user-access-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-user-access-id\} 
+Unique numeric id of this access record (primary key).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric id of the app this access applies to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+Numeric id of the user this access belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\} 
+Numeric id of the access tier granting this access; null if access was granted without a specific tier.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+Entitlement lifecycle: "active" (currently entitled) or "revoked" (access removed). Only active, non-expired rows grant runtime access. Defaults to "active".
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>grantedBy</b></code>](#granted-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#granted-by\} 
+Who granted this access: the granting admin's numeric user id (as a string), or "system" for automatic/free-tier grants.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>subscriptionId</b></code>](#subscription-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#subscription-id\} 
+External billing subscription id (e.g. Stripe/PayPal) backing a paid grant; null for free or manual grants.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+Optional expiry timestamp; access is treated as inactive once it has passed. Null means the grant does not expire.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+Timestamp when the access record was first created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+Timestamp when the access record was last updated (e.g. re-granted or revoked).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>user</b></code>](#user)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>User</b></code>](/reference/graphql/types/objects/user.mdx) <Badge class="badge badge--secondary " text="object"/> \{#user\} 
+The user this access record belongs to. Null if the user could not be loaded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>tier</b></code>](#tier)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppAccessTier</b></code>](/reference/graphql/types/objects/app-access-tier.mdx) <Badge class="badge badge--secondary " text="object"/> \{#tier\} 
+The access tier granted by this record. Null if no tier is associated (tierId is null) or the tier could not be loaded.
+
+
+
+
+### Returned By
+
+[`appUserAccessByApp`](/reference/graphql/operations/queries/app-user-access-by-app.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`claimFreeAppAccess`](/reference/graphql/operations/mutations/claim-free-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`grantAppAccess`](/reference/graphql/operations/mutations/grant-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`grantMyAppAccess`](/reference/graphql/operations/mutations/grant-my-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`myAppAccess`](/reference/graphql/operations/queries/my-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`revokeAppAccess`](/reference/graphql/operations/mutations/revoke-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`AppUserAccessEdge`](/reference/graphql/types/objects/app-user-access-edge.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

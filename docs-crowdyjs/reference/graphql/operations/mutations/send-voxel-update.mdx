@@ -1,0 +1,39 @@
+---
+id: send-voxel-update
+title: sendVoxelUpdate
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Send a single voxel (block) update for spatial replication to nearby chunks. Requires a bearer game token; opens a UDP proxy session automatically if none exists. Returns Boolean! that is true only when the datagram was ACCEPTED FOR SENDING to the game server — NOT confirmation that the world applied the change. There is NO separate per-request success response: the change fans out to nearby clients (the sender included) as a VoxelUpdateNotification carrying the same sequenceNumber (VoxelUpdateResponse is legacy and is never emitted). Failures arrive ASYNCHRONOUSLY as a GenericErrorResponse; both are correlated by the request sequenceNumber (correlation only — not an idempotency key; the server does not dedupe replays).
+
+
+```graphql
+sendVoxelUpdate(
+  input: VoxelUpdateRequestInput!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>sendVoxelUpdate.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelUpdateRequestInput!</b></code>](/reference/graphql/types/inputs/voxel-update-request-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The voxel update to send: target appId, chunk coordinates, 32-byte uuid, voxel coordinates within the chunk, voxelType, base64 voxelState, and optional distance/decayRate/sequenceNumber. See VoxelUpdateRequestInput.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

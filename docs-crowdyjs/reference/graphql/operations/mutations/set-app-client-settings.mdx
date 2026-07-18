@@ -1,0 +1,39 @@
+---
+id: set-app-client-settings
+title: setAppClientSettings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Register/update an app's portal client settings (redirect&#x005F;uris, client&#x005F;type, launch&#x005F;url). Requires manage&#x005F;apps on the app and a SESSION token.
+
+
+```graphql
+setAppClientSettings(
+  input: SetAppClientSettingsInput!
+): PortalConsentState!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setAppClientSettings.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetAppClientSettingsInput!</b></code>](/reference/graphql/types/inputs/set-app-client-settings-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PortalConsentState</b></code>](/reference/graphql/types/objects/portal-consent-state.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Whether portaling into an app requires a consent prompt on the Overworld.

@@ -1,0 +1,39 @@
+---
+id: update-voxel
+title: updateVoxel
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Records (upserts) a single voxel edit in the voxel&#x005F;updates log for one chunk and returns the resulting Voxel. WRITES world state; a background maintenance job later folds these edits into the chunk's packed grid. Requires a valid bearer token AND voxel-edit permission for the target region: the user must have active app access, the `update_voxel_data` tier permission, and (when grids cover the chunk) `update_voxel_data` on a covering grid.
+
+
+```graphql
+updateVoxel(
+  input: UpdateVoxelInput!
+): Voxel!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateVoxel.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateVoxelInput!</b></code>](/reference/graphql/types/inputs/update-voxel-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Voxel</b></code>](/reference/graphql/types/objects/voxel.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A recorded edit to a single voxel (one row of the voxel&#x005F;updates log): the app/chunk/local-position that changed, the new voxel type, an optional state blob, and who/when. Returned by listVoxels, getVoxelList and listVoxelUpdatesByDistance; created by updateVoxel. A background maintenance job later folds these edits into the chunk grid.

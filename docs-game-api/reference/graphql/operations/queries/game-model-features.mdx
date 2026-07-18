@@ -1,0 +1,39 @@
+---
+id: game-model-features
+title: gameModelFeatures
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List the feature keys defined for an app. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelFeatures(
+  appId: BigInt!
+): [GmAppFeature!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelFeatures.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose features to list.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmAppFeature</b></code>](/reference/graphql/types/objects/gm-app-feature.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An app feature key that functions can gate on and tiers can grant.

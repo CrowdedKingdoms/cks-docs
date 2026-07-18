@@ -1,0 +1,39 @@
+---
+id: join-channel
+title: joinChannel
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Join a channel as the caller (subscribe to it). Honors the channel membership policy: open -&#x003E; active immediately, request -&#x003E; pending (a manager must approve), invite/admin -&#x003E; rejected. On becoming active, Buddy is notified with the caller's effective send permission so routing starts.
+
+
+```graphql
+joinChannel(
+  groupId: BigInt!
+): GroupMember!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>joinChannel.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The channel to join.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GroupMember</b></code>](/reference/graphql/types/objects/group-member.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's membership in a group, including the roles assigned to them.

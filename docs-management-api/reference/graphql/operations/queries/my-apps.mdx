@@ -1,0 +1,29 @@
+---
+id: my-apps
+title: myApps
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Apps the authenticated caller can see in their account: those owned by an org they are an active member of, OR those where they hold an active app&#x005F;user&#x005F;access grant. Requires authentication. Includes apps of any visibility/status (e.g. drafts the caller can access). Ordered newest-first.
+
+
+```graphql
+myApps: [App!]!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>App</b></code>](/reference/graphql/types/objects/app.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A publishable application (game/experience) owned by an organization. Its discoverability is controlled by visibility and its lifecycle by status.

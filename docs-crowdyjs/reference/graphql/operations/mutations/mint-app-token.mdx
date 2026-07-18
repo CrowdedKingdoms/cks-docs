@@ -1,0 +1,39 @@
+---
+id: mint-app-token
+title: mintAppToken
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Mint a short-lived, app-scoped gameplay token for the calling user (native/direct path; no browser redirect). Requires an identity SESSION token (app tokens cannot mint). Free/open apps auto-grant access; paid apps require an existing entitlement (else FORBIDDEN). Side effect: may create an app&#x005F;user&#x005F;access row on the app's free default tier.
+
+
+```graphql
+mintAppToken(
+  input: MintAppTokenInput!
+): AppTokenResponse!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>mintAppToken.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>MintAppTokenInput!</b></code>](/reference/graphql/types/inputs/mint-app-token-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppTokenResponse</b></code>](/reference/graphql/types/objects/app-token-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A short-lived, app-scoped gameplay token (Overworld portal). Confined to a single app: usable only against that app's Game API + Buddy realtime surface (plus read-only `me` and same-app `refreshAppToken`). It CANNOT perform management operations and CANNOT mint tokens for other apps, so a game stack that receives it never gets the player's full identity session.

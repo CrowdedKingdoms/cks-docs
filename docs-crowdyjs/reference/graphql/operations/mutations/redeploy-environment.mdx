@@ -1,0 +1,39 @@
+---
+id: redeploy-environment
+title: redeployEnvironment
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Redeploys the environment to a target release version (input.version) or, when omitted, the latest available version for its class, reusing its current flavors/scaling and linked apps. Preserves the environment URLs. No-op-safe: re-running when already at latest still redeploys. If a prior deploy failed but stayed in&#x005F;progress, it is abandoned first so the redeploy can proceed. Requires the 'manage&#x005F;environments' org permission.
+
+
+```graphql
+redeployEnvironment(
+  input: RedeployEnvironmentInput!
+): CksEnvironmentChangeOrder!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>redeployEnvironment.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RedeployEnvironmentInput!</b></code>](/reference/graphql/types/inputs/redeploy-environment-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CksEnvironmentChangeOrder</b></code>](/reference/graphql/types/objects/cks-environment-change-order.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An asynchronous change order tracking a deploy / destroy / scaling pipeline for an environment. Returned by mutations so callers can poll completion.

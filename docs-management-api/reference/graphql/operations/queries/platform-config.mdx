@@ -1,0 +1,29 @@
+---
+id: platform-config
+title: platformConfig
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Public platform discovery. Returns the shared game-api URL clients use for shared-environment apps (served by the platform shared environment). No auth required.
+
+
+```graphql
+platformConfig: PlatformConfig!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlatformConfig</b></code>](/reference/graphql/types/objects/platform-config.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Public platform discovery. Clients/SDKs read the shared game-api URL here to route apps deployed to the shared environment.

@@ -1,0 +1,39 @@
+---
+id: claim-free-app-access
+title: claimFreeAppAccess
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Self-service: the authenticated caller claims access to an app via its free, open-by-default tier. Requires authentication only (no org membership needed). ENTITLEMENT CHANGE: grants the free default tier as a 'system' grant and notifies the game API. Idempotent: returns the existing row if already granted, and never overrides a prior revoke. Errors if the app has no free default tier or is archived.
+
+
+```graphql
+claimFreeAppAccess(
+  appId: BigInt!
+): AppUserAccess!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>claimFreeAppAccess.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric id of the app to claim free access to.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppUserAccess</b></code>](/reference/graphql/types/objects/app-user-access.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's entitlement to a specific app: whether (and via which tier) they may access it. At most one row per (app, user).

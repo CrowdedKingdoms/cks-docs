@@ -1,0 +1,35 @@
+---
+id: my-donation-data
+title: myDonationData
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+:::warning[DEPRECATED]
+
+Legacy donation/property-token data; these products are no longer purchasable. Retained for historical records.
+
+:::
+
+Returns the authenticated user's lifetime donation totals. Requires a valid session token. LEGACY: donations are no longer purchasable; retained for historical display only.
+
+
+```graphql
+myDonationData: UserDonationData! @deprecated
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UserDonationData</b></code>](/reference/graphql/types/objects/user-donation-data.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Aggregated lifetime donation totals for a user. LEGACY: donations are no longer purchasable. Returned by the deprecated myDonationData query.

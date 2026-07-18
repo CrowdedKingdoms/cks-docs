@@ -1,0 +1,39 @@
+---
+id: send-audio-packet
+title: sendAudioPacket
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Send a spatial voice/audio packet, fanned out to nearby actors as a ClientAudioNotification. Requires a bearer game token; voice may additionally be gated by a runtime/grid permission for the region — if the caller lacks it the game server responds asynchronously with a GenericErrorResponse (errorCode UNAUTHORIZED). Opens a UDP proxy session automatically if none exists. Returns Boolean! that is true only when the datagram was ACCEPTED FOR SENDING — NOT that it was delivered; the sender receives no echo, only errors (GenericErrorResponse, correlated by sequenceNumber) on udpNotifications. sequenceNumber is correlation only, not an idempotency key.
+
+
+```graphql
+sendAudioPacket(
+  input: ClientAudioPacketInput!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>sendAudioPacket.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ClientAudioPacketInput!</b></code>](/reference/graphql/types/inputs/client-audio-packet-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The voice/audio packet to send: target appId, chunk coordinates, 32-byte source uuid, base64 (compressed) audioData, and optional distance/decayRate/sequenceNumber. See ClientAudioPacketInput.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

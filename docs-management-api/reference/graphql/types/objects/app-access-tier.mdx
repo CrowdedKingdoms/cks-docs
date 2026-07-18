@@ -1,0 +1,107 @@
+---
+id: app-access-tier
+title: AppAccessTier
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A free or purchasable access tier for an app, bundling a price and the set of runtime permission keys that granted users receive.
+
+
+```graphql
+type AppAccessTier {
+  tierId: BigInt!
+  appId: BigInt!
+  name: String!
+  tierOrder: Float!
+  isFree: Boolean!
+  isDefault: Boolean!
+  priceCents: BigInt
+  currency: String
+  billingPeriod: String
+  description: String
+  permissionKeys: [String!]!
+  status: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\} 
+Unique numeric id of the tier (primary key).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric id of the app this tier belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Display name of the tier (e.g. "Free", "Pro").
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>tierOrder</b></code>](#tier-order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tier-order\} 
+Sort order for displaying tiers (ascending); lower values appear first.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>isFree</b></code>](#is-free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-free\} 
+True if the tier has no purchase cost.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>isDefault</b></code>](#is-default)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-default\} 
+True if this is the app default tier (used for open-by-default / self-service grants). At most one default per app is expected.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#price-cents\} 
+Price in the smallest currency unit (cents) for paid tiers; null for free tiers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+ISO 4217 currency code for priceCents (e.g. "usd"); defaults to "usd".
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>billingPeriod</b></code>](#billing-period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#billing-period\} 
+Billing cadence for recurring tiers (e.g. "month", "year"); null for one-time or free tiers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Optional marketing description of what the tier includes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-keys\} 
+Runtime permission keys granted to users on this tier (a subset of runtimePermissions), e.g. "access", "teleport", "update&#x005F;voxel&#x005F;data", "use&#x005F;voice&#x005F;chat".
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+Tier lifecycle: "active" or "archived" (soft-deleted via archiveAccessTier). Defaults to "active".
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+Timestamp when the tier was created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppAccessTier.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+Timestamp when the tier was last updated.
+
+
+
+
+### Returned By
+
+[`appAccessTiers`](/reference/graphql/operations/queries/app-access-tiers.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`archiveAccessTier`](/reference/graphql/operations/mutations/archive-access-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`createAccessTier`](/reference/graphql/operations/mutations/create-access-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateAccessTier`](/reference/graphql/operations/mutations/update-access-tier.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`AppUserAccess`](/reference/graphql/types/objects/app-user-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

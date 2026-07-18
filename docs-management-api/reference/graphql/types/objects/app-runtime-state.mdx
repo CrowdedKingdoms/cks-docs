@@ -1,0 +1,78 @@
+---
+id: app-runtime-state
+title: AppRuntimeState
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The shared-environment runtime gate + current billing-window usage for an app.
+
+
+```graphql
+type AppRuntimeState {
+  appId: BigInt!
+  deploymentTarget: AppDeploymentTarget!
+  runtimeStatus: AppRuntimeStatus!
+  runtimeDenialReason: String
+  walletBalanceCents: BigInt!
+  currentHourUsageCents: BigInt!
+  currentDayUsageCents: BigInt!
+  hourlyLimitCents: BigInt
+  dailyLimitCents: BigInt
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App id (BigInt).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>deploymentTarget</b></code>](#deployment-target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppDeploymentTarget!</b></code>](/reference/graphql/types/enums/app-deployment-target.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#deployment-target\} 
+Where the app runs (none / shared / dedicated).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>runtimeStatus</b></code>](#runtime-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppRuntimeStatus!</b></code>](/reference/graphql/types/enums/app-runtime-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#runtime-status\} 
+Current runtime gate decision (active / grace / denied / suspended).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>runtimeDenialReason</b></code>](#runtime-denial-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#runtime-denial-reason\} 
+free&#x005F;allowance | insufficient&#x005F;funds | spend&#x005F;cap | subscription&#x005F;lapsed when not active.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>walletBalanceCents</b></code>](#wallet-balance-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wallet-balance-cents\} 
+Owning org wallet balance, in cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>currentHourUsageCents</b></code>](#current-hour-usage-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#current-hour-usage-cents\} 
+Spend so far in the current hour window, in cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>currentDayUsageCents</b></code>](#current-day-usage-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#current-day-usage-cents\} 
+Spend so far in the current day window, in cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>hourlyLimitCents</b></code>](#hourly-limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#hourly-limit-cents\} 
+Per-app hourly spend cap in cents (set via setAppSpendCaps). Null = no cap.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>dailyLimitCents</b></code>](#daily-limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#daily-limit-cents\} 
+Per-app daily spend cap in cents (set via setAppSpendCaps). Null = no cap.
+
+
+
+
+### Returned By
+
+[`appRuntimeState`](/reference/graphql/operations/queries/app-runtime-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setAppSpendCaps`](/reference/graphql/operations/mutations/set-app-spend-caps.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

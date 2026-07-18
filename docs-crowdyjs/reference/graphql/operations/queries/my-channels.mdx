@@ -1,0 +1,39 @@
+---
+id: my-channels
+title: myChannels
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The caller's channels in an app, with their roles and effective channel permissions (e.g. whether they hold send&#x005F;messages). Use this to discover which channels the current user can read/post in.
+
+
+```graphql
+myChannels(
+  appId: BigInt!
+): [GroupMembership!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>myChannels.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) to list the caller's channels within.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GroupMembership</b></code>](/reference/graphql/types/objects/group-membership.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The caller's view of a group they belong to: the group, their roles, and their effective group permission keys.

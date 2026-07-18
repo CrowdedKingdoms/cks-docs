@@ -1,0 +1,39 @@
+---
+id: org-auto-billing
+title: orgAutoBilling
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An org's off-session auto-billing configuration (enabled flag, recharge amount, low-water threshold, per-period cap, and last error). Requires the 'view&#x005F;billing' org permission.
+
+
+```graphql
+orgAutoBilling(
+  orgId: BigInt!
+): OrgAutoBilling!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>orgAutoBilling.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt) to read auto-billing config for.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgAutoBilling</b></code>](/reference/graphql/types/objects/org-auto-billing.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Org off-session auto-billing configuration.

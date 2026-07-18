@@ -1,0 +1,39 @@
+---
+id: channel-roles
+title: channelRoles
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List the roles of a channel, including the system 'leader' role and any default 'member' role (which typically grants send&#x005F;messages).
+
+
+```graphql
+channelRoles(
+  groupId: BigInt!
+): [GroupRole!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>channelRoles.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The channel whose roles to list.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GroupRole</b></code>](/reference/graphql/types/objects/group-role.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A role within a group (team/channel). Carries the group-management permission keys it grants (e.g. manage&#x005F;members), NOT world/runtime grid permissions.

@@ -1,0 +1,60 @@
+---
+id: wallet-transactions
+title: walletTransactions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lists the organization's wallet transactions (credits and debits), ordered newest first. Use it to audit how the balance changed over time. Requires the 'view&#x005F;billing' org permission.
+
+
+```graphql
+walletTransactions(
+  orgId: BigInt!
+  limit: Int
+  offset: Int
+): [WalletTransaction!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>walletTransactions.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt as a decimal string) whose transactions to list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>walletTransactions.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+:::warning[DEPRECATED]
+
+Use walletTransactionsConnection(first:, after:) instead. See /overview/pagination.
+
+:::
+
+Maximum number of transactions to return. Defaults to 50 when omitted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>walletTransactions.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+:::warning[DEPRECATED]
+
+Use walletTransactionsConnection(first:, after:) instead. See /overview/pagination.
+
+:::
+
+Number of transactions to skip before returning results, for offset/limit pagination. Defaults to 0 when omitted.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>WalletTransaction</b></code>](/reference/graphql/types/objects/wallet-transaction.mdx) <Badge class="badge badge--secondary " text="object"/>

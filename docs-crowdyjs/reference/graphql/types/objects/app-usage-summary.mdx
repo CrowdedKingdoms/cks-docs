@@ -1,0 +1,78 @@
+---
+id: app-usage-summary
+title: AppUsageSummary
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Aggregate byte totals plus the top GraphQL operations for one app over the window.
+
+
+```graphql
+type AppUsageSummary {
+  appId: String!
+  replicationSendBytes: String!
+  replicationRecvBytes: String!
+  graphqlSendBytes: String!
+  graphqlRecvBytes: String!
+  topGraphqlOperations: [GraphqlOperationUsageRow!]!
+  automationRuns: String!
+  automationInvocations: String!
+  automationComputeUnits: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App id (as a string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>replicationSendBytes</b></code>](#replication-send-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#replication-send-bytes\} 
+Total replication bytes sent (string counter).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>replicationRecvBytes</b></code>](#replication-recv-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#replication-recv-bytes\} 
+Total replication bytes received (string counter).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>graphqlSendBytes</b></code>](#graphql-send-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-send-bytes\} 
+Total GraphQL bytes sent (string counter).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>graphqlRecvBytes</b></code>](#graphql-recv-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-recv-bytes\} 
+Total GraphQL bytes received (string counter).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>topGraphqlOperations</b></code>](#top-graphql-operations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GraphqlOperationUsageRow!]!</b></code>](/reference/graphql/types/objects/graphql-operation-usage-row.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#top-graphql-operations\} 
+Top GraphQL operations by bytes (capped by operationLimit).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>automationRuns</b></code>](#automation-runs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-runs\} 
+Autonomous-process (NPC) runs over the window (string counter).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>automationInvocations</b></code>](#automation-invocations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-invocations\} 
+Autonomous-process function invocations over the window (string counter).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>automationComputeUnits</b></code>](#automation-compute-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-compute-units\} 
+Billed autonomous-process compute units over the window (string counter).
+
+
+
+
+### Returned By
+
+[`appUsageSummary`](/reference/graphql/operations/queries/app-usage-summary.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,39 @@
+---
+id: environment-quote
+title: environmentQuote
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Pricing quote for the selected flavors plus the org wallet balance and a canCreate gate. Read-only — provisions nothing. Fails if any flavor is unavailable, hidden, or lacks customer pricing. Requires the 'view&#x005F;billing' org permission.
+
+
+```graphql
+environmentQuote(
+  input: EnvironmentQuoteInput!
+): CksEnvironmentQuote!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>environmentQuote.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnvironmentQuoteInput!</b></code>](/reference/graphql/types/inputs/environment-quote-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CksEnvironmentQuote</b></code>](/reference/graphql/types/objects/cks-environment-quote.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Pricing quote for a proposed environment selection plus the org wallet balance, used to gate createEnvironment. All &#x002A;Cents fields are in minor currency units (cents).

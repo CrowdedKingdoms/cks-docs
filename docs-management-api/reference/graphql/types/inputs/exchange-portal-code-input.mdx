@@ -1,0 +1,43 @@
+---
+id: exchange-portal-code-input
+title: ExchangePortalCodeInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Input for exchangePortalCode: the destination game (public client) trades a one-time portal code for an app-scoped gameplay token. Public (the code + PKCE verifier authorize the call).
+
+
+```graphql
+input ExchangePortalCodeInput {
+  code: String!
+  codeVerifier: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExchangePortalCodeInput.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code\} 
+The one-time authorization code received on the redirect.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExchangePortalCodeInput.<b>codeVerifier</b></code>](#code-verifier)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#code-verifier\} 
+PKCE code verifier matching the challenge supplied when the code was created. Required when the code was created with a challenge.
+
+
+
+
+### Member Of
+
+[`exchangePortalCode`](/reference/graphql/operations/mutations/exchange-portal-code.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

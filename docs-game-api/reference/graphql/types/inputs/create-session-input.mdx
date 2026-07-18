@@ -1,0 +1,53 @@
+---
+id: create-session-input
+title: CreateSessionInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a runtime session.
+
+
+```graphql
+input CreateSessionInput {
+  appId: BigInt!
+  name: String
+  metadataJson: String
+  participantUserIds: [BigInt!]
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) the session belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Optional session name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>metadataJson</b></code>](#metadata-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata-json\} 
+JSON object of session metadata.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>participantUserIds</b></code>](#participant-user-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#participant-user-ids\} 
+Initial participants besides the creator.
+
+
+
+
+### Member Of
+
+[`gameModelCreateSession`](/reference/graphql/operations/mutations/game-model-create-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

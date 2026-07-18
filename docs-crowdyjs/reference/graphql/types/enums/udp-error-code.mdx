@@ -1,0 +1,198 @@
+---
+id: udp-error-code
+title: UdpErrorCode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Error codes returned by UDP game servers (and surfaced on `GenericErrorResponse.errorCode`) in response to a spatial/realtime message. NO&#x005F;ERROR (0) indicates success; every other value indicates a failure. The numeric value is the byte sent on the wire; GraphQL exposes the name. Note: a failed message does not always produce an error — some auth failures are dropped silently (see the docs).
+
+
+```graphql
+enum UdpErrorCode {
+  NO_ERROR
+  UNKNOWN_ERROR
+  EMAIL_NOT_FOUND
+  BAD_PASSWORD
+  EMAIL_ALREADY_EXISTS
+  INVALID_TOKEN
+  APP_NOT_FOUND
+  UNAUTHORIZED
+  APP_NOT_LOADED
+  EMAIL_TOO_SHORT
+  EMAIL_TOO_LONG
+  PASSWORD_TOO_SHORT
+  PASSWORD_TOO_LONG
+  GAME_TOKEN_WRONG_SIZE
+  NAME_TOO_LONG
+  INVALID_REQUEST
+  EMAIL_INVALID
+  INVALID_TOKEN_LENGTH
+  INVALID_APP_ID
+  CHUNK_NOT_FOUND
+  USER_NOT_AUTHENTICATED
+  INVALID_STATE_DATA
+  USER_NOT_APP_ADMIN
+  GRID_OUTSIDE_ASSIGNMENT
+  NO_MATCHING_GRID_ASSIGNMENT
+  INVALID_GRID_COORDINATES
+  GRID_ALREADY_EXISTS
+  GRID_OVERLAPS_EXISTING
+  GAMERTAG_ALREADY_EXISTS
+  GRID_NOT_FOUND
+  CANNOT_DELETE_DEFAULT_WORLD_GRID
+  GRID_HAS_NESTED_CHILDREN
+  TOKEN_EXPIRED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>NO&#x005F;ERROR</b></code>](#no-error) \{#no-error\} 
+No error (0). The message was accepted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>UNKNOWN&#x005F;ERROR</b></code>](#unknown-error) \{#unknown-error\} 
+Unspecified server error (1). Retry; if it persists, report it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>EMAIL&#x005F;NOT&#x005F;FOUND</b></code>](#email-not-found) \{#email-not-found\} 
+No account matches the supplied email (login validation).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>BAD&#x005F;PASSWORD</b></code>](#bad-password) \{#bad-password\} 
+The password did not match (login validation).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>EMAIL&#x005F;ALREADY&#x005F;EXISTS</b></code>](#email-already-exists) \{#email-already-exists\} 
+Registration failed because the email is already in use.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>INVALID&#x005F;TOKEN</b></code>](#invalid-token) \{#invalid-token\} 
+The game token was rejected (expired, malformed, or revoked). Re-authenticate against the Management API to obtain a fresh token.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>APP&#x005F;NOT&#x005F;FOUND</b></code>](#app-not-found) \{#app-not-found\} 
+No app matches the supplied appId.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>UNAUTHORIZED</b></code>](#unauthorized) \{#unauthorized\} 
+The caller lacks the runtime/grid permission required for this action. Grid permissions can load asynchronously, so the first message to a newly entered region may transiently return this — retry shortly.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>APP&#x005F;NOT&#x005F;LOADED</b></code>](#app-not-loaded) \{#app-not-loaded\} 
+The app exists but is not currently loaded/active on this server.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>EMAIL&#x005F;TOO&#x005F;SHORT</b></code>](#email-too-short) \{#email-too-short\} 
+Email failed minimum-length validation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>EMAIL&#x005F;TOO&#x005F;LONG</b></code>](#email-too-long) \{#email-too-long\} 
+Email failed maximum-length validation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>PASSWORD&#x005F;TOO&#x005F;SHORT</b></code>](#password-too-short) \{#password-too-short\} 
+Password failed minimum-length validation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>PASSWORD&#x005F;TOO&#x005F;LONG</b></code>](#password-too-long) \{#password-too-long\} 
+Password failed maximum-length validation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>GAME&#x005F;TOKEN&#x005F;WRONG&#x005F;SIZE</b></code>](#game-token-wrong-size) \{#game-token-wrong-size\} 
+The game token is not the expected length. Use the exact token returned by login (do not trim or re-encode it).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>NAME&#x005F;TOO&#x005F;LONG</b></code>](#name-too-long) \{#name-too-long\} 
+A supplied name exceeded the maximum length.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>INVALID&#x005F;REQUEST</b></code>](#invalid-request) \{#invalid-request\} 
+The message was malformed or failed validation. Check the byte layout.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>EMAIL&#x005F;INVALID</b></code>](#email-invalid) \{#email-invalid\} 
+Email failed format validation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>INVALID&#x005F;TOKEN&#x005F;LENGTH</b></code>](#invalid-token-length) \{#invalid-token-length\} 
+The supplied token was not a valid length.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>INVALID&#x005F;APP&#x005F;ID</b></code>](#invalid-app-id) \{#invalid-app-id\} 
+The appId was missing, zero, or not a valid value.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>CHUNK&#x005F;NOT&#x005F;FOUND</b></code>](#chunk-not-found) \{#chunk-not-found\} 
+No chunk exists at the referenced coordinates.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>USER&#x005F;NOT&#x005F;AUTHENTICATED</b></code>](#user-not-authenticated) \{#user-not-authenticated\} 
+This client has no authenticated session on the server. Complete the UDP token handshake (or open the UDP proxy) before sending spatial messages.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>INVALID&#x005F;STATE&#x005F;DATA</b></code>](#invalid-state-data) \{#invalid-state-data\} 
+The state/payload bytes were invalid for this message type.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>USER&#x005F;NOT&#x005F;APP&#x005F;ADMIN</b></code>](#user-not-app-admin) \{#user-not-app-admin\} 
+Requires app-admin privileges (the 'manage&#x005F;apps' permission).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>GRID&#x005F;OUTSIDE&#x005F;ASSIGNMENT</b></code>](#grid-outside-assignment) \{#grid-outside-assignment\} 
+The target coordinates fall outside any grid assigned to the caller.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>NO&#x005F;MATCHING&#x005F;GRID&#x005F;ASSIGNMENT</b></code>](#no-matching-grid-assignment) \{#no-matching-grid-assignment\} 
+No grid assignment covers the referenced coordinates.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>INVALID&#x005F;GRID&#x005F;COORDINATES</b></code>](#invalid-grid-coordinates) \{#invalid-grid-coordinates\} 
+The grid coordinates were invalid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>GRID&#x005F;ALREADY&#x005F;EXISTS</b></code>](#grid-already-exists) \{#grid-already-exists\} 
+A grid already exists at these coordinates.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>GRID&#x005F;OVERLAPS&#x005F;EXISTING</b></code>](#grid-overlaps-existing) \{#grid-overlaps-existing\} 
+The requested grid overlaps an existing grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>GAMERTAG&#x005F;ALREADY&#x005F;EXISTS</b></code>](#gamertag-already-exists) \{#gamertag-already-exists\} 
+The requested gamertag is already taken.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>GRID&#x005F;NOT&#x005F;FOUND</b></code>](#grid-not-found) \{#grid-not-found\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>CANNOT&#x005F;DELETE&#x005F;DEFAULT&#x005F;WORLD&#x005F;GRID</b></code>](#cannot-delete-default-world-grid) \{#cannot-delete-default-world-grid\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>GRID&#x005F;HAS&#x005F;NESTED&#x005F;CHILDREN</b></code>](#grid-has-nested-children) \{#grid-has-nested-children\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>TOKEN&#x005F;EXPIRED</b></code>](#token-expired) \{#token-expired\} 
+The app-scoped gameplay token has expired. Refresh it (same app, via refreshAppToken) before it lapses, or re-portal through the Overworld for a fresh token, then re-authorize the realtime session.
+
+
+
+
+### Member Of
+
+[`CreateGridResponse`](/reference/graphql/types/objects/create-grid-response.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`DeleteGridResponse`](/reference/graphql/types/objects/delete-grid-response.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GenericErrorResponse`](/reference/graphql/types/objects/generic-error-response.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`TeleportResponse`](/reference/graphql/types/objects/teleport-response.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

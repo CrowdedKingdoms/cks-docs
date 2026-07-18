@@ -1,0 +1,35 @@
+---
+id: my-property-tokens
+title: myPropertyTokens
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+:::warning[DEPRECATED]
+
+Legacy donation/property-token data; these products are no longer purchasable. Retained for historical records.
+
+:::
+
+Returns the authenticated user's property-token balances (available, in use, and total). Requires a valid session token. LEGACY: property tokens are no longer purchasable; retained for historical display only.
+
+
+```graphql
+myPropertyTokens: UserPropertyTokenData! @deprecated
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UserPropertyTokenData</b></code>](/reference/graphql/types/objects/user-property-token-data.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Aggregated property-token balances for a user. LEGACY: property tokens are no longer purchasable. Returned by the deprecated myPropertyTokens query.

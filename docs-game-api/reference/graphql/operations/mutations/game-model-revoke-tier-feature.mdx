@@ -1,0 +1,39 @@
+---
+id: game-model-revoke-tier-feature
+title: gameModelRevokeTierFeature
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Revoke a feature key from an access tier. Requires app-admin ('manage&#x005F;apps'). Returns true if a grant was removed.
+
+
+```graphql
+gameModelRevokeTierFeature(
+  input: GrantTierFeatureInput!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelRevokeTierFeature.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GrantTierFeatureInput!</b></code>](/reference/graphql/types/inputs/grant-tier-feature-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, the tier id, and the feature key to revoke from that tier.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

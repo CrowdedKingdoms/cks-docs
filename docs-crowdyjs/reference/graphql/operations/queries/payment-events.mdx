@@ -1,0 +1,56 @@
+---
+id: payment-events
+title: paymentEvents
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Audit log of inbound payment-provider webhook events (used for idempotent reconciliation of checkouts), newest first. Restricted to super admins; requests from non-super-admins are rejected.
+
+
+```graphql
+paymentEvents(
+  limit: Int = 50
+  offset: Int = 0
+): PaymentEventsPage!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>paymentEvents.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+:::warning[DEPRECATED]
+
+Use paymentEventsConnection(first:, after:) instead. See /overview/pagination.
+
+:::
+
+Maximum number of events to return. Default 50; clamped to the range 1-200.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>paymentEvents.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+:::warning[DEPRECATED]
+
+Use paymentEventsConnection(first:, after:) instead. See /overview/pagination.
+
+:::
+
+Number of events to skip for offset/limit pagination. Default 0; negative values are treated as 0.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PaymentEventsPage</b></code>](/reference/graphql/types/objects/payment-events-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A page of payment webhook events with offset/limit pagination metadata.

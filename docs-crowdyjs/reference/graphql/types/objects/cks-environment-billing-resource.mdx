@@ -1,0 +1,93 @@
+---
+id: cks-environment-billing-resource
+title: CksEnvironmentBillingResource
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A billable cloud resource attributed to the environment, with its customer hourly price.
+
+
+```graphql
+type CksEnvironmentBillingResource {
+  id: String!
+  environmentId: String!
+  provider: String!
+  resourceId: String!
+  resourceName: String
+  componentKind: String!
+  region: String!
+  flavorName: String
+  status: String!
+  customerHourlyPriceCents: BigInt
+  currency: String!
+  observedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentBillingResource.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentBillingResource.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#environment-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentBillingResource.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentBillingResource.<b>resourceId</b></code>](#resource-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#resource-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentBillingResource.<b>resourceName</b></code>](#resource-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#resource-name\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentBillingResource.<b>componentKind</b></code>](#component-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#component-kind\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentBillingResource.<b>region</b></code>](#region)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#region\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentBillingResource.<b>flavorName</b></code>](#flavor-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#flavor-name\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentBillingResource.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentBillingResource.<b>customerHourlyPriceCents</b></code>](#customer-hourly-price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#customer-hourly-price-cents\} 
+Customer hourly price billed for this resource, in cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentBillingResource.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentBillingResource.<b>observedAt</b></code>](#observed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#observed-at\} 
+
+
+
+
+
+### Member Of
+
+[`CksEnvironmentDetail`](/reference/graphql/types/objects/cks-environment-detail.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

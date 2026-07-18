@@ -1,0 +1,39 @@
+---
+id: list-voxel-updates-by-distance
+title: listVoxelUpdatesByDistance
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lists recorded voxel edits for all chunks within a cubic (Chebyshev) radius of a center chunk, grouped per chunk and ordered by increasing distance, paginated over chunks. Requires a valid bearer token; app-scoped tokens are limited to their own app. Read-only.
+
+
+```graphql
+listVoxelUpdatesByDistance(
+  input: ListVoxelUpdatesByDistanceInput!
+): VoxelUpdatesByDistanceResponse!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>listVoxelUpdatesByDistance.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ListVoxelUpdatesByDistanceInput!</b></code>](/reference/graphql/types/inputs/list-voxel-updates-by-distance-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>VoxelUpdatesByDistanceResponse</b></code>](/reference/graphql/types/objects/voxel-updates-by-distance-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Result of listVoxelUpdatesByDistance: per-chunk groups of voxel edits ordered by increasing distance from the center, plus an echo of the pagination applied.

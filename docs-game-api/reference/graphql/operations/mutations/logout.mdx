@@ -1,0 +1,29 @@
+---
+id: logout
+title: logout
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Single-device logout: revokes the game token that authenticated this request by deleting its game&#x005F;tokens row. Returns true if a token was revoked, false if the request had no game token. Other devices/tokens are unaffected (use the Management API to revoke all devices). After this, the bearer token is rejected and any open UDP proxy session will no longer authorize new traffic.
+
+
+```graphql
+logout: Boolean!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

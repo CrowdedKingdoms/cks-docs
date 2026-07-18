@@ -1,0 +1,48 @@
+---
+id: voxel-coordinates-input
+title: VoxelCoordinatesInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Input form of a voxel position LOCAL to its chunk (see VoxelCoordinates). Signed 16-bit integers; in-bounds positions are 0-15 on each axis for a 16x16x16 chunk.
+
+
+```graphql
+input VoxelCoordinatesInput {
+  x: Int!
+  y: Int!
+  z: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>VoxelCoordinatesInput.<b>x</b></code>](#x)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#x\} 
+Local voxel X within the chunk (0-15 for in-bounds voxels).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>VoxelCoordinatesInput.<b>y</b></code>](#y)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#y\} 
+Local voxel Y within the chunk (0-15 for in-bounds voxels).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>VoxelCoordinatesInput.<b>z</b></code>](#z)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#z\} 
+Local voxel Z within the chunk (0-15 for in-bounds voxels).
+
+
+
+
+### Member Of
+
+[`TeleportRequestInput`](/reference/graphql/types/inputs/teleport-request-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpdateVoxelInput`](/reference/graphql/types/inputs/update-voxel-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`VoxelStateInput`](/reference/graphql/types/inputs/voxel-state-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`VoxelUpdateRequestInput`](/reference/graphql/types/inputs/voxel-update-request-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

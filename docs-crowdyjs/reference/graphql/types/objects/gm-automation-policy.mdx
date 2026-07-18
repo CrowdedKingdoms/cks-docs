@@ -1,0 +1,68 @@
+---
+id: gm-automation-policy
+title: GmAutomationPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Per-app guardrails / platform ceilings for autonomous processes.
+
+
+```graphql
+type GmAutomationPolicy {
+  appId: BigInt!
+  enabled: Boolean!
+  maxAutomations: Int!
+  minIntervalMs: Int!
+  maxFanout: Int!
+  maxCascadeDepth: Int!
+  globalRunsPerMinute: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationPolicy.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) the policy applies to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationPolicy.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+App-wide kill switch for all automations.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationPolicy.<b>maxAutomations</b></code>](#max-automations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-automations\} 
+Maximum number of automations the app may define.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationPolicy.<b>minIntervalMs</b></code>](#min-interval-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#min-interval-ms\} 
+Minimum allowed schedule interval (ms) floor.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationPolicy.<b>maxFanout</b></code>](#max-fanout)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-fanout\} 
+Maximum fan-out targets per run.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationPolicy.<b>maxCascadeDepth</b></code>](#max-cascade-depth)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-cascade-depth\} 
+Maximum event-trigger cascade depth.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationPolicy.<b>globalRunsPerMinute</b></code>](#global-runs-per-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#global-runs-per-minute\} 
+Maximum aggregate automation runs per minute for the app.
+
+
+
+
+### Returned By
+
+[`gameModelAutomationPolicy`](/reference/graphql/operations/queries/game-model-automation-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`gameModelSetAutomationPolicy`](/reference/graphql/operations/mutations/game-model-set-automation-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

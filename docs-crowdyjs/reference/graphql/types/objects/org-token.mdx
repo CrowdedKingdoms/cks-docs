@@ -1,0 +1,88 @@
+---
+id: org-token
+title: OrgToken
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type OrgToken {
+  orgTokenId: BigInt!
+  orgId: BigInt!
+  label: String
+  environmentId: String
+  kind: String!
+  isActive: Boolean!
+  expiresAt: DateTime
+  lastUsedAt: DateTime
+  revokedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>orgTokenId</b></code>](#org-token-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-token-id\} 
+Unique token id (primary key, BigInt as string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization that owns this token (BigInt as string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#label\} 
+Optional human-readable label.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#environment-id\} 
+For 'service' tokens, the environment id (UUID) the token is scoped to; null for user-minted tokens.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#kind\} 
+'user&#x005F;minted' (human-created) or 'service' (minted by the control plane for per-tenant game-apis).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>isActive</b></code>](#is-active)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-active\} 
+False once revoked; inactive tokens cannot authenticate.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+Optional expiry timestamp; null means the token never expires.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>lastUsedAt</b></code>](#last-used-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-used-at\} 
+When the token last authenticated a request, if ever.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>revokedAt</b></code>](#revoked-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#revoked-at\} 
+When the token was revoked, if it has been.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the token was created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When the token was last updated.
+
+
+
+
+### Returned By
+
+[`orgTokens`](/reference/graphql/operations/queries/org-tokens.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`updateOrgToken`](/reference/graphql/operations/mutations/update-org-token.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

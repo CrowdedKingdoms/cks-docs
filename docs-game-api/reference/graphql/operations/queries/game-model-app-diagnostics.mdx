@@ -1,0 +1,39 @@
+---
+id: game-model-app-diagnostics
+title: gameModelAppDiagnostics
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A snapshot of an app's game-model footprint and recent activity: container/property/edge/session/function/automation row counts, total + 24h event volume, failed + automation-driven invocations, and the most-invoked functions. Helps developers understand what is in their game and their database. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelAppDiagnostics(
+  appId: BigInt!
+): GmAppDiagnostics!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAppDiagnostics.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) to diagnose.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmAppDiagnostics</b></code>](/reference/graphql/types/objects/gm-app-diagnostics.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A snapshot of an app's game-model footprint and recent activity: row counts in the database plus invocation activity. Helps developers understand what is in their game and their database.

@@ -1,0 +1,53 @@
+---
+id: connection-page-info
+title: ConnectionPageInfo
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Relay-style pagination metadata for a connection.
+
+
+```graphql
+type ConnectionPageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ConnectionPageInfo.<b>hasNextPage</b></code>](#has-next-page)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#has-next-page\} 
+True if more edges exist after `endCursor`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ConnectionPageInfo.<b>hasPreviousPage</b></code>](#has-previous-page)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#has-previous-page\} 
+True if edges exist before `startCursor`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ConnectionPageInfo.<b>startCursor</b></code>](#start-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#start-cursor\} 
+Opaque cursor of the first edge in this page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ConnectionPageInfo.<b>endCursor</b></code>](#end-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#end-cursor\} 
+Opaque cursor of the last edge in this page; pass as `after`.
+
+
+
+
+### Member Of
+
+[`ActorsConnection`](/reference/graphql/types/objects/actors-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AppsConnection`](/reference/graphql/types/objects/apps-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AppUserAccessConnection`](/reference/graphql/types/objects/app-user-access-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CheckoutsConnection`](/reference/graphql/types/objects/checkouts-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GameModelEventsConnection`](/reference/graphql/types/objects/game-model-events-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PaymentEventsConnection`](/reference/graphql/types/objects/payment-events-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`UsersConnection`](/reference/graphql/types/objects/users-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`VoxelUpdateHistoryConnection`](/reference/graphql/types/objects/voxel-update-history-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`WalletTransactionsConnection`](/reference/graphql/types/objects/wallet-transactions-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

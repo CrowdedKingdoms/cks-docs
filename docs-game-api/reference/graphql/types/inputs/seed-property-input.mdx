@@ -1,0 +1,48 @@
+---
+id: seed-property-input
+title: SeedPropertyInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An initial property value for a seeded container.
+
+
+```graphql
+input SeedPropertyInput {
+  key: String!
+  valueType: String!
+  valueJson: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedPropertyInput.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+Property key.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedPropertyInput.<b>valueType</b></code>](#value-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#value-type\} 
+Value type of the value being set.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SeedPropertyInput.<b>valueJson</b></code>](#value-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#value-json\} 
+JSON-encoded value.
+
+
+
+
+### Member Of
+
+[`CreateContainerInput`](/reference/graphql/types/inputs/create-container-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SeedContainerInput`](/reference/graphql/types/inputs/seed-container-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

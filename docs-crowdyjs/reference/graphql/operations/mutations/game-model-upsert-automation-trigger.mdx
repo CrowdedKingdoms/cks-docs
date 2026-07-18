@@ -1,0 +1,39 @@
+---
+id: game-model-upsert-automation-trigger
+title: gameModelUpsertAutomationTrigger
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create an event trigger that fires an automation in reaction to model activity (a function invocation, a direct property write, or a container creation). Matched in the API server post-commit. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelUpsertAutomationTrigger(
+  input: UpsertAutomationTriggerInput!
+): GmAutomationTrigger!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelUpsertAutomationTrigger.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpsertAutomationTriggerInput!</b></code>](/reference/graphql/types/inputs/upsert-automation-trigger-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, the target automation (by name), the model event, and optional filters.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmAutomationTrigger</b></code>](/reference/graphql/types/objects/gm-automation-trigger.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An event subscription that fires an automation in reaction to model activity (matched in the API server, not the DB).

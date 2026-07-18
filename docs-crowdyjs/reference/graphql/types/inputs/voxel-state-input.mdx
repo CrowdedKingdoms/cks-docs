@@ -1,0 +1,48 @@
+---
+id: voxel-state-input
+title: VoxelStateInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One per-voxel state entry to write to a chunk.
+
+
+```graphql
+input VoxelStateInput {
+  voxelCoord: VoxelCoordinatesInput!
+  voxelType: Int!
+  state: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>VoxelStateInput.<b>voxelCoord</b></code>](#voxel-coord)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinatesInput!</b></code>](/reference/graphql/types/inputs/voxel-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#voxel-coord\} 
+Local voxel position within the chunk (0-15 per axis).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>VoxelStateInput.<b>voxelType</b></code>](#voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-type\} 
+Voxel type id to set at this position (0-255).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>VoxelStateInput.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 
+BASE64-encoded binary state blob for this voxel; omit/null for no extra state.
+
+
+
+
+### Member Of
+
+[`ChunkUpdateInput`](/reference/graphql/types/inputs/chunk-update-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

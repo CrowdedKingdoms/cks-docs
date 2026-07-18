@@ -1,0 +1,73 @@
+---
+id: gm-automation-trigger
+title: GmAutomationTrigger
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An event subscription that fires an automation in reaction to model activity (matched in the API server, not the DB).
+
+
+```graphql
+type GmAutomationTrigger {
+  triggerId: String!
+  appId: BigInt!
+  automationId: String!
+  onEvent: String!
+  functionName: String
+  containerTypeName: String
+  propertyKey: String
+  debounceMs: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>triggerId</b></code>](#trigger-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-id\} 
+Unique trigger id (UUID).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>automationId</b></code>](#automation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-id\} 
+The automation this trigger fires.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>onEvent</b></code>](#on-event)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#on-event\} 
+The model event: function&#x005F;invoked | property&#x005F;changed | container&#x005F;created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+Filter: only this function name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>containerTypeName</b></code>](#container-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#container-type-name\} 
+Filter: only this container type.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>propertyKey</b></code>](#property-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#property-key\} 
+Filter: only this property key.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>debounceMs</b></code>](#debounce-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#debounce-ms\} 
+Debounce/coalesce window in ms.
+
+
+
+
+### Returned By
+
+[`gameModelAutomationTriggers`](/reference/graphql/operations/queries/game-model-automation-triggers.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`gameModelUpsertAutomationTrigger`](/reference/graphql/operations/mutations/game-model-upsert-automation-trigger.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

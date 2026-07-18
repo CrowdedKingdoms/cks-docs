@@ -1,0 +1,39 @@
+---
+id: org-environments
+title: orgEnvironments
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lists every environment owned by an organization, in any lifecycle state (including destroyed). Summary rows only — use orgEnvironment(slug) for full detail. Requires the 'view&#x005F;environments' org permission.
+
+
+```graphql
+orgEnvironments(
+  orgId: BigInt!
+): [CksEnvironment!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>orgEnvironments.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt) that owns the environments.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CksEnvironment</b></code>](/reference/graphql/types/objects/cks-environment.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A provisioned (or provisioning/destroyed) tenant environment. status tracks provisioning lifecycle; billingStatus tracks payment lifecycle — they are independent.

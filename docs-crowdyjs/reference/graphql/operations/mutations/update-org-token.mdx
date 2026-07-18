@@ -1,0 +1,43 @@
+---
+id: update-org-token
+title: updateOrgToken
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Updates an org token's metadata (label, expiry, active flag). Requires the 'manage&#x005F;tokens' permission on the token's org (super admins bypass). Does not rotate the secret value.
+
+
+```graphql
+updateOrgToken(
+  orgTokenId: BigInt!
+  input: UpdateOrgTokenInput!
+): OrgToken!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateOrgToken.<b>orgTokenId</b></code>](#org-token-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-token-id\} 
+Org token id (BigInt as string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updateOrgToken.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateOrgTokenInput!</b></code>](/reference/graphql/types/inputs/update-org-token-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgToken</b></code>](/reference/graphql/types/objects/org-token.mdx) <Badge class="badge badge--secondary " text="object"/>

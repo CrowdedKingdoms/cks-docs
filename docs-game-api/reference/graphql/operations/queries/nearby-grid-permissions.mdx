@@ -1,0 +1,39 @@
+---
+id: nearby-grid-permissions
+title: nearbyGridPermissions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List every grid overlapping a chunk-coordinate bounding box, each with the given user's effective permission keys on it. Useful for previewing what a user can do across a region (e.g. around their current position). Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+nearbyGridPermissions(
+  input: NearbyGridPermissionsInput!
+): [NearbyGridPermissions!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>nearbyGridPermissions.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>NearbyGridPermissionsInput!</b></code>](/reference/graphql/types/inputs/nearby-grid-permissions-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, the user, and the low/high chunk corners of the region to scan (corners are normalized).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>NearbyGridPermissions</b></code>](/reference/graphql/types/objects/nearby-grid-permissions.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A grid overlapping a scanned region, plus a user's effective permission keys on it (returned by nearbyGridPermissions).

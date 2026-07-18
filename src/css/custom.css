@@ -1,0 +1,206 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&display=swap');
+
+/**
+ * Crowded Kingdoms brand tokens for the docs site.
+ * Full guidelines: see brand.md and /brand/guidelines.html in this docs instance.
+ */
+:root {
+  --color-black: #030405;
+  --color-soft-black: #111315;
+  --color-white: #ffffff;
+  --color-bone: #f6f3ea;
+  /* Pantone 144 C — homepage ember (v2.1); was #ff4d1d / #ff6a3d */
+  --color-ember: #ed8b00;
+  --color-ember-hover: #d97706;
+  --color-ember-deep: #d96e1c;
+  --color-ember-text: #9a5300;
+  --color-gray: #70757d;
+  --color-border: #e4e6e8;
+
+  --ifm-color-primary: #030405;
+  --ifm-color-primary-dark: #030405;
+  --ifm-color-primary-darker: #030405;
+  --ifm-color-primary-darkest: #030405;
+  --ifm-color-primary-light: #111315;
+  --ifm-color-primary-lighter: #70757d;
+  --ifm-color-primary-lightest: #70757d;
+  --ifm-font-family-base: 'Inter', system-ui, sans-serif;
+  --ifm-heading-font-family: 'Montserrat', 'Avenir Next', system-ui, sans-serif;
+  --ifm-font-weight-bold: 800;
+  --ifm-background-color: #ffffff;
+  --ifm-navbar-background-color: #ffffff;
+  --ifm-footer-background-color: #030405;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(3, 4, 5, 0.06);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #ed8b00;
+  --ifm-color-primary-dark: #d97706;
+  --ifm-color-primary-darker: #d96e1c;
+  --ifm-color-primary-darkest: #9a5300;
+  --ifm-color-primary-light: #f0a020;
+  --ifm-color-primary-lighter: #f5b84a;
+  --ifm-color-primary-lightest: #f8c97a;
+  --ifm-background-color: #111315;
+  --ifm-navbar-background-color: #111315;
+  --ifm-footer-background-color: #030405;
+  --docusaurus-highlighted-code-line-bg: rgba(237, 139, 0, 0.12);
+}
+
+.navbar__title {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--color-black);
+}
+
+[data-theme='dark'] .navbar__title {
+  color: var(--color-white);
+}
+
+.navbar__link--active,
+.menu__link--active {
+  color: var(--color-ember-text) !important;
+}
+
+[data-theme='dark'] .navbar__link--active,
+[data-theme='dark'] .menu__link--active {
+  color: var(--color-ember) !important;
+}
+
+.footer--dark {
+  --ifm-footer-background-color: #030405;
+}
+
+.theme-doc-markdown img.doc-screenshot {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--ifm-global-radius);
+}
+
+.hero--primary {
+  --ifm-hero-background-color: #ffffff;
+  --ifm-hero-text-color: #030405;
+}
+
+[data-theme='dark'] .hero--primary {
+  --ifm-hero-background-color: #030405;
+  --ifm-hero-text-color: #ffffff;
+}
+
+.hero__title {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero__subtitle {
+  color: var(--color-gray);
+}
+
+[data-theme='dark'] .hero__subtitle {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* Secondary buttons elsewhere on the site */
+.button--secondary {
+  border: 1px solid var(--color-black);
+  color: var(--color-black);
+  background: transparent;
+}
+
+[data-theme='dark'] .button--secondary {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  background: transparent;
+}
+
+.button--secondary:hover {
+  background: var(--color-black);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .button--secondary:hover {
+  background: var(--color-ember);
+  border-color: var(--color-ember);
+  color: var(--color-black);
+}
+
+.card:hover {
+  border-color: var(--color-ember);
+}
+
+/*
+ * Wide nav: switch to hamburger before links overlap (JS breakpoint: 1100px).
+ * Mirrors Infima rules normally applied at max-width: 996px.
+ */
+@media screen and (max-width: 1100px) {
+  .navbar__toggle {
+    display: inherit;
+  }
+
+  .navbar__item {
+    display: none;
+  }
+
+  .navbar > .container,
+  .navbar > .container-fluid {
+    padding: 0;
+  }
+}
+
+/*
+ * Mobile nav drawer portaled to <body> (see theme/Navbar/MobileSidebar).
+ * Avoids Chrome/Safari stacking-context traps from rendering inside <nav>.
+ */
+html.cks-mobile-nav-open {
+  overflow: hidden;
+}
+
+.cks-mobile-nav-root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ifm-z-index-overlay);
+}
+
+.cks-mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+}
+
+.cks-mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--ifm-navbar-sidebar-width);
+  max-width: 100vw;
+  z-index: calc(var(--ifm-z-index-overlay) + 1);
+  overflow: hidden;
+}
+
+.cks-mobile-nav-drawer .navbar-sidebar {
+  position: relative;
+  top: auto;
+  left: auto;
+  bottom: auto;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  background-color: var(--ifm-navbar-background-color);
+  box-shadow: var(--ifm-global-shadow-md);
+}

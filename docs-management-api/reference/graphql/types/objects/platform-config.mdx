@@ -1,0 +1,48 @@
+---
+id: platform-config
+title: PlatformConfig
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Public platform discovery. Clients/SDKs read the shared game-api URL here to route apps deployed to the shared environment.
+
+
+```graphql
+type PlatformConfig {
+  sharedGameApiUrl: String
+  sharedGameApiWsUrl: String
+  freeAppsPerOrg: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlatformConfig.<b>sharedGameApiUrl</b></code>](#shared-game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#shared-game-api-url\} 
+Shared game-api HTTP/GraphQL root for shared-environment apps.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlatformConfig.<b>sharedGameApiWsUrl</b></code>](#shared-game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#shared-game-api-ws-url\} 
+Shared game-api WebSocket root (subscriptions / UDP proxy).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlatformConfig.<b>freeAppsPerOrg</b></code>](#free-apps-per-org)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#free-apps-per-org\} 
+Free shared app slots an org gets before usage is wallet-billed.
+
+
+
+
+### Returned By
+
+[`platformConfig`](/reference/graphql/operations/queries/platform-config.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,39 @@
+---
+id: request-to-join-channel
+title: requestToJoinChannel
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Request to join a request-only channel (creates a pending membership a manager can approve via addChannelMember). Behaves identically to joinChannel; named for request-policy UIs.
+
+
+```graphql
+requestToJoinChannel(
+  groupId: BigInt!
+): GroupMember!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>requestToJoinChannel.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The request-only channel to request to join.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GroupMember</b></code>](/reference/graphql/types/objects/group-member.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's membership in a group, including the roles assigned to them.

@@ -1,0 +1,43 @@
+---
+id: teleport-response
+title: TeleportResponse
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type TeleportResponse {
+  success: Boolean!
+  errorCode: UdpErrorCode!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>TeleportResponse.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#success\} 
+True when the teleport is authorized/accepted; false otherwise (inspect errorCode for the reason).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TeleportResponse.<b>errorCode</b></code>](#error-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UdpErrorCode!</b></code>](/reference/graphql/types/enums/udp-error-code.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#error-code\} 
+ErrorType enum: NO&#x005F;ERROR on success; INVALID&#x005F;APP&#x005F;ID for a non-positive appId; UNAUTHORIZED when the destination is the reserved sentinel (-6,-6,-6) or the user lacks the app "teleport" runtime permission.
+
+
+
+
+### Returned By
+
+[`teleportRequest`](/reference/graphql/operations/mutations/teleport-request.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

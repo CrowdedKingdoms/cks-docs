@@ -1,0 +1,39 @@
+---
+id: game-model-container-types
+title: gameModelContainerTypes
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List all container types defined for an app. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelContainerTypes(
+  appId: BigInt!
+): [GmContainerType!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainerTypes.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose container types to list.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmContainerType</b></code>](/reference/graphql/types/objects/gm-container-type.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A studio-defined container type: the schema for a kind of runtime entity (like a class).

@@ -1,0 +1,44 @@
+---
+id: app-by-slug
+title: appBySlug
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Look up a single app by its org slug + app slug (the marketplace URL path). PUBLIC: no authentication required, and NOT filtered by visibility/status, so it can resolve unlisted or draft apps when the exact slugs are known. Returns null if no matching app exists.
+
+
+```graphql
+appBySlug(
+  orgSlug: String!
+  appSlug: String!
+): App
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appBySlug.<b>orgSlug</b></code>](#org-slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-slug\} 
+URL slug of the owning organization (e.g. "acme" in the path /acme/my-game).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>appBySlug.<b>appSlug</b></code>](#app-slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-slug\} 
+URL slug of the app within the org (e.g. "my-game"). Unique per org.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>App</b></code>](/reference/graphql/types/objects/app.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A publishable application (game/experience) owned by an organization. Its discoverability is controlled by visibility and its lifecycle by status.

@@ -1,0 +1,68 @@
+---
+id: gm-seed-result
+title: GmSeedResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Summary of what a gameModelSeed call created.
+
+
+```graphql
+type GmSeedResult {
+  containerTypesCreated: Int!
+  propertyDefinitionsCreated: Int!
+  functionsCreated: Int!
+  containersCreated: Int!
+  edgesCreated: Int!
+  warnings: [String!]!
+  idMapJson: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSeedResult.<b>containerTypesCreated</b></code>](#container-types-created)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#container-types-created\} 
+Number of container types created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSeedResult.<b>propertyDefinitionsCreated</b></code>](#property-definitions-created)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#property-definitions-created\} 
+Number of property definitions created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSeedResult.<b>functionsCreated</b></code>](#functions-created)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#functions-created\} 
+Number of functions created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSeedResult.<b>containersCreated</b></code>](#containers-created)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#containers-created\} 
+Number of containers (instances) created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSeedResult.<b>edgesCreated</b></code>](#edges-created)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#edges-created\} 
+Number of edges created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSeedResult.<b>warnings</b></code>](#warnings)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#warnings\} 
+Non-fatal warnings produced while seeding.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSeedResult.<b>idMapJson</b></code>](#id-map-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id-map-json\} 
+JSON object mapping seed temp&#x005F;id -&#x003E; created container UUID.
+
+
+
+
+### Returned By
+
+[`gameModelSeed`](/reference/graphql/operations/mutations/game-model-seed.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

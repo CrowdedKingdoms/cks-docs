@@ -1,0 +1,48 @@
+---
+id: update-avatar-app-state-input
+title: UpdateAvatarAppStateInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input UpdateAvatarAppStateInput {
+  appId: BigInt!
+  avatarId: BigInt!
+  state: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAvatarAppStateInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App (game) id the state is scoped to. Required. BigInt sent as a decimal string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAvatarAppStateInput.<b>avatarId</b></code>](#avatar-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#avatar-id\} 
+Avatar whose per-app state to write; must be owned by the caller. Required. BigInt sent as a decimal string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAvatarAppStateInput.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 
+Per-app avatar state as base64-encoded binary. Send null (or omit) to clear it.
+
+
+
+
+### Member Of
+
+[`updateAvatarAppState`](/reference/graphql/operations/mutations/update-avatar-app-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

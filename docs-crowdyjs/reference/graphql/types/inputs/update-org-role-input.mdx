@@ -1,0 +1,48 @@
+---
+id: update-org-role-input
+title: UpdateOrgRoleInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input UpdateOrgRoleInput {
+  roleName: String
+  description: String
+  permissions: [String!]
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateOrgRoleInput.<b>roleName</b></code>](#role-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#role-name\} 
+New role name; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateOrgRoleInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+New description; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateOrgRoleInput.<b>permissions</b></code>](#permissions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permissions\} 
+If provided, replaces the entire permission set (empty array clears all); omit to leave unchanged.
+
+
+
+
+### Member Of
+
+[`updateOrgRole`](/reference/graphql/operations/mutations/update-org-role.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

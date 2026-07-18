@@ -1,0 +1,28 @@
+---
+id: my-donation-data
+title: myDonationData
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lifetime donation totals for the authenticated user, summed across every app. Requires a valid game token. NOTE: donations are management-owned, so in cks-game-api this throws ForbiddenException — call cks-management-api instead.
+
+
+```graphql
+myDonationData: UserDonationData!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UserDonationData</b></code>](/reference/graphql/types/objects/user-donation-data.mdx) <Badge class="badge badge--secondary " text="object"/>

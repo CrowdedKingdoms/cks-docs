@@ -1,0 +1,39 @@
+---
+id: game-host
+title: gameHost
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Returns the single elected host user for an app (game). Deterministic across all cks-game-api replicas behind the LB: the user whose earliest still-connected actor row was created first wins, with a uuid tiebreaker. Returns null when no actors exist for the app. Stale actors (no recent actorHeartbeat) are excluded once HOST&#x005F;ACTOR&#x005F;FRESHNESS&#x005F;SECONDS is enabled. Clients should poll; there is no host-change subscription in v1.
+
+
+```graphql
+gameHost(
+  appId: BigInt!
+): GameHost
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameHost.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (game) to elect the host for, as a BigInt decimal string. Election considers only this app’s currently-connected actors.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GameHost</b></code>](/reference/graphql/types/objects/game-host.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The elected host user of a game (app). Election is deterministic across all cks-game-api replicas: among actors that are still fresh (recently heartbeated), the user whose earliest actor was created first wins, with a uuid tiebreaker. Row lifecycle is owned by Buddy (cks-udp-api); liveness (updated&#x005F;at) is owned by game-api's actorHeartbeat mutation.

@@ -1,0 +1,48 @@
+---
+id: gm-function-notification
+title: GmFunctionNotification
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A declarative realtime notification the function emits via Buddy AFTER its transaction commits. Fenced by delivery mode (proximity / channel membership / target).
+
+
+```graphql
+type GmFunctionNotification {
+  kind: String!
+  emitAs: String
+  args: [GmNotificationArg!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionNotification.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#kind\} 
+Delivery mode: 'spatial' | 'channel' | 'actor'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionNotification.<b>emitAs</b></code>](#emit-as)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#emit-as\} 
+For kind 'spatial': 'server&#x005F;event' (default) | 'generic&#x005F;spatial' | 'actor&#x005F;update'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionNotification.<b>args</b></code>](#args)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmNotificationArg!]!</b></code>](/reference/graphql/types/objects/gm-notification-arg.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#args\} 
+Named argument expressions.
+
+
+
+
+### Member Of
+
+[`GmFunction`](/reference/graphql/types/objects/gm-function.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

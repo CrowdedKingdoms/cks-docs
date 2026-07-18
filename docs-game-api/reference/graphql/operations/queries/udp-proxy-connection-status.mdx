@@ -1,0 +1,29 @@
+---
+id: udp-proxy-connection-status
+title: udpProxyConnectionStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+UDP proxy session status for the game token on this request. Without a game token, returns connected: false. Does not open a session—use udpNotifications or connectUdpProxy.
+
+
+```graphql
+udpProxyConnectionStatus: UdpProxyConnectionStatus!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UdpProxyConnectionStatus</b></code>](/reference/graphql/types/objects/udp-proxy-connection-status.mdx) <Badge class="badge badge--secondary " text="object"/> 
+UDP proxy session for the game token on the request. Returned by udpProxyConnectionStatus and connectUdpProxy. Binary UDP layouts are documented in database/client-wire-formats.md.

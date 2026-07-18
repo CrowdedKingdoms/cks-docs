@@ -1,0 +1,128 @@
+---
+id: server-status
+title: ServerStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Live status and load/telemetry for one UDP game server (Buddy) in the fleet. Returned by serverWithLeastClients (which picks a low-load ReadyForClients server). Throughput metrics are per-second samples from the last reporting window and are null until first reported.
+
+
+```graphql
+type ServerStatus {
+  serverId: ID!
+  ip4: String!
+  ip6: String!
+  clientPort: Int!
+  status: ServerState!
+  peers: Int!
+  clients: Int!
+  cpuPeakPct: Float
+  clientRecvMsgsPerSec: Float
+  clientRecvBytesPerSec: Float
+  clientSendMsgsPerSec: Float
+  clientSendBytesPerSec: Float
+  peerRecvMsgsPerSec: Float
+  peerRecvBytesPerSec: Float
+  peerSendMsgsPerSec: Float
+  peerSendBytesPerSec: Float
+  clientSendIndividualMsgsPerSec: Float
+  updatedAt: DateTime!
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>serverId</b></code>](#server-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#server-id\} 
+Unique id of this game-server row in the fleet registry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>ip4</b></code>](#ip-4)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#ip-4\} 
+IPv4 address native clients send spatial UDP datagrams to (paired with clientPort). Preferred over ip6 for inter-host UDP in current deployments.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>ip6</b></code>](#ip-6)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#ip-6\} 
+IPv6 address of the UDP game server. Global IPv6 between hosts can be unroutable in some deployments, so native clients generally use ip4 + clientPort.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>clientPort</b></code>](#client-port)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-port\} 
+UDP port that native clients send spatial datagrams to (typically 9091). Browser clients do not use this directly — they reach the server through the UDP proxy / udpNotifications.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ServerState!</b></code>](/reference/graphql/types/enums/server-state.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+Current lifecycle state of this server (see ServerState). Only ReadyForClients servers accept new clients.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>peers</b></code>](#peers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#peers\} 
+Number of peer (server-to-server P2P) connections this server currently holds.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>clients</b></code>](#clients)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#clients\} 
+Number of game clients currently connected to this server. serverWithLeastClients uses this to balance load across the fleet.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>cpuPeakPct</b></code>](#cpu-peak-pct)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cpu-peak-pct\} 
+Peak CPU utilization percentage (0-100) observed in the last reporting window. Null until reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>clientRecvMsgsPerSec</b></code>](#client-recv-msgs-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-recv-msgs-per-sec\} 
+Messages per second received from clients in the last reporting window. Null until reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>clientRecvBytesPerSec</b></code>](#client-recv-bytes-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-recv-bytes-per-sec\} 
+Bytes per second received from clients in the last reporting window. Null until reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>clientSendMsgsPerSec</b></code>](#client-send-msgs-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-send-msgs-per-sec\} 
+Messages per second sent to clients in the last reporting window. Null until reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>clientSendBytesPerSec</b></code>](#client-send-bytes-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-send-bytes-per-sec\} 
+Bytes per second sent to clients in the last reporting window. Null until reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>peerRecvMsgsPerSec</b></code>](#peer-recv-msgs-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#peer-recv-msgs-per-sec\} 
+Messages per second received from peer servers (server-to-server P2P) in the last reporting window. Null until reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>peerRecvBytesPerSec</b></code>](#peer-recv-bytes-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#peer-recv-bytes-per-sec\} 
+Bytes per second received from peer servers (server-to-server P2P) in the last reporting window. Null until reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>peerSendMsgsPerSec</b></code>](#peer-send-msgs-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#peer-send-msgs-per-sec\} 
+Messages per second sent to peer servers (server-to-server P2P) in the last reporting window. Null until reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>peerSendBytesPerSec</b></code>](#peer-send-bytes-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#peer-send-bytes-per-sec\} 
+Bytes per second sent to peer servers (server-to-server P2P) in the last reporting window. Null until reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>clientSendIndividualMsgsPerSec</b></code>](#client-send-individual-msgs-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-send-individual-msgs-per-sec\} 
+Per-second rate of individually-addressed (single-actor) messages sent to clients in the last window, as opposed to spatial fan-out. Null until reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When this status row was last updated (server heartbeat). Use to judge how fresh the metrics/state are.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When this server was first registered in the fleet.
+
+
+
+
+### Returned By
+
+[`serverWithLeastClients`](/reference/graphql/operations/queries/server-with-least-clients.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,48 @@
+---
+id: actors-connection
+title: ActorsConnection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Relay-style cursor-paginated connection over the caller’s actors (Actor). Page with `first`/`after`; cursors are opaque.
+
+
+```graphql
+type ActorsConnection {
+  edges: [ActorEdge!]!
+  pageInfo: ConnectionPageInfo!
+  totalCount: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorsConnection.<b>edges</b></code>](#edges)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ActorEdge!]!</b></code>](/reference/graphql/types/objects/actor-edge.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#edges\} 
+Edges on this page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorsConnection.<b>pageInfo</b></code>](#page-info)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ConnectionPageInfo!</b></code>](/reference/graphql/types/objects/connection-page-info.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#page-info\} 
+Pagination metadata.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorsConnection.<b>totalCount</b></code>](#total-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#total-count\} 
+Total matching records across all pages, when known (null for sources that do not compute a total).
+
+
+
+
+### Returned By
+
+[`actorsConnection`](/reference/graphql/operations/queries/actors-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

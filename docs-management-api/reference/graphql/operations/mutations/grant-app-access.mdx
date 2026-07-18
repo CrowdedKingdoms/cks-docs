@@ -1,0 +1,39 @@
+---
+id: grant-app-access
+title: grantAppAccess
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Grant (or re-activate) a user's access to an app, optionally on a specific tier. Requires the 'manage&#x005F;access&#x005F;tiers' permission on the app (input.appId); super admins bypass. ENTITLEMENT CHANGE: upserts an active app&#x005F;user&#x005F;access row and notifies the game API, so the target user immediately gains that tier's runtime permissions in Buddy. Idempotent per (app,user): re-granting updates the tier and sets status back to active.
+
+
+```graphql
+grantAppAccess(
+  input: GrantAppAccessInput!
+): AppUserAccess!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>grantAppAccess.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GrantAppAccessInput!</b></code>](/reference/graphql/types/inputs/grant-app-access-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Who to grant access to, and on which tier.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppUserAccess</b></code>](/reference/graphql/types/objects/app-user-access.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's entitlement to a specific app: whether (and via which tier) they may access it. At most one row per (app, user).

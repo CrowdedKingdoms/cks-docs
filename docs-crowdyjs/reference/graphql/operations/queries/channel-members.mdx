@@ -1,0 +1,39 @@
+---
+id: channel-members
+title: channelMembers
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List the members of a channel (the subscriber set, including pending requests), each with their status and roles.
+
+
+```graphql
+channelMembers(
+  groupId: BigInt!
+): [GroupMember!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>channelMembers.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The channel whose members to list.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GroupMember</b></code>](/reference/graphql/types/objects/group-member.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's membership in a group, including the roles assigned to them.

@@ -1,0 +1,39 @@
+---
+id: login
+title: login
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Authenticates with email + password and starts a new session. Returns an AuthResponse whose `token` must be sent on subsequent requests as `Authorization: Bearer <token>`. Public (no auth required); throws on invalid credentials. If the account also has another verified sign-in method, the password must first be email-confirmed.
+
+
+```graphql
+login(
+  loginUserInput: LoginUserInput!
+): AuthResponse!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>login.<b>loginUserInput</b></code>](#login-user-input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>LoginUserInput!</b></code>](/reference/graphql/types/inputs/login-user-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#login-user-input\} 
+Wraps the login credentials (email + password). (Argument name is non-standard but required.)
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AuthResponse</b></code>](/reference/graphql/types/objects/auth-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Result of a successful login or registration: a session token plus the authenticated user.

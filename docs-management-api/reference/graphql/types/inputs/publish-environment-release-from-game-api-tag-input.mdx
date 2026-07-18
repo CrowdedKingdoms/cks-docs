@@ -1,0 +1,43 @@
+---
+id: publish-environment-release-from-game-api-tag-input
+title: PublishEnvironmentReleaseFromGameApiTagInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input PublishEnvironmentReleaseFromGameApiTagInput {
+  gameApiTag: String!
+  force: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishEnvironmentReleaseFromGameApiTagInput.<b>gameApiTag</b></code>](#game-api-tag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-tag\} 
+cks-game-api semver tag (e.g. v0.6.20).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishEnvironmentReleaseFromGameApiTagInput.<b>force</b></code>](#force)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#force\} 
+Overwrite an existing environment version row if it already exists.
+
+
+
+
+### Member Of
+
+[`publishEnvironmentReleaseFromGameApiTag`](/reference/graphql/operations/mutations/publish-environment-release-from-game-api-tag.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

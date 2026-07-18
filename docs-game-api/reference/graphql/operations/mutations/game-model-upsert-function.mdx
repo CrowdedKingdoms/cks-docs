@@ -1,0 +1,39 @@
+---
+id: game-model-upsert-function
+title: gameModelUpsertFunction
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create or update a studio-defined function: a named, sandboxed behavior with typed parameters, declared property mutations (expressions compiled to an AST server-side, never eval'd), an optional return expression, an invoke scope, and an invoke policy (authority rule tree). Idempotent on (app, name). Requires app-admin ('manage&#x005F;apps'). Returns the function plus any non-fatal static-analysis warnings.
+
+
+```graphql
+gameModelUpsertFunction(
+  input: UpsertFunctionInput!
+): GmFunction!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelUpsertFunction.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpsertFunctionInput!</b></code>](/reference/graphql/types/inputs/upsert-function-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The full function definition: app, name, optional container type binding, parameters, mutations, return expression, invoke scope, and invoke-policy JSON.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmFunction</b></code>](/reference/graphql/types/objects/gm-function.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A studio-defined function: a named, sandboxed behavior over containers (parameters, declared mutations, optional return, and an authority invoke policy).

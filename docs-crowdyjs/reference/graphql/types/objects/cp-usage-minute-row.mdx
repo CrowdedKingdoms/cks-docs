@@ -1,0 +1,58 @@
+---
+id: cp-usage-minute-row
+title: CpUsageMinuteRow
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type CpUsageMinuteRow {
+  minute: DateTime!
+  recvBytes: String!
+  sendBytes: String!
+  recvMsgs: String
+  sendMsgs: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CpUsageMinuteRow.<b>minute</b></code>](#minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#minute\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpUsageMinuteRow.<b>recvBytes</b></code>](#recv-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#recv-bytes\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpUsageMinuteRow.<b>sendBytes</b></code>](#send-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#send-bytes\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpUsageMinuteRow.<b>recvMsgs</b></code>](#recv-msgs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#recv-msgs\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpUsageMinuteRow.<b>sendMsgs</b></code>](#send-msgs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#send-msgs\} 
+
+
+
+
+
+### Member Of
+
+[`CpUsageSummary`](/reference/graphql/types/objects/cp-usage-summary.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

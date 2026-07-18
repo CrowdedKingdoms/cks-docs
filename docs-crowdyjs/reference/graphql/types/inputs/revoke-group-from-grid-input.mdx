@@ -1,0 +1,58 @@
+---
+id: revoke-group-from-grid-input
+title: RevokeGroupFromGridInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Revoke a group's (optionally one role's) grants on a grid (deletes from the grid&#x005F;group&#x005F;grants input table).
+
+
+```graphql
+input RevokeGroupFromGridInput {
+  appId: BigInt!
+  gridId: BigInt!
+  groupId: BigInt!
+  groupRoleId: BigInt
+  permissionKeys: [String!]
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>RevokeGroupFromGridInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RevokeGroupFromGridInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid to revoke on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RevokeGroupFromGridInput.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The group whose grants to revoke.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RevokeGroupFromGridInput.<b>groupRoleId</b></code>](#group-role-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#group-role-id\} 
+Optional role to target. Must match the role the grant was created with (omit to target the group-wide grant, i.e. the grant with no role).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RevokeGroupFromGridInput.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-keys\} 
+Optional subset of keys to revoke. Omit to revoke all of the group/role grants on this grid.
+
+
+
+
+### Member Of
+
+[`revokeGroupFromGrid`](/reference/graphql/operations/mutations/revoke-group-from-grid.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

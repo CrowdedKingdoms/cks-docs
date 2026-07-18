@@ -1,0 +1,49 @@
+---
+id: game-model-containers
+title: gameModelContainers
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List containers in an app, optionally filtered by container type and/or session. Requires a valid token.
+
+
+```graphql
+gameModelContainers(
+  appId: BigInt!
+  typeName: String
+  sessionId: String
+): [GmContainer!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose containers to list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>typeName</b></code>](#type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#type-name\} 
+Optional: only containers of this type. Omit for all types.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+Optional: only containers in this session. Omit for all (including app-global).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmContainer</b></code>](/reference/graphql/types/objects/gm-container.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A container: a runtime instance of a container type (optionally scoped to a session).

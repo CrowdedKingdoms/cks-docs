@@ -1,0 +1,43 @@
+---
+id: cp-usage-summary
+title: cpUsageSummary
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only (is&#x005F;operator). Per-minute usage summary for any environment by slug (operator equivalent of environmentUsageSummary, not org-scoped). Read-only.
+
+
+```graphql
+cpUsageSummary(
+  environmentSlug: String!
+  since: DateTime!
+): CpUsageSummary!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>cpUsageSummary.<b>environmentSlug</b></code>](#environment-slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#environment-slug\} 
+Slug of the environment to report on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>cpUsageSummary.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#since\} 
+Start of the time window (ISO-8601 DateTime) up to now.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CpUsageSummary</b></code>](/reference/graphql/types/objects/cp-usage-summary.mdx) <Badge class="badge badge--secondary " text="object"/>

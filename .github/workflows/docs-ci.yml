@@ -1,0 +1,43 @@
+name: Docs CI
+
+# Pull-request guard for the public docs site. Validates that the committed GraphQL
+# reference + content build cleanly (onBrokenLinks: 'throw' catches broken cross-links),
+# and that every public root field/argument in the published SDL carries a description.
+# Note: `npx docusaurus build` skips the npm `prebuild`, so it uses the committed
+# reference/SDL (the sibling API repos are not checked out here). Maintainers regenerate
+# the reference + SDL locally with `npm run build` (which runs graphql:gen + sdl:gen).
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-lint:
+    name: Build and lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint schema descriptions (published SDL)
+        run: npm run lint:schema
+
+      - name: Build docs (link + MDX gate)
+        run: npx docusaurus build
+
+      - name: Smoke-test example operations (skips without a sandbox)
+        run: npm run test:examples
+        env:
+          SANDBOX_GRAPHQL_URL: ${{ secrets.SANDBOX_GRAPHQL_URL }}
+          SANDBOX_TOKEN: ${{ secrets.SANDBOX_TOKEN }}

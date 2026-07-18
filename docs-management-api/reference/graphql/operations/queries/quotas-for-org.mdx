@@ -1,0 +1,38 @@
+---
+id: quotas-for-org
+title: quotasForOrg
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lists the org-scoped quota rules explicitly configured for an organization (excludes app-, tier-, and free-tier-default quotas). Use `effectiveQuota` to resolve the limit actually applied for a given metric. Requires the 'view&#x005F;usage' org permission.
+
+
+```graphql
+quotasForOrg(
+  orgId: BigInt!
+): [ServiceQuota!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>quotasForOrg.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt as a decimal string) whose quota rules to list.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ServiceQuota</b></code>](/reference/graphql/types/objects/service-quota.mdx) <Badge class="badge badge--secondary " text="object"/>

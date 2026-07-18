@@ -1,0 +1,48 @@
+---
+id: app-deployment-target
+title: AppDeploymentTarget
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Where an app runs: none (draft), shared (the shared game-api), or dedicated (a provisioned environment).
+
+
+```graphql
+enum AppDeploymentTarget {
+  NONE
+  SHARED
+  DEDICATED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>AppDeploymentTarget.<b>NONE</b></code>](#none) \{#none\} 
+Draft / unpublished: the app is not deployed to any runtime.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppDeploymentTarget.<b>SHARED</b></code>](#shared) \{#shared\} 
+Runs on the multi-tenant shared game-api (publishAppToShared).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppDeploymentTarget.<b>DEDICATED</b></code>](#dedicated) \{#dedicated\} 
+Runs on a dedicated, org-provisioned environment.
+
+
+
+
+### Member Of
+
+[`AppRuntimeState`](/reference/graphql/types/objects/app-runtime-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,43 @@
+---
+id: delete-grid-input
+title: DeleteGridInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Identifies a studio-created grid to delete. The default open-by-default world grid and grids that still contain nested child grids cannot be removed.
+
+
+```graphql
+input DeleteGridInput {
+  appId: BigInt!
+  gridId: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>DeleteGridInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeleteGridInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid to delete.
+
+
+
+
+### Member Of
+
+[`deleteGrid`](/reference/graphql/operations/mutations/delete-grid.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

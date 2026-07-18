@@ -1,0 +1,63 @@
+---
+id: group-member
+title: GroupMember
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A user's membership in a group, including the roles assigned to them.
+
+
+```graphql
+type GroupMember {
+  groupMemberId: BigInt!
+  groupId: BigInt!
+  userId: BigInt!
+  status: String!
+  roles: [GroupRole!]!
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupMember.<b>groupMemberId</b></code>](#group-member-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-member-id\} 
+Unique membership id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupMember.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The group this membership is in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupMember.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The member user id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupMember.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+Membership status: 'active' | 'pending' (awaiting approval) | 'banned'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupMember.<b>roles</b></code>](#roles)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GroupRole!]!</b></code>](/reference/graphql/types/objects/group-role.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#roles\} 
+Roles assigned to this member.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupMember.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the membership row was created.
+
+
+
+
+### Returned By
+
+[`addChannelMember`](/reference/graphql/operations/mutations/add-channel-member.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`addTeamMember`](/reference/graphql/operations/mutations/add-team-member.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`channelMembers`](/reference/graphql/operations/queries/channel-members.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`joinChannel`](/reference/graphql/operations/mutations/join-channel.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`joinTeam`](/reference/graphql/operations/mutations/join-team.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`requestToJoinChannel`](/reference/graphql/operations/mutations/request-to-join-channel.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`requestToJoinTeam`](/reference/graphql/operations/mutations/request-to-join-team.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setChannelMemberRoles`](/reference/graphql/operations/mutations/set-channel-member-roles.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setTeamMemberRoles`](/reference/graphql/operations/mutations/set-team-member-roles.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`teamMembers`](/reference/graphql/operations/queries/team-members.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

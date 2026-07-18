@@ -1,0 +1,68 @@
+{
+  "name": "cks-docs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Crowded Kingdom Studios documentation site (Docusaurus v3, multi-instance).",
+  "scripts": {
+    "docusaurus": "docusaurus",
+    "start": "docusaurus start",
+    "graphql:gen": "docusaurus graphql-to-doc:gql-mgmt --force && docusaurus graphql-to-doc:gql-game --force && docusaurus graphql-to-doc:gql-crowdyjs --force",
+    "sdl:gen": "node scripts/generate-sdl.mjs",
+    "lint:schema": "node scripts/lint-schema-descriptions.mjs",
+    "test:examples": "node scripts/test-examples.mjs",
+    "prebuild": "npm run graphql:gen && npm run sdl:gen",
+    "build": "docusaurus build",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "clear": "docusaurus clear",
+    "serve": "docusaurus serve",
+    "write-translations": "docusaurus write-translations",
+    "write-heading-ids": "docusaurus write-heading-ids",
+    "typecheck": "tsc",
+    "screenshots": "tsx scripts/capture-management-ui-screenshots.mts",
+    "test:e2e": "playwright test app-first-onboarding.spec.ts",
+    "demo:install": "npm run build --prefix ../CrowdyJS && npm install --prefix ../simple-web-demo",
+    "demo:dev": "npm run dev --prefix ../simple-web-demo",
+    "demo:verify": "npm run verify --prefix ../simple-web-demo"
+  },
+  "dependencies": {
+    "@docusaurus/core": "3.10.1",
+    "@docusaurus/faster": "3.10.1",
+    "@docusaurus/plugin-content-docs": "3.10.1",
+    "@docusaurus/preset-classic": "3.10.1",
+    "@easyops-cn/docusaurus-search-local": "^0.55.2",
+    "@graphql-markdown/diff": "^1.1.14",
+    "@graphql-markdown/docusaurus": "^1.34.0",
+    "@graphql-tools/graphql-file-loader": "^8.0.0",
+    "@mdx-js/react": "^3.0.0",
+    "clsx": "^2.0.0",
+    "graphql": "^16.9.0",
+    "prism-react-renderer": "^2.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "3.10.1",
+    "@docusaurus/tsconfig": "3.10.1",
+    "@docusaurus/types": "3.10.1",
+    "@playwright/test": "^1.52.0",
+    "@types/react": "^19.0.0",
+    "tsx": "^4.19.4",
+    "typescript": "~5.6.2"
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 3 chrome version",
+      "last 3 firefox version",
+      "last 5 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">=20.0"
+  }
+}

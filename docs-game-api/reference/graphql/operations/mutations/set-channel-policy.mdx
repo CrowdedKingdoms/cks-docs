@@ -1,0 +1,39 @@
+---
+id: set-channel-policy
+title: setChannelPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set who may create channels in an app and the default membership policy for new channels. Requires app-admin ('manage&#x005F;apps'). Affects future channel creation only, not existing channels.
+
+
+```graphql
+setChannelPolicy(
+  input: SetChannelPolicyInput!
+): AppGroupPolicy!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setChannelPolicy.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetChannelPolicyInput!</b></code>](/reference/graphql/types/inputs/set-channel-policy-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app plus the new creation policy, default membership policy, and optional member/group caps.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppGroupPolicy</b></code>](/reference/graphql/types/objects/app-group-policy.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Per-app, per-type policy controlling who may create groups of a type and the default membership policy of new groups.

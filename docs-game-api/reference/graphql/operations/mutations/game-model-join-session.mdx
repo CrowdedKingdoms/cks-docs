@@ -1,0 +1,39 @@
+---
+id: game-model-join-session
+title: gameModelJoinSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Join an existing session as a participant, optionally with a role. Requires a valid token and app access.
+
+
+```graphql
+gameModelJoinSession(
+  input: JoinSessionInput!
+): GmSessionParticipant!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelJoinSession.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JoinSessionInput!</b></code>](/reference/graphql/types/inputs/join-session-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, the session id to join, and an optional participant role.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmSessionParticipant</b></code>](/reference/graphql/types/objects/gm-session-participant.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's participation in a session.

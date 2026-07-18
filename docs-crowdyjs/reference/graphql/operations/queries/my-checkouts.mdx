@@ -1,0 +1,56 @@
+---
+id: my-checkouts
+title: myCheckouts
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lists the authenticated caller's own checkouts (newest first), across every org and app. Use this for a self-service payment history; use `checkouts` for the cross-tenant super-admin view. Requires an authenticated user.
+
+
+```graphql
+myCheckouts(
+  limit: Int = 50
+  offset: Int = 0
+): CheckoutsPage!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>myCheckouts.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+:::warning[DEPRECATED]
+
+Use myCheckoutsConnection(first:, after:) instead. See /overview/pagination.
+
+:::
+
+Maximum number of checkouts to return. Default 50; clamped to the range 1-200.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>myCheckouts.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+:::warning[DEPRECATED]
+
+Use myCheckoutsConnection(first:, after:) instead. See /overview/pagination.
+
+:::
+
+Number of checkouts to skip for offset/limit pagination. Default 0; negative values are treated as 0.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CheckoutsPage</b></code>](/reference/graphql/types/objects/checkouts-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A page of checkouts with offset/limit pagination metadata.

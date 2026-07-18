@@ -1,0 +1,63 @@
+---
+id: avatar-dto
+title: AvatarDTO
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type AvatarDTO {
+  avatarId: ID!
+  userId: ID!
+  name: String!
+  publicState: String
+  privateState: String
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AvatarDTO.<b>avatarId</b></code>](#avatar-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#avatar-id\} 
+Avatar id, serialized as a GraphQL ID (a numeric string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AvatarDTO.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+Owner user id, serialized as a GraphQL ID (a numeric string). Same underlying value as Avatar.userId, which is typed as BigInt.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AvatarDTO.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Human-readable avatar name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AvatarDTO.<b>publicState</b></code>](#public-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#public-state\} 
+Public state blob, base64-encoded binary; visible to all viewers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AvatarDTO.<b>privateState</b></code>](#private-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#private-state\} 
+Owner-only private state blob, base64-encoded binary. Returned by `myAvatars` (caller is the owner); stripped to null for non-owners on other queries.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AvatarDTO.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+Server timestamp (ISO-8601) when the avatar was created.
+
+
+
+
+### Returned By
+
+[`myAvatars`](/reference/graphql/operations/queries/my-avatars.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

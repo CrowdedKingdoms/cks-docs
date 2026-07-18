@@ -1,0 +1,58 @@
+---
+id: single-actor-message-input
+title: SingleActorMessageInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Input for sending an actor-to-actor message: a message delivered only to the single actor identified by targetUuid. It is spatially routed (the sender must know the destination actor’s chunk), but unlike normal spatial messages it is NOT broadcast to other nearby actors and has no distance/decay.
+
+
+```graphql
+input SingleActorMessageInput {
+  appId: BigInt!
+  chunk: ChunkCoordinatesInput!
+  targetUuid: String!
+  payload: String!
+  sequenceNumber: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SingleActorMessageInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The ID of the app the destination actor belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SingleActorMessageInput.<b>chunk</b></code>](#chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#chunk\} 
+The chunk coordinates of the DESTINATION actor (where the target currently is). The sender must know this.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SingleActorMessageInput.<b>targetUuid</b></code>](#target-uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#target-uuid\} 
+The DESTINATION actor’s UUID. The message is delivered only to the client that owns this actor. Must be exactly 32 bytes when encoded as UTF-8.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SingleActorMessageInput.<b>payload</b></code>](#payload)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payload\} 
+The message payload, base64-encoded. Opaque to the server; the sender’s identity (if needed) must be embedded here by the application.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SingleActorMessageInput.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number\} 
+Client-assigned correlation id for this datagram: a uint8 (0-255) that wraps at gameClientBootstrap.sequenceNumberModulo (256); defaults to 0 if omitted. For CORRELATION ONLY — it is NOT an idempotency key and the server does not dedupe replays. Echoed on any GenericErrorResponse for this send, delivered on the udpNotifications subscription.
+
+
+
+
+### Member Of
+
+[`sendSingleActorMessage`](/reference/graphql/operations/mutations/send-single-actor-message.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

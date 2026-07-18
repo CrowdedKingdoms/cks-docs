@@ -1,0 +1,39 @@
+---
+id: game-model-seed
+title: gameModelSeed
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Bulk-create game-model definitions (container types, property defs, functions) and optionally instances (containers + edges) in one transaction — used to initialize or import a model. Requires app-admin ('manage&#x005F;apps'). Returns counts created, warnings, and a map of seed temp&#x005F;id -&#x003E; created container UUID.
+
+
+```graphql
+gameModelSeed(
+  input: SeedGameModelInput!
+): GmSeedResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSeed.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SeedGameModelInput!</b></code>](/reference/graphql/types/inputs/seed-game-model-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, an optional target session for instances, and arrays of container types, property defs, functions, containers, and edges to create.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmSeedResult</b></code>](/reference/graphql/types/objects/gm-seed-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Summary of what a gameModelSeed call created.

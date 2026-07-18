@@ -1,0 +1,53 @@
+---
+id: get-chunk-input
+title: GetChunkInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Arguments for getChunk: selects a single chunk by app id and chunk coordinates, with optional LOD filtering.
+
+
+```graphql
+input GetChunkInput {
+  appId: BigInt!
+  coordinates: ChunkCoordinatesInput!
+  requestedLodLevels: [Int!]
+  includeAllLods: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GetChunkInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Id of the app that owns the chunk (decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GetChunkInput.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#coordinates\} 
+Address of the chunk to fetch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GetChunkInput.<b>requestedLodLevels</b></code>](#requested-lod-levels)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Int!]</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#requested-lod-levels\} 
+Optional list of LOD levels (each &#x003E;= 0) to include in the returned chunk's `lods`. Ignored when `includeAllLods` is true. Omit to apply no LOD filtering.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GetChunkInput.<b>includeAllLods</b></code>](#include-all-lods)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#include-all-lods\} 
+When true, return all available LODs and ignore `requestedLodLevels`.
+
+
+
+
+### Member Of
+
+[`getChunk`](/reference/graphql/operations/queries/get-chunk.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,58 @@
+---
+id: checkout-status
+title: CheckoutStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lifecycle state of a Checkout. Updated by webhook reconciliation, not by the redirect URL.
+
+
+```graphql
+enum CheckoutStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  EXPIRED
+  CANCELED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>PENDING</b></code>](#pending) \{#pending\} 
+Created and awaiting payment. Initial state right after createCheckout; the user has not finished paying yet.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>COMPLETED</b></code>](#completed) \{#completed\} 
+Payment succeeded and the purpose side effect was applied (e.g. wallet credited). Terminal success state.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>FAILED</b></code>](#failed) \{#failed\} 
+Payment attempt failed or was declined; see the checkout `error` field for details. Terminal failure state.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>EXPIRED</b></code>](#expired) \{#expired\} 
+The provider session expired before payment completed (see `expiresAt`). Terminal state.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>CANCELED</b></code>](#canceled) \{#canceled\} 
+The user abandoned or canceled the checkout before completion. Terminal state.
+
+
+
+
+### Member Of
+
+[`Checkout`](/reference/graphql/types/objects/checkout.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CheckoutFilterInput`](/reference/graphql/types/inputs/checkout-filter-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

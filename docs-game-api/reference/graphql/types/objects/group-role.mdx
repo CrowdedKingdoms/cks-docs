@@ -1,0 +1,72 @@
+---
+id: group-role
+title: GroupRole
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A role within a group (team/channel). Carries the group-management permission keys it grants (e.g. manage&#x005F;members), NOT world/runtime grid permissions.
+
+
+```graphql
+type GroupRole {
+  groupRoleId: BigInt!
+  groupId: BigInt!
+  roleName: String!
+  rank: Int!
+  isSystem: Boolean!
+  permissions: [String!]!
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupRole.<b>groupRoleId</b></code>](#group-role-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-role-id\} 
+Unique role id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupRole.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The group this role belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupRole.<b>roleName</b></code>](#role-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#role-name\} 
+Role display name (unique within the group).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupRole.<b>rank</b></code>](#rank)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#rank\} 
+Sort/precedence rank; higher is more senior.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupRole.<b>isSystem</b></code>](#is-system)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-system\} 
+True for built-in roles (e.g. 'leader') that cannot be renamed, re-ranked, or deleted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupRole.<b>permissions</b></code>](#permissions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permissions\} 
+Group permission key strings this role grants (e.g. manage&#x005F;members, manage&#x005F;roles, manage&#x005F;group, send&#x005F;messages).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GroupRole.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the role was created.
+
+
+
+
+### Returned By
+
+[`channelRoles`](/reference/graphql/operations/queries/channel-roles.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`createChannelRole`](/reference/graphql/operations/mutations/create-channel-role.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`createTeamRole`](/reference/graphql/operations/mutations/create-team-role.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`teamRoles`](/reference/graphql/operations/queries/team-roles.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`updateChannelRole`](/reference/graphql/operations/mutations/update-channel-role.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateTeamRole`](/reference/graphql/operations/mutations/update-team-role.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`GroupMember`](/reference/graphql/types/objects/group-member.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GroupMembership`](/reference/graphql/types/objects/group-membership.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

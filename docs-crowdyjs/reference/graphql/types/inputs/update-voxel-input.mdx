@@ -1,0 +1,58 @@
+---
+id: update-voxel-input
+title: UpdateVoxelInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Payload for updateVoxel: records (upserts) a single voxel edit in the voxel&#x005F;updates log for one chunk.
+
+
+```graphql
+input UpdateVoxelInput {
+  appId: BigInt!
+  coordinates: ChunkCoordinatesInput!
+  location: VoxelCoordinatesInput!
+  voxelType: Float!
+  state: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateVoxelInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Id of the app that owns the target chunk (decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateVoxelInput.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#coordinates\} 
+Address of the chunk that contains the voxel to edit.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateVoxelInput.<b>location</b></code>](#location)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinatesInput!</b></code>](/reference/graphql/types/inputs/voxel-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#location\} 
+Local voxel position within the chunk (0-15 per axis; validated to the signed 16-bit range).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateVoxelInput.<b>voxelType</b></code>](#voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-type\} 
+Voxel type id to write (0-255).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateVoxelInput.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 
+Optional BASE64-encoded binary state blob for the voxel; omit for none.
+
+
+
+
+### Member Of
+
+[`updateVoxel`](/reference/graphql/operations/mutations/update-voxel.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

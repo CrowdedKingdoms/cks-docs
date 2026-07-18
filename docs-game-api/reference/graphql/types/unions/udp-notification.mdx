@@ -1,0 +1,80 @@
+---
+id: udp-notification
+title: UdpNotification
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+All game-server messages delivered over the UDP proxy as GraphQL payloads. Subscribe to udpNotifications before or with sending mutations so responses and GenericErrorResponse (correlate via sequenceNumber) are not missed.
+
+
+```graphql
+union UdpNotification = ActorUpdateResponse | ActorUpdateNotification | VoxelUpdateResponse | VoxelUpdateNotification | ClientAudioNotification | ClientTextNotification | ClientEventNotification | ServerEventNotification | SingleActorMessageNotification | ChannelMessageNotification | GenericErrorResponse | RealtimeConnectionEvent
+```
+
+
+### Possible types
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ActorUpdateResponse</b></code>](/reference/graphql/types/objects/actor-update-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Response from the UDP game server for an actor update request. Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ActorUpdateNotification</b></code>](/reference/graphql/types/objects/actor-update-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when an actor (player or NPC) state is updated by another client or the server. Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>VoxelUpdateResponse</b></code>](/reference/graphql/types/objects/voxel-update-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Response from the UDP game server for a voxel update request. Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>VoxelUpdateNotification</b></code>](/reference/graphql/types/objects/voxel-update-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when a voxel (block) is updated by another client or the server. Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ClientAudioNotification</b></code>](/reference/graphql/types/objects/client-audio-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when another client sends an audio packet (voice chat). Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ClientTextNotification</b></code>](/reference/graphql/types/objects/client-text-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when another client sends a text message (chat). Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ClientEventNotification</b></code>](/reference/graphql/types/objects/client-event-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when another client sends a custom event. Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ServerEventNotification</b></code>](/reference/graphql/types/objects/server-event-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when the server sends a custom event. Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>SingleActorMessageNotification</b></code>](/reference/graphql/types/objects/single-actor-message-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when another actor sends you a direct actor-to-actor message (SINGLE&#x005F;ACTOR&#x005F;MESSAGE). Delivered only to the targeted actor via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ChannelMessageNotification</b></code>](/reference/graphql/types/objects/channel-message-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when a message is published to a channel you are a member of. Delivered over the udpNotifications subscription to every active channel member.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>GenericErrorResponse</b></code>](/reference/graphql/types/objects/generic-error-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Asynchronous error from the UDP game server for a previously sent datagram (e.g. a send&#x002A; mutation). Delivered as a member of the udpNotifications union, NOT as a GraphQL error on the mutation (which only reports whether the datagram was accepted for sending). Match it to the originating send via sequenceNumber and read errorCode for the reason. Note: not every failure produces one — some auth failures are dropped silently (see UdpErrorCode).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>RealtimeConnectionEvent</b></code>](/reference/graphql/types/objects/realtime-connection-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Realtime lifecycle/error event delivered on the udpNotifications subscription when a session cannot be opened or correctly scoped. It is a control frame — it carries no appId, so it is never dropped by the per-app fan-out filter — and it is terminal: the subscription completes immediately after emitting it, so the client must fix the cause and resubscribe. Branch on `code`; use `retryable` to decide whether retrying can succeed. A healthy subscription never emits this type; it yields game-server notifications/responses instead.
+
+
+
+
+### Returned By
+
+[`udpNotifications`](/reference/graphql/operations/subscriptions/udp-notifications.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>

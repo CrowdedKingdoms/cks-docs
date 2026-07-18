@@ -1,0 +1,44 @@
+---
+id: app-usage-projection
+title: appUsageProjection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Linear end-of-month egress projection for one shared app from calendar-month usage so far. Requires at least 3 elapsed days in the month before returning projected values. Requires the 'view&#x005F;usage' org permission.
+
+
+```graphql
+appUsageProjection(
+  orgId: BigInt!
+  appId: BigInt!
+): AppUsageProjection!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appUsageProjection.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt) that owns the app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>appUsageProjection.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Shared app id (BigInt) to project usage for.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppUsageProjection</b></code>](/reference/graphql/types/objects/app-usage-projection.mdx) <Badge class="badge badge--secondary " text="object"/> 
+End-of-month egress projection for one shared app from linear extrapolation of calendar-month usage so far.

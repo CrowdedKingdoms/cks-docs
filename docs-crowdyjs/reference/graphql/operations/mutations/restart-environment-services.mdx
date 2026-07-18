@@ -1,0 +1,39 @@
+---
+id: restart-environment-services
+title: restartEnvironmentServices
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+SSH-restarts the Buddy systemd service on the active UDP runtime VM. Symptom relief when server&#x005F;status heartbeat is stale (see CksBuddyHealth.isStale); does not replace cks-udp-api pool fixes. Requires the 'manage&#x005F;environments' org permission.
+
+
+```graphql
+restartEnvironmentServices(
+  input: RestartEnvironmentServicesInput!
+): CksEnvironmentChangeOrder!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>restartEnvironmentServices.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RestartEnvironmentServicesInput!</b></code>](/reference/graphql/types/inputs/restart-environment-services-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CksEnvironmentChangeOrder</b></code>](/reference/graphql/types/objects/cks-environment-change-order.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An asynchronous change order tracking a deploy / destroy / scaling pipeline for an environment. Returned by mutations so callers can poll completion.

@@ -1,0 +1,118 @@
+---
+slug: connecting
+sidebar_position: 4
+title: Connecting to your app
+---
+
+import DocImage from '@site/src/components/DocImage';
+
+# Connecting to your app
+
+After you create an app on the **shared platform**, connection details come from the **app dashboard** and from Management API queries — not from a dedicated environment detail page. Use those values in game clients, dedicated servers, and CI.
+
+## Dev tier (shared integration hosts)
+
+For early client integration on the **dev tier**, use the public shared hosts documented in **[Dev tier (client integration)](/management-ui/dev-tier)**:
+
+| Surface | URL |
+| ------- | --- |
+| Management UI | [https://app.dev.crowdedkingdoms.com](https://app.dev.crowdedkingdoms.com) |
+| Management API | [https://api.dev.crowdedkingdoms.com](https://api.dev.crowdedkingdoms.com) |
+| Shared Game API (HTTP) | `https://game.shared.dev.cks-env.com/graphql` |
+| Shared Game API (WebSocket) | `wss://game.shared.dev.cks-env.com/graphql` |
+
+Management hosts are shared across the dev tier; **all shared-platform apps on dev** use the same Game API host, scoped by `appId`. Each API also exposes a **GraphQL playground** at `/graphql` for manual testing.
+
+On test and production tiers, read `platformConfig.sharedGameApiUrl` or your app's `gameApiUrl` for the correct host — do not assume the dev URL.
+
+## Find your endpoints
+
+### From the app dashboard
+
+1. Sign in and open your org: `/orgs/:orgSlug`.
+2. Open **Apps** and select your app (`/orgs/:orgSlug/apps/:appSlug`).
+3. Copy **Game API** HTTP and WebSocket URLs from the connection section (they match the tier's shared endpoint).
+
+### From the Management API
+
+Public tier defaults (no auth):
+
+```graphql
+query {
+  platformConfig {
+    sharedGameApiUrl
+    sharedGameApiWsUrl
+  }
+}
+```
+
+Per-app routing (requires org access):
+
+```graphql
+query {
+  app(appId: "<your-app-id>") {
+    gameApiUrl
+    deploymentTarget
+    runtimeStatus
+  }
+}
+```
+
+**`mintAppToken`** also returns `gameApiUrl` and `gameApiWsUrl` — convenient when wiring clients right after sign-in.
+
+<DocImage src="/img/management-ui/07-environment-published-outputs.png" alt="Connection URLs on app dashboard" />
+
+:::info[Screenshot note]
+This screenshot shows the legacy environment detail layout. On the shared-only portal, the same URL fields appear on the **app dashboard**.
+:::
+
+## Connection URLs
+
+| URL | Used for |
+| --- | -------- |
+| Management API | Login and identity; returns the identity **session token** (gameplay tokens are minted separately — see [Portals & app-scoped tokens](/management-api/portals-and-app-tokens)) |
+| Game API (HTTP GraphQL) | Browser and server clients using the [Game API](/game-api/intro) |
+| Game API (WebSocket) | Real-time GraphQL subscriptions (same `/graphql` path with `wss://`) |
+| Replication / Buddy | UDP replication when enabled for your tier; see [Replication API](/replication-api/getting-started) |
+
+Do not commit live tokens or secrets to source control.
+
+## Configure game clients
+
+- **Browser games**: [CrowdyJS](/crowdyjs/intro) talks to the shared Game API GraphQL endpoint. Use `mintAppToken` (or [shared environment routing](/crowdyjs/shared-environment-routing)) for URLs and the app-scoped token.
+- **Dedicated servers / buddies**: Use Replication API documentation with Buddy endpoints returned by the Game API after assignment.
+- **Custom engines**: Call Game API GraphQL directly; authenticate with an **app-scoped token** for the app — mint one with `mintAppToken` from your identity session token (or the PKCE portal flow). The session token and org/service tokens are management-plane only and are rejected by the Game API. See [Portals & app-scoped tokens](/management-api/portals-and-app-tokens).
+
+The Management UI does not configure in-world data (grids, actors, chunks). That happens through the Game API after clients can reach the shared endpoint with a valid app token.
+
+## Org API tokens (automation)
+
+For server-side scripts (CI, custom studio backends):
+
+1. Open `/orgs/:orgSlug` and select the **Tokens** tab.
+2. Create an org API token with the permissions you need.
+3. Call Management API GraphQL with the token (same operations you can run in the UI when permitted).
+
+See [Account and org basics](/management-ui/readme) and the [Management API GraphQL reference](/management-api/reference/graphql-overview) for `createApp`, `mintAppToken`, and related types.
+
+Keep tokens secret; rotation and least-privilege labels are your responsibility.
+
+## Verify connectivity
+
+1. Confirm `app.runtimeStatus` is **`active`** (query `app` or `appRuntimeState` — see [Shared environment & billing](/management-api/shared-environment)).
+2. **Sign in** on the management API for the identity session token.
+3. **`mintAppToken(appId)`** → app-scoped token and game URLs.
+4. Call the shared Game API playground or run `{ __typename }` with `Authorization: Bearer <app-scoped token>`.
+5. For realtime: **`connectUdpProxy`** → `connected: true`; then actor updates or subscriptions (see [Dev tier → Verify connectivity](/management-ui/dev-tier)).
+
+If `runtimeStatus` is not `active`, check wallet balance, spend caps, or subscription state before debugging client code.
+
+## Related guides
+
+- **[Dev tier (client integration)](/management-ui/dev-tier)** — public dev hosts and smoke checklist.
+- **[Create your first app](/management-ui/create-your-first-app)** — register on the shared platform.
+- **[Apps on the shared platform](/management-ui/environments)** — routing, free tier, and app dashboard.
+- **[Shared environment & billing](/management-api/shared-environment)** — wallet, caps, and denial reasons.
+- **[Management API](/management-api/intro)** — programmatic control plane.
+- **[Game API](/game-api/intro)** — world and gameplay GraphQL.
+- **[Replication API](/replication-api/getting-started)** — Buddy / UDP replication.

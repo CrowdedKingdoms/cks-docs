@@ -1,0 +1,43 @@
+---
+id: authorize-app-input
+title: AuthorizeAppInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Approve (consent to) an app receiving app-scoped tokens via the Overworld portal.
+
+
+```graphql
+input AuthorizeAppInput {
+  appId: BigInt!
+  scopes: [String!]
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AuthorizeAppInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App to authorize.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AuthorizeAppInput.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scopes\} 
+Optional explicit scopes to grant (defaults to the app baseline).
+
+
+
+
+### Member Of
+
+[`authorizeApp`](/reference/graphql/operations/mutations/authorize-app.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

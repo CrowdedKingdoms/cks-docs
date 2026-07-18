@@ -1,0 +1,39 @@
+---
+id: portal-consent
+title: portalConsent
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Whether portaling the calling user into an app needs a consent prompt. Trusted (first-party) apps and already-granted apps return consentRequired=false. The Overworld calls this before createPortalAuthorizationCode. Requires a SESSION token.
+
+
+```graphql
+portalConsent(
+  appId: BigInt!
+): PortalConsentState!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>portalConsent.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric id of the app the caller wants to portal into (BigInt as a decimal string).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PortalConsentState</b></code>](/reference/graphql/types/objects/portal-consent-state.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Whether portaling into an app requires a consent prompt on the Overworld.

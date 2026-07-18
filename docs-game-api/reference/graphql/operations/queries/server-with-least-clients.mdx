@@ -1,0 +1,29 @@
+---
+id: server-with-least-clients
+title: serverWithLeastClients
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Pick a low-load game server for a native (direct-UDP) client to connect to: returns a random server from the least-loaded ~20% (by client count) of ReadyForClients servers to spread load. Requires a bearer game token; as a side effect it authorizes that token’s P2P session with the chosen Buddy so the native client’s spatial datagrams are accepted. Connect the native client to the returned ip4 and clientPort. Browser clients should instead use the UDP proxy (connectUdpProxy / udpNotifications) and do not need this.
+
+
+```graphql
+serverWithLeastClients: ServerStatus!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ServerStatus</b></code>](/reference/graphql/types/objects/server-status.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Live status and load/telemetry for one UDP game server (Buddy) in the fleet. Returned by serverWithLeastClients (which picks a low-load ReadyForClients server). Throughput metrics are per-second samples from the last reporting window and are null until first reported.

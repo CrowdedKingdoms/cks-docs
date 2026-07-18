@@ -1,0 +1,77 @@
+---
+id: gm-container
+title: GmContainer
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A container: a runtime instance of a container type (optionally scoped to a session).
+
+
+```graphql
+type GmContainer {
+  containerId: String!
+  appId: BigInt!
+  sessionId: String
+  typeName: String!
+  displayName: String!
+  description: String
+  ownerUserId: BigInt
+  metadataJson: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainer.<b>containerId</b></code>](#container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#container-id\} 
+Unique container id (UUID).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainer.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the container.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainer.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+Owning session id, or null for an app-global container.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainer.<b>typeName</b></code>](#type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#type-name\} 
+The container type name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainer.<b>displayName</b></code>](#display-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#display-name\} 
+Human-friendly display name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainer.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Optional description.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainer.<b>ownerUserId</b></code>](#owner-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#owner-user-id\} 
+The owning user, or null if unowned.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainer.<b>metadataJson</b></code>](#metadata-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#metadata-json\} 
+JSON object of developer metadata.
+
+
+
+
+### Returned By
+
+[`gameModelContainer`](/reference/graphql/operations/queries/game-model-container.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`gameModelContainers`](/reference/graphql/operations/queries/game-model-containers.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`gameModelCreateContainer`](/reference/graphql/operations/mutations/game-model-create-container.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gameModelSetProperty`](/reference/graphql/operations/mutations/game-model-set-property.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`GmTraverseResult`](/reference/graphql/types/objects/gm-traverse-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

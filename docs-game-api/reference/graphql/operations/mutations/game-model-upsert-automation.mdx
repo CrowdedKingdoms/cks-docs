@@ -1,0 +1,39 @@
+---
+id: game-model-upsert-automation
+title: gameModelUpsertAutomation
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create or update an autonomous process ("automation" / NPC): a server-driven entry-point function bound to a trigger (schedule | event | manual), an optional run-as identity, a target/candidate selector, and a per-automation safety budget. The entry-point function must be marked autonomousInvocable. Idempotent on (app, name). Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelUpsertAutomation(
+  input: UpsertAutomationInput!
+): GmAutomation!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelUpsertAutomation.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpsertAutomationInput!</b></code>](/reference/graphql/types/inputs/upsert-automation-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The automation definition: app, name, entry-point function, target mode + selector, trigger/schedule, run-as identity, and safety budget.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmAutomation</b></code>](/reference/graphql/types/objects/gm-automation.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An autonomous process (automation / NPC): a server-driven entry-point function bound to a trigger (schedule or model activity) plus a safety budget and circuit-breaker state.

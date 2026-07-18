@@ -1,0 +1,39 @@
+---
+id: exchange-portal-code
+title: exchangePortalCode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Exchange a one-time portal authorization code (with the matching PKCE verifier) for an app-scoped gameplay token. Public (the code + verifier authorize the call); called by the destination game at its own origin so the game never sees the player's session token.
+
+
+```graphql
+exchangePortalCode(
+  input: ExchangePortalCodeInput!
+): AppTokenResponse!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>exchangePortalCode.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ExchangePortalCodeInput!</b></code>](/reference/graphql/types/inputs/exchange-portal-code-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppTokenResponse</b></code>](/reference/graphql/types/objects/app-token-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A short-lived, app-scoped gameplay token (Overworld portal). Confined to a single app: usable only against that app's Game API + Buddy realtime surface (plus read-only `me` and same-app `refreshAppToken`). It CANNOT perform management operations and CANNOT mint tokens for other apps, so a game stack that receives it never gets the player's full identity session.

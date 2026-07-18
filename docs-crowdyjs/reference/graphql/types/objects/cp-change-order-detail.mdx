@@ -1,0 +1,48 @@
+---
+id: cp-change-order-detail
+title: CpChangeOrderDetail
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type CpChangeOrderDetail {
+  order: CpChangeOrder!
+  tasks: [CpTaskRow!]!
+  steps: [CpStepRow!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CpChangeOrderDetail.<b>order</b></code>](#order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CpChangeOrder!</b></code>](/reference/graphql/types/objects/cp-change-order.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#order\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpChangeOrderDetail.<b>tasks</b></code>](#tasks)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CpTaskRow!]!</b></code>](/reference/graphql/types/objects/cp-task-row.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#tasks\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpChangeOrderDetail.<b>steps</b></code>](#steps)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CpStepRow!]!</b></code>](/reference/graphql/types/objects/cp-step-row.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#steps\} 
+
+
+
+
+
+### Returned By
+
+[`cpChangeOrder`](/reference/graphql/operations/queries/cp-change-order.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

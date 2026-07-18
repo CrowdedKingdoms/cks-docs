@@ -1,0 +1,63 @@
+---
+id: grid-group-grant
+title: GridGroupGrant
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A single group/role -&#x003E; permission-key grant on a grid (one row of the grid&#x005F;group&#x005F;grants input table).
+
+
+```graphql
+type GridGroupGrant {
+  appId: BigInt!
+  gridId: BigInt!
+  groupId: BigInt!
+  groupRoleId: BigInt
+  permissionKey: String!
+  expiresAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GridGroupGrant.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridGroupGrant.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid this grant applies to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridGroupGrant.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The group this grant is for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridGroupGrant.<b>groupRoleId</b></code>](#group-role-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#group-role-id\} 
+Null means the grant applies to all members of the group.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridGroupGrant.<b>permissionKey</b></code>](#permission-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-key\} 
+The runtime permission key string granted to the group/role.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridGroupGrant.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+When the grant expires; null means it never expires.
+
+
+
+
+### Returned By
+
+[`assignGroupToGrid`](/reference/graphql/operations/mutations/assign-group-to-grid.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gridGroupGrants`](/reference/graphql/operations/queries/grid-group-grants.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`revokeGroupFromGrid`](/reference/graphql/operations/mutations/revoke-group-from-grid.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

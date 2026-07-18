@@ -1,0 +1,48 @@
+---
+id: grant-tier-feature-input
+title: GrantTierFeatureInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Grant or revoke a feature key for an access tier.
+
+
+```graphql
+input GrantTierFeatureInput {
+  appId: BigInt!
+  tierId: BigInt!
+  featureKey: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GrantTierFeatureInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GrantTierFeatureInput.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\} 
+The access tier id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GrantTierFeatureInput.<b>featureKey</b></code>](#feature-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#feature-key\} 
+The feature key to grant to (or revoke from) the tier.
+
+
+
+
+### Member Of
+
+[`gameModelGrantTierFeature`](/reference/graphql/operations/mutations/game-model-grant-tier-feature.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gameModelRevokeTierFeature`](/reference/graphql/operations/mutations/game-model-revoke-tier-feature.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -1,0 +1,39 @@
+---
+id: game-model-automations
+title: gameModelAutomations
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List the automations defined for an app. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelAutomations(
+  appId: BigInt!
+): [GmAutomation!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomations.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose automations to list.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmAutomation</b></code>](/reference/graphql/types/objects/gm-automation.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An autonomous process (automation / NPC): a server-driven entry-point function bound to a trigger (schedule or model activity) plus a safety budget and circuit-breaker state.

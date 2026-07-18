@@ -1,0 +1,39 @@
+---
+id: ingest-environment-version
+title: ingestEnvironmentVersion
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only (is&#x005F;operator). Ingests a release manifest into cks&#x005F;environment&#x005F;versions, making the version deployable, and writes an audit entry. Use force to overwrite an existing row.
+
+
+```graphql
+ingestEnvironmentVersion(
+  input: IngestEnvironmentVersionInput!
+): CpEnvironmentVersionRow!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>ingestEnvironmentVersion.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>IngestEnvironmentVersionInput!</b></code>](/reference/graphql/types/inputs/ingest-environment-version-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CpEnvironmentVersionRow</b></code>](/reference/graphql/types/objects/cp-environment-version-row.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Operator-facing view of one ingested (or git-only pending) environment release manifest.

@@ -1,0 +1,92 @@
+---
+id: chunk
+title: Chunk
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A persisted 16x16x16-voxel chunk (4096 voxels) of an app's voxel world. Holds the packed voxel-type grid (`voxels`), sparse per-voxel state overrides (`voxelStates`), an optional opaque chunk-level state blob (`chunkState`), and level-of-detail meshes (`lods`). Returned by getChunk/getChunksByDistance and written by updateChunk/updateChunkState/updateChunkLods.
+
+
+```graphql
+type Chunk {
+  chunkId: ID!
+  appId: ID!
+  coordinates: ChunkCoordinates!
+  voxels: String
+  voxelStates: [VoxelState!]!
+  owner: ID
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  chunkState: String
+  cdnUploadedAt: DateTime
+  lods: [LodData!]
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>chunkId</b></code>](#chunk-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#chunk-id\} 
+Server-assigned unique chunk id (decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Id of the app that owns this chunk (decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#coordinates\} 
+This chunk's address in the app's world grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>voxels</b></code>](#voxels)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#voxels\} 
+BASE64-encoded binary blob of the dense voxel-type grid. When present, the DECODED buffer is exactly 4096 bytes: one unsigned byte (voxel type 0-255) per voxel, indexed as x + y&#x002A;16 + z&#x002A;256 with x,y,z in 0-15. Null when the chunk has no voxel grid yet. Decode from base64 before reading.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>voxelStates</b></code>](#voxel-states)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[VoxelState!]!</b></code>](/reference/graphql/types/objects/voxel-state.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#voxel-states\} 
+Sparse list of per-voxel state overrides (e.g. rotation, atlas, flags) for voxels that need more than a plain type byte. Empty when no voxel carries extra state.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>owner</b></code>](#owner)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#owner\} 
+User id (decimal string) of the last writer of this chunk, or null if unknown.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+Timestamp when this chunk row was first created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+Timestamp of the most recent write to this chunk.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>chunkState</b></code>](#chunk-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#chunk-state\} 
+BASE64-encoded opaque binary blob holding chunk-LEVEL state (distinct from per-voxel state). Decode from base64; null when unset. Written only via updateChunkState and preserved by updateChunk/updateChunkLods.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>cdnUploadedAt</b></code>](#cdn-uploaded-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cdn-uploaded-at\} 
+Timestamp the chunk's binary (d2.bin) was last synced to the CDN/S3, or null if it has never been uploaded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>lods</b></code>](#lods)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[LodData!]</b></code>](/reference/graphql/types/objects/lod-data.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#lods\} 
+Level-of-detail (LOD) entries for this chunk (coarser sampled representations), or null if none. Each entry is keyed by integer level (0 = finest) and carries a base64-encoded binary blob.
+
+
+
+
+### Returned By
+
+[`getChunk`](/reference/graphql/operations/queries/get-chunk.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`updateChunk`](/reference/graphql/operations/mutations/update-chunk.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateChunkLods`](/reference/graphql/operations/mutations/update-chunk-lods.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateChunkState`](/reference/graphql/operations/mutations/update-chunk-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`ChunksByDistanceResponse`](/reference/graphql/types/objects/chunks-by-distance-response.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

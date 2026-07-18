@@ -1,0 +1,29 @@
+---
+id: graphql-servers
+title: graphqlServers
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List every registered GraphQL API server (both management-api and game-api kinds), regardless of health/state. No authentication required. For service discovery; to route clients, prefer activeGraphQLServers (filters to healthy servers).
+
+
+```graphql
+graphqlServers: [GraphQLServer!]!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GraphQLServer</b></code>](/reference/graphql/types/objects/graph-qlserver.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A registered GraphQL API server instance in the fleet (either a management-api or a game-api, see `kind`), with reachability addresses and basic host telemetry. Returned by graphqlServers (all) and activeGraphQLServers (only ReadyForClients). Use this for service discovery; realtime/UDP play still goes through the game-api UDP proxy.

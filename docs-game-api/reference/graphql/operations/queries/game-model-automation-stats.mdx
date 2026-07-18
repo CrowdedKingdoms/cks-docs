@@ -1,0 +1,44 @@
+---
+id: game-model-automation-stats
+title: gameModelAutomationStats
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Aggregate automation activity for an app over a recent window (default 60 minutes, max 1440): total/failed runs, failure rate, runs/min, invocations/mutations/compute, and a per-automation breakdown with current circuit state. The "what are my NPCs doing" dashboard query. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelAutomationStats(
+  appId: BigInt!
+  windowMinutes: Int = 60
+): GmAutomationStats!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationStats.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose automation activity to summarize.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationStats.<b>windowMinutes</b></code>](#window-minutes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#window-minutes\} 
+Look-back window in minutes (default 60, max 1440).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmAutomationStats</b></code>](/reference/graphql/types/objects/gm-automation-stats.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Aggregate automation activity for an app over a recent window: throughput, failure rate, compute, and a per-automation breakdown. The "what are my NPCs doing" view.

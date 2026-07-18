@@ -1,0 +1,43 @@
+---
+id: payment-events-page
+title: PaymentEventsPage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A page of payment webhook events with offset/limit pagination metadata.
+
+
+```graphql
+type PaymentEventsPage {
+  items: [PaymentEventRecord!]!
+  pageInfo: PageInfo!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PaymentEventsPage.<b>items</b></code>](#items)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[PaymentEventRecord!]!</b></code>](/reference/graphql/types/objects/payment-event-record.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#items\} 
+The webhook events on this page, ordered newest first.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PaymentEventsPage.<b>pageInfo</b></code>](#page-info)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PageInfo!</b></code>](/reference/graphql/types/objects/page-info.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#page-info\} 
+Offset/limit pagination metadata (totalCount, limit, offset) for this result set.
+
+
+
+
+### Returned By
+
+[`paymentEvents`](/reference/graphql/operations/queries/payment-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

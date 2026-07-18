@@ -1,0 +1,93 @@
+---
+id: upsert-function-input
+title: UpsertFunctionInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create or update a studio-defined function. Upsert key is (app, name).
+
+
+```graphql
+input UpsertFunctionInput {
+  appId: BigInt!
+  name: String!
+  containerTypeName: String
+  description: String
+  returnType: String
+  parameters: [FunctionParamInput!]
+  mutations: [FunctionMutationInput!]
+  returnExpression: String
+  invokeScope: String
+  invokePolicyJson: String
+  autonomousInvocable: Boolean
+  notifications: [FunctionNotificationInput!]
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertFunctionInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the function.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertFunctionInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Function name (unique per app). Used to invoke it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertFunctionInput.<b>containerTypeName</b></code>](#container-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#container-type-name\} 
+Optional container type to bind the function to (omit for a global function).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertFunctionInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Optional description of the function.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertFunctionInput.<b>returnType</b></code>](#return-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#return-type\} 
+Optional declared return value type.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertFunctionInput.<b>parameters</b></code>](#parameters)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[FunctionParamInput!]</b></code>](/reference/graphql/types/inputs/function-param-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#parameters\} 
+Typed parameters the function accepts.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertFunctionInput.<b>mutations</b></code>](#mutations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[FunctionMutationInput!]</b></code>](/reference/graphql/types/inputs/function-mutation-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#mutations\} 
+The property writes the function performs (applied atomically when invoked).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertFunctionInput.<b>returnExpression</b></code>](#return-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#return-expression\} 
+Optional expression whose value becomes the invoke result.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertFunctionInput.<b>invokeScope</b></code>](#invoke-scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-scope\} 
+player | server | internal
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertFunctionInput.<b>invokePolicyJson</b></code>](#invoke-policy-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-policy-json\} 
+JSON-encoded invoke-policy rule tree (authority requirements).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertFunctionInput.<b>autonomousInvocable</b></code>](#autonomous-invocable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#autonomous-invocable\} 
+Opt-in: allow an autonomous process (automation/NPC) to use this function as an entry point. Defaults to false. Players are unaffected; this only enables server-driven invocation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertFunctionInput.<b>notifications</b></code>](#notifications)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[FunctionNotificationInput!]</b></code>](/reference/graphql/types/inputs/function-notification-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#notifications\} 
+Declarative realtime notifications the function emits via Buddy AFTER it commits. Players and automations (NPCs) emit identically; fenced by delivery mode.
+
+
+
+
+### Member Of
+
+[`gameModelUpsertFunction`](/reference/graphql/operations/mutations/game-model-upsert-function.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

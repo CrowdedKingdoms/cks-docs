@@ -1,0 +1,44 @@
+---
+id: archive-app
+title: archiveApp
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Soft-delete an app by setting status=ARCHIVED. The row is retained (NOT hard-deleted) and is excluded from the public marketplace. REVERSIBLE: call updateApp to set status back to DRAFT or LIVE. Requires the 'manage&#x005F;apps' permission on the app; super admins bypass. Throws if the app id does not exist.
+
+
+```graphql
+archiveApp(
+  appId: BigInt!
+  idempotencyKey: String
+): App!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>archiveApp.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric id of the app to archive (soft delete).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>archiveApp.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key. Recommended for retries: replaying with the same key and identical arguments returns the first result instead of re-applying; the same key with different arguments returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>App</b></code>](/reference/graphql/types/objects/app.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A publishable application (game/experience) owned by an organization. Its discoverability is controlled by visibility and its lifecycle by status.

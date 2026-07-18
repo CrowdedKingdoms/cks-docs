@@ -1,0 +1,44 @@
+---
+id: org-usage-summary
+title: orgUsageSummary
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Org-level rollup of replication/GraphQL byte totals and GraphQL op counts across all apps in the organization for the time window. Read-only reporting. Requires the 'view&#x005F;usage' org permission.
+
+
+```graphql
+orgUsageSummary(
+  orgId: BigInt!
+  since: DateTime
+): OrgUsageSummary!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>orgUsageSummary.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt) to roll up usage for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>orgUsageSummary.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#since\} 
+Start of the aggregation window (ISO-8601 DateTime or relative duration such as 1d, 7d, 1h) up to now. Defaults to 7d when omitted.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgUsageSummary</b></code>](/reference/graphql/types/objects/org-usage-summary.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Org-level rollup of replication/GraphQL byte totals and GraphQL op counts across all apps in the organization for the time window.

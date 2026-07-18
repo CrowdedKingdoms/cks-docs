@@ -1,0 +1,63 @@
+---
+id: app-shared-subscription
+title: AppSharedSubscription
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+@deprecated Legacy paid shared-environment subscription for an app slot. Null when the app has none.
+
+
+```graphql
+type AppSharedSubscription {
+  appId: BigInt!
+  orgId: BigInt!
+  planId: BigInt
+  provider: String
+  status: String!
+  currentPeriodEnd: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App id (BigInt).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Owning organization id (BigInt).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>planId</b></code>](#plan-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#plan-id\} 
+Subscribed plan id (BigInt). Null when not on a paid plan.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provider\} 
+Payment provider backing the subscription, e.g. 'stripe'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+Subscription status, e.g. 'active', 'past&#x005F;due', or 'canceled'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>currentPeriodEnd</b></code>](#current-period-end)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#current-period-end\} 
+End of the current paid period (when access lapses if not renewed).
+
+
+
+
+### Returned By
+
+[`appSharedSubscription`](/reference/graphql/operations/queries/app-shared-subscription.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`cancelSharedSubscription`](/reference/graphql/operations/mutations/cancel-shared-subscription.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

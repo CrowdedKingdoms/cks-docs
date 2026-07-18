@@ -1,0 +1,9 @@
+{
+  "label": "Player Services",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "title": "Player Services",
+    "description": "Voice chat, teams, avatars, and saved progress for the players in your game."
+  }
+}

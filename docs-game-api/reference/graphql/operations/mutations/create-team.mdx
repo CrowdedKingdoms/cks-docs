@@ -1,0 +1,39 @@
+---
+id: create-team
+title: createTeam
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a team. Whether the caller may create one is governed by the per-app team policy (app&#x005F;group&#x005F;policies: admin | member | anyone). The caller becomes the owner and is granted a system 'leader' role holding every team permission. New teams default to the app's default membership policy unless overridden.
+
+
+```graphql
+createTeam(
+  input: CreateTeamInput!
+): Group!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createTeam.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateTeamInput!</b></code>](/reference/graphql/types/inputs/create-team-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, the team name, and optional description / membership policy override.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Group</b></code>](/reference/graphql/types/objects/group.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A generic group. `groupType` discriminates teams ('team'), channels ('channel'), and grid-access groups ('grid').

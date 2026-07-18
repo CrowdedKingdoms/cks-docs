@@ -1,0 +1,39 @@
+---
+id: create-portal-authorization-code
+title: createPortalAuthorizationCode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a one-time, PKCE-bound portal authorization code (browser handoff). The Overworld identity origin (holding the SESSION token) calls this; redirect the player to the destination game carrying the code, which the game exchanges via exchangePortalCode. Requires a SESSION token.
+
+
+```graphql
+createPortalAuthorizationCode(
+  input: CreatePortalAuthorizationCodeInput!
+): PortalAuthorizationCode!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createPortalAuthorizationCode.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreatePortalAuthorizationCodeInput!</b></code>](/reference/graphql/types/inputs/create-portal-authorization-code-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PortalAuthorizationCode</b></code>](/reference/graphql/types/objects/portal-authorization-code.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A one-time portal authorization code. Redirect the player to `redirectUri` carrying `code`; the destination game exchanges it (with its PKCE verifier) via exchangePortalCode for an app token. Single-use and short-lived.

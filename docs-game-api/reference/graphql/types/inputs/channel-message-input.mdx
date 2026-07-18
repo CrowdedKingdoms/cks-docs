@@ -1,0 +1,53 @@
+---
+id: channel-message-input
+title: ChannelMessageInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Input for publishing a message to a channel. Delivered to every active member of the channel (regardless of location), not chunk-routed. The sender must have the channel send&#x005F;messages permission.
+
+
+```graphql
+input ChannelMessageInput {
+  channelId: BigInt!
+  uuid: String!
+  payload: String!
+  sequenceNumber: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ChannelMessageInput.<b>channelId</b></code>](#channel-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#channel-id\} 
+The channel id (groups.group&#x005F;id) to publish to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChannelMessageInput.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\} 
+The sender's actor UUID (your own actor's UUID). Must be exactly 32 bytes when encoded as UTF-8.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChannelMessageInput.<b>payload</b></code>](#payload)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payload\} 
+The message payload, base64-encoded. Opaque to the server; decode per your application protocol. Max 1024 bytes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ChannelMessageInput.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number\} 
+Client-assigned correlation id for this datagram: a uint8 (0-255) that wraps at gameClientBootstrap.sequenceNumberModulo (256); defaults to 0 if omitted. For CORRELATION ONLY — it is NOT an idempotency key and the server does not dedupe replays. Echoed on any GenericErrorResponse for this send, delivered on the udpNotifications subscription.
+
+
+
+
+### Member Of
+
+[`sendChannelMessage`](/reference/graphql/operations/mutations/send-channel-message.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

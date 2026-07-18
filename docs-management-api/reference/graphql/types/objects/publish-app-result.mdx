@@ -1,0 +1,48 @@
+---
+id: publish-app-result
+title: PublishAppResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Result of publishing an app to the shared environment. All paths publish immediately; usage above the free hourly allowance is wallet-billed.
+
+
+```graphql
+type PublishAppResult {
+  appId: BigInt!
+  free: Boolean!
+  checkout: Checkout
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishAppResult.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishAppResult.<b>free</b></code>](#free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#free\} 
+True when the app uses a free org app-slot (under the quota).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishAppResult.<b>checkout</b></code>](#checkout)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Checkout</b></code>](/reference/graphql/types/objects/checkout.mdx) <Badge class="badge badge--secondary " text="object"/> \{#checkout\} 
+@deprecated Always null — subscriptions replaced by wallet billing.
+
+
+
+
+### Returned By
+
+[`publishAppToShared`](/reference/graphql/operations/mutations/publish-app-to-shared.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

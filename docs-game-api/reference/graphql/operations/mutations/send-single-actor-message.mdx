@@ -1,0 +1,39 @@
+---
+id: send-single-actor-message
+title: sendSingleActorMessage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Send a direct actor-to-actor message, delivered only to the actor identified by targetUuid (NOT broadcast to nearby actors). The sender must know the destination actor’s current chunk. Requires a bearer game token; opens a UDP proxy session automatically if none exists. The target receives a SingleActorMessageNotification on udpNotifications; the sender receives no echo. Returns Boolean! that is true only when the datagram was ACCEPTED FOR SENDING — NOT confirmation of delivery; failures arrive ASYNCHRONOUSLY as GenericErrorResponse on udpNotifications, correlated by the request sequenceNumber (correlation only — not an idempotency key; the server does not dedupe replays).
+
+
+```graphql
+sendSingleActorMessage(
+  input: SingleActorMessageInput!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>sendSingleActorMessage.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SingleActorMessageInput!</b></code>](/reference/graphql/types/inputs/single-actor-message-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The direct message to send: target appId, the DESTINATION actor’s chunk coordinates, the 32-byte targetUuid, base64 payload, and optional sequenceNumber. See SingleActorMessageInput.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

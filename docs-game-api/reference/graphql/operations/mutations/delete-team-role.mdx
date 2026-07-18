@@ -1,0 +1,39 @@
+---
+id: delete-team-role
+title: deleteTeamRole
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Delete a non-system team role. Requires the 'manage&#x005F;roles' team permission (app admins bypass). The system 'leader' role cannot be deleted. DESTRUCTIVE: removes the role from members and recomputes any grid ACLs the role granted on. Returns true if a role was deleted.
+
+
+```graphql
+deleteTeamRole(
+  groupRoleId: BigInt!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>deleteTeamRole.<b>groupRoleId</b></code>](#group-role-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-role-id\} 
+The team role to delete (must be a non-system role).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

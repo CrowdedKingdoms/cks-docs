@@ -1,0 +1,39 @@
+---
+id: request-login-link
+title: requestLoginLink
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Passwordless: email a one-time magic sign-in link to the address (creates the account on first sign-in). Always reports sent=true (no account enumeration). Public.
+
+
+```graphql
+requestLoginLink(
+  input: RequestLoginLinkInput!
+): RequestLoginLinkResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>requestLoginLink.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RequestLoginLinkInput!</b></code>](/reference/graphql/types/inputs/request-login-link-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>RequestLoginLinkResult</b></code>](/reference/graphql/types/objects/request-login-link-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Result of requesting a magic link.

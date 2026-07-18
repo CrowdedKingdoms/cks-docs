@@ -1,0 +1,68 @@
+---
+id: gm-container-state
+title: GmContainerState
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A container plus its property values filtered to what the requesting caller is allowed to see.
+
+
+```graphql
+type GmContainerState {
+  containerId: String!
+  appId: BigInt!
+  sessionId: String
+  typeName: String!
+  displayName: String!
+  ownerUserId: BigInt
+  propertiesJson: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerState.<b>containerId</b></code>](#container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#container-id\} 
+The container id (UUID).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerState.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the container.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerState.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+Owning session id, or null if app-global.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerState.<b>typeName</b></code>](#type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#type-name\} 
+The container type name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerState.<b>displayName</b></code>](#display-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#display-name\} 
+Human-friendly display name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerState.<b>ownerUserId</b></code>](#owner-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#owner-user-id\} 
+The owning user, or null if unowned.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerState.<b>propertiesJson</b></code>](#properties-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#properties-json\} 
+JSON object of visible properties (filtered by the caller).
+
+
+
+
+### Returned By
+
+[`gameModelContainerState`](/reference/graphql/operations/queries/game-model-container-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

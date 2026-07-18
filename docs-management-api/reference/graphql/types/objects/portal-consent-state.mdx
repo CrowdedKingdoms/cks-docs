@@ -1,0 +1,58 @@
+---
+id: portal-consent-state
+title: PortalConsentState
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Whether portaling into an app requires a consent prompt on the Overworld.
+
+
+```graphql
+type PortalConsentState {
+  appId: String!
+  appName: String
+  trusted: Boolean!
+  alreadyGranted: Boolean!
+  consentRequired: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PortalConsentState.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App id, as a String.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PortalConsentState.<b>appName</b></code>](#app-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-name\} 
+App display name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PortalConsentState.<b>trusted</b></code>](#trusted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trusted\} 
+True for first-party/trusted apps (consent is always skipped).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PortalConsentState.<b>alreadyGranted</b></code>](#already-granted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#already-granted\} 
+True if the user already has an active grant for this app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PortalConsentState.<b>consentRequired</b></code>](#consent-required)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#consent-required\} 
+True if the Overworld must show a consent screen (untrusted app, not yet granted) before creating a portal code.
+
+
+
+
+### Returned By
+
+[`portalConsent`](/reference/graphql/operations/queries/portal-consent.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setAppClientSettings`](/reference/graphql/operations/mutations/set-app-client-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

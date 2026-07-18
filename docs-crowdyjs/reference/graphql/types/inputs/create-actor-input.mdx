@@ -1,0 +1,63 @@
+---
+id: create-actor-input
+title: CreateActorInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input CreateActorInput {
+  appId: BigInt!
+  avatarId: BigInt
+  uuid: String!
+  chunk: ChunkCoordinatesInput!
+  privateState: String
+  publicState: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateActorInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App (game) the actor belongs to. Required. BigInt sent as a decimal string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateActorInput.<b>avatarId</b></code>](#avatar-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#avatar-id\} 
+Optional avatar to attach; if provided it must be owned by the caller. BigInt sent as a decimal string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateActorInput.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\} 
+Actor id: exactly 32 ASCII characters (the UDP-wire actor id), NOT a hyphenated RFC-4122 UUID. Required and must be unique.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateActorInput.<b>chunk</b></code>](#chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#chunk\} 
+Initial chunk-grid coordinates (x, y, z as int64 BigInt decimal strings). Required.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateActorInput.<b>privateState</b></code>](#private-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#private-state\} 
+Optional owner-only private state blob, base64-encoded binary.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateActorInput.<b>publicState</b></code>](#public-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#public-state\} 
+Optional public state blob, base64-encoded binary.
+
+
+
+
+### Member Of
+
+[`createActor`](/reference/graphql/operations/mutations/create-actor.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

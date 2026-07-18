@@ -1,0 +1,39 @@
+---
+id: team-policy
+title: teamPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The current team creation/membership policy for an app (who may create teams and the default membership policy of new teams). Falls back to app defaults when unset.
+
+
+```graphql
+teamPolicy(
+  appId: BigInt!
+): AppGroupPolicy!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>teamPolicy.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose team policy to read.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppGroupPolicy</b></code>](/reference/graphql/types/objects/app-group-policy.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Per-app, per-type policy controlling who may create groups of a type and the default membership policy of new groups.

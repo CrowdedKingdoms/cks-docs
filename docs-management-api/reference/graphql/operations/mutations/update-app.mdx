@@ -1,0 +1,44 @@
+---
+id: update-app
+title: updateApp
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Update mutable fields of an existing app (name, description, visibility, status, metadata); only fields present in the input are changed. Requires the 'manage&#x005F;apps' permission on the app (resolved via its org); super admins bypass. Use this to publish (status=LIVE), change visibility, or restore an archived app (status back to DRAFT/LIVE). Throws if the app id does not exist.
+
+
+```graphql
+updateApp(
+  appId: BigInt!
+  input: UpdateAppInput!
+): App!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>updateApp.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric id of the app to update.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updateApp.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateAppInput!</b></code>](/reference/graphql/types/inputs/update-app-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Fields to change; omitted fields are left unchanged.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>App</b></code>](/reference/graphql/types/objects/app.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A publishable application (game/experience) owned by an organization. Its discoverability is controlled by visibility and its lifecycle by status.

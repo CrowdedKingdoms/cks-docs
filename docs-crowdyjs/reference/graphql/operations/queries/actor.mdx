@@ -1,0 +1,38 @@
+---
+id: actor
+title: actor
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Fetches a single actor by its 32-character ASCII `uuid`. Requires a valid game token. Owner-aware: the owner receives full state; non-owners receive a public copy with `privateState` stripped (null). Throws NotFound if the uuid does not exist.
+
+
+```graphql
+actor(
+  uuid: String!
+): Actor!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>actor.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\} 
+Actor id: exactly 32 ASCII characters (the UDP-wire actor id), NOT a hyphenated RFC-4122 UUID.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Actor</b></code>](/reference/graphql/types/objects/actor.mdx) <Badge class="badge badge--secondary " text="object"/>

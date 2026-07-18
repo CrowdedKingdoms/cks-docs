@@ -1,0 +1,68 @@
+---
+id: set-automation-policy-input
+title: SetAutomationPolicyInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set the per-app automation policy (guardrails / platform ceilings).
+
+
+```graphql
+input SetAutomationPolicyInput {
+  appId: BigInt!
+  enabled: Boolean
+  maxAutomations: Int
+  minIntervalMs: Int
+  maxFanout: Int
+  maxCascadeDepth: Int
+  globalRunsPerMinute: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAutomationPolicyInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAutomationPolicyInput.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+App-wide kill switch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAutomationPolicyInput.<b>maxAutomations</b></code>](#max-automations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-automations\} 
+Max automations the app may define.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAutomationPolicyInput.<b>minIntervalMs</b></code>](#min-interval-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#min-interval-ms\} 
+Minimum schedule interval (ms) floor.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAutomationPolicyInput.<b>maxFanout</b></code>](#max-fanout)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-fanout\} 
+Max fan-out targets per run.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAutomationPolicyInput.<b>maxCascadeDepth</b></code>](#max-cascade-depth)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-cascade-depth\} 
+Max event-trigger cascade depth.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetAutomationPolicyInput.<b>globalRunsPerMinute</b></code>](#global-runs-per-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#global-runs-per-minute\} 
+Max aggregate runs per minute for the app.
+
+
+
+
+### Member Of
+
+[`gameModelSetAutomationPolicy`](/reference/graphql/operations/mutations/game-model-set-automation-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

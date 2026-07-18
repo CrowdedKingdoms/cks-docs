@@ -1,0 +1,39 @@
+---
+id: app-shared-subscription
+title: appSharedSubscription
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An app's paid shared-environment subscription, or null when it has none (e.g. unpublished or on the free quota). Caller must be a member of the app's org.
+
+
+```graphql
+appSharedSubscription(
+  appId: BigInt!
+): AppSharedSubscription
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appSharedSubscription.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App id (BigInt) to look up the subscription for.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppSharedSubscription</b></code>](/reference/graphql/types/objects/app-shared-subscription.mdx) <Badge class="badge badge--secondary " text="object"/> 
+@deprecated Legacy paid shared-environment subscription for an app slot. Null when the app has none.

@@ -1,0 +1,29 @@
+---
+id: connect-udp-proxy
+title: connectUdpProxy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Open the UDP proxy session for this game token (idempotent: returns the existing status if one is already open). Binds a socket and selects the game server with the fewest clients on first open. Optional: send mutations and udpNotifications also create a session lazily when none exists. To force a fresh socket, call disconnectUdpProxy first.
+
+
+```graphql
+connectUdpProxy: UdpProxyConnectionStatus!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UdpProxyConnectionStatus</b></code>](/reference/graphql/types/objects/udp-proxy-connection-status.mdx) <Badge class="badge badge--secondary " text="object"/> 
+UDP proxy session for the game token on the request. Returned by udpProxyConnectionStatus and connectUdpProxy. Binary UDP layouts are documented in database/client-wire-formats.md.

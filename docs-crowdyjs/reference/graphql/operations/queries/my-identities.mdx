@@ -1,0 +1,29 @@
+---
+id: my-identities
+title: myIdentities
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The signed-in user's linked sign-in identities.
+
+
+```graphql
+myIdentities: [UserIdentity!]!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UserIdentity</b></code>](/reference/graphql/types/objects/user-identity.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A federated / passwordless sign-in identity linked to a user account (a social provider, an emailed magic link, or the dev bypass).

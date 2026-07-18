@@ -1,0 +1,38 @@
+---
+id: org-roles
+title: orgRoles
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lists all roles defined in an organization. Requires the 'manage&#x005F;members' permission on the org (super admins bypass).
+
+
+```graphql
+orgRoles(
+  orgId: BigInt!
+): [OrgRole!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>orgRoles.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt as string).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgRole</b></code>](/reference/graphql/types/objects/org-role.mdx) <Badge class="badge badge--secondary " text="object"/>

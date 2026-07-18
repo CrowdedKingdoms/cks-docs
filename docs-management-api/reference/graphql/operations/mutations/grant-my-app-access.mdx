@@ -1,0 +1,39 @@
+---
+id: grant-my-app-access
+title: grantMyAppAccess
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Org dashboard shortcut: the authenticated caller grants themselves access to an app using its default active tier. Requires that the caller is an active member of the app's owning org OR holds the 'manage&#x005F;access&#x005F;tiers' permission on the app. ENTITLEMENT CHANGE: upserts an active grant and notifies the game API. Errors if the app has no active tier, or the caller is neither a member nor a manager.
+
+
+```graphql
+grantMyAppAccess(
+  appId: BigInt!
+): AppUserAccess!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>grantMyAppAccess.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric id of the app to grant the caller access to.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppUserAccess</b></code>](/reference/graphql/types/objects/app-user-access.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's entitlement to a specific app: whether (and via which tier) they may access it. At most one row per (app, user).

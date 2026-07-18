@@ -1,0 +1,63 @@
+---
+id: gm-invoke-result
+title: GmInvokeResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The outcome of a gameModelInvoke call (return value, applied writes, and any error).
+
+
+```graphql
+type GmInvokeResult {
+  eventId: String!
+  functionName: String!
+  success: Boolean!
+  returnValueJson: String
+  mutationsApplied: [GmMutationApplied!]!
+  errorMessage: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmInvokeResult.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\} 
+The id of the event logged for this invocation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmInvokeResult.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+The function that was invoked.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmInvokeResult.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#success\} 
+True if the invocation succeeded; false if it was rejected or errored.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmInvokeResult.<b>returnValueJson</b></code>](#return-value-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#return-value-json\} 
+JSON-encoded return value.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmInvokeResult.<b>mutationsApplied</b></code>](#mutations-applied)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmMutationApplied!]!</b></code>](/reference/graphql/types/objects/gm-mutation-applied.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#mutations-applied\} 
+The property writes that were applied (empty if none / on failure).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmInvokeResult.<b>errorMessage</b></code>](#error-message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-message\} 
+Error message when success is false (e.g. authority denied or evaluation error).
+
+
+
+
+### Returned By
+
+[`gameModelInvoke`](/reference/graphql/operations/mutations/game-model-invoke.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

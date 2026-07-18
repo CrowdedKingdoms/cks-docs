@@ -1,0 +1,44 @@
+---
+id: set-app-visibility
+title: setAppVisibility
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Super admin only (also requires the management API to be enabled for this deployment). Overrides an app visibility platform-wide, e.g. to take down (PRIVATE/UNLISTED) or relist (PUBLIC) an app. Throws ForbiddenException for non-super-admins or when management APIs are disabled. Throws if the app id does not exist.
+
+
+```graphql
+setAppVisibility(
+  appId: BigInt!
+  visibility: AppVisibility!
+): App!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setAppVisibility.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric id of the app whose visibility to override.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setAppVisibility.<b>visibility</b></code>](#visibility)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppVisibility!</b></code>](/reference/graphql/types/enums/app-visibility.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#visibility\} 
+New visibility to set (PUBLIC, UNLISTED, or PRIVATE).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>App</b></code>](/reference/graphql/types/objects/app.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A publishable application (game/experience) owned by an organization. Its discoverability is controlled by visibility and its lifecycle by status.

@@ -1,0 +1,68 @@
+---
+id: free-app-quota-app
+title: FreeAppQuotaApp
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A shared app row in the org free-slot portfolio (free / reserved / paid credit).
+
+
+```graphql
+type FreeAppQuotaApp {
+  appId: BigInt!
+  name: String!
+  slug: String!
+  consumesFreeSlot: Boolean!
+  reservedEgressBytesPerSec: BigInt!
+  hasActiveSubscription: Boolean!
+  creditKind: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuotaApp.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App id (BigInt).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuotaApp.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+App display name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuotaApp.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
+URL slug for the app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuotaApp.<b>consumesFreeSlot</b></code>](#consumes-free-slot)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#consumes-free-slot\} 
+True when the app consumes a free org slot (shared, not archived, no active subscription, no reserved throughput).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuotaApp.<b>reservedEgressBytesPerSec</b></code>](#reserved-egress-bytes-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-egress-bytes-per-sec\} 
+Reserved egress throughput in bytes/sec (0 when none).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuotaApp.<b>hasActiveSubscription</b></code>](#has-active-subscription)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#has-active-subscription\} 
+True when the app has an active legacy shared subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuotaApp.<b>creditKind</b></code>](#credit-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#credit-kind\} 
+How this app is credited: 'free&#x005F;slot', 'reserved', or 'paid&#x005F;subscription'.
+
+
+
+
+### Member Of
+
+[`FreeAppQuota`](/reference/graphql/types/objects/free-app-quota.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

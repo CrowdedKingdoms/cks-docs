@@ -1,0 +1,38 @@
+---
+id: actors
+title: actors
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lists actors owned by the authenticated user, optionally narrowed by `filter` (appId, avatarId, uuid, chunk). Requires a valid game token; only the caller’s own actors are returned (full state included). For other users’ actors use `actor` or `batchLookupActors`.
+
+
+```graphql
+actors(
+  filter: ActorFilterInput
+): [Actor!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>actors.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ActorFilterInput</b></code>](/reference/graphql/types/inputs/actor-filter-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+Optional filters; all provided fields are AND-combined. Omit to return all of the caller’s actors.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Actor</b></code>](/reference/graphql/types/objects/actor.mdx) <Badge class="badge badge--secondary " text="object"/>
