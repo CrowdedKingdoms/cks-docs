@@ -14,6 +14,40 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-18 (latest)
 
+**Game API -- Compute Modules: server-side Rust/WebAssembly logic (additive)**
+
+The Game API gains **[Compute Modules](/game-api/compute-modules)** — studios
+write Rust, deploy the source through GraphQL, and the platform compiles it to
+WebAssembly and runs it server-side, sandboxed and fuel-metered:
+
+- **New GraphQL surface (additive):** mutations `computeUpsertModule`,
+  `computeDeployVersion`, `computeSetModuleEnabled`, `computeDeleteModule`,
+  `computeUpsertTrigger`, `computeDeleteTrigger`, `computeSetPolicy`,
+  `computeInvoke`; queries `computeModules`, `computeModule`,
+  `computeModuleVersions`, `computeModuleTriggers`, `computeModulePolicy`,
+  `computeModuleRuns`, `computeModuleStats`, `computeModuleLogs`,
+  `computeAppDiagnostics`. Full signatures in the
+  [GraphQL reference](/game-api/reference/graphql-overview).
+- **Triggers:** fixed-rate ticks, model/compute event subscriptions, and
+  client-callable invoke exports (synchronous RPC via `computeInvoke`, gated by
+  the same authority-policy trees as model functions).
+- **Host API:** typed, app-scoped access to game-model data, app state blobs,
+  chunks/voxels/actors, and replication emits that arrive on the existing
+  `udpNotifications` stream — see the
+  [Compute host API reference](/game-api/compute-host-api). Clients need no
+  changes.
+- **Permissions:** two new org permission keys — `manage_compute` (authoring)
+  and `view_compute_diagnostics` (monitoring). Org owners hold both by
+  default; existing `manage_apps` grants are unaffected.
+- **Billing:** three new shared-environment usage metrics with free hourly
+  allowances — `wasm_compute_units`, `wasm_egress_msgs`, `wasm_egress_bytes`
+  (see [Shared environment](/management-api/shared-environment)). Rates are
+  placeholders pending load-test calibration.
+- The management UI app dashboard gains a **Compute** tab (author, deploy,
+  watch compiles, monitor runs) driven by the same public API.
+
+No existing schema fields, wire messages, or behaviors changed.
+
 **Game API v0.13.13 -- invoke policy denials return results; `userAppState` round-trip fix**
 
 Two consumer-facing behavior fixes in `gameModelInvoke` and the per-user app

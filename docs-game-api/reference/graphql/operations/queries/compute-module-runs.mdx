@@ -1,0 +1,59 @@
+---
+id: compute-module-runs
+title: computeModuleRuns
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List compute-module runs (the monitoring + audit trail of executions), newest first, optionally filtered by module and/or outcome. Rows are written by the runtime; empty until modules execute (Phase 2). Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
+
+
+```graphql
+computeModuleRuns(
+  appId: BigInt!
+  moduleName: String
+  success: Boolean
+  limit: Int
+  offset: Int
+): [WasmModuleRun!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>computeModuleRuns.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose runs to list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeModuleRuns.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
+Optional: only runs of this module. Omit for all.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeModuleRuns.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#success\} 
+Optional: filter by outcome (true = succeeded, false = failed).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeModuleRuns.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Max runs to return (default 50, max 200).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeModuleRuns.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+Number of runs to skip (pagination).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>WasmModuleRun</b></code>](/reference/graphql/types/objects/wasm-module-run.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One recorded compute execution (init / tick batch / event / invoke): timing, fuel, host-call counts, outcome. Written by the runtime (Phase 2); empty until modules execute.

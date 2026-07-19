@@ -1,0 +1,98 @@
+---
+id: wasm-module-policy
+title: WasmModulePolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Per-app guardrails / platform ceilings for compute modules. A missing row means platform defaults.
+
+
+```graphql
+type WasmModulePolicy {
+  appId: BigInt!
+  enabled: Boolean!
+  maxModules: Int!
+  maxTickHz: Float!
+  fuelPerTick: BigInt!
+  fuelPerInvoke: BigInt!
+  maxMemoryMb: Int!
+  maxRunMs: Int!
+  maxDbOpsPerTick: Int!
+  maxEgressMsgsPerMin: Int!
+  maxEgressBytesPerMin: BigInt!
+  failureThreshold: Int!
+  cooldownMs: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModulePolicy.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) the policy applies to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModulePolicy.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+App-wide kill switch for all compute modules.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModulePolicy.<b>maxModules</b></code>](#max-modules)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-modules\} 
+Max modules the app may define.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModulePolicy.<b>maxTickHz</b></code>](#max-tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-tick-hz\} 
+Max tick rate (Hz) any module may request.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModulePolicy.<b>fuelPerTick</b></code>](#fuel-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-tick\} 
+Fuel budget per tick call.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModulePolicy.<b>fuelPerInvoke</b></code>](#fuel-per-invoke)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-invoke\} 
+Fuel budget per invoke/event call.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModulePolicy.<b>maxMemoryMb</b></code>](#max-memory-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-memory-mb\} 
+Max guest linear memory (MB).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModulePolicy.<b>maxRunMs</b></code>](#max-run-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-run-ms\} 
+Wall-clock watchdog budget per entry call (ms).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModulePolicy.<b>maxDbOpsPerTick</b></code>](#max-db-ops-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-db-ops-per-tick\} 
+Max host data-API operations per tick.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModulePolicy.<b>maxEgressMsgsPerMin</b></code>](#max-egress-msgs-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-msgs-per-min\} 
+Max replication messages a module may emit per minute.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModulePolicy.<b>maxEgressBytesPerMin</b></code>](#max-egress-bytes-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-bytes-per-min\} 
+Max replication bytes a module may emit per minute.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModulePolicy.<b>failureThreshold</b></code>](#failure-threshold)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#failure-threshold\} 
+Consecutive failures that open a module circuit.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModulePolicy.<b>cooldownMs</b></code>](#cooldown-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#cooldown-ms\} 
+Cooldown (ms) while a module circuit is open.
+
+
+
+
+### Returned By
+
+[`computeModulePolicy`](/reference/graphql/operations/queries/compute-module-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`computeSetPolicy`](/reference/graphql/operations/mutations/compute-set-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

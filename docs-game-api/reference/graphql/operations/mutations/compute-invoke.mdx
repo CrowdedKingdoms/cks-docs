@@ -1,0 +1,54 @@
+---
+id: compute-invoke
+title: computeInvoke
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Invoke a compute module's client-callable export (a trigger with triggerType=invoke). Synchronous RPC: the module runs and returns its result directly (unlike the spatial send surface's dual-success model). Authorization: the export's invoke policy (authority tree) — or holders of 'manage&#x005F;compute' only when no policy is set. Requires a valid app token.
+
+
+```graphql
+computeInvoke(
+  appId: BigInt!
+  moduleName: String!
+  exportName: String!
+  paramsJson: String
+): ComputeInvokeResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>computeInvoke.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the module.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeInvoke.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
+The module to invoke.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeInvoke.<b>exportName</b></code>](#export-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#export-name\} 
+The invoke export (must match an invoke trigger).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeInvoke.<b>paramsJson</b></code>](#params-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#params-json\} 
+JSON object of parameters passed to the module.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ComputeInvokeResult</b></code>](/reference/graphql/types/objects/compute-invoke-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The synchronous result of a computeInvoke call. Unlike the spatial send surface (dual-success), this is direct RPC: the module ran and this is its output.

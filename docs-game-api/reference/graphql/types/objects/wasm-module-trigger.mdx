@@ -1,0 +1,103 @@
+---
+id: wasm-module-trigger
+title: WasmModuleTrigger
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A trigger binding on a compute module: a tick loop, a model/compute event subscription, or a client-invokable export.
+
+
+```graphql
+type WasmModuleTrigger {
+  triggerId: String!
+  appId: BigInt!
+  moduleId: String!
+  triggerType: String!
+  tickHz: Float
+  onEvent: String
+  functionName: String
+  containerTypeName: String
+  propertyKey: String
+  eventName: String
+  debounceMs: Int!
+  exportName: String
+  invokePolicyJson: String
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>triggerId</b></code>](#trigger-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-id\} 
+Unique trigger id (UUID).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>moduleId</b></code>](#module-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-id\} 
+The module this trigger drives.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>triggerType</b></code>](#trigger-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-type\} 
+Trigger type: tick | event | invoke.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>tickHz</b></code>](#tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tick-hz\} 
+For tick triggers: the tick rate in Hz.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>onEvent</b></code>](#on-event)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#on-event\} 
+For event triggers: function&#x005F;invoked | property&#x005F;changed | container&#x005F;created | compute&#x005F;event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+Event filter: only this model function name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>containerTypeName</b></code>](#container-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#container-type-name\} 
+Event filter: only this container type.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>propertyKey</b></code>](#property-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#property-key\} 
+Event filter: only this property key.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>eventName</b></code>](#event-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#event-name\} 
+Event filter: only compute events with this name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>debounceMs</b></code>](#debounce-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#debounce-ms\} 
+Debounce/coalesce window in ms.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>exportName</b></code>](#export-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#export-name\} 
+For invoke triggers: the exported guest function name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>invokePolicyJson</b></code>](#invoke-policy-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-policy-json\} 
+For invoke triggers: JSON authority tree gating who may invoke. Null = app admins only.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the trigger was created.
+
+
+
+
+### Returned By
+
+[`computeModuleTriggers`](/reference/graphql/operations/queries/compute-module-triggers.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`computeUpsertTrigger`](/reference/graphql/operations/mutations/compute-upsert-trigger.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

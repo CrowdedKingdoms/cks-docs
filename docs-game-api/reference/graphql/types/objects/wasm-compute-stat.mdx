@@ -1,0 +1,63 @@
+---
+id: wasm-compute-stat
+title: WasmComputeStat
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Per-module rollup within a stats window.
+
+
+```graphql
+type WasmComputeStat {
+  moduleName: String!
+  runs: Int!
+  failures: Int!
+  fuelUsed: BigInt!
+  avgDurationUs: Int!
+  circuitState: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmComputeStat.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
+The module name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmComputeStat.<b>runs</b></code>](#runs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#runs\} 
+Runs in the window.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmComputeStat.<b>failures</b></code>](#failures)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#failures\} 
+Failed runs in the window.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmComputeStat.<b>fuelUsed</b></code>](#fuel-used)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-used\} 
+Total fuel consumed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmComputeStat.<b>avgDurationUs</b></code>](#avg-duration-us)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#avg-duration-us\} 
+Average run duration (microseconds).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmComputeStat.<b>circuitState</b></code>](#circuit-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#circuit-state\} 
+Current circuit-breaker state: closed | open | half&#x005F;open.
+
+
+
+
+### Member Of
+
+[`WasmComputeStats`](/reference/graphql/types/objects/wasm-compute-stats.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

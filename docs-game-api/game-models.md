@@ -26,7 +26,11 @@ This pairs well with turn-based games (RPGs, tactics, card and board games) but
 works for anything where the server should be the source of truth. For worked
 mappings of familiar features — inventory, keys/doors/chests, land permissions,
 NPCs — onto these primitives, see
-[Modeling game concepts](modeling-game-concepts).
+[Modeling game concepts](modeling-game-concepts). The expression language is
+deliberately loop-free; when your server logic outgrows it (pathfinding, world
+simulation, heavy computation), pair your model with a Rust
+**[Compute Module](/game-api/compute-modules)** — modules read and write the
+same containers and properties through a server-side host API.
 
 All Game Model operations live on the **Game API** GraphQL endpoint and require an
 **app-scoped token** for the app (`Authorization: Bearer <token>`; mint one with
