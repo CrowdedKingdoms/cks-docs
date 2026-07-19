@@ -1,0 +1,93 @@
+---
+id: upsert-compute-trigger-input
+title: UpsertComputeTriggerInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Bind a trigger to a module: a tick loop (tick&#x005F;hz), a model/compute event subscription, or a client-invokable export.
+
+
+```graphql
+input UpsertComputeTriggerInput {
+  appId: BigInt!
+  moduleName: String!
+  triggerType: String!
+  tickHz: Float
+  onEvent: String
+  functionName: String
+  containerTypeName: String
+  propertyKey: String
+  eventName: String
+  debounceMs: Int
+  exportName: String
+  invokePolicyJson: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
+The module (by name) this trigger drives.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>triggerType</b></code>](#trigger-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-type\} 
+Trigger type: tick | event | invoke.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>tickHz</b></code>](#tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tick-hz\} 
+For tick triggers: the tick rate in Hz (clamped by the app policy's maxTickHz).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>onEvent</b></code>](#on-event)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#on-event\} 
+For event triggers: function&#x005F;invoked | property&#x005F;changed | container&#x005F;created | compute&#x005F;event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+Event filter: only this model function name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>containerTypeName</b></code>](#container-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#container-type-name\} 
+Event filter: only this container type.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>propertyKey</b></code>](#property-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#property-key\} 
+Event filter: only this property key.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>eventName</b></code>](#event-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#event-name\} 
+Event filter: only compute events with this name (on&#x005F;event=compute&#x005F;event).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>debounceMs</b></code>](#debounce-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#debounce-ms\} 
+Debounce/coalesce window in ms for event triggers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>exportName</b></code>](#export-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#export-name\} 
+For invoke triggers: the exported guest function name computeInvoke routes to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>invokePolicyJson</b></code>](#invoke-policy-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-policy-json\} 
+For invoke triggers: JSON authority tree gating who may invoke (same shape as game-model function invoke policies). Null = app admins only.
+
+
+
+
+### Member Of
+
+[`computeUpsertTrigger`](/reference/graphql/operations/mutations/compute-upsert-trigger.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

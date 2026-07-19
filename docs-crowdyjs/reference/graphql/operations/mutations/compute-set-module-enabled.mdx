@@ -1,0 +1,49 @@
+---
+id: compute-set-module-enabled
+title: computeSetModuleEnabled
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Enable or disable a compute module. Enabling requires a deployed version and resets the module's circuit breaker; disabling stops all scheduling. Requires the org 'manage&#x005F;compute' permission.
+
+
+```graphql
+computeSetModuleEnabled(
+  appId: BigInt!
+  name: String!
+  enabled: Boolean!
+): WasmModule!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>computeSetModuleEnabled.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the module.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeSetModuleEnabled.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+The module name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeSetModuleEnabled.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+True to enable (and reset the circuit); false to stop.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>WasmModule</b></code>](/reference/graphql/types/objects/wasm-module.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A WASM compute module: developer-authored Rust compiled to sandboxed WASM on game-api instances. Holds metadata, the deployed version pointer, and circuit-breaker state; source lives in versions.

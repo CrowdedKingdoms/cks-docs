@@ -106,3 +106,29 @@ The full deploy-then-play program is
 in the SDK repository. For the blueprint catalog and per-layer guides, the
 [CrowdyJS Game Kit](/crowdyjs/game-kit) documentation applies directly —
 the layers, options, and conventions are the same.
+
+## Engine-aware helpers (v0.4.0+)
+
+When your app deploys [compute engines](/game-api/compute-engines), the C++
+kit mirrors CrowdyJS's engine surfaces (parity-tracked):
+
+- **`crowdy/kit/wire.hpp`** — the engine actor wire registry: the 48-byte
+  pose codec (`decodeEnginePose`, container-id `suffix`), `kFlagMob` /
+  `kFlagNpc` flag bits, and the server-event parsers `parseContactDamage`
+  (type 77) / `parseWeatherEvent` (type 90).
+- **`kit.mobs()`** — `attack(containerId, amount)` through the engine's
+  server referee (denials resolve `success == false` with the referee's
+  `reason`), `defs()` / `slots()` durable reads, `status()`.
+- **`kit.pets()`** — `adopt` / `list` / `summon` / `dismiss` / `rename`
+  over the npc-engine.
+- **`combat().attackRouted(targetId, attackerId, amount)`** — the referee
+  when the engine is present (capability-detected via `kit.engines()`),
+  else the model attack function.
+- **`npcs().engineAvailable()` + `NpcsKit::overlayLivePoses`** — overlay
+  live engine poses onto polled containers.
+- **`worldsim().forecast()`** — current weather front + day phase;
+  transitions arrive as type-90 server events (`WorldsimKit::parseWeather`).
+
+Everything degrades gracefully: without a deployed engine (or without the
+compute domain wired into `GameKitClient`), `engineAvailable()` is false and
+the model paths behave exactly as before.

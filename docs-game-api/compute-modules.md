@@ -423,6 +423,10 @@ event — using the [Compute host API](/game-api/compute-host-api) reference.
 
 - [Compute tutorial](/game-api/compute-tutorial) — zero to a live module in
   under 30 minutes with the `crowdy-compute` CLI, plus five runnable examples.
+- [Compute engines](/game-api/compute-engines) — ready-made, data-driven
+  engine templates (NPCs/pets, mobs with refereed combat, weather/farming)
+  built on the `crowdy-game-kit` crates. Start here before writing a
+  simulation from scratch.
 - [Compute host API](/game-api/compute-host-api) — every function a module can
   call, with limits.
 - [Game models](/game-api/game-models) ·

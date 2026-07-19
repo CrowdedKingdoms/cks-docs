@@ -120,10 +120,15 @@ client can never observe, and per-player records persist in module state.
 
 ## Where to go next
 
+- [Compute engines](/game-api/compute-engines) — skip the from-scratch
+  simulation: `crowdy-compute new my-mobs --engine mob` scaffolds a
+  data-driven NPC/mob/world engine you parameterize with containers.
 - [Compute Modules](/game-api/compute-modules) — concepts, lifecycle, limits,
   billing.
 - [Compute host API](/game-api/compute-host-api) — everything a module can
   call.
-- The `crowdy-game-kit-core` utility crate (used by every example): durable
-  state, wire codecs, chunk math, player presence, cadence, invoke routing,
-  deterministic RNG — so your module logic stays about your game.
+- The `crowdy-game-kit` crate family (used by every example): `kit-core`
+  (durable state, wire codecs, chunk math, presence, cadence, invoke
+  routing, RNG), `kit-ai` (pathfinding/steering/behavior trees), `kit-sim`
+  (day cycle/weather/nodes/growth), `kit-play` (the combat referee) — so
+  your module logic stays about your game.
