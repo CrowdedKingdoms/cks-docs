@@ -23,6 +23,9 @@ platform compiles it to WebAssembly and runs it **server-side**, sandboxed, with
   need **no new subscription**: module traffic arrives as ordinary
   `udpNotifications` events.
 
+If you are deciding whether a rule belongs in a model function/automation
+or in WASM, start with [Model API vs Compute](/game-api/model-vs-compute).
+
 Runaway code is impossible by construction: every call runs under a
 deterministic **fuel budget** (an instruction-count meter compiled into your
 module) plus a wall-clock watchdog, layered circuit breakers, and per-app
@@ -315,6 +318,12 @@ Per-app ceilings live in the compute **policy** (`computeModulePolicy` /
 | `failureThreshold` | 5 | Consecutive failures that open the circuit |
 | `cooldownMs` | 60,000 | Open-circuit cooldown |
 
+Phase 10 validated these defaults. On the reference builder, a host db-op
+cost ~1.4 ms, a radius scan ~0.4 ms, and a spatial emit ~0.5 ms; 50
+db-heavy modules at 5 Hz (2,500 db-ops/s) held full cadence but used ~80% of
+one game-api process. Treat ceilings as emergency guardrails — design
+normal engines far below them.
+
 ## Activation: when your module actually runs
 
 Modules load **lazily**: they run while your app has active realtime sessions
@@ -336,8 +345,9 @@ per minute, and billed hourly against your app on shared environments (see
 | `wasm_egress_bytes` | Replication bytes emitted by modules |
 
 Each metric has a free hourly allowance; sustained usage beyond it draws down
-the org wallet at the published rates (prices are placeholders while load
-testing calibrates them, the same discipline as other usage metrics).
+the org wallet at the published rates. The Phase 10 sweep calibrated the
+fuel equivalent to 22M fuel/unit and validated the free allowance + rate
+against the full kit-engine fleet and live BWF usage.
 Module-driven replication is kept separate from player-driven
 `udp_notifications` so your bill itemizes compute-driven traffic. If a spend
 cap or balance is hit, the budget gate pauses your modules until resolved.
