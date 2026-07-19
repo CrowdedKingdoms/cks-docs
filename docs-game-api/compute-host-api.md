@@ -63,6 +63,7 @@ let full = api::container_get(&id)?; // { container, properties }
 |---|---|---|
 | `container_create(type_name, session_id, properties)` | properties: JSON object (types inferred) or array of `{key, valueType, value}` | Creates a container of an existing container type; returns it. |
 | `container_get(container_id)` | | Returns `{ container, properties }` (up to 200 properties). |
+| `container_get_batch(container_ids)` | up to 32 ids | Batched form: `[{ container, properties }]` in a single call (one data-op charge). Requires SDK 0.1.2+. |
 | `containers_list(type_name, session_id)` | both optional filters | Lists containers (≤ 200). |
 | `container_delete(container_id)` | | Deletes a container. |
 | `property_set(container_id, key, value_type, value)` | `value_type`: `int`, `float`, `bool`, `string`, `object`, `array`, ... | Sets one property. |
@@ -94,6 +95,7 @@ voxel coordinates are 0–255 within a chunk).
 | `chunk_get(x, y, z)` | Returns the chunk at those coordinates (`chunkId`, `stateBase64`, `updatedAt`) or `null`. |
 | `voxels_list(x, y, z)` | The voxels recorded in that chunk (capped at 2048): `voxelX/Y/Z`, `voxelType`, `stateBase64`, `updatedAt`. Requires SDK 0.1.1+. |
 | `actors_list(x, y, z)` | Actors currently recorded in that chunk (≤ 200): `uuidHex`, `userId`, `stateBase64`. |
+| `actors_list_radius(x, y, z, radius_xz, radius_y)` | Actors in a chunk box around (x,y,z) — radii clamped to 3 (xz) / 1 (y), ≤ 500 rows, one data-op; rows add `chunkX/Y/Z`. Requires SDK 0.1.2+. |
 | `voxel_set(chunk, voxel, voxel_type, state_base64)` | Writes one voxel as the **server** (no player permission check — your module is trusted in your own app). Goes through the same validation as the voxel mutation and replicates to clients like any voxel update. |
 | `grid_permission_check(user_id, grid_id, permission_key)` | Checks whether a user holds a runtime permission key on one of your grids — e.g. a guard NPC testing `access` for an intruder. Returns `false` for grids outside your app. |
 

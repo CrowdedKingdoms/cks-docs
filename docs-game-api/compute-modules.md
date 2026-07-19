@@ -131,8 +131,9 @@ it persists its counter to the state blob every tick.
   `[package]`, `[lib]`, and `[dependencies]` sections are allowed. Do not
   upload a `Cargo.lock`.
 - **Versions** — `sdkVersion` and `abiVersion` must be platform-supported
-  (currently SDK `0.1.0` / `0.1.1`, ABI `0`; `0.1.1` adds `voxels_list`). The
-  SDK pins the ABI for you.
+  (currently SDK `0.1.0` – `0.1.2`, ABI `0`; `0.1.1` adds `voxels_list`,
+  `0.1.2` adds `container_get_batch` + `actors_list_radius`). The SDK pins the
+  ABI for you.
 - **Module names** are crate-shaped: lowercase letter first, then lowercase
   letters, digits, `-`, `_` (max 128 chars).
 
@@ -420,6 +421,8 @@ event — using the [Compute host API](/game-api/compute-host-api) reference.
 
 ## Related
 
+- [Compute tutorial](/game-api/compute-tutorial) — zero to a live module in
+  under 30 minutes with the `crowdy-compute` CLI, plus five runnable examples.
 - [Compute host API](/game-api/compute-host-api) — every function a module can
   call, with limits.
 - [Game models](/game-api/game-models) ·

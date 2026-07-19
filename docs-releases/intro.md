@@ -14,6 +14,28 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-18 (latest)
 
+**Compute Modules -- developer tooling: crowdy-compute CLI, game-kit utility crate, examples + tutorial**
+
+The compute developer experience grows a paved road (all additive):
+
+- **`crowdy-compute` CLI** (in the `compute-examples` repository folder):
+  `new` scaffolds a module crate, `check` mirrors the deploy validation
+  locally (plus a real `wasm32-wasip1` build when a toolchain is present),
+  `deploy` runs the full upsert → compile-wait → triggers → enable flow
+  idempotently, `watch`/`invoke`/`status` cover the observe loop.
+- **`crowdy-game-kit-core`** — a platform-vendored Rust utility crate for
+  module authors: durable-state harness, actor-pose wire codecs, chunk math,
+  player presence, cadence helpers, event framing, invoke routing, seeded
+  RNG. Add `crowdy-game-kit-core = "0.1.0"` to your module's dependencies.
+- **SDK `0.1.2`** adds two host functions: `container_get_batch` (up to 32
+  containers + properties in one data-op) and `actors_list_radius` (a chunk
+  box of actors in one call), plus a native test-host shim so module crates
+  can `cargo test` off-platform.
+- **Five runnable examples** (tick-counter, scoreboard, npc-pathfinder,
+  world-weather, mini-game) and a new
+  [Compute tutorial](/game-api/compute-tutorial) — zero to a live module in
+  under 30 minutes.
+
 **Game API -- Compute Modules: server-side Rust/WebAssembly logic (additive)**
 
 The Game API gains **[Compute Modules](/game-api/compute-modules)** — studios
