@@ -12,7 +12,36 @@ deprecation window — deprecated fields keep working and are marked `@deprecate
 schema (visible in the [reference](/management-api/reference/graphql-overview) and the
 downloadable SDL) until the stated removal date.
 
-## 2026-07-18 (latest)
+## 2026-07-19 (latest)
+
+**Compute Engines -- the game-kit crate family, engine templates, and SDK engine surfaces (CrowdyJS 8.7.0, CrowdyCPP v0.4.0)**
+
+Server-side game engines become a paved road (all additive):
+
+- **Three new platform-vendored kit crates** join `crowdy-game-kit-core` on
+  the module dependency allowlist: **`crowdy-game-kit-ai`** (budget-capped
+  A* over a `CostProvider`, steering behaviors, FSM + JSON behavior-tree
+  interpreter), **`crowdy-game-kit-sim`** (deterministic day cycle, weather
+  fronts, resource nodes, timestamp growth/farming, wave schedules, rule
+  zones), and **`crowdy-game-kit-play`** (the combat referee: presence-based
+  hit validation, damage pipeline, kill credit, contact damage).
+- **Engine templates** — deployable, data-driven reference engines in
+  `compute-examples/engines/`: `npc-engine` (behavior-tree agents + pets),
+  `mob-engine` (pooled spawns, aggro/leash/packs, refereed `attack_mob`),
+  `world-engine` (weather + nodes + farming). The CLI scaffolds a copy with
+  `crowdy-compute new <name> --engine <npc|mob|world>`; a `pets` example
+  ships alongside the original five. New docs page:
+  [Compute engines](/game-api/compute-engines).
+- **CrowdyJS 8.7.0** — engine kit surfaces: the `kit/wire` pose/lane
+  registry (`engineLanes()`, `enginePoseCodec`, type-77/90 event parsers),
+  `kit.mobs`, `kit.pets`, `kit.combat.attackRouted`, `kit.worldsim.forecast`,
+  `kit.npcs.overlayLivePoses`, and per-session engine capability detection
+  (`kit.engines`) so the same client code runs on model-only deployments.
+- **CrowdyCPP v0.4.0** — the same surfaces in C++ (`crowdy/kit/wire.hpp`,
+  `kit.mobs()`, `kit.pets()`, `attackRouted`, `forecast`), parity-tracked
+  against CrowdyJS.
+
+## 2026-07-18
 
 **Compute Modules -- developer tooling: crowdy-compute CLI, game-kit utility crate, examples + tutorial**
 

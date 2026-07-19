@@ -646,10 +646,45 @@ function, so the reveal and the state change commit together.
   `$self_owner_id`, which callers cannot spoof.
 - Hidden state uses property visibility, not client discipline.
 
+## Engine-aware helpers (8.7+)
+
+When your app deploys [compute engines](/game-api/compute-engines)
+(server-side Rust modules built on the `crowdy-game-kit` crates), the kit
+gains a second gear. Capability detection keeps one code path for both
+deployments: every engine-aware helper probes the module once per session
+(`kit.engines`, the shared `EngineDetector`) and degrades to the
+model/automation behavior when no engine is present.
+
+- **`kit/wire`** (package root exports): the engine actor wire registry —
+  the 48-byte pose codec (`decodeEnginePose`, container-id `suffix`),
+  `FLAG_MOB` / `FLAG_NPC` flag bits,   `enginePoseCodec` (a `StateCodec` for
+  [World Stores](/crowdyjs/stores)), `engineLanes()` ready-made
+  players/mobs/npcs lane predicates for `createWorldSession`, and the
+  server-event parsers `parseContactDamage` (type 77) / `parseWeatherEvent`
+  (type 90).
+- **`kit.mobs`** — `attack(containerId, amount)` through the engine's
+  server referee (range/presence validated server-side; denials resolve
+  `{success: false, reason}`), `defs()` / `slots()` durable reads,
+  `status()`.
+- **`kit.pets`** — `adopt` / `list` / `summon` / `dismiss` / `rename` over
+  the npc-engine (pets follow their owner server-side).
+- **`kit.combat.attackRouted({targetId, attackerId?, amount?})`** — routes
+  through the referee when the engine is present, else the model attack
+  function; the result names which authority resolved it (`via`).
+- **`kit.npcs.engineAvailable()` + `kit.npcs.overlayLivePoses(npcs, lane)`**
+  — overlay live engine-driven poses onto polled containers; model-only
+  deployments keep the polled positions.
+- **`kit.worldsim.forecast()`** — the world engine's current weather front +
+  day phase; track transitions from the type-90 event stream with
+  `kit.worldsim.parseWeather`.
+
 ## Escape hatches
 
 The kit is a convention layer. When a concept outgrows it, drop down to
 [`client.gameModel`](/crowdyjs/game-model) with your own types, functions, and
 policies — blueprints and hand-authored models coexist in the same app. The
 underlying model design for each concept is documented in
-[Modeling game concepts](/game-api/modeling-game-concepts).
+[Modeling game concepts](/game-api/modeling-game-concepts). For heavy
+server-side logic (pathfinding, simulation), graduate to
+[Compute Modules](/game-api/compute-modules) and the
+[engine templates](/game-api/compute-engines).
