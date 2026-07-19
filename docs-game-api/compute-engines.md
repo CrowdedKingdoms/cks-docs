@@ -177,6 +177,94 @@ state and are decided AFTER the player commits, and per-export invoke
 policies gate admin operations (`reset_records` without a policy = compute
 admins only). Clients: `kit.minigames`.
 
+## Realtime + live-ops engines (Wave 3)
+
+The catalog's realtime/competitive set. Same rules as always: data-driven
+from model containers, capability-detected in the SDKs, all referee
+decisions server-side.
+
+### abilities-engine — realtime casts
+
+`AbilityDef` containers (a `spec` JSON: cooldown/resource/range + kind
+`instant`/`projectile`/`aoe`) drive server-validated casts: the caster's
+position comes from their LIVE POSE (never a cast param), cooldown/resource
+books are module state, projectiles step on ticks with sub-step tunneling
+protection, and AoEs detonate late with falloff. Damage lands on
+`Combatant` containers through the trusted property path; every cast/impact
+broadcasts a **type-94** event plus an `ability_hit` compute event.
+Clients: `kit.abilities` (cast/loadout/book + the parser). See the
+`arena-blitz` example for a complete dodge-and-shoot arena on this stack.
+
+### movement-warden — the movement envelope (observe/flag)
+
+The movement-authority answer WITHOUT server physics: the warden samples
+live poses, keeps per-actor books, and FLAGS violations — sustained
+over-speed (with jitter forgiveness), single-sample teleports, and
+out-of-bounds — as **type-95** events + `movement_violation` compute events
++ per-user counters admins read. It never corrects, kicks, or rewrites
+poses (the decided v1 posture); games decide what flags mean. Tunables come
+from a `WardenConfig` container. Clients: `kit.movement`.
+
+### territory — control points and factions
+
+`Faction` / `FactionMember` / `ControlPoint` containers drive
+presence-based capture: a single faction occupying a point advances
+progress, mixed presence stalls, empty points decay, optional siege windows
+gate capture hours, and owned points accrue income into faction treasuries.
+Flips write durable ownership and broadcast **type-96** events. Clients:
+`kit.territory`.
+
+### racing + possession — timing and the ball
+
+`Course` containers (ordered gates) feed server-side lap timing from the
+pose stream (`kit-play::timing`): gate crossings, splits, laps, and
+finishes are **type-97** events, results auto-board through the board
+engine (score = −totalMs), and best runs record ghost tracks the engine
+replays onto the actor lane (suffix `ghost:<courseId>`, FLAG_RESERVED3).
+The **possession** sub-template is the single contested authoritative
+object: claim/steal (protection window)/pass/shoot invokes, physics-lite
+flight on ticks, server-decided goals, ball pose on the lane (suffix
+`ball`). Clients: `kit.racing` (both).
+
+### liveops-scheduler — events, seasons, battle passes
+
+Liveops is MODEL-FIRST: `EventWindow`/`SeasonDef` containers with admin (or
+cron) flips, and a battle pass is a season + a progression track + feature
+gates — no new machinery. The scheduler engine exists only for windows that
+must mutate world state: it watches activation transitions (owning the flag
+for timestamp-scheduled windows) and broadcasts each window's `modifiers`
+JSON on the compute bus (`liveops_window_opened`/`closed`) for other
+engines to apply. `kit-sim::zones` adds **shrinking circles** (phased
+radius schedules with warning/shrink/settle events, **type-98**) — see the
+`zone-rush` BR-lite example: circle + director-spawned hazards +
+last-standing scoring. Clients: `kit.liveops`.
+
+### moderation + telemetry — model-first kits
+
+No compute: `moderation` is report containers (the admin escalation queue)
++ personal mute lists (client-enforced) with enforcement on existing
+platform surfaces; `telemetry` is a naming convention (`<area>.<action>`)
+over sampled counter containers. Clients: `kit.moderation`,
+`kit.telemetry.track()`.
+
+## Deploying engines by name (the template registry)
+
+Every engine on this page ships in the platform's template registry —
+deploy one with a single call instead of the upsert/deploy/trigger/enable
+sequence:
+
+```graphql
+query  { computeTemplates(appId: 1) { name description exports } }
+mutation { computeDeployTemplate(appId: 1, templateName: "mob-engine") { name enabled } }
+```
+
+Deploys are idempotent (source-hash deduped), bind the template's triggers,
+and enable the module; compilation is asynchronous (poll
+`computeModuleVersions`). Pass `moduleName` to run two parameterizations
+side by side. SDK sugar: `client.compute.deployTemplate(...)` or blueprints
++ engines in one call — `kit.deploy(blueprints, { engines: ["mob-engine",
+"world-engine"] })`.
+
 ## Wire format (what clients decode)
 
 Engine actor emits are 48-byte little-endian poses (position, yaw/pitch,
@@ -202,6 +290,14 @@ types (both SDKs ship parsers):
 | 91 | turn changed (match engines) |
 | 92 | score / match summary |
 | 93 | match proposal (matchmaking handoff) |
+| 94 | ability cast/impact (abilities engine) |
+| 95 | movement violation (warden, observe/flag) |
+| 96 | control-point state (territory) |
+| 97 | race timing (checkpoint/lap/finish) |
+| 98 | zone change (shrinking circles, event areas) |
+
+Lane suffixes join the registry too: `ghost:<courseId>` (racing replays)
+and `ball` (possession), both flagged FLAG_RESERVED3.
 
 ## Parameterize vs fork
 

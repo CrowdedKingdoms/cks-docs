@@ -117,6 +117,11 @@ it persists its counter to the state blob every tick.
 
 ### Source rules (validated at deploy time)
 
+> **Deploying a ready-made engine?** Skip the source upload entirely:
+> `computeDeployTemplate(appId, templateName)` deploys any engine from the
+> [template registry](/game-api/compute-engines#deploying-engines-by-name-the-template-registry)
+> by name (list them with `computeTemplates`).
+
 `computeDeployVersion` validates the upload before anything compiles:
 
 - **Files** — a JSON map of relative paths to contents. `Cargo.toml` and

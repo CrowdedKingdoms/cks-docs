@@ -145,3 +145,12 @@ server-ranked pages (`engineTop` / `engineRankOf` / `engineSubmitSelf` /
 `engineSeasons`), quests tutorial sequencing (`defineTutorial` /
 `tutorial` / `acceptNextTutorialStep`), and the type-91/92/93 event parsers
 in `crowdy/kit/wire.hpp`.
+
+## Realtime + live-ops surfaces (v0.6.0+)
+
+Mirroring CrowdyJS 8.9 (parity-tracked): `abilities()`, `movement()`,
+`territory()`, `racing()` (with the possession ball), `liveops()`,
+`moderation()`, `telemetry()`, the loot engine path
+(`enginePull`/`enginePity`/`engineAudit`), `compute().templates()` /
+`deployTemplate()` for the platform engine registry, and the type-94..98
+event parsers in `crowdy/kit/wire.hpp`.

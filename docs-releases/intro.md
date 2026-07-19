@@ -14,6 +14,37 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-19 (latest)
 
+**Realtime + live-ops engines and the template registry -- the game-kit catalog complete (CrowdyJS 8.9.0, CrowdyCPP v0.6.0)**
+
+Wave 3 closes out the 30-abstraction game-kit catalog with the realtime/
+competitive set (all additive):
+
+- **New GraphQL surface**: `computeTemplates` +
+  **`computeDeployTemplate`** — the platform's engine-template registry.
+  Deploy any canonical engine by NAME (source-hash-deduped, triggers bound,
+  enabled in one call); `moduleName` runs parameterizations side by side.
+  SDK sugar: `client.compute.deployTemplate(...)` and
+  `kit.deploy(blueprints, { engines: [...] })`.
+- **Kit crates**: `kit-play` gains `abilities` (cast books, sub-stepped
+  projectiles, AoE falloff) and `timing` (checkpoints/laps/ghost tracks);
+  `kit-sim::zones` gains shrinking circles (BR schedules with
+  warning/shrink/settle events).
+- **Engine templates**: `abilities-engine` (AbilityDef-driven casts,
+  type-94 events), `movement-warden` (observe/flag envelopes, type-95),
+  `territory` (capture/decay/siege/income, type-96), `racing` (server-timed
+  laps, auto-boarded results, ghost replays, type-97) + `possession` (the
+  authoritative ball), `liveops-scheduler` (window modifiers on the compute
+  bus) — plus the `arena-blitz` (G6) and `zone-rush` (G14 BR-lite)
+  acceptance examples.
+- **CrowdyJS 8.9.0 / CrowdyCPP v0.6.0**: new `kit.abilities` / `movement` /
+  `territory` / `racing` / `liveops` / `moderation` / `telemetry` surfaces,
+  the `kit.loot` engine path (pity rolls), liveops/moderation/telemetry
+  blueprints, and event types 94–98 with parsers in both SDKs. Everything
+  capability-detected; the movement warden observes and flags only — it
+  never corrects (client prediction is untouched).
+
+## 2026-07-19
+
 **Session-genre engines -- kit-play completion, kit-econ, six new engine templates, and SDK surfaces (CrowdyJS 8.8.0, CrowdyCPP v0.5.0)**
 
 Wave 2 of the game-kit program brings the session genres to the paved road

@@ -1,0 +1,48 @@
+---
+id: compute-template-info
+title: ComputeTemplateInfo
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One entry in the platform's engine-template registry (deployable by name via computeDeployTemplate).
+
+
+```graphql
+type ComputeTemplateInfo {
+  name: String!
+  description: String!
+  exports: [String!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ComputeTemplateInfo.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+The template name (e.g. 'mob-engine', 'matchmaking').
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ComputeTemplateInfo.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+What the template does (from its deploy manifest).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ComputeTemplateInfo.<b>exports</b></code>](#exports)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#exports\} 
+The invoke exports the template binds (its client surface).
+
+
+
+
+### Returned By
+
+[`computeTemplates`](/reference/graphql/operations/queries/compute-templates.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

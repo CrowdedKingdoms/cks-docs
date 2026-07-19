@@ -705,6 +705,27 @@ model/automation behavior when no engine is present.
 - **`kit/wire`** — reserved event types 91/92/93 with `parseTurnEvent`,
   `parseScoreEvent`, `parseProposalEvent`.
 
+### Realtime + live-ops (8.9+)
+
+- **`kit.abilities`** — server-validated realtime casts: `cast(abilityId,
+  targetX, targetZ)` (your position is your live pose), `loadout`, `book`,
+  `defineAbility` (admin), type-94 parsing.
+- **`kit.movement`** — warden reads (observe/flag): `violations`, `config`,
+  `defineConfig` (admin), type-95 parsing.
+- **`kit.territory`** — `points` (live capture state), `factions`, admin
+  map CRUD, type-96 parsing.
+- **`kit.racing`** — `defineCourse`, `enter`, `raceStatus`, `best`,
+  `ghostPlay`, type-97 parsing; plus the possession ball
+  (`joinMatch`/`claim`/`pass`/`shoot`/`matchState`).
+- **`kit.liveops`** — event windows (scheduler-aware `activeWindows`),
+  seasons + battle-pass composition, type-98 zone-change parsing.
+- **`kit.moderation`** / **`kit.telemetry`** — model-first: reports/queue/
+  mutes; `track(name, props)` over sampled counters.
+- **`kit.loot` engine path** — `enginePull`/`enginePity`/`engineAudit` for
+  pity-timer tables; small weighted tables stay on the model.
+- **`kit.deploy({ engines })`** — blueprints + platform engine templates in
+  one call (`computeDeployTemplate` under the hood).
+
 ## Escape hatches
 
 The kit is a convention layer. When a concept outgrows it, drop down to
