@@ -132,3 +132,16 @@ kit mirrors CrowdyJS's engine surfaces (parity-tracked):
 Everything degrades gracefully: without a deployed engine (or without the
 compute domain wired into `GameKitClient`), `engineAvailable()` is false and
 the model paths behave exactly as before.
+
+## Session-engine surfaces (v0.5.0+)
+
+Mirroring CrowdyJS 8.8 (parity-tracked): `matches()` gains the engine path
+(`engineReady` / `engineSubmitMove` / `engineForfeit` / `engineStatus` /
+`findByProposal`), `decks()` gains hidden-hand tables (`engineNewTable` /
+`engineHand` / `enginePlay` / `engineTakeZone`), and the new kits
+`instances()`, `director()`, `matchmaking()`, `minigames()` plus
+`economy().orderBook()` (escrowed bid/ask market), `leaderboards()`
+server-ranked pages (`engineTop` / `engineRankOf` / `engineSubmitSelf` /
+`engineSeasons`), quests tutorial sequencing (`defineTutorial` /
+`tutorial` / `acceptNextTutorialStep`), and the type-91/92/93 event parsers
+in `crowdy/kit/wire.hpp`.

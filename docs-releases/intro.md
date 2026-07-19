@@ -14,6 +14,38 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-19 (latest)
 
+**Session-genre engines -- kit-play completion, kit-econ, six new engine templates, and SDK surfaces (CrowdyJS 8.8.0, CrowdyCPP v0.5.0)**
+
+Wave 2 of the game-kit program brings the session genres to the paved road
+(all additive):
+
+- **Kit crates**: `crowdy-game-kit-play` completes with `turns` (initiative,
+  timeouts, simultaneous reveal), `score` (authoritative win conditions),
+  and `cards` (server-held hidden hands, seeded shuffles);
+  `crowdy-game-kit-ai` adds flow fields, a path cache, and budgeted
+  turn-game movers; new **`crowdy-game-kit-econ`** ships order-book markets,
+  server-computed standings, production chains with offline catch-up, and
+  pity-timer loot. All allowlisted + vendored.
+- **Engine templates**: `match-engine` (server-driven lifecycle over
+  MatchMeta), `deck-engine` (true hidden information), `instance-engine`
+  (private world slices, seeded runs), `director` (wave schedules, boss
+  phases, party scaling), `matchmaking` (rating buckets, party blocks,
+  compute-event handoff to matches), `market-engine` + `board-engine`
+  (escrowed order books; tie-aware server rankings with season snapshots),
+  and the `minigame` invoke-loop scaffold — plus playable examples per
+  genre: `card-duel`, `dungeon-run`, `tower-defense`, `gacha-shrine`,
+  `idle-factory`. The Tactical Model Simulator's enemy phase + outcome
+  authority moved into a `tms-battle` compute referee (kit-ai).
+- **CrowdyJS 8.8.0 / CrowdyCPP v0.5.0**: engine paths on
+  `kit.matches`/`kit.decks`/`kit.leaderboards`, new
+  `kit.instances`/`kit.director`/`kit.matchmaking`/`kit.minigames`,
+  `kit.economy.orderBook`, quests FTUE tutorial sequencing, and reserved
+  event types 91 (turn) / 92 (score) / 93 (proposal) with parsers in both
+  SDKs. Everything capability-detected — model-only deployments keep their
+  behavior.
+
+## 2026-07-19
+
 **Compute Engines -- the game-kit crate family, engine templates, and SDK engine surfaces (CrowdyJS 8.7.0, CrowdyCPP v0.4.0)**
 
 Server-side game engines become a paved road (all additive):
