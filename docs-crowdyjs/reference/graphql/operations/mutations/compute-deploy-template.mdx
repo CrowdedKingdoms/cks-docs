@@ -1,0 +1,49 @@
+---
+id: compute-deploy-template
+title: computeDeployTemplate
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Deploy a named engine template from the platform registry: upserts the module, publishes the template source (deduped by hash), binds its triggers, and enables it — one call instead of the upsert/deploy/trigger/enable sequence. Compilation proceeds asynchronously; poll computeModuleVersions for compile status. Templates are data-driven (behavior comes from model containers such as MobDef/EncounterDef/Course), so most games parameterize rather than fork. Requires the org 'manage&#x005F;compute' permission.
+
+
+```graphql
+computeDeployTemplate(
+  appId: BigInt!
+  templateName: String!
+  moduleName: String
+): WasmModule!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>computeDeployTemplate.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) to deploy into.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeDeployTemplate.<b>templateName</b></code>](#template-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#template-name\} 
+The registry template to deploy (see computeTemplates).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeDeployTemplate.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
+Optional module name override (defaults to the template name); use it to run two parameterizations side by side.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>WasmModule</b></code>](/reference/graphql/types/objects/wasm-module.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A WASM compute module: developer-authored Rust compiled to sandboxed WASM on game-api instances. Holds metadata, the deployed version pointer, and circuit-breaker state; source lives in versions.
