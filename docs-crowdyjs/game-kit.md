@@ -678,6 +678,33 @@ model/automation behavior when no engine is present.
   day phase; track transitions from the type-90 event stream with
   `kit.worldsim.parseWeather`.
 
+### Session engines (8.8+)
+
+- **`kit.matches` engine path** — `engineReady` / `engineSubmitMove` /
+  `engineForfeit` / `engineStatus` (server-driven turn order, timeouts,
+  authoritative scoring) and `findByProposal` (the matchmaking handoff).
+- **`kit.decks` engine path** — `engineNewTable` / `engineHand`
+  (caller-scoped hidden hands that never replicate) / `engineDraw` /
+  `enginePlay` / `engineTakeZone` / `engineTable`.
+- **`kit.instances`** — open/join/complete/state over the instance engine
+  (per-run seeds, disjoint chunk volumes).
+- **`kit.director`** — `defineEncounter` (admin), `startRun`, `reportKill`,
+  `reportBossHp`, `skipWave`, `runState`.
+- **`kit.matchmaking`** — `queueJoin` (party blocks, optional explicit
+  rating), `queueLeave`, `queueStatus`, `accept`, `reportResult`.
+- **`kit.economy.orderBook`** — the escrowed order-book market:
+  `depositCoins`/`depositItems`, `bid`/`ask`, `cancel`, `book`, `account`,
+  `withdraw`.
+- **`kit.leaderboards` engine path** — `engineTop` (server-ranked pages),
+  `engineRankOf`, `engineSubmitSelf`, `engineSeasons`.
+- **`kit.minigames`** — a thin invoke wrapper for invoke-loop games;
+  denials resolve as `{success: false, reason}`.
+- **`kit.quests` tutorial sequencing** — `defineTutorial` (admin),
+  `tutorial(owner)` (ordered steps as locked/active/complete),
+  `acceptNextTutorialStep`.
+- **`kit/wire`** — reserved event types 91/92/93 with `parseTurnEvent`,
+  `parseScoreEvent`, `parseProposalEvent`.
+
 ## Escape hatches
 
 The kit is a convention layer. When a concept outgrows it, drop down to

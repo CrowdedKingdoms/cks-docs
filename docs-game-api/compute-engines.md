@@ -29,12 +29,13 @@ Engines (and your own modules) may depend on the platform-vendored crates:
 
 | Crate | Provides |
 |---|---|
-| `crowdy-game-kit-core` | Pose wire codec + flag registry, chunk math, durable state (`Persisted`), model access (`Catalog`, batched loads), player presence (`PlayerTracker`), cadence (`Every`/`Cooldown`), events, invoke router, seeded RNG |
-| `crowdy-game-kit-ai` | Budget-capped A* over a `CostProvider`, steering (seek/flee/arrive/separate/leash/wander), FSM + JSON behavior-tree interpreter (`AgentDef` containers drive behavior without redeploys) |
+| `crowdy-game-kit-core` | Pose wire codec + flag registry, chunk math, durable state (`Persisted`, `Partitioned` with size guards + eviction), model access (`Catalog`, batched loads), player presence (`PlayerTracker`), cadence (`Every`/`Cooldown`), events, invoke router, seeded RNG |
+| `crowdy-game-kit-ai` | Budget-capped A* over a `CostProvider` (+ generation-keyed path cache), **flow fields** (many-agent descent), steering (seek/flee/arrive/separate/leash/wander), FSM + JSON behavior-tree interpreter, budgeted **turn movers** for enemy phases |
 | `crowdy-game-kit-sim` | Deterministic day cycle, weather-front state machine, resource-node harvest/deplete/respawn, timestamp growth (**farming**), wave schedules, rule zones |
-| `crowdy-game-kit-play` | The combat **referee**: hit validation against live presence (range/cooldown/clamps), damage pipeline, kill credit + respawn timers, contact damage with per-victim cooldowns |
+| `crowdy-game-kit-play` | The combat **referee** (hit validation, damage pipeline, kill credit, contact damage), the **turn engine** (initiative, timeouts, simultaneous reveal), authoritative **scoring** (win conditions, summaries), and **cards** (server-held hidden hands, seeded shuffles, reveal protocol) |
+| `crowdy-game-kit-econ` | **Order-book markets** (price-time priority, escrowed settlement plans), server-computed **standings** (tie-aware ranks, percentiles, season snapshots), **production chains** with one-call offline catch-up, **pity-timer loot** with audit trails |
 
-All four are on the dependency allowlist — declare them in your `Cargo.toml`
+All five are on the dependency allowlist — declare them in your `Cargo.toml`
 by version (`crowdy-game-kit-ai = "0.1.0"`); the platform path-rewrites them
 to the vendored toolchain copies at compile time.
 
@@ -97,6 +98,85 @@ A kit-sim assembly that runs without players (`alwaysOn`):
   Blocks with Friends' `bwf-world-tick` is this rule with the BWF tree shape.
 - Invokes: `forecast`, `harvest({nodeId})`, `status`.
 
+## Session engines (Wave 2)
+
+Six more data-driven templates cover the session genres. Scaffold with
+`crowdy-compute new <name> --engine <match|deck|instance|director|matchmaking|market|board|minigame>`.
+
+### match-engine — server-driven match lifecycle
+
+Runs over the matches blueprint's `MatchMeta` containers: players `ready`
+up (the match starts when everyone expected is in), the engine owns turn
+order + per-turn timeouts (`kit-play::turns`), `submit_move` validates the
+turn and resolves server-side, and scoring/win conditions are authoritative
+(`kit-play::score`). Every transition announces on the match's
+notify-to-pull channel and syncs durably to the container, so blueprint-only
+clients keep working. It also consumes `match_ready` compute events from
+matchmaking (below) to create + start matches automatically. Clients:
+`kit.matches.engineReady/engineSubmitMove/engineForfeit/engineStatus`.
+
+### deck-engine — true hidden information
+
+Deck order and hands live in MODULE state (server-held secrets); the only
+read path for hidden cards is the caller-scoped `hand` invoke, plays are
+validated against your hand (the legality floor), and shuffles are seeded.
+Public zones + hand *sizes* are all spectators ever see. See the
+`card-duel` example for a complete trick-taking game (simultaneous trick
+reveal via `kit-play::turns::RevealRound`). Clients: `kit.decks.engine*`.
+
+### instance-engine — private world slices
+
+Lifecycle (open/join/complete/expire) with per-run seeds for deterministic
+procedural content and reserved **disjoint chunk volumes** (v1 spatial
+isolation is by-convention: disjoint volumes + distance-scoped emits). One
+module serves many instances through partitioned state with size guards
+against the 256 KB state cap. Completion announces `instance_completed` on
+the compute bus — the board engine (below) auto-boards scores from it. See
+the `dungeon-run` example for a full roguelike loop (seeded dungeon,
+server-validated movement, server-rolled combat). Clients: `kit.instances`.
+
+### director — encounter direction
+
+`EncounterDef` containers hold wave schedules (`kit-sim::waves`), spawn
+budgets, and boss-phase machines; unit counts scale with party size. The
+director DIRECTS rather than simulates: wave starts emit `director_spawn`
+compute events the mob layer consumes, kills are reported back, and boss hp
+reports drive phase transitions. See the `tower-defense` example for the
+full genre loop — creeps descending a **kit-ai flow field** that rebuilds
+when towers are placed (placements that would seal the lane are rejected).
+Clients: `kit.director`.
+
+### matchmaking — queues and lobbies
+
+Rating-bucketed queues with widening search windows, party blocks that
+match together, and accept-gated proposals. The handoff is the compute-event
+convention: `match_proposed` → all accept → `match_ready` → the match
+engine creates + starts the match (resolve it with
+`kit.matches.findByProposal`). An internal Elo-lite book seeds ratings at
+1000; games that keep rating on the progression layer pass `rating`
+explicitly. Clients: `kit.matchmaking`.
+
+### market-engine + board-engine — the economy pair
+
+The **market** is an order book with price-time priority and escrowed
+settlement: bids lock coins, asks lock items, fills settle at the maker
+price, and deposits/withdrawals bridge to your wallets via compute events
+(`kit.economy.orderBook`). The **board engine** retires client-side sorting:
+tie-aware ranks, percentiles, ranked pages, and season snapshots computed
+module-side, plus automatic boarding of `instance_completed` scores
+(`kit.leaderboards.engineTop`). Pity-timer loot (`gacha-shrine`) and
+production chains with offline catch-up (`idle-factory`) round out the
+kit-econ examples.
+
+### minigame — the invoke-loop pattern
+
+The scaffold for RPS-likes, trivia, and casino loops. The patterns it
+teaches: the invoke IS the game loop (no ticks — costs scale with play),
+`callerUserId` is server-bound (unspoofable records), secrets stay in module
+state and are decided AFTER the player commits, and per-export invoke
+policies gate admin operations (`reset_records` without a policy = compute
+admins only). Clients: `kit.minigames`.
+
 ## Wire format (what clients decode)
 
 Engine actor emits are 48-byte little-endian poses (position, yaw/pitch,
@@ -112,8 +192,16 @@ container-id suffix. Flag bits 0-3 are platform-reserved:
 CrowdyJS ships the codec + ready-made lane predicates (`engineLanes()`,
 `enginePoseCodec` in the package root) and CrowdyCPP mirrors them in
 `crowdy/kit/wire.hpp`; see the SDKs' [Game Kit](/crowdyjs/game-kit) pages.
-Server events use `[u16 LE event type][JSON]` payloads — type 77 is contact
-damage, type 90 is weather.
+Server events use `[u16 LE event type][JSON]` payloads with these reserved
+types (both SDKs ship parsers):
+
+| Type | Meaning |
+|---|---|
+| 77 | contact damage (combat referee) |
+| 90 | weather/season transition |
+| 91 | turn changed (match engines) |
+| 92 | score / match summary |
+| 93 | match proposal (matchmaking handoff) |
 
 ## Parameterize vs fork
 
