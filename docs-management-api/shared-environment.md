@@ -26,7 +26,10 @@ This page covers the shared environment.
 - Every organization can create up to **`platformConfig.freeAppsPerOrg`** apps on the shared
   environment (default **3**).
 - Each app includes a small **free hourly usage allowance** per metered
-  dimension (network bytes, message/operation counts, and resolver time).
+  dimension (network bytes, message/operation counts, resolver time, and — for
+  server-side logic — automation compute units and
+  [compute-module](/game-api/compute-modules) usage: `wasm_compute_units`,
+  `wasm_egress_msgs`, `wasm_egress_bytes`).
 - Within the free allowance the app runs at no cost. When an app exceeds its
   free hourly allowance, usage above the allowance is billed from your
   organization wallet at the published rate card.
@@ -180,7 +183,10 @@ query {
 
 While an app is denied or suspended, the Game API and realtime layer refuse new
 connections for that `appId` with a reason-bearing error, so your client can
-prompt the studio to fund the wallet, raise a cap, or renew.
+prompt the studio to fund the wallet, raise a cap, or renew. Server-driven work
+pauses too: [autonomous processes](/game-api/autonomous-processes) and
+[compute modules](/game-api/compute-modules) are deactivated until the app is
+`active` again.
 
 ## Connecting clients
 

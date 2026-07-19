@@ -32,6 +32,14 @@ breakers so a runaway loop can't take your game (or your bill) down.
 All operations live on the **Game API** GraphQL endpoint and require app-admin
 (`manage_apps`), except where noted.
 
+:::tip[Need loops or heavy logic?]
+Automations run the loop-free model expression language, which is the point —
+they are cheap, declarative, and safe. When your server logic needs real
+computation (pathfinding, flocking, full world simulation), write a
+**[Compute Module](/game-api/compute-modules)** in Rust instead; it can react
+to the same model events and coexists with your automations.
+:::
+
 ## Opting a function in
 
 A function can only be driven by an automation if you explicitly mark it

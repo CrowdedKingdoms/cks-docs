@@ -1,0 +1,58 @@
+---
+id: wasm-module-log-entry
+title: WasmModuleLogEntry
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A diagnostic log line for a compute module. Phase 1 surfaces failed-run errors; the Phase 2 runtime adds guest ck.log output.
+
+
+```graphql
+type WasmModuleLogEntry {
+  ts: DateTime!
+  moduleName: String!
+  level: String!
+  message: String!
+  triggerSource: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleLogEntry.<b>ts</b></code>](#ts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#ts\} 
+When the line was recorded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleLogEntry.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
+The module name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleLogEntry.<b>level</b></code>](#level)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#level\} 
+Log level: debug | info | warn | error.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleLogEntry.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
+The log message.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleLogEntry.<b>triggerSource</b></code>](#trigger-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-source\} 
+The entry that produced the line: init | tick | event | invoke.
+
+
+
+
+### Returned By
+
+[`computeModuleLogs`](/reference/graphql/operations/queries/compute-module-logs.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

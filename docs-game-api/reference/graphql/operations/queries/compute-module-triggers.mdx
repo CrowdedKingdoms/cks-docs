@@ -1,0 +1,44 @@
+---
+id: compute-module-triggers
+title: computeModuleTriggers
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List trigger bindings for an app, optionally filtered to one module. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
+
+
+```graphql
+computeModuleTriggers(
+  appId: BigInt!
+  moduleName: String
+): [WasmModuleTrigger!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>computeModuleTriggers.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose triggers to list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeModuleTriggers.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
+Optional: only triggers of this module.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>WasmModuleTrigger</b></code>](/reference/graphql/types/objects/wasm-module-trigger.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A trigger binding on a compute module: a tick loop, a model/compute event subscription, or a client-invokable export.

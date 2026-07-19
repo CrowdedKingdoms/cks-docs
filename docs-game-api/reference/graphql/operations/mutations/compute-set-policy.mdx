@@ -1,0 +1,39 @@
+---
+id: compute-set-policy
+title: computeSetPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set the app's compute policy (platform guardrails): the kill switch, module count / tick-rate / fuel / memory / runtime / host-op / egress ceilings, and circuit-breaker tuning. Omitted fields keep current values. Requires the org 'manage&#x005F;compute' permission.
+
+
+```graphql
+computeSetPolicy(
+  input: SetComputePolicyInput!
+): WasmModulePolicy!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>computeSetPolicy.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetComputePolicyInput!</b></code>](/reference/graphql/types/inputs/set-compute-policy-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app plus any guardrail fields to set.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>WasmModulePolicy</b></code>](/reference/graphql/types/objects/wasm-module-policy.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Per-app guardrails / platform ceilings for compute modules. A missing row means platform defaults.

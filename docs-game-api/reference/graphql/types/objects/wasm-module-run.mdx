@@ -1,0 +1,113 @@
+---
+id: wasm-module-run
+title: WasmModuleRun
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One recorded compute execution (init / tick batch / event / invoke): timing, fuel, host-call counts, outcome. Written by the runtime (Phase 2); empty until modules execute.
+
+
+```graphql
+type WasmModuleRun {
+  runId: String!
+  appId: BigInt!
+  moduleId: String!
+  moduleName: String!
+  triggerSource: String!
+  entry: String
+  startedAt: DateTime!
+  durationUs: Int!
+  fuelUsed: BigInt!
+  dbReads: Int!
+  dbWrites: Int!
+  egressMsgs: Int!
+  egressBytes: BigInt!
+  success: Boolean!
+  errorMessage: String
+  circuitAction: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\} 
+Unique run id (UUID).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>moduleId</b></code>](#module-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-id\} 
+The module that ran.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
+The module name at run time.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>triggerSource</b></code>](#trigger-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-source\} 
+What ran: init | tick | event | invoke.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>entry</b></code>](#entry)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#entry\} 
+The guest entry point (e.g. an invoke export name).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>startedAt</b></code>](#started-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#started-at\} 
+When the run started.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>durationUs</b></code>](#duration-us)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#duration-us\} 
+Wall-clock duration in microseconds.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>fuelUsed</b></code>](#fuel-used)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-used\} 
+Fuel consumed by the run.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>dbReads</b></code>](#db-reads)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#db-reads\} 
+Host data-API reads performed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>dbWrites</b></code>](#db-writes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#db-writes\} 
+Host data-API writes performed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>egressMsgs</b></code>](#egress-msgs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#egress-msgs\} 
+Replication messages emitted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>egressBytes</b></code>](#egress-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#egress-bytes\} 
+Replication bytes emitted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#success\} 
+Whether the run succeeded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>errorMessage</b></code>](#error-message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-message\} 
+Error message when the run failed (trap, fuel, watchdog).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>circuitAction</b></code>](#circuit-action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#circuit-action\} 
+Circuit action taken (e.g. opened, half&#x005F;open&#x005F;retry).
+
+
+
+
+### Returned By
+
+[`computeModuleRuns`](/reference/graphql/operations/queries/compute-module-runs.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
