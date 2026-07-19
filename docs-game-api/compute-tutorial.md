@@ -12,6 +12,10 @@ uses the `crowdy-compute` CLI from the
 (`cks-project-root/compute-examples/`), which wraps the
 [Compute Modules](/game-api/compute-modules) GraphQL surface.
 
+This tutorial assumes compute is the right tier. For the decision criteria
+and the recommended hybrid pattern, see
+[Model API vs Compute](/game-api/model-vs-compute).
+
 ## 0. Prerequisites (~5 min)
 
 - **Node 20+** and the examples folder: `cd compute-examples && npm install`.

@@ -34,6 +34,14 @@ This page covers the shared environment.
   free hourly allowance, usage above the allowance is billed from your
   organization wallet at the published rate card.
 
+For compute modules, one `wasm_compute_unit` is approximately one millisecond
+of reference CPU. The platform takes the larger of measured CPU time and the
+deterministic fuel equivalent (`GREATEST(CEIL(cpu_us/1000),
+CEIL(fuel/22,000,000))`), so neither a host stall nor unusually dense guest
+instructions under-report work. The 22M conversion, free allowance, and rate
+were calibrated in the July 2026 hardening sweep; module-emitted messages and
+bytes remain separate line items.
+
 Check your remaining free slots:
 
 ```graphql

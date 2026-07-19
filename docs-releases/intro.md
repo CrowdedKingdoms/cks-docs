@@ -14,6 +14,31 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-19 (latest)
 
+**Compute hardening complete -- measured limits, calibrated billing, failure containment, and the Model-vs-Compute guide**
+
+The deferred Phase 10 production-confidence pass is complete:
+
+- Load harness + matrix: up to 50 modules, 5 Hz, six host-call mixes and
+  invoke storms. A 50-module db-heavy fleet sustained 2,500 db-ops/s at
+  full cadence (~80% of one reference game-api process); invokes held
+  99 rps at p99 4 ms with zero errors.
+- Compute billing's deterministic equivalent is now **22M fuel per unit**
+  (measured ~21.8M fuel/ms) instead of the Phase 4 placeholder 28M. The
+  free allowance and rate were validated against the 27-engine kit fleet
+  and live Blocks with Friends usage.
+- Failure drills proved compile rollback, fuel/watchdog/OOM/panic
+  containment, circuit reset, 256 KB state rejection, lease-holder death,
+  deploy mid-tick, event cascade depth, spend-cap pausing, and
+  environment-wide rollback/resume.
+- Runtime fixes: trigger upserts no longer stack duplicate rows; tick-rate
+  edits reload a live module; failed compiles restore the prior succeeded
+  version.
+- New [Model API vs Compute](/game-api/model-vs-compute) decision guide,
+  measured engine policy-footprint table, and calibrated billing/limits
+  prose.
+
+## 2026-07-19
+
 **Realtime + live-ops engines and the template registry -- the game-kit catalog complete (CrowdyJS 8.9.0, CrowdyCPP v0.6.0)**
 
 Wave 3 closes out the 30-abstraction game-kit catalog with the realtime/

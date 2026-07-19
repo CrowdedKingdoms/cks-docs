@@ -12,6 +12,9 @@ containers, and your world has server-authoritative NPCs, mobs, weather, and
 farming. The engines are **data-driven**: game content lives in container
 properties, so you deploy once and iterate on data, not Rust.
 
+Still choosing the server-logic tier? Read
+[Model API vs Compute](/game-api/model-vs-compute) first.
+
 Scaffold a private copy with the CLI and deploy it like any module:
 
 ```bash
@@ -246,6 +249,37 @@ No compute: `moderation` is report containers (the admin escalation queue)
 platform surfaces; `telemetry` is a naming convention (`<area>.<action>`)
 over sampled counter containers. Clients: `kit.moderation`,
 `kit.telemetry.track()`.
+
+## Policy-footprint quick reference
+
+Measured Phase 10 host costs on the single-box builder: ~1.4 ms per db-op,
+~0.4 ms per radius scan, ~0.5 ms per spatial emit. The table is the
+design-time footprint; actual counts scale with agents/players. The
+template's `deploy.json` is authoritative for policy overrides.
+
+| Template | Tick | Dominant per-tick work | Egress |
+|---|---:|---|---|
+| npc-engine | 2 Hz | presence + batched NPC/Pet reads; periodic durable sync | 1 pose/live agent |
+| mob-engine | 4 Hz | presence + def/slot batches; combat/contact checks | 1 pose/live mob + impacts |
+| world-engine | 1 Hz | weather clock; amortized node/voxel scan cursor | transitions only |
+| match-engine | 1 Hz | module-state timers; model writes on transitions | turn/score events |
+| deck-engine | 0.05 Hz cleanup | module-state only outside invokes | none |
+| instance-engine | 0.05 Hz cleanup | module-state lifecycle; model writes on create/complete | completion event |
+| director | 1 Hz | module-state schedule; model defs on start | wave/boss compute events |
+| matchmaking | 1 Hz | module-state queues/proposals | proposal/handoff events |
+| market-engine | invoke-only | module-state order book; settlement events | trade/withdraw events |
+| board-engine | event/invoke | module-state sort/rank | none |
+| minigame | invoke-only | module-state RNG/records | none |
+| abilities-engine | 2 Hz | 1 presence scan + bounded projectile/AoE set; HP writes on hit | cast/impact events |
+| movement-warden | 2 Hz | 1 presence scan + O(players) envelope math | violations only |
+| territory | 1 Hz | point/member definition batches + 1 presence scan; income writes | flips only |
+| racing | 2 Hz | course defs + 1 presence scan + bounded ghost playback | timing + ghost poses |
+| possession | 2 Hz | 1 presence scan while held + ball integration | 1 ball pose/tick |
+| liveops-scheduler | 1 Hz | EventWindow batch; writes only at timestamp transitions | open/close events |
+
+Keep loops bounded and batch model reads. A 50-module × 5 Hz × 10-db-op
+stress fleet held 100% cadence but consumed ~80% of one builder game-api
+process — use that as a conservative sizing boundary, not a target.
 
 ## Deploying engines by name (the template registry)
 
