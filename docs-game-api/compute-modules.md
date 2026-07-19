@@ -131,7 +131,8 @@ it persists its counter to the state blob every tick.
   `[package]`, `[lib]`, and `[dependencies]` sections are allowed. Do not
   upload a `Cargo.lock`.
 - **Versions** — `sdkVersion` and `abiVersion` must be platform-supported
-  (currently SDK `0.1.0`, ABI `0`). The SDK pins the ABI for you.
+  (currently SDK `0.1.0` / `0.1.1`, ABI `0`; `0.1.1` adds `voxels_list`). The
+  SDK pins the ABI for you.
 - **Module names** are crate-shaped: lowercase letter first, then lowercase
   letters, digits, `-`, `_` (max 128 chars).
 

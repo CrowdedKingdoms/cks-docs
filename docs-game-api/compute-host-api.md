@@ -92,6 +92,7 @@ voxel coordinates are 0–255 within a chunk).
 | Function | Behavior |
 |---|---|
 | `chunk_get(x, y, z)` | Returns the chunk at those coordinates (`chunkId`, `stateBase64`, `updatedAt`) or `null`. |
+| `voxels_list(x, y, z)` | The voxels recorded in that chunk (capped at 2048): `voxelX/Y/Z`, `voxelType`, `stateBase64`, `updatedAt`. Requires SDK 0.1.1+. |
 | `actors_list(x, y, z)` | Actors currently recorded in that chunk (≤ 200): `uuidHex`, `userId`, `stateBase64`. |
 | `voxel_set(chunk, voxel, voxel_type, state_base64)` | Writes one voxel as the **server** (no player permission check — your module is trusted in your own app). Goes through the same validation as the voxel mutation and replicates to clients like any voxel update. |
 | `grid_permission_check(user_id, grid_id, permission_key)` | Checks whether a user holds a runtime permission key on one of your grids — e.g. a guard NPC testing `access` for an intruder. Returns `false` for grids outside your app. |
