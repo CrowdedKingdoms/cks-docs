@@ -33,6 +33,10 @@ downloadable SDL) until the stated removal date.
 - Game API behavior change (non-breaking): the `computeSetPolicy` ceiling
   clamp now reflects operator-set values, so the ceiling named in the
   `... exceeds the platform ceiling (N)` error can change over time.
+- SDK coverage: CrowdyJS **8.14** (`client.operator.computePlatformCeilings()`
+  / `setComputePlatformCeilings(input)`) and CrowdyCPP **v0.10.0**
+  (`operator_().computePlatformCeilings()` / `setComputePlatformCeilings`)
+  wrap the two fields with the same patch semantics.
 
 ## 2026-07-19
 
