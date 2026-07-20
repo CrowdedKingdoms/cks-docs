@@ -14,6 +14,18 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-19 (latest)
 
+**Compute SDK 0.1.4 — atomic world+model referee commits**
+
+- New host call `model_invoke_with_world`: up to 16 voxel writes commit on
+  the **same SQL transaction** as an `autonomousInvocable` Model function.
+  A denied function touches no voxel; a failed voxel write rolls the Model
+  commit back. Each write charges one data op.
+- Blocks with Friends' `mine`/`place` referee moved onto the atomic call —
+  the earlier compensation/refund ordering and its bounded loss windows are
+  retired (action receipts remain for client retry idempotency).
+- No GraphQL schema changes; see the
+  [Compute host API](/game-api/compute-host-api) reference.
+
 **Docs: the "self-reported vitals" client-trust pattern**
 
 - [Choosing Game APIs](/game-api/model-vs-compute) now names the

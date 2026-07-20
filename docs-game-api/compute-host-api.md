@@ -69,6 +69,7 @@ let full = api::container_get(&id)?; // { container, properties }
 | `container_delete(container_id)` | | Deletes a container. |
 | `property_set(container_id, key, value_type, value)` | `value_type`: `int`, `float`, `bool`, `string`, `object`, `array`, ... | Sets one property. |
 | `model_invoke(function_name, self_container_id, params, session_id, caller_user_id)` | session/caller optional | SDK 0.1.3+. Runs an `autonomousInvocable` Model function transactionally. With a caller, policy evaluates as that user with `is_automation`; without one, the trusted server path is used. Returns `GmInvokeResult`. |
+| `model_invoke_with_world(function_name, self_container_id, params, session_id, caller_user_id, world_writes)` | `world_writes`: up to 16 `WorldWrite { chunk, voxel, voxel_type, state_base64 }` | SDK 0.1.4+. Same as `model_invoke`, plus the voxel writes commit on the **same SQL transaction** as the Model mutations: a denied function touches no voxel, a failed voxel write rolls the Model commit back. Each write charges one data op (same budget as `voxel_set`). |
 | `edge_add(from, to, relationship_type)` | container ids | Adds a typed edge between containers. |
 | `edge_delete(from, to, relationship_type)` | | Removes the edge; returns whether one existed. |
 | `sessions_list(status)` | optional status filter | Lists model sessions (≤ 200). |
@@ -79,6 +80,12 @@ effects, metering and cascade depth. It counts as one host data operation and
 is app-scoped; the guest cannot choose another tenant. Direct
 `property_set` remains appropriate for rebuildable engine mirrors and
 non-atomic telemetry.
+
+Use `model_invoke_with_world` when a referee action must change the **voxel
+world and the Model ledger together** — mine a block and grant its drop,
+consume an item and place its block. Sequencing `voxel_set` next to a
+separate `model_invoke` leaves a partial-failure window that needs
+compensation code; the combined call removes it.
 
 ## App state blobs
 
