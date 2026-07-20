@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-List containers in an app, optionally filtered by container type and/or session. Requires a valid token.
+List containers in an app, optionally filtered by container type and/or session, by property predicates (`where`, requires typeName; the same predicate shape automation selectors use — missing properties fall back to the type default), and paged with offset/limit over the stable created-at ordering. Requires a valid token.
 
 
 ```graphql
@@ -23,6 +23,9 @@ gameModelContainers(
   appId: BigInt!
   typeName: String
   sessionId: String
+  where: [GmPropertyPredicateInput!]
+  limit: Int
+  offset: Int
 ): [GmContainer!]!
 ```
 
@@ -39,6 +42,18 @@ Optional: only containers of this type. Omit for all types.
 
 #### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
 Optional: only containers in this session. Omit for all (including app-global).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>where</b></code>](#where)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmPropertyPredicateInput!]</b></code>](/reference/graphql/types/inputs/gm-property-predicate-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#where\} 
+Optional property predicates (max 8, AND-combined). Requires typeName. Ops: '==', '!=', '&#x003C;', '&#x003E;', '&#x003C;=', '&#x003E;='. Values are JSON-encoded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Optional page size (applied after `where` filtering).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+Optional page offset (applied after `where` filtering).
 
 
 

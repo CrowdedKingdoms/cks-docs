@@ -285,7 +285,25 @@ arithmetic on a missing value) the transaction is rolled back, `success` is
 - `gameModelContainer(appId, containerId)` — container metadata.
 - `gameModelContainerState(appId, containerId)` — visible properties as a JSON
   object.
-- `gameModelContainers(appId, typeName, sessionId)` — list instances.
+- `gameModelContainers(appId, typeName, sessionId, where, limit, offset)` —
+  list instances. `where` (requires `typeName`) filters by up to 8
+  AND-combined property predicates `{ key, op, valueJson }` — ops `==`,
+  `!=`, `<`, `>`, `<=`, `>=`; missing properties fall back to the type
+  default (the same predicate shape [automation
+  selectors](autonomous-processes#selectors-choosing-targets-from-model-data)
+  use). `limit`/`offset` page after filtering over the stable created-at
+  ordering:
+
+```graphql
+query {
+  gameModelContainers(
+    appId: "1", typeName: "Unit",
+    where: [{ key: "team", op: "==", valueJson: "\"red\"" },
+            { key: "hp", op: ">", valueJson: "0" }]
+    limit: 20
+  ) { containerId displayName }
+}
+```
 - `gameModelTraverse(appId, rootId, relationshipType, depth)` — walk the
   container graph (edges created with `gameModelAddEdge` / removed with
   `gameModelDeleteEdge`), e.g. an inventory's items or a tech tree. `depth` is

@@ -66,6 +66,7 @@ let full = api::container_get(&id)?; // { container, properties }
 | `container_get(container_id)` | | Returns `{ container, properties }` (up to 200 properties). |
 | `container_get_batch(container_ids)` | up to 32 ids | Batched form: `[{ container, properties }]` in a single call (one data-op charge). Requires SDK 0.1.2+. |
 | `containers_list(type_name, session_id)` | both optional filters | Lists containers (≤ 200). |
+| `containers_list_where(type_name, session_id, where, limit, offset)` | `where`: up to 8 `Predicate { key, op, value }` | SDK 0.1.5+. Filtered/paged list: predicates evaluated host-side (requires `type_name`; type defaults honored), then offset/limit over the stable created-at ordering (limit clamps to 200). Charges 2 data ops with predicates (list + property batch), 1 without. |
 | `container_delete(container_id)` | | Deletes a container. |
 | `property_set(container_id, key, value_type, value)` | `value_type`: `int`, `float`, `bool`, `string`, `object`, `array`, ... | Sets one property. |
 | `model_invoke(function_name, self_container_id, params, session_id, caller_user_id)` | session/caller optional | SDK 0.1.3+. Runs an `autonomousInvocable` Model function transactionally. With a caller, policy evaluates as that user with `is_automation`; without one, the trusted server path is used. Returns `GmInvokeResult`. |

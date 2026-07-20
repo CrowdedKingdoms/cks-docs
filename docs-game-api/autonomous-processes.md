@@ -93,7 +93,21 @@ mutation {
 
 Key fields:
 
-- **`functionName`** — the `autonomous_invocable` entry point.
+- **`actionKind`** — what the automation does when it fires:
+  - `model_function` (default) — invoke the `functionName` Model function
+    (everything below applies).
+  - `compute_invoke` — invoke a [compute module](compute-modules)'s invoke
+    export directly: set `computeModuleName` + `computeExport` (the export
+    must be bound as an invoke trigger on the module). The call runs on the
+    trusted server path — no invoke-policy evaluation; your automation
+    config is the authorization. `targetMode` is forced to `global`,
+    selectors/fan-out don't apply, and `paramsJson` is passed to the export
+    verbatim. The module's execution bills as WASM compute; the automation
+    run records dispatch overhead only. This is the first-class home for
+    cron-shaped compute work ("at 03:00 run the settlement export") —
+    no marker function needed.
+- **`functionName`** — the `autonomous_invocable` entry point
+  (`model_function` actions).
 - **`targetMode`** — how to pick the `self` container(s):
   - `container` — one specific `selfContainerId`.
   - `type` — fan out over every instance of `targetTypeName` (in `sessionId`
@@ -147,6 +161,11 @@ mutation {
 (filter by `containerTypeName` / `propertyKey`, fired by direct
 `gameModelSetProperty` writes), or `container_created` (filter by
 `containerTypeName`). `debounceMs` coalesces bursts.
+
+`property_changed` deliveries to **compute modules** additionally carry the
+`oldValue`/`newValue` delta, so a module reacting to a write doesn't spend a
+data op re-reading the container it was just told about (see
+[Compute Modules — events](compute-modules)).
 
 ## Selectors: choosing targets from model data
 
