@@ -14,6 +14,25 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-19 (latest)
 
+**Container-change push, typed invoke contracts, optimistic-action kit**
+
+- New subscription `gameModelContainerChanged`: post-commit, metadata-only
+  container-change events (which container, which keys — pull the
+  visibility-filtered state on receipt) with typeName/session filters,
+  fanned out across API replicas. Replaces interval polling with
+  pull-on-push; Blocks with Friends' NPC reconcile loop now rides it with a
+  polling fallback for older servers.
+- Compute invoke triggers may declare a typed **contract**
+  (`contractJson`): declared params are validated pre-sandbox (structured
+  `BAD_REQUEST` instead of a guest runtime error), contracts surface on
+  `computeModuleTriggers`, and `crowdy-compute types` generates TypeScript
+  wrappers from them.
+- CrowdyJS **8.11** adds `gameModel.containerChanged(...)` and the
+  `runOptimisticAction` kit helper (the packaged optimistic apply → referee
+  invoke → confirm/rollback loop with actionId receipts); CrowdyCPP **0.8**
+  mirrors with `crowdy::kit::run_optimistic_action` (parity 0 missing; the
+  push stream is waived for native clients).
+
 **Container query predicates, automation compute actions, event deltas**
 
 - `gameModelContainers` gains `where` (up to 8 AND-combined property

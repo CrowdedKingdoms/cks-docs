@@ -32,6 +32,7 @@ input UpsertComputeTriggerInput {
   debounceMs: Int
   exportName: String
   invokePolicyJson: String
+  contractJson: String
 }
 ```
 
@@ -84,6 +85,10 @@ For invoke triggers: the exported guest function name computeInvoke routes to.
 
 #### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>invokePolicyJson</b></code>](#invoke-policy-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-policy-json\} 
 For invoke triggers: JSON authority tree gating who may invoke (same shape as game-model function invoke policies). Null = app admins only.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>contractJson</b></code>](#contract-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#contract-json\} 
+For invoke triggers: optional typed contract (JSON): &#x007B;"params": &#x007B;name: &#x007B;type, required?, description?&#x007D;&#x007D;, "result": &#x007B;...&#x007D;, "description"?&#x007D;. Types: int|float|string|bool|object|array. Declared params are validated on computeInvoke BEFORE the sandbox runs (required presence + type; undeclared params pass through); result is documentation/codegen only. Null = no validation.
 
 
 

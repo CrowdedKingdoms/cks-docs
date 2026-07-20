@@ -269,6 +269,27 @@ mutation {
 
 `invokePolicyJson` is the same JSON authority tree used by
 [game-model invoke policies](/game-api/game-models#authority-deciding-who-may-invoke-a-function).
+
+An invoke trigger may also declare a **typed contract** (`contractJson`):
+
+```json
+{
+  "description": "Spend gold and place the block atomically",
+  "params": {
+    "amount":   { "type": "int", "required": true },
+    "targetId": { "type": "string" }
+  },
+  "result": { "placed": { "type": "bool" } }
+}
+```
+
+Types are `int | float | string | bool | object | array`. Declared params are
+validated on `computeInvoke` **before the sandbox runs** — a shape mistake is
+a structured `BAD_REQUEST` naming the violation, not a runtime guest error.
+Undeclared params pass through untouched; `result` is documentation/codegen
+only. Contracts surface on `computeModuleTriggers`, and the
+`crowdy-compute types` CLI command generates TypeScript param/result
+interfaces plus typed invoke wrappers from them.
 When it is **null, only `manage_compute` holders may invoke** (the safe
 default). Leaves that need a model container context (e.g. `owner_of_self`)
 fail closed here — prefer caller-based leaves (`anyone`, `user_in_list`,

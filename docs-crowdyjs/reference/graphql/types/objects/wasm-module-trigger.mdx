@@ -33,6 +33,7 @@ type WasmModuleTrigger {
   debounceMs: Int!
   exportName: String
   invokePolicyJson: String
+  contractJson: String
   createdAt: DateTime!
 }
 ```
@@ -90,6 +91,10 @@ For invoke triggers: the exported guest function name.
 
 #### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>invokePolicyJson</b></code>](#invoke-policy-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-policy-json\} 
 For invoke triggers: JSON authority tree gating who may invoke. Null = app admins only.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>contractJson</b></code>](#contract-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#contract-json\} 
+For invoke triggers: the typed contract (JSON: params/result field maps with int|float|string|bool|object|array types). The platform validates computeInvoke params against it pre-sandbox; client codegen reads it for typed wrappers. Null = undeclared.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
