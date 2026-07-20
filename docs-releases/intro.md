@@ -14,6 +14,16 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-19 (latest)
 
+**Docs: the "self-reported vitals" client-trust pattern**
+
+- [Choosing Game APIs](/game-api/model-vs-compute) now names the
+  self-reported vitals pattern (client-committed survival stats under
+  `owner_of_self`) with its four guardrails: clamp every write, gate
+  restoration on consumed resources, never gate grants or competitive
+  results on self-reported state, and move abuse-sensitive writes behind a
+  compute referee (the expression language deliberately has no clock
+  builtin, so Model invoke policies cannot express cooldowns).
+
 **Choosing Game APIs + BWF/TMS authority dogfood**
 
 - The canonical five-tier API guide now maps mechanics and genre starters to
