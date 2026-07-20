@@ -14,6 +14,22 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-19 (latest)
 
+**Container query predicates, automation compute actions, event deltas**
+
+- `gameModelContainers` gains `where` (up to 8 AND-combined property
+  predicates, the automation-selector shape, type defaults honored) plus
+  `limit`/`offset` paging; the compute host mirrors it as
+  `containers_list_where` (SDK `0.1.5`).
+- Automations gain `actionKind: compute_invoke`: bind a schedule/event/
+  manual automation directly to a compute module's invoke export (trusted
+  server path, `targetMode: global`) — the first-class home for cron-shaped
+  compute work, replacing the marker-function pattern.
+- `property_changed` event deliveries to compute modules now carry the
+  `oldValue`/`newValue` delta.
+- SDKs: CrowdyJS **8.11** / CrowdyCPP **0.8** expose the new arguments and
+  fields (`containersWhere` convenience in CPP); older servers reject the
+  new arguments — omit them and everything else keeps working.
+
 **Compute SDK 0.1.4 — atomic world+model referee commits**
 
 - New host call `model_invoke_with_world`: up to 16 voxel writes commit on

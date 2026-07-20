@@ -24,7 +24,10 @@ input UpsertAutomationInput {
   name: String!
   description: String
   enabled: Boolean
-  functionName: String!
+  actionKind: String
+  functionName: String
+  computeModuleName: String
+  computeExport: String
   targetMode: String
   selfContainerId: String
   targetTypeName: String
@@ -65,12 +68,24 @@ Optional description.
 Whether it may run. Defaults to true.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
-Entry-point function name (must be autonomous&#x005F;invocable).
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>actionKind</b></code>](#action-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#action-kind\} 
+Action kind: model&#x005F;function (default — invoke a Model function) or compute&#x005F;invoke (invoke a compute-module export directly; the trusted server path, no invoke policy evaluation).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+Entry-point function name (must be autonomous&#x005F;invocable). Required for action&#x005F;kind=model&#x005F;function; ignored for compute&#x005F;invoke.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>computeModuleName</b></code>](#compute-module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compute-module-name\} 
+For action&#x005F;kind=compute&#x005F;invoke: the compute module name to invoke.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>computeExport</b></code>](#compute-export)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compute-export\} 
+For action&#x005F;kind=compute&#x005F;invoke: the module invoke export to call (must be bound as an invoke trigger on the module).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>targetMode</b></code>](#target-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#target-mode\} 
-Target mode: container | type | global. Defaults to container.
+Target mode: container | type | global. Defaults to container (model&#x005F;function) / global (compute&#x005F;invoke).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationInput.<b>selfContainerId</b></code>](#self-container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#self-container-id\} 

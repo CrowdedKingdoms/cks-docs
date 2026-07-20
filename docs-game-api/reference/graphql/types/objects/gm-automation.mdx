@@ -25,7 +25,10 @@ type GmAutomation {
   name: String!
   description: String
   enabled: Boolean!
-  functionName: String!
+  actionKind: String!
+  functionName: String
+  computeModuleName: String
+  computeExport: String
   targetMode: String!
   selfContainerId: String
   targetTypeName: String
@@ -76,8 +79,20 @@ Optional description.
 Whether the automation is eligible to run.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmAutomation.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
-The entry-point function name (must be autonomous&#x005F;invocable).
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomation.<b>actionKind</b></code>](#action-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action-kind\} 
+Action kind: model&#x005F;function (invoke a Model function) or compute&#x005F;invoke (invoke a compute-module export).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomation.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+The entry-point function name (must be autonomous&#x005F;invocable). Null for compute&#x005F;invoke actions.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomation.<b>computeModuleName</b></code>](#compute-module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compute-module-name\} 
+For action&#x005F;kind=compute&#x005F;invoke: the compute module name invoked.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomation.<b>computeExport</b></code>](#compute-export)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compute-export\} 
+For action&#x005F;kind=compute&#x005F;invoke: the module invoke export called.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GmAutomation.<b>targetMode</b></code>](#target-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#target-mode\} 

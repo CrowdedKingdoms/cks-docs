@@ -139,9 +139,10 @@ it persists its counter to the state blob every tick.
   `[package]`, `[lib]`, and `[dependencies]` sections are allowed. Do not
   upload a `Cargo.lock`.
 - **Versions** — `sdkVersion` and `abiVersion` must be platform-supported
-  (currently SDK `0.1.0` – `0.1.4`, ABI `0`; `0.1.1` adds `voxels_list`,
+  (currently SDK `0.1.0` – `0.1.5`, ABI `0`; `0.1.1` adds `voxels_list`,
   `0.1.2` adds batched/radius reads, `0.1.4` adds atomic world+model
-  commits via `model_invoke_with_world`, and `0.1.3` adds transactional
+  commits via `model_invoke_with_world`, `0.1.5` adds filtered/paged
+  container lists via `containers_list_where`, and `0.1.3` adds transactional
   `model_invoke` + explicitly owned container creation). The SDK pins the
   ABI for you.
 - **Module names** are crate-shaped: lowercase letter first, then lowercase
@@ -236,13 +237,21 @@ replicas — your `tick` never overlaps or double-fires.
 
 - `function_invoked` — a model function ran (filter with `functionName`),
 - `property_changed` — a direct property write (filter with
-  `containerTypeName` / `propertyKey`),
+  `containerTypeName` / `propertyKey`); the delivered payload carries the
+  `oldValue`/`newValue` delta so your module doesn't spend a data op
+  re-reading the container it was just told about,
 - `container_created` — (filter with `containerTypeName`),
 - `compute_event` — another module (or this one) called `emit_event` (filter
   with `eventName`).
 
 `debounceMs` coalesces bursts. Event chains are bounded: a cascade of modules
 triggering each other via `emit_event` is cut off at a platform depth limit.
+
+Automations can also drive modules directly: a
+[`compute_invoke` automation](autonomous-processes#authoring-an-automation-the-npc-table)
+binds a schedule/event/manual automation to one of your module's invoke
+exports on the trusted server path — the natural home for cron-shaped
+compute work.
 
 ### `invoke` — a callable export
 
