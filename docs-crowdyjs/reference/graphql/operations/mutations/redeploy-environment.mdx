@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Redeploys the environment to a target release version (input.version) or, when omitted, the latest available version for its class, reusing its current flavors/scaling and linked apps. Preserves the environment URLs. No-op-safe: re-running when already at latest still redeploys. If a prior deploy failed but stayed in&#x005F;progress, it is abandoned first so the redeploy can proceed. Requires the 'manage&#x005F;environments' org permission.
+Redeploys the environment to a target release version (input.version) or, when omitted, the latest available version for its class, reusing its current flavors/scaling and linked apps. Preserves the environment URLs. No-op-safe: re-running when already at latest still redeploys. If a prior deploy failed but stayed in&#x005F;progress, it is abandoned first so the redeploy can proceed. Preview first with environmentRedeployPlan (the dry run). Requires the 'manage&#x005F;environments' org permission.
 
 
 ```graphql

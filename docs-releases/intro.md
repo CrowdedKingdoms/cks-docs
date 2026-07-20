@@ -14,6 +14,21 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-20 (latest)
 
+**Redeploy dry run: preview what a release will do before running it**
+
+- New Management API query `environmentRedeployPlan(input)` — the DRY RUN
+  of `redeployEnvironment`. Same input, read-only: it resolves the same
+  target version and returns per-component version diffs (game-api, Buddy,
+  base images), whether game-DB schema DDL applies or is skipped
+  (`schemaWillApply` + `schemaGitRef`), Buddy artifact resolution, the
+  exact pipeline tasks/steps the change order would run (enumerated
+  through the real planner), and `blockers` — everything that would make
+  the real mutation fail (active change order, missing flavors,
+  non-deployable version) reported instead of thrown. Requires
+  `view_environments` (the mutation still requires `manage_environments`).
+- SDK coverage: CrowdyJS **8.15** (`client.environments.redeployPlan(input)`)
+  and CrowdyCPP **v0.11.0** (`admin_().redeployPlan(input)`).
+
 **Complete flow timelines: demand-driven compute runs always record**
 
 - `wasm_module_runs` now records every demand-driven run — `invoke` and

@@ -1,0 +1,88 @@
+---
+id: environment-redeploy-plan
+title: EnvironmentRedeployPlan
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+DRY RUN preview of redeployEnvironment: exactly what moving the environment to a target release version would do — component version diffs (game-api, Buddy, base images), whether game-DB schema DDL applies, and the pipeline tasks/steps that would run — WITHOUT creating a change order or touching any VM. Blockers list everything that would make the real mutation fail.
+
+
+```graphql
+type EnvironmentRedeployPlan {
+  environmentSlug: String!
+  currentVersion: String
+  targetVersion: String
+  deployMode: String
+  changeOrderKind: String
+  schemaWillApply: Boolean!
+  schemaGitRef: String
+  componentChanges: [EnvironmentComponentChange!]!
+  tasks: [EnvironmentPlannedTask!]!
+  blockers: [String!]!
+  notes: [String!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentRedeployPlan.<b>environmentSlug</b></code>](#environment-slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#environment-slug\} 
+Environment slug.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentRedeployPlan.<b>currentVersion</b></code>](#current-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#current-version\} 
+Release version the environment currently observes (null before first deploy).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentRedeployPlan.<b>targetVersion</b></code>](#target-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#target-version\} 
+Release version the redeploy would move to (the requested version, or the latest available for the class when omitted). Null when no version resolves — see blockers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentRedeployPlan.<b>deployMode</b></code>](#deploy-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#deploy-mode\} 
+How the redeploy would run: 'services' (in-place bump on existing VMs) or 'full' (full reprovision). Null when blocked before resolution.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentRedeployPlan.<b>changeOrderKind</b></code>](#change-order-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#change-order-kind\} 
+Change-order kind the real mutation would enqueue ('redeploy&#x005F;environment&#x005F;services' or 'deploy&#x005F;environment&#x005F;version').
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentRedeployPlan.<b>schemaWillApply</b></code>](#schema-will-apply)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#schema-will-apply\} 
+True when the plan applies the game schema (create-schema.sql at the target's schemaGitRef) to the tenant game DB in place. False when the observed schema ref already matches (apply skipped) or when blocked.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentRedeployPlan.<b>schemaGitRef</b></code>](#schema-git-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#schema-git-ref\} 
+Git ref whose create-schema.sql would be applied.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentRedeployPlan.<b>componentChanges</b></code>](#component-changes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[EnvironmentComponentChange!]!</b></code>](/reference/graphql/types/objects/environment-component-change.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#component-changes\} 
+Per-component version diff between what the environment runs and what the target release pins.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentRedeployPlan.<b>tasks</b></code>](#tasks)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[EnvironmentPlannedTask!]!</b></code>](/reference/graphql/types/objects/environment-planned-task.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#tasks\} 
+Pipeline tasks the change order would run (enumerated for 'services' mode; empty for 'full' mode and when blocked).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentRedeployPlan.<b>blockers</b></code>](#blockers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#blockers\} 
+Why the real redeployEnvironment call would be rejected right now (active change order, missing flavors, version not deployable, ...). Empty when the redeploy would proceed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentRedeployPlan.<b>notes</b></code>](#notes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#notes\} 
+Human-readable highlights of what the redeploy does (game-api tag movement, Buddy artifact resolution, schema apply/skip, VM counts).
+
+
+
+
+### Returned By
+
+[`environmentRedeployPlan`](/reference/graphql/operations/queries/environment-redeploy-plan.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

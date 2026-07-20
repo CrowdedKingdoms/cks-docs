@@ -1921,6 +1921,86 @@ type PlayerPulse {
 }
 
 """
+One manifest component's change in a redeploy plan: what the environment currently runs vs what the target release pins.
+"""
+type EnvironmentComponentChange {
+  """
+  Manifest component kind (e.g. 'game_api_environment', 'buddy', 'game_api_base_image').
+  """
+  component: String!
+  """
+  Version the environment currently runs for this component (observed, falling back to last-desired). Null when never deployed.
+  """
+  fromVersion: String
+  """
+  Version the target release pins for this component. Null when the target manifest omits the component.
+  """
+  toVersion: String
+  """True when the redeploy would change this component."""
+  changed: Boolean!
+}
+
+"""
+A task the redeploy pipeline would enqueue, with its step kinds in execution order. Enumerated from the same planner the real change order uses.
+"""
+type EnvironmentPlannedTask {
+  """Task kind (e.g. 'apply_schema_in_place', 'update_game_api_1')."""
+  kind: String!
+  """Task kinds this task waits on before starting."""
+  dependsOn: [String!]!
+  """
+  Step kinds in order (e.g. 'pg:apply_schema', 'ssh:install_wasm_toolchain').
+  """
+  steps: [String!]!
+}
+
+"""
+DRY RUN preview of redeployEnvironment: exactly what moving the environment to a target release version would do — component version diffs (game-api, Buddy, base images), whether game-DB schema DDL applies, and the pipeline tasks/steps that would run — WITHOUT creating a change order or touching any VM. Blockers list everything that would make the real mutation fail.
+"""
+type EnvironmentRedeployPlan {
+  """Environment slug."""
+  environmentSlug: String!
+  """
+  Release version the environment currently observes (null before first deploy).
+  """
+  currentVersion: String
+  """
+  Release version the redeploy would move to (the requested version, or the latest available for the class when omitted). Null when no version resolves — see blockers.
+  """
+  targetVersion: String
+  """
+  How the redeploy would run: 'services' (in-place bump on existing VMs) or 'full' (full reprovision). Null when blocked before resolution.
+  """
+  deployMode: String
+  """
+  Change-order kind the real mutation would enqueue ('redeploy_environment_services' or 'deploy_environment_version').
+  """
+  changeOrderKind: String
+  """
+  True when the plan applies the game schema (create-schema.sql at the target's schemaGitRef) to the tenant game DB in place. False when the observed schema ref already matches (apply skipped) or when blocked.
+  """
+  schemaWillApply: Boolean!
+  """Git ref whose create-schema.sql would be applied."""
+  schemaGitRef: String
+  """
+  Per-component version diff between what the environment runs and what the target release pins.
+  """
+  componentChanges: [EnvironmentComponentChange!]!
+  """
+  Pipeline tasks the change order would run (enumerated for 'services' mode; empty for 'full' mode and when blocked).
+  """
+  tasks: [EnvironmentPlannedTask!]!
+  """
+  Why the real redeployEnvironment call would be rejected right now (active change order, missing flavors, version not deployable, ...). Empty when the redeploy would proceed.
+  """
+  blockers: [String!]!
+  """
+  Human-readable highlights of what the redeploy does (game-api tag movement, Buddy artifact resolution, schema apply/skip, VM counts).
+  """
+  notes: [String!]!
+}
+
+"""
 A single step within a deploy/destroy task, with its retry attempt and any error.
 """
 type CksDeployProgressStep {
@@ -2941,6 +3021,10 @@ type Query {
   """
   environmentQuote(input: EnvironmentQuoteInput!): CksEnvironmentQuote! @requiresPermission(scope: "org", permission: "view_billing", scopeArg: "input.orgId")
   """
+  DRY RUN of redeployEnvironment: previews exactly what moving the environment to a target release version (input.version, or latest for its class when omitted) would do — component version diffs (game-api, Buddy, base images), whether game-DB schema DDL applies or is skipped, Buddy artifact resolution, and the pipeline tasks/steps that would run — WITHOUT creating a change order or touching any VM. Anything that would make the real mutation fail is returned in `blockers`. Read-only; requires the 'view_environments' org permission.
+  """
+  environmentRedeployPlan(input: RedeployEnvironmentInput!): EnvironmentRedeployPlan! @requiresPermission(scope: "org", permission: "view_environments", scopeArg: "input.orgId")
+  """
   Public read-only catalog of active Buddy (UDP replication) billing tiers.
   """
   buddyBillingTiers: [BuddyBillingTier!]!
@@ -3230,6 +3314,33 @@ input EnvironmentQuoteInput {
   udpBuddyMinServers: Int
   udpBuddyMaxServers: Int
   loadBalancerCount: Int
+}
+
+input RedeployEnvironmentInput {
+  orgId: BigInt!
+  slug: String!
+  """
+  Target environment version. When omitted, redeploys to the latest available version for the class. Must be available, deployable by this class, and not older than the current version (forward-only — no rollback).
+  """
+  version: String
+  """
+  How to roll out the version. When omitted, routes to services-only when active runtime VMs exist, otherwise full.
+  """
+  deployMode: RedeployDeployMode
+}
+
+"""
+How redeployEnvironment rolls out a new version. Omit for automatic routing (services-only when active runtime VMs exist, otherwise full).
+"""
+enum RedeployDeployMode {
+  """
+  Replace the runtime VMs (reprovision game-api / Buddy instances). Slower; use when the box image or infra must change.
+  """
+  FULL
+  """
+  Update services in place on the existing runtime VMs (no VM replacement). Faster; only valid when active runtime VMs exist.
+  """
+  SERVICES
 }
 
 type Mutation {
@@ -3782,7 +3893,7 @@ type Mutation {
   """
   updateEnvironmentBillingTiers(input: UpdateEnvironmentBillingTiersInput!): CksEnvironment! @requiresPermission(scope: "org", permission: "manage_environments", scopeArg: "input.orgId")
   """
-  Redeploys the environment to a target release version (input.version) or, when omitted, the latest available version for its class, reusing its current flavors/scaling and linked apps. Preserves the environment URLs. No-op-safe: re-running when already at latest still redeploys. If a prior deploy failed but stayed in_progress, it is abandoned first so the redeploy can proceed. Requires the 'manage_environments' org permission.
+  Redeploys the environment to a target release version (input.version) or, when omitted, the latest available version for its class, reusing its current flavors/scaling and linked apps. Preserves the environment URLs. No-op-safe: re-running when already at latest still redeploys. If a prior deploy failed but stayed in_progress, it is abandoned first so the redeploy can proceed. Preview first with environmentRedeployPlan (the dry run). Requires the 'manage_environments' org permission.
   """
   redeployEnvironment(input: RedeployEnvironmentInput!): CksEnvironmentChangeOrder! @requiresPermission(scope: "org", permission: "manage_environments", scopeArg: "input.orgId")
   """
@@ -4445,33 +4556,6 @@ input UpdateEnvironmentBillingTiersInput {
   graphqlBillingTier: Int
   """Postgres billing tier level from postgresBillingTiers."""
   postgresBillingTier: Int
-}
-
-input RedeployEnvironmentInput {
-  orgId: BigInt!
-  slug: String!
-  """
-  Target environment version. When omitted, redeploys to the latest available version for the class. Must be available, deployable by this class, and not older than the current version (forward-only — no rollback).
-  """
-  version: String
-  """
-  How to roll out the version. When omitted, routes to services-only when active runtime VMs exist, otherwise full.
-  """
-  deployMode: RedeployDeployMode
-}
-
-"""
-How redeployEnvironment rolls out a new version. Omit for automatic routing (services-only when active runtime VMs exist, otherwise full).
-"""
-enum RedeployDeployMode {
-  """
-  Replace the runtime VMs (reprovision game-api / Buddy instances). Slower; use when the box image or infra must change.
-  """
-  FULL
-  """
-  Update services in place on the existing runtime VMs (no VM replacement). Faster; only valid when active runtime VMs exist.
-  """
-  SERVICES
 }
 
 input RestartEnvironmentServicesInput {

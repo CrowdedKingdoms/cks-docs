@@ -1,0 +1,53 @@
+---
+id: environment-component-change
+title: EnvironmentComponentChange
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One manifest component's change in a redeploy plan: what the environment currently runs vs what the target release pins.
+
+
+```graphql
+type EnvironmentComponentChange {
+  component: String!
+  fromVersion: String
+  toVersion: String
+  changed: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentComponentChange.<b>component</b></code>](#component)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#component\} 
+Manifest component kind (e.g. 'game&#x005F;api&#x005F;environment', 'buddy', 'game&#x005F;api&#x005F;base&#x005F;image').
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentComponentChange.<b>fromVersion</b></code>](#from-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#from-version\} 
+Version the environment currently runs for this component (observed, falling back to last-desired). Null when never deployed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentComponentChange.<b>toVersion</b></code>](#to-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#to-version\} 
+Version the target release pins for this component. Null when the target manifest omits the component.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentComponentChange.<b>changed</b></code>](#changed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#changed\} 
+True when the redeploy would change this component.
+
+
+
+
+### Member Of
+
+[`EnvironmentRedeployPlan`](/reference/graphql/types/objects/environment-redeploy-plan.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
