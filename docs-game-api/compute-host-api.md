@@ -109,7 +109,7 @@ voxel coordinates are 0–255 within a chunk).
 
 | Function | Behavior |
 |---|---|
-| `chunk_get(x, y, z)` | Returns the chunk at those coordinates (`chunkId`, `stateBase64`, `updatedAt`) or `null`. |
+| `chunk_get(x, y, z)` | Returns the chunk at those coordinates or `null`. `stateBase64` is the **dense voxel grid** (size³ bytes, indexed `y*size² + z*size + x`, byte 0 = air — what terrain sampling reads); `chunkStateBase64` is the game's opaque chunk metadata blob when set; plus `chunkId`, `updatedAt`. Fixed 2026-07-20 (server v0.14.5) — earlier hosts errored on every `chunk_get` call. `crowdy-game-kit-sim`'s `terrain::TerrainCache` wraps this for agent grounding (cached, budgeted `ground_y`). |
 | `voxels_list(x, y, z)` | The voxels recorded in that chunk (capped at 2048): `voxelX/Y/Z`, `voxelType`, `stateBase64`, `updatedAt`. Requires SDK 0.1.1+. |
 | `actors_list(x, y, z)` | Actors currently recorded in that chunk (≤ 200): `uuidHex`, `userId`, `stateBase64`. |
 | `actors_list_radius(x, y, z, radius_xz, radius_y)` | Actors in a chunk box around (x,y,z) — radii clamped to 3 (xz) / 1 (y), ≤ 500 rows, one data-op; rows add `chunkX/Y/Z`. Requires SDK 0.1.2+. |

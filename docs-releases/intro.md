@@ -14,6 +14,20 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-20 (latest)
 
+**Terrain grounding for engine agents + `chunk_get` repair (game-api v0.14.5)**
+
+- `chunk_get` now works (its SQL had referenced a nonexistent column since
+  Phase 3, so every call errored) and returns the dense voxel grid as
+  `stateBase64` plus the game's opaque metadata blob as `chunkStateBase64`.
+- New `crowdy-game-kit-sim` `terrain::TerrainCache`: cached, per-tick
+  budgeted ground sampling over dense chunks (`ground_y(x, z)` — the
+  server-side equivalent of a client ground scan), fail-soft on unloaded
+  chunks and non-voxel games.
+- The `mob-engine` and `npc-engine` templates (and Blocks with Friends'
+  `bwf-mobs`) now walk agents ON the terrain instead of approximating
+  height from nearby players — the approximation floated/flew mobs whenever
+  players jumped or flew, and NPC heights froze at their seeded values.
+
 **Redeploy dry run: preview what a release will do before running it**
 
 - New Management API query `environmentRedeployPlan(input)` — the DRY RUN
