@@ -292,12 +292,19 @@ query  { computeTemplates(appId: 1) { name description exports } }
 mutation { computeDeployTemplate(appId: 1, templateName: "mob-engine") { name enabled } }
 ```
 
-Deploys are idempotent (source-hash deduped), bind the template's triggers,
+Deploys are idempotent (source-hash deduped), re-upsert the template's
+triggers (tick rates, invoke policies and contracts refresh on redeploy),
 and enable the module; compilation is asynchronous (poll
 `computeModuleVersions`). Pass `moduleName` to run two parameterizations
 side by side. SDK sugar: `client.compute.deployTemplate(...)` or blueprints
 + engines in one call — `kit.deploy(blueprints, { engines: ["mob-engine",
 "world-engine"] })`.
+
+Every engine's invoke exports declare [typed
+contracts](compute-modules) platform-wide: `computeInvoke` params are
+validated before the sandbox runs (structured `BAD_REQUEST` on violations),
+and the `crowdy-compute types` CLI command generates fully typed
+param/result interfaces for the whole fleet.
 
 ## Wire format (what clients decode)
 
