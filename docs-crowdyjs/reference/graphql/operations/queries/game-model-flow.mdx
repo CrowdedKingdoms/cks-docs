@@ -1,0 +1,44 @@
+---
+id: game-model-flow
+title: gameModelFlow
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Diagnostics surface: stitch one flow correlation id into a single cross-engine timeline — the model events (gm event log), automation runs, and compute module runs that share the flowId minted at the entry edge (player gameModelInvoke / automation run / computeInvoke) and propagated across model&#x005F;invoke, the event bus, and emit&#x005F;compute&#x005F;event. Each array is ordered by time ascending; an unknown flowId returns three empty arrays. Answers "what happened to this kill's reward" in one query instead of three hand-joined ones. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelFlow(
+  appId: BigInt!
+  flowId: String!
+): GmFlowTimeline!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelFlow.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose flow to stitch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelFlow.<b>flowId</b></code>](#flow-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#flow-id\} 
+The flow correlation id (UUID) — from the flowId field of a GmEvent, GmAutomationRun, or WasmModuleRun.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmFlowTimeline</b></code>](/reference/graphql/types/objects/gm-flow-timeline.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The stitched cross-engine timeline for one flow correlation id: every model event, automation run, and compute module run that shares the flow&#x005F;id minted at the entry edge (player invoke / automation run / computeInvoke). Each array is ordered by time ascending, so the three together read as one causal diagnostics trace (e.g. mob kill -&#x003E; compute event -&#x003E; reward grant).

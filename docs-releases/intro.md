@@ -14,6 +14,26 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-19 (latest)
 
+**Flow-correlation query + SDK sweep (CrowdyJS 8.13 / CrowdyCPP 0.9)**
+
+- New Game API query `gameModelFlow(appId, flowId)`: stitch one flow
+  correlation id into a single cross-engine timeline — the `gameModelEvents`
+  rows, `gameModelAutomationRuns` and `computeModuleRuns` sharing the
+  `flowId` minted at the entry edge, each array ordered by time ascending. A
+  diagnostics surface gated by app-admin `manage_apps`; see
+  [Tracing a flow](/game-api/game-models#tracing-a-flow). Partial indexes
+  back the `flow_id` lookups on all three tables.
+- CrowdyJS **8.13** / CrowdyCPP **0.9**: the default event/run selections now
+  include `flowId`, and `gameModel.flow({ appId, flowId })` /
+  `gameModel().flow(appId, flowId)` fetch the stitched timeline (parity 0
+  missing). Older servers reject the new field/operation with a validation
+  error — everything else keeps working.
+- Kit invoke helpers treat `computeInvoke`'s typed **contract violation**
+  (`BAD_REQUEST` "Invoke params violate …") as a gameplay verdict: `kitInvoke`
+  resolves `{ success: false, errorMessage }` and engine invokes resolve
+  `{ success: false, reason }` instead of throwing (new `isKitVerdictError`
+  predicate in CrowdyJS).
+
 **Compute fleet hardening: revision-guarded state, flow correlation, shared artifacts, lane codegen**
 
 - State-blob writes are revision-guarded: the tick-lease holder always wins
