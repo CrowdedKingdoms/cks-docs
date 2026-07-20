@@ -132,7 +132,7 @@ const stacks = await kit.inventory.stacks(myUserId);
 const spend = await kit.inventory.consume(stacks[0].containerId, 5);
 if (!spend.success) console.warn(spend.errorMessage); // e.g. insufficient quantity
 
-await kit.inventory.grant(stackId, 10);
+await kit.inventory.grant(stackId, 10); // sandbox default only
 await kit.inventory.move(stackId, 3);
 // Atomic cross-stack transfer (same item type; both writes or neither):
 await kit.inventory.transfer(fromStackId, toStackId, 16);
@@ -140,7 +140,19 @@ await kit.inventory.transfer(fromStackId, toStackId, 16);
 // Optional: record membership edges and read a whole bag in one traversal.
 await kit.inventory.linkStack(bag.containerId, stackId);
 const contents = await kit.inventory.contents(bag.containerId);
+
+// Recipes/barters supplied to inventoryBlueprint become one Model function:
+await kit.inventory.craft(bag.containerId, 'wood_planks', [woodId], plankId);
+await kit.inventory.barter(bag.containerId, 'wheat_for_emerald', wheatId, emeraldId);
 ```
+
+For competitive economies deploy
+`inventoryBlueprint({ stackInstantiableBy: 'admin', grantAuthority: 'server' })`.
+Players can still consume/transfer/craft/barter, but cannot seed a non-empty
+stack or call generic `grant_stack`; a trusted bootstrap/referee creates empty
+stacks and grants through `model_invoke`. Set `ownerIdKind: 'string'` in both
+the blueprint and runtime options only for legacy worlds whose owner-mirror
+property is a string.
 
 ## Objects with custom permissions
 
@@ -421,10 +433,11 @@ damage-over-time all run server-side.
   selector binds the matching combatant as a `$target` ref
   (`where combat_key == self.target_key`) — automations cannot follow
   property refs directly.
-- `hostSynced: true` adds `sync_combatant` gated `is_host` for **fast**
-  combat: the elected host simulates per-frame on the replication plane and
-  persists durable hp at low frequency (the Blocks-with-Friends `mob_update`
-  precedent, with the policy actually enforced).
+- For competitive realtime combat, deploy a compute referee and use
+  `kit.combat.attackRouted`; live poses/range/cooldowns are validated
+  server-side and Model HP remains durable truth.
+- `hostSynced: true` remains a legacy/low-stakes co-op fallback: the elected
+  host may persist simulated HP, but it is not an anti-cheat boundary.
 
 ```ts
 const me = await kit.combat.spawnCombatant({ ownerUserId: myUserId, displayName: 'Knight', attack: 12 });
@@ -574,21 +587,19 @@ await adminKit.deploy([
 The mental models behind the layers — read these before designing your own
 blueprints.
 
-### The three simulation tiers
+### The four simulation tiers
 
-1. **Replication plane** (per-frame): actor updates, voxel edits, client
-   events over [`client.udp` / `client.world`](/game-api/graphql-udp-proxy-api)
-   — 20–60 Hz, host/client authority, nothing durable.
-2. **Automations** (seconds): server-driven ticks and reactions
-   ([autonomous processes](/game-api/autonomous-processes)) — the dispatcher
-   floor is seconds; **never** put per-frame behavior here.
-3. **Model invokes** (player actions): transactional, policy-gated functions —
-   the durable source of truth.
+1. **Replication/client render** (20–60 Hz): actor updates, voxel edits,
+   prediction and interpolation over `client.udp` / `client.world`.
+2. **Compute engines** (normally 1–5 Hz): authoritative agents, projectiles,
+   world loops and competitive referees.
+3. **Automations** (seconds–minutes): restock, dailies, coarse selector
+   fan-out; never pathfinding or fast motion.
+4. **Model invokes** (on demand): atomic, policy-gated durable transactions.
 
-Fast-twitch simulation (mobs, physics, vehicles) runs on tier 1 under the
-elected [host](/game-api/host-discovery), persists through `is_host`-gated
-tier-3 functions (`combatBlueprint({ hostSynced: true })`), and leaves slow
-lifecycle work (spawning, restocking, regen) to tier 2.
+The elected host remains useful for targeted delivery and low-stakes co-op
+fallbacks. It is not the preferred authority for competitive simulation.
+See [Choosing Game APIs](/game-api/model-vs-compute).
 
 ### Notify-to-pull
 
