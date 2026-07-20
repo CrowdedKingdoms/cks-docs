@@ -1,0 +1,73 @@
+---
+id: gm-container-change
+title: GmContainerChange
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One container-change notification from gameModelContainerChanged. Metadata only (no property values): clients pull the visibility-filtered state with gameModelContainerState on receipt. Delivery is post-commit and best-effort, like model-driven notifications.
+
+
+```graphql
+type GmContainerChange {
+  appId: BigInt!
+  containerId: String!
+  typeName: String
+  sessionId: String
+  source: String!
+  functionName: String
+  changedKeys: [String!]!
+  occurredAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerChange.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerChange.<b>containerId</b></code>](#container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#container-id\} 
+The container that changed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerChange.<b>typeName</b></code>](#type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#type-name\} 
+The container type (null if the type is unknown).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerChange.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+The session scope of the change, when any.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerChange.<b>source</b></code>](#source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source\} 
+What changed it: 'function' (invoke mutation), 'direct' (gameModelSetProperty), 'created', or 'deleted'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerChange.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+For source='function': the function that mutated it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerChange.<b>changedKeys</b></code>](#changed-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#changed-keys\} 
+The property keys the change touched (empty for created/deleted; clamped to 32 keys).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmContainerChange.<b>occurredAt</b></code>](#occurred-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#occurred-at\} 
+When the change committed.
+
+
+
+
+### Returned By
+
+[`gameModelContainerChanged`](/reference/graphql/operations/subscriptions/game-model-container-changed.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>

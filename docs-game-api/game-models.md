@@ -313,8 +313,9 @@ query {
 
 Every successful invocation is recorded — whether a player or a server-driven
 [automation](autonomous-processes) made it (events carry `callerKind` and
-`automationId`). Clients **pull** the authoritative state from the model API —
-there is no server-push subscription. Poll the event log with `gameModelEvents`
+`automationId`). Clients **pull** the authoritative state from the model API;
+the `gameModelContainerChanged` subscription (below) tells you *when* to pull.
+Poll the event log with `gameModelEvents`
 (filter by session, container, function, success):
 
 ```graphql
@@ -325,6 +326,30 @@ query { gameModelEvents(appId: "1", sessionId: "<session-uuid>") {
 
 Re-read `gameModelContainerState` / `gameModelContainers` after a change to get
 the new values.
+
+### Push: the container-change subscription
+
+Instead of interval polling, subscribe to `gameModelContainerChanged` over
+graphql-transport-ws (the same WebSocket path as `udpNotifications`):
+
+```graphql
+subscription {
+  gameModelContainerChanged(appId: "1", typeName: "Npc") {
+    containerId typeName sessionId source functionName changedKeys occurredAt
+  }
+}
+```
+
+Events fire post-commit whenever a container changes — an invoke mutated it
+(`source: "function"`), a direct `gameModelSetProperty` wrote it
+(`"direct"`), or it was `"created"` / `"deleted"`. Delivery is **metadata
+only** (which container, which keys — never property values), so visibility
+rules need no per-subscriber filtering: pull the filtered state with
+`gameModelContainerState` on receipt. Semantics are best-effort like
+[model-driven notifications](model-driven-notifications) — a dropped event
+costs one missed pull, never correctness; events fan out across all API
+replicas. CrowdyJS exposes this as `client.gameModel.containerChanged(...)`
+(pass `webSocketImpl` on Node ≤ 21).
 
 ### Notify clients to pull
 
