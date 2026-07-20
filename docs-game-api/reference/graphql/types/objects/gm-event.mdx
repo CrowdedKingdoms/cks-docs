@@ -21,6 +21,7 @@ An audit-log entry recording one function invocation and its outcome.
 ```graphql
 type GmEvent {
   eventId: String!
+  flowId: String
   sessionId: String
   functionName: String!
   selfContainerId: String
@@ -42,6 +43,10 @@ type GmEvent {
 
 #### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\} 
 Unique event id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>flowId</b></code>](#flow-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#flow-id\} 
+Flow correlation id: shared with automation runs and compute module runs caused by the same entry call (player invoke / automation run / computeInvoke), so cross-engine flows can be stitched together.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
