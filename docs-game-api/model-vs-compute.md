@@ -113,6 +113,31 @@ or authoritative event. Client RNG, peer-supplied damage, client-sorted
 tournament standings and elected-host competitive referees are
 anti-patterns.
 
+#### Named pattern: self-reported vitals
+
+Survival stats that only hurt their own reporter — hunger drain, breath,
+fall damage, self-heal after eating — may be committed by client-called
+Model functions (`owner_of_self` policy) instead of a compute referee.
+Blocks with Friends' `PlayerStats` functions (`consume_hunger`,
+`damage_player`, `heal_player`, `eat_food`) are the reference. This is a
+deliberate client-trust choice: a hostile client can at most flatter its own
+vitals. Use it knowingly, with these guardrails:
+
+1. **Clamp every write in the expression** (`min(20, self.health + $amount)`)
+   so no call can exceed caps regardless of params.
+2. **Gate restorative calls on consumed resources** — `eat_food` composes
+   `owner_of_self` with a condition that a food stack was consumed; the
+   consumption itself is an atomic Model transaction.
+3. **Never let self-reported state gate a grant or a competitive result.**
+   Kill credit, loot, XP from combat, and PvP damage go through the compute
+   referee (`is_automation`-locked functions); vitals may influence
+   *presentation*, not rewards.
+4. The expression language has no clock builtin, so **true cooldowns cannot
+   be expressed in an invoke policy**. If abuse of a self-reported function
+   would matter (PvP healing mid-fight), move that write behind a compute
+   referee invoke — the referee has `now_ms()` and live poses — rather than
+   approximating a rate limit in Model.
+
 ## Four simulation cadences
 
 | Tier | Typical cadence | Good for |
