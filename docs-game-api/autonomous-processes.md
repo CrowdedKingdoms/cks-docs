@@ -40,6 +40,13 @@ computation (pathfinding, flocking, full world simulation), write a
 to the same model events and coexists with your automations.
 :::
 
+Expression syntax refresher (the full language lives on
+[Game Models](game-models)): property reads are **accessors, not function
+calls** — `self.hp` on the acting container, `ref($id).hp` through a
+container reference, `$param` for invoke params. There is no `prop(...)`;
+function calls are reserved for builtins (`clamp`, `coalesce`, `grid_at`,
+…) and user functions via `fn:<name>(...)`.
+
 ## Opting a function in
 
 A function can only be driven by an automation if you explicitly mark it
