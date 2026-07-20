@@ -483,7 +483,7 @@ bumped by an interval automation — expressions have no `now()`.
 
 ### Decks and hidden information
 
-Hidden state is **property visibility**, not client discipline: a
+For small/low-stakes games, hidden state is **property visibility**, not client discipline: a
 `CardInstance` carries an owner-visible `card_id` plus a public
 `revealed_card_id` that stays empty until the play function copies it over in
 the same transaction. Shuffling works within the platform's limits (no array
@@ -491,35 +491,40 @@ permutation in expressions): a manual type-fan-out automation deals each
 deck-zone card a `rand_int` position, and drawing takes the caller's
 lowest-position card with the zone transition enforced server-side.
 
+For true secret deck order, simultaneous reveal or competitive cards, use
+the `deck-engine`: hands/order stay in module state and only caller-scoped
+invokes reveal them.
+
 ### World simulation
 
-Interval automations run the world with no client online: a `WorldState`
+Simple interval automations can run the world with no client online: a `WorldState`
 singleton advances `time_of_day` (`% hours_per_day`) and re-rolls weather —
 emitting a **spatial notification** at its anchor chunk so nearby clients
 update the sky without polling; `ResourceNode`s regenerate toward
 `max_amount` (selector `where amount < self.max_amount`); crops advance
-`stage` and are harvested by an owner-gated atomic function; wave spawners
-bump counters that the elected host reads to spawn actual entities on the
-replication plane.
+`stage` and are harvested by an owner-gated atomic function. For weather
+fronts, waves, resource placement or shared agents that need loops/fidelity,
+use `world-engine`/`director`/`mob-engine` rather than an elected-host
+spawner.
 
 ### Leaderboards and seasons
 
 Per-player `LeaderboardEntry` rows (`board_id`, `score`, `season`) written
 only by a trusted `submit_score` (host-gated, server scope, or an event
-automation on `end_match`). There is no server-side ORDER BY on container
-lists, so clients fetch a board and sort locally (bounded populations);
-selector `pick: "highest"` covers automation-side top-1. Seasons roll with a
-cron automation that bumps `season` and resets scores.
+automation on `end_match`). A bounded/casual board may fetch and sort
+locally; competitive or large boards should use `board-engine` for
+server-computed rank/percentile/pages. Seasons still roll cleanly with a
+cron automation.
 
 ### Genre map
 
 | Genre | Core needs | Model mappings (kit layers) |
 | --- | --- | --- |
 | RPG / MMORPG | stats, quests, XP/levels, vendors, loot, parties, guilds | progression, quests, economy, combat, loot, social, NPCs, inventory |
-| Survival / sandbox | land, build rights, crafting, farming, regen, mobs | plots, worldsim, inventory, locks, host-sim pattern |
-| Turn-based tactics / board / card | matches, turn order, hidden info, decks, ELO | matches, decks, progression (rating), sessions |
-| FPS / battle royale / racing | lobbies, rounds, scoring, loadouts, leaderboards | matches, inventory (loadouts), leaderboards, host-sim + replication |
-| MOBA / team arena | teams, matches, abilities with cooldowns | matches, social, combat, timer patterns |
+| Survival / sandbox | land, build rights, crafting, farming, regen, mobs | plots, inventory, quests + world/npc/mob/combat engines |
+| Turn-based tactics / board / card | matches, turn order, hidden info, decks, ELO | sessions, matches/decks + match/deck/tactics engines |
+| FPS / battle royale / racing | refereed actions, zones, rounds, ranking | abilities, movement, liveops/zones, racing, match/board engines |
+| MOBA / team arena | teams, matchmaking, abilities, lanes, territory | social + matchmaking/abilities/director/territory engines |
 | Tycoon / city / farming sims | plots, production chains, timers, markets | plots, worldsim (production ticks), economy (market) |
 | Tower defense / idle | waves, upgrades, offline progress | worldsim (waves), progression, interval accrual |
 | Roguelike / dungeon | runs, procedural loot, meta-progression | matches (run = session), loot, progression |

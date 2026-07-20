@@ -14,6 +14,21 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-19 (latest)
 
+**Choosing Game APIs + BWF/TMS authority dogfood**
+
+- The canonical five-tier API guide now maps mechanics and genre starters to
+  platform primitives, Model functions, automations, compute engines and
+  client conventions.
+- Compute SDK `0.1.3` adds app-scoped `model_invoke`, preserving Model
+  transactions/events/notifications when a live referee commits durable
+  results.
+- CrowdyJS 8.10 / CrowdyCPP 0.7 add atomic inventory crafting and barter,
+  including a hardened server-grant posture.
+- BWF schema v6 moves craft/smelt/trade/chests/quests to atomic Model
+  transactions and PvP/fishing/mine/place/rewards to compute referees.
+- TMS now routes all battle actions, turns, enemy AI and outcomes through
+  `tms-battle`; automations remain test fixtures only.
+
 **Compute hardening complete -- measured limits, calibrated billing, failure containment, and the Model-vs-Compute guide**
 
 The deferred Phase 10 production-confidence pass is complete:

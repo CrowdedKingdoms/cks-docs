@@ -62,14 +62,23 @@ let full = api::container_get(&id)?; // { container, properties }
 | Function | Args | Behavior |
 |---|---|---|
 | `container_create(type_name, session_id, properties)` | properties: JSON object (types inferred) or array of `{key, valueType, value}` | Creates a container of an existing container type; returns it. |
+| `container_create_for(type_name, display_name, session_id, owner_user_id, properties)` | explicit trusted owner/display name | SDK 0.1.3+. Creates module-owned durable rows such as reward stacks. |
 | `container_get(container_id)` | | Returns `{ container, properties }` (up to 200 properties). |
 | `container_get_batch(container_ids)` | up to 32 ids | Batched form: `[{ container, properties }]` in a single call (one data-op charge). Requires SDK 0.1.2+. |
 | `containers_list(type_name, session_id)` | both optional filters | Lists containers (≤ 200). |
 | `container_delete(container_id)` | | Deletes a container. |
 | `property_set(container_id, key, value_type, value)` | `value_type`: `int`, `float`, `bool`, `string`, `object`, `array`, ... | Sets one property. |
+| `model_invoke(function_name, self_container_id, params, session_id, caller_user_id)` | session/caller optional | SDK 0.1.3+. Runs an `autonomousInvocable` Model function transactionally. With a caller, policy evaluates as that user with `is_automation`; without one, the trusted server path is used. Returns `GmInvokeResult`. |
 | `edge_add(from, to, relationship_type)` | container ids | Adds a typed edge between containers. |
 | `edge_delete(from, to, relationship_type)` | | Removes the edge; returns whether one existed. |
 | `sessions_list(status)` | optional status filter | Lists model sessions (≤ 200). |
+
+Use `model_invoke` when multiple Model containers must commit together. It
+preserves the normal transaction, event log, notifications, permission
+effects, metering and cascade depth. It counts as one host data operation and
+is app-scoped; the guest cannot choose another tenant. Direct
+`property_set` remains appropriate for rebuildable engine mirrors and
+non-atomic telemetry.
 
 ## App state blobs
 

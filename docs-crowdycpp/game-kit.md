@@ -11,10 +11,11 @@ CrowdyJS's [`client.kit(appId)`](/crowdyjs/game-kit). It packages the concept
 mappings from [Modeling game concepts](/game-api/modeling-game-concepts) as
 ready-made **blueprints** plus typed runtime helpers, so you don't hand-write
 container types, expression functions, and invoke policies for the common
-cases. Everything composes `client.gameModel()`; the kit adds no new server
-surface.
+cases. Model-first kits compose `client.gameModel()`; engine-aware kits can
+also deploy/invoke compute templates. See
+[Choosing Game APIs](/game-api/model-vs-compute) for the authority boundary.
 
-All fifteen layers are available, matching CrowdyJS:
+The foundational Model layers are available, matching CrowdyJS:
 
 | Layer | Runtime kit |
 |---|---|
@@ -67,6 +68,12 @@ auto bag = playerKit.inventory().ensure(playerId);
 auto stack = playerKit.inventory().createStack("gem", 5, 0, playerId);
 playerKit.inventory().grant(stack["containerId"].asString(), 10);
 ```
+
+Inventory parity includes generated atomic recipes/barters:
+`InventoryBlueprintOptions::recipes` / `barters` and
+`InventoryKit::craft` / `barter`. Competitive games set
+`stackInstantiableBy = "admin"` and `serverGrant = true`; stack creation and
+rewards then come from a trusted compute/bootstrap path.
 
 Blueprints are plain data built by builder functions (invoke policies,
 trusted-authority conventions, `*policyExtra` composition — the same
