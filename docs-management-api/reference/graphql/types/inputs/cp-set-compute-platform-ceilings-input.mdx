@@ -1,0 +1,78 @@
+---
+id: cp-set-compute-platform-ceilings-input
+title: CpSetComputePlatformCeilingsInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Patch for cpSetComputePlatformCeilings. Omitted fields stay unchanged; a field set to an explicit null clears that override (game-api falls back to its COMPUTE&#x005F;PLATFORM&#x005F;MAX&#x005F;&#x002A; env var, then the code default); a value sets the ceiling. All values must be &#x003E; 0. At least one field is required.
+
+
+```graphql
+input CpSetComputePlatformCeilingsInput {
+  maxModules: Int
+  maxTickHz: Int
+  fuelPerTick: BigInt
+  fuelPerInvoke: BigInt
+  maxMemoryMb: Int
+  maxRunMs: Int
+  maxDbOpsPerTick: Int
+  maxEgressMsgsPerMin: Int
+  maxEgressBytesPerMin: BigInt
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CpSetComputePlatformCeilingsInput.<b>maxModules</b></code>](#max-modules)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-modules\} 
+Max compute modules per app. &#x003E; 0; explicit null clears the override; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpSetComputePlatformCeilingsInput.<b>maxTickHz</b></code>](#max-tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-tick-hz\} 
+Max tick rate in Hz per module. &#x003E; 0; explicit null clears the override; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpSetComputePlatformCeilingsInput.<b>fuelPerTick</b></code>](#fuel-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-tick\} 
+Max fuel per tick (decimal string). &#x003E; 0; explicit null clears the override; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpSetComputePlatformCeilingsInput.<b>fuelPerInvoke</b></code>](#fuel-per-invoke)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-invoke\} 
+Max fuel per invoke (decimal string). &#x003E; 0; explicit null clears the override; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpSetComputePlatformCeilingsInput.<b>maxMemoryMb</b></code>](#max-memory-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-memory-mb\} 
+Max WASM memory per module instance in MiB. &#x003E; 0; explicit null clears the override; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpSetComputePlatformCeilingsInput.<b>maxRunMs</b></code>](#max-run-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-run-ms\} 
+Max watchdog deadline per entry call in milliseconds. &#x003E; 0; explicit null clears the override; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpSetComputePlatformCeilingsInput.<b>maxDbOpsPerTick</b></code>](#max-db-ops-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-db-ops-per-tick\} 
+Max host data-API operations per tick. &#x003E; 0; explicit null clears the override; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpSetComputePlatformCeilingsInput.<b>maxEgressMsgsPerMin</b></code>](#max-egress-msgs-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-msgs-per-min\} 
+Max module-emitted replication messages per minute. &#x003E; 0; explicit null clears the override; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpSetComputePlatformCeilingsInput.<b>maxEgressBytesPerMin</b></code>](#max-egress-bytes-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-bytes-per-min\} 
+Max module-emitted replication bytes per minute (decimal string). &#x003E; 0; explicit null clears the override; omit to leave unchanged.
+
+
+
+
+### Member Of
+
+[`cpSetComputePlatformCeilings`](/reference/graphql/operations/mutations/cp-set-compute-platform-ceilings.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

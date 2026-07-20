@@ -12,7 +12,29 @@ deprecation window — deprecated fields keep working and are marked `@deprecate
 schema (visible in the [reference](/management-api/reference/graphql-overview) and the
 downloadable SDL) until the stated removal date.
 
-## 2026-07-19 (latest)
+## 2026-07-20 (latest)
+
+**Operator-editable platform compute ceilings (Management API)**
+
+- New operator-only Management API surface: query `cpComputePlatformCeilings`
+  and mutation `cpSetComputePlatformCeilings` read and patch the nine
+  platform ceilings the Game API's `computeSetPolicy` clamps per-app compute
+  policies against (`maxModules`, `maxTickHz`, `fuelPerTick`,
+  `fuelPerInvoke`, `maxMemoryMb`, `maxRunMs`, `maxDbOpsPerTick`,
+  `maxEgressMsgsPerMin`, `maxEgressBytesPerMin`). Patch semantics: omitted =
+  unchanged, explicit `null` = clear the override (env/default bootstrap
+  values apply), value > 0 = set. Requires `is_operator`; changes are
+  audited. Reference:
+  [`cpComputePlatformCeilings`](/management-api/reference/graphql/operations/queries/cp-compute-platform-ceilings),
+  [`cpSetComputePlatformCeilings`](/management-api/reference/graphql/operations/mutations/cp-set-compute-platform-ceilings).
+- Ceiling edits replica-sync to every game-api and take effect in the
+  `computeSetPolicy` clamp within ~30 seconds — no game-api restart. The
+  `COMPUTE_PLATFORM_MAX_*` environment variables remain bootstrap defaults.
+- Game API behavior change (non-breaking): the `computeSetPolicy` ceiling
+  clamp now reflects operator-set values, so the ceiling named in the
+  `... exceeds the platform ceiling (N)` error can change over time.
+
+## 2026-07-19
 
 **Flow-correlation query + SDK sweep (CrowdyJS 8.13 / CrowdyCPP 0.9)**
 

@@ -18,6 +18,32 @@ Operators handle:
 | Change orders queue | `/admin/control-plane/change-orders*` |
 | Pricing catalog | `/admin/control-plane/catalog*` |
 | Secrets + audit logs | Secrets / Audit drawers |
+| Compute platform ceilings | GraphQL (`cpComputePlatformCeilings`); admin screen planned |
+
+## Platform compute ceilings
+
+The per-app [compute policy](/game-api/compute-modules#limits-and-circuit-breakers)
+(`computeSetPolicy`) is clamped platform-wide by nine operator-settable
+ceilings: `maxModules`, `maxTickHz`, `fuelPerTick`, `fuelPerInvoke`,
+`maxMemoryMb`, `maxRunMs`, `maxDbOpsPerTick`, `maxEgressMsgsPerMin`, and
+`maxEgressBytesPerMin`.
+
+- **Read** them with the operator query
+  [`cpComputePlatformCeilings`](/management-api/reference/graphql/operations/queries/cp-compute-platform-ceilings);
+  **patch** them with
+  [`cpSetComputePlatformCeilings`](/management-api/reference/graphql/operations/mutations/cp-set-compute-platform-ceilings)
+  (both require `is_operator` / `is_super_admin`).
+- Patch semantics: omitted fields stay unchanged; an **explicit `null` clears
+  the override** — the game-api then falls back to its
+  `COMPUTE_PLATFORM_MAX_*` environment variable, then the built-in default;
+  a value (> 0) sets the ceiling.
+- Edits propagate to every game-api over replica sync and take effect in the
+  `computeSetPolicy` clamp within **~30 seconds, without a restart**. The
+  env vars remain bootstrap defaults only.
+- Lowering a ceiling does not shrink already-stored per-app policies; it
+  rejects *future* `computeSetPolicy` values above the new ceiling.
+- Every change writes an operator audit entry
+  (`compute.platform_ceilings_set`).
 
 ## First super admin (bootstrap)
 

@@ -1,0 +1,29 @@
+---
+id: cp-compute-platform-ceilings
+title: cpComputePlatformCeilings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only (is&#x005F;operator). The stored platform ceilings for the per-app WASM compute policy (the nine knobs computeSetPolicy clamps against). Null fields mean no operator override: game-api uses its COMPUTE&#x005F;PLATFORM&#x005F;MAX&#x005F;&#x002A; env var, then the code default. Read-only.
+
+
+```graphql
+cpComputePlatformCeilings: CpComputePlatformCeilings!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CpComputePlatformCeilings</b></code>](/reference/graphql/types/objects/cp-compute-platform-ceilings.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Operator-set platform ceilings for the per-app WASM compute policy. Each field caps the matching wasm&#x005F;module&#x005F;policy knob platform-wide: game-api rejects computeSetPolicy values above the ceiling. A null field means no operator override is stored — game-api falls back to its COMPUTE&#x005F;PLATFORM&#x005F;MAX&#x005F;&#x002A; env var (bootstrap default), then to the built-in code default. Edits propagate to game-api replicas via replica sync and apply within ~30 seconds, without a game-api restart.
