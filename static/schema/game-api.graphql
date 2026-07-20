@@ -1202,6 +1202,10 @@ type GmAutomationRun {
   runId: String!
   """The app (tenant)."""
   appId: BigInt!
+  """
+  Flow correlation id: shared with gm event-log rows and compute module runs triggered by the same entry call (player invoke / automation run / computeInvoke).
+  """
+  flowId: String
   """The automation that ran."""
   automationId: String!
   """The automation name at run time."""
@@ -1636,6 +1640,10 @@ type GmInvokeResult {
 type GmEvent {
   """Unique event id."""
   eventId: String!
+  """
+  Flow correlation id: shared with automation runs and compute module runs caused by the same entry call (player invoke / automation run / computeInvoke), so cross-engine flows can be stitched together.
+  """
+  flowId: String
   """The session the invocation ran in, if any."""
   sessionId: String
   """The function that was invoked."""
@@ -1932,6 +1940,10 @@ type WasmModuleRun {
   runId: String!
   """The app (tenant)."""
   appId: BigInt!
+  """
+  Flow correlation id: shared with gm event-log rows and automation runs caused by the same entry call (computeInvoke / automation run / player invoke); ticks mint their own.
+  """
+  flowId: String
   """The module that ran."""
   moduleId: String!
   """The module name at run time."""

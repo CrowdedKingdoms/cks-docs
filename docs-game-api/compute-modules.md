@@ -118,6 +118,19 @@ replication emits, durable state, logging — documented in
 Treat in-memory state as a cache. The starter module above is correct because
 it persists its counter to the state blob every tick.
 
+:::warning State blob writes on multi-server fleets
+`computeInvoke` calls and event deliveries may run on a server that does
+**not** hold your module's tick lease, on a separate short-lived instance
+whose memory starts from the last persisted snapshot. State-blob writes are
+revision-guarded: the tick-lease holder always wins, and a non-lease
+instance's `state_set` is **dropped** (with a warning in
+`computeModuleLogs`) if the lease holder persisted first. Consequence: never
+keep referee-critical records (grants, receipts, scores) only in the state
+blob — commit them to Model containers (`model_invoke`), which are
+transactional and fleet-wide. The state blob is for rebuildable simulation
+caches.
+:::
+
 ### Source rules (validated at deploy time)
 
 > **Deploying a ready-made engine?** Skip the source upload entirely:
@@ -407,12 +420,17 @@ query { computeModules(appId: "1") { name enabled circuitState consecutiveFailur
 # Run history (newest first; filter by module / outcome)
 query { computeModuleRuns(appId: "1", moduleName: "world-sim", success: false) {
   startedAt triggerSource entry durationUs fuelUsed dbReads dbWrites
-  egressMsgs egressBytes errorMessage circuitAction
+  egressMsgs egressBytes errorMessage circuitAction flowId
 } }
 # Run rows record module loads (init), every failure, and circuit probes.
 # Healthy high-frequency ticks are aggregated into per-minute usage (the
 # billing metrics) instead of one row per tick, so a quiet runs list plus
 # growing usage is a healthy module.
+#
+# flowId stitches cross-engine flows: the same id appears on the
+# gameModelEvents rows and gameModelAutomationRuns caused by one entry call
+# (a computeInvoke, an automation run, or a player invoke), across
+# model_invoke, event triggers and emit_event cascades.
 
 # Aggregate activity over a window
 query { computeModuleStats(appId: "1", windowMinutes: 60) {

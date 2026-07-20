@@ -22,6 +22,7 @@ One execution of an automation: its target/fan-out + invocation counts, timing, 
 type GmAutomationRun {
   runId: String!
   appId: BigInt!
+  flowId: String
   automationId: String!
   automationName: String!
   triggerSource: String!
@@ -51,6 +52,10 @@ Unique run id (UUID).
 
 #### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>flowId</b></code>](#flow-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#flow-id\} 
+Flow correlation id: shared with gm event-log rows and compute module runs triggered by the same entry call (player invoke / automation run / computeInvoke).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>automationId</b></code>](#automation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-id\} 

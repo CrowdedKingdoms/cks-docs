@@ -22,6 +22,7 @@ One recorded compute execution (init / tick batch / event / invoke): timing, fue
 type WasmModuleRun {
   runId: String!
   appId: BigInt!
+  flowId: String
   moduleId: String!
   moduleName: String!
   triggerSource: String!
@@ -48,6 +49,10 @@ Unique run id (UUID).
 
 #### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>flowId</b></code>](#flow-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#flow-id\} 
+Flow correlation id: shared with gm event-log rows and automation runs caused by the same entry call (computeInvoke / automation run / player invoke); ticks mint their own.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>WasmModuleRun.<b>moduleId</b></code>](#module-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-id\} 

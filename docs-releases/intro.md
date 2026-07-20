@@ -14,6 +14,25 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-19 (latest)
 
+**Compute fleet hardening: revision-guarded state, flow correlation, shared artifacts, lane codegen**
+
+- State-blob writes are revision-guarded: the tick-lease holder always wins
+  and a non-lease instance's stale `state_set` is dropped with an observable
+  module-log warning — keep referee-critical records in Model, not the blob
+  (see the new state-contract warning in
+  [Compute Modules](/game-api/compute-modules)).
+- New `flowId` on `gameModelEvents`, `gameModelAutomationRuns` and
+  `computeModuleRuns`: one correlation id per entry call, carried across
+  `model_invoke`, event triggers and `emit_event` cascades — cross-engine
+  flows ("what happened to this kill's reward") are now stitchable.
+- `wasm_module_artifacts`: modules compile once per fleet; replicas fetch
+  bytes by cache key instead of recompiling, and instances log a toolchain
+  fingerprint at boot (`COMPUTE_EXPECTED_RUST_VERSION` turns skew into a
+  loud error).
+- `crowdy-compute lanes`: declare a fixed-size actor-lane layout once
+  (JSON) and generate matched little-endian codecs for Rust, TypeScript and
+  C++ — no more hand-packing the same bytes on every side.
+
 **Container-change push, typed invoke contracts, optimistic-action kit**
 
 - New subscription `gameModelContainerChanged`: post-commit, metadata-only
