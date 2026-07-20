@@ -346,7 +346,10 @@ Modules are bounded by layered budgets so a bug degrades gracefully:
    pause automatically, exactly like automations.
 
 Per-app ceilings live in the compute **policy** (`computeModulePolicy` /
-`computeSetPolicy`) and are clamped to platform maxima:
+`computeSetPolicy`) and are clamped to platform maxima. The platform maxima
+are operator-managed and can change without notice (a `computeSetPolicy`
+value above one fails with `... exceeds the platform ceiling (N)` naming the
+current ceiling):
 
 | Policy field | Default | Meaning |
 |---|---|---|

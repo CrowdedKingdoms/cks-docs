@@ -1,0 +1,39 @@
+---
+id: cp-set-compute-platform-ceilings
+title: cpSetComputePlatformCeilings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only (is&#x005F;operator). Patches the platform compute ceilings: omitted fields stay unchanged, an explicit null clears that override (game-api falls back to env/default), a value (&#x003E; 0) sets it. SIDE EFFECTS: fans a replica notify out to every game-api so the new ceilings clamp computeSetPolicy within ~30 seconds without a restart, and writes an audit entry. Lowering a ceiling does not shrink already-stored per-app policies; it rejects future computeSetPolicy values above the new ceiling. Returns the updated ceilings row.
+
+
+```graphql
+cpSetComputePlatformCeilings(
+  input: CpSetComputePlatformCeilingsInput!
+): CpComputePlatformCeilings!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>cpSetComputePlatformCeilings.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CpSetComputePlatformCeilingsInput!</b></code>](/reference/graphql/types/inputs/cp-set-compute-platform-ceilings-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Ceiling patch: at least one field; omitted = unchanged, explicit null = clear override, value (&#x003E; 0) = set.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CpComputePlatformCeilings</b></code>](/reference/graphql/types/objects/cp-compute-platform-ceilings.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Operator-set platform ceilings for the per-app WASM compute policy. Each field caps the matching wasm&#x005F;module&#x005F;policy knob platform-wide: game-api rejects computeSetPolicy values above the ceiling. A null field means no operator override is stored — game-api falls back to its COMPUTE&#x005F;PLATFORM&#x005F;MAX&#x005F;&#x002A; env var (bootstrap default), then to the built-in code default. Edits propagate to game-api replicas via replica sync and apply within ~30 seconds, without a game-api restart.
