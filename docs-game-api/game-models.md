@@ -327,6 +327,37 @@ query { gameModelEvents(appId: "1", sessionId: "<session-uuid>") {
 Re-read `gameModelContainerState` / `gameModelContainers` after a change to get
 the new values.
 
+### Tracing a flow
+
+Every event carries a nullable `flowId`: a correlation id (UUID) minted at
+the **entry edge** of a request — a player `gameModelInvoke`, an
+[automation](autonomous-processes) run, or a
+[`computeInvoke`](compute-modules) — and propagated across `model_invoke`,
+the event bus, and `emit_event` cascades. The same id lands on the
+`gameModelEvents` rows, the `gameModelAutomationRuns` rows, and the
+[`computeModuleRuns`](compute-modules#monitoring) rows a single cause
+produced, so a cross-engine chain like *mob kill → compute event → reward
+grant* is one correlated trace instead of three uncorrelated records.
+
+Stitch a flow into one timeline with `gameModelFlow` (a diagnostics surface;
+requires app-admin `manage_apps`, like `gameModelAutomationRuns`). Take the
+`flowId` from any event or run row:
+
+```graphql
+query { gameModelFlow(appId: "1", flowId: "<flow-uuid>") {
+  flowId
+  events         { functionName callerKind success executedAt }
+  automationRuns { automationName triggerSource success startedAt }
+  moduleRuns     { moduleName triggerSource success errorMessage startedAt }
+} }
+```
+
+Each array is ordered by time ascending; an unknown `flowId` returns three
+empty arrays. Ticks mint their own flow id per batch, so tick-driven cascades
+correlate too. The SDKs expose this as `client.gameModel.flow({ appId,
+flowId })` (CrowdyJS 8.13+) / `gameModel().flow(appId, flowId)` (CrowdyCPP
+0.9+), and their default event/run selections include `flowId`.
+
 ### Push: the container-change subscription
 
 Instead of interval polling, subscribe to `gameModelContainerChanged` over

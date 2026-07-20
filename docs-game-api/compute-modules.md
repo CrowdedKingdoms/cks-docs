@@ -430,7 +430,9 @@ query { computeModuleRuns(appId: "1", moduleName: "world-sim", success: false) {
 # flowId stitches cross-engine flows: the same id appears on the
 # gameModelEvents rows and gameModelAutomationRuns caused by one entry call
 # (a computeInvoke, an automation run, or a player invoke), across
-# model_invoke, event triggers and emit_event cascades.
+# model_invoke, event triggers and emit_event cascades. One query returns
+# the whole correlated timeline: gameModelFlow(appId, flowId) — see
+# "Tracing a flow" under Game Models (game-models#tracing-a-flow).
 
 # Aggregate activity over a window
 query { computeModuleStats(appId: "1", windowMinutes: 60) {
