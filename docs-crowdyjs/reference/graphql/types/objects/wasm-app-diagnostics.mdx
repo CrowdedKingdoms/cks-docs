@@ -29,6 +29,8 @@ type WasmAppDiagnostics {
   failedRuns24h: Int!
   fuelUsed24h: BigInt!
   topModules: [WasmTopModule!]!
+  toolchainRustVersion: String
+  toolchainWasmOptVersion: String
 }
 ```
 
@@ -69,6 +71,14 @@ Fuel consumed in the last 24h.
 
 #### [<code style={{ fontWeight: 'normal' }}>WasmAppDiagnostics.<b>topModules</b></code>](#top-modules)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[WasmTopModule!]!</b></code>](/reference/graphql/types/objects/wasm-top-module.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#top-modules\} 
 Most-active modules in the last 24h.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmAppDiagnostics.<b>toolchainRustVersion</b></code>](#toolchain-rust-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#toolchain-rust-version\} 
+Rust compiler version of the toolchain on the replica that served this query (the boot-logged fingerprint; replicas with skewed toolchains produce disjoint compile-cache keys). Null when the toolchain is not provisioned on this host.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmAppDiagnostics.<b>toolchainWasmOptVersion</b></code>](#toolchain-wasm-opt-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#toolchain-wasm-opt-version\} 
+wasm-opt version of the toolchain on the replica that served this query. Null when the toolchain is not provisioned on this host.
 
 
 

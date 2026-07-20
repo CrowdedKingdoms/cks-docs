@@ -425,10 +425,11 @@ query { computeModuleRuns(appId: "1", moduleName: "world-sim", success: false) {
   startedAt triggerSource entry durationUs fuelUsed dbReads dbWrites
   egressMsgs egressBytes errorMessage circuitAction flowId
 } }
-# Run rows record module loads (init), every failure, and circuit probes.
+# Run rows record every demand-driven run (init, invoke, event — success or
+# failure, each carrying its flowId), every failure, and circuit probes.
 # Healthy high-frequency ticks are aggregated into per-minute usage (the
-# billing metrics) instead of one row per tick, so a quiet runs list plus
-# growing usage is a healthy module.
+# billing metrics) instead of one row per tick, so a runs list with only
+# invokes plus growing usage is a healthy ticking module.
 #
 # flowId stitches cross-engine flows: the same id appears on the
 # gameModelEvents rows and gameModelAutomationRuns caused by one entry call

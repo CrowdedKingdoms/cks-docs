@@ -14,6 +14,22 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-20 (latest)
 
+**Complete flow timelines: demand-driven compute runs always record**
+
+- `wasm_module_runs` now records every demand-driven run — `invoke` and
+  `event` entries, success or failure, each carrying its `flowId` — in
+  addition to the existing init rows, failures, and circuit probes. Flow
+  timelines (`gameModelFlow`) therefore show the compute leg of a
+  cross-engine chain instead of only its Model/Automation legs. Healthy
+  high-frequency ticks still aggregate into per-minute usage rather than
+  one row per tick.
+- `computeAppDiagnostics` gains `toolchainRustVersion` /
+  `toolchainWasmOptVersion`: the compile-toolchain fingerprint of the
+  replica that served the query (null when the toolchain is not
+  provisioned). Skewed replicas compile correct but non-shared artifacts,
+  so surfacing the fingerprint makes fleet drift visible from the studio.
+  CrowdyJS **8.14.1** / CrowdyCPP **v0.10.1** select the new fields.
+
 **Operator-editable platform compute ceilings (Management API)**
 
 - New operator-only Management API surface: query `cpComputePlatformCeilings`
