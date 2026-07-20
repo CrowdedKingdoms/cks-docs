@@ -321,6 +321,12 @@ container-id suffix. Flag bits 0-3 are platform-reserved:
 CrowdyJS ships the codec + ready-made lane predicates (`engineLanes()`,
 `enginePoseCodec` in the package root) and CrowdyCPP mirrors them in
 `crowdy/kit/wire.hpp`; see the SDKs' [Game Kit](/crowdyjs/game-kit) pages.
+The layout itself is declared once as a `crowdy-compute lanes` JSON
+(`compute-examples/lanes/actor-pose.example.json`) and generated per
+language — the reference games (Blocks with Friends, Tactical Model
+Simulator) run on these generated codecs in production, locked by
+committed golden byte vectors on the Rust and TypeScript sides, so the
+layout JSONs are the wire source of truth rather than examples.
 Server events use `[u16 LE event type][JSON]` payloads with these reserved
 types (both SDKs ship parsers):
 
