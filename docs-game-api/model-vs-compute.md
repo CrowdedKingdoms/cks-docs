@@ -104,6 +104,10 @@ Ticks simulate; invokes referee a caller's intent. Compute state is a
 rebuildable cache (256 KiB); durable state remains in Model/platform
 storage. A trusted engine commits Model transactions with `model_invoke`
 instead of reproducing transaction logic through sequential property writes.
+When a referee action spans the voxel world and the Model ledger (mine and
+grant, consume and place), use `model_invoke_with_world` (SDK 0.1.4+) so
+both commit in one transaction rather than sequencing writes with
+compensation code.
 
 ### Client conventions
 
