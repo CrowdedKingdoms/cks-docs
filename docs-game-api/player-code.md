@@ -209,10 +209,10 @@ P1 executes scheduled (interval/cron) actions for both studio-model functions
 and player-module exports. `player_compute_invoke` routes through
 `playerComputeInvoke` as the grid owner and compute fuel is metered by the
 module (the automation records dispatch overhead only).
-`owner_container_changed` event automations run post-commit through the same
-confined dispatcher. Actor/voxel/compute-event triggers remain typed pending
-lanes until their event producers are connected; they never fall back to a
-broader studio path.
+`owner_container_changed` events fan out post-commit to both matching player
+automations and loaded player modules through the same owner/grid filter.
+Actor/voxel/compute-event triggers remain typed pending lanes until their event
+producers are connected; they never fall back to a broader studio path.
 
 ## Client target status
 
