@@ -1,0 +1,133 @@
+---
+id: player-wasm-policy
+title: PlayerWasmPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One player-compute policy row (06 §3): developer-set per-player/cohort clamps evaluated most-specific-wins (user &#x003E; grid &#x003E; tier &#x003E; app&#x005F;default), every knob additionally clamped by the app's studio policy at runtime. Management is authoritative in P2; rows replica-sync to the game runtime.
+
+
+```graphql
+type PlayerWasmPolicy {
+  policyId: String!
+  appId: BigInt!
+  scope: String!
+  scopeRef: BigInt
+  enabled: Boolean!
+  maxModulesPerGrid: Int!
+  maxModulesTotal: Int!
+  maxTickHz: Float!
+  fuelPerTick: BigInt!
+  fuelPerInvoke: BigInt!
+  maxMemoryMb: Int!
+  maxRunMs: Int!
+  maxDbOpsPerTick: Int!
+  maxEgressMsgsPerMin: Int!
+  maxEgressBytesPerMin: BigInt!
+  unitsPerHour: BigInt
+  unitsPerDay: BigInt
+  maxCompilesPerHour: Int!
+  maxContainerCreatesDay: Int!
+  clientFuelPerDispatch: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>policyId</b></code>](#policy-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#policy-id\} 
+Policy row UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scope\} 
+'app&#x005F;default', 'tier', 'grid', or 'user'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>scopeRef</b></code>](#scope-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#scope-ref\} 
+Tier/grid/user id; null for app&#x005F;default.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+Whether this row is applied.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>maxModulesPerGrid</b></code>](#max-modules-per-grid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-modules-per-grid\} 
+Max player modules per grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>maxModulesTotal</b></code>](#max-modules-total)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-modules-total\} 
+Max player modules across all grids one player owns.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>maxTickHz</b></code>](#max-tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-tick-hz\} 
+Max tick rate in Hz.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>fuelPerTick</b></code>](#fuel-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-tick\} 
+Fuel budget per tick.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>fuelPerInvoke</b></code>](#fuel-per-invoke)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-invoke\} 
+Fuel budget per invoke/event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>maxMemoryMb</b></code>](#max-memory-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-memory-mb\} 
+Sandbox memory ceiling (MiB).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>maxRunMs</b></code>](#max-run-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-run-ms\} 
+Watchdog wall-clock ceiling (ms).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>maxDbOpsPerTick</b></code>](#max-db-ops-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-db-ops-per-tick\} 
+Host data-API ops per tick.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>maxEgressMsgsPerMin</b></code>](#max-egress-msgs-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-msgs-per-min\} 
+Module replication messages per minute.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>maxEgressBytesPerMin</b></code>](#max-egress-bytes-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-bytes-per-min\} 
+Module replication bytes per minute.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>unitsPerHour</b></code>](#units-per-hour)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#units-per-hour\} 
+Hourly compute-unit quota (PLAYER&#x005F;QUOTA&#x005F;EXHAUSTED pause); null = uncapped.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>unitsPerDay</b></code>](#units-per-day)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#units-per-day\} 
+Daily compute-unit quota; null = uncapped.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>maxCompilesPerHour</b></code>](#max-compiles-per-hour)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-compiles-per-hour\} 
+Deploys (compiles) allowed per player per hour.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>maxContainerCreatesDay</b></code>](#max-container-creates-day)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-container-creates-day\} 
+Player model containers created per player per day.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>clientFuelPerDispatch</b></code>](#client-fuel-per-dispatch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-fuel-per-dispatch\} 
+Client-target fuel budget per browser dispatch (04 §3).
+
+
+
+
+### Returned By
+
+[`playerWasmPolicies`](/reference/graphql/operations/queries/player-wasm-policies.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setPlayerWasmPolicy`](/reference/graphql/operations/mutations/set-player-wasm-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

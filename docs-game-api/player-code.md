@@ -214,6 +214,41 @@ automations and loaded player modules through the same owner/grid filter.
 Actor/voxel/compute-event triggers remain typed pending lanes until their event
 producers are connected; they never fall back to a broader studio path.
 
+## Quotas, spend, and the kill ladder (P2)
+
+Player compute is metered per player (the grid owner — never the author) and
+billed to that player's [wallet](/management-api/player-billing); an org's
+bill can never be touched by player activity. Game-side, three enforcement
+layers can pause a player's modules, each with a typed reason:
+
+| Reason | Source | Behavior |
+|---|---|---|
+| `PLAYER_QUOTA_EXHAUSTED` | `unitsPerHour` / `unitsPerDay` in the app's player policy | Modules pause until the clock window rolls; deploys stay allowed |
+| `PLAYER_WALLET_EMPTY` / `PLAYER_SPEND_CAP` | The management player gate, replica-synced | Modules drain on the next scheduler pass; play is untouched |
+| `PLAYER_COMPUTE_KILLED` | A studio kill switch | Immediate stop; quota state retained |
+
+Compute units follow the platform formula `GREATEST(cpu ms, fuel/22M)`;
+player automation units meter into the same per-player window, so the trio
+bills as one player surface.
+
+Read your own spend and remaining budget:
+
+- `playerComputeUsage(appId)` — hour/day units vs the effective caps,
+  compile-quota utilization, and the current gate status + reason. This is
+  the data source for a live "what is this grid costing me" meter.
+- `playerComputeRuns(appId, gridId, ...)` / `playerComputeLogs(...)` —
+  per-run history and failed-run diagnostics on grids you currently own.
+
+Deploys are bounded separately by `maxCompilesPerHour` (refused with a
+retry-after; running modules are unaffected), and player model container
+creation by `maxContainerCreatesDay`.
+
+Studio-side, the kill ladder is `playerComputeSetSwitch(appId, scope,
+disabled)` at `player`, `grid`, or `app` scope (requires `manage_compute`)
+with `playerComputeSwitches(appId)` to list active switches (requires
+`view_compute_diagnostics`). Module-level disable remains
+`playerComputeSetEnabled`; listing scope arrives with the marketplace.
+
 ## Client target status
 
 P1 provides the client compile target, artifact schema, permissions, shared

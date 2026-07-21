@@ -1,0 +1,29 @@
+---
+id: player-wallet-balance
+title: playerWalletBalance
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The caller's player wallet, created empty on first access (never null). Platform-scoped: one wallet funds the player's grid compute across every org/app (DN-5); org billing never touches it. Fund it via createCheckout purpose PLAYER&#x005F;WALLET&#x005F;TOPUP.
+
+
+```graphql
+playerWalletBalance: PlayerWallet!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerWallet</b></code>](/reference/graphql/types/objects/player-wallet.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The caller's player wallet (player compute P2, DN-5): a platform-scoped balance funding that player's grid compute across every org/app they play in. Out-of-band from org wallets — player usage never touches an org's money.

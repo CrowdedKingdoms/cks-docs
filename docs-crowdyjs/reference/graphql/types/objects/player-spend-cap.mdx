@@ -1,0 +1,68 @@
+---
+id: player-spend-cap
+title: PlayerSpendCap
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A player's self-set spend cap (06 §2a): a daily/monthly ceiling globally or per app. The effective runtime limit is min(developer policy, self-cap, wallet balance); hitting a cap pauses that player's mods with PLAYER&#x005F;SPEND&#x005F;CAP, never their play.
+
+
+```graphql
+type PlayerSpendCap {
+  userId: BigInt!
+  scope: String!
+  scopeRef: BigInt
+  dailyLimitCents: BigInt
+  monthlyLimitCents: BigInt
+  currentDayUsageCents: BigInt!
+  currentMonthUsageCents: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerSpendCap.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The owning player user id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerSpendCap.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scope\} 
+Cap scope: 'global' or 'app'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerSpendCap.<b>scopeRef</b></code>](#scope-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#scope-ref\} 
+The app id for app scope; null for global.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerSpendCap.<b>dailyLimitCents</b></code>](#daily-limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#daily-limit-cents\} 
+Daily ceiling in cents; null = no daily cap.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerSpendCap.<b>monthlyLimitCents</b></code>](#monthly-limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#monthly-limit-cents\} 
+Calendar-month ceiling in cents; null = no monthly cap.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerSpendCap.<b>currentDayUsageCents</b></code>](#current-day-usage-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#current-day-usage-cents\} 
+Spend counted against the daily cap so far today.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerSpendCap.<b>currentMonthUsageCents</b></code>](#current-month-usage-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#current-month-usage-cents\} 
+Spend counted against the monthly cap so far this month.
+
+
+
+
+### Returned By
+
+[`playerSpendCaps`](/reference/graphql/operations/queries/player-spend-caps.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setPlayerSpendCap`](/reference/graphql/operations/mutations/set-player-spend-cap.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

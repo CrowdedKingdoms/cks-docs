@@ -112,6 +112,24 @@ Use `appCodeAdmissions` to inspect active/history rows and
 grants source access — closed source remains author-only with no moderation
 override.
 
+### c.2 (Optional) Bound player compute cost and take a markup
+
+Player compute bills the **player's own wallet**, never the org — see
+**[Player wallets & billing](/management-api/player-billing)**. Two knobs
+belong to the studio:
+
+- **Player policy** (`setPlayerWasmPolicy`, `manage_compute`): per-player or
+  cohort clamps at `app_default` / `tier` / `grid` / `user` scope, including
+  `unitsPerHour`/`unitsPerDay` compute quotas, `maxCompilesPerHour`, and
+  runtime budgets. Quotas protect world health independent of anyone's
+  ability to pay.
+- **Rate-card markup** (`setPlayerRateMarkup`, `manage_billing`): basis
+  points added on the platform's base player rates — the studio's usage
+  revenue, always itemized separately in the player's spend history.
+
+`appPlayerUsage` (`view_compute_diagnostics`) shows per-player consumption;
+`appPlayerMarkupAccrued` (`view_billing`) totals accrued markup income.
+
 ### d. Choose where the app runs
 
 Your app needs a **Game API** to serve runtime traffic. Today you provision a **developer sandbox** and link your app to it; that gives the app a `gameApiUrl` and turns on split‑mode routing. See **[Dedicated environments](/management-api/dedicated-environments)** for the step‑by‑step flow.

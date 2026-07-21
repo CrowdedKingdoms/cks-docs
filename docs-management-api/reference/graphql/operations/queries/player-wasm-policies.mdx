@@ -1,0 +1,39 @@
+---
+id: player-wasm-policies
+title: playerWasmPolicies
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List an app's player-compute policy rows (developer cost/rate clamps per player or cohort, 06 §3), most general first. Requires 'view&#x005F;compute&#x005F;diagnostics'. Management is authoritative; rows replica-sync to the game runtime on change.
+
+
+```graphql
+playerWasmPolicies(
+  appId: BigInt!
+): [PlayerWasmPolicy!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerWasmPolicies.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App whose player policies to list.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerWasmPolicy</b></code>](/reference/graphql/types/objects/player-wasm-policy.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One player-compute policy row (06 §3): developer-set per-player/cohort clamps evaluated most-specific-wins (user &#x003E; grid &#x003E; tier &#x003E; app&#x005F;default), every knob additionally clamped by the app's studio policy at runtime. Management is authoritative in P2; rows replica-sync to the game runtime.

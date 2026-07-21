@@ -1,0 +1,29 @@
+---
+id: player-runtime-states
+title: playerRuntimeStates
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The caller's per-app player runtime gate states. Only apps where the gate has ever acted appear; absence means active. 'denied' with PLAYER&#x005F;WALLET&#x005F;EMPTY or PLAYER&#x005F;SPEND&#x005F;CAP pauses that player's grid compute only — play is never touched.
+
+
+```graphql
+playerRuntimeStates: [PlayerRuntimeState!]!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerRuntimeState</b></code>](/reference/graphql/types/objects/player-runtime-state.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The caller's per-app player runtime gate state (the app runtime&#x005F;status twin, player-scoped): 'active', 'grace', or 'denied' with a typed reason. Non-active pauses the player's grid compute only — an unfunded wallet stops your mods, not your game.

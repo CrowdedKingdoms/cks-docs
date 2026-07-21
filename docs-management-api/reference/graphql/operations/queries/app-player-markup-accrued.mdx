@@ -1,0 +1,39 @@
+---
+id: app-player-markup-accrued
+title: appPlayerMarkupAccrued
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Total player rate-card markup accrued to this app's org income line, in cents (payouts arrive with the P4b ledger). Requires 'view&#x005F;billing'.
+
+
+```graphql
+appPlayerMarkupAccrued(
+  appId: BigInt!
+): BigInt!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appPlayerMarkupAccrued.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App whose accrued markup to total.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+64-bit integer. Sent and received as a decimal string (e.g. "123"), never a JSON number, to avoid precision loss for values beyond 2^53. On input, provide a string literal; on output, the value is serialized as a string.

@@ -2230,6 +2230,90 @@ enum PlayerComputeTarget {
 }
 
 """
+The caller's player-compute spend and quota view for one app (P2): unit usage in the current clock hour/day, the effective policy limits, compile-quota utilization, and the replica-synced wallet/spend-cap gate state. Units follow the platform formula GREATEST(cpu ms, fuel/22M); player automation units are included.
+"""
+type PlayerComputeUsage {
+  """The app this view covers."""
+  appId: BigInt!
+  """
+  Compute units consumed in the current clock hour (modules + automations, all owned grids aggregated).
+  """
+  hourUnitsUsed: BigInt!
+  """Compute units consumed in the current clock day."""
+  dayUnitsUsed: BigInt!
+  """
+  Effective units_per_hour developer-policy cap; null when the app sets no hourly quota.
+  """
+  unitsPerHour: BigInt
+  """
+  Effective units_per_day developer-policy cap; null when the app sets no daily quota.
+  """
+  unitsPerDay: BigInt
+  """Compile submissions counted in the current clock hour."""
+  compilesThisHour: Int!
+  """Effective max_compiles_per_hour policy cap."""
+  maxCompilesPerHour: Int!
+  """
+  Replica-synced management player gate for this app: 'active', 'grace', or 'denied'. Non-active pauses this player's modules only; play is untouched.
+  """
+  gateStatus: String!
+  """
+  Typed pause reason when gated: PLAYER_WALLET_EMPTY, PLAYER_SPEND_CAP, PLAYER_QUOTA_EXHAUSTED, or PLAYER_COMPUTE_KILLED.
+  """
+  gateReason: String
+}
+
+"""
+One execution of a player module (init/tick/invoke/event), attributed to the grid owner it ran as. The per-run twin of the studio WasmModuleRun, scoped to grids the caller currently owns.
+"""
+type PlayerWasmModuleRun {
+  """Unique run id (UUID)."""
+  runId: String!
+  """The app (tenant)."""
+  appId: BigInt!
+  """The owned grid the module ran in."""
+  gridId: BigInt!
+  """The module that ran."""
+  moduleId: String!
+  """The module name at run time."""
+  moduleName: String!
+  """Execution identity: the grid owner the run executed as."""
+  executedAsUserId: BigInt!
+  """Flow correlation id shared across the entry call."""
+  flowId: String
+  """What ran: init | tick | event | invoke."""
+  triggerSource: String!
+  """When the run started."""
+  startedAt: DateTime!
+  """Wall-clock duration in microseconds."""
+  durationUs: Int!
+  """Fuel consumed by the run."""
+  fuelUsed: BigInt!
+  """Whether the run succeeded."""
+  success: Boolean!
+  """Typed failure kind when the run failed."""
+  errorMessage: String
+}
+
+"""
+A kill-ladder switch row (P2, 03 §7): a studio-set immediate stop at player, grid, or app scope. Module-level disable lives on the module itself; listing scope arrives with the marketplace. Quota state is retained across a kill.
+"""
+type PlayerComputeSwitch {
+  """Switch row UUID."""
+  switchId: String!
+  """The app the switch applies to."""
+  appId: BigInt!
+  """Scope: 'player', 'grid', or 'app'."""
+  scope: String!
+  """The player user id or grid id; null for app scope."""
+  scopeRef: BigInt
+  """Operator note recorded when the switch was thrown."""
+  reason: String
+  """When execution was stopped."""
+  disabledAt: DateTime!
+}
+
+"""
 Synchronous result from invoking an admitted server player-module export as the current grid owner.
 """
 type PlayerComputeInvokeResult {
@@ -3050,6 +3134,50 @@ type Query {
     """Module name within the grid."""
     name: String!
   ): [PlayerWasmModuleVersion!]!
+  """
+  The caller's player-compute spend and quota view for one app (P2): compute units used in the current clock hour/day vs the effective units_per_hour/units_per_day policy caps, compile-quota utilization, and the wallet/spend-cap gate state with its typed reason. This is the remaining-budget source the live-coding panel consumes.
+  """
+  playerComputeUsage(
+    """App whose player usage to report."""
+    appId: BigInt!
+  ): PlayerComputeUsage!
+  """
+  List executions of player modules on a grid the caller currently owns, newest first. Every run is attributed to the grid owner it executed as; author identity never appears here.
+  """
+  playerComputeRuns(
+    """App containing the owned grid."""
+    appId: BigInt!
+    """Owned grid whose runs to list."""
+    gridId: BigInt!
+    """Optional: only runs of this module. Omit for all."""
+    moduleName: String
+    """Optional: filter by outcome (true = succeeded, false = failed)."""
+    success: Boolean
+    """Max runs to return (default 50, max 200)."""
+    limit: Int
+    """Number of runs to skip (pagination)."""
+    offset: Int
+  ): [PlayerWasmModuleRun!]!
+  """
+  Failed-run diagnostics for player modules on a grid the caller currently owns: the failing runs with their typed error kinds, newest first. The owner-scoped twin of computeModuleLogs.
+  """
+  playerComputeLogs(
+    """App containing the owned grid."""
+    appId: BigInt!
+    """Owned grid whose failures to list."""
+    gridId: BigInt!
+    """Optional: only failures of this module. Omit for all."""
+    moduleName: String
+    """Max entries to return (default 50, max 200)."""
+    limit: Int
+  ): [PlayerWasmModuleRun!]!
+  """
+  Active player-compute kill switches for an app, newest first. Requires the org 'view_compute_diagnostics' permission.
+  """
+  playerComputeSwitches(
+    """App whose switches to list."""
+    appId: BigInt!
+  ): [PlayerComputeSwitch!]! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
   """
   List flexible player-model containers owned by the caller in one currently owned grid. Requires an app-scoped token and current grid ownership; never returns app-wide or foreign-owner rows.
   """
@@ -4168,6 +4296,23 @@ type Mutation {
     """Optional JSON object passed to the export."""
     paramsJson: String
   ): PlayerComputeInvokeResult!
+  """
+  Throw or release a player-compute kill switch at player, grid, or app scope (the 03 §7 kill ladder). Throwing a switch stops the covered modules on the next scheduler pass; quota state is retained, and releasing resumes normally. Module-level disable is playerComputeSetEnabled; listing scope arrives with the marketplace. Requires the org 'manage_compute' permission.
+  """
+  playerComputeSetSwitch(
+    """App the switch applies to."""
+    appId: BigInt!
+    """Switch scope: 'player', 'grid', or 'app'."""
+    scope: String!
+    """True to stop execution at this scope; false to release."""
+    disabled: Boolean!
+    """
+    The player user id (player scope) or grid id (grid scope); omit for app scope.
+    """
+    scopeRef: BigInt
+    """Operator note recorded on the switch row."""
+    reason: String
+  ): Boolean! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "appId")
   """
   Delete a self-authored player module and its source versions. Only the code author may delete it, and they must still own the target grid. Returns false when no matching module exists.
   """

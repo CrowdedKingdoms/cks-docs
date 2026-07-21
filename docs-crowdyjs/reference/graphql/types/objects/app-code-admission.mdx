@@ -51,7 +51,7 @@ Stable id of the admitted subject (listing UUID, user id, or org id).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>versionRange</b></code>](#version-range)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-range\} 
-Optional version-range expression. Null admits all versions; capability-widening updates still require re-review.
+Optional P1 version range: exact "3", inclusive "2-5", "&#x003E;=4", or "&#x003C;=9". Null admits all versions; invalid expressions fail closed at runtime.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>admittedBy</b></code>](#admitted-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#admitted-by\} 
