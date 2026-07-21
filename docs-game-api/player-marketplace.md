@@ -158,12 +158,21 @@ acquisition, and drains installs.
 
 ## Selling & payouts
 
-Sellers (players, or orgs for org-owned listings) onboard **Stripe Connect
-Express** before pricing anything above free — KYC lives with Stripe; the
-platform stores only an account reference:
+Sellers (players, or orgs for org-owned listings) onboard **Stripe Connect**
+before pricing anything above free — KYC lives with Stripe; the platform
+stores only an account reference. Onboarding and payout management render
+**inside the platform UI** via Stripe's embedded components: create an
+Account Session, initialize Connect.js with the returned publishable key +
+client secret, and mount `account-onboarding` (KYC), `payouts`, and
+`balances` in your page — no redirect to a Stripe-hosted site. Client
+secrets are short-lived; pass the mutation as Connect.js's
+`fetchClientSecret` callback so sessions refresh automatically. The
+hosted-link flow (`beginSellerOnboarding`) remains as a fallback.
 
 ```graphql
-mutation { beginSellerOnboarding(country: "US") { status onboardingUrl } }
+mutation { createSellerAccountSession(country: "US") {   # embedded components (primary)
+  clientSecret publishableKey accountRef onboardingComplete } }
+mutation { beginSellerOnboarding(country: "US") { status onboardingUrl } }  # hosted fallback
 query { mySellerPayoutBalance { pendingCents payableCents reservedCents } }
 mutation { requestSellerPayout }                      # aged balance -> Stripe transfer
 mutation { spendPayoutBalanceToWallet(amountCents: 500) }  # earn-to-mod

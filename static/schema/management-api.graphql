@@ -1902,6 +1902,24 @@ type SellerOnboardingLink {
   unavailableReason: String
 }
 
+"""
+An Account Session for Stripe's EMBEDDED Connect components: the browser initializes Connect.js with the publishable key + this short-lived client secret and mounts the account-onboarding / payouts / balances components INSIDE the platform UI — sellers never leave for a Stripe-hosted page. Re-request on expiry. The hosted-link flow (beginSellerOnboarding) remains the fallback.
+"""
+type SellerAccountSession {
+  """Short-lived Account Session client secret for Connect.js."""
+  clientSecret: String!
+  """Stripe publishable key the browser initializes Connect.js with."""
+  publishableKey: String
+  """The connected account the session is scoped to (provider ref only)."""
+  accountRef: String!
+  """
+  Whether onboarding is already complete (payouts enabled) — render the payouts/balances components instead of onboarding.
+  """
+  onboardingComplete: Boolean!
+  """When the client secret expires; re-request after this."""
+  expiresAt: DateTime
+}
+
 """One entry in the T11 commerce risk queue (studio/operator moderation)."""
 type CommerceRiskFlag {
   """Flag row id."""
@@ -4663,6 +4681,22 @@ type Mutation {
     """
     approverUserIds: [BigInt!] = []
   ): GridClaimPolicy! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "appId")
+  """
+  Create an Account Session for Stripe's EMBEDDED Connect components on the calling player's seller account (created on first call): the browser initializes Connect.js with the returned publishable key + client secret and mounts account-onboarding / payouts / balances INSIDE the platform UI. Client secrets are short-lived — re-request on expiry. The hosted-link flow (beginSellerOnboarding) remains the fallback.
+  """
+  createSellerAccountSession(
+    """ISO country code for the payout account (first call only)."""
+    country: String!
+  ): SellerAccountSession!
+  """
+  Create an embedded-components Account Session for an ORG's payout account (org-owned listings, DN-9). Requires 'manage_billing' in the org.
+  """
+  createOrgSellerAccountSession(
+    """Org whose payout account to manage."""
+    orgId: BigInt!
+    """ISO country code for the payout account (first call only)."""
+    country: String!
+  ): SellerAccountSession!
   """
   Begin Stripe Connect Express seller onboarding for the calling player (personal listings). Returns the hosted onboarding URL to finish KYC, or an unavailable reason in unsupported regions. Required before pricing a listing above free.
   """
