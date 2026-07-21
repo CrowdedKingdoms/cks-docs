@@ -1,0 +1,68 @@
+---
+id: seller-payout-balance
+title: SellerPayoutBalance
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A seller's payout balance (player or org). pending ages through the D6 delay window into payable; reserved is the D6 young-account holdback or a T11 freeze.
+
+
+```graphql
+type SellerPayoutBalance {
+  partyKind: String!
+  partyRef: BigInt!
+  pendingCents: Int!
+  payableCents: Int!
+  reservedCents: Int!
+  onboardingStatus: SellerOnboardingStatus!
+  payoutsFrozen: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>partyKind</b></code>](#party-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#party-kind\} 
+'user' or 'org'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>partyRef</b></code>](#party-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#party-ref\} 
+User id or org id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>pendingCents</b></code>](#pending-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#pending-cents\} 
+Cents still aging in the delay window.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>payableCents</b></code>](#payable-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payable-cents\} 
+Cents aged, unreserved, and withdrawable.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>reservedCents</b></code>](#reserved-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-cents\} 
+Cents held back (reserve or T11 freeze).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>onboardingStatus</b></code>](#onboarding-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SellerOnboardingStatus!</b></code>](/reference/graphql/types/enums/seller-onboarding-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#onboarding-status\} 
+Stripe Connect Express onboarding state.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>payoutsFrozen</b></code>](#payouts-frozen)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payouts-frozen\} 
+Whether payouts are frozen by a T11 review hold.
+
+
+
+
+### Returned By
+
+[`mySellerPayoutBalance`](/reference/graphql/operations/queries/my-seller-payout-balance.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

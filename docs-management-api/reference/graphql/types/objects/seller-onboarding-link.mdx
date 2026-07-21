@@ -1,0 +1,48 @@
+---
+id: seller-onboarding-link
+title: SellerOnboardingLink
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Result of beginning seller onboarding: the Stripe Connect Express account link the seller opens to finish KYC.
+
+
+```graphql
+type SellerOnboardingLink {
+  status: SellerOnboardingStatus!
+  onboardingUrl: String
+  unavailableReason: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerOnboardingLink.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SellerOnboardingStatus!</b></code>](/reference/graphql/types/enums/seller-onboarding-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+Current onboarding state.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerOnboardingLink.<b>onboardingUrl</b></code>](#onboarding-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#onboarding-url\} 
+The Stripe-hosted onboarding URL to open; null when already complete or unavailable in the seller region.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerOnboardingLink.<b>unavailableReason</b></code>](#unavailable-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#unavailable-reason\} 
+Why onboarding is unavailable (e.g. region unsupported); null otherwise.
+
+
+
+
+### Returned By
+
+[`beginOrgSellerOnboarding`](/reference/graphql/operations/mutations/begin-org-seller-onboarding.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`beginSellerOnboarding`](/reference/graphql/operations/mutations/begin-seller-onboarding.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

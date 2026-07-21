@@ -32,6 +32,10 @@ type PlayerCodeListing {
   status: PlayerCodeListingStatus!
   createdAt: DateTime!
   updatedAt: DateTime!
+  priceCents: Int
+  rentIntervalDays: Int
+  windowDays: Int
+  unitBudget: BigInt
   admissionState: PlayerCodeAdmissionState!
   latestVersionId: String
 }
@@ -73,7 +77,7 @@ Source-access mode for new versions.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>acquisitionMode</b></code>](#acquisition-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeAcquisitionMode!</b></code>](/reference/graphql/types/enums/player-code-acquisition-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#acquisition-mode\} 
-Acquisition mode; always FREE in P4a (paid modes are P4b).
+Acquisition mode: FREE, or a paid mode (BUY / RENT / TIME&#x005F;LIMITED / COST&#x005F;LIMITED; P4b). Free listings carry no price.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListingStatus!</b></code>](/reference/graphql/types/enums/player-code-listing-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
@@ -86,6 +90,22 @@ When the listing was created.
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 When the listing was last updated.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#price-cents\} 
+Price in cents for paid modes; null when FREE.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>rentIntervalDays</b></code>](#rent-interval-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#rent-interval-days\} 
+Rent billing interval in days (RENT mode).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>windowDays</b></code>](#window-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#window-days\} 
+Fixed access window in days (TIME&#x005F;LIMITED mode).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>unitBudget</b></code>](#unit-budget)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#unit-budget\} 
+Compute-unit budget per purchase (COST&#x005F;LIMITED mode).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>admissionState</b></code>](#admission-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeAdmissionState!</b></code>](/reference/graphql/types/enums/player-code-admission-state.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#admission-state\} 

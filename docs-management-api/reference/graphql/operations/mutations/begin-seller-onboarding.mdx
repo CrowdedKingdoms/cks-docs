@@ -1,0 +1,39 @@
+---
+id: begin-seller-onboarding
+title: beginSellerOnboarding
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Begin Stripe Connect Express seller onboarding for the calling player (personal listings). Returns the hosted onboarding URL to finish KYC, or an unavailable reason in unsupported regions. Required before pricing a listing above free.
+
+
+```graphql
+beginSellerOnboarding(
+  country: String!
+): SellerOnboardingLink!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>beginSellerOnboarding.<b>country</b></code>](#country)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#country\} 
+ISO country code for the payout account (Stripe-supported).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>SellerOnboardingLink</b></code>](/reference/graphql/types/objects/seller-onboarding-link.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Result of beginning seller onboarding: the Stripe Connect Express account link the seller opens to finish KYC.

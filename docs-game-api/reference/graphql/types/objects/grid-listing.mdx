@@ -1,0 +1,73 @@
+---
+id: grid-listing
+title: GridListing
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A grid listing available in the app store (P4b): a blueprint that stamps a fresh grid per purchase, or a concrete grid. Buying it confers grid&#x005F;ownership + the listed player-code keys + the quota preset atomically.
+
+
+```graphql
+type GridListing {
+  gridListingId: String!
+  appId: BigInt!
+  kind: String!
+  name: String!
+  description: String!
+  priceCents: Int!
+  conferredPermissionKeys: [String!]!
+  resalePolicy: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GridListing.<b>gridListingId</b></code>](#grid-listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-listing-id\} 
+UUID of the grid listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridListing.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App the listing belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridListing.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#kind\} 
+'blueprint' or 'concrete'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridListing.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Display name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridListing.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Store description.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridListing.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#price-cents\} 
+Price in cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridListing.<b>conferredPermissionKeys</b></code>](#conferred-permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#conferred-permission-keys\} 
+Player-code keys conferred on purchase.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridListing.<b>resalePolicy</b></code>](#resale-policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#resale-policy\} 
+Resale policy for the grid.
+
+
+
+
+### Returned By
+
+[`gridListings`](/reference/graphql/operations/queries/grid-listings.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

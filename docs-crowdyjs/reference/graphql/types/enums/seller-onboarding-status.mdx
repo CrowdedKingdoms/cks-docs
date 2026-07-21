@@ -1,0 +1,53 @@
+---
+id: seller-onboarding-status
+title: SellerOnboardingStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A seller (player or org) payout-account state: NONE (never started), PENDING (Stripe Connect Express onboarding incomplete), COMPLETE (payouts enabled), or BLOCKED (provider or platform hold).
+
+
+```graphql
+enum SellerOnboardingStatus {
+  NONE
+  PENDING
+  COMPLETE
+  BLOCKED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerOnboardingStatus.<b>NONE</b></code>](#none) \{#none\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerOnboardingStatus.<b>PENDING</b></code>](#pending) \{#pending\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerOnboardingStatus.<b>COMPLETE</b></code>](#complete) \{#complete\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerOnboardingStatus.<b>BLOCKED</b></code>](#blocked) \{#blocked\} 
+
+
+
+
+
+### Member Of
+
+[`SellerOnboardingLink`](/reference/graphql/types/objects/seller-onboarding-link.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SellerPayoutBalance`](/reference/graphql/types/objects/seller-payout-balance.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

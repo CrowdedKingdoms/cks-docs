@@ -2377,8 +2377,18 @@ type PlayerCodeListing {
   mediaJson: String!
   """Source-access mode for new versions."""
   licenseMode: PlayerCodeLicenseMode!
-  """Acquisition mode; always FREE in P4a (paid modes are P4b)."""
+  """
+  Acquisition mode: FREE, or a paid mode (BUY / RENT / TIME_LIMITED / COST_LIMITED; P4b). Free listings carry no price.
+  """
   acquisitionMode: PlayerCodeAcquisitionMode!
+  """Price in cents for paid modes; null when FREE."""
+  priceCents: Int
+  """Rent billing interval in days (RENT mode)."""
+  rentIntervalDays: Int
+  """Fixed access window in days (TIME_LIMITED mode)."""
+  windowDays: Int
+  """Compute-unit budget per purchase (COST_LIMITED mode)."""
+  unitBudget: BigInt
   """Catalog status (active / delisted / killed)."""
   status: PlayerCodeListingStatus!
   """
@@ -2412,6 +2422,10 @@ How a listing is acquired. P4a ships FREE only; the paid modes (buy, rent, time-
 """
 enum PlayerCodeAcquisitionMode {
   FREE
+  BUY
+  RENT
+  TIME_LIMITED
+  COST_LIMITED
 }
 
 """
@@ -2472,10 +2486,20 @@ type PlayerCodeAcquisition {
   listingId: String!
   """App of the listing."""
   appId: BigInt!
-  """Acquisition mode; always FREE in P4a."""
+  """
+  Acquisition mode: FREE, BUY (perpetual), RENT (renewable window), TIME_LIMITED (single window), or COST_LIMITED (compute-unit budget).
+  """
   mode: PlayerCodeAcquisitionMode!
   """Entitlement status: 'active' or 'revoked'."""
   status: String!
+  """
+  Expiry for RENT/TIME_LIMITED; null for perpetual (FREE/BUY) or unit-budgeted (COST_LIMITED). Past expiry drains installs until renewed.
+  """
+  expiresAt: DateTime
+  """Compute-unit budget for COST_LIMITED; null otherwise."""
+  unitBudget: BigInt
+  """Compute units consumed so far (advances against unitBudget)."""
+  unitsConsumed: BigInt!
   """When acquired."""
   acquiredAt: DateTime!
 }
@@ -2566,6 +2590,38 @@ enum GridClaimPolicy {
   APPROVAL
   INVITE
   MARKETPLACE_ONLY
+}
+
+"""
+A grid listing available in the app store (P4b): a blueprint that stamps a fresh grid per purchase, or a concrete grid. Buying it confers grid_ownership + the listed player-code keys + the quota preset atomically.
+"""
+type GridListing {
+  """UUID of the grid listing."""
+  gridListingId: String!
+  """App the listing belongs to."""
+  appId: BigInt!
+  """'blueprint' or 'concrete'."""
+  kind: String!
+  """Display name."""
+  name: String!
+  """Store description."""
+  description: String!
+  """Price in cents."""
+  priceCents: Int!
+  """Player-code keys conferred on purchase."""
+  conferredPermissionKeys: [String!]!
+  """Resale policy for the grid."""
+  resalePolicy: String!
+}
+
+"""
+Result of purchasing a grid listing: the owned grid the buyer now holds.
+"""
+type GridPurchaseResult {
+  """The grid the buyer now owns."""
+  gridId: BigInt!
+  """True when ownership was assigned."""
+  ownershipAssigned: Boolean!
 }
 
 """
@@ -3482,6 +3538,13 @@ type Query {
     """Optional version pin; must match the live install/attachment version."""
     versionId: String
   ): PlayerClientArtifact!
+  """
+  Browse the app's grid listings (P4b): blueprints that stamp a fresh grid per purchase, or concrete grids. Buying confers ownership + keys + quota preset atomically.
+  """
+  gridListings(
+    """App whose grid listings to browse."""
+    appId: BigInt!
+  ): [GridListing!]!
   """
   The app's grid claim policy (D4): how a player claim confers grid ownership.
   """
@@ -4645,6 +4708,21 @@ type Mutation {
     name: String!
   ): Boolean!
   """
+  Buy a grid listing with real money (P4b). Debits the player wallet management-side (platform/org split), then assigns grid_ownership + the listed player-code keys atomically; a failure to apply ownership refunds the charge. For blueprint listings, targetChunk picks where the fresh grid is stamped. This is the ownership path for marketplace_only-policy apps.
+  """
+  purchaseGrid(
+    """App that owns the listing."""
+    appId: BigInt!
+    """UUID of the grid listing to buy."""
+    gridListingId: String!
+    """Blueprint stamp chunk X."""
+    chunkX: Int
+    """Blueprint stamp chunk Y."""
+    chunkY: Int
+    """Blueprint stamp chunk Z."""
+    chunkZ: Int
+  ): GridPurchaseResult!
+  """
   Create a marketplace listing (free mode) for code the caller authors — personally, or org-owned via ownerOrgId (DN-9; requires manage_compute in that org). SIDE EFFECTS: the catalog row is written on cks-management-api with an ownership audit entry and replica-synced back. Publishing never uploads source; versions snapshot artifact hashes only.
   """
   publishPlayerCode(
@@ -4686,6 +4764,33 @@ type Mutation {
     """Version to pin; defaults to the newest published version."""
     versionId: String
   ): PlayerCodeInstall!
+  """
+  Renew a RENT acquisition (or extend a TIME_LIMITED window): a wallet charge on the same acquisition that pushes its expiry out. A drained install resumes on the next scheduler pass without re-consent. Paid modes only (P4b).
+  """
+  renewPlayerCodeAcquisition(
+    """App of the acquisition."""
+    appId: BigInt!
+    """UUID of the acquisition to renew."""
+    acquisitionId: String!
+  ): PlayerCodeAcquisition!
+  """
+  Top up a COST_LIMITED acquisition's compute-unit budget: a wallet charge that adds the listing's unit budget to the license. Exhausted installs resume once the budget clears their consumed units. Paid modes only (P4b).
+  """
+  topUpPlayerCodeAcquisition(
+    """App of the acquisition."""
+    appId: BigInt!
+    """UUID of the acquisition to top up."""
+    acquisitionId: String!
+  ): PlayerCodeAcquisition!
+  """
+  Request a refund of a paid acquisition (P4b). Allowed only within the refund window and before meaningful use (first install/fetch voids it), capped per buyer; a successful refund credits the wallet, reverses the ledger split, claws back the seller balance, revokes the acquisition, and drains installs. Returns cents refunded.
+  """
+  refundPlayerCodeAcquisition(
+    """App of the acquisition."""
+    appId: BigInt!
+    """UUID of the acquisition to refund."""
+    acquisitionId: String!
+  ): Int!
   """
   Uninstall: removes the registered instances, grid client attachments, and fetch rights. The acquisition row is RETAINED for audit; reinstalling later needs no new acquisition. Returns false when no matching active install exists.
   """

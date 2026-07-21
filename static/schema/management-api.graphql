@@ -1752,6 +1752,10 @@ How a listing is acquired. P4a ships FREE only; the paid modes (buy, rent, time-
 """
 enum PlayerCodeAcquisitionMode {
   FREE
+  BUY
+  RENT
+  TIME_LIMITED
+  COST_LIMITED
 }
 
 """
@@ -1850,6 +1854,104 @@ enum PlayerCodeAdmissionState {
   ADMITTED
   PENDING
   REVOKED
+}
+
+"""
+A seller's payout balance (player or org). pending ages through the D6 delay window into payable; reserved is the D6 young-account holdback or a T11 freeze.
+"""
+type SellerPayoutBalance {
+  """'user' or 'org'."""
+  partyKind: String!
+  """User id or org id."""
+  partyRef: BigInt!
+  """Cents still aging in the delay window."""
+  pendingCents: Int!
+  """Cents aged, unreserved, and withdrawable."""
+  payableCents: Int!
+  """Cents held back (reserve or T11 freeze)."""
+  reservedCents: Int!
+  """Stripe Connect Express onboarding state."""
+  onboardingStatus: SellerOnboardingStatus!
+  """Whether payouts are frozen by a T11 review hold."""
+  payoutsFrozen: Boolean!
+}
+
+"""
+A seller (player or org) payout-account state: NONE (never started), PENDING (Stripe Connect Express onboarding incomplete), COMPLETE (payouts enabled), or BLOCKED (provider or platform hold).
+"""
+enum SellerOnboardingStatus {
+  NONE
+  PENDING
+  COMPLETE
+  BLOCKED
+}
+
+"""
+Result of beginning seller onboarding: the Stripe Connect Express account link the seller opens to finish KYC.
+"""
+type SellerOnboardingLink {
+  """Current onboarding state."""
+  status: SellerOnboardingStatus!
+  """
+  The Stripe-hosted onboarding URL to open; null when already complete or unavailable in the seller region.
+  """
+  onboardingUrl: String
+  """
+  Why onboarding is unavailable (e.g. region unsupported); null otherwise.
+  """
+  unavailableReason: String
+}
+
+"""One entry in the T11 commerce risk queue (studio/operator moderation)."""
+type CommerceRiskFlag {
+  """Flag row id."""
+  flagId: String!
+  """App the flag belongs to."""
+  appId: BigInt!
+  """
+  Flag kind: 'buyer_velocity', 'listing_velocity', 'same_party', 'chargeback', or 'manual'.
+  """
+  kind: String!
+  """Related order UUID, if any."""
+  orderId: String
+  """Subject: 'user' or 'org'."""
+  subjectKind: String!
+  """Subject user or org id."""
+  subjectRef: BigInt!
+  """Detail note."""
+  detail: String
+  """'open', 'released', or 'confirmed'."""
+  status: String!
+  """When the flag was raised."""
+  createdAt: DateTime!
+}
+
+"""
+A studio grid listing (07 §1.1): a blueprint that stamps a fresh grid per sale, or a concrete grid. Purchase confers grid_ownership + the listed keys + quota preset atomically.
+"""
+type GridListing {
+  """UUID of the grid listing."""
+  gridListingId: String!
+  """App the listing belongs to."""
+  appId: BigInt!
+  """'blueprint' or 'concrete'."""
+  kind: String!
+  """Display name."""
+  name: String!
+  """Store description."""
+  description: String!
+  """Price in cents."""
+  priceCents: Int!
+  """Player-code keys conferred on purchase."""
+  conferredPermissionKeys: [String!]!
+  """
+  Resale policy: 'no_resale', 'resale_free', or 'resale_with_studio_cut'.
+  """
+  resalePolicy: String!
+  """Studio cut (bps) on resale, when applicable."""
+  studioCutBps: Int!
+  """Catalog status: 'active' or 'delisted'."""
+  status: String!
 }
 
 """
@@ -2761,6 +2863,18 @@ type PlayerSpendCap {
 }
 
 """
+A pending player card-vault (P4b): the Stripe SetupIntent the browser confirms to save a card off-session, enabling wallet auto-recharge and rent auto-renew. On success a setup_intent.succeeded webhook persists the card.
+"""
+type PlayerCardSetup {
+  """Stripe SetupIntent client secret the browser confirms."""
+  clientSecret: String
+  """Stripe publishable key the browser needs to confirm the card."""
+  publishableKey: String
+  """The Stripe customer id the card is attached to."""
+  externalCustomerId: String!
+}
+
+"""
 Off-session auto-recharge settings for the player wallet (the org auto-billing twin): when enabled with a vaulted card, the player gate tops the wallet up before denying for insufficient funds.
 """
 type PlayerAutoBilling {
@@ -3666,6 +3780,20 @@ type Query {
     """Numeric app id whose admission queue to view."""
     appId: BigInt!
   ): [PlayerCodeAdmissionQueueEntry!]! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
+  """The calling player's seller payout balance (pending/payable/reserved)."""
+  mySellerPayoutBalance: SellerPayoutBalance!
+  """
+  The app's open T11 commerce risk queue (velocity holds, same-party flags, chargebacks). Requires 'manage_compute'.
+  """
+  commerceRiskQueue(
+    """App whose risk queue to view."""
+    appId: BigInt!
+  ): [CommerceRiskFlag!]! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "appId")
+  """The app's active grid listings (studio catalog + store browse)."""
+  gridListings(
+    """App whose grid listings to view."""
+    appId: BigInt!
+  ): [GridListing!]!
   """
   All registered GraphQL servers (management-api and game-api) in any state. No auth required. For only routable servers, use activeGraphQLServers.
   """
@@ -4536,6 +4664,67 @@ type Mutation {
     approverUserIds: [BigInt!] = []
   ): GridClaimPolicy! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "appId")
   """
+  Begin Stripe Connect Express seller onboarding for the calling player (personal listings). Returns the hosted onboarding URL to finish KYC, or an unavailable reason in unsupported regions. Required before pricing a listing above free.
+  """
+  beginSellerOnboarding(
+    """ISO country code for the payout account (Stripe-supported)."""
+    country: String!
+  ): SellerOnboardingLink!
+  """
+  Begin Stripe Connect Express onboarding for an ORG's payout account (org-owned listings, DN-9). Requires 'manage_billing' in the org.
+  """
+  beginOrgSellerOnboarding(
+    """Org to onboard."""
+    orgId: BigInt!
+    """ISO country code for the payout account."""
+    country: String!
+  ): SellerOnboardingLink!
+  """
+  Pay out the calling player's payable balance to their Connect account (D6 minimum, 7-day delay, reserves enforced). Returns cents paid.
+  """
+  requestSellerPayout: Int!
+  """
+  Earn-to-mod: convert payable seller balance into the player wallet without a provider round-trip (07 §4.1). Returns cents credited.
+  """
+  spendPayoutBalanceToWallet(
+    """Cents to convert."""
+    amountCents: Int!
+  ): Int!
+  """
+  Set (author-only) the acquisition mode and pricing for a code listing. Non-free modes require completed seller onboarding. Curation can reject a listing but never reprice it (07 §1.2).
+  """
+  setListingPricing(
+    """Listing, mode, and price/interval/budget."""
+    input: SetListingPricingInput!
+  ): Boolean!
+  """
+  Set the app's marketplace org revenue share in basis points (OQ-3; taken from the post-platform remainder). Requires 'manage_billing'. BWF uses 0.
+  """
+  setAppMarketplaceOrgShare(
+    """App to configure."""
+    appId: BigInt!
+    """Org share in basis points (0..10000)."""
+    bps: Int!
+  ): Int! @requiresPermission(scope: "app", permission: "manage_billing", scopeArg: "appId")
+  """
+  Release (settle held order + unfreeze payout) or confirm (uphold) a T11 risk flag. Requires 'manage_compute'.
+  """
+  decideCommerceRiskFlag(
+    """App that owns the flag."""
+    appId: BigInt!
+    """UUID of the flag."""
+    flagId: String!
+    """True to release, false to confirm."""
+    release: Boolean!
+  ): Boolean! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "appId")
+  """
+  Create a studio grid listing (07 §1.1): a blueprint that stamps a fresh grid per sale, or a concrete grid. Requires 'manage_apps'. Purchase (in-game) confers grid_ownership + the listed keys + quota preset atomically.
+  """
+  createGridListing(
+    """Grid listing config."""
+    input: CreateGridListingInput!
+  ): GridListing! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "input.appId")
+  """
   Operator only (is_operator). Patches the platform compute ceilings: omitted fields stay unchanged, an explicit null clears that override (game-api falls back to env/default), a value (> 0) sets it. SIDE EFFECTS: fans a replica notify out to every game-api so the new ceilings clamp computeSetPolicy within ~30 seconds without a restart, and writes an audit entry. Lowering a ceiling does not shrink already-stored per-app policies; it rejects future computeSetPolicy values above the new ceiling. Returns the updated ceilings row.
   """
   cpSetComputePlatformCeilings(
@@ -4557,6 +4746,10 @@ type Mutation {
     """Monthly ceiling in cents; null = no monthly cap."""
     monthlyLimitCents: BigInt
   ): [PlayerSpendCap!]!
+  """
+  Begin vaulting a card on the caller's player wallet (P4b): returns a Stripe SetupIntent client secret + publishable key for the browser to confirm. On success the card is saved for wallet auto-recharge and rent auto-renew. Closes the P2 gap where players had no card-setup path.
+  """
+  beginPlayerCardSetup: PlayerCardSetup!
   """
   Configure the caller's player-wallet auto-recharge: enable/disable, per-period ceiling, recharge amount, and low-water threshold. Enabling requires a vaulted payment method.
   """
@@ -5255,6 +5448,56 @@ enum GridClaimPolicy {
   APPROVAL
   INVITE
   MARKETPLACE_ONLY
+}
+
+input SetListingPricingInput {
+  """App that owns the listing."""
+  appId: BigInt!
+  """UUID of the listing to price."""
+  listingId: String!
+  """
+  Acquisition mode: 'free', 'buy', 'rent', 'time_limited', or 'cost_limited'.
+  """
+  acquisitionMode: String!
+  """Price in cents (required for all non-free modes; author-set only)."""
+  priceCents: Int
+  """Rent billing interval in days (rent mode)."""
+  rentIntervalDays: Int
+  """Single fixed window in days (time_limited mode)."""
+  windowDays: Int
+  """Compute-unit budget the license grants (cost_limited mode)."""
+  unitBudget: BigInt
+  """
+  Whether an acquired license may travel with a grid resale (default false; 07 §5.a).
+  """
+  licenseTransferable: Boolean
+}
+
+input CreateGridListingInput {
+  """App the listing belongs to."""
+  appId: BigInt!
+  """'blueprint' or 'concrete'."""
+  kind: String!
+  """Display name."""
+  name: String!
+  """Store description."""
+  description: String
+  """JSON bounds/placement config (blueprint listings)."""
+  blueprintConfigJson: String
+  """The concrete grid id being sold (concrete listings)."""
+  gridId: BigInt
+  """Price in cents."""
+  priceCents: Int!
+  """Player-code keys the sale confers (e.g. write/run server/client)."""
+  conferredPermissionKeys: [String!]
+  """JSON per-grid quota preset bound on purchase."""
+  quotaPresetJson: String
+  """
+  Resale policy: 'no_resale' (default), 'resale_free', or 'resale_with_studio_cut'.
+  """
+  resalePolicy: String
+  """Studio cut (bps) taken on resales, when resale_with_studio_cut."""
+  studioCutBps: Int
 }
 
 """

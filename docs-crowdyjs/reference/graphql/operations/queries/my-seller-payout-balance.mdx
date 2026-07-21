@@ -1,0 +1,29 @@
+---
+id: my-seller-payout-balance
+title: mySellerPayoutBalance
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The calling player's seller payout balance (pending/payable/reserved).
+
+
+```graphql
+mySellerPayoutBalance: SellerPayoutBalance!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>SellerPayoutBalance</b></code>](/reference/graphql/types/objects/seller-payout-balance.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A seller's payout balance (player or org). pending ages through the D6 delay window into payable; reserved is the D6 young-account holdback or a T11 freeze.

@@ -24,10 +24,17 @@ wallet, with no org permission involved:
 
 - `playerWalletBalance` — the caller's wallet, created empty on first access.
 - `playerWalletTransactions` — the ledger: top-ups, hourly usage debits,
-  auto-recharges, refunds, adjustments.
+  auto-recharges, refunds, adjustments, **`purchase`** (marketplace buys —
+  code listings, rent renewals, budget top-ups, grid purchases), and
+  **`payout_credit`** (earn-to-mod: seller payout balance converted into
+  the wallet).
 - `createCheckout` with purpose `PLAYER_WALLET_TOPUP` — fund the wallet
   through the ordinary hosted checkout (Stripe/PayPal). Only `amountCents`
-  is required.
+  is required. This is also how you fund
+  [marketplace purchases](/game-api/player-marketplace#buying-and-refunds):
+  purchases debit the wallet directly and never open a checkout.
+- `beginPlayerCardSetup` — vault a card on the wallet (a Stripe SetupIntent
+  the browser confirms), enabling auto-recharge and rent auto-renew.
 - `playerAutoBilling` / `setPlayerAutoBilling` — off-session auto-recharge
   from a vaulted card, with a per-period ceiling. The player gate tries an
   auto-recharge before ever denying for funds.

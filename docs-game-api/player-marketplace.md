@@ -1,21 +1,22 @@
 ---
 sidebar_position: 26
-title: Marketplace (free mode)
+title: Marketplace
 ---
 
-# Marketplace (free mode)
+# Marketplace
 
-:::info No money yet
-This phase (P4a) ships the **free acquisition mode only**. Every listing is
-free; there is **no checkout, no ledger, no revenue split, no payout, no
-seller onboarding**. The paid modes (buy, rent, time-limited, cost-limited)
-and payouts arrive with the real-money workstream (P4b) as a payment edge on
-this exact pipeline — nothing here changes shape when pricing lands.
-:::
+The marketplace supports **five acquisition modes**: free, and four paid
+modes (buy, rent, time-limited, cost-limited) funded by the
+[player wallet](/management-api/player-billing). Money is strictly a
+**payment edge** on the free pipeline — publish, consent, install,
+admission, and the kill ladder are byte-identical whether a listing costs
+nothing or $9.99. A free listing today behaves exactly as it did before
+paid modes existed.
 
 The marketplace turns [player code](player-code) into **discoverable,
 acquirable products** inside one app: an author publishes a versioned
-listing, a player browses their game's store, acquires it (free), consents
+listing, a player browses their game's store, acquires it (free or from
+their wallet), consents
 to its **derived capability summary**, and installs it into a grid they own
 (server code) or their client. Acquired code runs under the exact same
 runtime as self-authored code — same registry, same host boundary, same
@@ -24,8 +25,8 @@ never a second execution path.
 
 ## Identity model (what everything hangs on)
 
-The **author** is provenance: source access, listing control, and — from
-P4b — proceeds. The author has **no residual access** to any buyer's world;
+The **author** is provenance: source access, listing control, and
+proceeds. The author has **no residual access** to any buyer's world;
 a mod is a program, not a service.
 
 - An installed **server** mod runs **as the installing grid owner**, in
@@ -105,6 +106,83 @@ registry as self-authored modules with provenance pointing at the listing.
 `uninstallPlayerCode` removes instances, attachments, and fetch rights but
 keeps the acquisition.
 
+## Pricing and license lifecycles (paid modes)
+
+Authors price a listing **after** publishing it (`setListingPricing`,
+Management API; author-only — curation can reject a listing but never
+reprice it). Non-free modes require completed
+[seller onboarding](#selling--payouts).
+
+| Mode | You get | Lifecycle |
+|---|---|---|
+| `FREE` | Perpetual entitlement | none |
+| `BUY` | Perpetual license | none (idempotent re-buy) |
+| `RENT` | `rentIntervalDays` of access | `expiresAt`; renewable |
+| `TIME_LIMITED` | A single `windowDays` window | `expiresAt`; extendable |
+| `COST_LIMITED` | `unitBudget` compute units | `unitsConsumed` advances; top up to extend |
+
+A paid acquisition is only **live** while its terms hold. Past `expiresAt`
+(or once `unitsConsumed >= unitBudget`) the install **drains at the
+scheduler gate and both artifact ACLs fail closed** — the module stops
+running and clients can no longer fetch its bytes. Consent is retained, so
+renewing resumes without a re-consent:
+
+```graphql
+mutation { renewPlayerCodeAcquisition(appId: "1", acquisitionId: "...") { expiresAt } }
+mutation { topUpPlayerCodeAcquisition(appId: "1", acquisitionId: "...") { unitBudget unitsConsumed } }
+```
+
+Cost-limited metering slices the **existing** per-player usage rollup by
+install provenance (a marketplace install owns its module instances); there
+is no per-invoke micro-billing, and exhaustion is eventually-consistent on
+the same cadence as the wallet gate.
+
+## Buying and refunds
+
+`acquirePlayerCode` on a paid listing **debits your wallet** — there is no
+checkout redirect in the purchase path; fund the wallet first (top-up via
+`createCheckout` purpose `PLAYER_WALLET_TOPUP`). An insufficient balance
+**refuses atomically** (`INSUFFICIENT_WALLET_BALANCE`): no order, no debit,
+no partial state.
+
+Each sale splits three ways at order time: the platform takes 30%, the app
+org takes its configured share of the remainder
+(`setAppMarketplaceOrgShare`, basis points, default 0), and the seller gets
+the rest. Splits always sum to the price paid.
+
+Refunds (`refundPlayerCodeAcquisition`) follow fixed rules: within **14
+days**, **void on meaningful use** (the first install or client fetch), and
+capped at **3 per buyer per 30 days**. A refund credits your wallet,
+reverses the ledger split, claws back the seller's balance, revokes the
+acquisition, and drains installs.
+
+## Selling & payouts
+
+Sellers (players, or orgs for org-owned listings) onboard **Stripe Connect
+Express** before pricing anything above free — KYC lives with Stripe; the
+platform stores only an account reference:
+
+```graphql
+mutation { beginSellerOnboarding(country: "US") { status onboardingUrl } }
+query { mySellerPayoutBalance { pendingCents payableCents reservedCents } }
+mutation { requestSellerPayout }                      # aged balance -> Stripe transfer
+mutation { spendPayoutBalanceToWallet(amountCents: 500) }  # earn-to-mod
+```
+
+Sale proceeds age **7 days** from pending to payable; young seller accounts
+(< 60 days from first sale) carry a **10% reserve held 90 days**; payouts
+have a **$10 minimum**. `spendPayoutBalanceToWallet` (earn-to-mod) skips the
+provider round-trip entirely — earnings can fund your own compute without a
+bank account. In regions Stripe Connect does not support, onboarding
+reports `unavailableReason` honestly; earn-to-mod still works.
+
+Fraud controls (T11): buyer/listing velocity caps **hold** orders for
+studio review (`commerceRiskQueue` / `decideCommerceRiskFlag`,
+`manage_compute`); self-dealing (buying your own listing, or a listing of
+an org you belong to) freezes the payout clock pending review; card
+disputes on wallet top-ups claw back the wallet and flag the buyer. See the
+[commerce incidents runbook](/operators/commerce-incidents).
+
 ## Bundles and grid-attached client mods
 
 A bundled listing (server + client halves) installed into a grid also
@@ -157,7 +235,7 @@ Each app chooses how a player claim confers `grid_ownership`
 | `SELF_CLAIM` | The claim alone assigns ownership (server-authorized; the default) |
 | `APPROVAL` | Claims create requests; designated approvers (or staff with `manage_compute`) accept via `decideGridClaim` |
 | `INVITE` | Ownership only against a standing `issueGridClaimInvite` invite |
-| `MARKETPLACE_ONLY` | Direct claims refused; ownership arrives only via a grid purchase (P4b) |
+| `MARKETPLACE_ONLY` | Direct claims refused; ownership arrives only via a [grid purchase](grid-commerce) |
 
 `claimGridOwnership(appId, gridId)` executes the policy. On success the
 claimer also receives grid grants for whichever player-code keys their tier
@@ -167,8 +245,8 @@ already carries — mod rights ride tier keys, and studio
 ## Ownership transfer and delisting
 
 - **Personal ↔ org transfer** (`transferPlayerCodeListing`, Management
-  API) is audited and moves listing control and source-access rights (and,
-  from P4b, proceeds).
+  API) is audited and moves listing control, source-access rights, and
+  future proceeds.
 - **Delisting** stops new acquisitions; existing installs keep running
   their pinned versions — buyers keep what they acquired. Deleting an
   author module is refused while a live listing references its versions.

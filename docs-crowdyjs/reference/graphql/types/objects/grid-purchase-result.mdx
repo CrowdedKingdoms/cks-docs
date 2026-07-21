@@ -1,0 +1,43 @@
+---
+id: grid-purchase-result
+title: GridPurchaseResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Result of purchasing a grid listing: the owned grid the buyer now holds.
+
+
+```graphql
+type GridPurchaseResult {
+  gridId: BigInt!
+  ownershipAssigned: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GridPurchaseResult.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid the buyer now owns.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridPurchaseResult.<b>ownershipAssigned</b></code>](#ownership-assigned)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#ownership-assigned\} 
+True when ownership was assigned.
+
+
+
+
+### Returned By
+
+[`purchaseGrid`](/reference/graphql/operations/mutations/purchase-grid.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
