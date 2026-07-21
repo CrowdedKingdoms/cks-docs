@@ -112,6 +112,13 @@ Use `playerComputeVersions` to poll compilation, then
 3. current version compiled successfully;
 4. the artifact is admitted when the app uses strict allow-list mode.
 
+`playerComputeInvoke(appId, gridId, moduleName, exportName, paramsJson)`
+performs synchronous RPC against an enabled server artifact. It resolves the
+current grid owner again, applies the same run/admission gates, runs on the
+lease holder or an ephemeral sandbox, and puts `callerUserId` + `gridId` in the
+guest envelope. Player automations use this same path for
+`player_compute_invoke` actions.
+
 `playerComputeMyModules` lists modules you authored or installed on grids you
 own. `playerComputeDelete` is author-only.
 
@@ -198,10 +205,12 @@ could call normally. Supplied identities, selectors, global targets, and
 app-wide fan-out are rejected. Studio model invokes use the ordinary player
 path, so `is_automation` does not grant extra authority.
 
-P1 executes scheduled (interval/cron) studio-model actions. Event-trigger
-delivery and `player_compute_invoke` automation actions are accepted as typed
-configuration but return a typed pending/not-supported result until their
-dispatch lanes land; they never fall back to a broader studio path.
+P1 executes scheduled (interval/cron) actions for both studio-model functions
+and player-module exports. `player_compute_invoke` routes through
+`playerComputeInvoke` as the grid owner and compute fuel is metered by the
+module (the automation records dispatch overhead only). Event-trigger delivery
+is accepted as typed configuration but remains a pending dispatch lane; it
+never falls back to a broader studio path.
 
 ## Client target status
 
