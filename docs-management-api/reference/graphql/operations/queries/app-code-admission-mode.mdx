@@ -1,0 +1,39 @@
+---
+id: app-code-admission-mode
+title: appCodeAdmissionMode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Read an app's player-code admission mode. Requires 'view&#x005F;compute&#x005F;diagnostics'. IMPLICIT&#x005F;ALLOW (the default) admits lawful player code without curation; ALLOW&#x005F;LIST requires every running server/client artifact, including self-authored code, to match an active code, author, or org admission.
+
+
+```graphql
+appCodeAdmissionMode(
+  appId: BigInt!
+): CodeAdmissionMode!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appCodeAdmissionMode.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric app id whose code-admission mode to read.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CodeAdmissionMode</b></code>](/reference/graphql/types/enums/code-admission-mode.mdx) <Badge class="badge badge--secondary " text="enum"/> 
+Controls player-code censorship for an app. IMPLICIT&#x005F;ALLOW admits lawful code by default; ALLOW&#x005F;LIST requires every code target, including self-authored code, to match an active code/author/org admission.

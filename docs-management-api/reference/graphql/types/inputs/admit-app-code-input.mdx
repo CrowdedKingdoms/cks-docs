@@ -1,0 +1,53 @@
+---
+id: admit-app-code-input
+title: AdmitAppCodeInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input AdmitAppCodeInput {
+  appId: BigInt!
+  subjectKind: CodeAdmissionSubjectKind!
+  subjectRef: String!
+  versionRange: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AdmitAppCodeInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric app id whose allow list receives this entry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AdmitAppCodeInput.<b>subjectKind</b></code>](#subject-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CodeAdmissionSubjectKind!</b></code>](/reference/graphql/types/enums/code-admission-subject-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#subject-kind\} 
+Admit one code listing, author user, or authoring org.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AdmitAppCodeInput.<b>subjectRef</b></code>](#subject-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#subject-ref\} 
+Stable id of the subject (listing UUID, numeric user id, or numeric org id).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AdmitAppCodeInput.<b>versionRange</b></code>](#version-range)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-range\} 
+Optional P1 version range: exact "3", inclusive "2-5", "&#x003E;=4", or "&#x003C;=9". Omit to admit all versions.
+
+
+
+
+### Member Of
+
+[`admitAppCode`](/reference/graphql/operations/mutations/admit-app-code.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

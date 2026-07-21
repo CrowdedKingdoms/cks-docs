@@ -1,0 +1,39 @@
+---
+id: grid-listings
+title: gridListings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Browse the app's grid listings (P4b): blueprints that stamp a fresh grid per purchase, or concrete grids. Buying confers ownership + keys + quota preset atomically.
+
+
+```graphql
+gridListings(
+  appId: BigInt!
+): [GridListing!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gridListings.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App whose grid listings to browse.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridListing</b></code>](/reference/graphql/types/objects/grid-listing.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A grid listing available in the app store (P4b): a blueprint that stamps a fresh grid per purchase, or a concrete grid. Buying it confers grid&#x005F;ownership + the listed player-code keys + the quota preset atomically.

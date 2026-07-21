@@ -1,0 +1,39 @@
+---
+id: transfer-player-code-listing
+title: transferPlayerCodeListing
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Transfer a listing between personal and org ownership (DN-9). The caller must be the current owner (user-owned) or hold manage&#x005F;compute in the owning org; transfers to an org require manage&#x005F;compute in the receiving org. SIDE EFFECTS: append-only ownership audit row + replica sync to game-api. Ownership moves listing control and source-access rights; from P4b it also moves proceeds.
+
+
+```graphql
+transferPlayerCodeListing(
+  input: TransferPlayerCodeListingInput!
+): PlayerCodeListing!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>transferPlayerCodeListing.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TransferPlayerCodeListingInput!</b></code>](/reference/graphql/types/inputs/transfer-player-code-listing-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Listing, app, and the new owner (user or org).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListing</b></code>](/reference/graphql/types/objects/player-code-listing.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A marketplace code listing as seen in-game (replica of the management catalog). Every listing is FREE in P4a; carrying both server and client artifact sets makes it a bundle.

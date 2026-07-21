@@ -1,0 +1,39 @@
+---
+id: publish-player-code
+title: publishPlayerCode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a marketplace listing (free mode) for code the caller authors — personally, or org-owned via ownerOrgId (DN-9; requires manage&#x005F;compute in that org). SIDE EFFECTS: the catalog row is written on cks-management-api with an ownership audit entry and replica-synced back. Publishing never uploads source; versions snapshot artifact hashes only.
+
+
+```graphql
+publishPlayerCode(
+  input: PublishPlayerCodeInput!
+): PlayerCodeListing!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>publishPlayerCode.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PublishPlayerCodeInput!</b></code>](/reference/graphql/types/inputs/publish-player-code-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+App, display metadata, license mode, and optional owning org.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListing</b></code>](/reference/graphql/types/objects/player-code-listing.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A marketplace code listing as seen in-game (replica of the management catalog). Every listing is FREE in P4a; carrying both server and client artifact sets makes it a bundle.

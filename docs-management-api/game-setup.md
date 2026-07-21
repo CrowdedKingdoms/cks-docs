@@ -73,6 +73,93 @@ Tier operations require the **`manage_access_tiers`** permission. Edit or retire
 
 > **Opting out of open‑by‑default:** if you do **not** want anonymous/auto access, remove (or never create) a tier that is both `isFree` **and** `isDefault`. Players then only get access through an explicit grant (below).
 
+The four player-code keys (`write_server_code`, `run_server_code`,
+`write_client_code`, `run_client_code`) are **not** in the generated default
+tier. Add them only to tiers intended for authors or mod users; see
+[Player code and owned grids](/game-api/player-code).
+
+### c.1 (Optional) Censor player code with strict admission
+
+New apps default to `IMPLICIT_ALLOW` (censorship off). To require studio
+approval for every running player artifact:
+
+```graphql
+mutation {
+  setAppCodeAdmissionMode(appId: "APP_ID", mode: ALLOW_LIST)
+}
+```
+
+`ALLOW_LIST` is strict: self-authored code in its author's own grid still waits
+for the code, author, or authoring org to be admitted. Deploy and compile remain
+available; only execution is gated.
+
+```graphql
+mutation {
+  admitAppCode(input: {
+    appId: "APP_ID"
+    subjectKind: AUTHOR
+    subjectRef: "PLAYER_USER_ID"
+  }) {
+    admissionId
+    admittedAt
+  }
+}
+```
+
+Use `appCodeAdmissions` to inspect active/history rows and
+`revokeAppCodeAdmission` to drain admitted code. Writes require
+`manage_compute`; reads require `view_compute_diagnostics`. Admission never
+grants source access — closed source remains author-only with no moderation
+override.
+
+**Admission at scale (P4a).** Once the app has a marketplace catalog, the
+moderation surface is `appCodeAdmissionQueue(appId)`: every listing joined
+with its allow-list standing (`ADMITTED` / `PENDING` / `REVOKED`) and which
+subject matched (the listing, its author, or its owning org). The wholesale
+pattern is admitting an **org** once (`subjectKind: ORG`) so every listing
+that org owns — current and future — is admitted; per-listing admission
+remains for precise control. De-admission drains running installs exactly
+like a run-key revocation. For a hostile listing, pair the catalog kill
+(`setPlayerCodeListingStatus(..., status: KILLED)`) with the game-side
+fleet-wide runtime kill
+(`playerComputeSetSwitch(scope: "listing", listingRef: ...)`).
+
+### c.1a (Optional) Choose how claims confer grid ownership (P4a)
+
+Games differ on how a player comes to **own** a grid. Configure the app's
+claim policy (requires `manage_apps`):
+
+```graphql
+mutation {
+  setAppGridClaimPolicy(appId: "APP_ID", policy: SELF_CLAIM)
+}
+```
+
+`SELF_CLAIM` (default) lets `claimGridOwnership` assign ownership directly;
+`APPROVAL` turns claims into requests your designated approvers accept;
+`INVITE` requires a standing invite; `MARKETPLACE_ONLY` refuses direct
+claims so ownership arrives only through grid purchase (the purchase edge is
+part of the real-money phase). Changing policy never revokes existing
+ownership rows.
+
+### c.2 (Optional) Bound player compute cost and take a markup
+
+Player compute bills the **player's own wallet**, never the org — see
+**[Player wallets & billing](/management-api/player-billing)**. Two knobs
+belong to the studio:
+
+- **Player policy** (`setPlayerWasmPolicy`, `manage_compute`): per-player or
+  cohort clamps at `app_default` / `tier` / `grid` / `user` scope, including
+  `unitsPerHour`/`unitsPerDay` compute quotas, `maxCompilesPerHour`, and
+  runtime budgets. Quotas protect world health independent of anyone's
+  ability to pay.
+- **Rate-card markup** (`setPlayerRateMarkup`, `manage_billing`): basis
+  points added on the platform's base player rates — the studio's usage
+  revenue, always itemized separately in the player's spend history.
+
+`appPlayerUsage` (`view_compute_diagnostics`) shows per-player consumption;
+`appPlayerMarkupAccrued` (`view_billing`) totals accrued markup income.
+
 ### d. Choose where the app runs
 
 Your app needs a **Game API** to serve runtime traffic. Today you provision a **developer sandbox** and link your app to it; that gives the app a `gameApiUrl` and turns on split‑mode routing. See **[Dedicated environments](/management-api/dedicated-environments)** for the step‑by‑step flow.

@@ -1,0 +1,44 @@
+---
+id: renew-player-code-acquisition
+title: renewPlayerCodeAcquisition
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Renew a RENT acquisition (or extend a TIME&#x005F;LIMITED window): a wallet charge on the same acquisition that pushes its expiry out. A drained install resumes on the next scheduler pass without re-consent. Paid modes only (P4b).
+
+
+```graphql
+renewPlayerCodeAcquisition(
+  appId: BigInt!
+  acquisitionId: String!
+): PlayerCodeAcquisition!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>renewPlayerCodeAcquisition.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App of the acquisition.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>renewPlayerCodeAcquisition.<b>acquisitionId</b></code>](#acquisition-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquisition-id\} 
+UUID of the acquisition to renew.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeAcquisition</b></code>](/reference/graphql/types/objects/player-code-acquisition.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The caller's entitlement to a listing (mode 'free' in P4a). Uninstalling never deletes this row; it is the audit trail P4b attaches payment to.

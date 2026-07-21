@@ -1,0 +1,88 @@
+---
+id: player-usage-charge
+title: PlayerUsageCharge
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One posted player usage charge: a (player, app, closed clock hour) row. amountCents = platformCents + markupCents — players see what the platform charges and what the studio adds (06 §4). The UNIQUE hour key makes the billing tick idempotent.
+
+
+```graphql
+type PlayerUsageCharge {
+  chargeId: BigInt!
+  userId: BigInt!
+  appId: BigInt!
+  periodStart: DateTime!
+  periodEnd: DateTime!
+  amountCents: BigInt!
+  platformCents: BigInt!
+  markupCents: BigInt!
+  currency: String!
+  usageSnapshotJson: String!
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerUsageCharge.<b>chargeId</b></code>](#charge-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#charge-id\} 
+Charge id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerUsageCharge.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The owning player user id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerUsageCharge.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app the usage ran in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerUsageCharge.<b>periodStart</b></code>](#period-start)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#period-start\} 
+Billed hour start (inclusive).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerUsageCharge.<b>periodEnd</b></code>](#period-end)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#period-end\} 
+Billed hour end (exclusive).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerUsageCharge.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#amount-cents\} 
+Total debited cents.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerUsageCharge.<b>platformCents</b></code>](#platform-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#platform-cents\} 
+Platform component (base rate card).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerUsageCharge.<b>markupCents</b></code>](#markup-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#markup-cents\} 
+Studio markup component (the app's player&#x005F;rate&#x005F;markup&#x005F;bps).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerUsageCharge.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+ISO currency code.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerUsageCharge.<b>usageSnapshotJson</b></code>](#usage-snapshot-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#usage-snapshot-json\} 
+JSON per-metric usage/billing snapshot for the hour.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerUsageCharge.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the charge posted.
+
+
+
+
+### Returned By
+
+[`playerUsageCharges`](/reference/graphql/operations/queries/player-usage-charges.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

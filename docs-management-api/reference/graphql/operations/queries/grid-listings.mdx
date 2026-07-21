@@ -1,0 +1,39 @@
+---
+id: grid-listings
+title: gridListings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The app's active grid listings (studio catalog + store browse).
+
+
+```graphql
+gridListings(
+  appId: BigInt!
+): [GridListing!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gridListings.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App whose grid listings to view.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridListing</b></code>](/reference/graphql/types/objects/grid-listing.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A studio grid listing (07 §1.1): a blueprint that stamps a fresh grid per sale, or a concrete grid. Purchase confers grid&#x005F;ownership + the listed keys + quota preset atomically.

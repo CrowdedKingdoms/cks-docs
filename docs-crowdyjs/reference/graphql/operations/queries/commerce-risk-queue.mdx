@@ -1,0 +1,39 @@
+---
+id: commerce-risk-queue
+title: commerceRiskQueue
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The app's open T11 commerce risk queue (velocity holds, same-party flags, chargebacks). Requires 'manage&#x005F;compute'.
+
+
+```graphql
+commerceRiskQueue(
+  appId: BigInt!
+): [CommerceRiskFlag!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>commerceRiskQueue.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App whose risk queue to view.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CommerceRiskFlag</b></code>](/reference/graphql/types/objects/commerce-risk-flag.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One entry in the T11 commerce risk queue (studio/operator moderation).

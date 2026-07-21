@@ -1,0 +1,83 @@
+---
+id: player-code-listing-version
+title: PlayerCodeListingVersion
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An immutable published version of a code listing: artifact hashes (never source) plus the DERIVED capability summary installers consent to.
+
+
+```graphql
+type PlayerCodeListingVersion {
+  versionId: String!
+  listingId: String!
+  versionNo: Int!
+  serverArtifactHashes: [String!]!
+  clientArtifactHashes: [String!]!
+  capabilitySummaryJson: String!
+  capabilityHash: String!
+  openSource: Boolean!
+  licenseText: String
+  createdAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListingVersion.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\} 
+UUID of this published version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListingVersion.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
+UUID of the listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListingVersion.<b>versionNo</b></code>](#version-no)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-no\} 
+Monotonic version number within the listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListingVersion.<b>serverArtifactHashes</b></code>](#server-artifact-hashes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#server-artifact-hashes\} 
+Server-target artifact hashes (empty for client-only listings).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListingVersion.<b>clientArtifactHashes</b></code>](#client-artifact-hashes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-artifact-hashes\} 
+Client-target artifact hashes (empty for server-only listings).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListingVersion.<b>capabilitySummaryJson</b></code>](#capability-summary-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#capability-summary-json\} 
+JSON capability summary DERIVED from the artifacts (host functions, capability groups, presentation hooks, triggers, egress budgets). Never self-declared; shown at acquire and install consent.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListingVersion.<b>capabilityHash</b></code>](#capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#capability-hash\} 
+sha256 of the canonical capability summary. installPlayerCode and consentGridClientMod must echo this hash as the consent acknowledgement.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListingVersion.<b>openSource</b></code>](#open-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#open-source\} 
+Whether this version’s source is open (irreversible per version).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListingVersion.<b>licenseText</b></code>](#license-text)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#license-text\} 
+Author license terms shown at acquisition.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListingVersion.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the version was published.
+
+
+
+
+### Returned By
+
+[`playerCodeListingVersions`](/reference/graphql/operations/queries/player-code-listing-versions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`publishPlayerCodeVersion`](/reference/graphql/operations/mutations/publish-player-code-version.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

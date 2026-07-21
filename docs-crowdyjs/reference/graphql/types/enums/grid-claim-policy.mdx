@@ -1,0 +1,57 @@
+---
+id: grid-claim-policy
+title: GridClaimPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+How a player claim confers grid ownership in this app (D4): SELF&#x005F;CLAIM (the claim alone assigns ownership), APPROVAL (claims create requests designated approvers accept), INVITE (only against a standing invite), or MARKETPLACE&#x005F;ONLY (only a marketplace grid purchase; direct claims refused — the purchase edge ships in P4b).
+
+
+```graphql
+enum GridClaimPolicy {
+  SELF_CLAIM
+  APPROVAL
+  INVITE
+  MARKETPLACE_ONLY
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClaimPolicy.<b>SELF&#x005F;CLAIM</b></code>](#self-claim) \{#self-claim\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClaimPolicy.<b>APPROVAL</b></code>](#approval) \{#approval\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClaimPolicy.<b>INVITE</b></code>](#invite) \{#invite\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClaimPolicy.<b>MARKETPLACE&#x005F;ONLY</b></code>](#marketplace-only) \{#marketplace-only\} 
+
+
+
+
+
+### Returned By
+
+[`gridClaimPolicy`](/reference/graphql/operations/queries/grid-claim-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setAppGridClaimPolicy`](/reference/graphql/operations/mutations/set-app-grid-claim-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`GridClaimResult`](/reference/graphql/types/objects/grid-claim-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`setAppGridClaimPolicy`](/reference/graphql/operations/mutations/set-app-grid-claim-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

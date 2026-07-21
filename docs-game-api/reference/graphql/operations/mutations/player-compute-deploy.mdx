@@ -1,0 +1,39 @@
+---
+id: player-compute-deploy
+title: playerComputeDeploy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Deploy player-authored Rust into a grid the caller currently owns. Requires the target's write permission at both app-tier and grid ACL layers. One call creates/updates the module and publishes an immutable pending version; the shared compiler builds it asynchronously. Authoring is never admission-gated, but only the original author may replace closed source.
+
+
+```graphql
+playerComputeDeploy(
+  input: DeployPlayerComputeInput!
+): PlayerWasmModuleVersion!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeDeploy.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DeployPlayerComputeInput!</b></code>](/reference/graphql/types/inputs/deploy-player-compute-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Owned grid, module metadata, SERVER/CLIENT target, source map, and SDK/ABI pins.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerWasmModuleVersion</b></code>](/reference/graphql/types/objects/player-wasm-module-version.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An immutable player-code source version. sourceFilesJson is returned only to its personal author (org-owned source requires the future org-authoring path) or when openSource is true.

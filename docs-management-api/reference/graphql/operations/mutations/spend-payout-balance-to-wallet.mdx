@@ -1,0 +1,39 @@
+---
+id: spend-payout-balance-to-wallet
+title: spendPayoutBalanceToWallet
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Earn-to-mod: convert payable seller balance into the player wallet without a provider round-trip (07 §4.1). Returns cents credited.
+
+
+```graphql
+spendPayoutBalanceToWallet(
+  amountCents: Int!
+): Int!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>spendPayoutBalanceToWallet.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#amount-cents\} 
+Cents to convert.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.

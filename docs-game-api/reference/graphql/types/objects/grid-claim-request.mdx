@@ -1,0 +1,63 @@
+---
+id: grid-claim-request
+title: GridClaimRequest
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A pending or decided grid claim request (claim policy 'approval'). Approval assigns grid&#x005F;ownership to the requester.
+
+
+```graphql
+type GridClaimRequest {
+  requestId: String!
+  appId: BigInt!
+  gridId: BigInt!
+  requesterUserId: BigInt!
+  status: String!
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClaimRequest.<b>requestId</b></code>](#request-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#request-id\} 
+UUID of the request.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClaimRequest.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App of the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClaimRequest.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid being claimed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClaimRequest.<b>requesterUserId</b></code>](#requester-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#requester-user-id\} 
+The requesting player.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClaimRequest.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+Request status: 'pending', 'approved', 'denied', or 'cancelled'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClaimRequest.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the request was created.
+
+
+
+
+### Returned By
+
+[`decideGridClaim`](/reference/graphql/operations/mutations/decide-grid-claim.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gridClaimRequests`](/reference/graphql/operations/queries/grid-claim-requests.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

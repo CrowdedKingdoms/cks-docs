@@ -1,0 +1,78 @@
+---
+id: player-code-install
+title: PlayerCodeInstall
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An install of an acquired listing: the pinned version, the consent hash acknowledged, and (for server halves) the owned target grid. Installs pin their version; updating to a newer version is a new consent + install update, never automatic.
+
+
+```graphql
+type PlayerCodeInstall {
+  installId: String!
+  acquisitionId: String!
+  listingId: String!
+  appId: BigInt!
+  pinnedVersionId: String!
+  targetGridId: BigInt
+  consentedCapabilityHash: String!
+  status: String!
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeInstall.<b>installId</b></code>](#install-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#install-id\} 
+UUID of the install.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeInstall.<b>acquisitionId</b></code>](#acquisition-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquisition-id\} 
+UUID of the acquisition this install uses.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeInstall.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
+UUID of the installed listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeInstall.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App of the listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeInstall.<b>pinnedVersionId</b></code>](#pinned-version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#pinned-version-id\} 
+UUID of the pinned listing version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeInstall.<b>targetGridId</b></code>](#target-grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#target-grid-id\} 
+Owned grid the server half (and any bundled client attachment) was installed into; null for personal client-only installs.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeInstall.<b>consentedCapabilityHash</b></code>](#consented-capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#consented-capability-hash\} 
+The capability hash the installer consented to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeInstall.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+Install status: 'active', 'uninstalled', or 'disabled'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeInstall.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When installed.
+
+
+
+
+### Returned By
+
+[`installPlayerCode`](/reference/graphql/operations/mutations/install-player-code.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`myPlayerCodeInstalls`](/reference/graphql/operations/queries/my-player-code-installs.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,39 @@
+---
+id: grid-claim-requests
+title: gridClaimRequests
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Pending grid claim requests: designated approvers (or studio staff holding manage&#x005F;compute) see the app's queue; other callers see their own requests.
+
+
+```graphql
+gridClaimRequests(
+  appId: BigInt!
+): [GridClaimRequest!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gridClaimRequests.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App whose claim requests to list.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridClaimRequest</b></code>](/reference/graphql/types/objects/grid-claim-request.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A pending or decided grid claim request (claim policy 'approval'). Approval assigns grid&#x005F;ownership to the requester.

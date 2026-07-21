@@ -1,0 +1,44 @@
+---
+id: grid-ownership
+title: gridOwnership
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Read the current first-class ownership record for a grid. Requires authentication. Returns null when the grid has no current/unexpired owner. Player server code always resolves its execution identity from this record.
+
+
+```graphql
+gridOwnership(
+  appId: BigInt!
+  gridId: BigInt!
+): GridOwnership
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gridOwnership.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App that contains the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gridOwnership.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Grid whose current title to read.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridOwnership</b></code>](/reference/graphql/types/objects/grid-ownership.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The current first-class ownership record for a grid. Server player code always resolves its execution identity from this record.

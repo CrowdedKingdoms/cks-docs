@@ -1,0 +1,83 @@
+---
+id: player-wallet-transaction
+title: PlayerWalletTransaction
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One player-wallet ledger entry: top-ups, hourly usage debits, auto-recharges, refunds, and adjustments. Usage debits carry the app and reference the hour's charge row, whose snapshot splits platform vs studio-markup components.
+
+
+```graphql
+type PlayerWalletTransaction {
+  transactionId: BigInt!
+  walletId: BigInt!
+  userId: BigInt!
+  amountCents: BigInt!
+  balanceAfter: BigInt!
+  transactionType: String!
+  description: String
+  referenceId: String
+  appId: BigInt
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>transactionId</b></code>](#transaction-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#transaction-id\} 
+Transaction id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>walletId</b></code>](#wallet-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wallet-id\} 
+The wallet.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The owning player user id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#amount-cents\} 
+Signed amount in cents (debits negative).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>balanceAfter</b></code>](#balance-after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-after\} 
+Balance after this entry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>transactionType</b></code>](#transaction-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#transaction-type\} 
+One of 'topup', 'usage&#x005F;debit', 'auto&#x005F;recharge', 'refund', 'adjustment'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Human description.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>referenceId</b></code>](#reference-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reference-id\} 
+External reference (checkout/PaymentIntent id).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app a usage debit covers; null for wallet-level entries.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+Entry time.
+
+
+
+
+### Returned By
+
+[`playerWalletTransactions`](/reference/graphql/operations/queries/player-wallet-transactions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

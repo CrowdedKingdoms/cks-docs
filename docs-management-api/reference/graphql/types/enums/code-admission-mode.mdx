@@ -1,0 +1,47 @@
+---
+id: code-admission-mode
+title: CodeAdmissionMode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Controls player-code censorship for an app. IMPLICIT&#x005F;ALLOW admits lawful code by default; ALLOW&#x005F;LIST requires every code target, including self-authored code, to match an active code/author/org admission.
+
+
+```graphql
+enum CodeAdmissionMode {
+  IMPLICIT_ALLOW
+  ALLOW_LIST
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CodeAdmissionMode.<b>IMPLICIT&#x005F;ALLOW</b></code>](#implicit-allow) \{#implicit-allow\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CodeAdmissionMode.<b>ALLOW&#x005F;LIST</b></code>](#allow-list) \{#allow-list\} 
+
+
+
+
+
+### Returned By
+
+[`appCodeAdmissionMode`](/reference/graphql/operations/queries/app-code-admission-mode.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setAppCodeAdmissionMode`](/reference/graphql/operations/mutations/set-app-code-admission-mode.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`setAppCodeAdmissionMode`](/reference/graphql/operations/mutations/set-app-code-admission-mode.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

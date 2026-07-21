@@ -1,0 +1,39 @@
+---
+id: player-model-delete-container
+title: playerModelDeleteContainer
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Delete one caller-owned player-model container and its properties from the specified currently owned grid. Destructive; foreign or absent IDs return NOT&#x005F;FOUND.
+
+
+```graphql
+playerModelDeleteContainer(
+  input: PlayerModelContainerRefInput!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerModelDeleteContainer.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerModelContainerRefInput!</b></code>](/reference/graphql/types/inputs/player-model-container-ref-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+App/grid scope and player container UUID to delete.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

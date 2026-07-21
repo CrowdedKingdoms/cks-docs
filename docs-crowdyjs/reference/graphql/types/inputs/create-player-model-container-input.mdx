@@ -1,0 +1,58 @@
+---
+id: create-player-model-container-input
+title: CreatePlayerModelContainerInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a flexible player-owned model container inside one grid. The caller must currently own the grid; owner identity cannot be supplied.
+
+
+```graphql
+input CreatePlayerModelContainerInput {
+  appId: BigInt!
+  gridId: BigInt!
+  typeKey: String
+  displayName: String
+  stateJson: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerModelContainerInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App containing the owned grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerModelContainerInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Grid that confines the container.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerModelContainerInput.<b>typeKey</b></code>](#type-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#type-key\} 
+Flexible instance kit key. Defaults to 'PlayerData'; this does not author a studio model type.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerModelContainerInput.<b>displayName</b></code>](#display-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#display-name\} 
+Optional player-facing name, unique within the owner/grid/type tuple.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerModelContainerInput.<b>stateJson</b></code>](#state-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state-json\} 
+Optional JSON object stored as untyped container state.
+
+
+
+
+### Member Of
+
+[`playerModelCreateContainer`](/reference/graphql/operations/mutations/player-model-create-container.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

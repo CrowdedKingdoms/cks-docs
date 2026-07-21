@@ -1,0 +1,44 @@
+---
+id: set-app-code-admission-mode
+title: setAppCodeAdmissionMode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set an app's player-code censorship mode. Requires 'manage&#x005F;compute'. SIDE EFFECTS: writes an immutable audit row and replica-syncs the mode to game-api. Switching to ALLOW&#x005F;LIST is strict: unadmitted code (including self-authored code) drains at the runtime activation gate; deploy/compile remain allowed.
+
+
+```graphql
+setAppCodeAdmissionMode(
+  appId: BigInt!
+  mode: CodeAdmissionMode!
+): CodeAdmissionMode!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setAppCodeAdmissionMode.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric app id whose admission mode to change.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setAppCodeAdmissionMode.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CodeAdmissionMode!</b></code>](/reference/graphql/types/enums/code-admission-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#mode\} 
+New admission mode (IMPLICIT&#x005F;ALLOW or ALLOW&#x005F;LIST).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CodeAdmissionMode</b></code>](/reference/graphql/types/enums/code-admission-mode.mdx) <Badge class="badge badge--secondary " text="enum"/> 
+Controls player-code censorship for an app. IMPLICIT&#x005F;ALLOW admits lawful code by default; ALLOW&#x005F;LIST requires every code target, including self-authored code, to match an active code/author/org admission.

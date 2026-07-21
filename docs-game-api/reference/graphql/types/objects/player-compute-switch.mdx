@@ -1,0 +1,68 @@
+---
+id: player-compute-switch
+title: PlayerComputeSwitch
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A kill-ladder switch row (03 §7): a studio-set immediate stop at player, grid, app, or listing scope. Module-level disable lives on the module itself; killing a LISTING disables every install of that marketplace listing fleet-wide (P4a). Quota state is retained across a kill.
+
+
+```graphql
+type PlayerComputeSwitch {
+  switchId: String!
+  appId: BigInt!
+  scope: String!
+  scopeRef: BigInt
+  listingRef: String
+  reason: String
+  disabledAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeSwitch.<b>switchId</b></code>](#switch-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#switch-id\} 
+Switch row UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeSwitch.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app the switch applies to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeSwitch.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scope\} 
+Scope: 'player', 'grid', 'app', or 'listing'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeSwitch.<b>scopeRef</b></code>](#scope-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#scope-ref\} 
+The player user id or grid id; null for app and listing scopes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeSwitch.<b>listingRef</b></code>](#listing-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#listing-ref\} 
+The marketplace listing UUID for listing scope; null otherwise.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeSwitch.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Operator note recorded when the switch was thrown.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeSwitch.<b>disabledAt</b></code>](#disabled-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#disabled-at\} 
+When execution was stopped.
+
+
+
+
+### Returned By
+
+[`playerComputeSwitches`](/reference/graphql/operations/queries/player-compute-switches.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

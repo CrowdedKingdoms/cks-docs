@@ -1,0 +1,39 @@
+---
+id: publish-player-code-version
+title: publishPlayerCodeVersion
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Publish an immutable version under a listing from the caller's successfully compiled module versions (server and/or client — both makes a bundle). Snapshots ARTIFACT HASHES and the DERIVED capability summary; source never leaves the author's rows. Open-sourcing a version is irreversible for that version. Existing installs keep their pinned versions; a widened capability summary forces fresh consent on any new install.
+
+
+```graphql
+publishPlayerCodeVersion(
+  input: PublishPlayerCodeVersionInput!
+): PlayerCodeListingVersion!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>publishPlayerCodeVersion.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PublishPlayerCodeVersionInput!</b></code>](/reference/graphql/types/inputs/publish-player-code-version-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Listing, packaged module version ids, and license options.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListingVersion</b></code>](/reference/graphql/types/objects/player-code-listing-version.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An immutable published version of a code listing: artifact hashes (never source) plus the DERIVED capability summary installers consent to.

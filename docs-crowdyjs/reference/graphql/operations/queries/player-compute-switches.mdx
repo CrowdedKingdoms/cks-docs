@@ -1,0 +1,39 @@
+---
+id: player-compute-switches
+title: playerComputeSwitches
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Active player-compute kill switches for an app, newest first. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
+
+
+```graphql
+playerComputeSwitches(
+  appId: BigInt!
+): [PlayerComputeSwitch!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSwitches.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App whose switches to list.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerComputeSwitch</b></code>](/reference/graphql/types/objects/player-compute-switch.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A kill-ladder switch row (03 §7): a studio-set immediate stop at player, grid, app, or listing scope. Module-level disable lives on the module itself; killing a LISTING disables every install of that marketplace listing fleet-wide (P4a). Quota state is retained across a kill.

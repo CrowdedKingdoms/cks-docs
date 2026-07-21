@@ -115,6 +115,15 @@ const config: Config = {
     [
       '@docusaurus/plugin-content-docs',
       {
+        id: 'operators',
+        path: 'docs-operators',
+        routeBasePath: '/operators',
+        sidebarPath: './sidebars/operators.ts',
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
         id: 'crowdyjs',
         path: 'docs-crowdyjs',
         routeBasePath: '/crowdyjs',
@@ -258,6 +267,13 @@ const config: Config = {
           sidebarId: 'sidebar',
           position: 'left',
           label: 'Portal',
+        },
+        {
+          type: 'docSidebar',
+          docsPluginId: 'operators',
+          sidebarId: 'sidebar',
+          position: 'left',
+          label: 'Operators',
         },
         {
           type: 'dropdown',

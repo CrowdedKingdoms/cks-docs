@@ -1,0 +1,48 @@
+---
+id: grid-owner-kind
+title: GridOwnerKind
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Kind of principal holding grid title. P1 can assign USER owners; GROUP and ORG are schema-reserved for future shared ownership.
+
+
+```graphql
+enum GridOwnerKind {
+  USER
+  GROUP
+  ORG
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>GridOwnerKind.<b>USER</b></code>](#user) \{#user\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridOwnerKind.<b>GROUP</b></code>](#group) \{#group\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridOwnerKind.<b>ORG</b></code>](#org) \{#org\} 
+
+
+
+
+
+### Member Of
+
+[`GridOwnership`](/reference/graphql/types/objects/grid-ownership.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

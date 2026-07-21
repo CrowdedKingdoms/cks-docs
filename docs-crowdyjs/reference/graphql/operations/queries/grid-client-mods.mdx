@@ -1,0 +1,44 @@
+---
+id: grid-client-mods
+title: gridClientMods
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Client mods attached to a grid (bundled listings installed by the grid owner, D2). A player present in the grid may run one only after consenting to its capability hash via consentGridClientMod; callerConsented reports the caller's state. This is how grid authors offer client compute to visitors — e.g. relaying actor updates to the grid's server compute.
+
+
+```graphql
+gridClientMods(
+  appId: BigInt!
+  gridId: BigInt!
+): [GridClientMod!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gridClientMods.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App containing the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gridClientMods.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Grid whose attached client mods to list.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridClientMod</b></code>](/reference/graphql/types/objects/grid-client-mod.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A grid-attached client mod (a bundle's client half installed on a grid). Players present in the grid may fetch and run it only after per-player consent to its capability hash — the D2 pattern that lets grid authors run client compute on visitors (e.g. relaying actor updates to the grid's server compute).

@@ -1,0 +1,44 @@
+---
+id: acquire-player-code
+title: acquirePlayerCode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Acquire a free listing: writes the entitlement row (no payment edge exists in P4a — paid modes are P4b). Idempotent per (listing, caller). Allowed in any admission mode; in allow&#x005F;list apps an unadmitted acquisition holds until the listing/author/org is admitted, at which point installPlayerCode proceeds.
+
+
+```graphql
+acquirePlayerCode(
+  appId: BigInt!
+  listingId: String!
+): PlayerCodeAcquisition!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>acquirePlayerCode.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App that owns the listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>acquirePlayerCode.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
+UUID of the listing to acquire.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeAcquisition</b></code>](/reference/graphql/types/objects/player-code-acquisition.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The caller's entitlement to a listing (mode 'free' in P4a). Uninstalling never deletes this row; it is the audit trail P4b attaches payment to.

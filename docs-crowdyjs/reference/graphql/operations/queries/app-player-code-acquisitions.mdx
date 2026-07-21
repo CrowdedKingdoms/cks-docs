@@ -1,0 +1,39 @@
+---
+id: app-player-code-acquisitions
+title: appPlayerCodeAcquisitions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List an app's code acquisitions (entitlement rows), newest first. Requires 'view&#x005F;compute&#x005F;diagnostics'. All rows are mode FREE in P4a; uninstalls never delete acquisitions (audit).
+
+
+```graphql
+appPlayerCodeAcquisitions(
+  appId: BigInt!
+): [PlayerCodeAcquisition!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appPlayerCodeAcquisitions.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric app id whose acquisitions to view.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeAcquisition</b></code>](/reference/graphql/types/objects/player-code-acquisition.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The caller's entitlement to a listing (mode 'free' in P4a). Uninstalling never deletes this row; it is the audit trail P4b attaches payment to.

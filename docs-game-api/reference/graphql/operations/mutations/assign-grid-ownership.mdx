@@ -1,0 +1,39 @@
+---
+id: assign-grid-ownership
+title: assignGridOwnership
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Assign first-class title for an unowned grid to one user. P1 studio/bootstrap path; marketplace acquisition supersedes it later. Requires app-admin ('manage&#x005F;apps'). Assigns title only: permissions must be granted explicitly.
+
+
+```graphql
+assignGridOwnership(
+  input: AssignGridOwnershipInput!
+): GridOwnership!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>assignGridOwnership.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AssignGridOwnershipInput!</b></code>](/reference/graphql/types/inputs/assign-grid-ownership-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+App/grid, receiving user, tenure, and optional rental expiry.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridOwnership</b></code>](/reference/graphql/types/objects/grid-ownership.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The current first-class ownership record for a grid. Server player code always resolves its execution identity from this record.
