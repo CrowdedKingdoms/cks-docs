@@ -1,0 +1,68 @@
+---
+id: player-client-artifact
+title: PlayerClientArtifact
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A compiled CLIENT-target player artifact plus the metadata the browser broker needs to run it (player compute P3). Served only to the current grid owner who authored the version, holding run&#x005F;client&#x005F;code, when the app's admission mode admits the code. The bytes are the gas-injected wasm32-unknown-unknown module; clientFuelPerDispatch is the per-dispatch fuel budget the glue worker enforces locally.
+
+
+```graphql
+type PlayerClientArtifact {
+  versionId: String!
+  artifactHash: String!
+  artifactBase64: String!
+  sizeBytes: Int!
+  abiVersion: Int!
+  contractJson: String
+  clientFuelPerDispatch: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\} 
+The served version UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>artifactHash</b></code>](#artifact-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-hash\} 
+Content hash of the artifact (also the cache key stem).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>artifactBase64</b></code>](#artifact-base-64)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-base-64\} 
+The gas-injected client WASM artifact, base64-encoded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>sizeBytes</b></code>](#size-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#size-bytes\} 
+Artifact size in bytes (&#x003C;= 512 KiB).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\} 
+ABI version the artifact was built for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>contractJson</b></code>](#contract-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#contract-json\} 
+Declared client interop contract (bridge messages) as JSON, when the version pins one.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>clientFuelPerDispatch</b></code>](#client-fuel-per-dispatch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-fuel-per-dispatch\} 
+Per-dispatch client fuel budget from the resolved player policy; the broker's glue worker traps when a dispatch exceeds it.
+
+
+
+
+### Returned By
+
+[`playerComputeArtifact`](/reference/graphql/operations/queries/player-compute-artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -249,6 +249,46 @@ with `playerComputeSwitches(appId)` to list active switches (requires
 `view_compute_diagnostics`). Module-level disable remains
 `playerComputeSetEnabled`; listing scope arrives with the marketplace.
 
+## Presence gating and event lanes (P3)
+
+A server tick module runs **only while someone is inside its grid** — an empty
+world costs nothing, and re-entry reloads the module on the next scheduler
+pass. Invoke and event triggers are unaffected (they use the ephemeral path).
+`always_on` is not a trigger a player can request.
+
+In-grid **voxel and actor changes** are delivered to loaded modules and
+grid-scoped automations through the same fail-closed event filter as
+owner-container events: an event outside your grid, or for another app, is
+never delivered. Subscribe with a `grid_voxel_changed` / `grid_actor_changed`
+trigger.
+
+## Live coding (P3)
+
+Player code is written in an **in-grid live-coding panel** (a mountable
+CrowdyJS component, `mountLiveCoding`) rather than a separate tool. The loop:
+
+- **Server mods:** edit -> `playerComputeDeploy` -> the panel polls compile
+  status -> on success the module is enabled and its runs/logs stream into the
+  console. Hot reload swaps the module on the next scheduler pass and drops
+  in-memory guest state (persist across reloads with `state_set`).
+- **Client mods:** edit -> deploy with `target: CLIENT` -> the panel fetches
+  the artifact (`playerComputeArtifact`) and respawns the browser worker.
+
+The panel shows your quota and wallet meters live (units used vs the effective
+cap, remaining compiles, and the typed gate reason when paused), so you can
+see a mod's cost as you iterate. There is no separate live-coding permission —
+the panel is gated by the same `write_*_code` keys, and the
+`maxCompilesPerHour` quota governs the loop (a compile flood is refused with a
+retry-after; running modules are unaffected).
+
+### Draft mode
+
+Deploy with `draft: true` while iterating. A draft module runs for you, but
+its **spatial egress is suppressed server-side** — no other session in the
+grid observes its world effects. The filter lives in game-api, not the
+client, so it holds even against a modified page. Clear the flag (a normal
+deploy) to go live.
+
 ## Client target status
 
 P1 provides the client compile target, artifact schema, permissions, shared

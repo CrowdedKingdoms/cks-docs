@@ -29,6 +29,7 @@ input DeployPlayerComputeInput {
   sdkVersion: String
   abiVersion: Int
   tickHz: Float
+  draft: Boolean
 }
 ```
 
@@ -69,6 +70,10 @@ Guest ABI version. P1 supports ABI 0.
 
 #### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>tickHz</b></code>](#tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tick-hz\} 
 Optional server tick rate in Hz. Omit for invoke/event-only modules or CLIENT artifacts. Clamped by the effective player/app policy.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>draft</b></code>](#draft)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#draft\} 
+Deploy in draft mode (live-coding iteration): the module runs for its author but its spatial egress is suppressed server-side, so no other session in the grid observes its world effects. Omit or false for a normal deploy.
 
 
 

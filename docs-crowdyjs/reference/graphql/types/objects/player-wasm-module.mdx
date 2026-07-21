@@ -29,6 +29,7 @@ type PlayerWasmModule {
   authorOrgId: BigInt
   enabled: Boolean!
   currentVersionId: String
+  draft: Boolean!
   circuitState: String!
   lastError: String
   createdAt: DateTime!
@@ -73,6 +74,10 @@ Requested activation state. Actual execution also requires grid ownership, run p
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModule.<b>currentVersionId</b></code>](#current-version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#current-version-id\} 
 Currently deployed immutable version UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModule.<b>draft</b></code>](#draft)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#draft\} 
+Draft mode: the module runs for its author but its spatial egress is suppressed server-side (live-coding iteration).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModule.<b>circuitState</b></code>](#circuit-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#circuit-state\} 
