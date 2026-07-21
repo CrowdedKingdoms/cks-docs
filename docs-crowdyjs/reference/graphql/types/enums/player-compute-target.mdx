@@ -1,0 +1,43 @@
+---
+id: player-compute-target
+title: PlayerComputeTarget
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Execution target for player-authored Rust. SERVER runs as the grid owner in game-api; CLIENT runs as the actual player in the browser worker sandbox.
+
+
+```graphql
+enum PlayerComputeTarget {
+  SERVER
+  CLIENT
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeTarget.<b>SERVER</b></code>](#server) \{#server\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeTarget.<b>CLIENT</b></code>](#client) \{#client\} 
+
+
+
+
+
+### Member Of
+
+[`DeployPlayerComputeInput`](/reference/graphql/types/inputs/deploy-player-compute-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`PlayerWasmModuleVersion`](/reference/graphql/types/objects/player-wasm-module-version.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

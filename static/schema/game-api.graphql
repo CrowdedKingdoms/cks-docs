@@ -983,6 +983,49 @@ type GridGroupGrant {
 }
 
 """
+The current first-class ownership record for a grid. Server player code always resolves its execution identity from this record.
+"""
+type GridOwnership {
+  """UUID of the ownership history row."""
+  gridOwnershipId: String!
+  """Owned grid id."""
+  gridId: BigInt!
+  """App that contains the grid."""
+  appId: BigInt!
+  """Kind of current owner. P1 supports USER."""
+  ownerKind: GridOwnerKind!
+  """Numeric user/group/org id selected by ownerKind."""
+  ownerRef: BigInt!
+  """Permanent ownership or an expiring rental."""
+  tenure: GridTenure!
+  """
+  Audit origin of this ownership (for example studio_grant, transfer, or marketplace).
+  """
+  acquiredVia: String!
+  """When this ownership began."""
+  acquiredAt: DateTime!
+  """Rental expiry; null for permanent ownership."""
+  expiresAt: DateTime
+}
+
+"""
+Kind of principal holding grid title. P1 can assign USER owners; GROUP and ORG are schema-reserved for future shared ownership.
+"""
+enum GridOwnerKind {
+  USER
+  GROUP
+  ORG
+}
+
+"""
+Whether the current title is permanent ownership or an expiring rental.
+"""
+enum GridTenure {
+  OWNED
+  RENTED
+}
+
+"""
 A role within a group (team/channel). Carries the group-management permission keys it grants (e.g. manage_members), NOT world/runtime grid permissions.
 """
 type GroupRole {
@@ -2117,6 +2160,148 @@ type GameModelEventsConnection {
 }
 
 """
+A grid-bound player compute module. Runtime identity is never stored here; it resolves from the grid current owner at activation.
+"""
+type PlayerWasmModule {
+  """Module UUID."""
+  moduleId: String!
+  """Owning app id."""
+  appId: BigInt!
+  """Confining grid id."""
+  gridId: BigInt!
+  """Module name within the grid."""
+  name: String!
+  """Module description."""
+  description: String
+  """Personal author user id; null for org-owned code."""
+  authorUserId: BigInt
+  """Authoring org id; null for personally-authored code."""
+  authorOrgId: BigInt
+  """
+  Requested activation state. Actual execution also requires grid ownership, run permission, admission, and a successful version.
+  """
+  enabled: Boolean!
+  """Currently deployed immutable version UUID."""
+  currentVersionId: String
+  """closed, open, or half_open."""
+  circuitState: String!
+  """Last runtime/transfer error."""
+  lastError: String
+  """Creation time."""
+  createdAt: DateTime!
+  """Last update time."""
+  updatedAt: DateTime!
+}
+
+"""
+An immutable player-code source version. sourceFilesJson is returned only to its personal author (org-owned source requires the future org-authoring path) or when openSource is true.
+"""
+type PlayerWasmModuleVersion {
+  """Version UUID."""
+  versionId: String!
+  """Parent module UUID."""
+  moduleId: String!
+  """Monotonic version number."""
+  versionNo: Int!
+  """Compile target."""
+  target: PlayerComputeTarget!
+  """
+  JSON source map. Null for non-authors of closed-source code; P1 exposes no moderation override.
+  """
+  sourceFilesJson: String
+  """Whether anyone may read this immutable version source."""
+  openSource: Boolean!
+  """pending, compiling, succeeded, or failed."""
+  compileStatus: String!
+  """Compiler log; visible to the author."""
+  compileLog: String
+  """Final instrumented/optimized artifact size."""
+  compiledSizeBytes: BigInt
+  """Version creation time."""
+  createdAt: DateTime!
+}
+
+"""
+Execution target for player-authored Rust. SERVER runs as the grid owner in game-api; CLIENT runs as the actual player in the browser worker sandbox.
+"""
+enum PlayerComputeTarget {
+  SERVER
+  CLIENT
+}
+
+"""
+A flexible player-owned model container confined to exactly one app, grid, and current owner.
+"""
+type PlayerModelContainer {
+  """Player container UUID."""
+  containerId: String!
+  """App containing the container."""
+  appId: BigInt!
+  """Grid confining the container."""
+  gridId: BigInt!
+  """Owning user. Always the grid owner at creation time."""
+  ownerUserId: BigInt!
+  """Flexible instance kit key; this is not a studio-authored type."""
+  typeKey: String!
+  """Optional player-facing name."""
+  displayName: String
+  """JSON object containing untyped container state."""
+  stateJson: String!
+  """JSON object containing all separately upserted properties."""
+  propertiesJson: String!
+  """Container creation time."""
+  createdAt: DateTime!
+  """Most recent container or property update time."""
+  updatedAt: DateTime!
+}
+
+"""
+A player-owned automation confined to one app and grid. Trigger/action JSON has been structurally validated.
+"""
+type PlayerAutomation {
+  """Player automation UUID."""
+  automationId: String!
+  """App containing the automation."""
+  appId: BigInt!
+  """Grid confining the automation."""
+  gridId: BigInt!
+  """Owning user. Forced from current grid ownership at creation."""
+  ownerUserId: BigInt!
+  """Owner-local automation name."""
+  name: String!
+  """Optional description."""
+  description: String
+  """Whether the automation may dispatch."""
+  enabled: Boolean!
+  """Validated trigger as canonical JSON."""
+  triggerJson: String!
+  """Validated action as canonical JSON."""
+  actionJson: String!
+  """Maximum runs per rolling minute."""
+  maxRunsPerMinute: Int!
+  """Failures required to open the circuit."""
+  failureThreshold: Int!
+  """Open-circuit cooldown in milliseconds."""
+  cooldownMs: Int!
+  """Circuit state: closed, open, or half_open."""
+  circuitState: String!
+  """Current consecutive failure count."""
+  consecutiveFailures: Int!
+  """Time at which an open circuit may retry."""
+  pausedUntil: DateTime
+  """Most recent dispatch error."""
+  lastError: String
+  """Most recent dispatch time."""
+  lastRunAt: DateTime
+  """Next scheduled dispatch time."""
+  nextRunAt: DateTime
+  """Automation creation time."""
+  createdAt: DateTime!
+  """Most recent automation update time."""
+  updatedAt: DateTime!
+}
+
+"""
 Arbitrary-precision signed integer (used for 64-bit ids and chunk coordinates such as appId, userId and chunk x/y/z). ALWAYS transmitted as a base-10 decimal STRING in BOTH directions — send it quoted (e.g. "1024", "-5") and read it back as a string; never use a raw JSON number, because large values overflow IEEE-754 doubles. The server rejects any value that is not a valid integer string.
 """
 scalar BigInt
@@ -2355,6 +2540,15 @@ type Query {
     """
     after: String
   ): VoxelUpdateHistoryConnection!
+  """
+  Read the current first-class ownership record for a grid. Requires authentication. Returns null when the grid has no current/unexpired owner. Player server code always resolves its execution identity from this record.
+  """
+  gridOwnership(
+    """App that contains the grid."""
+    appId: BigInt!
+    """Grid whose current title to read."""
+    gridId: BigInt!
+  ): GridOwnership
   """
   Read one user's effective (materialized) runtime permission keys on a grid — the flattened union of direct and group-derived grants that Buddy enforces, with expired grants excluded. Use this to see what a user can actually do. To inspect the underlying inputs instead, use `gridGroupGrants` (group grants) and `gridPermissionLimits` (the whitelist). Requires app-admin ('manage_apps').
   """
@@ -2824,6 +3018,49 @@ type Query {
     """
     appId: BigInt!
   ): GameClientBootstrap!
+  """
+  List player modules the caller authored or that are installed on grids they currently own. Requires a valid app token; closed source is never included here.
+  """
+  playerComputeMyModules(
+    """App whose player modules to list."""
+    appId: BigInt!
+  ): [PlayerWasmModule!]!
+  """
+  List immutable versions for one player module. Source and compile logs are returned only to the personal author, or source when that version is open-source. There is intentionally no studio/operator moderation override.
+  """
+  playerComputeVersions(
+    """App containing the module."""
+    appId: BigInt!
+    """Grid containing the module."""
+    gridId: BigInt!
+    """Module name within the grid."""
+    name: String!
+  ): [PlayerWasmModuleVersion!]!
+  """
+  List flexible player-model containers owned by the caller in one currently owned grid. Requires an app-scoped token and current grid ownership; never returns app-wide or foreign-owner rows.
+  """
+  playerModelContainers(
+    """App containing the grid; must match the app-scoped token."""
+    appId: BigInt!
+    """Grid currently owned by the caller."""
+    gridId: BigInt!
+  ): [PlayerModelContainer!]!
+  """
+  Return one caller-owned player-model container in the specified app/grid, or null when it is absent or outside that owner scope. Requires current grid ownership.
+  """
+  playerModelContainer(
+    """App, grid, and player container UUID to read."""
+    input: PlayerModelContainerRefInput!
+  ): PlayerModelContainer
+  """
+  List only the caller-owned player automations in one currently owned grid. Requires an app-scoped token; no app-wide listing exists.
+  """
+  playerAutomations(
+    """App containing the grid; must match the app-scoped token."""
+    appId: BigInt!
+    """Grid currently owned by the caller."""
+    gridId: BigInt!
+  ): [PlayerAutomation!]!
 }
 
 input ActorFilterInput {
@@ -2986,6 +3223,18 @@ input GmPropertyPredicateInput {
   op: String!
   """JSON-encoded comparison value (e.g. '"enemy"', 'true', '10')."""
   valueJson: String!
+}
+
+"""
+Identify one player-owned model container within an app and grid. The server also forces the current caller as owner.
+"""
+input PlayerModelContainerRefInput {
+  """App containing the owned grid."""
+  appId: BigInt!
+  """Grid that confines the container."""
+  gridId: BigInt!
+  """Player container UUID."""
+  containerId: String!
 }
 
 type Mutation {
@@ -3184,6 +3433,20 @@ type Mutation {
   Reverts every voxel edit made by `userId` in `appId` between `from` and `to`, returning one RollbackVoxelEventResult per affected voxel (`applied` tells you whether each was actually changed). DEFAULTS to dryRun=true, which only PREVIEWS the planned reversions without writing; pass dryRun=false to actually apply them (DESTRUCTIVE — mutates world state). Requires a valid bearer token AND the `manage_apps` permission on the org that owns `appId` (super admins bypass).
   """
   rollbackVoxelUpdates(input: RollbackVoxelUpdatesInput!): [RollbackVoxelEventResult!]! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "input.appId")
+  """
+  Assign first-class title for an unowned grid to one user. P1 studio/bootstrap path; marketplace acquisition supersedes it later. Requires app-admin ('manage_apps'). Assigns title only: permissions must be granted explicitly.
+  """
+  assignGridOwnership(
+    """App/grid, receiving user, tenure, and optional rental expiry."""
+    input: AssignGridOwnershipInput!
+  ): GridOwnership! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "input.appId")
+  """
+  Transfer grid title to another user. The current user owner or an app admin may transfer. DESTRUCTIVE/SECURITY-SENSITIVE: atomically disables every player module on the grid pending new-owner consent, wipes module state, removes the old owner direct grid grants, and closes the old title row. The new owner receives no implicit permissions.
+  """
+  transferGridOwnership(
+    """App/grid, new owner user id, tenure, and optional rental expiry."""
+    input: TransferGridOwnershipInput!
+  ): GridOwnership!
   """
   Create a grid: a named 3D box of chunks that runtime/world (voxel) permissions are scoped to. The box must fit within one of the app's grid assignments (its buildable regions); it MAY be nested inside a broader containing grid such as the open-by-default world grid, but must not partially overlap a peer grid. Requires app-admin ('manage_apps'). Returns a hybrid response — on success `grid` is populated and `error` is NO_ERROR; on failure `grid` is null and `error` is a UDP-style error code (e.g. NO_MATCHING_GRID_ASSIGNMENT, GRID_OUTSIDE_ASSIGNMENT, GRID_OVERLAPS_EXISTING, GRID_ALREADY_EXISTS).
   """
@@ -3854,6 +4117,85 @@ type Mutation {
     """
     input: ChannelMessageInput!
   ): Boolean!
+  """
+  Deploy player-authored Rust into a grid the caller currently owns. Requires the target's write permission at both app-tier and grid ACL layers. One call creates/updates the module and publishes an immutable pending version; the shared compiler builds it asynchronously. Authoring is never admission-gated, but only the original author may replace closed source.
+  """
+  playerComputeDeploy(
+    """
+    Owned grid, module metadata, SERVER/CLIENT target, source map, and SDK/ABI pins.
+    """
+    input: DeployPlayerComputeInput!
+  ): PlayerWasmModuleVersion!
+  """
+  Enable or disable a player module. Enabling requires current grid ownership, the target's run permission, a successful compile, and admission when the app uses strict ALLOW_LIST mode. Write permission is not sufficient to run code.
+  """
+  playerComputeSetEnabled(
+    """App containing the module."""
+    appId: BigInt!
+    """Owned grid containing the module."""
+    gridId: BigInt!
+    """Module name within the grid."""
+    name: String!
+    """True to request activation; false to stop execution."""
+    enabled: Boolean!
+  ): PlayerWasmModule!
+  """
+  Delete a self-authored player module and its source versions. Only the code author may delete it, and they must still own the target grid. Returns false when no matching module exists.
+  """
+  playerComputeDelete(
+    """App containing the module."""
+    appId: BigInt!
+    """Owned grid containing the module."""
+    gridId: BigInt!
+    """Module name within the grid."""
+    name: String!
+  ): Boolean!
+  """
+  Create a flexible player-model instance in a currently owned grid. The server forces ownerUserId to the caller; this cannot author studio types or app-wide rows.
+  """
+  playerModelCreateContainer(
+    """
+    App/grid scope plus optional flexible type key, display name, and JSON object state.
+    """
+    input: CreatePlayerModelContainerInput!
+  ): PlayerModelContainer!
+  """
+  Delete one caller-owned player-model container and its properties from the specified currently owned grid. Destructive; foreign or absent IDs return NOT_FOUND.
+  """
+  playerModelDeleteContainer(
+    """App/grid scope and player container UUID to delete."""
+    input: PlayerModelContainerRefInput!
+  ): Boolean!
+  """
+  Upsert one arbitrary JSON property on a caller-owned player-model container. Requires current ownership of the specified grid.
+  """
+  playerModelSetProperty(
+    """App/grid/container scope, property key, and JSON-encoded value."""
+    input: SetPlayerModelPropertyInput!
+  ): PlayerModelContainer!
+  """
+  Create a disabled player automation confined to the caller and one currently owned grid. Strict trigger/action validation rejects selectors, supplied identities, and app-wide shapes.
+  """
+  playerAutomationCreate(
+    """
+    App/grid scope, name, strict trigger/action JSON, and optional circuit limits.
+    """
+    input: CreatePlayerAutomationInput!
+  ): PlayerAutomation!
+  """
+  Enable or disable one caller-owned player automation. Enabling requires effective run_server_code and, in strict mode, author admission. Interval/cron triggers compute the first due time; the P1 dispatcher executes scheduled studio-model actions while event delivery and player-compute actions remain typed pending paths.
+  """
+  playerAutomationSetEnabled(
+    """App/grid/automation scope and desired enabled state."""
+    input: SetPlayerAutomationEnabledInput!
+  ): PlayerAutomation!
+  """
+  Delete one caller-owned player automation from the specified currently owned grid. Destructive; recorded run rows remain for audit.
+  """
+  playerAutomationDelete(
+    """App/grid scope and player automation UUID to delete."""
+    input: PlayerAutomationRefInput!
+  ): Boolean!
 }
 
 input UpdateGamertagInput {
@@ -4117,6 +4459,32 @@ input RollbackVoxelUpdatesInput {
   Optional idempotency key. Recommended for retries: replaying with the same key and identical input returns the first result instead of re-applying; the same key with different input returns IDEMPOTENCY_CONFLICT. Keys expire after 24h.
   """
   idempotencyKey: String
+}
+
+input AssignGridOwnershipInput {
+  """App that contains the grid."""
+  appId: BigInt!
+  """Grid to assign."""
+  gridId: BigInt!
+  """User id receiving title. P1 only permits user owners."""
+  ownerUserId: BigInt!
+  """OWNED (default) or RENTED."""
+  tenure: GridTenure = OWNED
+  """Required for RENTED tenure; omitted for permanent ownership."""
+  expiresAt: DateTime
+}
+
+input TransferGridOwnershipInput {
+  """App that contains the grid."""
+  appId: BigInt!
+  """Grid whose title transfers."""
+  gridId: BigInt!
+  """User id receiving title."""
+  newOwnerUserId: BigInt!
+  """New owner tenure."""
+  tenure: GridTenure = OWNED
+  """Required when the new tenure is RENTED."""
+  expiresAt: DateTime
 }
 
 """
@@ -5227,6 +5595,119 @@ input ChannelMessageInput {
   Client-assigned correlation id for this datagram: a uint8 (0-255) that wraps at gameClientBootstrap.sequenceNumberModulo (256); defaults to 0 if omitted. For CORRELATION ONLY — it is NOT an idempotency key and the server does not dedupe replays. Echoed on any GenericErrorResponse for this send, delivered on the udpNotifications subscription.
   """
   sequenceNumber: Int
+}
+
+input DeployPlayerComputeInput {
+  """App containing the owned grid."""
+  appId: BigInt!
+  """Owned grid that confines server execution."""
+  gridId: BigInt!
+  """Lowercase crate-style module name, unique within the grid."""
+  name: String!
+  """Optional player-facing module description."""
+  description: String
+  """SERVER or CLIENT compile target."""
+  target: PlayerComputeTarget!
+  """
+  JSON object mapping Cargo.toml and src/*.rs relative paths to source. P1 player caps: at most 8 files, 64 KiB/file, 256 KiB total.
+  """
+  sourceFilesJson: String!
+  """Pinned crowdy-compute-sdk version. Defaults to 0.1.5."""
+  sdkVersion: String = "0.1.5"
+  """Guest ABI version. P1 supports ABI 0."""
+  abiVersion: Int = 0
+  """
+  Optional server tick rate in Hz. Omit for invoke/event-only modules or CLIENT artifacts. Clamped by the effective player/app policy.
+  """
+  tickHz: Float
+}
+
+"""
+Create a flexible player-owned model container inside one grid. The caller must currently own the grid; owner identity cannot be supplied.
+"""
+input CreatePlayerModelContainerInput {
+  """App containing the owned grid."""
+  appId: BigInt!
+  """Grid that confines the container."""
+  gridId: BigInt!
+  """
+  Flexible instance kit key. Defaults to 'PlayerData'; this does not author a studio model type.
+  """
+  typeKey: String = "PlayerData"
+  """Optional player-facing name, unique within the owner/grid/type tuple."""
+  displayName: String
+  """Optional JSON object stored as untyped container state."""
+  stateJson: String
+}
+
+"""
+Set one arbitrary JSON property on a player-owned container. The caller must currently own the specified grid and container.
+"""
+input SetPlayerModelPropertyInput {
+  """App containing the owned grid."""
+  appId: BigInt!
+  """Grid that confines the container."""
+  gridId: BigInt!
+  """Player container UUID."""
+  containerId: String!
+  """Property key, upserted within the container."""
+  propertyKey: String!
+  """JSON-encoded property value. Any valid JSON value is accepted."""
+  valueJson: String!
+}
+
+"""
+Create a grid-confined player automation. Trigger and action are strict JSON shapes; owner/app/grid selectors cannot be supplied.
+"""
+input CreatePlayerAutomationInput {
+  """App containing the owned grid."""
+  appId: BigInt!
+  """Grid that confines the automation."""
+  gridId: BigInt!
+  """Name unique for the current owner in this grid."""
+  name: String!
+  """Optional description."""
+  description: String
+  """
+  Strict trigger JSON. Schedule: {"kind":"schedule","scheduleKind":"interval","intervalMs":2000} or cron with cronExpr. Event: {"kind":"event","eventKind":"owner_container_changed|grid_actor_changed|grid_voxel_changed|compute_event"}; compute_event may include eventName.
+  """
+  triggerJson: String!
+  """
+  Strict action JSON. Use {"kind":"studio_model_invoke","functionName":"...","selfContainerId":"...","params":{}} or {"kind":"player_compute_invoke","moduleName":"...","exportName":"...","params":{}}. Selectors and caller identity are forbidden.
+  """
+  actionJson: String!
+  """Per-automation run limit per rolling minute. Default 60; minimum 1."""
+  maxRunsPerMinute: Int = 60
+  """Consecutive failures before the circuit opens. Default 5; minimum 1."""
+  failureThreshold: Int = 5
+  """Circuit cooldown in milliseconds. Default 60000; minimum 1."""
+  cooldownMs: Int = 60000
+}
+
+"""
+Enable or disable one player automation. Enabling a schedule computes its next due time.
+"""
+input SetPlayerAutomationEnabledInput {
+  """App containing the owned grid."""
+  appId: BigInt!
+  """Grid that confines the automation."""
+  gridId: BigInt!
+  """Player automation UUID."""
+  automationId: String!
+  """Whether the automation may dispatch."""
+  enabled: Boolean!
+}
+
+"""
+Identify one player automation within its app and grid. The server additionally forces the current caller as owner.
+"""
+input PlayerAutomationRefInput {
+  """App containing the owned grid."""
+  appId: BigInt!
+  """Grid that confines the automation."""
+  gridId: BigInt!
+  """Player automation UUID."""
+  automationId: String!
 }
 
 type Subscription {

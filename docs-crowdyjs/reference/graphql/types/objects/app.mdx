@@ -40,6 +40,7 @@ type App {
   reservedEgressBytesPerSec: BigInt!
   runtimeStatus: String!
   runtimeDenialReason: String
+  codeAdmissionMode: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   org: Organization
@@ -127,6 +128,10 @@ Shared-environment runtime gate, mirrored to the game DB and enforced by game-ap
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>runtimeDenialReason</b></code>](#runtime-denial-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#runtime-denial-reason\} 
 When runtimeStatus is not "active", why the runtime is gated: "free&#x005F;allowance", "insufficient&#x005F;funds", "spend&#x005F;cap", or "subscription&#x005F;lapsed". Null when active.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>codeAdmissionMode</b></code>](#code-admission-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code-admission-mode\}
+Player-code censorship mode: "implicit&#x005F;allow" (default/off) or "allow&#x005F;list" (strict admission of every running artifact, including self-authored code).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 

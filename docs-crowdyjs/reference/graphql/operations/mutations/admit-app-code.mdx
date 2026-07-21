@@ -1,0 +1,39 @@
+---
+id: admit-app-code
+title: admitAppCode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Admit one player-code listing, author, or authoring org to an app's strict allow list. Requires 'manage&#x005F;compute'. Idempotency is explicit: an identical active entry returns a conflict instead of silently creating duplicates. SIDE EFFECTS: audit row + replica sync.
+
+
+```graphql
+admitAppCode(
+  input: AdmitAppCodeInput!
+): AppCodeAdmission!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>admitAppCode.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AdmitAppCodeInput!</b></code>](/reference/graphql/types/inputs/admit-app-code-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+App, subject kind/ref, and optional version range to admit.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppCodeAdmission</b></code>](/reference/graphql/types/objects/app-code-admission.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An active or revoked app code-admission entry. Admission controls execution only; it never grants source access.

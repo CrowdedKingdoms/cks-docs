@@ -1,0 +1,39 @@
+---
+id: transfer-grid-ownership
+title: transferGridOwnership
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Transfer grid title to another user. The current user owner or an app admin may transfer. DESTRUCTIVE/SECURITY-SENSITIVE: atomically disables every player module on the grid pending new-owner consent, wipes module state, removes the old owner direct grid grants, and closes the old title row. The new owner receives no implicit permissions.
+
+
+```graphql
+transferGridOwnership(
+  input: TransferGridOwnershipInput!
+): GridOwnership!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>transferGridOwnership.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TransferGridOwnershipInput!</b></code>](/reference/graphql/types/inputs/transfer-grid-ownership-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+App/grid, new owner user id, tenure, and optional rental expiry.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridOwnership</b></code>](/reference/graphql/types/objects/grid-ownership.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The current first-class ownership record for a grid. Server player code always resolves its execution identity from this record.

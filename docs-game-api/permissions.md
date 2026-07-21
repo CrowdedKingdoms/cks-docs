@@ -40,10 +40,16 @@ There is no "permissions off" mode.
 
 To keep the common case effortless, a **new app is open by default**:
 
-- Creating an app provisions a **default tier** that grants **all** runtime
-  permissions (`access`, `teleport`, `update_voxel_data`, `use_voice_chat`).
+- Creating an app provisions a **default tier** that grants the explicit legacy
+  gameplay allowlist (`access`, `teleport`, `update_voxel_data`,
+  `use_voice_chat`).
 - The app gets a **default grid that spans the whole world**, and any player you
-  grant app access is **automatically granted all permissions on that grid**.
+  grant app access is automatically granted those same legacy keys on that
+  grid.
+
+Player-code permissions are deliberately excluded. Adding new runtime keys
+does not widen the default tier/grid automatically; server/client code remains
+opt-in.
 
 So a fresh app behaves like an open sandbox: any entitled player can move, build,
 and use voice anywhere — no manual grid or grant setup required. You only do the
@@ -58,8 +64,13 @@ Grid and tier permissions use these runtime keys:
 | Key | Allows |
 | --- | ------ |
 | `access` | Entering / moving / sending events in an area |
+| `teleport` | Teleporting within the app (wire enforcement may depend on the client path) |
 | `update_voxel_data` | Editing voxels (building) |
 | `use_voice_chat` | Voice audio |
+| `write_server_code` | Authoring/deploying server code in owned grids |
+| `run_server_code` | Running admitted server code in owned grids |
+| `write_client_code` | Authoring browser-target code |
+| `run_client_code` | Running admitted browser-target code |
 
 Query the Management API **`runtimePermissions`** for the live catalog when
 building a permission picker in your studio tools.
@@ -117,5 +128,7 @@ a chunk) to see exactly what a player has where.
 - [Teams](teams) — teams, roles, delegation, and assigning teams to grids.
 - [Channels](channels) — app-wide message channels, the `send_messages` role,
   and publishing/receiving channel messages over the realtime UDP path.
+- [Player code and owned grids](player-code) — first-class grid title, the
+  four player-code keys, source privacy, and strict code admission.
 - [Avatar state](avatar-state) and [Actor state](actor-state) — owner-exclusive
   write / public read for character data.

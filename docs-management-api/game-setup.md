@@ -73,6 +73,45 @@ Tier operations require the **`manage_access_tiers`** permission. Edit or retire
 
 > **Opting out of open‑by‑default:** if you do **not** want anonymous/auto access, remove (or never create) a tier that is both `isFree` **and** `isDefault`. Players then only get access through an explicit grant (below).
 
+The four player-code keys (`write_server_code`, `run_server_code`,
+`write_client_code`, `run_client_code`) are **not** in the generated default
+tier. Add them only to tiers intended for authors or mod users; see
+[Player code and owned grids](/game-api/player-code).
+
+### c.1 (Optional) Censor player code with strict admission
+
+New apps default to `IMPLICIT_ALLOW` (censorship off). To require studio
+approval for every running player artifact:
+
+```graphql
+mutation {
+  setAppCodeAdmissionMode(appId: "APP_ID", mode: ALLOW_LIST)
+}
+```
+
+`ALLOW_LIST` is strict: self-authored code in its author's own grid still waits
+for the code, author, or authoring org to be admitted. Deploy and compile remain
+available; only execution is gated.
+
+```graphql
+mutation {
+  admitAppCode(input: {
+    appId: "APP_ID"
+    subjectKind: AUTHOR
+    subjectRef: "PLAYER_USER_ID"
+  }) {
+    admissionId
+    admittedAt
+  }
+}
+```
+
+Use `appCodeAdmissions` to inspect active/history rows and
+`revokeAppCodeAdmission` to drain admitted code. Writes require
+`manage_compute`; reads require `view_compute_diagnostics`. Admission never
+grants source access — closed source remains author-only with no moderation
+override.
+
 ### d. Choose where the app runs
 
 Your app needs a **Game API** to serve runtime traffic. Today you provision a **developer sandbox** and link your app to it; that gives the app a `gameApiUrl` and turns on split‑mode routing. See **[Dedicated environments](/management-api/dedicated-environments)** for the step‑by‑step flow.

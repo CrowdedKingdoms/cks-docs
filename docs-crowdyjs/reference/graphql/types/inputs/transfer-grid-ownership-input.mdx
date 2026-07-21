@@ -1,0 +1,58 @@
+---
+id: transfer-grid-ownership-input
+title: TransferGridOwnershipInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input TransferGridOwnershipInput {
+  appId: BigInt!
+  gridId: BigInt!
+  newOwnerUserId: BigInt!
+  tenure: GridTenure
+  expiresAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>TransferGridOwnershipInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App that contains the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TransferGridOwnershipInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Grid whose title transfers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TransferGridOwnershipInput.<b>newOwnerUserId</b></code>](#new-owner-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#new-owner-user-id\} 
+User id receiving title.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TransferGridOwnershipInput.<b>tenure</b></code>](#tenure)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GridTenure</b></code>](/reference/graphql/types/enums/grid-tenure.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#tenure\} 
+New owner tenure.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TransferGridOwnershipInput.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+Required when the new tenure is RENTED.
+
+
+
+
+### Member Of
+
+[`transferGridOwnership`](/reference/graphql/operations/mutations/transfer-grid-ownership.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

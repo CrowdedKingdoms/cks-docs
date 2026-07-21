@@ -36,6 +36,12 @@ All operations live on the **Game API** GraphQL endpoint. Authoring requires
 the org **`manage_compute`** permission; monitoring requires
 **`view_compute_diagnostics`** (see [Permissions](#permissions)).
 
+This page describes **studio modules**: trusted app-scoped code authored by
+org members. If players author or install code, use
+[Player code and owned grids](player-code): its source is stored separately,
+server execution is restricted to one owned grid and runs as that grid owner,
+and write/run permissions plus app admission are checked independently.
+
 ## When to use which
 
 | | Game Models + Automations | Compute Modules |

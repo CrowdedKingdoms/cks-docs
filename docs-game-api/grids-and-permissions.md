@@ -22,11 +22,11 @@ key from their tier **and** a grid (covering that chunk) where they hold the key
 
 You don't have to build this from scratch. A new app starts **open by default**:
 it gets a **default grid spanning the whole world**, and every player you grant
-app access is **auto-granted all keys on it** (see
+app access is auto-granted the four legacy gameplay keys on it (see
 [Permissions overview → Open by default](permissions#open-by-default)). The grids
 and grants below are how you **layer restrictions or finer ownership** on top of
 that open baseline — e.g. carve out a safe zone, or hand one player their own
-plot.
+plot. Player-code keys are never auto-granted.
 
 ## Permission keys
 
@@ -37,6 +37,10 @@ Grid permissions reuse the runtime permission keys:
 | `access` | Entering / moving / sending events in the region |
 | `update_voxel_data` | Editing voxels (building) in the region |
 | `use_voice_chat` | Voice audio in the region |
+| `write_server_code` | Authoring/deploying server Rust on a grid the player owns |
+| `run_server_code` | Activating admitted server code in an owned grid |
+| `write_client_code` | Authoring browser-target Rust |
+| `run_client_code` | Running admitted browser artifacts |
 
 Query the Management API **`runtimePermissions`** for the catalog when building a
 key picker in your studio UI.
@@ -46,6 +50,19 @@ key picker in your studio UI.
 A **grid** is an axis-aligned box of chunks inside one of your app's world
 bounds. A grid can be as large as a region or as small as a **single chunk** —
 so you can give one player control of exactly one chunk.
+
+### First-class ownership
+
+Permission grants answer "what may this user do here?" Ownership answers
+"whose grid is this, and whose identity/budget does its server code use?"
+They are separate. `gridOwnership` reads current title;
+`assignGridOwnership` is the P1 studio/bootstrap assignment path; and
+`transferGridOwnership` transfers title with safety actions (disable modules,
+wipe private module state, remove old direct grants) in the same transaction.
+
+Owning a grid grants no permissions by itself. A player still needs the
+appropriate tier + grid keys. See
+[Player code and owned grids](player-code) for the runtime model.
 
 ```graphql
 mutation {

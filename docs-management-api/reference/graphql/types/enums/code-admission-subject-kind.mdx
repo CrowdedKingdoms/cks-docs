@@ -1,0 +1,48 @@
+---
+id: code-admission-subject-kind
+title: CodeAdmissionSubjectKind
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The identity admitted by an app code allow-list entry: one code listing, one author user, or one authoring organization.
+
+
+```graphql
+enum CodeAdmissionSubjectKind {
+  CODE
+  AUTHOR
+  ORG
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CodeAdmissionSubjectKind.<b>CODE</b></code>](#code) \{#code\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CodeAdmissionSubjectKind.<b>AUTHOR</b></code>](#author) \{#author\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CodeAdmissionSubjectKind.<b>ORG</b></code>](#org) \{#org\} 
+
+
+
+
+
+### Member Of
+
+[`AdmitAppCodeInput`](/reference/graphql/types/inputs/admit-app-code-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`AppCodeAdmission`](/reference/graphql/types/objects/app-code-admission.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -566,6 +566,10 @@ type App {
   When runtimeStatus is not "active", why the runtime is gated: "free_allowance", "insufficient_funds", "spend_cap", or "subscription_lapsed". Null when active.
   """
   runtimeDenialReason: String
+  """
+  Player-code censorship mode: "implicit_allow" (default/off) or "allow_list" (strict admission of every running artifact, including self-authored code).
+  """
+  codeAdmissionMode: String!
   """Timestamp when the app was created."""
   createdAt: DateTime!
   """Timestamp when the app was last updated."""
@@ -642,6 +646,39 @@ type AppsConnection {
   Total matching records across all pages, when known (null for sources that do not compute a total).
   """
   totalCount: Int
+}
+
+"""
+An active or revoked app code-admission entry. Admission controls execution only; it never grants source access.
+"""
+type AppCodeAdmission {
+  """UUID of this admission record."""
+  admissionId: String!
+  """Numeric app id whose code-admission policy owns this entry."""
+  appId: BigInt!
+  """Whether this entry admits code, an author, or an org."""
+  subjectKind: CodeAdmissionSubjectKind!
+  """Stable id of the admitted subject (listing UUID, user id, or org id)."""
+  subjectRef: String!
+  """
+  Optional version-range expression. Null admits all versions; capability-widening updates still require re-review.
+  """
+  versionRange: String
+  """Numeric user id of the org member who admitted the subject."""
+  admittedBy: BigInt!
+  """When the entry was admitted."""
+  admittedAt: DateTime!
+  """When the entry was revoked; null while active."""
+  revokedAt: DateTime
+}
+
+"""
+The identity admitted by an app code allow-list entry: one code listing, one author user, or one authoring organization.
+"""
+enum CodeAdmissionSubjectKind {
+  CODE
+  AUTHOR
+  ORG
 }
 
 """
@@ -2682,6 +2719,22 @@ type Query {
     orgSlug: String!
   ): [App!]!
   """
+  Read an app's player-code admission mode. Requires 'view_compute_diagnostics'. IMPLICIT_ALLOW (the default) admits lawful player code without curation; ALLOW_LIST requires every running server/client artifact, including self-authored code, to match an active code, author, or org admission.
+  """
+  appCodeAdmissionMode(
+    """Numeric app id whose code-admission mode to read."""
+    appId: BigInt!
+  ): CodeAdmissionMode! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
+  """
+  List an app's player-code admission entries, newest first. Requires 'view_compute_diagnostics'. By default returns active entries only; includeRevoked adds audit-visible revoked rows. Admission controls execution, never source visibility.
+  """
+  appCodeAdmissions(
+    """Numeric app id whose admission entries to list."""
+    appId: BigInt!
+    """Include revoked historical entries when true."""
+    includeRevoked: Boolean = false
+  ): [AppCodeAdmission!]! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
+  """
   Public listing of an app's access tiers (the free/paid bundles of runtime permissions), ordered by tierOrder ascending. PUBLIC: no authentication required. Powers the marketplace app detail / pricing page. Includes tiers of all statuses; inspect AppAccessTier.status to skip archived tiers.
   """
   appAccessTiers(
@@ -3260,6 +3313,14 @@ input AppMarketplaceFilterInput {
   orgSlug: String
 }
 
+"""
+Controls player-code censorship for an app. IMPLICIT_ALLOW admits lawful code by default; ALLOW_LIST requires every code target, including self-authored code, to match an active code/author/org admission.
+"""
+enum CodeAdmissionMode {
+  IMPLICIT_ALLOW
+  ALLOW_LIST
+}
+
 input CheckoutFilterInput {
   """Only return checkouts using this payment provider."""
   provider: PaymentProvider
@@ -3614,6 +3675,31 @@ type Mutation {
     """New visibility to set (PUBLIC, UNLISTED, or PRIVATE)."""
     visibility: AppVisibility!
   ): App! @requiresPermission(scope: "super_admin", permission: "is_super_admin")
+  """
+  Set an app's player-code censorship mode. Requires 'manage_compute'. SIDE EFFECTS: writes an immutable audit row and replica-syncs the mode to game-api. Switching to ALLOW_LIST is strict: unadmitted code (including self-authored code) drains at the runtime activation gate; deploy/compile remain allowed.
+  """
+  setAppCodeAdmissionMode(
+    """Numeric app id whose admission mode to change."""
+    appId: BigInt!
+    """New admission mode (IMPLICIT_ALLOW or ALLOW_LIST)."""
+    mode: CodeAdmissionMode!
+  ): CodeAdmissionMode! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "appId")
+  """
+  Admit one player-code listing, author, or authoring org to an app's strict allow list. Requires 'manage_compute'. Idempotency is explicit: an identical active entry returns a conflict instead of silently creating duplicates. SIDE EFFECTS: audit row + replica sync.
+  """
+  admitAppCode(
+    """App, subject kind/ref, and optional version range to admit."""
+    input: AdmitAppCodeInput!
+  ): AppCodeAdmission! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "input.appId")
+  """
+  Revoke an active player-code admission. Requires 'manage_compute'. SIDE EFFECTS: audit row + replica sync; game-api drains affected server modules and blocks client artifact fetches on the next admission refresh.
+  """
+  revokeAppCodeAdmission(
+    """Numeric app id that owns the admission."""
+    appId: BigInt!
+    """UUID of the active admission to revoke."""
+    admissionId: String!
+  ): AppCodeAdmission! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "appId")
   """
   Create a new access tier (a free/paid bundle of runtime permissions) for an app. Requires the 'manage_access_tiers' permission on the app (input.appId); super admins bypass. SIDE EFFECTS: validates the tier's permission keys against runtimePermissions and notifies the game API so Buddy sees the new tier. Does NOT grant the tier to any user.
   """
@@ -4160,6 +4246,19 @@ input UpdateAppInput {
   New JSON-encoded marketplace metadata string, replacing the existing value (see App.metadata). Omit to leave unchanged.
   """
   metadata: String
+}
+
+input AdmitAppCodeInput {
+  """Numeric app id whose allow list receives this entry."""
+  appId: BigInt!
+  """Admit one code listing, author user, or authoring org."""
+  subjectKind: CodeAdmissionSubjectKind!
+  """
+  Stable id of the subject (listing UUID, numeric user id, or numeric org id).
+  """
+  subjectRef: String!
+  """Optional version-range expression. Omit to admit all current versions."""
+  versionRange: String
 }
 
 """Input for creating a new app access tier."""
