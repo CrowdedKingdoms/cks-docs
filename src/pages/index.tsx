@@ -119,7 +119,7 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <p className={styles.heroBadge}>Beta</p>
+        <p className={styles.heroBadge}>Early Access</p>
         <Heading as="h1" className={styles.heroTitle}>
           Build on Crowded Kingdoms
         </Heading>
