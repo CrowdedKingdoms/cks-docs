@@ -1,0 +1,44 @@
+---
+id: app-player-code-listing-versions
+title: appPlayerCodeListingVersions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List the immutable published versions of a listing, newest first. Requires 'view&#x005F;compute&#x005F;diagnostics'. Versions expose artifact hashes and the derived capability summary — never source.
+
+
+```graphql
+appPlayerCodeListingVersions(
+  appId: BigInt!
+  listingId: String!
+): [PlayerCodeVersion!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appPlayerCodeListingVersions.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric app id that owns the listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>appPlayerCodeListingVersions.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
+UUID of the listing whose versions to list.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeVersion</b></code>](/reference/graphql/types/objects/player-code-version.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An immutable published version of a code listing. Snapshots ARTIFACT HASHES from the author’s compiled module versions — never source (OQ-1). A version with both server and client hashes is a bundle: installing it on a grid also attaches the client half for visitor consent (D2).

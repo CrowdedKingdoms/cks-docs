@@ -1,0 +1,44 @@
+---
+id: app-player-code-listings
+title: appPlayerCodeListings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List an app's marketplace code listings (studio administration view), newest first. Requires 'view&#x005F;compute&#x005F;diagnostics'. includeDelisted adds delisted/killed rows for moderation history.
+
+
+```graphql
+appPlayerCodeListings(
+  appId: BigInt!
+  includeDelisted: Boolean = false
+): [PlayerCodeListing!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appPlayerCodeListings.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric app id whose listings to view.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>appPlayerCodeListings.<b>includeDelisted</b></code>](#include-delisted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#include-delisted\} 
+Include delisted and killed listings when true.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListing</b></code>](/reference/graphql/types/objects/player-code-listing.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A marketplace code listing: the catalog/provenance record for published player code. Carries no price in P4a — every listing is free. Source is never part of a listing (artifact hashes only).

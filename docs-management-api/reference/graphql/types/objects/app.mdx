@@ -41,6 +41,8 @@ type App {
   runtimeStatus: String!
   runtimeDenialReason: String
   codeAdmissionMode: String!
+  gridClaimPolicy: String!
+  gridClaimApproverUserIds: [String!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   org: Organization
@@ -132,6 +134,14 @@ When runtimeStatus is not "active", why the runtime is gated: "free&#x005F;allow
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>codeAdmissionMode</b></code>](#code-admission-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code-admission-mode\} 
 Player-code censorship mode: "implicit&#x005F;allow" (default/off) or "allow&#x005F;list" (strict admission of every running artifact, including self-authored code).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>gridClaimPolicy</b></code>](#grid-claim-policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-claim-policy\} 
+How a player claim confers grid ownership (D4): "self&#x005F;claim" (the claim right alone; default), "approval" (designated approvers accept claim requests), "invite" (standing invites only), or "marketplace&#x005F;only" (only a marketplace grid purchase; the purchase edge ships in P4b).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>gridClaimApproverUserIds</b></code>](#grid-claim-approver-user-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-claim-approver-user-ids\} 
+Player user ids allowed to approve grid claim requests in "approval" mode. When empty, approval falls back to org staff holding manage&#x005F;compute.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 

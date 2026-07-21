@@ -1,0 +1,97 @@
+---
+id: player-code-listing
+title: PlayerCodeListing
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A marketplace code listing: the catalog/provenance record for published player code. Carries no price in P4a — every listing is free. Source is never part of a listing (artifact hashes only).
+
+
+```graphql
+type PlayerCodeListing {
+  listingId: String!
+  appId: BigInt!
+  ownerKind: PlayerCodeOwnerKind!
+  ownerRef: BigInt!
+  name: String!
+  description: String!
+  mediaJson: String!
+  licenseMode: PlayerCodeLicenseMode!
+  acquisitionMode: PlayerCodeAcquisitionMode!
+  status: PlayerCodeListingStatus!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
+UUID of the listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+Numeric app id the listing belongs to (per-app catalogs; cross-app is a non-goal).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>ownerKind</b></code>](#owner-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeOwnerKind!</b></code>](/reference/graphql/types/enums/player-code-owner-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#owner-kind\} 
+Whether a player user or an org owns this listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>ownerRef</b></code>](#owner-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#owner-ref\} 
+Numeric user id or org id of the owner, per ownerKind.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Display name (unique per app among non-killed listings).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Author-provided description shown in stores.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>mediaJson</b></code>](#media-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#media-json\} 
+JSON array of media refs (images/clips) for store display.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>licenseMode</b></code>](#license-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeLicenseMode!</b></code>](/reference/graphql/types/enums/player-code-license-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#license-mode\} 
+Default source-access mode for new versions of this listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>acquisitionMode</b></code>](#acquisition-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeAcquisitionMode!</b></code>](/reference/graphql/types/enums/player-code-acquisition-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#acquisition-mode\} 
+Acquisition mode. Always FREE in P4a.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListingStatus!</b></code>](/reference/graphql/types/enums/player-code-listing-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+Catalog status (active / delisted / killed).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the listing was created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When the listing was last updated.
+
+
+
+
+### Returned By
+
+[`appPlayerCodeListings`](/reference/graphql/operations/queries/app-player-code-listings.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setPlayerCodeListingStatus`](/reference/graphql/operations/mutations/set-player-code-listing-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`transferPlayerCodeListing`](/reference/graphql/operations/mutations/transfer-player-code-listing.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`PlayerCodeAdmissionQueueEntry`](/reference/graphql/types/objects/player-code-admission-queue-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

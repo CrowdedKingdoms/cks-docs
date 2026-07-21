@@ -1,0 +1,107 @@
+---
+id: player-code-listing
+title: PlayerCodeListing
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A marketplace code listing as seen in-game (replica of the management catalog). Every listing is FREE in P4a; carrying both server and client artifact sets makes it a bundle.
+
+
+```graphql
+type PlayerCodeListing {
+  listingId: String!
+  appId: BigInt!
+  ownerKind: PlayerCodeOwnerKind!
+  ownerRef: BigInt!
+  name: String!
+  description: String!
+  mediaJson: String!
+  licenseMode: PlayerCodeLicenseMode!
+  acquisitionMode: PlayerCodeAcquisitionMode!
+  status: PlayerCodeListingStatus!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  admissionState: PlayerCodeAdmissionState!
+  latestVersionId: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
+UUID of the listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App the listing belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>ownerKind</b></code>](#owner-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeOwnerKind!</b></code>](/reference/graphql/types/enums/player-code-owner-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#owner-kind\} 
+Whether a player user or an org owns this listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>ownerRef</b></code>](#owner-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#owner-ref\} 
+User id or org id of the owner, per ownerKind.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Display name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Store description.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>mediaJson</b></code>](#media-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#media-json\} 
+JSON array of media refs.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>licenseMode</b></code>](#license-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeLicenseMode!</b></code>](/reference/graphql/types/enums/player-code-license-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#license-mode\} 
+Source-access mode for new versions.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>acquisitionMode</b></code>](#acquisition-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeAcquisitionMode!</b></code>](/reference/graphql/types/enums/player-code-acquisition-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#acquisition-mode\} 
+Acquisition mode; always FREE in P4a (paid modes are P4b).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListingStatus!</b></code>](/reference/graphql/types/enums/player-code-listing-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+Catalog status (active / delisted / killed).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the listing was created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When the listing was last updated.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>admissionState</b></code>](#admission-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeAdmissionState!</b></code>](/reference/graphql/types/enums/player-code-admission-state.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#admission-state\} 
+The listing's admission standing in this app. In implicit&#x005F;allow apps this is always ADMITTED; in allow&#x005F;list apps PENDING listings can be acquired but not installed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeListing.<b>latestVersionId</b></code>](#latest-version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#latest-version-id\} 
+UUID of the newest published version; null before first publish.
+
+
+
+
+### Returned By
+
+[`appPlayerCodeListings`](/reference/graphql/operations/queries/app-player-code-listings.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`playerCodeListings`](/reference/graphql/operations/queries/player-code-listings.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`publishPlayerCode`](/reference/graphql/operations/mutations/publish-player-code.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setPlayerCodeListingStatus`](/reference/graphql/operations/mutations/set-player-code-listing-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`transferPlayerCodeListing`](/reference/graphql/operations/mutations/transfer-player-code-listing.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`PlayerCodeAdmissionQueueEntry`](/reference/graphql/types/objects/player-code-admission-queue-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,73 @@
+---
+id: grid-client-mod
+title: GridClientMod
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A grid-attached client mod (a bundle's client half installed on a grid). Players present in the grid may fetch and run it only after per-player consent to its capability hash — the D2 pattern that lets grid authors run client compute on visitors (e.g. relaying actor updates to the grid's server compute).
+
+
+```graphql
+type GridClientMod {
+  attachmentId: String!
+  listingId: String!
+  listingName: String!
+  versionId: String!
+  gridId: BigInt!
+  capabilitySummaryJson: String!
+  capabilityHash: String!
+  callerConsented: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>attachmentId</b></code>](#attachment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#attachment-id\} 
+UUID of the grid attachment.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
+UUID of the listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>listingName</b></code>](#listing-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-name\} 
+Listing display name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\} 
+UUID of the pinned listing version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid the client mod is attached to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>capabilitySummaryJson</b></code>](#capability-summary-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#capability-summary-json\} 
+JSON derived capability summary of the pinned version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>capabilityHash</b></code>](#capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#capability-hash\} 
+Capability hash a player must consent to before fetching.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>callerConsented</b></code>](#caller-consented)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#caller-consented\} 
+Whether the calling player has already consented to this attachment.
+
+
+
+
+### Returned By
+
+[`gridClientMods`](/reference/graphql/operations/queries/grid-client-mods.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

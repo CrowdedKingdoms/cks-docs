@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A kill-ladder switch row (P2, 03 §7): a studio-set immediate stop at player, grid, or app scope. Module-level disable lives on the module itself; listing scope arrives with the marketplace. Quota state is retained across a kill.
+A kill-ladder switch row (03 §7): a studio-set immediate stop at player, grid, app, or listing scope. Module-level disable lives on the module itself; killing a LISTING disables every install of that marketplace listing fleet-wide (P4a). Quota state is retained across a kill.
 
 
 ```graphql
@@ -24,6 +24,7 @@ type PlayerComputeSwitch {
   appId: BigInt!
   scope: String!
   scopeRef: BigInt
+  listingRef: String
   reason: String
   disabledAt: DateTime!
 }
@@ -41,11 +42,15 @@ The app the switch applies to.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerComputeSwitch.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scope\} 
-Scope: 'player', 'grid', or 'app'.
+Scope: 'player', 'grid', 'app', or 'listing'.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerComputeSwitch.<b>scopeRef</b></code>](#scope-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#scope-ref\} 
-The player user id or grid id; null for app scope.
+The player user id or grid id; null for app and listing scopes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeSwitch.<b>listingRef</b></code>](#listing-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#listing-ref\} 
+The marketplace listing UUID for listing scope; null otherwise.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerComputeSwitch.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 

@@ -1,0 +1,44 @@
+---
+id: claim-grid-ownership
+title: claimGridOwnership
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Claim grid ownership under the app's claim policy (D4, server-authorized — no client manage&#x005F;apps involved). SELF&#x005F;CLAIM assigns ownership immediately; APPROVAL creates a pending request for designated approvers; INVITE requires a standing invite (consumed on use); MARKETPLACE&#x005F;ONLY refuses (ownership arrives only via grid purchase, P4b). The grid must exist and have no current owner; game rules gate who may attempt a claim.
+
+
+```graphql
+claimGridOwnership(
+  appId: BigInt!
+  gridId: BigInt!
+): GridClaimResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>claimGridOwnership.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App containing the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>claimGridOwnership.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The unowned grid being claimed.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridClaimResult</b></code>](/reference/graphql/types/objects/grid-claim-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Result of claimGridOwnership: either ownership was assigned now (SELF&#x005F;CLAIM / INVITE) or a claim request was created (APPROVAL). MARKETPLACE&#x005F;ONLY apps refuse direct claims.

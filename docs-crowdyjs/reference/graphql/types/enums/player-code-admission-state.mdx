@@ -1,0 +1,48 @@
+---
+id: player-code-admission-state
+title: PlayerCodeAdmissionState
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A listing's standing under this app's admission mode: ADMITTED (installable), PENDING (browsable but uninstallable in allow&#x005F;list apps), or REVOKED (installs drain).
+
+
+```graphql
+enum PlayerCodeAdmissionState {
+  ADMITTED
+  PENDING
+  REVOKED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAdmissionState.<b>ADMITTED</b></code>](#admitted) \{#admitted\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAdmissionState.<b>PENDING</b></code>](#pending) \{#pending\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAdmissionState.<b>REVOKED</b></code>](#revoked) \{#revoked\} 
+
+
+
+
+
+### Member Of
+
+[`PlayerCodeAdmissionQueueEntry`](/reference/graphql/types/objects/player-code-admission-queue-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PlayerCodeListing`](/reference/graphql/types/objects/player-code-listing.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

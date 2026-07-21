@@ -1,0 +1,39 @@
+---
+id: my-player-code-installs
+title: myPlayerCodeInstalls
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The caller's active installs in this app: pinned versions, consent hashes, and target grids.
+
+
+```graphql
+myPlayerCodeInstalls(
+  appId: BigInt!
+): [PlayerCodeInstall!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>myPlayerCodeInstalls.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App whose installs to list.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeInstall</b></code>](/reference/graphql/types/objects/player-code-install.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An install of an acquired listing: the pinned version, the consent hash acknowledged, and (for server halves) the owned target grid. Installs pin their version; updating to a newer version is a new consent + install update, never automatic.

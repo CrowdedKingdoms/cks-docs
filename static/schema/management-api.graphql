@@ -570,6 +570,14 @@ type App {
   Player-code censorship mode: "implicit_allow" (default/off) or "allow_list" (strict admission of every running artifact, including self-authored code).
   """
   codeAdmissionMode: String!
+  """
+  How a player claim confers grid ownership (D4): "self_claim" (the claim right alone; default), "approval" (designated approvers accept claim requests), "invite" (standing invites only), or "marketplace_only" (only a marketplace grid purchase; the purchase edge ships in P4b).
+  """
+  gridClaimPolicy: String!
+  """
+  Player user ids allowed to approve grid claim requests in "approval" mode. When empty, approval falls back to org staff holding manage_compute.
+  """
+  gridClaimApproverUserIds: [String!]!
   """Timestamp when the app was created."""
   createdAt: DateTime!
   """Timestamp when the app was last updated."""
@@ -1689,6 +1697,159 @@ type CpPublishEnvironmentReleaseResult {
   committedToGit: Boolean!
   """Set when ingest succeeded but the GitHub manifest commit failed."""
   gitCommitError: String
+}
+
+"""
+A marketplace code listing: the catalog/provenance record for published player code. Carries no price in P4a — every listing is free. Source is never part of a listing (artifact hashes only).
+"""
+type PlayerCodeListing {
+  """UUID of the listing."""
+  listingId: String!
+  """
+  Numeric app id the listing belongs to (per-app catalogs; cross-app is a non-goal).
+  """
+  appId: BigInt!
+  """Whether a player user or an org owns this listing."""
+  ownerKind: PlayerCodeOwnerKind!
+  """Numeric user id or org id of the owner, per ownerKind."""
+  ownerRef: BigInt!
+  """Display name (unique per app among non-killed listings)."""
+  name: String!
+  """Author-provided description shown in stores."""
+  description: String!
+  """JSON array of media refs (images/clips) for store display."""
+  mediaJson: String!
+  """Default source-access mode for new versions of this listing."""
+  licenseMode: PlayerCodeLicenseMode!
+  """Acquisition mode. Always FREE in P4a."""
+  acquisitionMode: PlayerCodeAcquisitionMode!
+  """Catalog status (active / delisted / killed)."""
+  status: PlayerCodeListingStatus!
+  """When the listing was created."""
+  createdAt: DateTime!
+  """When the listing was last updated."""
+  updatedAt: DateTime!
+}
+
+"""
+Who owns a marketplace code listing: a player user, or an org (DN-9: the org then owns source access, listing control, and — from P4b — proceeds).
+"""
+enum PlayerCodeOwnerKind {
+  USER
+  ORG
+}
+
+"""
+Source-access mode of a listing: CLOSED (artifacts + contracts only; source stays author-only with no override) or OPEN_SOURCE (source readable; irreversible per published version).
+"""
+enum PlayerCodeLicenseMode {
+  CLOSED
+  OPEN_SOURCE
+}
+
+"""
+How a listing is acquired. P4a ships FREE only; the paid modes (buy, rent, time-limited, cost-limited) arrive with the P4b money workstream.
+"""
+enum PlayerCodeAcquisitionMode {
+  FREE
+}
+
+"""
+Catalog status of a listing: ACTIVE (browsable/acquirable), DELISTED (author withdrew it — existing installs keep running their pinned version), KILLED (studio/operator kill — every install is disabled fleet-wide via the listing kill switch).
+"""
+enum PlayerCodeListingStatus {
+  ACTIVE
+  DELISTED
+  KILLED
+}
+
+"""
+An immutable published version of a code listing. Snapshots ARTIFACT HASHES from the author’s compiled module versions — never source (OQ-1). A version with both server and client hashes is a bundle: installing it on a grid also attaches the client half for visitor consent (D2).
+"""
+type PlayerCodeVersion {
+  """UUID of this published version."""
+  versionId: String!
+  """UUID of the listing this version belongs to."""
+  listingId: String!
+  """Numeric app id (denormalized from the listing)."""
+  appId: BigInt!
+  """Monotonic version number within the listing."""
+  versionNo: Int!
+  """
+  Artifact hashes of the server-target modules in this version (empty for client-only listings).
+  """
+  serverArtifactHashes: [String!]!
+  """
+  Artifact hashes of the client-target modules in this version (empty for server-only listings).
+  """
+  clientArtifactHashes: [String!]!
+  """
+  JSON capability summary DERIVED from the artifacts by the compile pipeline (imported host families, invoke contracts, presentation hooks, egress budgets). Never self-declared; this is what installers consent to.
+  """
+  capabilitySummaryJson: String!
+  """
+  sha256 of the canonical capability summary. Installs record the hash they consented to; a widened summary on a newer version forces re-consent.
+  """
+  capabilityHash: String!
+  """
+  Whether this version’s source is open. Open-sourcing a version is irreversible for that version; later versions may return to closed.
+  """
+  openSource: Boolean!
+  """
+  Author license terms shown at acquisition (platform enforces access, not downstream legal terms).
+  """
+  licenseText: String
+  """When the version was published."""
+  createdAt: DateTime!
+}
+
+"""
+A player’s entitlement to a listing. Free acquisitions write the same row shape paid ones will in P4b (expiry/unit-budget fields exist but stay dormant); uninstall never deletes this row (audit).
+"""
+type PlayerCodeAcquisition {
+  """UUID of the acquisition."""
+  acquisitionId: String!
+  """UUID of the acquired listing."""
+  listingId: String!
+  """Numeric app id of the listing."""
+  appId: BigInt!
+  """Numeric user id of the acquirer."""
+  acquirerUserId: BigInt!
+  """Acquisition mode (always FREE in P4a)."""
+  mode: PlayerCodeAcquisitionMode!
+  """Entitlement status: 'active' or 'revoked'."""
+  status: String!
+  """When the listing was acquired."""
+  acquiredAt: DateTime!
+  """When the entitlement was revoked; null while active."""
+  revokedAt: DateTime
+}
+
+"""
+One row of an app's admission queue: a listing joined with its standing under the app's allow-list (admitted via a matching code, author, or org admission; pending; or revoked). The studio moderation surface for allow_list apps.
+"""
+type PlayerCodeAdmissionQueueEntry {
+  """The listing under review."""
+  listing: PlayerCodeListing!
+  """The listing's admission standing in this app."""
+  admissionState: PlayerCodeAdmissionState!
+  """
+  UUID of the admission entry that admits (or last admitted) this listing — matched on the code subject, its author, or its owning org. Null while pending.
+  """
+  admissionId: String
+  """
+  Which allow-list subject matched: 'code', 'author', or 'org'. Null while pending.
+  """
+  matchedSubjectKind: String
+}
+
+"""
+A listing's standing under an app's allow-list: ADMITTED (an active code/author/org admission matches), PENDING (no admission yet — browsable but uninstallable), or REVOKED (a previous admission was revoked; installs drain).
+"""
+enum PlayerCodeAdmissionState {
+  ADMITTED
+  PENDING
+  REVOKED
 }
 
 """
@@ -3474,6 +3635,38 @@ type Query {
     orgId: BigInt!
   ): PlayerPulse! @requiresPermission(scope: "org", permission: "view_usage", scopeArg: "orgId")
   """
+  List an app's marketplace code listings (studio administration view), newest first. Requires 'view_compute_diagnostics'. includeDelisted adds delisted/killed rows for moderation history.
+  """
+  appPlayerCodeListings(
+    """Numeric app id whose listings to view."""
+    appId: BigInt!
+    """Include delisted and killed listings when true."""
+    includeDelisted: Boolean = false
+  ): [PlayerCodeListing!]! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
+  """
+  List the immutable published versions of a listing, newest first. Requires 'view_compute_diagnostics'. Versions expose artifact hashes and the derived capability summary — never source.
+  """
+  appPlayerCodeListingVersions(
+    """Numeric app id that owns the listing."""
+    appId: BigInt!
+    """UUID of the listing whose versions to list."""
+    listingId: String!
+  ): [PlayerCodeVersion!]! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
+  """
+  List an app's code acquisitions (entitlement rows), newest first. Requires 'view_compute_diagnostics'. All rows are mode FREE in P4a; uninstalls never delete acquisitions (audit).
+  """
+  appPlayerCodeAcquisitions(
+    """Numeric app id whose acquisitions to view."""
+    appId: BigInt!
+  ): [PlayerCodeAcquisition!]! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
+  """
+  The app's admission queue: every non-killed listing joined with its allow-list standing (ADMITTED via a matching code/author/org admission, PENDING, or REVOKED). Requires 'view_compute_diagnostics'. In allow_list apps PENDING listings are browsable but uninstallable; admit them via admitAppCode (subject kind CODE for one listing, AUTHOR or ORG for wholesale admission).
+  """
+  appCodeAdmissionQueue(
+    """Numeric app id whose admission queue to view."""
+    appId: BigInt!
+  ): [PlayerCodeAdmissionQueueEntry!]! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
+  """
   All registered GraphQL servers (management-api and game-api) in any state. No auth required. For only routable servers, use activeGraphQLServers.
   """
   graphqlServers: [GraphQLServer!]!
@@ -4312,6 +4505,37 @@ type Mutation {
     version: String!
   ): Boolean! @requiresPermission(scope: "operator", permission: "is_operator")
   """
+  Transfer a listing between personal and org ownership (DN-9). The caller must be the current owner (user-owned) or hold manage_compute in the owning org; transfers to an org require manage_compute in the receiving org. SIDE EFFECTS: append-only ownership audit row + replica sync to game-api. Ownership moves listing control and source-access rights; from P4b it also moves proceeds.
+  """
+  transferPlayerCodeListing(
+    """Listing, app, and the new owner (user or org)."""
+    input: TransferPlayerCodeListingInput!
+  ): PlayerCodeListing!
+  """
+  Change a listing's catalog status. DELISTED/ACTIVE are owner actions (existing installs keep their pinned versions; delisting only stops new acquisitions). KILLED requires 'manage_compute' on the app (studio/operator) and is the catalog half of the listing kill — pair it with the game-api listing-scope kill switch (playerComputeSetSwitch) to disable running installs fleet-wide. SIDE EFFECTS: audit row + replica sync.
+  """
+  setPlayerCodeListingStatus(
+    """Numeric app id that owns the listing."""
+    appId: BigInt!
+    """UUID of the listing."""
+    listingId: String!
+    """New catalog status (ACTIVE, DELISTED, or KILLED)."""
+    status: PlayerCodeListingStatus!
+  ): PlayerCodeListing!
+  """
+  Set how a player claim confers grid ownership in this app (D4): SELF_CLAIM, APPROVAL (optionally with a designated approver list), INVITE, or MARKETPLACE_ONLY. Requires 'manage_apps'. SIDE EFFECTS: replica-syncs to game-api, where claimGridOwnership enforces the policy. Changing policy never revokes existing grid_ownership rows.
+  """
+  setAppGridClaimPolicy(
+    """Numeric app id whose claim policy to set."""
+    appId: BigInt!
+    """The new claim policy."""
+    policy: GridClaimPolicy!
+    """
+    Player user ids allowed to approve claim requests in APPROVAL mode. Empty falls back to org staff holding manage_compute.
+    """
+    approverUserIds: [BigInt!] = []
+  ): GridClaimPolicy! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "appId")
+  """
   Operator only (is_operator). Patches the platform compute ceilings: omitted fields stay unchanged, an explicit null clears that override (game-api falls back to env/default), a value (> 0) sets it. SIDE EFFECTS: fans a replica notify out to every game-api so the new ceilings clamp computeSetPolicy within ~30 seconds without a restart, and writes an audit entry. Lowering a ceiling does not shrink already-stored per-app policies; it rejects future computeSetPolicy values above the new ceiling. Returns the updated ceilings row.
   """
   cpSetComputePlatformCeilings(
@@ -5010,6 +5234,27 @@ input PublishEnvironmentReleaseFromGameApiTagInput {
   gameApiTag: String!
   """Overwrite an existing environment version row if it already exists."""
   force: Boolean! = false
+}
+
+input TransferPlayerCodeListingInput {
+  """Numeric app id that owns the listing."""
+  appId: BigInt!
+  """UUID of the listing to transfer."""
+  listingId: String!
+  """New owner kind (USER or ORG)."""
+  toOwnerKind: PlayerCodeOwnerKind!
+  """Numeric user id or org id of the new owner, per toOwnerKind."""
+  toOwnerRef: BigInt!
+}
+
+"""
+How a player claim confers grid ownership in an app (D4): SELF_CLAIM (the claim right alone assigns ownership server-side; default), APPROVAL (claims create requests that designated approvers accept), INVITE (ownership only against a standing invite), or MARKETPLACE_ONLY (only a marketplace grid purchase confers ownership; the purchase edge ships in P4b, so direct claims are refused).
+"""
+enum GridClaimPolicy {
+  SELF_CLAIM
+  APPROVAL
+  INVITE
+  MARKETPLACE_ONLY
 }
 
 """

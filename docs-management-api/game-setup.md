@@ -112,6 +112,36 @@ Use `appCodeAdmissions` to inspect active/history rows and
 grants source access — closed source remains author-only with no moderation
 override.
 
+**Admission at scale (P4a).** Once the app has a marketplace catalog, the
+moderation surface is `appCodeAdmissionQueue(appId)`: every listing joined
+with its allow-list standing (`ADMITTED` / `PENDING` / `REVOKED`) and which
+subject matched (the listing, its author, or its owning org). The wholesale
+pattern is admitting an **org** once (`subjectKind: ORG`) so every listing
+that org owns — current and future — is admitted; per-listing admission
+remains for precise control. De-admission drains running installs exactly
+like a run-key revocation. For a hostile listing, pair the catalog kill
+(`setPlayerCodeListingStatus(..., status: KILLED)`) with the game-side
+fleet-wide runtime kill
+(`playerComputeSetSwitch(scope: "listing", listingRef: ...)`).
+
+### c.1a (Optional) Choose how claims confer grid ownership (P4a)
+
+Games differ on how a player comes to **own** a grid. Configure the app's
+claim policy (requires `manage_apps`):
+
+```graphql
+mutation {
+  setAppGridClaimPolicy(appId: "APP_ID", policy: SELF_CLAIM)
+}
+```
+
+`SELF_CLAIM` (default) lets `claimGridOwnership` assign ownership directly;
+`APPROVAL` turns claims into requests your designated approvers accept;
+`INVITE` requires a standing invite; `MARKETPLACE_ONLY` refuses direct
+claims so ownership arrives only through grid purchase (the purchase edge is
+part of the real-money phase). Changing policy never revokes existing
+ownership rows.
+
 ### c.2 (Optional) Bound player compute cost and take a markup
 
 Player compute bills the **player's own wallet**, never the org — see

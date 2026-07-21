@@ -1,0 +1,44 @@
+---
+id: player-code-listing-versions
+title: playerCodeListingVersions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List the immutable published versions of a listing, newest first, with each version’s derived capability summary and consent hash.
+
+
+```graphql
+playerCodeListingVersions(
+  appId: BigInt!
+  listingId: String!
+): [PlayerCodeListingVersion!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerCodeListingVersions.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App that owns the listing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerCodeListingVersions.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
+UUID of the listing.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListingVersion</b></code>](/reference/graphql/types/objects/player-code-listing-version.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An immutable published version of a code listing: artifact hashes (never source) plus the DERIVED capability summary installers consent to.

@@ -262,6 +262,14 @@ owner-container events: an event outside your grid, or for another app, is
 never delivered. Subscribe with a `grid_voxel_changed` / `grid_actor_changed`
 trigger.
 
+Actor events are produced by the platform from the `actorHeartbeat` write
+(P4a): chunk enter/leave transitions emit `grid_actor_changed` at heartbeat
+cadence, with full player coverage and no client mod required. For richer
+presence signals (look direction, custom telemetry), a grid owner can ship a
+**bundled client mod** that visitors consent to and which relays into the
+grid's server compute — see
+[grid-attached client mods](player-marketplace#bundles-and-grid-attached-client-mods).
+
 ## Live coding (P3)
 
 Player code is written in an **in-grid live-coding panel** (a mountable
@@ -288,6 +296,28 @@ its **spatial egress is suppressed server-side** — no other session in the
 grid observes its world effects. The filter lives in game-api, not the
 client, so it holds even against a modified page. Clear the flag (a normal
 deploy) to go live.
+
+## Acquired code (P4a)
+
+Self-authored code is not the only provenance anymore: the
+[marketplace](player-marketplace) lets players **acquire and install**
+published code (free mode in this phase). Everything on this page applies
+unchanged to acquired code — it registers through the same registry, runs
+as the **installing grid owner** (never the author), spends the installer's
+quota and wallet, and obeys the same admission and kill-ladder chain. What
+changes is provenance:
+
+- installed instances carry the listing and install ids,
+- module versions record a derived **capability summary** installers
+  consent to by hash,
+- the kill ladder gains a **listing scope** that stops every install of a
+  marketplace listing fleet-wide,
+- the client artifact fetch also serves **entitled acquirers** and
+  **consenting visitors** of grids with attached bundles
+  (`playerCodeClientArtifact`) — the author-only `playerComputeArtifact`
+  path additionally serves an acquirer's own installed instances,
+- deleting an author module is refused while a live listing references its
+  versions (buyers keep their pinned versions).
 
 ## Client target status
 
