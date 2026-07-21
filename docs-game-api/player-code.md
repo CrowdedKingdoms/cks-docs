@@ -208,13 +208,17 @@ path, so `is_automation` does not grant extra authority.
 P1 executes scheduled (interval/cron) actions for both studio-model functions
 and player-module exports. `player_compute_invoke` routes through
 `playerComputeInvoke` as the grid owner and compute fuel is metered by the
-module (the automation records dispatch overhead only). Event-trigger delivery
-is accepted as typed configuration but remains a pending dispatch lane; it
-never falls back to a broader studio path.
+module (the automation records dispatch overhead only).
+`owner_container_changed` event automations run post-commit through the same
+confined dispatcher. Actor/voxel/compute-event triggers remain typed pending
+lanes until their event producers are connected; they never fall back to a
+broader studio path.
 
 ## Client target status
 
-P1 provides the client compile target, artifact schema, permissions, and shared
-contracts. The production browser broker/live-coding UI is a later rollout
-phase. Until that host ships, `CLIENT` versions prove compilation and
-distribution contracts but are not a general browser scripting runtime.
+P1 provides the client compile target, artifact schema, permissions, shared
+contracts, and CrowdyJS `PlayerCodeBroker` page-side security skeleton
+(worker transfer, no tokens in the worker, host-call allowlist, local grid
+clamp). P3 adds the platform glue worker, game presentation hooks, and
+live-coding UI. Until that host ships, `CLIENT` versions plus the broker prove
+the boundary/contracts but are not yet a general browser scripting runtime.
