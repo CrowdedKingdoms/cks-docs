@@ -145,6 +145,14 @@ checkout redirect in the purchase path; fund the wallet first (top-up via
 **refuses atomically** (`INSUFFICIENT_WALLET_BALANCE`): no order, no debit,
 no partial state.
 
+**In-client top-up.** A game can offer the top-up in-game without shipping
+an identity session: an app-scoped gameplay token may call `createCheckout`
+**only** for `PLAYER_WALLET_TOPUP` (and read its own `playerWalletBalance`).
+Redirect the player to the returned `externalUrl` (Stripe's hosted card
+page — no card data touches the game), and refresh the balance on return;
+the `checkout.session.completed` webhook credits the wallet. Blocks with
+Friends wires this as the Store tab's "Top up" presets.
+
 Each sale splits three ways at order time: the platform takes 30%, the app
 org takes its configured share of the remainder
 (`setAppMarketplaceOrgShare`, basis points, default 0), and the seller gets
@@ -168,6 +176,16 @@ client secret, and mount `account-onboarding` (KYC), `payouts`, and
 secrets are short-lived; pass the mutation as Connect.js's
 `fetchClientSecret` callback so sessions refresh automatically. The
 hosted-link flow (`beginSellerOnboarding`) remains as a fallback.
+
+`createSellerAccountSession` is callable with an app-scoped gameplay token
+(it only ever mints the **caller's own** account session), so the seller
+dashboard mounts **in-game** — Blocks with Friends opens it from a "Sell &
+payouts" panel. Because Connect.js loads a cross-origin script, the page must
+be cross-origin isolated (COOP `same-origin` + COEP `credentialless`), the
+same headers a game needs for client-mod execution. The org variant
+(`createOrgSellerAccountSession`) and every payout-moving mutation
+(`requestSellerPayout`, `spendPayoutBalanceToWallet`) stay identity-session
+only.
 
 ```graphql
 mutation { createSellerAccountSession(country: "US") {   # embedded components (primary)

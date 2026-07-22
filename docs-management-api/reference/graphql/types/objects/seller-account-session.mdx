@@ -1,0 +1,58 @@
+---
+id: seller-account-session
+title: SellerAccountSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An Account Session for Stripe's EMBEDDED Connect components: the browser initializes Connect.js with the publishable key + this short-lived client secret and mounts the account-onboarding / payouts / balances components INSIDE the platform UI — sellers never leave for a Stripe-hosted page. Re-request on expiry. The hosted-link flow (beginSellerOnboarding) remains the fallback.
+
+
+```graphql
+type SellerAccountSession {
+  clientSecret: String!
+  publishableKey: String
+  accountRef: String!
+  onboardingComplete: Boolean!
+  expiresAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerAccountSession.<b>clientSecret</b></code>](#client-secret)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-secret\} 
+Short-lived Account Session client secret for Connect.js.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerAccountSession.<b>publishableKey</b></code>](#publishable-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#publishable-key\} 
+Stripe publishable key the browser initializes Connect.js with.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerAccountSession.<b>accountRef</b></code>](#account-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#account-ref\} 
+The connected account the session is scoped to (provider ref only).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerAccountSession.<b>onboardingComplete</b></code>](#onboarding-complete)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#onboarding-complete\} 
+Whether onboarding is already complete (payouts enabled) — render the payouts/balances components instead of onboarding.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SellerAccountSession.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+When the client secret expires; re-request after this.
+
+
+
+
+### Returned By
+
+[`createOrgSellerAccountSession`](/reference/graphql/operations/mutations/create-org-seller-account-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`createSellerAccountSession`](/reference/graphql/operations/mutations/create-seller-account-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
