@@ -17,16 +17,31 @@ const siblingRoot = resolve(docsRepo, '..'); // cks-project-root/ (sibling API r
 const outDir = resolve(docsRepo, 'static/schema');
 
 const sources = [
-  { from: 'cks-management-api/schema.gql', to: 'management-api.graphql' },
-  { from: 'cks-game-api/schema.gql', to: 'game-api.graphql' },
-  { from: 'CrowdyJS/schema.gql', to: 'crowdyjs.graphql' },
+  {
+    from:
+      process.env.CKS_DOCS_MANAGEMENT_SCHEMA ??
+      resolve(siblingRoot, 'cks-management-api/schema.gql'),
+    to: 'management-api.graphql',
+  },
+  {
+    from:
+      process.env.CKS_DOCS_GAME_SCHEMA ??
+      resolve(siblingRoot, 'cks-game-api/schema.gql'),
+    to: 'game-api.graphql',
+  },
+  {
+    from:
+      process.env.CKS_DOCS_CROWDYJS_SCHEMA ??
+      resolve(siblingRoot, 'CrowdyJS/schema.gql'),
+    to: 'crowdyjs.graphql',
+  },
 ];
 
 mkdirSync(outDir, { recursive: true });
 
 let copied = 0;
 for (const { from, to } of sources) {
-  const src = resolve(siblingRoot, from);
+  const src = resolve(from);
   if (!existsSync(src)) {
     console.warn(`[sdl:gen] skip (source missing): ${from}`);
     continue;

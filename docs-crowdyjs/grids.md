@@ -19,6 +19,14 @@ out of the untrusted game client you ship to end users. It is also reachable as
 `client.admin.grids`. See [Portals & app-scoped tokens](/management-api/portals-and-app-tokens);
 the examples below assume `client` holds that app's app-scoped token.
 
+Do not call this administration surface to implement player land claims.
+For an app whose policy is `self_claim`, use
+`client.marketplace.claimGridChunk({ appId, chunk })` and
+`client.marketplace.releaseClaimedGrid({ appId, gridId })`. Those operations
+authorize the current player, create/release only self-claimed one-chunk grids,
+and apply ownership plus effective ACLs atomically. See
+[Marketplace → Claim a player-owned chunk grid](/game-api/player-marketplace#claim-a-player-owned-chunk-grid).
+
 For the underlying concepts (how grids layer on top of app access, the
 open-by-default world grid, nesting vs. straddling, and effective-permission
 math) see **[Game API → Grids and permissions](/game-api/grids-and-permissions)**.

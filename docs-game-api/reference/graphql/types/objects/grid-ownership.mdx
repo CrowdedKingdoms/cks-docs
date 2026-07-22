@@ -60,7 +60,7 @@ Permanent ownership or an expiring rental.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>acquiredVia</b></code>](#acquired-via)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquired-via\} 
-Audit origin of this ownership (for example studio&#x005F;grant, transfer, or marketplace).
+Audit origin of this ownership (for example studio&#x005F;grant, self&#x005F;claim, self&#x005F;claim&#x005F;chunk, transfer, or marketplace). self&#x005F;claim&#x005F;chunk identifies a grid created by claimGridChunk and eligible for owner release.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>acquiredAt</b></code>](#acquired-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquired-at\} 
@@ -76,3 +76,7 @@ Rental expiry; null for permanent ownership.
 ### Returned By
 
 [`assignGridOwnership`](/reference/graphql/operations/mutations/assign-grid-ownership.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gridOwnership`](/reference/graphql/operations/queries/grid-ownership.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`transferGridOwnership`](/reference/graphql/operations/mutations/transfer-grid-ownership.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`ChunkClaimResult`](/reference/graphql/types/objects/chunk-claim-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

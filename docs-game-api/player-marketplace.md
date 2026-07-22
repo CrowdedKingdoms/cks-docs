@@ -34,6 +34,44 @@ a mod is a program, not a service.
 - A **client** mod runs **as the player running it**, in their browser
   sandbox.
 
+## Claim a player-owned chunk grid
+
+Apps with the `self_claim` grid policy can let an ordinary player claim an
+unclaimed chunk without giving the game client the studio-only `manage_apps`
+permission:
+
+```graphql
+mutation ClaimChunk($appId: BigInt!, $chunk: ChunkCoordinatesInput!) {
+  claimGridChunk(appId: $appId, chunk: $chunk) {
+    gridId
+    lowChunk { x y z }
+    highChunk { x y z }
+    policy
+    ownership { ownerKind ownerRef acquiredVia }
+    moddable
+    effectivePermissionKeys
+  }
+}
+```
+
+The mutation is atomic: it checks the app policy and spatial overlap, creates
+the one-chunk grid, assigns the caller as its current owner, and materializes
+the caller's build plus tier-entitled player-code keys. A competing claim
+returns a conflict and leaves no grid, ownership, or ACL rows behind.
+
+Release only grids created by this self-claim path:
+
+```graphql
+mutation {
+  releaseClaimedGrid(appId: "2", gridId: "42") { released }
+}
+```
+
+Only the current owner can release the claim. Studio grids, purchased grids,
+and another player's claim fail closed. A successful release removes the
+self-claimed grid and makes that chunk claimable again; it does not delete
+chunks, voxels, or game-model data in the region.
+
 ## Publish
 
 Only artifact **hashes** and derived metadata are published; source never

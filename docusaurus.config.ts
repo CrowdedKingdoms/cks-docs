@@ -2,6 +2,13 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
+const managementSchema =
+  process.env.CKS_DOCS_MANAGEMENT_SCHEMA ?? '../cks-management-api/schema.gql';
+const gameSchema =
+  process.env.CKS_DOCS_GAME_SCHEMA ?? '../cks-game-api/schema.gql';
+const crowdyJsSchema =
+  process.env.CKS_DOCS_CROWDYJS_SCHEMA ?? '../CrowdyJS/schema.gql';
+
 const config: Config = {
   title: 'Crowded Kingdoms Docs',
   tagline: 'Massive worlds. No shards. No ceilings.',
@@ -184,7 +191,7 @@ const config: Config = {
       '@graphql-markdown/docusaurus',
       {
         id: 'gql-mgmt',
-        schema: '../cks-management-api/schema.gql',
+        schema: managementSchema,
         rootPath: './docs-management-api',
         baseURL: 'reference/graphql',
         homepage: './docs-management-api/reference/graphql-overview.md',
@@ -197,7 +204,7 @@ const config: Config = {
       '@graphql-markdown/docusaurus',
       {
         id: 'gql-game',
-        schema: '../cks-game-api/schema.gql',
+        schema: gameSchema,
         rootPath: './docs-game-api',
         baseURL: 'reference/graphql',
         homepage: './docs-game-api/reference/graphql-overview.md',
@@ -210,7 +217,7 @@ const config: Config = {
       '@graphql-markdown/docusaurus',
       {
         id: 'gql-crowdyjs',
-        schema: '../CrowdyJS/schema.gql',
+        schema: crowdyJsSchema,
         rootPath: './docs-crowdyjs',
         baseURL: 'reference/graphql',
         homepage: './docs-crowdyjs/reference/graphql-overview.md',
