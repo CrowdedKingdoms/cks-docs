@@ -12,7 +12,29 @@ deprecation window — deprecated fields keep working and are marked `@deprecate
 schema (visible in the [reference](/management-api/reference/graphql-overview) and the
 downloadable SDL) until the stated removal date.
 
-## 2026-07-20 (latest)
+## 2026-07-22 (latest)
+
+**Durable environment deployment progress (Management API)**
+
+- `cpChangeOrder`, `orgEnvironment.deployProgress`, and destroy progress can
+  now return read-only projected task/step progress for durable change orders
+  instead of empty arrays. Recorded execution progress remains authoritative
+  when available.
+- Planned work remains `pending` until an outcome is observed or inferred.
+  Fields unavailable for projected progress remain null, and identifiers
+  should be treated as opaque.
+- For projected step progress, `attempt` is `0` when no attempt or outcome has
+  been observed or inferred, and `1` when an attempt or outcome has been
+  observed or inferred.
+
+**Machine-readable Game API permission metadata**
+
+- The refreshed downloadable Game API SDL now publishes
+  `@requiresPermission` metadata on permission-gated root fields. This makes
+  existing authorization requirements discoverable to tools and agents; it
+  does not change runtime authorization behavior.
+
+## 2026-07-20
 
 **Terrain grounding for engine agents + `chunk_get` repair (game-api v0.14.5)**
 
