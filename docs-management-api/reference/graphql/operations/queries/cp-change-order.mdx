@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Operator only (is&#x005F;operator). One change order with its tasks and steps. Null when the id is not found.
+Operator only (is&#x005F;operator). One change order with its tasks and steps. Legacy orders use persisted runner rows; DBOS orders use the checkpointed plan plus available checkpoint/audit outcomes, leaving not-yet-checkpointed work pending. Null when the id is not found.
 
 
 ```graphql
@@ -36,3 +36,4 @@ Change order UUID.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>CpChangeOrderDetail</b></code>](/reference/graphql/types/objects/cp-change-order-detail.mdx) <Badge class="badge badge--secondary " text="object"/>
+Change-order detail using persisted legacy task/step rows when present, otherwise a DBOS checkpoint/planner projection with available outcome overlays.

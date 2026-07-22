@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-No description
+Operator step progress. DBOS rows are read-only projections; fields unavailable from DBOS checkpoints remain null and attempt is only 0 (not checkpointed) or 1 (checkpointed).
 
 
 ```graphql
@@ -61,7 +61,7 @@ type CpStepRow {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CpStepRow.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
-
+Execution status. Pending DBOS steps are planned but their exact live state is unavailable.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CpStepRow.<b>attempt</b></code>](#attempt)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#attempt\} 

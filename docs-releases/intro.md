@@ -12,7 +12,19 @@ deprecation window — deprecated fields keep working and are marked `@deprecate
 schema (visible in the [reference](/management-api/reference/graphql-overview) and the
 downloadable SDL) until the stated removal date.
 
-## 2026-07-20 (latest)
+## 2026-07-22 (latest)
+
+**DBOS-aware environment deployment progress (Management API)**
+
+- `cpChangeOrder`, `orgEnvironment.deployProgress`, and destroy progress now
+  return read-only task/step projections for DBOS-backed change orders instead
+  of empty arrays. Persisted legacy runner rows still take precedence.
+- Projected pending work means the planner knows the task or step exists but
+  DBOS has not exposed a terminal checkpoint yet. Completed checkpoints and
+  audit outcomes are overlaid when available; synthetic projected ids are
+  prefixed with `dbos:` and are not persisted task-row identifiers.
+
+## 2026-07-20
 
 **Terrain grounding for engine agents + `chunk_get` repair (game-api v0.14.5)**
 
