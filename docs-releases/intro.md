@@ -14,15 +14,25 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-22 (latest)
 
-**DBOS-aware environment deployment progress (Management API)**
+**Durable environment deployment progress (Management API)**
 
-- `cpChangeOrder`, `orgEnvironment.deployProgress`, and destroy progress now
-  return read-only task/step projections for DBOS-backed change orders instead
-  of empty arrays. Persisted legacy runner rows still take precedence.
-- Projected pending work means the planner knows the task or step exists but
-  DBOS has not exposed a terminal checkpoint yet. Completed checkpoints and
-  audit outcomes are overlaid when available; synthetic projected ids are
-  prefixed with `dbos:` and are not persisted task-row identifiers.
+- `cpChangeOrder`, `orgEnvironment.deployProgress`, and destroy progress can
+  now return read-only projected task/step progress for durable change orders
+  instead of empty arrays. Recorded execution progress remains authoritative
+  when available.
+- Planned work remains `pending` until an outcome is observed or inferred.
+  Fields unavailable for projected progress remain null, and identifiers
+  should be treated as opaque.
+- For projected step progress, `attempt` is `0` when no attempt or outcome has
+  been observed or inferred, and `1` when an attempt or outcome has been
+  observed or inferred.
+
+**Machine-readable Game API permission metadata**
+
+- The refreshed downloadable Game API SDL now publishes
+  `@requiresPermission` metadata on permission-gated root fields. This makes
+  existing authorization requirements discoverable to tools and agents; it
+  does not change runtime authorization behavior.
 
 ## 2026-07-20
 

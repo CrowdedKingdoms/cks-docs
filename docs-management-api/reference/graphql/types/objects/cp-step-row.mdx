@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Operator step progress. DBOS rows are read-only projections; fields unavailable from DBOS checkpoints remain null and attempt is only 0 (not checkpointed) or 1 (checkpointed).
+Operator step progress. Rows may contain recorded execution progress or a read-only projection. Fields unavailable for projected progress remain null.
 
 
 ```graphql
@@ -61,11 +61,11 @@ type CpStepRow {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CpStepRow.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
-Execution status. Pending DBOS steps are planned but their exact live state is unavailable.
+Execution status. For projected progress, pending means the step is planned and no terminal outcome is available yet.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CpStepRow.<b>attempt</b></code>](#attempt)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#attempt\} 
-
+Attempt indicator. For projected progress, 0 means no attempt or outcome has been observed or inferred; 1 means an attempt or outcome has been observed or inferred.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CpStepRow.<b>payloadJson</b></code>](#payload-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#payload-json\} 

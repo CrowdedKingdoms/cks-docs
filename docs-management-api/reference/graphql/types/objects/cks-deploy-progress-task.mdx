@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A task in a deploy/destroy pipeline, containing ordered steps. DBOS tasks are a read-only projection and are not cp&#x005F;tasks rows.
+A task in a deploy/destroy pipeline, containing ordered steps. Durable change orders may expose task progress as a read-only projection.
 
 
 ```graphql
@@ -45,7 +45,7 @@ type CksDeployProgressTask {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CksDeployProgressTask.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
-Execution status over the available step outcomes; active DBOS tasks may contain pending steps when exact live state is unavailable.
+Execution status derived from available step outcomes. Active projected tasks may contain pending steps when exact live state is unavailable.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CksDeployProgressTask.<b>error</b></code>](#error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error\} 

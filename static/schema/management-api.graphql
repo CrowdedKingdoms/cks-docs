@@ -1490,7 +1490,7 @@ type CpChangeOrdersPage {
 }
 
 """
-Operator task progress. Legacy values are persisted cp_tasks rows; DBOS values are read-only projections from the checkpointed plan and use dbos:-prefixed synthetic ids.
+Operator task progress. Rows may contain recorded execution progress or a read-only projection for a durable change order.
 """
 type CpTaskRow {
   id: ID!
@@ -1500,7 +1500,7 @@ type CpTaskRow {
   ordinal: Int!
   dependsOn: [String!]!
   """
-  Execution status. In a DBOS projection, pending means planned work without an exact terminal checkpoint yet.
+  Execution status. For projected progress, pending means the task is planned and no terminal outcome is available yet.
   """
   status: String!
   """JSON-encoded context"""
@@ -1513,7 +1513,7 @@ type CpTaskRow {
 }
 
 """
-Operator step progress. DBOS rows are read-only projections; fields unavailable from DBOS checkpoints remain null and attempt is only 0 (not checkpointed) or 1 (checkpointed).
+Operator step progress. Rows may contain recorded execution progress or a read-only projection. Fields unavailable for projected progress remain null.
 """
 type CpStepRow {
   id: ID!
@@ -1521,9 +1521,12 @@ type CpStepRow {
   ordinal: Int!
   kind: String!
   """
-  Execution status. Pending DBOS steps are planned but their exact live state is unavailable.
+  Execution status. For projected progress, pending means the step is planned and no terminal outcome is available yet.
   """
   status: String!
+  """
+  Attempt indicator. For projected progress, 0 means no attempt or outcome has been observed or inferred; 1 means an attempt or outcome has been observed or inferred.
+  """
   attempt: Int!
   payloadJson: String
   intentJson: String
@@ -1540,7 +1543,7 @@ type CpStepRow {
 }
 
 """
-Change-order detail using persisted legacy task/step rows when present, otherwise a DBOS checkpoint/planner projection with available outcome overlays.
+Change-order detail with ordered task and step progress. Durable change orders may return read-only projected rows when exact live execution details are unavailable.
 """
 type CpChangeOrderDetail {
   order: CpChangeOrder!
@@ -2352,7 +2355,7 @@ type EnvironmentRedeployPlan {
 }
 
 """
-A single step within a deploy/destroy task. Legacy progress comes from persisted runner rows; DBOS progress is reconstructed from its checkpointed plan and overlays completed checkpoints/audit events. A pending DBOS step is planned work whose exact live state is not yet checkpointed.
+A single step within a deploy/destroy task. Progress may be recorded directly or exposed as a read-only projection for a durable change order. Planned steps remain pending until an outcome is observed or inferred.
 """
 type CksDeployProgressStep {
   id: String!
@@ -2360,22 +2363,25 @@ type CksDeployProgressStep {
   """Human-readable step label for the org UI"""
   label: String!
   """
-  Execution status. For DBOS projections, pending means planned but no exact terminal checkpoint is available yet.
+  Execution status. For projected progress, pending means the step is planned and no terminal outcome is available yet.
   """
   status: String!
+  """
+  Attempt count. For projected progress, 0 means no attempt or outcome has been observed or inferred; 1 means an attempt or outcome has been observed or inferred.
+  """
   attempt: Int!
   error: String
 }
 
 """
-A task in a deploy/destroy pipeline, containing ordered steps. DBOS tasks are a read-only projection and are not cp_tasks rows.
+A task in a deploy/destroy pipeline, containing ordered steps. Durable change orders may expose task progress as a read-only projection.
 """
 type CksDeployProgressTask {
   id: String!
   kind: String!
   label: String!
   """
-  Execution status over the available step outcomes; active DBOS tasks may contain pending steps when exact live state is unavailable.
+  Execution status derived from available step outcomes. Active projected tasks may contain pending steps when exact live state is unavailable.
   """
   status: String!
   error: String
@@ -2383,7 +2389,7 @@ type CksDeployProgressTask {
 }
 
 """
-Progress for the active or most recent deploy/destroy change order, with per-task counts and a retry hint. Legacy orders use persisted task rows; DBOS orders use the checkpointed plan plus available outcomes, so not-yet-checkpointed work remains pending.
+Progress for the active or most recent deploy/destroy change order, with per-task counts and a retry hint. Durable change orders may expose read-only projected tasks and steps; planned work remains pending until an outcome is observed or inferred.
 """
 type CksDeployProgress {
   changeOrderId: String!
@@ -2724,11 +2730,11 @@ type CksEnvironmentDetail {
   outputs: [CksEnvironmentOutput!]!
   billingResources: [CksEnvironmentBillingResource!]!
   """
-  Deploy task/step progress for the active or most recent deploy. Legacy orders use persisted runner rows; DBOS orders use their checkpointed plan with available outcomes, leaving exact live state pending until checkpointed.
+  Deploy task/step progress for the active or most recent deploy. Durable change orders may expose read-only projected progress, with planned work pending until an outcome is observed or inferred.
   """
   deployProgress: CksDeployProgress
   """
-  Destroy tear-down progress for game-api and platform change orders. DBOS progress is a checkpoint/planner projection and may show planned work as pending.
+  Destroy tear-down progress for game-api and platform change orders. Durable change orders may expose read-only projected progress and show planned work as pending.
   """
   destroyProgress: [CksDeployProgress!]!
 }
@@ -3645,7 +3651,7 @@ type Query {
     pageSize: Int! = 50
   ): CpChangeOrdersPage! @requiresPermission(scope: "operator", permission: "is_operator")
   """
-  Operator only (is_operator). One change order with its tasks and steps. Legacy orders use persisted runner rows; DBOS orders use the checkpointed plan plus available checkpoint/audit outcomes, leaving not-yet-checkpointed work pending. Null when the id is not found.
+  Operator only (is_operator). One change order with ordered task and step progress. Durable change orders may return read-only projected rows when exact live execution details are unavailable; planned work remains pending until an outcome is observed or inferred. Null when the id is not found.
   """
   cpChangeOrder(
     """Change order UUID."""

@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A single step within a deploy/destroy task. Legacy progress comes from persisted runner rows; DBOS progress is reconstructed from its checkpointed plan and overlays completed checkpoints/audit events. A pending DBOS step is planned work whose exact live state is not yet checkpointed.
+A single step within a deploy/destroy task. Progress may be recorded directly or exposed as a read-only projection for a durable change order. Planned steps remain pending until an outcome is observed or inferred.
 
 
 ```graphql
@@ -45,11 +45,11 @@ Human-readable step label for the org UI
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CksDeployProgressStep.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
-Execution status. For DBOS projections, pending means planned but no exact terminal checkpoint is available yet.
+Execution status. For projected progress, pending means the step is planned and no terminal outcome is available yet.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CksDeployProgressStep.<b>attempt</b></code>](#attempt)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#attempt\} 
-
+Attempt count. For projected progress, 0 means no attempt or outcome has been observed or inferred; 1 means an attempt or outcome has been observed or inferred.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CksDeployProgressStep.<b>error</b></code>](#error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error\} 

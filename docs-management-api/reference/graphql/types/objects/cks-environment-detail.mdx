@@ -69,11 +69,11 @@ Buddy UDP server heartbeat from mirrored server&#x005F;status. Null when env is 
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentDetail.<b>deployProgress</b></code>](#deploy-progress)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CksDeployProgress</b></code>](/reference/graphql/types/objects/cks-deploy-progress.mdx) <Badge class="badge badge--secondary " text="object"/> \{#deploy-progress\} 
-Deploy task/step progress for the active or most recent deploy. Legacy orders use persisted runner rows; DBOS orders use their checkpointed plan with available outcomes, leaving exact live state pending until checkpointed.
+Deploy task/step progress for the active or most recent deploy. Durable change orders may expose read-only projected progress, with planned work pending until an outcome is observed or inferred.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CksEnvironmentDetail.<b>destroyProgress</b></code>](#destroy-progress)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CksDeployProgress!]!</b></code>](/reference/graphql/types/objects/cks-deploy-progress.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#destroy-progress\} 
-Destroy tear-down progress for game-api and platform change orders. DBOS progress is a checkpoint/planner projection and may show planned work as pending.
+Destroy tear-down progress for game-api and platform change orders. Durable change orders may expose read-only projected progress and show planned work as pending.
 
 
 
