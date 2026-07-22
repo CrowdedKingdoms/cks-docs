@@ -29,6 +29,7 @@ type PlayerWasmModule {
   authorOrgId: BigInt
   enabled: Boolean!
   currentVersionId: String
+  currentTarget: PlayerComputeTarget
   draft: Boolean!
   circuitState: String!
   lastError: String
@@ -74,6 +75,10 @@ Requested activation state. Actual execution also requires grid ownership, run p
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModule.<b>currentVersionId</b></code>](#current-version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#current-version-id\} 
 Currently deployed immutable version UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModule.<b>currentTarget</b></code>](#current-target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerComputeTarget</b></code>](/reference/graphql/types/enums/player-compute-target.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#current-target\} 
+Target of the current immutable version, or null before the first deploy.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModule.<b>draft</b></code>](#draft)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#draft\} 

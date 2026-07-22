@@ -1,0 +1,43 @@
+---
+id: player-code-requirement
+title: PlayerCodeRequirement
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One explicit edge from a server artifact to the client artifact it requires within the same immutable marketplace bundle.
+
+
+```graphql
+type PlayerCodeRequirement {
+  serverArtifactHash: String!
+  clientArtifactHash: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeRequirement.<b>serverArtifactHash</b></code>](#server-artifact-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#server-artifact-hash\} 
+Artifact hash of the SERVER half declaring the requirement.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeRequirement.<b>clientArtifactHash</b></code>](#client-artifact-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-artifact-hash\} 
+Artifact hash of the CLIENT half required by that server.
+
+
+
+
+### Member Of
+
+[`PlayerCodeListingVersion`](/reference/graphql/types/objects/player-code-listing-version.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

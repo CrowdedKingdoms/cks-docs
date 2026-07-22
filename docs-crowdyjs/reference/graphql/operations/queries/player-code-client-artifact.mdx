@@ -15,13 +15,14 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Fetch the client half of an acquired or grid-attached listing (P4a — the deliberate widening of the P3 author-only artifact fetch). Served to an entitled acquirer with a live install, or to a consenting player currently PRESENT in a grid with a live attachment. Both paths require run&#x005F;client&#x005F;code and the listing admitted under the app's mode; every factor fails closed as 'not found'.
+Fetch client WASM for an entitled marketplace install or an exact marketplace/self-authored grid attachment. Attachment fetches require current in-grid presence plus matching attachment consent or capability-bound author trust; self-authored code uses module/author admission rather than a synthetic listing. Every factor, including run&#x005F;client&#x005F;code, Buddy lease when enabled, and kill switches, fails closed as 'not found'.
 
 
 ```graphql
 playerCodeClientArtifact(
   appId: BigInt!
-  listingId: String!
+  listingId: String
+  attachmentId: String
   versionId: String
 ): PlayerClientArtifact!
 ```
@@ -33,8 +34,12 @@ playerCodeClientArtifact(
 App that owns the listing.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>playerCodeClientArtifact.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
-UUID of the listing.
+#### [<code style={{ fontWeight: 'normal' }}>playerCodeClientArtifact.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
+UUID of the marketplace listing. Required for an acquirer fetch; omit when fetching a grid attachment by attachmentId.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerCodeClientArtifact.<b>attachmentId</b></code>](#attachment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#attachment-id\} 
+UUID of a grid client attachment. Supports marketplace and self-authored visitor fetches and binds entitlement to the exact attachment.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>playerCodeClientArtifact.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\} 
