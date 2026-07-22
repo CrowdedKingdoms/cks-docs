@@ -1,0 +1,44 @@
+---
+id: claim-grid-chunk
+title: claimGridChunk
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Claim one currently unclaimed chunk as a new player-owned grid. Requires an ordinary app-scoped player token and active app access, but never manage&#x005F;apps. The app's policy must be SELF&#x005F;CLAIM. The server validates the app's grid assignment and peer-overlap rules, then atomically creates a one-chunk grid, assigns current-user ownership, grants access/update&#x005F;voxel&#x005F;data/use&#x005F;voice&#x005F;chat/teleport plus player-code keys already carried by the caller's tier, and materializes the effective ACL. Conflicts and policy denials throw GraphQL errors; no partial grid, ownership, or grant rows remain.
+
+
+```graphql
+claimGridChunk(
+  appId: BigInt!
+  chunk: ChunkCoordinatesInput!
+): ChunkClaimResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>claimGridChunk.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App in which to claim the chunk. The bearer app token must be scoped to this app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>claimGridChunk.<b>chunk</b></code>](#chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#chunk\} 
+Exact chunk coordinate to claim; the created grid has this coordinate as both its low and high corner.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ChunkClaimResult</b></code>](/reference/graphql/types/objects/chunk-claim-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Authoritative result of an ordinary player claiming one chunk as a new grid under SELF&#x005F;CLAIM. Grid creation, title assignment, and direct ACL grants are committed atomically.

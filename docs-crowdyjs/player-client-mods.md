@@ -11,6 +11,23 @@ page, and a mountable live-coding panel drives the whole edit-deploy-observe
 loop for both server and client targets. (Server mods run in game-api; this
 page is the browser side.)
 
+Before mounting the panel, obtain an authoritative owned grid. In a
+`self_claim` app, an ordinary player can claim the unclaimed chunk they are
+standing in:
+
+```ts
+const claim = await client.marketplace.claimGridChunk({
+  appId,
+  chunk: { x: '12', y: '1', z: '-4' },
+});
+if (!claim.moddable) {
+  throw new Error('The player tier does not include all live-coding keys');
+}
+```
+
+This player path is distinct from `client.gameApps.createGrid`, which is a
+studio-admin operation requiring `manage_apps`.
+
 ## The two-layer sandbox
 
 A client mod never runs on the page directly. Two layers stand between it and
