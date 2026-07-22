@@ -54,12 +54,21 @@ the surfaces you intend to: a HUD panel region and a budgeted in-grid overlay
 are the v1 hooks; world-mesh mutation, other players' HUDs, and camera control
 are not offered.
 
-## Mounting the live-coding panel
+## Mounting the Monaco Rust IDE
+
+CrowdyJS 8.19.1 adds `mountLiveCodingIDE`. It lazy-loads Monaco, opens
+`Cargo.toml` and `src/*.rs` as separate models, and connects to the
+authenticated rust-analyzer authoring service. Syntax highlighting works
+without the language service; completion, hover, go-to-definition, and
+diagnostics require `languageServiceUrl` plus a current app-token getter.
 
 ```ts
-import { mountLiveCoding, PLAYER_CODE_TEMPLATES } from '@crowdedkingdoms/crowdyjs';
+import {
+  mountLiveCodingIDE,
+  PLAYER_CODE_TEMPLATES,
+} from '@crowdedkingdoms/crowdyjs';
 
-const handle = mountLiveCoding(hostElement, {
+const handle = await mountLiveCodingIDE(hostElement, {
   playerCompute: client.playerCompute,
   playerWallet: client.playerWallet,
   appId,
@@ -68,16 +77,70 @@ const handle = mountLiveCoding(hostElement, {
   workerUrl: '/player-glue-worker.js',
   templates: PLAYER_CODE_TEMPLATES,
   draftByDefault: true,
+  languageServiceUrl: 'wss://game.example.com/authoring-lsp',
+  appToken: () => client.session.getToken(),
   onHostCall: (call) => routeToWorldStores(call), // owner-lawful reads/effects
   onPresentation: (p) => renderModHud(p),
 });
 // handle.controller drives deploy/stop; handle.destroy() unmounts.
 ```
 
-The panel offers a target picker, a template picker, an editor, deploy /
+The IDE offers a target picker, template picker, file tabs, editor, deploy /
 draft-deploy / stop, a compile console with the rustc log, and the quota +
-wallet meter. For a custom UI, drive `LiveCodingController` directly with the
-same options.
+wallet meter. rust-analyzer feedback is advisory: Deploy always runs the
+authoritative offline compiler before code can execute.
+
+When the service URL/token is absent or Monaco cannot initialize,
+`mountLiveCodingIDE` falls back to the dependency-free `mountLiveCoding`
+textarea. For a custom UI, drive `LiveCodingController` directly.
+
+## Server modules that require a client companion
+
+Requirements bind **immutable compiled versions**, not mutable module names.
+The UI can present names, but the server resolves each name to its current
+compiled version when this mutation succeeds:
+
+```ts
+await client.playerCompute.setRequires({
+  appId,
+  gridId,
+  serverName: 'plot-referee',
+  requiredClientName: 'plot-hud', // null clears the edge
+});
+```
+
+Both modules must be authored by the caller, compiled successfully, and live
+in the same owned grid. Publishing rejects a marketplace bundle that omits a
+required client version.
+
+## Visitor discovery and per-author trust
+
+On grid entry, call `client.marketplace.gridClientMods({ appId, gridId })`.
+Rows include:
+
+- marketplace/self-authored provenance and immutable client artifact identity;
+- the exact attachment capability summary/hash and consent state; and
+- `authorCapabilitySummaryJson`, `authorCapabilityHash`, and
+  `callerTrustsAuthor`, aggregated across every active attachment from that
+  author in the grid.
+
+Show one prompt per author and echo the aggregate hash:
+
+```ts
+await client.marketplace.trustGridAuthor({
+  appId,
+  gridId,
+  authorKind: row.authorKind,
+  authorRef: row.authorRef,
+  consentCapabilityHash: row.authorCapabilityHash,
+});
+```
+
+Capability widening changes the hash and requires a new prompt. Poll only
+`gridClientMods` metadata while mods run; stop a worker if its attachment
+disappears or its capability/artifact hash changes. Fetch bytes by
+`attachmentId`, cache immutable bytes by `clientArtifactHash`, and stop all
+grid workers on grid exit.
 
 ## The deploy loop
 

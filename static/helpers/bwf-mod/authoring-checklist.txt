@@ -1,0 +1,39 @@
+BWF PLAYER-MOD AUTHORING CHECKLIST
+
+INPUTS
+- appId: BWF app id
+- gridId: a grid currently owned by the author
+- name: lowercase crate-style module name, unique in the grid
+- target: SERVER or CLIENT
+- sourceFilesJson: JSON object containing Cargo.toml and src/lib.rs
+
+REQUIRED SOURCE MAP
+{
+  "Cargo.toml": "<contents of Cargo.toml>",
+  "src/lib.rs": "<contents of server-lib.rs or client-hud-lib.rs>"
+}
+
+WORKFLOW
+1. Deploy CLIENT source with playerComputeDeploy.
+2. Poll playerComputeVersions until compileStatus is succeeded.
+3. Deploy SERVER source and wait for successful compile.
+4. Bind the current versions with playerComputeSetRequires.
+5. Enable the server with playerComputeSetEnabled.
+6. Visitors query gridClientMods, display authorCapabilitySummaryJson, and
+   call trustGridAuthor with the exact authorCapabilityHash.
+7. Fetch client bytes with playerCodeClientArtifact(attachmentId: ...).
+8. Poll only gridClientMods metadata; stop on removal/hash change/grid exit.
+
+INVARIANTS
+- Rust + crowdy-compute-sdk = "0.1.5"; dependencies must be allow-listed.
+- Server code executes as the current grid owner and is grid-confined.
+- Client code runs in the browser worker with no DOM/token/network access.
+- hud_set and overlay_draw are host-rendered presentation requests.
+- rust-analyzer diagnostics are advisory; Deploy compilation is authoritative.
+- Trust is scoped to visitor + app + grid + author + aggregate capability hash.
+- Any capability widening requires a new explicit trust action.
+
+DOWNLOADS
+- /helpers/bwf-mod/Cargo.toml
+- /helpers/bwf-mod/server-lib.rs
+- /helpers/bwf-mod/client-hud-lib.rs

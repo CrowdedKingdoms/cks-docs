@@ -1768,7 +1768,17 @@ enum PlayerCodeListingStatus {
 }
 
 """
-An immutable published version of a code listing. Snapshots ARTIFACT HASHES from the author’s compiled module versions — never source (OQ-1). A version with both server and client hashes is a bundle: installing it on a grid also attaches the client half for visitor consent (D2).
+One explicit edge from a server artifact to the client artifact it requires within the same immutable marketplace bundle.
+"""
+type PlayerCodeRequirement {
+  """Artifact hash of the SERVER half declaring the requirement."""
+  serverArtifactHash: String!
+  """Artifact hash of the CLIENT half required by that server."""
+  clientArtifactHash: String!
+}
+
+"""
+An immutable published version of a code listing. Snapshots ARTIFACT HASHES and explicit server-to-client requirements from the author’s compiled module versions — never source (OQ-1).
 """
 type PlayerCodeVersion {
   """UUID of this published version."""
@@ -1787,6 +1797,10 @@ type PlayerCodeVersion {
   Artifact hashes of the client-target modules in this version (empty for server-only listings).
   """
   clientArtifactHashes: [String!]!
+  """
+  Explicit SERVER artifact to required CLIENT artifact edges. Every referenced hash is a member of this immutable bundle.
+  """
+  requirements: [PlayerCodeRequirement!]!
   """
   JSON capability summary DERIVED from the artifacts by the compile pipeline (imported host families, invoke contracts, presentation hooks, egress budgets). Never self-declared; this is what installers consent to.
   """

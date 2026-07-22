@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-An immutable published version of a code listing. Snapshots ARTIFACT HASHES from the author’s compiled module versions — never source (OQ-1). A version with both server and client hashes is a bundle: installing it on a grid also attaches the client half for visitor consent (D2).
+An immutable published version of a code listing. Snapshots ARTIFACT HASHES and explicit server-to-client requirements from the author’s compiled module versions — never source (OQ-1).
 
 
 ```graphql
@@ -26,6 +26,7 @@ type PlayerCodeVersion {
   versionNo: Int!
   serverArtifactHashes: [String!]!
   clientArtifactHashes: [String!]!
+  requirements: [PlayerCodeRequirement!]!
   capabilitySummaryJson: String!
   capabilityHash: String!
   openSource: Boolean!
@@ -59,6 +60,10 @@ Artifact hashes of the server-target modules in this version (empty for client-o
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerCodeVersion.<b>clientArtifactHashes</b></code>](#client-artifact-hashes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-artifact-hashes\} 
 Artifact hashes of the client-target modules in this version (empty for server-only listings).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeVersion.<b>requirements</b></code>](#requirements)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[PlayerCodeRequirement!]!</b></code>](/reference/graphql/types/objects/player-code-requirement.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#requirements\} 
+Explicit SERVER artifact to required CLIENT artifact edges. Every referenced hash is a member of this immutable bundle.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerCodeVersion.<b>capabilitySummaryJson</b></code>](#capability-summary-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#capability-summary-json\} 

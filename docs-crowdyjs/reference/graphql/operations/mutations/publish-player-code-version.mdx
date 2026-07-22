@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Publish an immutable version under a listing from the caller's successfully compiled module versions (server and/or client — both makes a bundle). Snapshots ARTIFACT HASHES and the DERIVED capability summary; source never leaves the author's rows. Open-sourcing a version is irreversible for that version. Existing installs keep their pinned versions; a widened capability summary forces fresh consent on any new install.
+Publish an immutable version under a listing from the caller's successfully compiled module versions. Snapshots artifact hashes, explicit SERVER-to-required-CLIENT edges, and the derived aggregate capability summary; publishing fails if a required client version is absent from the bundle. Source never leaves the author's rows.
 
 
 ```graphql
@@ -36,4 +36,4 @@ Listing, packaged module version ids, and license options.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListingVersion</b></code>](/reference/graphql/types/objects/player-code-listing-version.mdx) <Badge class="badge badge--secondary " text="object"/> 
-An immutable published version of a code listing: artifact hashes (never source) plus the DERIVED capability summary installers consent to.
+An immutable published version of a code listing: artifact hashes (never source), explicit server-to-client requirements, and the DERIVED capability summary installers consent to.

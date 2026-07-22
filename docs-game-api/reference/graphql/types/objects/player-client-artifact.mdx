@@ -38,7 +38,7 @@ The served version UUID.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>artifactHash</b></code>](#artifact-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-hash\} 
-Content hash of the artifact (also the cache key stem).
+SHA-256 content hash of the served artifact bytes. The browser broker recomputes it and refuses any artifact whose hash differs, so a side-loaded module cannot run (T7).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>artifactBase64</b></code>](#artifact-base-64)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-base-64\} 

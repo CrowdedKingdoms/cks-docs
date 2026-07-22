@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Liveness heartbeat for the authenticated user's actors in an app. Refreshes actors.updated&#x005F;at for every actor row the user owns so the user stays host-eligible, then returns the freshly-elected host (same shape as the gameHost query) so a client can fold its poll and heartbeat into one round-trip. Call on an interval shorter than HOST&#x005F;ACTOR&#x005F;FRESHNESS&#x005F;SECONDS. Only refreshes rows that already exist (created by Buddy on chunk entry); returns null when no fresh actors exist for the app.
+Application liveness heartbeat for the authenticated user's existing actor rows in an app. Refreshes actors.updated&#x005F;at so the user stays host-eligible, then returns the freshly-elected host so a client can fold its poll and heartbeat into one round-trip. This is not proof of a live Buddy session and does not refresh the separate Buddy presence lease used by security-sensitive artifact/compute occupancy gates.
 
 
 ```graphql
