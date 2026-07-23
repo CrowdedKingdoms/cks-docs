@@ -1,5 +1,11 @@
 BWF PLAYER-MOD AUTHORING CHECKLIST
 
+UNPUBLISHED LOCAL MIGRATION
+- Browser-local Rust tooling exists only in local development.
+- No CrowdyJS package version has been assigned or published for this change.
+- The planned major removes languageServiceUrl and appToken IDE options.
+- The lazy language worker receives no token and opens no authoring connection.
+
 INPUTS
 - appId: BWF app id
 - gridId: a grid currently owned by the author
@@ -29,7 +35,10 @@ INVARIANTS
 - Server code executes as the current grid owner and is grid-confined.
 - Client code runs in the browser worker with no DOM/token/network access.
 - hud_set and overlay_draw are host-rendered presentation requests.
-- rust-analyzer diagnostics are advisory; Deploy compilation is authoritative.
+- Local parser/index diagnostics are advisory; Deploy compilation is authoritative.
+- Local tooling does not provide borrow checking, full trait/proc-macro
+  resolution, Cargo build-script execution, or full build semantics.
+- There is no authoring endpoint/token or server language-service fallback.
 - Trust is scoped to visitor + app + grid + author + aggregate capability hash.
 - Any capability widening requires a new explicit trust action.
 
