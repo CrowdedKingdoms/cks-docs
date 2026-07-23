@@ -60,9 +60,9 @@ by hand.
 Serve the app with a `connect-src` CSP that allows only your game-api and
 management-api origins, and host the glue worker as a same-origin asset. The
 player-code worker needs no third-party origins; the broker makes no
-cross-origin requests. The unpublished local-authoring migration also loads its
-module worker and parser/grammar WASM as local assets. It does not add an
-authoring origin to `connect-src`.
+cross-origin requests. CrowdyJS `9.0.0` also loads its Rust-analysis module
+worker and parser/grammar WASM as local assets. It does not add an authoring
+origin to `connect-src`.
 
 ## Presentation hooks
 
@@ -75,21 +75,11 @@ are not offered.
 
 ## Mounting the browser-local Rust IDE
 
-:::caution Unpublished next-major migration
-
-The API in this section exists only in a local development migration. It has
-not been assigned or published as a CrowdyJS version. Do not infer an npm
-version from these docs; the currently published package may still expose the
-older server-authoring options.
-
-:::
-
-The planned CrowdyJS major keeps `mountLiveCodingIDE`, but removes the public
-authoring connection. Opening the panel lazy-loads Monaco, one browser module
-worker, and local `web-tree-sitter` parser/Rust grammar WASM assets. The worker
-speaks an LSP 3.17 subset to Monaco over structured-clone worker messages. It
-does not open a WebSocket or other authoring connection, and it receives no
-app token.
+CrowdyJS `9.0.0` keeps `mountLiveCodingIDE`, but removes the public authoring
+connection. Opening the panel lazy-loads Monaco, one browser module worker, and
+local `web-tree-sitter` parser/Rust grammar WASM assets. The worker speaks an
+LSP 3.17 subset to Monaco over structured-clone worker messages. It does not
+open a WebSocket or other authoring connection, and it receives no app token.
 
 Local feedback includes Rust syntax diagnostics, document symbols,
 workspace-local go-to-definition, completion from open files and the embedded
@@ -131,7 +121,7 @@ The IDE offers a target picker, template picker, file tabs, editor, deploy /
 draft-deploy / stop, a compile console with the authoritative rustc log, and
 the quota + wallet meter.
 
-`languageServiceUrl` and `appToken` are removed from the planned
+`languageServiceUrl` and `appToken` are removed from
 `MountLiveCodingIDEOptions`. Most games need no language-specific options. A
 custom asset pipeline may supply `languageWorkerFactory`; advanced hosts may
 also supply `editorWorkerFactory`, a generated `platformIndex`, or
