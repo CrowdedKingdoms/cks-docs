@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-project-create-from-modules
+title: crowdyStudioProjectCreateFromModules
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lazily create a private project by copying the authenticated author’s latest source from an existing self-authored SERVER module, CLIENT module, or both. Requires an app-scoped token and authorship of every requested module; current grid ownership is deliberately not required for private source recovery after transfer, while any later deploy still rechecks ownership and target permissions. Repeated requests reuse the matching active project.
+
+
+```graphql
+crowdyStudioProjectCreateFromModules(
+  input: CreateCrowdyStudioProjectFromModulesInput!
+): CrowdyStudioProject!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioProjectCreateFromModules.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateCrowdyStudioProjectFromModulesInput!</b></code>](/reference/graphql/types/inputs/create-crowdy-studio-project-from-modules-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+App/grid, one or two caller-authored module names, optional project name, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioProject</b></code>](/reference/graphql/types/objects/crowdy-studio-project.mdx) <Badge class="badge badge--secondary " text="object"/>
+A private, revisioned Crowdy Studio project owned by one user in one app. Optional grid affinity and module names are authoring hints only; deployment still rechecks current grid ownership and target-specific permissions.

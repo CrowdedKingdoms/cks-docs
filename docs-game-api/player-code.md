@@ -72,9 +72,9 @@ all player modules on the grid, wipes their private state, removes the old
 owner's direct grants, and transfers title. The new owner receives no implicit
 permissions and must explicitly consent before re-enabling code.
 
-## Cloud projects and reusable files
+## Crowdy Studio projects and reusable files
 
-An authoring project is mutable, private workspace state. It is deliberately
+A Crowdy Studio project is mutable, private workspace state. It is deliberately
 separate from `player_wasm_module_versions`: autosaving a half-written file
 does not consume compile quota or create a runnable version. A deploy takes the
 saved SERVER or CLIENT tree and publishes the ordinary immutable source
@@ -102,23 +102,23 @@ provenance. It is not a live dependency: publishing a new common-file version
 cannot mutate an existing project or deployed artifact behind the author's
 back.
 
-The player-facing project surface is:
+The Crowdy Studio project surface is:
 
-- `playerCodeProjects` / `playerCodeProject` — list or load private projects;
-- `playerCodeProjectCreate`, atomic `playerCodeProjectSave`,
-  lower-level `playerCodeProjectSaveMetadata` /
-  `playerCodeProjectSaveFiles`, and `playerCodeProjectSetArchived` — create,
+- `crowdyStudioProjects` / `crowdyStudioProject` — list or load private projects;
+- `crowdyStudioProjectCreate`, atomic `crowdyStudioProjectSave`,
+  lower-level `crowdyStudioProjectSaveMetadata` /
+  `crowdyStudioProjectSaveFiles`, and `crowdyStudioProjectSetArchived` — create,
   optimistically save, and retain/archive projects;
-- `playerCodeLibraryFiles`, `playerCodeLibrarySave`, and
-  `playerCodeLibrarySetArchived` — manage the caller's private reusable files;
-- `playerCodeCommonFiles` — read the app's current published catalog;
-- `playerCodeProjectImportFile` — copy one authorized library/common version
+- `crowdyStudioLibraryFiles`, `crowdyStudioLibrarySave`, and
+  `crowdyStudioLibrarySetArchived` — manage the caller's private reusable files;
+- `crowdyStudioCommonFiles` — read the app's current published catalog;
+- `crowdyStudioProjectImportFile` — copy one authorized library/common version
   into a project; and
-- `playerCodeProjectCreateFromModules` — recover the caller's latest authored
+- `crowdyStudioProjectCreateFromModules` — recover the caller's latest authored
   module source into a cloud project, including after grid transfer.
 
 Studios publish immutable common-file versions with
-`playerCodeCommonPublish`, which requires `manage_compute`. Personal project
+`crowdyStudioCommonPublish`, which requires `manage_compute`. Personal project
 operations use an app-scoped token and exact app/user ownership; grid affinity
 never grants source access or deployment rights.
 
@@ -320,10 +320,10 @@ presence signals (look direction, custom telemetry), a grid owner can ship a
 grid's server compute — see
 [grid-attached client mods](player-marketplace#bundles-and-grid-attached-client-mods).
 
-## Mod Studio
+## Crowdy Studio
 
-Player code is written in an **in-grid Mod Studio** (CrowdyJS
-`mountModStudio`) rather than a separate management tool. Its private cloud
+Player code is written in **Crowdy Studio** inside the game (CrowdyJS
+`mountCrowdyStudio`) rather than a separate management tool. Its private cloud
 projects survive closing the game and may contain both server and client
 source trees. Personal library files and app-curated common files can be
 copied into either tree; deployment always snapshots the resulting source into
@@ -343,13 +343,13 @@ The loop is:
   succeed. Enabling the server materializes the client attachment visitors
   consent to when they enter the grid.
 
-Mod Studio distinguishes local advisory diagnostics from authoritative rustc
+Crowdy Studio distinguishes local advisory diagnostics from authoritative rustc
 errors, maps compiler locations back to files, and exposes Problems, Build,
 Runs, Logs, and Invoke views. It also shows quota and wallet meters live (units
 used vs the effective cap, remaining compiles, and the typed gate reason when
 paused), so the player can see a mod's cost while iterating.
 
-There is no separate Mod Studio permission. SERVER and CLIENT actions are
+There is no separate Crowdy Studio permission. SERVER and CLIENT actions are
 shown according to their distinct `write_*_code` and `run_*_code` keys, and
 the `maxCompilesPerHour` quota governs the compile loop. A compile flood is
 refused with a retry-after; running modules are unaffected.

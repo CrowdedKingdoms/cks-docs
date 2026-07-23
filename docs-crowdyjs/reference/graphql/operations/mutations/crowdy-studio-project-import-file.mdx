@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-project-import-file
+title: crowdyStudioProjectImportFile
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Copy one active caller-owned library revision or one immutable published app-common version into a private project by value. Requires an app-scoped token and exact project ownership. The source is re-authorized, content/provenance are snapshotted, project caps and aggregate storage are checked, and the project revision advances atomically.
+
+
+```graphql
+crowdyStudioProjectImportFile(
+  input: ImportCrowdyStudioProjectFileInput!
+): CrowdyStudioProject!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioProjectImportFile.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ImportCrowdyStudioProjectFileInput!</b></code>](/reference/graphql/types/inputs/import-crowdy-studio-project-file-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+Destination project/revision, exactly one authorized source id, optional safe destination path, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioProject</b></code>](/reference/graphql/types/objects/crowdy-studio-project.mdx) <Badge class="badge badge--secondary " text="object"/>
+A private, revisioned Crowdy Studio project owned by one user in one app. Optional grid affinity and module names are authoring hints only; deployment still rechecks current grid ownership and target-specific permissions.

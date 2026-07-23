@@ -1,15 +1,15 @@
 ---
 sidebar_position: 19
-title: Player client mods & live coding
+title: Crowdy Studio & player client mods
 ---
 
-# Player client mods and live coding
+# Crowdy Studio and player client mods
 
-CrowdyJS hosts the browser half of [player code](/game-api/player-code):
-client-target player mods run **as the actual player**, sandboxed in the
-page, and a mountable live-coding panel drives the whole edit-deploy-observe
-loop for both server and client targets. (Server mods run in game-api; this
-page is the browser side.)
+CrowdyJS hosts Crowdy Studio and the browser half of
+[player code](/game-api/player-code): client-target player mods run **as the
+actual player**, sandboxed in the page, and the mountable authoring panel
+drives the whole edit-deploy-observe loop for both server and client targets.
+(Server mods run in game-api; this page is the browser side.)
 
 Before mounting the panel, obtain an authoritative owned grid. In a
 `self_claim` app, an ordinary player can claim the unclaimed chunk they are
@@ -21,7 +21,7 @@ const claim = await client.marketplace.claimGridChunk({
   chunk: { x: '12', y: '1', z: '-4' },
 });
 if (!claim.moddable) {
-  throw new Error('The player tier does not include all live-coding keys');
+  throw new Error('The player tier does not include all player-code authoring keys');
 }
 ```
 
@@ -60,30 +60,29 @@ by hand.
 Serve the app with a `connect-src` CSP that allows only your game-api and
 management-api origins, and host the glue worker as a same-origin asset. The
 player-code worker needs no third-party origins; the broker makes no
-cross-origin requests. CrowdyJS `9.0.0` also loads its Rust-analysis module
-worker and parser/grammar WASM as local assets. It does not add an authoring
-origin to `connect-src`.
+cross-origin requests. Crowdy Studio also loads its Rust-analysis module worker
+and parser/grammar WASM as local assets. It does not add an authoring origin to
+`connect-src`.
 
 ## Presentation hooks
 
 A client mod never touches your DOM. To let a mod draw, the host game passes
-`onPresentation` to the broker (or the live-coding panel) and renders the
+`onPresentation` to the broker (or Crowdy Studio) and renders the
 `hud` / `overlay` payloads into a mod-scoped region it controls. Offer only
 the surfaces you intend to: a HUD panel region and a budgeted in-grid overlay
 are the v1 hooks; world-mesh mutation, other players' HUDs, and camera control
 are not offered.
 
-## Mounting Mod Studio
+## Mounting Crowdy Studio
 
-CrowdyJS 10 exposes a project-first `mountModStudio` surface for in-game
-authoring. It intentionally replaces the removed session-only
-`mountLiveCodingIDE` / `LiveCodingController` API without compatibility
-aliases. A project is private cloud state owned by one player and can contain
-both a SERVER tree and a CLIENT tree. Each target has its own `Cargo.toml` and
+CrowdyJS 11 exposes a project-first `mountCrowdyStudio` surface for in-game
+authoring. This finalized greenfield surface has no compatibility aliases. A
+project is private cloud state owned by one player and can contain both a
+SERVER tree and a CLIENT tree. Each target has its own `Cargo.toml` and
 `src/*.rs` files; deployment still creates two independently compiled,
 immutable module versions.
 
-Opening Mod Studio lazy-loads Monaco, one browser module worker, and local
+Opening Crowdy Studio lazy-loads Monaco, one browser module worker, and local
 `web-tree-sitter` parser/Rust grammar WASM assets. The worker speaks an LSP
 3.17 subset to Monaco over structured-clone worker messages. It does not open a
 WebSocket or other authoring connection, and it receives no app token.
@@ -104,11 +103,11 @@ source through the existing player-compute API, and the platform's server-side
 compiler remains the only authoritative compile decision.
 
 ```ts
-import { mountModStudio } from '@crowdedkingdoms/crowdyjs/mod-studio';
+import { mountCrowdyStudio } from '@crowdedkingdoms/crowdyjs/crowdy-studio';
 
-const handle = await mountModStudio(hostElement, {
+const handle = await mountCrowdyStudio(hostElement, {
   playerCompute: client.playerCompute,
-  projectProvider: client.playerCodeProjects,
+  projectProvider: client.crowdyStudio,
   playerWallet: client.playerWallet,
   appId,
   gridId,                // a grid the player currently owns
@@ -124,7 +123,7 @@ const handle = await mountModStudio(hostElement, {
 // handle.controller drives save/test/deploy/stop; handle.destroy() unmounts.
 ```
 
-Mod Studio offers cloud autosave, a target-aware project explorer, personal
+Crowdy Studio offers cloud autosave, a target-aware project explorer, personal
 library files, app-provided common files, Monaco tabs, Problems, Build, Logs,
 Runs, Invoke, and quota/wallet status. Library and common files are copied by
 value into a project: later catalog edits cannot silently change a deployed
@@ -138,7 +137,7 @@ supply `languageWorkerFactory`; advanced hosts may also supply
 `languageRequestTimeoutMs`:
 
 ```ts
-await mountModStudio(hostElement, {
+await mountCrowdyStudio(hostElement, {
   // ...the required projects, player-compute, grid, worker, and host options...
   languageWorkerFactory: () =>
     new Worker(localRustWorkerUrl, { type: 'module' }),
@@ -152,7 +151,7 @@ These are local worker/configuration hooks, not endpoint or credential
 options. If Monaco, Worker, the local WASM assets, or platform-index validation
 fails, the same mount renders a target/file-aware textarea workspace backed by
 the cloud project API. There is deliberately no server language-service
-fallback. For a custom UI, drive `ModStudioController` directly.
+fallback. For a custom UI, drive `CrowdyStudioController` directly.
 
 ## Server modules that require a client companion
 

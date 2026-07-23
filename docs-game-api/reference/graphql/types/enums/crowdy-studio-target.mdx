@@ -1,0 +1,43 @@
+---
+id: crowdy-studio-target
+title: CrowdyStudioTarget
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The independently capped source target inside a player-owned Crowdy Studio project.
+
+
+```graphql
+enum CrowdyStudioTarget {
+  SERVER
+  CLIENT
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioTarget.<b>SERVER</b></code>](#server) \{#server\}
+Server-target Rust that can run only after the caller separately passes current grid ownership and write&#x005F;server&#x005F;code deployment checks.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioTarget.<b>CLIENT</b></code>](#client) \{#client\}
+Browser-worker Rust that can run only after the caller separately passes current grid ownership and write&#x005F;client&#x005F;code deployment checks.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioCommonFile`](/reference/graphql/types/objects/crowdy-studio-common-file.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`crowdyStudioCommonFiles`](/reference/graphql/operations/queries/crowdy-studio-common-files.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`CrowdyStudioLibraryFile`](/reference/graphql/types/objects/crowdy-studio-library-file.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CrowdyStudioProjectFile`](/reference/graphql/types/objects/crowdy-studio-project-file.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CrowdyStudioProjectFileDeleteInput`](/reference/graphql/types/inputs/crowdy-studio-project-file-delete-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`CrowdyStudioProjectFileInput`](/reference/graphql/types/inputs/crowdy-studio-project-file-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`PublishCrowdyStudioCommonFileInput`](/reference/graphql/types/inputs/publish-crowdy-studio-common-file-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SaveCrowdyStudioLibraryFileInput`](/reference/graphql/types/inputs/save-crowdy-studio-library-file-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
