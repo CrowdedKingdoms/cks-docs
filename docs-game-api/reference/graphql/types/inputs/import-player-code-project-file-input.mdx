@@ -1,0 +1,73 @@
+---
+id: import-player-code-project-file-input
+title: ImportPlayerCodeProjectFileInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Copy a private library revision or immutable published common version into a project by value.
+
+
+```graphql
+input ImportPlayerCodeProjectFileInput {
+  appId: BigInt!
+  projectId: String!
+  expectedProjectRevision: BigInt!
+  source: PlayerCodeImportSource!
+  libraryFileId: String
+  commonVersionId: String
+  destinationPath: String
+  idempotencyKey: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ImportPlayerCodeProjectFileInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App tenant shared by the project and import source.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ImportPlayerCodeProjectFileInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+Destination project UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ImportPlayerCodeProjectFileInput.<b>expectedProjectRevision</b></code>](#expected-project-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expected-project-revision\} 
+Current project revision; the copy and revision increment are atomic.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ImportPlayerCodeProjectFileInput.<b>source</b></code>](#source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeImportSource!</b></code>](/reference/graphql/types/enums/player-code-import-source.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#source\} 
+Private LIBRARY or app-curated COMMON source.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ImportPlayerCodeProjectFileInput.<b>libraryFileId</b></code>](#library-file-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#library-file-id\} 
+Caller-owned library file UUID; required only for LIBRARY imports.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ImportPlayerCodeProjectFileInput.<b>commonVersionId</b></code>](#common-version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#common-version-id\} 
+Immutable common version UUID; required only for COMMON imports.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ImportPlayerCodeProjectFileInput.<b>destinationPath</b></code>](#destination-path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#destination-path\} 
+Optional safe destination path. Omit to use the source entry’s path or path hint.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ImportPlayerCodeProjectFileInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional 24-hour retry key.
+
+
+
+
+### Member Of
+
+[`playerCodeProjectImportFile`](/reference/graphql/operations/mutations/player-code-project-import-file.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

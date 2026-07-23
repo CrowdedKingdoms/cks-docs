@@ -1,0 +1,48 @@
+---
+id: player-code-common-status
+title: PlayerCodeCommonStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Studio-controlled catalog visibility. Player catalog queries return only published entries.
+
+
+```graphql
+enum PlayerCodeCommonStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonStatus.<b>DRAFT</b></code>](#draft) \{#draft\} 
+Studio work in progress; hidden from player common-file queries.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonStatus.<b>PUBLISHED</b></code>](#published) \{#published\} 
+Available to app-scoped players for reading and copy-by-value import.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonStatus.<b>ARCHIVED</b></code>](#archived) \{#archived\} 
+Retained for provenance but hidden from new player catalog reads and imports.
+
+
+
+
+### Member Of
+
+[`PlayerCodeCommonFile`](/reference/graphql/types/objects/player-code-common-file.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

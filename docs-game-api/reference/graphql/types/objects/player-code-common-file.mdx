@@ -1,0 +1,118 @@
+---
+id: player-code-common-file
+title: PlayerCodeCommonFile
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A studio-curated app-scoped common file at its current immutable published version. Unlike personal source, this content is intentionally readable by app-scoped players.
+
+
+```graphql
+type PlayerCodeCommonFile {
+  commonFileId: String!
+  appId: BigInt!
+  slug: String!
+  title: String!
+  description: String
+  path: String!
+  target: PlayerCodeTarget!
+  tags: [String!]!
+  status: PlayerCodeCommonStatus!
+  versionId: String!
+  versionNo: BigInt!
+  content: String!
+  contentSha256: String!
+  publishedByUserId: BigInt!
+  publishedAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>commonFileId</b></code>](#common-file-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#common-file-id\} 
+Stable common catalog entry UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App tenant whose players may read this published entry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
+Stable lowercase URL-safe catalog slug.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>title</b></code>](#title)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#title\} 
+Studio-authored catalog title.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Optional studio-authored catalog description.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\} 
+Safe recommended project destination path.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeTarget!</b></code>](/reference/graphql/types/enums/player-code-target.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#target\} 
+Compatible project target for this catalog entry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tags\} 
+Normalized studio-curated discovery tags.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeCommonStatus!</b></code>](/reference/graphql/types/enums/player-code-common-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+Catalog lifecycle state; ordinary player queries expose only PUBLISHED.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\} 
+Current immutable content-version UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>versionNo</b></code>](#version-no)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-no\} 
+Monotonic immutable version number within the catalog entry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>content</b></code>](#content)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content\} 
+Published UTF-8 source text for this immutable version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>contentSha256</b></code>](#content-sha-256)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content-sha-256\} 
+Lowercase SHA-256 digest of the exact UTF-8 content bytes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>publishedByUserId</b></code>](#published-by-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#published-by-user-id\} 
+Studio user that published the current immutable version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>publishedAt</b></code>](#published-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#published-at\} 
+Timestamp when the current immutable version was published.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+Catalog entry creation timestamp.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeCommonFile.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+Timestamp of the latest catalog publication.
+
+
+
+
+### Returned By
+
+[`playerCodeCommonFiles`](/reference/graphql/operations/queries/player-code-common-files.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`playerCodeCommonPublish`](/reference/graphql/operations/mutations/player-code-common-publish.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

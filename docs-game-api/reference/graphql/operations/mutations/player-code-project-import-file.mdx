@@ -1,0 +1,39 @@
+---
+id: player-code-project-import-file
+title: playerCodeProjectImportFile
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Copy one active caller-owned library revision or one immutable published app-common version into a private project by value. Requires an app-scoped token and exact project ownership. The source is re-authorized, content/provenance are snapshotted, project caps and aggregate storage are checked, and the project revision advances atomically.
+
+
+```graphql
+playerCodeProjectImportFile(
+  input: ImportPlayerCodeProjectFileInput!
+): PlayerCodeProject!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerCodeProjectImportFile.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ImportPlayerCodeProjectFileInput!</b></code>](/reference/graphql/types/inputs/import-player-code-project-file-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Destination project/revision, exactly one authorized source id, optional safe destination path, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeProject</b></code>](/reference/graphql/types/objects/player-code-project.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A private, revisioned Mod Studio project owned by one user in one app. Optional grid affinity and module names are authoring hints only; deployment still rechecks current grid ownership and target-specific permissions.

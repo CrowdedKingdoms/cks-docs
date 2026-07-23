@@ -1,0 +1,128 @@
+---
+id: player-code-project
+title: PlayerCodeProject
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A private, revisioned Mod Studio project owned by one user in one app. Optional grid affinity and module names are authoring hints only; deployment still rechecks current grid ownership and target-specific permissions.
+
+
+```graphql
+type PlayerCodeProject {
+  projectId: String!
+  appId: BigInt!
+  ownerUserId: BigInt!
+  gridId: BigInt
+  name: String!
+  description: String
+  serverModuleName: String
+  clientModuleName: String
+  pairingPreference: PlayerCodePairingPreference!
+  sdkVersion: String!
+  abiVersion: Int!
+  revision: BigInt!
+  archived: Boolean!
+  archivedAt: DateTime
+  fileCount: Int!
+  totalBytes: BigInt!
+  files: [PlayerCodeProjectFile!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+Stable project UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App tenant that isolates this project and all of its source.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>ownerUserId</b></code>](#owner-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#owner-user-id\} 
+User that exclusively owns and may read or modify this project source.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Optional grid affinity. It survives a grid transfer and does not itself grant deploy authority.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Player-facing project name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Optional private project description.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>serverModuleName</b></code>](#server-module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#server-module-name\} 
+Stable crate-style SERVER module name used when the owner chooses to deploy, or null when unassigned.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>clientModuleName</b></code>](#client-module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-module-name\} 
+Stable crate-style CLIENT module name used when the owner chooses to deploy, or null when unassigned.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>pairingPreference</b></code>](#pairing-preference)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodePairingPreference!</b></code>](/reference/graphql/types/enums/player-code-pairing-preference.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#pairing-preference\} 
+Editor presentation preference for the two source targets.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>sdkVersion</b></code>](#sdk-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sdk-version\} 
+Pinned crowdy-compute-sdk version used when constructing deploy input.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\} 
+Pinned guest ABI version used when constructing deploy input.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>revision</b></code>](#revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#revision\} 
+Monotonic project revision required by optimistic metadata, file, import, and archive mutations.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>archived</b></code>](#archived)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#archived\} 
+Whether the project is archived. Archived projects remain private and retained but are read-only until unarchived.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>archivedAt</b></code>](#archived-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#archived-at\} 
+Archive timestamp, or null while the project is active.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>fileCount</b></code>](#file-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#file-count\} 
+Total file count across both targets; each target is independently capped at eight.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>totalBytes</b></code>](#total-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total-bytes\} 
+Total UTF-8 source bytes across both targets, bounded by target and aggregate owner quotas.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>files</b></code>](#files)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[PlayerCodeProjectFile!]!</b></code>](/reference/graphql/types/objects/player-code-project-file.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#files\} 
+Private project files ordered by target and path. Bounded to eight files per target.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+Project creation timestamp.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProject.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+Timestamp of the latest successful project mutation.
+
+
+
+
+### Returned By
+
+[`playerCodeProject`](/reference/graphql/operations/queries/player-code-project.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`playerCodeProjectCreate`](/reference/graphql/operations/mutations/player-code-project-create.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`playerCodeProjectCreateFromModules`](/reference/graphql/operations/mutations/player-code-project-create-from-modules.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`playerCodeProjectImportFile`](/reference/graphql/operations/mutations/player-code-project-import-file.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`playerCodeProjects`](/reference/graphql/operations/queries/player-code-projects.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`playerCodeProjectSave`](/reference/graphql/operations/mutations/player-code-project-save.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`playerCodeProjectSaveFiles`](/reference/graphql/operations/mutations/player-code-project-save-files.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`playerCodeProjectSaveMetadata`](/reference/graphql/operations/mutations/player-code-project-save-metadata.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`playerCodeProjectSetArchived`](/reference/graphql/operations/mutations/player-code-project-set-archived.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

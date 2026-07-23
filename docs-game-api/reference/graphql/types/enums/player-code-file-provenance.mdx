@@ -1,0 +1,48 @@
+---
+id: player-code-file-provenance
+title: PlayerCodeFileProvenance
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+How a project file entered the project. Imported content is copied by value; provenance is informational and does not create a live link.
+
+
+```graphql
+enum PlayerCodeFileProvenance {
+  AUTHORED
+  LIBRARY
+  COMMON
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeFileProvenance.<b>AUTHORED</b></code>](#authored) \{#authored\} 
+The owner authored or directly saved this project file.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeFileProvenance.<b>LIBRARY</b></code>](#library) \{#library\} 
+The file was copied from a specific revision of the owner’s private personal library.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeFileProvenance.<b>COMMON</b></code>](#common) \{#common\} 
+The file was copied from a specific immutable version of the app’s studio-curated common catalog.
+
+
+
+
+### Member Of
+
+[`PlayerCodeProjectFile`](/reference/graphql/types/objects/player-code-project-file.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

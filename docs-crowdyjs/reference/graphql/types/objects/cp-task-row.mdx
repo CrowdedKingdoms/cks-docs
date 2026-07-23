@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-No description
+Operator task progress. Rows may contain recorded execution progress or a read-only projection for a durable change order.
 
 
 ```graphql
@@ -64,7 +64,7 @@ type CpTaskRow {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CpTaskRow.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
-
+Execution status. For projected progress, pending means the task is planned and no terminal outcome is available yet.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CpTaskRow.<b>contextJson</b></code>](#context-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#context-json\} 

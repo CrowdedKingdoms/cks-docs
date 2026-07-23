@@ -1,0 +1,63 @@
+---
+id: create-player-code-project-from-modules-input
+title: CreatePlayerCodeProjectFromModulesInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lazily create a private project by copying the authenticated author’s latest source versions from existing self-authored player modules.
+
+
+```graphql
+input CreatePlayerCodeProjectFromModulesInput {
+  appId: BigInt!
+  gridId: BigInt!
+  serverModuleName: String
+  clientModuleName: String
+  projectName: String
+  idempotencyKey: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerCodeProjectFromModulesInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App tenant containing the authored modules.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerCodeProjectFromModulesInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Grid containing the authored modules. Current ownership is not required to recover one’s own source, but deployment is rechecked separately.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerCodeProjectFromModulesInput.<b>serverModuleName</b></code>](#server-module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#server-module-name\} 
+Existing self-authored SERVER module name to copy; at least one module name is required.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerCodeProjectFromModulesInput.<b>clientModuleName</b></code>](#client-module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-module-name\} 
+Existing self-authored CLIENT module name to copy; at least one module name is required.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerCodeProjectFromModulesInput.<b>projectName</b></code>](#project-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#project-name\} 
+Optional project name. Omit to derive a bounded name from the imported module name(s).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerCodeProjectFromModulesInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional 24-hour retry key. The operation also returns an already-created active project with the same module affinity.
+
+
+
+
+### Member Of
+
+[`playerCodeProjectCreateFromModules`](/reference/graphql/operations/mutations/player-code-project-create-from-modules.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
