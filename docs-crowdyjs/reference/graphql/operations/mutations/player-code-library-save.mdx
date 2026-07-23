@@ -1,0 +1,39 @@
+---
+id: player-code-library-save
+title: playerCodeLibrarySave
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create or optimistically update one private personal-library source file. Requires an app-scoped token; ownership is always the authenticated player and cannot be delegated. Safe source paths, 64-KiB content, revision, and configurable bounded aggregate library storage are enforced atomically.
+
+
+```graphql
+playerCodeLibrarySave(
+  input: SavePlayerCodeLibraryFileInput!
+): PlayerCodeLibraryFile!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerCodeLibrarySave.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SavePlayerCodeLibraryFileInput!</b></code>](/reference/graphql/types/inputs/save-player-code-library-file-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Create/update shape, safe path hint, target, tags, private content, and optional retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeLibraryFile</b></code>](/reference/graphql/types/objects/player-code-library-file.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A reusable private text file in the authenticated player’s app-scoped personal library.

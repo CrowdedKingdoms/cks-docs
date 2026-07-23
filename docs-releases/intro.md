@@ -14,6 +14,30 @@ downloadable SDL) until the stated removal date.
 
 ## 2026-07-23 (latest)
 
+**CrowdyJS 10 + Game API: project-first Mod Studio**
+
+- New private Game API project storage separates autosaved SERVER/CLIENT
+  source from immutable compile versions. Projects use optimistic revisions;
+  personal-library files stay owner-only; studio common files are immutable
+  and copy into projects by value.
+- New roots: `playerCodeProjects`, `playerCodeProject`,
+  `playerCodeProjectCreate`, atomic `playerCodeProjectSave`,
+  `playerCodeProjectSaveMetadata`, `playerCodeProjectSaveFiles`,
+  `playerCodeProjectSetArchived`, `playerCodeLibraryFiles`,
+  `playerCodeLibrarySave`, `playerCodeLibrarySetArchived`,
+  `playerCodeCommonFiles`, `playerCodeCommonPublish`,
+  `playerCodeProjectImportFile`, and `playerCodeProjectCreateFromModules`.
+- CrowdyJS `10.0.0` intentionally replaces the greenfield session-only
+  live-coding exports with `mountModStudio` / `ModStudioController` and
+  `client.playerCodeProjects`. There are no deprecated aliases. Mod Studio
+  adds cloud autosave/conflicts, project file CRUD, My Library/Common Files,
+  target-aware Monaco/fallback editors, authoritative rustc markers,
+  full-stack deploy/pairing, Runs/Logs/Invoke, wallet/quota status, and truthful
+  server+client stop behavior.
+- Blocks with Friends now embeds the full-screen accessible Mod Studio, passes
+  authoritative grid bounds and target-specific permissions, and seeds its
+  first-party entrypoints into the common-file catalog.
+
 **CrowdyJS 9.0.0: browser-local Rust authoring**
 
 - CrowdyJS `9.0.0` is published. Blocks with Friends dev and test use it and

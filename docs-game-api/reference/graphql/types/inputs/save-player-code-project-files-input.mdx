@@ -1,0 +1,63 @@
+---
+id: save-player-code-project-files-input
+title: SavePlayerCodeProjectFilesInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Atomically upsert and delete a private project’s text files under one expected project revision.
+
+
+```graphql
+input SavePlayerCodeProjectFilesInput {
+  appId: BigInt!
+  projectId: String!
+  expectedRevision: BigInt!
+  upserts: [PlayerCodeProjectFileInput!]
+  deletes: [PlayerCodeProjectFileDeleteInput!]
+  idempotencyKey: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SavePlayerCodeProjectFilesInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App tenant that owns the private project.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SavePlayerCodeProjectFilesInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+Project UUID to mutate.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SavePlayerCodeProjectFilesInput.<b>expectedRevision</b></code>](#expected-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expected-revision\} 
+Current project revision used for optimistic concurrency across the entire batch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SavePlayerCodeProjectFilesInput.<b>upserts</b></code>](#upserts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[PlayerCodeProjectFileInput!]</b></code>](/reference/graphql/types/inputs/player-code-project-file-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#upserts\} 
+Files to insert or replace. The batch commits only if all paths and post-save caps are valid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SavePlayerCodeProjectFilesInput.<b>deletes</b></code>](#deletes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[PlayerCodeProjectFileDeleteInput!]</b></code>](/reference/graphql/types/inputs/player-code-project-file-delete-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#deletes\} 
+Files to remove in the same transaction. A target/path cannot also appear in upserts.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SavePlayerCodeProjectFilesInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional 24-hour retry key; recommended because a successful batch increments the expected revision.
+
+
+
+
+### Member Of
+
+[`playerCodeProjectSaveFiles`](/reference/graphql/operations/mutations/player-code-project-save-files.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

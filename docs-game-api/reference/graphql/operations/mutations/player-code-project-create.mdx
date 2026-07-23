@@ -1,0 +1,39 @@
+---
+id: player-code-project-create
+title: playerCodeProjectCreate
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a private revisioned Mod Studio project for the authenticated player, optionally with initial server/client text files. Requires only an app-scoped token for the input app; optional grid affinity is validated but grants no deployment authority. Source paths, per-target deploy caps, and aggregate owner/app storage are enforced atomically.
+
+
+```graphql
+playerCodeProjectCreate(
+  input: CreatePlayerCodeProjectInput!
+): PlayerCodeProject!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerCodeProjectCreate.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreatePlayerCodeProjectInput!</b></code>](/reference/graphql/types/inputs/create-player-code-project-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Project metadata, optional non-authoritative grid affinity, optional bounded initial files, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeProject</b></code>](/reference/graphql/types/objects/player-code-project.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A private, revisioned Mod Studio project owned by one user in one app. Optional grid affinity and module names are authoring hints only; deployment still rechecks current grid ownership and target-specific permissions.

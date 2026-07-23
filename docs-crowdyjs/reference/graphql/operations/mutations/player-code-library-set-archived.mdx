@@ -1,0 +1,39 @@
+---
+id: player-code-library-set-archived
+title: playerCodeLibrarySetArchived
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Archive or restore one caller-owned personal-library file under optimistic revision control. Requires an app-scoped token and exact app/user ownership; archived entries remain retained but cannot be imported until restored.
+
+
+```graphql
+playerCodeLibrarySetArchived(
+  input: SetPlayerCodeLibraryFileArchivedInput!
+): PlayerCodeLibraryFile!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerCodeLibrarySetArchived.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetPlayerCodeLibraryFileArchivedInput!</b></code>](/reference/graphql/types/inputs/set-player-code-library-file-archived-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Library entry id, expected revision, desired archive state, and optional retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeLibraryFile</b></code>](/reference/graphql/types/objects/player-code-library-file.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A reusable private text file in the authenticated player’s app-scoped personal library.

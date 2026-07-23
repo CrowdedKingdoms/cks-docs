@@ -2727,6 +2727,244 @@ type GridPurchaseResult {
 }
 
 """
+One private text file in a player-owned project. It is returned only when both app id and authenticated owner match the project.
+"""
+type PlayerCodeProjectFile {
+  """
+  Server or client target whose independent 8-file/256-KiB deploy cap includes this file.
+  """
+  target: PlayerCodeTarget!
+  """
+  Safe compute-source relative path: Cargo.toml or a Rust file below src/.
+  """
+  path: String!
+  """
+  Private UTF-8 source text. Grid ownership and studio permissions never override project ownership.
+  """
+  content: String!
+  """
+  Monotonic revision of this target/path entry, incremented on every successful upsert.
+  """
+  revision: BigInt!
+  """
+  Copy provenance. Imported bytes remain unchanged if the source catalog entry later changes.
+  """
+  provenance: PlayerCodeFileProvenance!
+  """
+  Private library file UUID used for the copy, or null for authored/common content.
+  """
+  provenanceLibraryFileId: String
+  """
+  Library revision copied into this file, or null when library provenance does not apply.
+  """
+  provenanceLibraryRevision: BigInt
+  """
+  Immutable common-file version UUID copied into this file, or null when common provenance does not apply.
+  """
+  provenanceCommonVersionId: String
+  """Timestamp when this target/path entry was first created."""
+  createdAt: DateTime!
+  """Timestamp of the latest successful content/provenance save."""
+  updatedAt: DateTime!
+}
+
+"""
+The independently capped source target inside a player-owned Mod Studio project.
+"""
+enum PlayerCodeTarget {
+  """
+  Server-target Rust that can run only after the caller separately passes current grid ownership and write_server_code deployment checks.
+  """
+  SERVER
+  """
+  Browser-worker Rust that can run only after the caller separately passes current grid ownership and write_client_code deployment checks.
+  """
+  CLIENT
+}
+
+"""
+How a project file entered the project. Imported content is copied by value; provenance is informational and does not create a live link.
+"""
+enum PlayerCodeFileProvenance {
+  """The owner authored or directly saved this project file."""
+  AUTHORED
+  """
+  The file was copied from a specific revision of the owner’s private personal library.
+  """
+  LIBRARY
+  """
+  The file was copied from a specific immutable version of the app’s studio-curated common catalog.
+  """
+  COMMON
+}
+
+"""
+A private, revisioned Mod Studio project owned by one user in one app. Optional grid affinity and module names are authoring hints only; deployment still rechecks current grid ownership and target-specific permissions.
+"""
+type PlayerCodeProject {
+  """Stable project UUID."""
+  projectId: String!
+  """App tenant that isolates this project and all of its source."""
+  appId: BigInt!
+  """User that exclusively owns and may read or modify this project source."""
+  ownerUserId: BigInt!
+  """
+  Optional grid affinity. It survives a grid transfer and does not itself grant deploy authority.
+  """
+  gridId: BigInt
+  """Player-facing project name."""
+  name: String!
+  """Optional private project description."""
+  description: String
+  """
+  Stable crate-style SERVER module name used when the owner chooses to deploy, or null when unassigned.
+  """
+  serverModuleName: String
+  """
+  Stable crate-style CLIENT module name used when the owner chooses to deploy, or null when unassigned.
+  """
+  clientModuleName: String
+  """Editor presentation preference for the two source targets."""
+  pairingPreference: PlayerCodePairingPreference!
+  """Pinned crowdy-compute-sdk version used when constructing deploy input."""
+  sdkVersion: String!
+  """Pinned guest ABI version used when constructing deploy input."""
+  abiVersion: Int!
+  """
+  Monotonic project revision required by optimistic metadata, file, import, and archive mutations.
+  """
+  revision: BigInt!
+  """
+  Whether the project is archived. Archived projects remain private and retained but are read-only until unarchived.
+  """
+  archived: Boolean!
+  """Archive timestamp, or null while the project is active."""
+  archivedAt: DateTime
+  """
+  Total file count across both targets; each target is independently capped at eight.
+  """
+  fileCount: Int!
+  """
+  Total UTF-8 source bytes across both targets, bounded by target and aggregate owner quotas.
+  """
+  totalBytes: BigInt!
+  """
+  Private project files ordered by target and path. Bounded to eight files per target.
+  """
+  files: [PlayerCodeProjectFile!]!
+  """Project creation timestamp."""
+  createdAt: DateTime!
+  """Timestamp of the latest successful project mutation."""
+  updatedAt: DateTime!
+}
+
+"""
+Editor preference describing how the project presents its server and client targets; it never grants deployment or runtime authority.
+"""
+enum PlayerCodePairingPreference {
+  """
+  Present server and client sources as two coordinated halves of one mod.
+  """
+  PAIRED
+  """
+  Present server and client sources independently without an implied requirement edge.
+  """
+  INDEPENDENT
+  """Present only the server-target authoring workflow."""
+  SERVER_ONLY
+  """Present only the client-target authoring workflow."""
+  CLIENT_ONLY
+}
+
+"""
+A reusable private text file in the authenticated player’s app-scoped personal library.
+"""
+type PlayerCodeLibraryFile {
+  """Stable personal-library file UUID."""
+  libraryFileId: String!
+  """App tenant that isolates this private library entry."""
+  appId: BigInt!
+  """User that exclusively owns this library entry."""
+  ownerUserId: BigInt!
+  """Player-facing library title."""
+  title: String!
+  """Safe suggested destination path; imports may choose another safe path."""
+  pathHint: String!
+  """Compatible project target for this reusable file."""
+  target: PlayerCodeTarget!
+  """Normalized search tags, each lowercase and hyphen-safe."""
+  tags: [String!]!
+  """Private UTF-8 source text, visible only to the app-scoped owner."""
+  content: String!
+  """Monotonic optimistic-concurrency revision."""
+  revision: BigInt!
+  """Whether this entry is archived and unavailable for new imports."""
+  archived: Boolean!
+  """Archive timestamp, or null while active."""
+  archivedAt: DateTime
+  """Library entry creation timestamp."""
+  createdAt: DateTime!
+  """Timestamp of the latest successful library mutation."""
+  updatedAt: DateTime!
+}
+
+"""
+A studio-curated app-scoped common file at its current immutable published version. Unlike personal source, this content is intentionally readable by app-scoped players.
+"""
+type PlayerCodeCommonFile {
+  """Stable common catalog entry UUID."""
+  commonFileId: String!
+  """App tenant whose players may read this published entry."""
+  appId: BigInt!
+  """Stable lowercase URL-safe catalog slug."""
+  slug: String!
+  """Studio-authored catalog title."""
+  title: String!
+  """Optional studio-authored catalog description."""
+  description: String
+  """Safe recommended project destination path."""
+  path: String!
+  """Compatible project target for this catalog entry."""
+  target: PlayerCodeTarget!
+  """Normalized studio-curated discovery tags."""
+  tags: [String!]!
+  """
+  Catalog lifecycle state; ordinary player queries expose only PUBLISHED.
+  """
+  status: PlayerCodeCommonStatus!
+  """Current immutable content-version UUID."""
+  versionId: String!
+  """Monotonic immutable version number within the catalog entry."""
+  versionNo: BigInt!
+  """Published UTF-8 source text for this immutable version."""
+  content: String!
+  """Lowercase SHA-256 digest of the exact UTF-8 content bytes."""
+  contentSha256: String!
+  """Studio user that published the current immutable version."""
+  publishedByUserId: BigInt!
+  """Timestamp when the current immutable version was published."""
+  publishedAt: DateTime!
+  """Catalog entry creation timestamp."""
+  createdAt: DateTime!
+  """Timestamp of the latest catalog publication."""
+  updatedAt: DateTime!
+}
+
+"""
+Studio-controlled catalog visibility. Player catalog queries return only published entries.
+"""
+enum PlayerCodeCommonStatus {
+  """Studio work in progress; hidden from player common-file queries."""
+  DRAFT
+  """Available to app-scoped players for reading and copy-by-value import."""
+  PUBLISHED
+  """
+  Retained for provenance but hidden from new player catalog reads and imports.
+  """
+  ARCHIVED
+}
+
+"""
 A flexible player-owned model container confined to exactly one app, grid, and current owner.
 """
 type PlayerModelContainer {
@@ -3667,6 +3905,62 @@ type Query {
     """App whose claim requests to list."""
     appId: BigInt!
   ): [GridClaimRequest!]!
+  """
+  List the authenticated player’s private Mod Studio projects in one app, newest first. Requires an app-scoped token for appId; every row and source-file read is filtered by both app and caller ownership. The bounded result defaults to 25 and never grants grid deployment authority.
+  """
+  playerCodeProjects(
+    """App tenant to list. The bearer token must be scoped to this exact app."""
+    appId: BigInt!
+    """
+    True to include retained archived projects; omitted/false returns active projects only.
+    """
+    includeArchived: Boolean
+    """Maximum projects to return (default 25, allowed 1–50)."""
+    limit: Int
+    """Number of owner-scoped projects to skip (default 0, maximum 10000)."""
+    offset: Int
+  ): [PlayerCodeProject!]!
+  """
+  Load one private Mod Studio project with all bounded source files. Requires an app-scoped token for appId and exact caller ownership; missing, cross-app, and cross-user ids all return the same NOT_FOUND shape. Grid owners and studio operators receive no source override.
+  """
+  playerCodeProject(
+    """App tenant containing the project; the bearer token must match it."""
+    appId: BigInt!
+    """Private project UUID to load."""
+    projectId: String!
+  ): PlayerCodeProject!
+  """
+  List the authenticated player’s private reusable source files in one app. Requires an app-scoped token for appId; cross-user entries are never visible, including to grid owners or studio operators. The bounded result defaults to 50.
+  """
+  playerCodeLibraryFiles(
+    """App tenant whose caller-owned personal library should be listed."""
+    appId: BigInt!
+    """
+    True to include retained archived entries; omitted/false returns active entries only.
+    """
+    includeArchived: Boolean
+    """Maximum private library entries to return (default 50, allowed 1–100)."""
+    limit: Int
+    """
+    Number of owner-scoped library entries to skip (default 0, maximum 10000).
+    """
+    offset: Int
+  ): [PlayerCodeLibraryFile!]!
+  """
+  List the current immutable versions of published studio-curated common files for one app. Requires an app-scoped token for appId; unlike private player source, this catalog content is intentionally readable by players in that app. Results are bounded and may be filtered by target.
+  """
+  playerCodeCommonFiles(
+    """
+    App tenant whose published curated catalog should be read; the bearer token must match it.
+    """
+    appId: BigInt!
+    """Optional SERVER or CLIENT compatibility filter; omit for both targets."""
+    target: PlayerCodeTarget
+    """Maximum published entries to return (default 50, allowed 1–100)."""
+    limit: Int
+    """Number of matching catalog entries to skip (default 0, maximum 10000)."""
+    offset: Int
+  ): [PlayerCodeCommonFile!]!
   """
   List flexible player-model containers owned by the caller in one currently owned grid. Requires an app-scoped token and current grid ownership; never returns app-wide or foreign-owner rows.
   """
@@ -5008,6 +5302,96 @@ type Mutation {
     """Player the invite is issued to."""
     inviteeUserId: BigInt!
   ): Boolean!
+  """
+  Create a private revisioned Mod Studio project for the authenticated player, optionally with initial server/client text files. Requires only an app-scoped token for the input app; optional grid affinity is validated but grants no deployment authority. Source paths, per-target deploy caps, and aggregate owner/app storage are enforced atomically.
+  """
+  playerCodeProjectCreate(
+    """
+    Project metadata, optional non-authoritative grid affinity, optional bounded initial files, and retry key.
+    """
+    input: CreatePlayerCodeProjectInput!
+  ): PlayerCodeProject!
+  """
+  Optimistically save selected private project metadata and increment its monotonic revision. Requires an app-scoped token and exact project ownership. A stale expectedRevision returns CONFLICT; grid affinity remains an authoring hint and never bypasses player-compute deployment checks.
+  """
+  playerCodeProjectSaveMetadata(
+    """
+    Project id, expected revision, selected metadata changes, and optional retry key.
+    """
+    input: SavePlayerCodeProjectMetadataInput!
+  ): PlayerCodeProject!
+  """
+  Atomically save selected private project metadata and a batch of file upserts/deletes under one expected project revision. Requires an app-scoped token and exact project ownership. No partial metadata or file changes survive validation, target-cap, aggregate-storage, module-binding, or revision failures.
+  """
+  playerCodeProjectSave(
+    """
+    Project id/revision, optional metadata changes, atomic file delta, and optional retry key.
+    """
+    input: SavePlayerCodeProjectInput!
+  ): PlayerCodeProject!
+  """
+  Apply a batch of project-file upserts and deletes in one transaction under one expected project revision. Requires an app-scoped token and exact project ownership. No partial writes survive path, manifest, independent 8-file/64-KiB-file/256-KiB-target caps, aggregate storage, or revision failures.
+  """
+  playerCodeProjectSaveFiles(
+    """
+    Destination project, expected revision, atomic upsert/delete batch, and optional retry key.
+    """
+    input: SavePlayerCodeProjectFilesInput!
+  ): PlayerCodeProject!
+  """
+  Archive or restore a private project without deleting any source or provenance, using optimistic revision control. Requires an app-scoped token and exact owner match. Archived projects remain readable by their owner but are read-only until restored.
+  """
+  playerCodeProjectSetArchived(
+    """
+    Project id, expected revision, desired archive state, and optional retry key.
+    """
+    input: SetPlayerCodeProjectArchivedInput!
+  ): PlayerCodeProject!
+  """
+  Create or optimistically update one private personal-library source file. Requires an app-scoped token; ownership is always the authenticated player and cannot be delegated. Safe source paths, 64-KiB content, revision, and configurable bounded aggregate library storage are enforced atomically.
+  """
+  playerCodeLibrarySave(
+    """
+    Create/update shape, safe path hint, target, tags, private content, and optional retry key.
+    """
+    input: SavePlayerCodeLibraryFileInput!
+  ): PlayerCodeLibraryFile!
+  """
+  Archive or restore one caller-owned personal-library file under optimistic revision control. Requires an app-scoped token and exact app/user ownership; archived entries remain retained but cannot be imported until restored.
+  """
+  playerCodeLibrarySetArchived(
+    """
+    Library entry id, expected revision, desired archive state, and optional retry key.
+    """
+    input: SetPlayerCodeLibraryFileArchivedInput!
+  ): PlayerCodeLibraryFile!
+  """
+  Copy one active caller-owned library revision or one immutable published app-common version into a private project by value. Requires an app-scoped token and exact project ownership. The source is re-authorized, content/provenance are snapshotted, project caps and aggregate storage are checked, and the project revision advances atomically.
+  """
+  playerCodeProjectImportFile(
+    """
+    Destination project/revision, exactly one authorized source id, optional safe destination path, and retry key.
+    """
+    input: ImportPlayerCodeProjectFileInput!
+  ): PlayerCodeProject!
+  """
+  Publish a new immutable version of an app-scoped studio-curated common file and make it the current player-readable version. Requires an app-scoped token plus the app manage_compute permission. Old versions remain immutable for provenance; an idempotency key is strongly recommended for transport retries.
+  """
+  playerCodeCommonPublish(
+    """
+    Stable catalog identity/metadata, compatible target/path, new immutable content, and optional retry key.
+    """
+    input: PublishPlayerCodeCommonFileInput!
+  ): PlayerCodeCommonFile! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "input.appId")
+  """
+  Lazily create a private project by copying the authenticated author’s latest source from an existing self-authored SERVER module, CLIENT module, or both. Requires an app-scoped token and authorship of every requested module; current grid ownership is deliberately not required for private source recovery after transfer, while any later deploy still rechecks ownership and target permissions. Repeated requests reuse the matching active project.
+  """
+  playerCodeProjectCreateFromModules(
+    """
+    App/grid, one or two caller-authored module names, optional project name, and retry key.
+    """
+    input: CreatePlayerCodeProjectFromModulesInput!
+  ): PlayerCodeProject!
   """
   Create a flexible player-model instance in a currently owned grid. The server forces ownerUserId to the caller; this cannot author studio types or app-wide rows.
   """
@@ -6514,6 +6898,336 @@ input PublishPlayerCodeVersionInput {
   openSource: Boolean = false
   """Author license terms shown at acquisition."""
   licenseText: String
+}
+
+"""
+Create a private player-owned project, optionally with bounded initial files for either target.
+"""
+input CreatePlayerCodeProjectInput {
+  """
+  App tenant. Requires an app-scoped token for this exact app; the project is owned by the authenticated user.
+  """
+  appId: BigInt!
+  """
+  Optional grid affinity in the same app. Affinity does not grant deployment permission and survives ownership transfer.
+  """
+  gridId: BigInt
+  """Player-facing project name."""
+  name: String!
+  """Optional private project description."""
+  description: String
+  """
+  Optional stable crate-style SERVER module name. Deployment rechecks current authority.
+  """
+  serverModuleName: String
+  """
+  Optional stable crate-style CLIENT module name. It must differ from the server name.
+  """
+  clientModuleName: String
+  """Optional editor pairing preference; defaults to PAIRED."""
+  pairingPreference: PlayerCodePairingPreference = PAIRED
+  """
+  Supported crowdy-compute-sdk pin; defaults to the current 0.1.5 authoring pin.
+  """
+  sdkVersion: String = "0.1.5"
+  """Supported guest ABI pin; defaults to ABI 0."""
+  abiVersion: Int = 0
+  """
+  Optional initial source files. At most 16 total and at most 8/256 KiB independently per target.
+  """
+  initialFiles: [PlayerCodeProjectFileInput!]
+  """
+  Optional retry key. Same user, operation, key, and input replay the first result for 24 hours; changed input returns IDEMPOTENCY_CONFLICT.
+  """
+  idempotencyKey: String
+}
+
+"""
+One direct-authored initial or batch-upsert project file. Paths and UTF-8 bytes are validated against player-compute safety limits.
+"""
+input PlayerCodeProjectFileInput {
+  """Project target receiving this file."""
+  target: PlayerCodeTarget!
+  """
+  Safe relative path: Cargo.toml or a .rs file below src/, with no traversal segments.
+  """
+  path: String!
+  """UTF-8 source text, capped at 64 KiB."""
+  content: String!
+}
+
+"""
+Optimistically save selected project metadata. Omitted fields remain unchanged; explicit null clears nullable metadata.
+"""
+input SavePlayerCodeProjectMetadataInput {
+  """App tenant that owns the private project."""
+  appId: BigInt!
+  """Project UUID to update."""
+  projectId: String!
+  """
+  Current project revision. A stale value returns CONFLICT with PLAYER_CODE_REVISION_CONFLICT.
+  """
+  expectedRevision: BigInt!
+  """
+  New optional grid affinity, explicit null to clear, or omit to preserve. Affinity never grants deploy authority.
+  """
+  gridId: BigInt
+  """New project name, or omit to preserve."""
+  name: String
+  """New private description, explicit null to clear, or omit to preserve."""
+  description: String
+  """New SERVER module name, explicit null to clear, or omit to preserve."""
+  serverModuleName: String
+  """New CLIENT module name, explicit null to clear, or omit to preserve."""
+  clientModuleName: String
+  """New editor pairing preference, or omit to preserve."""
+  pairingPreference: PlayerCodePairingPreference
+  """New supported SDK pin, or omit to preserve."""
+  sdkVersion: String
+  """New supported ABI pin, or omit to preserve."""
+  abiVersion: Int
+  """
+  Optional 24-hour retry key; reuse with changed input returns IDEMPOTENCY_CONFLICT.
+  """
+  idempotencyKey: String
+}
+
+"""
+Atomically save selected project metadata plus a batch of file upserts/deletes under one expected project revision. Mod Studio uses this to persist one coherent full-stack edit.
+"""
+input SavePlayerCodeProjectInput {
+  """App tenant that owns the private project."""
+  appId: BigInt!
+  """Project UUID to update."""
+  projectId: String!
+  """
+  Current project revision. A stale value returns CONFLICT with PLAYER_CODE_REVISION_CONFLICT and applies no metadata or file writes.
+  """
+  expectedRevision: BigInt!
+  """
+  New optional grid affinity, explicit null to clear, or omit to preserve. Affinity never grants deploy authority.
+  """
+  gridId: BigInt
+  """New non-empty project name, or omit to preserve."""
+  name: String
+  """New private description, explicit null to clear, or omit to preserve."""
+  description: String
+  """New SERVER module name, explicit null to clear, or omit to preserve."""
+  serverModuleName: String
+  """New CLIENT module name, explicit null to clear, or omit to preserve."""
+  clientModuleName: String
+  """New editor pairing preference, or omit to preserve."""
+  pairingPreference: PlayerCodePairingPreference
+  """New supported SDK pin, or omit to preserve."""
+  sdkVersion: String
+  """New supported ABI pin, or omit to preserve."""
+  abiVersion: Int
+  """
+  Changed or new files to insert/replace. Unmentioned files and their provenance remain unchanged.
+  """
+  upserts: [PlayerCodeProjectFileInput!]
+  """
+  Files to delete in the same transaction. A target/path cannot also appear in upserts.
+  """
+  deletes: [PlayerCodeProjectFileDeleteInput!]
+  """
+  Optional 24-hour retry key; recommended because a successful atomic save increments the expected revision.
+  """
+  idempotencyKey: String
+}
+
+"""A target/path key removed atomically by playerCodeProjectSaveFiles."""
+input PlayerCodeProjectFileDeleteInput {
+  """Project target containing the file to remove."""
+  target: PlayerCodeTarget!
+  """Safe relative path of the file to remove."""
+  path: String!
+}
+
+"""
+Atomically upsert and delete a private project’s text files under one expected project revision.
+"""
+input SavePlayerCodeProjectFilesInput {
+  """App tenant that owns the private project."""
+  appId: BigInt!
+  """Project UUID to mutate."""
+  projectId: String!
+  """
+  Current project revision used for optimistic concurrency across the entire batch.
+  """
+  expectedRevision: BigInt!
+  """
+  Files to insert or replace. The batch commits only if all paths and post-save caps are valid.
+  """
+  upserts: [PlayerCodeProjectFileInput!]
+  """
+  Files to remove in the same transaction. A target/path cannot also appear in upserts.
+  """
+  deletes: [PlayerCodeProjectFileDeleteInput!]
+  """
+  Optional 24-hour retry key; recommended because a successful batch increments the expected revision.
+  """
+  idempotencyKey: String
+}
+
+"""
+Optimistically archive or unarchive one private project without deleting its files or provenance.
+"""
+input SetPlayerCodeProjectArchivedInput {
+  """App tenant that owns the private project."""
+  appId: BigInt!
+  """Project UUID to archive or restore."""
+  projectId: String!
+  """Current project revision required for optimistic concurrency."""
+  expectedRevision: BigInt!
+  """True to archive; false to restore the project."""
+  archived: Boolean!
+  """Optional 24-hour retry key."""
+  idempotencyKey: String
+}
+
+"""
+Create or optimistically update one private reusable personal-library file.
+"""
+input SavePlayerCodeLibraryFileInput {
+  """
+  App tenant. Requires an app-scoped token; ownership is always the authenticated user.
+  """
+  appId: BigInt!
+  """Existing library UUID to update; omit to create a new entry."""
+  libraryFileId: String
+  """
+  Required current revision when libraryFileId is supplied; omit on create.
+  """
+  expectedRevision: BigInt
+  """Player-facing library title."""
+  title: String!
+  """Safe suggested destination path: Cargo.toml or a .rs file below src/."""
+  pathHint: String!
+  """Compatible project target for this reusable file."""
+  target: PlayerCodeTarget!
+  """
+  Optional unique lowercase discovery tags; at most 16, each at most 32 characters.
+  """
+  tags: [String!]
+  """Private UTF-8 source text, capped at 64 KiB."""
+  content: String!
+  """Optional 24-hour retry key."""
+  idempotencyKey: String
+}
+
+"""
+Optimistically archive or restore one caller-owned personal-library file.
+"""
+input SetPlayerCodeLibraryFileArchivedInput {
+  """App tenant that owns the private library entry."""
+  appId: BigInt!
+  """Personal-library file UUID."""
+  libraryFileId: String!
+  """Current library revision required for optimistic concurrency."""
+  expectedRevision: BigInt!
+  """True to archive; false to make the entry active again."""
+  archived: Boolean!
+  """Optional 24-hour retry key."""
+  idempotencyKey: String
+}
+
+"""
+Copy a private library revision or immutable published common version into a project by value.
+"""
+input ImportPlayerCodeProjectFileInput {
+  """App tenant shared by the project and import source."""
+  appId: BigInt!
+  """Destination project UUID."""
+  projectId: String!
+  """Current project revision; the copy and revision increment are atomic."""
+  expectedProjectRevision: BigInt!
+  """Private LIBRARY or app-curated COMMON source."""
+  source: PlayerCodeImportSource!
+  """Caller-owned library file UUID; required only for LIBRARY imports."""
+  libraryFileId: String
+  """Immutable common version UUID; required only for COMMON imports."""
+  commonVersionId: String
+  """
+  Optional safe destination path. Omit to use the source entry’s path or path hint.
+  """
+  destinationPath: String
+  """Optional 24-hour retry key."""
+  idempotencyKey: String
+}
+
+"""The source catalog used for a copy-by-value project file import."""
+enum PlayerCodeImportSource {
+  """
+  Import from a private personal-library file owned by the authenticated caller.
+  """
+  LIBRARY
+  """
+  Import from an immutable published common-file version in the requested app.
+  """
+  COMMON
+}
+
+"""
+Publish a new immutable studio-curated common-file version. Requires the app manage_compute permission.
+"""
+input PublishPlayerCodeCommonFileInput {
+  """
+  App tenant receiving the common entry; the token and manage_compute permission must cover this app.
+  """
+  appId: BigInt!
+  """
+  Existing common entry UUID to version; omit to create or version by slug.
+  """
+  commonFileId: String
+  """
+  Stable lowercase hyphenated catalog slug. Existing entries cannot change their slug.
+  """
+  slug: String!
+  """Studio-authored catalog title."""
+  title: String!
+  """Optional studio-authored catalog description."""
+  description: String
+  """Safe recommended destination path."""
+  path: String!
+  """Compatible project target for this common file."""
+  target: PlayerCodeTarget!
+  """Optional unique lowercase discovery tags; at most 16."""
+  tags: [String!]
+  """UTF-8 source text for the new immutable version, capped at 64 KiB."""
+  content: String!
+  """
+  Optional 24-hour retry key; strongly recommended to avoid duplicate versions after transport retries.
+  """
+  idempotencyKey: String
+}
+
+"""
+Lazily create a private project by copying the authenticated author’s latest source versions from existing self-authored player modules.
+"""
+input CreatePlayerCodeProjectFromModulesInput {
+  """App tenant containing the authored modules."""
+  appId: BigInt!
+  """
+  Grid containing the authored modules. Current ownership is not required to recover one’s own source, but deployment is rechecked separately.
+  """
+  gridId: BigInt!
+  """
+  Existing self-authored SERVER module name to copy; at least one module name is required.
+  """
+  serverModuleName: String
+  """
+  Existing self-authored CLIENT module name to copy; at least one module name is required.
+  """
+  clientModuleName: String
+  """
+  Optional project name. Omit to derive a bounded name from the imported module name(s).
+  """
+  projectName: String
+  """
+  Optional 24-hour retry key. The operation also returns an already-created active project with the same module affinity.
+  """
+  idempotencyKey: String
 }
 
 """

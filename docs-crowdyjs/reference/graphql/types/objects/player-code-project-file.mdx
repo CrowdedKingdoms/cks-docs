@@ -1,0 +1,83 @@
+---
+id: player-code-project-file
+title: PlayerCodeProjectFile
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One private text file in a player-owned project. It is returned only when both app id and authenticated owner match the project.
+
+
+```graphql
+type PlayerCodeProjectFile {
+  target: PlayerCodeTarget!
+  path: String!
+  content: String!
+  revision: BigInt!
+  provenance: PlayerCodeFileProvenance!
+  provenanceLibraryFileId: String
+  provenanceLibraryRevision: BigInt
+  provenanceCommonVersionId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProjectFile.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeTarget!</b></code>](/reference/graphql/types/enums/player-code-target.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#target\} 
+Server or client target whose independent 8-file/256-KiB deploy cap includes this file.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProjectFile.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\} 
+Safe compute-source relative path: Cargo.toml or a Rust file below src/.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProjectFile.<b>content</b></code>](#content)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content\} 
+Private UTF-8 source text. Grid ownership and studio permissions never override project ownership.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProjectFile.<b>revision</b></code>](#revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#revision\} 
+Monotonic revision of this target/path entry, incremented on every successful upsert.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProjectFile.<b>provenance</b></code>](#provenance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeFileProvenance!</b></code>](/reference/graphql/types/enums/player-code-file-provenance.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#provenance\} 
+Copy provenance. Imported bytes remain unchanged if the source catalog entry later changes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProjectFile.<b>provenanceLibraryFileId</b></code>](#provenance-library-file-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provenance-library-file-id\} 
+Private library file UUID used for the copy, or null for authored/common content.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProjectFile.<b>provenanceLibraryRevision</b></code>](#provenance-library-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provenance-library-revision\} 
+Library revision copied into this file, or null when library provenance does not apply.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProjectFile.<b>provenanceCommonVersionId</b></code>](#provenance-common-version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provenance-common-version-id\} 
+Immutable common-file version UUID copied into this file, or null when common provenance does not apply.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProjectFile.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+Timestamp when this target/path entry was first created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeProjectFile.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+Timestamp of the latest successful content/provenance save.
+
+
+
+
+### Member Of
+
+[`PlayerCodeProject`](/reference/graphql/types/objects/player-code-project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

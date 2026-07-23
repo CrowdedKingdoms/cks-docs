@@ -72,6 +72,56 @@ all player modules on the grid, wipes their private state, removes the old
 owner's direct grants, and transfers title. The new owner receives no implicit
 permissions and must explicitly consent before re-enabling code.
 
+## Cloud projects and reusable files
+
+An authoring project is mutable, private workspace state. It is deliberately
+separate from `player_wasm_module_versions`: autosaving a half-written file
+does not consume compile quota or create a runnable version. A deploy takes the
+saved SERVER or CLIENT tree and publishes the ordinary immutable source
+snapshot described below.
+
+Projects belong to their author, not to the current grid owner. A project may
+remember a grid and stable server/client module names, but transferring that
+grid only removes the old author's authority to deploy there. It does not
+delete their project or reveal its files to the buyer. Cross-user project and
+personal-library reads fail closed.
+
+Project saves use an expected monotonic revision. If the same project is open
+in two sessions, the second stale save receives a revision conflict rather
+than silently overwriting newer source. File paths and sizes are validated
+with the player compiler's rules independently for each target: `Cargo.toml`
+and `src/*.rs`, at most 8 files, 64 KiB per file, and 256 KiB total.
+
+There are two reusable-file catalogs:
+
+- **My Library** is private to one player and app.
+- **Common Files** are app-scoped, studio-curated, and versioned immutably.
+
+Importing either kind copies its content into the project and records
+provenance. It is not a live dependency: publishing a new common-file version
+cannot mutate an existing project or deployed artifact behind the author's
+back.
+
+The player-facing project surface is:
+
+- `playerCodeProjects` / `playerCodeProject` — list or load private projects;
+- `playerCodeProjectCreate`, atomic `playerCodeProjectSave`,
+  lower-level `playerCodeProjectSaveMetadata` /
+  `playerCodeProjectSaveFiles`, and `playerCodeProjectSetArchived` — create,
+  optimistically save, and retain/archive projects;
+- `playerCodeLibraryFiles`, `playerCodeLibrarySave`, and
+  `playerCodeLibrarySetArchived` — manage the caller's private reusable files;
+- `playerCodeCommonFiles` — read the app's current published catalog;
+- `playerCodeProjectImportFile` — copy one authorized library/common version
+  into a project; and
+- `playerCodeProjectCreateFromModules` — recover the caller's latest authored
+  module source into a cloud project, including after grid transfer.
+
+Studios publish immutable common-file versions with
+`playerCodeCommonPublish`, which requires `manage_compute`. Personal project
+operations use an app-scoped token and exact app/user ownership; grid affinity
+never grants source access or deployment rights.
+
 ## Deploy player code
 
 `playerComputeDeploy` is a one-step create/update + immutable-version upload.
@@ -270,24 +320,39 @@ presence signals (look direction, custom telemetry), a grid owner can ship a
 grid's server compute — see
 [grid-attached client mods](player-marketplace#bundles-and-grid-attached-client-mods).
 
-## Live coding (P3)
+## Mod Studio
 
-Player code is written in an **in-grid live-coding panel** (a mountable
-CrowdyJS component, `mountLiveCoding`) rather than a separate tool. The loop:
+Player code is written in an **in-grid Mod Studio** (CrowdyJS
+`mountModStudio`) rather than a separate management tool. Its private cloud
+projects survive closing the game and may contain both server and client
+source trees. Personal library files and app-curated common files can be
+copied into either tree; deployment always snapshots the resulting source into
+the existing immutable player-module version registry.
 
-- **Server mods:** edit -> `playerComputeDeploy` -> the panel polls compile
-  status -> on success the module is enabled and its runs/logs stream into the
-  console. Hot reload swaps the module on the next scheduler pass and drops
-  in-memory guest state (persist across reloads with `state_set`).
-- **Client mods:** edit -> deploy with `target: CLIENT` -> the panel fetches
-  the artifact (`playerComputeArtifact`) and respawns the browser worker.
+The loop is:
 
-The panel shows your quota and wallet meters live (units used vs the effective
-cap, remaining compiles, and the typed gate reason when paused), so you can
-see a mod's cost as you iterate. There is no separate live-coding permission —
-the panel is gated by the same `write_*_code` keys, and the
-`maxCompilesPerHour` quota governs the loop (a compile flood is refused with a
-retry-after; running modules are unaffected).
+- **Server projects:** edit and autosave -> `playerComputeDeploy` -> poll
+  compile status -> enable on success -> stream runs/logs into the console. Hot
+  reload swaps the module on the next scheduler pass and drops in-memory guest
+  state (persist across reloads with `state_set`).
+- **Client projects:** edit and autosave -> deploy with `target: CLIENT` ->
+  fetch the artifact (`playerComputeArtifact`) -> verify its content hash ->
+  respawn the browser worker.
+- **Full-stack projects:** compile the client and server trees independently,
+  then call `playerComputeSetRequires` only after both immutable versions
+  succeed. Enabling the server materializes the client attachment visitors
+  consent to when they enter the grid.
+
+Mod Studio distinguishes local advisory diagnostics from authoritative rustc
+errors, maps compiler locations back to files, and exposes Problems, Build,
+Runs, Logs, and Invoke views. It also shows quota and wallet meters live (units
+used vs the effective cap, remaining compiles, and the typed gate reason when
+paused), so the player can see a mod's cost while iterating.
+
+There is no separate Mod Studio permission. SERVER and CLIENT actions are
+shown according to their distinct `write_*_code` and `run_*_code` keys, and
+the `maxCompilesPerHour` quota governs the compile loop. A compile flood is
+refused with a retry-after; running modules are unaffected.
 
 ### Draft mode
 
@@ -321,9 +386,11 @@ changes is provenance:
 
 ## Client target status
 
-P1 provides the client compile target, artifact schema, permissions, shared
-contracts, and CrowdyJS `PlayerCodeBroker` page-side security skeleton
-(worker transfer, no tokens in the worker, host-call allowlist, local grid
-clamp). P3 adds the platform glue worker, game presentation hooks, and
-live-coding UI. Until that host ships, `CLIENT` versions plus the broker prove
-the boundary/contracts but are not yet a general browser scripting runtime.
+The client target, artifact delivery, and CrowdyJS browser runtime are shipped
+for compatible host games such as Blocks with Friends. `PlayerCodeBroker`
+verifies platform artifact hashes, runs the guest in a tokenless worker,
+enforces the host-call allowlist and local grid clamp, and forwards only
+game-owned presentation hooks. Other games must provide the same worker,
+security headers, host-call router, and presentation boundary before enabling
+CLIENT authoring; compiling a CLIENT artifact alone does not make an
+unintegrated game a safe browser scripting host.

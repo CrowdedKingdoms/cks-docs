@@ -73,13 +73,20 @@ the surfaces you intend to: a HUD panel region and a budgeted in-grid overlay
 are the v1 hooks; world-mesh mutation, other players' HUDs, and camera control
 are not offered.
 
-## Mounting the browser-local Rust IDE
+## Mounting Mod Studio
 
-CrowdyJS `9.0.0` keeps `mountLiveCodingIDE`, but removes the public authoring
-connection. Opening the panel lazy-loads Monaco, one browser module worker, and
-local `web-tree-sitter` parser/Rust grammar WASM assets. The worker speaks an
-LSP 3.17 subset to Monaco over structured-clone worker messages. It does not
-open a WebSocket or other authoring connection, and it receives no app token.
+CrowdyJS 10 exposes a project-first `mountModStudio` surface for in-game
+authoring. It intentionally replaces the removed session-only
+`mountLiveCodingIDE` / `LiveCodingController` API without compatibility
+aliases. A project is private cloud state owned by one player and can contain
+both a SERVER tree and a CLIENT tree. Each target has its own `Cargo.toml` and
+`src/*.rs` files; deployment still creates two independently compiled,
+immutable module versions.
+
+Opening Mod Studio lazy-loads Monaco, one browser module worker, and local
+`web-tree-sitter` parser/Rust grammar WASM assets. The worker speaks an LSP
+3.17 subset to Monaco over structured-clone worker messages. It does not open a
+WebSocket or other authoring connection, and it receives no app token.
 
 Local feedback includes Rust syntax diagnostics, document symbols,
 workspace-local go-to-definition, completion from open files and the embedded
@@ -97,39 +104,42 @@ source through the existing player-compute API, and the platform's server-side
 compiler remains the only authoritative compile decision.
 
 ```ts
-import {
-  mountLiveCodingIDE,
-  PLAYER_CODE_TEMPLATES,
-} from '@crowdedkingdoms/crowdyjs/live-coding';
+import { mountModStudio } from '@crowdedkingdoms/crowdyjs/mod-studio';
 
-const handle = await mountLiveCodingIDE(hostElement, {
+const handle = await mountModStudio(hostElement, {
   playerCompute: client.playerCompute,
+  projectProvider: client.playerCodeProjects,
   playerWallet: client.playerWallet,
   appId,
   gridId,                // a grid the player currently owns
   grid: { low, high },   // chunk-AABB the broker clamps to
   workerUrl: '/player-glue-worker.js',
-  templates: PLAYER_CODE_TEMPLATES,
-  draftByDefault: true,
+  targetPermissions: {
+    SERVER: { canWrite: true, canRun: true },
+    CLIENT: { canWrite: true, canRun: true },
+  },
   onHostCall: (call) => routeToWorldStores(call), // owner-lawful reads/effects
   onPresentation: (p) => renderModHud(p),
 });
-// handle.controller drives deploy/stop; handle.destroy() unmounts.
+// handle.controller drives save/test/deploy/stop; handle.destroy() unmounts.
 ```
 
-The IDE offers a target picker, template picker, file tabs, editor, deploy /
-draft-deploy / stop, a compile console with the authoritative rustc log, and
-the quota + wallet meter.
+Mod Studio offers cloud autosave, a target-aware project explorer, personal
+library files, app-provided common files, Monaco tabs, Problems, Build, Logs,
+Runs, Invoke, and quota/wallet status. Library and common files are copied by
+value into a project: later catalog edits cannot silently change a deployed
+mod. The primary safe action is **Test draft**; **Deploy live** clears draft
+mode; **Stop project** disables the server module and terminates the client
+worker.
 
-`languageServiceUrl` and `appToken` are removed from
-`MountLiveCodingIDEOptions`. Most games need no language-specific options. A
-custom asset pipeline may supply `languageWorkerFactory`; advanced hosts may
-also supply `editorWorkerFactory`, a generated `platformIndex`, or
+Most games need no language-specific options. A custom asset pipeline may
+supply `languageWorkerFactory`; advanced hosts may also supply
+`editorWorkerFactory`, a generated `platformIndex`, or
 `languageRequestTimeoutMs`:
 
 ```ts
-await mountLiveCodingIDE(hostElement, {
-  // ...the required player-compute, grid, worker, and host-call options above...
+await mountModStudio(hostElement, {
+  // ...the required projects, player-compute, grid, worker, and host options...
   languageWorkerFactory: () =>
     new Worker(localRustWorkerUrl, { type: 'module' }),
   editorWorkerFactory: () => new Worker(localEditorWorkerUrl),
@@ -140,9 +150,9 @@ await mountLiveCodingIDE(hostElement, {
 
 These are local worker/configuration hooks, not endpoint or credential
 options. If Monaco, Worker, the local WASM assets, or platform-index validation
-fails, `mountLiveCodingIDE` falls back to the dependency-free
-`mountLiveCoding` textarea. There is deliberately no server language-service
-fallback. For a custom UI, drive `LiveCodingController` directly.
+fails, the same mount renders a target/file-aware textarea workspace backed by
+the cloud project API. There is deliberately no server language-service
+fallback. For a custom UI, drive `ModStudioController` directly.
 
 ## Server modules that require a client companion
 
