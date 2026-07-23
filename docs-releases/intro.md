@@ -16,6 +16,18 @@ removals are called out explicitly.
 
 ## 2026-07-23 (latest)
 
+**CrowdyJS 11.1 + Blocks with Friends: resizable Crowdy Studio**
+
+- Crowdy Studio now fills and observes its host element, relayouts Monaco when
+  a split pane changes size, and responds to container width instead of the
+  whole browser viewport.
+- Blocks with Friends embeds it as a resizable right-hand desktop dock with a
+  live game viewport, focus-scoped game/editor input, and a full-screen
+  narrow-screen fallback.
+- Source still autosaves independently from runtime. Creators explicitly choose
+  **Test draft** or **Deploy live** before SERVER or CLIENT changes compile and
+  apply; this release adds no auto-deploy and changes no GraphQL schema.
+
 **CrowdyJS 11 + Game API: Crowdy Studio rename**
 
 - New private Game API project storage separates autosaved SERVER/CLIENT
@@ -44,9 +56,9 @@ removals are called out explicitly.
   `playerCodeProject*` / `PlayerCodeProject*` GraphQL names are removed, not
   deprecated. That authoring surface was still greenfield, so there are no
   legacy aliases to preserve.
-- Blocks with Friends now embeds the full-screen accessible Crowdy Studio,
-  passes authoritative grid bounds and target-specific permissions, and seeds
-  its first-party entrypoints into the common-file catalog.
+- Blocks with Friends embeds the accessible Crowdy Studio, passes authoritative
+  grid bounds and target-specific permissions, and seeds its first-party
+  entrypoints into the common-file catalog.
 
 **CrowdyJS 9.0.0: browser-local Rust authoring**
 

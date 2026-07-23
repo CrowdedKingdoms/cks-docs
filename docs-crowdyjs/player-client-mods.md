@@ -82,6 +82,11 @@ SERVER tree and a CLIENT tree. Each target has its own `Cargo.toml` and
 `src/*.rs` files; deployment still creates two independently compiled,
 immutable module versions.
 
+CrowdyJS 11.1 fills and observes the mount host, relayouts Monaco when that
+element changes size, and collapses secondary panes from the host's container
+width. Give the host an explicit width and height; it can then live in a
+draggable game dock without forwarding browser resize events manually.
+
 Opening Crowdy Studio lazy-loads Monaco, one browser module worker, and local
 `web-tree-sitter` parser/Rust grammar WASM assets. The worker speaks an LSP
 3.17 subset to Monaco over structured-clone worker messages. It does not open a
@@ -129,7 +134,7 @@ Runs, Invoke, and quota/wallet status. Library and common files are copied by
 value into a project: later catalog edits cannot silently change a deployed
 mod. The primary safe action is **Test draft**; **Deploy live** clears draft
 mode; **Stop project** disables the server module and terminates the client
-worker.
+worker. Autosave never compiles or runs code by itself.
 
 Most games need no language-specific options. A custom asset pipeline may
 supply `languageWorkerFactory`; advanced hosts may also supply
