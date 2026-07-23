@@ -1,0 +1,93 @@
+---
+id: save-crowdy-studio-project-metadata-input
+title: SaveCrowdyStudioProjectMetadataInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Optimistically save selected project metadata. Omitted fields remain unchanged; explicit null clears nullable metadata.
+
+
+```graphql
+input SaveCrowdyStudioProjectMetadataInput {
+  appId: BigInt!
+  projectId: String!
+  expectedRevision: BigInt!
+  gridId: BigInt
+  name: String
+  description: String
+  serverModuleName: String
+  clientModuleName: String
+  pairingPreference: CrowdyStudioPairingPreference
+  sdkVersion: String
+  abiVersion: Int
+  idempotencyKey: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+App tenant that owns the private project.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\}
+Project UUID to update.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>expectedRevision</b></code>](#expected-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expected-revision\}
+Current project revision. A stale value returns CONFLICT with CROWDY&#x005F;STUDIO&#x005F;REVISION&#x005F;CONFLICT.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\}
+New optional grid affinity, explicit null to clear, or omit to preserve. Affinity never grants deploy authority.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\}
+New project name, or omit to preserve.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\}
+New private description, explicit null to clear, or omit to preserve.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>serverModuleName</b></code>](#server-module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#server-module-name\}
+New SERVER module name, explicit null to clear, or omit to preserve.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>clientModuleName</b></code>](#client-module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-module-name\}
+New CLIENT module name, explicit null to clear, or omit to preserve.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>pairingPreference</b></code>](#pairing-preference)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioPairingPreference</b></code>](/reference/graphql/types/enums/crowdy-studio-pairing-preference.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#pairing-preference\}
+New editor pairing preference, or omit to preserve.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>sdkVersion</b></code>](#sdk-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sdk-version\}
+New supported SDK pin, or omit to preserve.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\}
+New supported ABI pin, or omit to preserve.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
+Optional 24-hour retry key; reuse with changed input returns IDEMPOTENCY&#x005F;CONFLICT.
+
+
+
+
+### Member Of
+
+[`crowdyStudioProjectSaveMetadata`](/reference/graphql/operations/mutations/crowdy-studio-project-save-metadata.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

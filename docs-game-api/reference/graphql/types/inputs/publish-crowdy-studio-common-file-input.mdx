@@ -1,0 +1,83 @@
+---
+id: publish-crowdy-studio-common-file-input
+title: PublishCrowdyStudioCommonFileInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Publish a new immutable Crowdy Studio-curated common-file version. Requires the app manage&#x005F;compute permission.
+
+
+```graphql
+input PublishCrowdyStudioCommonFileInput {
+  appId: BigInt!
+  commonFileId: String
+  slug: String!
+  title: String!
+  description: String
+  path: String!
+  target: CrowdyStudioTarget!
+  tags: [String!]
+  content: String!
+  idempotencyKey: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishCrowdyStudioCommonFileInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+App tenant receiving the common entry; the token and manage&#x005F;compute permission must cover this app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishCrowdyStudioCommonFileInput.<b>commonFileId</b></code>](#common-file-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#common-file-id\}
+Existing common entry UUID to version; omit to create or version by slug.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishCrowdyStudioCommonFileInput.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\}
+Stable lowercase hyphenated catalog slug. Existing entries cannot change their slug.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishCrowdyStudioCommonFileInput.<b>title</b></code>](#title)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#title\}
+Crowdy Studio-authored catalog title.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishCrowdyStudioCommonFileInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\}
+Optional Crowdy Studio-authored catalog description.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishCrowdyStudioCommonFileInput.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\}
+Safe recommended destination path.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishCrowdyStudioCommonFileInput.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioTarget!</b></code>](/reference/graphql/types/enums/crowdy-studio-target.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#target\}
+Compatible project target for this common file.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishCrowdyStudioCommonFileInput.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tags\}
+Optional unique lowercase discovery tags; at most 16.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishCrowdyStudioCommonFileInput.<b>content</b></code>](#content)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content\}
+UTF-8 source text for the new immutable version, capped at 64 KiB.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublishCrowdyStudioCommonFileInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
+Optional 24-hour retry key; strongly recommended to avoid duplicate versions after transport retries.
+
+
+
+
+### Member Of
+
+[`crowdyStudioCommonPublish`](/reference/graphql/operations/mutations/crowdy-studio-common-publish.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

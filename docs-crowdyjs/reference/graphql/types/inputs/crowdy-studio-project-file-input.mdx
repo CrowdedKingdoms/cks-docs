@@ -1,0 +1,48 @@
+---
+id: crowdy-studio-project-file-input
+title: CrowdyStudioProjectFileInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One direct-authored initial or batch-upsert project file. Paths and UTF-8 bytes are validated against player-compute safety limits.
+
+
+```graphql
+input CrowdyStudioProjectFileInput {
+  target: CrowdyStudioTarget!
+  path: String!
+  content: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProjectFileInput.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioTarget!</b></code>](/reference/graphql/types/enums/crowdy-studio-target.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#target\}
+Project target receiving this file.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProjectFileInput.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\}
+Safe relative path: Cargo.toml or a .rs file below src/, with no traversal segments.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProjectFileInput.<b>content</b></code>](#content)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content\}
+UTF-8 source text, capped at 64 KiB.
+
+
+
+
+### Member Of
+
+[`CreateCrowdyStudioProjectInput`](/reference/graphql/types/inputs/create-crowdy-studio-project-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SaveCrowdyStudioProjectFilesInput`](/reference/graphql/types/inputs/save-crowdy-studio-project-files-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SaveCrowdyStudioProjectInput`](/reference/graphql/types/inputs/save-crowdy-studio-project-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

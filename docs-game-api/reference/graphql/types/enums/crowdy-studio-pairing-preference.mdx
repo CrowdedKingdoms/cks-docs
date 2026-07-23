@@ -1,0 +1,53 @@
+---
+id: crowdy-studio-pairing-preference
+title: CrowdyStudioPairingPreference
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Editor preference describing how the project presents its server and client targets; it never grants deployment or runtime authority.
+
+
+```graphql
+enum CrowdyStudioPairingPreference {
+  PAIRED
+  INDEPENDENT
+  SERVER_ONLY
+  CLIENT_ONLY
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioPairingPreference.<b>PAIRED</b></code>](#paired) \{#paired\}
+Present server and client sources as two coordinated halves of one Crowdy Studio project.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioPairingPreference.<b>INDEPENDENT</b></code>](#independent) \{#independent\}
+Present server and client sources independently without an implied requirement edge.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioPairingPreference.<b>SERVER&#x005F;ONLY</b></code>](#server-only) \{#server-only\}
+Present only the server-target authoring workflow.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioPairingPreference.<b>CLIENT&#x005F;ONLY</b></code>](#client-only) \{#client-only\}
+Present only the client-target authoring workflow.
+
+
+
+
+### Member Of
+
+[`CreateCrowdyStudioProjectInput`](/reference/graphql/types/inputs/create-crowdy-studio-project-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`CrowdyStudioProject`](/reference/graphql/types/objects/crowdy-studio-project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SaveCrowdyStudioProjectInput`](/reference/graphql/types/inputs/save-crowdy-studio-project-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SaveCrowdyStudioProjectMetadataInput`](/reference/graphql/types/inputs/save-crowdy-studio-project-metadata-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

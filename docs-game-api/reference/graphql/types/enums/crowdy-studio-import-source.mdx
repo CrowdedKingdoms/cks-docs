@@ -1,0 +1,43 @@
+---
+id: crowdy-studio-import-source
+title: CrowdyStudioImportSource
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The source catalog used for a copy-by-value project file import.
+
+
+```graphql
+enum CrowdyStudioImportSource {
+  LIBRARY
+  COMMON
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioImportSource.<b>LIBRARY</b></code>](#library) \{#library\}
+Import from a private personal-library file owned by the authenticated caller.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioImportSource.<b>COMMON</b></code>](#common) \{#common\}
+Import from an immutable published common-file version in the requested app.
+
+
+
+
+### Member Of
+
+[`ImportCrowdyStudioProjectFileInput`](/reference/graphql/types/inputs/import-crowdy-studio-project-file-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

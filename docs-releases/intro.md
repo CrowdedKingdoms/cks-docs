@@ -8,35 +8,45 @@ title: Changelog
 
 Notable, consumer-facing changes to the public Crowded Kingdoms APIs (Management API,
 Game API, Replication API) and SDKs. Newest first. Breaking changes always ship with a
-deprecation window — deprecated fields keep working and are marked `@deprecated` in the
-schema (visible in the [reference](/management-api/reference/graphql-overview) and the
-downloadable SDL) until the stated removal date.
+deprecation window once a surface is released — deprecated fields keep working and are
+marked `@deprecated` in the schema (visible in the
+[reference](/management-api/reference/graphql-overview) and the downloadable SDL) until
+the stated removal date. Greenfield surfaces may be finalized without aliases; those
+removals are called out explicitly.
 
 ## 2026-07-23 (latest)
 
-**CrowdyJS 10 + Game API: project-first Mod Studio**
+**CrowdyJS 11 + Game API: Crowdy Studio rename**
 
 - New private Game API project storage separates autosaved SERVER/CLIENT
   source from immutable compile versions. Projects use optimistic revisions;
   personal-library files stay owner-only; studio common files are immutable
   and copy into projects by value.
-- New roots: `playerCodeProjects`, `playerCodeProject`,
-  `playerCodeProjectCreate`, atomic `playerCodeProjectSave`,
-  `playerCodeProjectSaveMetadata`, `playerCodeProjectSaveFiles`,
-  `playerCodeProjectSetArchived`, `playerCodeLibraryFiles`,
-  `playerCodeLibrarySave`, `playerCodeLibrarySetArchived`,
-  `playerCodeCommonFiles`, `playerCodeCommonPublish`,
-  `playerCodeProjectImportFile`, and `playerCodeProjectCreateFromModules`.
-- CrowdyJS `10.0.0` intentionally replaces the greenfield session-only
-  live-coding exports with `mountModStudio` / `ModStudioController` and
-  `client.playerCodeProjects`. There are no deprecated aliases. Mod Studio
-  adds cloud autosave/conflicts, project file CRUD, My Library/Common Files,
-  target-aware Monaco/fallback editors, authoritative rustc markers,
-  full-stack deploy/pairing, Runs/Logs/Invoke, wallet/quota status, and truthful
-  server+client stop behavior.
-- Blocks with Friends now embeds the full-screen accessible Mod Studio, passes
-  authoritative grid bounds and target-specific permissions, and seeds its
-  first-party entrypoints into the common-file catalog.
+- Final Game API roots are `crowdyStudioProjects`, `crowdyStudioProject`,
+  `crowdyStudioProjectCreate`, atomic `crowdyStudioProjectSave`,
+  `crowdyStudioProjectSaveMetadata`, `crowdyStudioProjectSaveFiles`,
+  `crowdyStudioProjectSetArchived`, `crowdyStudioLibraryFiles`,
+  `crowdyStudioLibrarySave`, `crowdyStudioLibrarySetArchived`,
+  `crowdyStudioCommonFiles`, `crowdyStudioCommonPublish`,
+  `crowdyStudioProjectImportFile`, and
+  `crowdyStudioProjectCreateFromModules`. Project, library, common-file,
+  input, and enum schema types now use `CrowdyStudio*`; the `playerCompute*`
+  deployment/runtime surface is intentionally unchanged.
+- CrowdyJS `11.0.0` exports `mountCrowdyStudio` and
+  `CrowdyStudioController` from
+  `@crowdedkingdoms/crowdyjs/crowdy-studio`; the project provider is
+  `client.crowdyStudio`. Crowdy Studio adds cloud autosave/conflicts, project
+  file CRUD, My Library/Common Files, target-aware Monaco/fallback editors,
+  authoritative rustc markers, full-stack deploy/pairing, Runs/Logs/Invoke,
+  wallet/quota status, and truthful server+client stop behavior.
+- The v10 `mountModStudio`, `ModStudioController`,
+  `client.playerCodeProjects`, `mod-studio` package subpath, and
+  `playerCodeProject*` / `PlayerCodeProject*` GraphQL names are removed, not
+  deprecated. That authoring surface was still greenfield, so there are no
+  legacy aliases to preserve.
+- Blocks with Friends now embeds the full-screen accessible Crowdy Studio,
+  passes authoritative grid bounds and target-specific permissions, and seeds
+  its first-party entrypoints into the common-file catalog.
 
 **CrowdyJS 9.0.0: browser-local Rust authoring**
 

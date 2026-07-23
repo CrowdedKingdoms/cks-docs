@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-library-set-archived
+title: crowdyStudioLibrarySetArchived
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Archive or restore one caller-owned personal-library file under optimistic revision control. Requires an app-scoped token and exact app/user ownership; archived entries remain retained but cannot be imported until restored.
+
+
+```graphql
+crowdyStudioLibrarySetArchived(
+  input: SetCrowdyStudioLibraryFileArchivedInput!
+): CrowdyStudioLibraryFile!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioLibrarySetArchived.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetCrowdyStudioLibraryFileArchivedInput!</b></code>](/reference/graphql/types/inputs/set-crowdy-studio-library-file-archived-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+Library entry id, expected revision, desired archive state, and optional retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioLibraryFile</b></code>](/reference/graphql/types/objects/crowdy-studio-library-file.mdx) <Badge class="badge badge--secondary " text="object"/>
+A reusable private text file in the authenticated player’s app-scoped personal library.

@@ -1,0 +1,43 @@
+---
+id: crowdy-studio-project-file-delete-input
+title: CrowdyStudioProjectFileDeleteInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A target/path key removed atomically by crowdyStudioProjectSaveFiles.
+
+
+```graphql
+input CrowdyStudioProjectFileDeleteInput {
+  target: CrowdyStudioTarget!
+  path: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProjectFileDeleteInput.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioTarget!</b></code>](/reference/graphql/types/enums/crowdy-studio-target.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#target\}
+Project target containing the file to remove.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProjectFileDeleteInput.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\}
+Safe relative path of the file to remove.
+
+
+
+
+### Member Of
+
+[`SaveCrowdyStudioProjectFilesInput`](/reference/graphql/types/inputs/save-crowdy-studio-project-files-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SaveCrowdyStudioProjectInput`](/reference/graphql/types/inputs/save-crowdy-studio-project-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

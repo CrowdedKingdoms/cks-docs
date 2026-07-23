@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-common-publish
+title: crowdyStudioCommonPublish
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Publish a new immutable version of an app-scoped Crowdy Studio-curated common file and make it the current player-readable version. Requires an app-scoped token plus the app manage&#x005F;compute permission. Old versions remain immutable for provenance; an idempotency key is strongly recommended for transport retries.
+
+
+```graphql
+crowdyStudioCommonPublish(
+  input: PublishCrowdyStudioCommonFileInput!
+): CrowdyStudioCommonFile!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioCommonPublish.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PublishCrowdyStudioCommonFileInput!</b></code>](/reference/graphql/types/inputs/publish-crowdy-studio-common-file-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+Stable catalog identity/metadata, compatible target/path, new immutable content, and optional retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioCommonFile</b></code>](/reference/graphql/types/objects/crowdy-studio-common-file.mdx) <Badge class="badge badge--secondary " text="object"/>
+A Crowdy Studio-curated app-scoped common file at its current immutable published version. Unlike personal source, this content is intentionally readable by app-scoped players.

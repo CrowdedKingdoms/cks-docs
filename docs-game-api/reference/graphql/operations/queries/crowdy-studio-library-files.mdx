@@ -1,0 +1,54 @@
+---
+id: crowdy-studio-library-files
+title: crowdyStudioLibraryFiles
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List the authenticated player’s private reusable Crowdy Studio source files in one app. Requires an app-scoped token for appId; cross-user entries are never visible, including to grid owners or Crowdy Studio operators. The bounded result defaults to 50.
+
+
+```graphql
+crowdyStudioLibraryFiles(
+  appId: BigInt!
+  includeArchived: Boolean
+  limit: Int
+  offset: Int
+): [CrowdyStudioLibraryFile!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioLibraryFiles.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+App tenant whose caller-owned personal library should be listed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioLibraryFiles.<b>includeArchived</b></code>](#include-archived)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#include-archived\}
+True to include retained archived entries; omitted/false returns active entries only.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioLibraryFiles.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\}
+Maximum private library entries to return (default 50, allowed 1–100).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioLibraryFiles.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\}
+Number of owner-scoped library entries to skip (default 0, maximum 10000).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioLibraryFile</b></code>](/reference/graphql/types/objects/crowdy-studio-library-file.mdx) <Badge class="badge badge--secondary " text="object"/>
+A reusable private text file in the authenticated player’s app-scoped personal library.

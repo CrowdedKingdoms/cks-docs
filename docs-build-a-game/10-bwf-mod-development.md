@@ -1,41 +1,34 @@
 ---
 sidebar_position: 10
-title: Build mods in Blocks with Friends
+title: Build mods with Crowdy Studio
 ---
 
-# Build mods in Blocks with Friends
+# Build mods with Crowdy Studio
 
-Blocks with Friends (BWF) provides an in-world Rust IDE for player-authored
-server and client mods. This guide is for a mod developer using the game,
-not a studio operator deploying platform infrastructure.
+Blocks with Friends (BWF) embeds Crowdy Studio for player-authored server and
+client Rust mods. This guide is for a mod developer using the game, not a
+studio operator deploying platform infrastructure.
 
-:::caution Local and unreleased
-
-The browser-local Rust language tooling described below exists only in a local
-development migration. It is planned for a CrowdyJS major release, but no
-package version has been assigned or published.
-
-:::
-
-## Open the editor
+## Open Crowdy Studio
 
 1. Enter BWF with an app-scoped game token.
 2. Stand inside a grid you own and that grants the player-code write/run keys.
 3. Press **M**.
-4. Pick `server` or `client`, then choose a starter template.
+4. Open or create a server, client, or full-stack project. You can copy an
+   app-provided starter from **Common Files** into either target.
 
-The panel opens Monaco with separate `Cargo.toml` and `src/lib.rs` tabs. Rust
-syntax colors, parser diagnostics, workspace completion, hover, symbols, and
-workspace-local navigation run in a lazily loaded browser module worker. The
-worker loads local parser/grammar WASM; it has no authoring endpoint and
-receives no game token. Its feedback is advisory. **Deploy** invokes the
-authoritative platform compiler.
+Crowdy Studio opens Monaco with target-aware `Cargo.toml` and `src/*.rs` tabs.
+Rust syntax colors, parser diagnostics, workspace completion, hover, symbols,
+and workspace-local navigation run in a lazily loaded browser module worker.
+The worker loads local parser/grammar WASM; it has no authoring endpoint and
+receives no game token. Its feedback is advisory. **Test draft** and **Deploy
+live** invoke the authoritative platform compiler.
 
 The local worker is a parser and indexed-symbol service, not rustc or
 rust-analyzer. It cannot prove borrow/lifetime correctness, perform complete
 trait resolution or type inference, expand procedural macros, run Cargo build
 scripts, or reproduce full crate/build-target semantics. A locally clean file
-can still fail Deploy, and a local warning does not block Deploy.
+can still fail deployment, and a local warning does not block deployment.
 
 Downloadable starter files:
 
@@ -90,9 +83,9 @@ crowdy_compute_sdk::register_module!(
 );
 ```
 
-Use **Deploy draft** while iterating when you want server spatial egress
-suppressed from other sessions. A normal Deploy compiles and enables the
-server module after admission and quota checks.
+Use **Test draft** while iterating when you want server spatial egress
+suppressed from other sessions. **Deploy live** compiles and enables the server
+module after admission and quota checks.
 
 ## Client HUD mod
 
@@ -138,15 +131,12 @@ abbreviations in this explanation.
 
 ## Bundle server and client halves
 
-Deploy and successfully compile the client module first, then the server
-module. In the panel:
-
-1. choose the server under **Server mod**;
-2. choose the client under **Requires client mod**;
-3. select **Set requirement**.
-
-The edge pins the current immutable versions. Deploying a new server version
-removes the old attachment until you compile and bind the new version.
+In a full-stack project, set distinct server and client module names and keep
+the pairing requirement enabled. **Deploy live** autosaves one coherent
+revision, compiles CLIENT first and SERVER second, binds the requirement only
+after both compiles succeed, enables the server, and hot-swaps the exact client
+artifact. The edge pins immutable versions; a partial compile failure never
+writes a new requirement.
 
 Visitors entering the grid see one trust prompt for the author. It displays
 the aggregate server+client capability summary. Widening capabilities requires
@@ -157,16 +147,16 @@ prove the new summary is strictly narrower.
 
 - **Compile failed:** read the rustc log in the panel; server compilation is
   authoritative even if the local parser showed no problem.
-- **No completion/diagnostics:** Deploy still works. Check that the browser can
-  load the same-origin module-worker and parser/grammar WASM assets, then reopen
-  the panel. If local language startup fails, the editor deliberately falls
-  back to the textarea, which is the only fallback.
+- **No completion/diagnostics:** deployment still works. Check that the browser
+  can load the same-origin module-worker and parser/grammar WASM assets, then
+  reopen the panel. If local language startup fails, the editor deliberately
+  falls back to the textarea, which is the only fallback.
 - **Deploy refused:** inspect the quota meter and typed gate reason.
 - **Client HUD does not appear:** confirm visitor trust, `run_client_code`,
   current grid presence, and that the attachment remains active.
 - **Server does not tick:** the grid must contain a Buddy-confirmed live actor;
   empty grids suspend tick modules.
 
-See [Player client mods and live coding](/crowdyjs/player-client-mods) for host
-integration and sandbox details, and [Player code](/game-api/player-code) for
-the server-side API model.
+See [Crowdy Studio and player client mods](/crowdyjs/player-client-mods) for
+host integration and sandbox details, and
+[Player code](/game-api/player-code) for the server-side API model.
