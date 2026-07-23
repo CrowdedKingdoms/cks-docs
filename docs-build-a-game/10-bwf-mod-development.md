@@ -24,6 +24,17 @@ The worker loads local parser/grammar WASM; it has no authoring endpoint and
 receives no game token. Its feedback is advisory. **Test draft** and **Deploy
 live** invoke the authoritative platform compiler.
 
+On desktop, Crowdy Studio opens in a resizable right-hand dock so the running
+game remains visible. Drag the divider (or focus it and use the arrow keys) to
+balance the game and editor. Click the game to return to pointer-lock controls,
+then click the editor to code; the panes isolate their keyboard input. Narrow
+screens use the full-screen editor.
+
+Edits autosave to the cloud, but they do not change the running grid until you
+select **Test draft** or **Deploy live**. This keeps compile quota and
+neighbor-visible effects explicit while still letting you observe the updated
+SERVER module or hot-swapped CLIENT worker without closing the studio.
+
 The local worker is a parser and indexed-symbol service, not rustc or
 rust-analyzer. It cannot prove borrow/lifetime correctness, perform complete
 trait resolution or type inference, expand procedural macros, run Cargo build
