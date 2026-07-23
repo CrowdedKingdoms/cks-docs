@@ -9,6 +9,14 @@ Blocks with Friends (BWF) provides an in-world Rust IDE for player-authored
 server and client mods. This guide is for a mod developer using the game,
 not a studio operator deploying platform infrastructure.
 
+:::caution Local and unreleased
+
+The browser-local Rust language tooling described below exists only in a local
+development migration. It is planned for a CrowdyJS major release, but no
+package version has been assigned or published.
+
+:::
+
 ## Open the editor
 
 1. Enter BWF with an app-scoped game token.
@@ -17,9 +25,17 @@ not a studio operator deploying platform infrastructure.
 4. Pick `server` or `client`, then choose a starter template.
 
 The panel opens Monaco with separate `Cargo.toml` and `src/lib.rs` tabs. Rust
-syntax colors work locally. Completion, hover, navigation, and inline
-diagnostics come from rust-analyzer. They are advisory; **Deploy** invokes the
+syntax colors, parser diagnostics, workspace completion, hover, symbols, and
+workspace-local navigation run in a lazily loaded browser module worker. The
+worker loads local parser/grammar WASM; it has no authoring endpoint and
+receives no game token. Its feedback is advisory. **Deploy** invokes the
 authoritative platform compiler.
+
+The local worker is a parser and indexed-symbol service, not rustc or
+rust-analyzer. It cannot prove borrow/lifetime correctness, perform complete
+trait resolution or type inference, expand procedural macros, run Cargo build
+scripts, or reproduce full crate/build-target semantics. A locally clean file
+can still fail Deploy, and a local warning does not block Deploy.
 
 Downloadable starter files:
 
@@ -44,9 +60,11 @@ Use the platform SDK pin:
 crowdy-compute-sdk = "0.1.5"
 ```
 
-The service compiles offline against the same pinned SDK and vendored
-dependency sources used by rust-analyzer. Do not add arbitrary crates; only
-the platform allow-list is accepted.
+The server compiles offline against its pinned SDK and vendored dependency
+sources. The browser worker's embedded platform index helps with names,
+signatures, and hover text, but does not resolve arbitrary crates. Do not add
+arbitrary dependencies; only the platform allow-list is accepted by the
+authoritative server compile.
 
 ## Server mod
 
@@ -138,9 +156,11 @@ prove the new summary is strictly narrower.
 ## Debugging
 
 - **Compile failed:** read the rustc log in the panel; server compilation is
-  authoritative even if rust-analyzer showed no problem.
-- **No completion/diagnostics:** syntax colors and Deploy still work. Reopen the
-  panel after the authoring service reconnects.
+  authoritative even if the local parser showed no problem.
+- **No completion/diagnostics:** Deploy still works. Check that the browser can
+  load the same-origin module-worker and parser/grammar WASM assets, then reopen
+  the panel. If local language startup fails, the editor deliberately falls
+  back to the textarea, which is the only fallback.
 - **Deploy refused:** inspect the quota meter and typed gate reason.
 - **Client HUD does not appear:** confirm visitor trust, `run_client_code`,
   current grid presence, and that the attachment remains active.

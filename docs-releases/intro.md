@@ -12,6 +12,26 @@ deprecation window — deprecated fields keep working and are marked `@deprecate
 schema (visible in the [reference](/management-api/reference/graphql-overview) and the
 downloadable SDL) until the stated removal date.
 
+## Unreleased (local migration branch only)
+
+**CrowdyJS next-major: browser-local Rust authoring**
+
+- This work exists only in local development. It has not been published or
+  assigned a CrowdyJS version; the currently published package remains
+  unchanged.
+- The planned breaking API removes `languageServiceUrl` and `appToken` from
+  `MountLiveCodingIDEOptions`. Monaco instead talks to a lazily loaded browser
+  module worker over local LSP/JSON-RPC messages. Parser/grammar WASM and the
+  generated platform symbol index are packaged assets; there is no public
+  authoring endpoint, authoring token, or server language-service fallback.
+- Local syntax diagnostics, completion, hover, symbols, and workspace
+  navigation are advisory. The worker is not rustc or rust-analyzer and does
+  not provide borrow checking, complete trait/procedural-macro/build-script
+  semantics, or a full Cargo build. **Deploy** still uses the authoritative
+  server-side compiler.
+- This migration changes no GraphQL field, SDL, or replication wire format.
+  It is not yet available to consumers.
+
 ## 2026-07-22 (latest)
 
 **Durable environment deployment progress (Management API)**

@@ -59,8 +59,10 @@ by hand.
 
 Serve the app with a `connect-src` CSP that allows only your game-api and
 management-api origins, and host the glue worker as a same-origin asset. The
-worker needs no third-party origins; the broker makes no cross-origin
-requests.
+player-code worker needs no third-party origins; the broker makes no
+cross-origin requests. The unpublished local-authoring migration also loads its
+module worker and parser/grammar WASM as local assets. It does not add an
+authoring origin to `connect-src`.
 
 ## Presentation hooks
 
@@ -71,19 +73,44 @@ the surfaces you intend to: a HUD panel region and a budgeted in-grid overlay
 are the v1 hooks; world-mesh mutation, other players' HUDs, and camera control
 are not offered.
 
-## Mounting the Monaco Rust IDE
+## Mounting the browser-local Rust IDE
 
-CrowdyJS 8.19.1 adds `mountLiveCodingIDE`. It lazy-loads Monaco, opens
-`Cargo.toml` and `src/*.rs` as separate models, and connects to the
-authenticated rust-analyzer authoring service. Syntax highlighting works
-without the language service; completion, hover, go-to-definition, and
-diagnostics require `languageServiceUrl` plus a current app-token getter.
+:::caution Unpublished next-major migration
+
+The API in this section exists only in a local development migration. It has
+not been assigned or published as a CrowdyJS version. Do not infer an npm
+version from these docs; the currently published package may still expose the
+older server-authoring options.
+
+:::
+
+The planned CrowdyJS major keeps `mountLiveCodingIDE`, but removes the public
+authoring connection. Opening the panel lazy-loads Monaco, one browser module
+worker, and local `web-tree-sitter` parser/Rust grammar WASM assets. The worker
+speaks an LSP 3.17 subset to Monaco over structured-clone worker messages. It
+does not open a WebSocket or other authoring connection, and it receives no
+app token.
+
+Local feedback includes Rust syntax diagnostics, document symbols,
+workspace-local go-to-definition, completion from open files and the embedded
+platform symbol index, and hover text. This is intentionally a fast authoring
+aid, not rustc or rust-analyzer. In particular it does **not** provide:
+
+- borrow checking or lifetime validation;
+- complete type inference or trait resolution;
+- procedural-macro expansion;
+- Cargo build-script execution; or
+- full crate/dependency/build-target semantics.
+
+Treat every local diagnostic and completion as advisory. **Deploy** sends the
+source through the existing player-compute API, and the platform's server-side
+compiler remains the only authoritative compile decision.
 
 ```ts
 import {
   mountLiveCodingIDE,
   PLAYER_CODE_TEMPLATES,
-} from '@crowdedkingdoms/crowdyjs';
+} from '@crowdedkingdoms/crowdyjs/live-coding';
 
 const handle = await mountLiveCodingIDE(hostElement, {
   playerCompute: client.playerCompute,
@@ -94,8 +121,6 @@ const handle = await mountLiveCodingIDE(hostElement, {
   workerUrl: '/player-glue-worker.js',
   templates: PLAYER_CODE_TEMPLATES,
   draftByDefault: true,
-  languageServiceUrl: 'wss://game.example.com/authoring-lsp',
-  appToken: () => client.session.getToken(),
   onHostCall: (call) => routeToWorldStores(call), // owner-lawful reads/effects
   onPresentation: (p) => renderModHud(p),
 });
@@ -103,13 +128,31 @@ const handle = await mountLiveCodingIDE(hostElement, {
 ```
 
 The IDE offers a target picker, template picker, file tabs, editor, deploy /
-draft-deploy / stop, a compile console with the rustc log, and the quota +
-wallet meter. rust-analyzer feedback is advisory: Deploy always runs the
-authoritative offline compiler before code can execute.
+draft-deploy / stop, a compile console with the authoritative rustc log, and
+the quota + wallet meter.
 
-When the service URL/token is absent or Monaco cannot initialize,
-`mountLiveCodingIDE` falls back to the dependency-free `mountLiveCoding`
-textarea. For a custom UI, drive `LiveCodingController` directly.
+`languageServiceUrl` and `appToken` are removed from the planned
+`MountLiveCodingIDEOptions`. Most games need no language-specific options. A
+custom asset pipeline may supply `languageWorkerFactory`; advanced hosts may
+also supply `editorWorkerFactory`, a generated `platformIndex`, or
+`languageRequestTimeoutMs`:
+
+```ts
+await mountLiveCodingIDE(hostElement, {
+  // ...the required player-compute, grid, worker, and host-call options above...
+  languageWorkerFactory: () =>
+    new Worker(localRustWorkerUrl, { type: 'module' }),
+  editorWorkerFactory: () => new Worker(localEditorWorkerUrl),
+  platformIndex: generatedPlatformIndex,
+  languageRequestTimeoutMs: 3_000,
+});
+```
+
+These are local worker/configuration hooks, not endpoint or credential
+options. If Monaco, Worker, the local WASM assets, or platform-index validation
+fails, `mountLiveCodingIDE` falls back to the dependency-free
+`mountLiveCoding` textarea. There is deliberately no server language-service
+fallback. For a custom UI, drive `LiveCodingController` directly.
 
 ## Server modules that require a client companion
 
