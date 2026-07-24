@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-agent-cancel-run
+title: crowdyStudioAgentCancelRun
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Immediately make one owner/session run durably CANCELLED, revoke pending capabilities/tools, and abort its local provider stream when present. Requires the app-scoped owner, current epoch, exact run id, and idempotency key; cancellation never silently resumes.
+
+
+```graphql
+crowdyStudioAgentCancelRun(
+  input: CancelAgentRunInput!
+): AgentRun!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentCancelRun.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CancelAgentRunInput!</b></code>](/reference/graphql/types/inputs/cancel-agent-run-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+Session, current epoch, active run UUID, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentRun</b></code>](/reference/graphql/types/objects/agent-run.mdx) <Badge class="badge badge--secondary " text="object"/>
+Summary of one durable session run.

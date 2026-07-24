@@ -33,31 +33,31 @@ input CreateAccessTierInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 Numeric id of the app the tier belongs to. The caller must hold manage&#x005F;access&#x005F;tiers on this app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\}
 Tier display name (max 128 chars).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>tierOrder</b></code>](#tier-order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-order\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>tierOrder</b></code>](#tier-order)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-order\}
 Optional sort order (ascending). Defaults to 0.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>isFree</b></code>](#is-free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#is-free\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>isFree</b></code>](#is-free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#is-free\}
 Optional; whether the tier is free. Defaults to false.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>isDefault</b></code>](#is-default)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#is-default\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>isDefault</b></code>](#is-default)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#is-default\}
 Optional; whether this is the app's default tier. Defaults to false.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\}
 Optional marketing description of the tier.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-keys\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-keys\}
 Optional runtime permission keys to grant on this tier (must be valid runtimePermissions). Defaults to ["access"] when omitted.
 
 

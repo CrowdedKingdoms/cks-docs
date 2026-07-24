@@ -1,0 +1,88 @@
+---
+id: crowdy-studio-agent-turn-limits
+title: CrowdyStudioAgentTurnLimits
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Per-turn provider/tool/compile limits. Token and cost values are exact decimal BigInt strings; cost is in micro-US-dollars.
+
+
+```graphql
+type CrowdyStudioAgentTurnLimits {
+  providerRequests: Int!
+  inputTokens: BigInt!
+  outputTokens: BigInt!
+  reasoningTokens: BigInt!
+  totalTokens: BigInt!
+  providerCostMicrousd: BigInt!
+  toolCalls: Int!
+  toolRounds: Int!
+  compiles: Int!
+  wallClockMs: Int!
+  concurrentProviderRequests: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentTurnLimits.<b>providerRequests</b></code>](#provider-requests)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider-requests\}
+Maximum provider requests in one accepted turn.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentTurnLimits.<b>inputTokens</b></code>](#input-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#input-tokens\}
+Maximum input tokens in one turn.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentTurnLimits.<b>outputTokens</b></code>](#output-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#output-tokens\}
+Maximum output tokens in one turn.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentTurnLimits.<b>reasoningTokens</b></code>](#reasoning-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reasoning-tokens\}
+Maximum reasoning tokens in one turn.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentTurnLimits.<b>totalTokens</b></code>](#total-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total-tokens\}
+Maximum total provider tokens in one turn.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentTurnLimits.<b>providerCostMicrousd</b></code>](#provider-cost-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider-cost-microusd\}
+Maximum reserved/reconciled provider cost per turn, in micro-USD.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentTurnLimits.<b>toolCalls</b></code>](#tool-calls)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-calls\}
+Maximum tool calls in one turn.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentTurnLimits.<b>toolRounds</b></code>](#tool-rounds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-rounds\}
+Maximum serialized provider/tool rounds in one turn.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentTurnLimits.<b>compiles</b></code>](#compiles)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compiles\}
+Maximum draft compile submissions in one turn.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentTurnLimits.<b>wallClockMs</b></code>](#wall-clock-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wall-clock-ms\}
+Maximum turn wall-clock duration in milliseconds.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentTurnLimits.<b>concurrentProviderRequests</b></code>](#concurrent-provider-requests)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#concurrent-provider-requests\}
+Maximum concurrent provider requests in one turn. The v1 orchestrator still serializes calls.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioAgentPolicy`](/reference/graphql/types/objects/crowdy-studio-agent-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-agent-reject-tool
+title: crowdyStudioAgentRejectTool
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Human-deny one unexpired pending exact tool call, terminally denying the call and failing its run without any effect. Requires the app-scoped owner, current epoch, matching hash, and idempotency key.
+
+
+```graphql
+crowdyStudioAgentRejectTool(
+  input: DecideAgentToolInput!
+): AgentApproval!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentRejectTool.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DecideAgentToolInput!</b></code>](/reference/graphql/types/inputs/decide-agent-tool-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+Session, current epoch, pending call UUID, displayed argument hash, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentApproval</b></code>](/reference/graphql/types/objects/agent-approval.mdx) <Badge class="badge badge--secondary " text="object"/>
+Short-lived single-use human decision bound to one tool call and canonical argument hash.

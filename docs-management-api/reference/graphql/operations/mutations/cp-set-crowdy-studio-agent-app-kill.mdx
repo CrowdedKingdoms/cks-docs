@@ -1,0 +1,39 @@
+---
+id: cp-set-crowdy-studio-agent-app-kill
+title: cpSetCrowdyStudioAgentAppKill
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only (is&#x005F;operator or is&#x005F;super&#x005F;admin). Publish or release an emergency kill for one app. This state is separate from the app's own kill and always takes precedence in Management's effective envelope; app users cannot clear it. SIDE EFFECTS: revision increment, sanitized audit event, and transactional Game API policy notify. Runtime preemption depends on Game API pulling and enforcing the fresh envelope; releasing the operator kill does not enable the app or clear its own kill. Stable errors: AGENT&#x005F;POLICY&#x005F;INVALID, AGENT&#x005F;POLICY&#x005F;REVISION&#x005F;CONFLICT, IDEMPOTENCY&#x005F;CONFLICT.
+
+
+```graphql
+cpSetCrowdyStudioAgentAppKill(
+  input: SetCrowdyStudioAgentOperatorAppKillInput!
+): CrowdyStudioAgentPolicy!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>cpSetCrowdyStudioAgentAppKill.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetCrowdyStudioAgentOperatorAppKillInput!</b></code>](/reference/graphql/types/inputs/set-crowdy-studio-agent-operator-app-kill-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+Target app, kill state, safe reason, expected revision, and idempotency key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentPolicy</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-policy.mdx) <Badge class="badge badge--secondary " text="object"/>
+Management's Agentic Crowdy Studio policy publication. EFFECTIVE values are the fail-closed platform/app intersection; an app can never widen platform models, tools, modes, risks, budgets, retention, or privacy. Game API runtime enforcement still requires a fresh validated replica.

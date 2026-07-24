@@ -1,0 +1,53 @@
+---
+id: agent-checkpoint-file
+title: AgentCheckpointFile
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One source-free file summary in an immutable checkpoint.
+
+
+```graphql
+type AgentCheckpointFile {
+  target: String!
+  path: String!
+  contentHash: String!
+  byteLength: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentCheckpointFile.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#target\}
+SERVER or CLIENT target.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentCheckpointFile.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\}
+Bounded project-relative path.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentCheckpointFile.<b>contentHash</b></code>](#content-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content-hash\}
+Exact file content digest.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentCheckpointFile.<b>byteLength</b></code>](#byte-length)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#byte-length\}
+Exact UTF-8 byte length.
+
+
+
+
+### Member Of
+
+[`AgentCheckpointEvent`](/reference/graphql/types/objects/agent-checkpoint-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,43 @@
+---
+id: crowdy-studio-agent-lease-type
+title: CrowdyStudioAgentLeaseType
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Capability family represented by a lease.
+
+
+```graphql
+enum CrowdyStudioAgentLeaseType {
+  WORKSPACE
+  PLAY
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentLeaseType.<b>WORKSPACE</b></code>](#workspace) \{#workspace\}
+Thirty-second server-acquired lease bound to project revision and target write scopes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentLeaseType.<b>PLAY</b></code>](#play) \{#play\}
+Visible human-granted browser control lease, capped at ten minutes.
+
+
+
+
+### Member Of
+
+[`AgentLease`](/reference/graphql/types/objects/agent-lease.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentLeaseEvent`](/reference/graphql/types/objects/agent-lease-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -28,11 +28,11 @@ claimGridChunk(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>claimGridChunk.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>claimGridChunk.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 App in which to claim the chunk. The bearer app token must be scoped to this app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>claimGridChunk.<b>chunk</b></code>](#chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#chunk\} 
+#### [<code style={{ fontWeight: 'normal' }}>claimGridChunk.<b>chunk</b></code>](#chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#chunk\}
 Exact chunk coordinate to claim; the created grid has this coordinate as both its low and high corner.
 
 
@@ -40,5 +40,5 @@ Exact chunk coordinate to claim; the created grid has this coordinate as both it
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>ChunkClaimResult</b></code>](/reference/graphql/types/objects/chunk-claim-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>ChunkClaimResult</b></code>](/reference/graphql/types/objects/chunk-claim-result.mdx) <Badge class="badge badge--secondary " text="object"/>
 Authoritative result of an ordinary player claiming one chunk as a new grid under SELF&#x005F;CLAIM. Grid creation, title assignment, and direct ACL grants are committed atomically.

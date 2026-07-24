@@ -1,0 +1,58 @@
+---
+id: agent-session-connection
+title: AgentSessionConnection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Bounded owner/app session connection.
+
+
+```graphql
+type AgentSessionConnection {
+  edges: [AgentSessionEdge!]!
+  pageInfo: AgentPageInfo!
+  nodes: [AgentSession!]!
+  endCursor: String
+  hasNextPage: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentSessionConnection.<b>edges</b></code>](#edges)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AgentSessionEdge!]!</b></code>](/reference/graphql/types/objects/agent-session-edge.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#edges\}
+Sessions ordered newest first.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentSessionConnection.<b>pageInfo</b></code>](#page-info)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentPageInfo!</b></code>](/reference/graphql/types/objects/agent-page-info.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#page-info\}
+Connection page metadata.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentSessionConnection.<b>nodes</b></code>](#nodes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AgentSession!]!</b></code>](/reference/graphql/types/objects/agent-session.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#nodes\}
+SDK-compatible session nodes in newest-first order.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentSessionConnection.<b>endCursor</b></code>](#end-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#end-cursor\}
+SDK-compatible final opaque cursor.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentSessionConnection.<b>hasNextPage</b></code>](#has-next-page)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#has-next-page\}
+SDK-compatible next-page indicator.
+
+
+
+
+### Returned By
+
+[`crowdyStudioAgentSessions`](/reference/graphql/operations/queries/crowdy-studio-agent-sessions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

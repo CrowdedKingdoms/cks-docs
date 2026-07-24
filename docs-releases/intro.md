@@ -16,6 +16,57 @@ removals are called out explicitly.
 
 ## 2026-07-23 (latest)
 
+**Development preview — Agentic Crowdy Studio (CrowdyJS 12, Game API,
+Management API, Blocks with Friends)**
+
+This coordinated contract is implemented on development branches and reflected
+in the downloadable development schemas. It is **not a production deployment or
+general-availability announcement**. The feature remains disabled/killed by
+default, and this preview does **not** authorize production, unattended
+real-money activity, wallet actions, or broad autonomous gameplay.
+
+- **CrowdyJS 12 (breaking greenfield agent contract):** adds
+  `@crowdedkingdoms/crowdyjs/agent` and `/player-host`, while
+  `/crowdy-studio` gains the integrated Ask/Build/Play dock.
+  `client.crowdyStudioAgent` is the typed app-token Game API transport for
+  durable replay/ack, epochs, exact approvals, leases, heartbeat, tool results,
+  and reconnect. The immutable `crowdy.agent-tools/1` registry, execute-once
+  browser dispatcher, checkpoint-aware project controller, and
+  `crowdy.player-host/1` contracts contain no provider key, raw GraphQL
+  executor, DOM driver, shell, fetch, UDP escape hatch, or client-mod bridge.
+  Existing manual Studio mounts remain unchanged when `agent` is omitted.
+- **Game API Agent GraphQL:** adds five owner/app queries, 15 idempotent control
+  mutations, and the ordered `crowdyStudioAgentEvents` subscription under the
+  `crowdyStudioAgent*` prefix. Durable sessions/runs/events/tool calls,
+  approvals, workspace/Play leases, checkpoints, budgets/usage, client epochs,
+  provider orchestration, policy freshness, and stable `AGENT_*` errors live in
+  the Game API. The pilot registry advertises only implemented,
+  policy/mode/host-filtered tools and separately requires
+  `use_studio_agent`; live deploy, destructive, trust, economic, and
+  irreversible work remains exact-human-approval gated.
+- **Management policy GraphQL and S2S:** adds app reads
+  `crowdyStudioAgentPolicy`, `crowdyStudioAgentEffectivePolicy`,
+  `crowdyStudioAgentUsage`, app mutation `setCrowdyStudioAgentPolicy`, and
+  operator `cpCrowdyStudioAgentPlatformPolicy`,
+  `cpSetCrowdyStudioAgentPlatformPolicy`, and
+  `cpSetCrowdyStudioAgentAppKill`. Platform/app model, tool, mode, risk,
+  budget, privacy, retention, and kill layers publish the nested
+  `crowdy.studio-agent-policy/1` replica contract; sanitized terminal usage
+  returns through `crowdy.studio-agent-usage/1`. Missing/stale policy fails
+  closed. `use_studio_agent` is app-only, separately grantable, and not in the
+  default tier. The pilot is platform-funded and never debits a player wallet.
+- **Blocks with Friends host:** adds a bounded `BwfPlayerHostAdapter`,
+  observation builder, exact generic command router over the same typed intent
+  services used by humans, synchronous input/death/offline takeover, and an
+  accessible external lease/Pause/Stop banner. Observations expire and are
+  bounded; commands bind observation/host/entity revisions. High-risk
+  grid/trust/commerce and PvP actions remain unadvertised.
+- Public guides now cover the
+  [player/SDK flow](/crowdyjs/agentic-crowdy-studio),
+  [game-host boundary](/game-api/agentic-crowdy-studio),
+  [Management app policy](/management-api/agentic-crowdy-studio-policy), and
+  [operator kill/retention procedure](/operators/agentic-crowdy-studio).
+
 **CrowdyJS 11.1 + Blocks with Friends: resizable Crowdy Studio**
 
 - Crowdy Studio now fills and observes its host element, relayouts Monaco when

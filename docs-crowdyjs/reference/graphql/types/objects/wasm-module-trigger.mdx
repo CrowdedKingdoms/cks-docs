@@ -41,63 +41,63 @@ type WasmModuleTrigger {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>triggerId</b></code>](#trigger-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>triggerId</b></code>](#trigger-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-id\}
 Unique trigger id (UUID).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 The app (tenant).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>moduleId</b></code>](#module-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>moduleId</b></code>](#module-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-id\}
 The module this trigger drives.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>triggerType</b></code>](#trigger-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-type\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>triggerType</b></code>](#trigger-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-type\}
 Trigger type: tick | event | invoke.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>tickHz</b></code>](#tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tick-hz\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>tickHz</b></code>](#tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tick-hz\}
 For tick triggers: the tick rate in Hz.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>onEvent</b></code>](#on-event)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#on-event\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>onEvent</b></code>](#on-event)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#on-event\}
 For event triggers: function&#x005F;invoked | property&#x005F;changed | container&#x005F;created | compute&#x005F;event.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\}
 Event filter: only this model function name.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>containerTypeName</b></code>](#container-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#container-type-name\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>containerTypeName</b></code>](#container-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#container-type-name\}
 Event filter: only this container type.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>propertyKey</b></code>](#property-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#property-key\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>propertyKey</b></code>](#property-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#property-key\}
 Event filter: only this property key.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>eventName</b></code>](#event-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#event-name\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>eventName</b></code>](#event-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#event-name\}
 Event filter: only compute events with this name.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>debounceMs</b></code>](#debounce-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#debounce-ms\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>debounceMs</b></code>](#debounce-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#debounce-ms\}
 Debounce/coalesce window in ms.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>exportName</b></code>](#export-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#export-name\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>exportName</b></code>](#export-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#export-name\}
 For invoke triggers: the exported guest function name.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>invokePolicyJson</b></code>](#invoke-policy-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-policy-json\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>invokePolicyJson</b></code>](#invoke-policy-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-policy-json\}
 For invoke triggers: JSON authority tree gating who may invoke. Null = app admins only.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>contractJson</b></code>](#contract-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#contract-json\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>contractJson</b></code>](#contract-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#contract-json\}
 For invoke triggers: the typed contract (JSON: params/result field maps with int|float|string|bool|object|array types). The platform validates computeInvoke params against it pre-sandbox; client codegen reads it for typed wrappers. Null = undeclared.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
 When the trigger was created.
 
 

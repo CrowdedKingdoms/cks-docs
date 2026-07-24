@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-agent-attach-client
+title: crowdyStudioAgentAttachClient
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Attach one interactive browser, allocate a new monotonic epoch, return that client instance’s replay cursor, and fence every older epoch plus its leases, approvals, and pending browser tools. Requires the app-scoped owner, use&#x005F;studio&#x005F;agent, and idempotency key; reconnect never replays an effect.
+
+
+```graphql
+crowdyStudioAgentAttachClient(
+  input: AttachAgentClientInput!
+): AgentClientAttachment!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentAttachClient.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AttachAgentClientInput!</b></code>](/reference/graphql/types/inputs/attach-agent-client-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+Session, stable client-instance UUID, optional selected project/grid, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentClientAttachment</b></code>](/reference/graphql/types/objects/agent-client-attachment.mdx) <Badge class="badge badge--secondary " text="object"/>
+Result of attaching a fresh interactive client epoch.

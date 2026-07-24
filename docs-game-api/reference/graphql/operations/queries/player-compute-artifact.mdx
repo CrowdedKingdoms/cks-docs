@@ -30,19 +30,19 @@ playerComputeArtifact(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>playerComputeArtifact.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeArtifact.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 App containing the owned grid.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>playerComputeArtifact.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeArtifact.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\}
 Owned grid containing the module.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>playerComputeArtifact.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeArtifact.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\}
 Module name within the grid.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>playerComputeArtifact.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeArtifact.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\}
 Optional specific version UUID; defaults to the current version.
 
 
@@ -50,5 +50,5 @@ Optional specific version UUID; defaults to the current version.
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>PlayerClientArtifact</b></code>](/reference/graphql/types/objects/player-client-artifact.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerClientArtifact</b></code>](/reference/graphql/types/objects/player-client-artifact.mdx) <Badge class="badge badge--secondary " text="object"/>
 A compiled CLIENT-target player artifact plus the metadata the browser broker needs to run it (player compute P3). Served only to the current grid owner who authored the version, holding run&#x005F;client&#x005F;code, when the app's admission mode admits the code. The bytes are the gas-injected wasm32-unknown-unknown module; clientFuelPerDispatch is the per-dispatch fuel budget the glue worker enforces locally.

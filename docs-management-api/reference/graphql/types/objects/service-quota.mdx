@@ -36,43 +36,43 @@ type ServiceQuota {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>quotaId</b></code>](#quota-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#quota-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>quotaId</b></code>](#quota-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#quota-id\}
 Unique quota rule id (BigInt as a decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
 Organization this rule is scoped to (BigInt as a decimal string); null if not org-scoped.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 App this rule is scoped to (BigInt as a decimal string); null if not app-scoped.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\}
 Access tier this rule is scoped to (BigInt as a decimal string); null if not tier-scoped.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>metric</b></code>](#metric)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#metric\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>metric</b></code>](#metric)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#metric\}
 The metered resource this rule limits (e.g. "api&#x005F;requests", "storage&#x005F;bytes"). Free-form metric key, matched exactly.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>limitValue</b></code>](#limit-value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit-value\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>limitValue</b></code>](#limit-value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit-value\}
 Maximum allowed amount of the metric per `period`, as a BigInt decimal string.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>period</b></code>](#period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#period\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>period</b></code>](#period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#period\}
 Time window the limit applies over. Free-form string; defaults to "per&#x005F;minute" (typical values: "per&#x005F;minute", "per&#x005F;hour", "per&#x005F;day").
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>actionOnExceed</b></code>](#action-on-exceed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action-on-exceed\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>actionOnExceed</b></code>](#action-on-exceed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action-on-exceed\}
 What happens when the limit is exceeded. Free-form string; defaults to "throttle" (typical values: "throttle" to rate-limit, "block" to reject).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
 When the rule was created (ISO-8601 UTC timestamp).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServiceQuota.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\}
 When the rule was last updated (ISO-8601 UTC timestamp).
 
 

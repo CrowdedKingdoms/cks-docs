@@ -42,67 +42,67 @@ type Checkout {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>checkoutId</b></code>](#checkout-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#checkout-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>checkoutId</b></code>](#checkout-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#checkout-id\}
 Unique checkout id (BigInt as a decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\}
 User who initiated the checkout (BigInt as a decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaymentProvider!</b></code>](/reference/graphql/types/enums/payment-provider.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#provider\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaymentProvider!</b></code>](/reference/graphql/types/enums/payment-provider.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#provider\}
 Payment processor handling this checkout.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>purpose</b></code>](#purpose)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CheckoutPurpose!</b></code>](/reference/graphql/types/enums/checkout-purpose.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#purpose\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>purpose</b></code>](#purpose)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CheckoutPurpose!</b></code>](/reference/graphql/types/enums/checkout-purpose.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#purpose\}
 Why the checkout was created; determines the side effect applied on completion.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CheckoutStatus!</b></code>](/reference/graphql/types/enums/checkout-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CheckoutStatus!</b></code>](/reference/graphql/types/enums/checkout-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
 Current lifecycle state, updated by webhook reconciliation (not by the redirect).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#amount-cents\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#amount-cents\}
 Charge amount in minor currency units (cents) of `currency`, as a BigInt decimal string; null when the purpose carries no amount.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#currency\}
 ISO-4217 currency code for `amountCents`, lowercase (e.g. "usd"); null when no amount applies.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>externalId</b></code>](#external-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#external-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>externalId</b></code>](#external-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#external-id\}
 Identifier of the session/order in the provider (e.g. Stripe Checkout Session id, PayPal Order id).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>externalUrl</b></code>](#external-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#external-url\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>externalUrl</b></code>](#external-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#external-url\}
 Provider-hosted URL to redirect the user to in order to complete payment.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
 Target organization for the purpose (BigInt as a decimal string); null when not applicable.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 Target app for the purpose (BigInt as a decimal string); null when not applicable.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\}
 Access tier being purchased (BigInt as a decimal string); set for APP&#x005F;ACCESS&#x005F;PURCHASE, otherwise null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>error</b></code>](#error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>error</b></code>](#error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error\}
 Failure reason when `status` is FAILED; null otherwise.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
 When the checkout was created (ISO-8601 UTC timestamp).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>completedAt</b></code>](#completed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#completed-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>completedAt</b></code>](#completed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#completed-at\}
 When the checkout reached COMPLETED (ISO-8601 UTC timestamp); null until then.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>Checkout.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\}
 When the provider session expires if still unpaid (ISO-8601 UTC timestamp); null if there is no expiry.
 
 

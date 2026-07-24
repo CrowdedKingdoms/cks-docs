@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-agent-create-session
+title: crowdyStudioAgentCreateSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a durable owner/app Agentic Crowdy Studio session and pin mode, private project/grid context, allowlisted model, exact Management platform/app revisions, and the mode/tool/risk-filtered registry digest. Requires an app-scoped token, use&#x005F;studio&#x005F;agent, a fresh non-killed policy, and an idempotency key; optional consent applies only to private source.
+
+
+```graphql
+crowdyStudioAgentCreateSession(
+  input: CreateAgentSessionInput!
+): AgentSession!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentCreateSession.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateAgentSessionInput!</b></code>](/reference/graphql/types/inputs/create-agent-session-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+App/project/grid, human mode, optional allowlisted model, optional private-source consent, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentSession</b></code>](/reference/graphql/types/objects/agent-session.mdx) <Badge class="badge badge--secondary " text="object"/>
+Owner/app-scoped durable agent conversation with pinned mode, model, policy, registry, and client epoch.

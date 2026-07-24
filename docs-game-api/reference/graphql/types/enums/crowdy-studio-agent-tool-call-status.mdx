@@ -1,0 +1,88 @@
+---
+id: crowdy-studio-agent-tool-call-status
+title: CrowdyStudioAgentToolCallStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Durable state of one descriptor-pinned serialized tool proposal.
+
+
+```graphql
+enum CrowdyStudioAgentToolCallStatus {
+  PROPOSED
+  WAITING_FOR_APPROVAL
+  DISPATCHED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  DENIED
+  TIMED_OUT
+  CANCELLED
+  STALE
+  OUTCOME_UNKNOWN
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>PROPOSED</b></code>](#proposed) \{#proposed\}
+Validated and recorded, not yet dispatched.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>WAITING&#x005F;FOR&#x005F;APPROVAL</b></code>](#waiting-for-approval) \{#waiting-for-approval\}
+Blocked on the exact argument-hash approval.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>DISPATCHED</b></code>](#dispatched) \{#dispatched\}
+Durably sent to the matching attached browser epoch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>RUNNING</b></code>](#running) \{#running\}
+Executor began the typed operation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>SUCCEEDED</b></code>](#succeeded) \{#succeeded\}
+Typed output validated successfully.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>FAILED</b></code>](#failed) \{#failed\}
+Typed executor failure.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>DENIED</b></code>](#denied) \{#denied\}
+Human denied the exact proposal.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>TIMED&#x005F;OUT</b></code>](#timed-out) \{#timed-out\}
+The recorded tool deadline elapsed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>CANCELLED</b></code>](#cancelled) \{#cancelled\}
+Cancelled before a known successful effect.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>STALE</b></code>](#stale) \{#stale\}
+Fenced by an epoch or context change.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>OUTCOME&#x005F;UNKNOWN</b></code>](#outcome-unknown) \{#outcome-unknown\}
+An effect may have occurred; it is never retried blindly and requires human inspection.
+
+
+
+
+### Member Of
+
+[`AgentToolCall`](/reference/graphql/types/objects/agent-tool-call.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentToolEvent`](/reference/graphql/types/objects/agent-tool-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

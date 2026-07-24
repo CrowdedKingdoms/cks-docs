@@ -1,0 +1,208 @@
+---
+id: crowdy-studio-agent-event-type
+title: CrowdyStudioAgentEventType
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Version 1 durable ordered event vocabulary.
+
+
+```graphql
+enum CrowdyStudioAgentEventType {
+  SESSION_CREATED
+  SESSION_PAUSED
+  SESSION_RESUMED
+  SESSION_CLOSED
+  CLIENT_ATTACHED
+  CLIENT_DETACHED
+  MODE_SELECTED
+  USER_MESSAGE
+  RUN_STARTED
+  ASSISTANT_CHUNK
+  ASSISTANT_MESSAGE
+  TOOL_PROPOSED
+  TOOL_DISPATCHED
+  TOOL_SUCCEEDED
+  TOOL_FAILED
+  TOOL_DENIED
+  TOOL_TIMED_OUT
+  TOOL_OUTCOME_UNKNOWN
+  APPROVAL_REQUESTED
+  APPROVAL_GRANTED
+  APPROVAL_DENIED
+  APPROVAL_CONSUMED
+  APPROVAL_EXPIRED
+  CHECKPOINT_CREATED
+  CHECKPOINT_RESTORED
+  LEASE_GRANTED
+  LEASE_REVOKED
+  LEASE_EXPIRED
+  CONTEXT_CHANGED
+  BUDGET_UPDATED
+  RUN_PAUSED
+  RUN_SUCCEEDED
+  RUN_FAILED
+  RUN_CANCELLED
+  RUN_PREEMPTED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>SESSION&#x005F;CREATED</b></code>](#session-created) \{#session-created\}
+Session and pinned policy/registry context were created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>SESSION&#x005F;PAUSED</b></code>](#session-paused) \{#session-paused\}
+Human paused the session and revoked capabilities.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>SESSION&#x005F;RESUMED</b></code>](#session-resumed) \{#session-resumed\}
+Human explicitly resumed after context revalidation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>SESSION&#x005F;CLOSED</b></code>](#session-closed) \{#session-closed\}
+Session closed and retention cleanup began.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>CLIENT&#x005F;ATTACHED</b></code>](#client-attached) \{#client-attached\}
+A new monotonic client epoch attached and fenced older tabs.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>CLIENT&#x005F;DETACHED</b></code>](#client-detached) \{#client-detached\}
+The interactive browser detached.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>MODE&#x005F;SELECTED</b></code>](#mode-selected) \{#mode-selected\}
+Human selected ASK, BUILD, or PLAY.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>USER&#x005F;MESSAGE</b></code>](#user-message) \{#user-message\}
+Redacted bounded human message accepted for one run.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>RUN&#x005F;STARTED</b></code>](#run-started) \{#run-started\}
+A leased worker started the serialized run.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>ASSISTANT&#x005F;CHUNK</b></code>](#assistant-chunk) \{#assistant-chunk\}
+Bounded coalesced assistant text; final message is canonical.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>ASSISTANT&#x005F;MESSAGE</b></code>](#assistant-message) \{#assistant-message\}
+Canonical final assistant response.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>TOOL&#x005F;PROPOSED</b></code>](#tool-proposed) \{#tool-proposed\}
+Provider proposal passed exact name and input validation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>TOOL&#x005F;DISPATCHED</b></code>](#tool-dispatched) \{#tool-dispatched\}
+Typed browser call was durably dispatched once.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>TOOL&#x005F;SUCCEEDED</b></code>](#tool-succeeded) \{#tool-succeeded\}
+Typed executor output passed validation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>TOOL&#x005F;FAILED</b></code>](#tool-failed) \{#tool-failed\}
+Typed executor reported a safe terminal failure.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>TOOL&#x005F;DENIED</b></code>](#tool-denied) \{#tool-denied\}
+Human denied the exact proposal.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>TOOL&#x005F;TIMED&#x005F;OUT</b></code>](#tool-timed-out) \{#tool-timed-out\}
+Recorded tool deadline elapsed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>TOOL&#x005F;OUTCOME&#x005F;UNKNOWN</b></code>](#tool-outcome-unknown) \{#tool-outcome-unknown\}
+Effect may have occurred; no blind retry is allowed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>APPROVAL&#x005F;REQUESTED</b></code>](#approval-requested) \{#approval-requested\}
+Exact argument-hash human approval was requested.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>APPROVAL&#x005F;GRANTED</b></code>](#approval-granted) \{#approval-granted\}
+Human granted the pending exact approval.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>APPROVAL&#x005F;DENIED</b></code>](#approval-denied) \{#approval-denied\}
+Human denied the pending exact approval.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>APPROVAL&#x005F;CONSUMED</b></code>](#approval-consumed) \{#approval-consumed\}
+Approval was atomically consumed once.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>APPROVAL&#x005F;EXPIRED</b></code>](#approval-expired) \{#approval-expired\}
+Approval TTL elapsed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>CHECKPOINT&#x005F;CREATED</b></code>](#checkpoint-created) \{#checkpoint-created\}
+Immutable private pre-image checkpoint was created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>CHECKPOINT&#x005F;RESTORED</b></code>](#checkpoint-restored) \{#checkpoint-restored\}
+Checkpoint restored as a new project revision.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>LEASE&#x005F;GRANTED</b></code>](#lease-granted) \{#lease-granted\}
+Workspace or Play lease was granted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>LEASE&#x005F;REVOKED</b></code>](#lease-revoked) \{#lease-revoked\}
+Lease was immediately revoked.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>LEASE&#x005F;EXPIRED</b></code>](#lease-expired) \{#lease-expired\}
+Lease reached its expiry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>CONTEXT&#x005F;CHANGED</b></code>](#context-changed) \{#context-changed\}
+Authoritative context changed and old authority was fenced.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>BUDGET&#x005F;UPDATED</b></code>](#budget-updated) \{#budget-updated\}
+Provider reservation/accounting state changed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>RUN&#x005F;PAUSED</b></code>](#run-paused) \{#run-paused\}
+Active run entered a recoverable pause.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>RUN&#x005F;SUCCEEDED</b></code>](#run-succeeded) \{#run-succeeded\}
+Run completed successfully.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>RUN&#x005F;FAILED</b></code>](#run-failed) \{#run-failed\}
+Run reached a typed terminal failure.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>RUN&#x005F;CANCELLED</b></code>](#run-cancelled) \{#run-cancelled\}
+Human cancellation became durable.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEventType.<b>RUN&#x005F;PREEMPTED</b></code>](#run-preempted) \{#run-preempted\}
+Safety preemption became durable.
+
+
+
+
+### Member Of
+
+[`AgentApprovalEvent`](/reference/graphql/types/objects/agent-approval-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentBudgetEvent`](/reference/graphql/types/objects/agent-budget-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentCheckpointEvent`](/reference/graphql/types/objects/agent-checkpoint-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentEventBase`](/reference/graphql/types/interfaces/agent-event-base.mdx)  <Badge class="badge badge--secondary badge--relation" text="interface"/><Bullet />[`AgentLeaseEvent`](/reference/graphql/types/objects/agent-lease-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentLifecycleEvent`](/reference/graphql/types/objects/agent-lifecycle-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentMessageEvent`](/reference/graphql/types/objects/agent-message-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentRunEvent`](/reference/graphql/types/objects/agent-run-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentToolEvent`](/reference/graphql/types/objects/agent-tool-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

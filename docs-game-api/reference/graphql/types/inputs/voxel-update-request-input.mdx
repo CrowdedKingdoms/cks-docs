@@ -35,39 +35,39 @@ input VoxelUpdateRequestInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 The ID of the app where the voxel is located.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>chunk</b></code>](#chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#chunk\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>chunk</b></code>](#chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#chunk\}
 The chunk coordinates containing the voxel. A chunk is a 16x16x16 voxel cube.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\}
 A unique identifier for this voxel update. Must be exactly 32 bytes when encoded as UTF-8.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>voxel</b></code>](#voxel)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinatesInput!</b></code>](/reference/graphql/types/inputs/voxel-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#voxel\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>voxel</b></code>](#voxel)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinatesInput!</b></code>](/reference/graphql/types/inputs/voxel-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#voxel\}
 The voxel coordinates within the chunk. Values must be between -32768 and 32767 (int16 range).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>voxelType</b></code>](#voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-type\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>voxelType</b></code>](#voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-type\}
 The new voxel type ID. This determines the appearance and properties of the voxel.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>voxelState</b></code>](#voxel-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-state\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>voxelState</b></code>](#voxel-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-state\}
 The voxel state data, base64-encoded.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>distance</b></code>](#distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#distance\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>distance</b></code>](#distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#distance\}
 Chunk replication distance (0-8). Defaults to 8 for voxel updates. Clamped to 0-8.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>decayRate</b></code>](#decay-rate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#decay-rate\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>decayRate</b></code>](#decay-rate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#decay-rate\}
 Decay algorithm for replication: 0 = none, 1 = exponential, 2 = linear 50%, 3 = linear 25%, 4 = linear 10%, 5 = linear 5%. Defaults to 0 (none) for voxel updates.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number\}
 Client-assigned correlation id for this datagram: a uint8 (0-255) that wraps at gameClientBootstrap.sequenceNumberModulo (256); defaults to 0 if omitted. For CORRELATION ONLY — it is NOT an idempotency key and the server does not dedupe replays. Echoed on the matching response and on any GenericErrorResponse for this send, both delivered on the udpNotifications subscription.
 
 

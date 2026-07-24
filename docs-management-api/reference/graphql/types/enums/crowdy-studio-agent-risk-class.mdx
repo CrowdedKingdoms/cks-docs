@@ -1,0 +1,68 @@
+---
+id: crowdy-studio-agent-risk-class
+title: CrowdyStudioAgentRiskClass
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Tool risk classes from crowdy.agent-tools/1. App policy may only remove platform-allowed classes; locked approval requirements still apply.
+
+
+```graphql
+enum CrowdyStudioAgentRiskClass {
+  READ_ONLY
+  ROUTINE_WRITE
+  WORLD_CONTROL
+  DESTRUCTIVE
+  TRUST_CONSENT
+  ECONOMIC
+  IRREVERSIBLE
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRiskClass.<b>READ&#x005F;ONLY</b></code>](#read-only) \{#read-only\}
+Owner/app-scoped reads with redaction.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRiskClass.<b>ROUTINE&#x005F;WRITE</b></code>](#routine-write) \{#routine-write\}
+Reversible Build writes with revision checks and checkpoints.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRiskClass.<b>WORLD&#x005F;CONTROL</b></code>](#world-control) \{#world-control\}
+Routine Play actions requiring a visible human-granted lease.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRiskClass.<b>DESTRUCTIVE</b></code>](#destructive) \{#destructive\}
+Destructive action; exact human approval required.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRiskClass.<b>TRUST&#x005F;CONSENT</b></code>](#trust-consent) \{#trust-consent\}
+Trust, consent, or capability change; exact human approval required.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRiskClass.<b>ECONOMIC</b></code>](#economic) \{#economic\}
+Money or commerce action; exact human approval required.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRiskClass.<b>IRREVERSIBLE</b></code>](#irreversible) \{#irreversible\}
+Irreversible action; exact human approval required.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioAgentPolicy`](/reference/graphql/types/objects/crowdy-studio-agent-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SetCrowdyStudioAgentAppPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-app-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SetCrowdyStudioAgentPlatformPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-platform-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

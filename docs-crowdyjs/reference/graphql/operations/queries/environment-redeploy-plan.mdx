@@ -27,7 +27,7 @@ environmentRedeployPlan(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>environmentRedeployPlan.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RedeployEnvironmentInput!</b></code>](/reference/graphql/types/inputs/redeploy-environment-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+#### [<code style={{ fontWeight: 'normal' }}>environmentRedeployPlan.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RedeployEnvironmentInput!</b></code>](/reference/graphql/types/inputs/redeploy-environment-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
 
 
 
@@ -35,5 +35,5 @@ environmentRedeployPlan(
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>EnvironmentRedeployPlan</b></code>](/reference/graphql/types/objects/environment-redeploy-plan.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>EnvironmentRedeployPlan</b></code>](/reference/graphql/types/objects/environment-redeploy-plan.mdx) <Badge class="badge badge--secondary " text="object"/>
 DRY RUN preview of redeployEnvironment: exactly what moving the environment to a target release version would do — component version diffs (game-api, Buddy, base images), whether game-DB schema DDL applies, and the pipeline tasks/steps that would run — WITHOUT creating a change order or touching any VM. Blockers list everything that would make the real mutation fail.

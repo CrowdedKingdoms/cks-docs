@@ -41,63 +41,63 @@ type GmEvent {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\}
 Unique event id.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>flowId</b></code>](#flow-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#flow-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>flowId</b></code>](#flow-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#flow-id\}
 Flow correlation id: shared with automation runs and compute module runs caused by the same entry call (player invoke / automation run / computeInvoke), so cross-engine flows can be stitched together.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
 The session the invocation ran in, if any.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\}
 The function that was invoked.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>selfContainerId</b></code>](#self-container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#self-container-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>selfContainerId</b></code>](#self-container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#self-container-id\}
 The self container id the function ran against.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>callerUserId</b></code>](#caller-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#caller-user-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>callerUserId</b></code>](#caller-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#caller-user-id\}
 The user who invoked the function.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>callerKind</b></code>](#caller-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#caller-kind\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>callerKind</b></code>](#caller-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#caller-kind\}
 Who invoked: player | automation | system. Distinguishes NPC/autonomous-process actions from player actions.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>automationId</b></code>](#automation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#automation-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>automationId</b></code>](#automation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#automation-id\}
 The automation (autonomous process) that drove this invocation, if any.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>paramsJson</b></code>](#params-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#params-json\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>paramsJson</b></code>](#params-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#params-json\}
 JSON object of params.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>mutationsAppliedJson</b></code>](#mutations-applied-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#mutations-applied-json\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>mutationsAppliedJson</b></code>](#mutations-applied-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#mutations-applied-json\}
 JSON array of applied mutations.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>permissionEffectsAppliedJson</b></code>](#permission-effects-applied-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-effects-applied-json\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>permissionEffectsAppliedJson</b></code>](#permission-effects-applied-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-effects-applied-json\}
 JSON array of grid-permission effects this invocation applied (audit trail for model-driven grants/revokes): [&#x007B; action, permission&#x005F;keys, user&#x005F;id, grid&#x005F;id, expires&#x005F;at &#x007D;].
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>returnValueJson</b></code>](#return-value-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#return-value-json\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>returnValueJson</b></code>](#return-value-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#return-value-json\}
 JSON-encoded return value.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#success\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#success\}
 True if the invocation succeeded.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>errorMessage</b></code>](#error-message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-message\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>errorMessage</b></code>](#error-message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-message\}
 Error message when the invocation failed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>executedAt</b></code>](#executed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#executed-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmEvent.<b>executedAt</b></code>](#executed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#executed-at\}
 When the invocation executed.
 
 

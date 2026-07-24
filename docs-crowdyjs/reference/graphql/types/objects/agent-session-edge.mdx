@@ -1,0 +1,43 @@
+---
+id: agent-session-edge
+title: AgentSessionEdge
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One session connection edge.
+
+
+```graphql
+type AgentSessionEdge {
+  cursor: String!
+  node: AgentSession!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentSessionEdge.<b>cursor</b></code>](#cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#cursor\}
+Opaque cursor for this session edge.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentSessionEdge.<b>node</b></code>](#node)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentSession!</b></code>](/reference/graphql/types/objects/agent-session.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#node\}
+Owner/app-scoped session node.
+
+
+
+
+### Member Of
+
+[`AgentSessionConnection`](/reference/graphql/types/objects/agent-session-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

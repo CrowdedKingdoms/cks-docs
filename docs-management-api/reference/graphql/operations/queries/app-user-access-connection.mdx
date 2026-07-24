@@ -30,19 +30,19 @@ appUserAccessConnection(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>appUserAccessConnection.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>appUserAccessConnection.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 Numeric id of the app whose access records to list.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>appUserAccessConnection.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\} 
+#### [<code style={{ fontWeight: 'normal' }}>appUserAccessConnection.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\}
 Return the first N edges after `after`. Default 50; clamped to 1..200.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>appUserAccessConnection.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\} 
+#### [<code style={{ fontWeight: 'normal' }}>appUserAccessConnection.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\}
 Opaque cursor: return edges after this one. Pass a previous page's `pageInfo.endCursor`. Omit for the first page.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>appUserAccessConnection.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+#### [<code style={{ fontWeight: 'normal' }}>appUserAccessConnection.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#status\}
 Optional exact-match filter on access status (e.g. "active" or "revoked"). Omit to return records of all statuses.
 
 
@@ -50,5 +50,5 @@ Optional exact-match filter on access status (e.g. "active" or "revoked"). Omit 
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>AppUserAccessConnection</b></code>](/reference/graphql/types/objects/app-user-access-connection.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>AppUserAccessConnection</b></code>](/reference/graphql/types/objects/app-user-access-connection.mdx) <Badge class="badge badge--secondary " text="object"/>
 A Relay cursor connection over AppUserAccess records. Page with first/after; pass pageInfo.endCursor back as after for the next page.

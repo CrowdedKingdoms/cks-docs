@@ -1,0 +1,48 @@
+---
+id: crowdy-studio-agent-mode
+title: CrowdyStudioAgentMode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Human-selected Agentic Crowdy Studio mode. Policy can remove modes but cannot add authority or let the model select one.
+
+
+```graphql
+enum CrowdyStudioAgentMode {
+  ASK
+  BUILD
+  PLAY
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>ASK</b></code>](#ask) \{#ask\}
+Read-only assistance and proposals.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>BUILD</b></code>](#build) \{#build\}
+Routine project edits and draft tests under ordinary write/run permissions.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>PLAY</b></code>](#play) \{#play\}
+Game control only while a human-granted, scoped, time-boxed control lease is active.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioAgentPolicy`](/reference/graphql/types/objects/crowdy-studio-agent-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SetCrowdyStudioAgentAppPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-app-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SetCrowdyStudioAgentPlatformPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-platform-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

@@ -1,0 +1,57 @@
+---
+id: agent-budget
+title: AgentBudget
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Complete platform-funded budget across turn, session, and player-day dimensions.
+
+
+```graphql
+type AgentBudget {
+  dimensions: [AgentBudgetDimension!]!
+  resetAt: DateTime
+  platformFunded: Boolean!
+  payer: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentBudget.<b>dimensions</b></code>](#dimensions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AgentBudgetDimension!]!</b></code>](/reference/graphql/types/objects/agent-budget-dimension.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#dimensions\}
+All normative provider/tool/compile/wall-clock dimensions.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentBudget.<b>resetAt</b></code>](#reset-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reset-at\}
+UTC player-day reset, or null when no reset applies.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentBudget.<b>platformFunded</b></code>](#platform-funded)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#platform-funded\}
+True throughout the development pilot.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentBudget.<b>payer</b></code>](#payer)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payer\}
+Payer seam; 'PLATFORM' throughout the development pilot.
+
+
+
+
+### Returned By
+
+[`crowdyStudioAgentBudget`](/reference/graphql/operations/queries/crowdy-studio-agent-budget.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`AgentBudgetEvent`](/reference/graphql/types/objects/agent-budget-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

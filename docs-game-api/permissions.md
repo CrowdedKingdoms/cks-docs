@@ -71,9 +71,18 @@ Grid and tier permissions use these runtime keys:
 | `run_server_code` | Running admitted server code in owned grids |
 | `write_client_code` | Authoring browser-target code |
 | `run_client_code` | Running admitted browser-target code |
+| `use_studio_agent` | Entering the Agentic Crowdy Studio protocol. Separately grantable and app-only; it does not imply project, runtime, grid, Play-lease, trust, or commerce authority. |
 
 Query the Management API **`runtimePermissions`** for the live catalog when
 building a permission picker in your studio tools.
+
+`use_studio_agent` currently occupies replica permission bit index **8**, but
+clients and tier configuration should use the stable key instead of hard-coding
+the bit. It has `appliesToApp=true` and `appliesToGrid=false`; do not require or
+infer a grid ACL row for this key. Agentic Build still checks the four
+target-specific code keys above, and Play still checks a human-granted lease
+plus the ordinary game permissions. See
+[Agentic Crowdy Studio](agentic-crowdy-studio).
 
 Teams use a separate set of **team-management** keys (`manage_group`,
 `manage_members`, `manage_roles`, `invite_members`) — see [Teams](teams).

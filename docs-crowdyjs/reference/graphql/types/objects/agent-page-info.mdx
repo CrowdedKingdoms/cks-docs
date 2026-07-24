@@ -1,0 +1,43 @@
+---
+id: agent-page-info
+title: AgentPageInfo
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Standard opaque-cursor pagination metadata.
+
+
+```graphql
+type AgentPageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentPageInfo.<b>hasNextPage</b></code>](#has-next-page)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#has-next-page\}
+Whether another page exists after endCursor.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentPageInfo.<b>endCursor</b></code>](#end-cursor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#end-cursor\}
+Opaque cursor for the final returned edge, or null.
+
+
+
+
+### Member Of
+
+[`AgentEventConnection`](/reference/graphql/types/objects/agent-event-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentSessionConnection`](/reference/graphql/types/objects/agent-session-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-agent-set-mode
+title: crowdyStudioAgentSetMode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Atomically human-select ASK, BUILD, or PLAY plus optional project/grid and repin effective policy revisions, descriptors, registry digest, and context. The change preempts runs and revokes old leases/approvals. Requires current epoch, app owner, use&#x005F;studio&#x005F;agent, mode policy, and idempotency key.
+
+
+```graphql
+crowdyStudioAgentSetMode(
+  input: SetAgentModeInput!
+): AgentSession!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentSetMode.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetAgentModeInput!</b></code>](/reference/graphql/types/inputs/set-agent-mode-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+Session, current epoch, new human mode, optional project/grid, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentSession</b></code>](/reference/graphql/types/objects/agent-session.mdx) <Badge class="badge badge--secondary " text="object"/>
+Owner/app-scoped durable agent conversation with pinned mode, model, policy, registry, and client epoch.

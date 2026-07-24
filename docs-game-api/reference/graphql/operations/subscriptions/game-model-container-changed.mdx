@@ -29,15 +29,15 @@ gameModelContainerChanged(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelContainerChanged.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainerChanged.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 The app (tenant) whose container changes to stream.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelContainerChanged.<b>typeName</b></code>](#type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#type-name\} 
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainerChanged.<b>typeName</b></code>](#type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#type-name\}
 Optional: only changes to containers of this type.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelContainerChanged.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainerChanged.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
 Optional: only changes scoped to this session.
 
 
@@ -45,5 +45,5 @@ Optional: only changes scoped to this session.
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>GmContainerChange</b></code>](/reference/graphql/types/objects/gm-container-change.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>GmContainerChange</b></code>](/reference/graphql/types/objects/gm-container-change.mdx) <Badge class="badge badge--secondary " text="object"/>
 One container-change notification from gameModelContainerChanged. Metadata only (no property values): clients pull the visibility-filtered state with gameModelContainerState on receipt. Delivery is post-commit and best-effort, like model-driven notifications.

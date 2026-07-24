@@ -11,6 +11,11 @@ actual player**, sandboxed in the page, and the mountable authoring panel
 drives the whole edit-deploy-observe loop for both server and client targets.
 (Server mods run in game-api; this page is the browser side.)
 
+CrowdyJS v12 can add a disabled-by-default model-assisted dock to the same
+project UI. Ask/Build/Play never changes the manual draft/live boundary, and
+Play uses a separate game-host lease rather than the client-mod worker. See
+[Agentic Crowdy Studio](agentic-crowdy-studio).
+
 Before mounting the panel, obtain an authoritative owned grid. In a
 `self_claim` app, an ordinary player can claim the unclaimed chunk they are
 standing in:

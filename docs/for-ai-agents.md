@@ -9,6 +9,13 @@ This page is the fastest path for an autonomous agent (or any backend integrator
 call Crowded Kingdoms correctly. It links the machine-readable schema, states the
 global conventions, and walks the three most common end-to-end workflows.
 
+This page is for external API clients and coding agents. The in-product
+**Agentic Crowdy Studio** model runtime is a separate, disabled-by-default
+development contract: use its [player/SDK guide](/crowdyjs/agentic-crowdy-studio),
+[game-host guide](/game-api/agentic-crowdy-studio), and
+[operator runbook](/operators/agentic-crowdy-studio). It never gives a model
+the raw GraphQL access described below.
+
 ## The surface at a glance
 
 | API | Protocol | Use it for |

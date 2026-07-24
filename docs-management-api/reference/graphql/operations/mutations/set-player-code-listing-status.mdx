@@ -29,15 +29,15 @@ setPlayerCodeListingStatus(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>setPlayerCodeListingStatus.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>setPlayerCodeListingStatus.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 Numeric app id that owns the listing.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setPlayerCodeListingStatus.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>setPlayerCodeListingStatus.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\}
 UUID of the listing.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setPlayerCodeListingStatus.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListingStatus!</b></code>](/reference/graphql/types/enums/player-code-listing-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+#### [<code style={{ fontWeight: 'normal' }}>setPlayerCodeListingStatus.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListingStatus!</b></code>](/reference/graphql/types/enums/player-code-listing-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
 New catalog status (ACTIVE, DELISTED, or KILLED).
 
 
@@ -45,5 +45,5 @@ New catalog status (ACTIVE, DELISTED, or KILLED).
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListing</b></code>](/reference/graphql/types/objects/player-code-listing.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListing</b></code>](/reference/graphql/types/objects/player-code-listing.mdx) <Badge class="badge badge--secondary " text="object"/>
 A marketplace code listing: the catalog/provenance record for published player code. Carries no price in P4a — every listing is free. Source is never part of a listing (artifact hashes only).

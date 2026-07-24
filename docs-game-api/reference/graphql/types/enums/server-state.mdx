@@ -32,27 +32,27 @@ enum ServerState {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Starting</b></code>](#starting) \{#starting\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Starting</b></code>](#starting) \{#starting\}
 The server is booting and not yet accepting clients. Do not route new connections here; wait for ReadyForClients.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>ReadyForClients</b></code>](#ready-for-clients) \{#ready-for-clients\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>ReadyForClients</b></code>](#ready-for-clients) \{#ready-for-clients\}
 The server is healthy and accepting clients. This is the only state safe to route new connections to.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Stopping</b></code>](#stopping) \{#stopping\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Stopping</b></code>](#stopping) \{#stopping\}
 The server is draining and shutting down: existing sessions may continue briefly but no new clients should be routed here.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Offline</b></code>](#offline) \{#offline\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Offline</b></code>](#offline) \{#offline\}
 The server is down or unreachable (failed health checks). Do not route any traffic here.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>NearCapacity</b></code>](#near-capacity) \{#near-capacity\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>NearCapacity</b></code>](#near-capacity) \{#near-capacity\}
 Soft resource overload (a CPU core or system memory has been high for several seconds). Existing sessions continue, but the server is excluded from serverWithLeastClients so no new clients are routed here until it recovers.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Full</b></code>](#full) \{#full\} 
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Full</b></code>](#full) \{#full\}
 Hard resource overload. Like NearCapacity (excluded from new-client selection), and the server is also actively shedding clients: it sends each affected client a reconnect command and drops their session after a short grace period so they migrate to another server.
 
 

@@ -1,0 +1,38 @@
+---
+id: crowdy-studio-agent-privacy-policy-input
+title: CrowdyStudioAgentPrivacyPolicyInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+App/platform privacy patch. It can disable private-source sharing; ZDR, collection denial, first-use consent, and provider-body non-persistence are locked.
+
+
+```graphql
+input CrowdyStudioAgentPrivacyPolicyInput {
+  allowPrivateSource: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPrivacyPolicyInput.<b>allowPrivateSource</b></code>](#allow-private-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#allow-private-source\}
+Allow selected private source only after the separate human disclosure/consent gate.
+
+
+
+
+### Member Of
+
+[`SetCrowdyStudioAgentAppPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-app-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SetCrowdyStudioAgentPlatformPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-platform-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

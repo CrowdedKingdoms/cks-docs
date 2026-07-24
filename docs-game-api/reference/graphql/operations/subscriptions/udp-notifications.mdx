@@ -25,5 +25,5 @@ udpNotifications: UdpNotification
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>UdpNotification</b></code>](/reference/graphql/types/unions/udp-notification.mdx) <Badge class="badge badge--secondary " text="union"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>UdpNotification</b></code>](/reference/graphql/types/unions/udp-notification.mdx) <Badge class="badge badge--secondary " text="union"/>
 All game-server messages delivered over the UDP proxy as GraphQL payloads. Subscribe to udpNotifications before or with sending mutations so responses and GenericErrorResponse (correlate via sequenceNumber) are not missed. NOTE: the ActorUpdateResponse and VoxelUpdateResponse members are LEGACY and never emitted (applied updates arrive as your own &#x002A;Notification self-echo; failures as GenericErrorResponse) — they remain in the union for backward compatibility and will be removed in a future major version.

@@ -1,0 +1,176 @@
+---
+id: agent-tool-event
+title: AgentToolEvent
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Typed tool event. JSON fields are descriptor-versioned and validated against the descriptor returned by crowdyStudioAgentToolDescriptors; they are never arbitrary executor input.
+
+
+```graphql
+type AgentToolEvent implements AgentEventBase {
+  protocolVersion: String!
+  eventId: String!
+  sessionId: String!
+  seq: BigInt!
+  type: CrowdyStudioAgentEventType!
+  runId: String
+  version: String!
+  createdAt: DateTime!
+  toolCallId: String!
+  toolName: String!
+  toolVersion: String!
+  status: CrowdyStudioAgentToolCallStatus!
+  safeSummary: String
+  descriptorDigest: String
+  argumentHash: String
+  executor: CrowdyStudioAgentToolExecutor
+  contextVersion: String
+  clientEpoch: BigInt
+  argumentsJson: String
+  leaseId: String
+  approvalGrant: String
+  idempotencyKey: String
+  resultJson: String
+  invocation: AgentToolInvocation
+  result: AgentToolResultEnvelope
+  error: AgentError
+  deadline: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>protocolVersion</b></code>](#protocol-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#protocol-version\}
+Event envelope version; always 'crowdy.agent-event/1'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\}
+Stable event UUID for deduplication.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+Owning session UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>seq</b></code>](#seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#seq\}
+Strictly increasing session sequence as a decimal BigInt.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentEventType!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-event-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#type\}
+Stable version 1 event discriminator.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\}
+Related run UUID, or null for session-only facts.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\}
+Versioned event payload contract.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+Commit timestamp.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>toolCallId</b></code>](#tool-call-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-call-id\}
+Stable tool call UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>toolName</b></code>](#tool-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-name\}
+Logical versioned tool name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>toolVersion</b></code>](#tool-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-version\}
+Pinned semantic tool version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentToolCallStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-tool-call-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
+Required durable tool status for this event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>safeSummary</b></code>](#safe-summary)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#safe-summary\}
+Safe bounded human summary, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>descriptorDigest</b></code>](#descriptor-digest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#descriptor-digest\}
+Pinned descriptor digest, or null before dispatch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>argumentHash</b></code>](#argument-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#argument-hash\}
+Canonical argument hash, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>executor</b></code>](#executor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentToolExecutor</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-tool-executor.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#executor\}
+SERVER or BROWSER executor, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>contextVersion</b></code>](#context-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#context-version\}
+Authoritative dispatch context version, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\}
+Fenced browser epoch for a dispatch, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>argumentsJson</b></code>](#arguments-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#arguments-json\}
+Descriptor-schema-validated, redaction-safe canonical JSON arguments for browser dispatch; null otherwise.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>leaseId</b></code>](#lease-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#lease-id\}
+Bound lease UUID, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>approvalGrant</b></code>](#approval-grant)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#approval-grant\}
+Opaque approval capability, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
+Executor idempotency key, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>resultJson</b></code>](#result-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#result-json\}
+Descriptor-schema-validated, redaction-safe canonical JSON result summary; source and prompt bodies are omitted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>invocation</b></code>](#invocation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentToolInvocation</b></code>](/reference/graphql/types/objects/agent-tool-invocation.mdx) <Badge class="badge badge--secondary " text="object"/> \{#invocation\}
+Complete browser invocation on TOOL&#x005F;DISPATCHED; null for other events.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>result</b></code>](#result)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentToolResultEnvelope</b></code>](/reference/graphql/types/objects/agent-tool-result-envelope.mdx) <Badge class="badge badge--secondary " text="object"/> \{#result\}
+Complete typed terminal result when available.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>error</b></code>](#error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentError</b></code>](/reference/graphql/types/objects/agent-error.mdx) <Badge class="badge badge--secondary " text="object"/> \{#error\}
+Safe typed terminal tool error, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolEvent.<b>deadline</b></code>](#deadline)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#deadline\}
+Dispatch deadline, or null for non-dispatch events.
+
+
+
+
+### Interfaces
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentEventBase</b></code>](/reference/graphql/types/interfaces/agent-event-base.mdx) <Badge class="badge badge--secondary " text="interface"/>
+Common identity/order fields on every typed durable agent event variant.
+
+
+
+
+### Implemented By
+
+[`CrowdyStudioAgentEvent`](/reference/graphql/types/unions/crowdy-studio-agent-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/>

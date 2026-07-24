@@ -30,19 +30,19 @@ input TeleportRequestInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>TeleportRequestInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>TeleportRequestInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 App (game) to teleport within. Must be greater than 0 (a non-positive value yields errorCode INVALID&#x005F;APP&#x005F;ID). BigInt sent as a decimal string.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>TeleportRequestInput.<b>chunkAddress</b></code>](#chunk-address)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#chunk-address\} 
+#### [<code style={{ fontWeight: 'normal' }}>TeleportRequestInput.<b>chunkAddress</b></code>](#chunk-address)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#chunk-address\}
 Destination chunk-grid coordinates (x, y, z as int64 BigInt decimal strings). The reserved sentinel (-6, -6, -6) is rejected as UNAUTHORIZED.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>TeleportRequestInput.<b>voxelAddress</b></code>](#voxel-address)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinatesInput!</b></code>](/reference/graphql/types/inputs/voxel-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#voxel-address\} 
+#### [<code style={{ fontWeight: 'normal' }}>TeleportRequestInput.<b>voxelAddress</b></code>](#voxel-address)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinatesInput!</b></code>](/reference/graphql/types/inputs/voxel-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#voxel-address\}
 Destination voxel coordinates within the chunk (x, y, z as signed 16-bit ints, -32768..32767).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>TeleportRequestInput.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\} 
+#### [<code style={{ fontWeight: 'normal' }}>TeleportRequestInput.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\}
 Actor being teleported: exactly 32 ASCII characters (the UDP-wire actor id), NOT a hyphenated RFC-4122 UUID.
 
 

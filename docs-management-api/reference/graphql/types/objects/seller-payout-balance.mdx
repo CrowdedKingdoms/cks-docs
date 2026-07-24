@@ -33,31 +33,31 @@ type SellerPayoutBalance {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>partyKind</b></code>](#party-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#party-kind\} 
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>partyKind</b></code>](#party-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#party-kind\}
 'user' or 'org'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>partyRef</b></code>](#party-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#party-ref\} 
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>partyRef</b></code>](#party-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#party-ref\}
 User id or org id.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>pendingCents</b></code>](#pending-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#pending-cents\} 
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>pendingCents</b></code>](#pending-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#pending-cents\}
 Cents still aging in the delay window.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>payableCents</b></code>](#payable-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payable-cents\} 
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>payableCents</b></code>](#payable-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payable-cents\}
 Cents aged, unreserved, and withdrawable.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>reservedCents</b></code>](#reserved-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-cents\} 
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>reservedCents</b></code>](#reserved-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-cents\}
 Cents held back (reserve or T11 freeze).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>onboardingStatus</b></code>](#onboarding-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SellerOnboardingStatus!</b></code>](/reference/graphql/types/enums/seller-onboarding-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#onboarding-status\} 
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>onboardingStatus</b></code>](#onboarding-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SellerOnboardingStatus!</b></code>](/reference/graphql/types/enums/seller-onboarding-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#onboarding-status\}
 Stripe Connect Express onboarding state.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>payoutsFrozen</b></code>](#payouts-frozen)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payouts-frozen\} 
+#### [<code style={{ fontWeight: 'normal' }}>SellerPayoutBalance.<b>payoutsFrozen</b></code>](#payouts-frozen)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payouts-frozen\}
 Whether payouts are frozen by a T11 review hold.
 
 

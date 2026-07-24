@@ -1,0 +1,49 @@
+---
+id: crowdy-studio-agent-history
+title: crowdyStudioAgentHistory
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Replay ordered durable typed events with seq greater than afterSeq. Requires the app-scoped owner and use&#x005F;studio&#x005F;agent. Use this query to fill subscription gaps; results are ascending, at-least-once safe, default 100, maximum 200.
+
+
+```graphql
+crowdyStudioAgentHistory(
+  sessionId: String!
+  afterSeq: BigInt
+  first: Int
+): AgentEventConnection!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentHistory.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+Owner/app session UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentHistory.<b>afterSeq</b></code>](#after-seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after-seq\}
+Exclusive durable sequence cursor as a decimal BigInt; defaults to 0.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentHistory.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\}
+Maximum events to return (default 100, allowed 1–200).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentEventConnection</b></code>](/reference/graphql/types/objects/agent-event-connection.mdx) <Badge class="badge badge--secondary " text="object"/>
+Bounded ordered history connection, exclusive of the supplied afterSeq.

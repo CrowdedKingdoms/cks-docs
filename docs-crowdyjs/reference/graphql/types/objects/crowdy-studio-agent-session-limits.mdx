@@ -1,0 +1,78 @@
+---
+id: crowdy-studio-agent-session-limits
+title: CrowdyStudioAgentSessionLimits
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Per-session cumulative provider/tool/compile limits and the serialized-run concurrency ceiling.
+
+
+```graphql
+type CrowdyStudioAgentSessionLimits {
+  providerRequests: Int!
+  inputTokens: BigInt!
+  outputTokens: BigInt!
+  reasoningTokens: BigInt!
+  totalTokens: BigInt!
+  providerCostMicrousd: BigInt!
+  toolCalls: Int!
+  compiles: Int!
+  concurrentRuns: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimits.<b>providerRequests</b></code>](#provider-requests)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider-requests\}
+Maximum provider requests in one session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimits.<b>inputTokens</b></code>](#input-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#input-tokens\}
+Maximum input tokens in one session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimits.<b>outputTokens</b></code>](#output-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#output-tokens\}
+Maximum output tokens in one session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimits.<b>reasoningTokens</b></code>](#reasoning-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reasoning-tokens\}
+Maximum reasoning tokens in one session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimits.<b>totalTokens</b></code>](#total-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total-tokens\}
+Maximum total provider tokens in one session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimits.<b>providerCostMicrousd</b></code>](#provider-cost-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider-cost-microusd\}
+Maximum provider cost in one session, in micro-USD.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimits.<b>toolCalls</b></code>](#tool-calls)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-calls\}
+Maximum tool calls in one session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimits.<b>compiles</b></code>](#compiles)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compiles\}
+Maximum draft compile submissions in one session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimits.<b>concurrentRuns</b></code>](#concurrent-runs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#concurrent-runs\}
+Maximum concurrent non-terminal runs in a session. The v1 contract requires one.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioAgentPolicy`](/reference/graphql/types/objects/crowdy-studio-agent-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

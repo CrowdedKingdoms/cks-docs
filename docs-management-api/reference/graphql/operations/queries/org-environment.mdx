@@ -28,11 +28,11 @@ orgEnvironment(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>orgEnvironment.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>orgEnvironment.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
 Organization id (BigInt) that owns the environment.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>orgEnvironment.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
+#### [<code style={{ fontWeight: 'normal' }}>orgEnvironment.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\}
 Environment slug (cks&#x005F;environments.slug), e.g. an auto-generated 'e-&#x003C;12 chars&#x003E;' or a custom slug supplied at creation.
 
 
@@ -40,5 +40,5 @@ Environment slug (cks&#x005F;environments.slug), e.g. an auto-generated 'e-&#x00
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>CksEnvironmentDetail</b></code>](/reference/graphql/types/objects/cks-environment-detail.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>CksEnvironmentDetail</b></code>](/reference/graphql/types/objects/cks-environment-detail.mdx) <Badge class="badge badge--secondary " text="object"/>
 Full environment detail returned by orgEnvironment: the environment plus its components, change orders, audit, secrets, outputs, billing resources, live deploy/destroy progress, and Buddy health.

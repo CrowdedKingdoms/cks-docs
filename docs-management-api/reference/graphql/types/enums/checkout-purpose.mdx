@@ -32,19 +32,19 @@ enum CheckoutPurpose {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>ORG&#x005F;WALLET&#x005F;TOPUP</b></code>](#org-wallet-topup) \{#org-wallet-topup\} 
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>ORG&#x005F;WALLET&#x005F;TOPUP</b></code>](#org-wallet-topup) \{#org-wallet-topup\}
 Add funds to an organization wallet. Requires orgId and amountCents, and the caller must hold the org "manage&#x005F;billing" permission. Credits the org wallet on completion.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>PLAYER&#x005F;WALLET&#x005F;TOPUP</b></code>](#player-wallet-topup) \{#player-wallet-topup\} 
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>PLAYER&#x005F;WALLET&#x005F;TOPUP</b></code>](#player-wallet-topup) \{#player-wallet-topup\}
 Add funds to the caller's own player wallet (player compute P2). Requires amountCents only — any authenticated user may fund their own wallet; no org permission is involved. Credits the player wallet idempotently on completion.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>APP&#x005F;ACCESS&#x005F;PURCHASE</b></code>](#app-access-purchase) \{#app-access-purchase\} 
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>APP&#x005F;ACCESS&#x005F;PURCHASE</b></code>](#app-access-purchase) \{#app-access-purchase\}
 Purchase a user's access to an app at a given tier. Requires appId and tierId. Upserts app&#x005F;user&#x005F;access on completion.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>DONATION</b></code>](#donation) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> \{#donation\} 
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>DONATION</b></code>](#donation) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> \{#donation\}
 :::warning[DEPRECATED]
 
 No longer purchasable; use ORG&#x005F;WALLET&#x005F;TOPUP or APP&#x005F;ACCESS&#x005F;PURCHASE. Retained for historical checkouts.
@@ -54,7 +54,7 @@ No longer purchasable; use ORG&#x005F;WALLET&#x005F;TOPUP or APP&#x005F;ACCESS&#
 Deprecated. Historically a one-off donation to an app. No longer purchasable and rejected at runtime by createCheckout.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>PROPERTY&#x005F;TOKENS</b></code>](#property-tokens) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> \{#property-tokens\} 
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>PROPERTY&#x005F;TOKENS</b></code>](#property-tokens) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> \{#property-tokens\}
 :::warning[DEPRECATED]
 
 No longer purchasable; use ORG&#x005F;WALLET&#x005F;TOPUP or APP&#x005F;ACCESS&#x005F;PURCHASE. Retained for historical checkouts.
@@ -64,7 +64,7 @@ No longer purchasable; use ORG&#x005F;WALLET&#x005F;TOPUP or APP&#x005F;ACCESS&#
 Deprecated. Historically a purchase of in-world property tokens. No longer purchasable and rejected at runtime by createCheckout.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>SHARED&#x005F;APP&#x005F;SUBSCRIPTION</b></code>](#shared-app-subscription) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> \{#shared-app-subscription\} 
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>SHARED&#x005F;APP&#x005F;SUBSCRIPTION</b></code>](#shared-app-subscription) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> \{#shared-app-subscription\}
 :::warning[DEPRECATED]
 
 Shared apps use org wallet hourly usage billing. Publish via publishAppToShared and top up with ORG&#x005F;WALLET&#x005F;TOPUP.

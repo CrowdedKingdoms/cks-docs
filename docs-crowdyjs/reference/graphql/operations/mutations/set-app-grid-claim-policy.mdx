@@ -29,15 +29,15 @@ setAppGridClaimPolicy(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>setAppGridClaimPolicy.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>setAppGridClaimPolicy.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 Numeric app id whose claim policy to set.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setAppGridClaimPolicy.<b>policy</b></code>](#policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GridClaimPolicy!</b></code>](/reference/graphql/types/enums/grid-claim-policy.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#policy\} 
+#### [<code style={{ fontWeight: 'normal' }}>setAppGridClaimPolicy.<b>policy</b></code>](#policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GridClaimPolicy!</b></code>](/reference/graphql/types/enums/grid-claim-policy.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#policy\}
 The new claim policy.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setAppGridClaimPolicy.<b>approverUserIds</b></code>](#approver-user-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#approver-user-ids\} 
+#### [<code style={{ fontWeight: 'normal' }}>setAppGridClaimPolicy.<b>approverUserIds</b></code>](#approver-user-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#approver-user-ids\}
 Player user ids allowed to approve claim requests in APPROVAL mode. Empty falls back to org staff holding manage&#x005F;compute.
 
 
@@ -45,5 +45,5 @@ Player user ids allowed to approve claim requests in APPROVAL mode. Empty falls 
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>GridClaimPolicy</b></code>](/reference/graphql/types/enums/grid-claim-policy.mdx) <Badge class="badge badge--secondary " text="enum"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>GridClaimPolicy</b></code>](/reference/graphql/types/enums/grid-claim-policy.mdx) <Badge class="badge badge--secondary " text="enum"/>
 How a player claim confers grid ownership in this app (D4): SELF&#x005F;CLAIM (the claim alone assigns ownership), APPROVAL (claims create requests designated approvers accept), INVITE (only against a standing invite), or MARKETPLACE&#x005F;ONLY (only a marketplace grid purchase; direct claims refused — the purchase edge ships in P4b).

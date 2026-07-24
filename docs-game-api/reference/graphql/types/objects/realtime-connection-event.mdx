@@ -30,19 +30,19 @@ type RealtimeConnectionEvent {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>RealtimeConnectionEvent.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+#### [<code style={{ fontWeight: 'normal' }}>RealtimeConnectionEvent.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\}
 Lifecycle status of the session attempt. Currently always "failed" — this event is only emitted when udpNotifications could not establish (or had to tear down) the underlying UDP proxy session.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RealtimeConnectionEvent.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code\} 
+#### [<code style={{ fontWeight: 'normal' }}>RealtimeConnectionEvent.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code\}
 Machine-readable failure reason. Branch on this (not on `message`). Known values: AUTH&#x005F;REQUIRED — no valid bearer game token was presented on the WS connection&#x005F;init / request; authenticate via the Management API and resubscribe (not retryable as-is). APP&#x005F;ID&#x005F;REQUIRED — the subscription was opened without an appId scope; udpNotifications must be app-scoped (game tokens are app-agnostic and one socket is shared across apps), so pass the app you are playing and resubscribe (not retryable as-is). UDP&#x005F;PROXY&#x005F;CONNECTION&#x005F;FAILED — the proxy could not open or keep a UDP socket to the selected game server (transient/infrastructure); back off and resubscribe (retryable). `message` carries the specific underlying detail for this case.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RealtimeConnectionEvent.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
+#### [<code style={{ fontWeight: 'normal' }}>RealtimeConnectionEvent.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message\}
 Human-readable explanation of the failure, suitable for logs and developer-facing surfaces. Do not parse or branch on this text — branch on `code` instead.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RealtimeConnectionEvent.<b>retryable</b></code>](#retryable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#retryable\} 
+#### [<code style={{ fontWeight: 'normal' }}>RealtimeConnectionEvent.<b>retryable</b></code>](#retryable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#retryable\}
 Whether resubscribing without changing anything may succeed. true for transient failures (e.g. UDP&#x005F;PROXY&#x005F;CONNECTION&#x005F;FAILED) — back off and retry. false for caller errors that must be fixed first (AUTH&#x005F;REQUIRED needs a fresh/valid game token; APP&#x005F;ID&#x005F;REQUIRED needs an appId-scoped subscription).
 
 

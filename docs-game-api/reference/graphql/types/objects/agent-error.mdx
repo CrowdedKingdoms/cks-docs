@@ -1,0 +1,63 @@
+---
+id: agent-error
+title: AgentError
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Stable safe error envelope carried inside tool/run events. Branch on code, never message.
+
+
+```graphql
+type AgentError {
+  code: String!
+  message: String!
+  retryable: Boolean!
+  remediation: String
+  field: String
+  requiredScope: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentError.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code\}
+Stable additive error code.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentError.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message\}
+Safe bounded human-readable detail.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentError.<b>retryable</b></code>](#retryable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#retryable\}
+Whether policy permits a deliberate retry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentError.<b>remediation</b></code>](#remediation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#remediation\}
+Optional safe human remediation, never a command to execute.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentError.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#field\}
+Optional invalid input field path.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentError.<b>requiredScope</b></code>](#required-scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#required-scope\}
+Optional missing agent scope.
+
+
+
+
+### Member Of
+
+[`AgentRunEvent`](/reference/graphql/types/objects/agent-run-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentToolCall`](/reference/graphql/types/objects/agent-tool-call.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentToolEvent`](/reference/graphql/types/objects/agent-tool-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentToolResultEnvelope`](/reference/graphql/types/objects/agent-tool-result-envelope.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

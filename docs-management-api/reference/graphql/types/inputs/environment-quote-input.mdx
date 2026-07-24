@@ -39,55 +39,55 @@ input EnvironmentQuoteInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
 Organization id (BigInt) to quote against (uses its wallet balance).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>datacenter</b></code>](#datacenter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#datacenter\} 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>datacenter</b></code>](#datacenter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#datacenter\}
 OVH datacenter/region code from environmentDatacenters (e.g. 'GRA11').
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>environmentClass</b></code>](#environment-class)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#environment-class\} 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>environmentClass</b></code>](#environment-class)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#environment-class\}
 Deployment class: 'dedicated' (default) or 'dev&#x005F;single'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>flavor</b></code>](#flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#flavor\} 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>flavor</b></code>](#flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#flavor\}
 Single VM flavor for environmentClass='dev&#x005F;single'. Ignored for dedicated.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>databaseFlavor</b></code>](#database-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#database-flavor\} 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>databaseFlavor</b></code>](#database-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#database-flavor\}
 Flavor name from environmentFlavors(datacenter); must have a published hourly price. Required for dedicated.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>gameApiFlavor</b></code>](#game-api-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-flavor\} 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>gameApiFlavor</b></code>](#game-api-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-flavor\}
 Flavor name from environmentFlavors(datacenter) for per-tenant game-api VMs; must have a published hourly price. Required for dedicated.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>udpBuddyFlavor</b></code>](#udp-buddy-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-flavor\} 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>udpBuddyFlavor</b></code>](#udp-buddy-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-flavor\}
 Flavor name from environmentFlavors(datacenter); must have a published hourly price. Required for dedicated.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>caddyFlavor</b></code>](#caddy-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#caddy-flavor\} 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>caddyFlavor</b></code>](#caddy-flavor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#caddy-flavor\}
 Flavor name from environmentFlavors(datacenter) for the Caddy LB VMs in front of the game-api fleet; must have a published hourly price. Required for dedicated.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>gameApiMinServers</b></code>](#game-api-min-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-min-servers\} 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>gameApiMinServers</b></code>](#game-api-min-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-min-servers\}
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>gameApiMaxServers</b></code>](#game-api-max-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-max-servers\} 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>gameApiMaxServers</b></code>](#game-api-max-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-max-servers\}
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>udpBuddyMinServers</b></code>](#udp-buddy-min-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-min-servers\} 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>udpBuddyMinServers</b></code>](#udp-buddy-min-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-min-servers\}
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>udpBuddyMaxServers</b></code>](#udp-buddy-max-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-max-servers\} 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>udpBuddyMaxServers</b></code>](#udp-buddy-max-servers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#udp-buddy-max-servers\}
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>loadBalancerCount</b></code>](#load-balancer-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#load-balancer-count\} 
+#### [<code style={{ fontWeight: 'normal' }}>EnvironmentQuoteInput.<b>loadBalancerCount</b></code>](#load-balancer-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#load-balancer-count\}
 
 
 

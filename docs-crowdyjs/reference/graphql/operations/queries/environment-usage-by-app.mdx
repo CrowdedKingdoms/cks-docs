@@ -29,15 +29,15 @@ environmentUsageByApp(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>environmentUsageByApp.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>environmentUsageByApp.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
 Organization id (BigInt) that owns the environment.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>environmentUsageByApp.<b>environmentSlug</b></code>](#environment-slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#environment-slug\} 
+#### [<code style={{ fontWeight: 'normal' }}>environmentUsageByApp.<b>environmentSlug</b></code>](#environment-slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#environment-slug\}
 Slug of the environment whose apps to roll up.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>environmentUsageByApp.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#since\} 
+#### [<code style={{ fontWeight: 'normal' }}>environmentUsageByApp.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#since\}
 Start of the aggregation window (ISO-8601 DateTime or relative duration such as 1d, 7d, 1h) up to now.
 
 
@@ -45,5 +45,5 @@ Start of the aggregation window (ISO-8601 DateTime or relative duration such as 
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>AppUsageRollupRow</b></code>](/reference/graphql/types/objects/app-usage-rollup-row.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>AppUsageRollupRow</b></code>](/reference/graphql/types/objects/app-usage-rollup-row.mdx) <Badge class="badge badge--secondary " text="object"/>
 Aggregate byte totals for one app over the requested window. All &#x002A;Bytes fields are string counters (may exceed Int range).

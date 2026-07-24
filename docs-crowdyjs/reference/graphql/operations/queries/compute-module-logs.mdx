@@ -29,15 +29,15 @@ computeModuleLogs(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>computeModuleLogs.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>computeModuleLogs.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 The app (tenant) whose logs to read.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>computeModuleLogs.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
+#### [<code style={{ fontWeight: 'normal' }}>computeModuleLogs.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\}
 Optional: only lines from this module.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>computeModuleLogs.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+#### [<code style={{ fontWeight: 'normal' }}>computeModuleLogs.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\}
 Max lines to return (default 100, max 500).
 
 
@@ -45,5 +45,5 @@ Max lines to return (default 100, max 500).
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>WasmModuleLogEntry</b></code>](/reference/graphql/types/objects/wasm-module-log-entry.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>WasmModuleLogEntry</b></code>](/reference/graphql/types/objects/wasm-module-log-entry.mdx) <Badge class="badge badge--secondary " text="object"/>
 A diagnostic log line for a compute module. Phase 1 surfaces failed-run errors; the Phase 2 runtime adds guest ck.log output.

@@ -30,19 +30,19 @@ input CreatePortalAuthorizationCodeInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>CreatePortalAuthorizationCodeInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreatePortalAuthorizationCodeInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 Numeric id of the target app the player is portaling into.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreatePortalAuthorizationCodeInput.<b>codeChallenge</b></code>](#code-challenge)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code-challenge\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreatePortalAuthorizationCodeInput.<b>codeChallenge</b></code>](#code-challenge)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code-challenge\}
 PKCE code challenge (recommended). Base64url(SHA-256(verifier)) when method is S256. The destination game generates the verifier+challenge so the verifier never leaves its origin.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreatePortalAuthorizationCodeInput.<b>codeChallengeMethod</b></code>](#code-challenge-method)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#code-challenge-method\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreatePortalAuthorizationCodeInput.<b>codeChallengeMethod</b></code>](#code-challenge-method)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#code-challenge-method\}
 PKCE method: "S256" (default, recommended) or "plain".
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreatePortalAuthorizationCodeInput.<b>redirectUri</b></code>](#redirect-uri)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#redirect-uri\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreatePortalAuthorizationCodeInput.<b>redirectUri</b></code>](#redirect-uri)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#redirect-uri\}
 Where to redirect the player after issuing the code. Must match the target app's configured launch&#x005F;url origin when set.
 
 

@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-agent-tool-result
+title: crowdyStudioAgentToolResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Submit one idempotent terminal result for a matching BROWSER dispatch. The server fences old epochs/context, validates output against the pinned descriptor, redacts before persistence/provider continuation, and never retries OUTCOME&#x005F;UNKNOWN. Requires an app-scoped owner and idempotency key.
+
+
+```graphql
+crowdyStudioAgentToolResult(
+  input: AgentToolResultInput!
+): AgentToolCall!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentToolResult.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentToolResultInput!</b></code>](/reference/graphql/types/inputs/agent-tool-result-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+Dispatch identity, epoch/context, typed terminal status, optional schema output/safe error, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentToolCall</b></code>](/reference/graphql/types/objects/agent-tool-call.mdx) <Badge class="badge badge--secondary " text="object"/>
+Typed browser tool-call terminal record returned after submit.

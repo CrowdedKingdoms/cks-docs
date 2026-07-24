@@ -12,6 +12,13 @@ and a representative response. Field shapes are authoritative in the
 [For AI agents](/overview/for-ai-agents); for error handling see
 [Error codes](/overview/error-codes).
 
+Agentic Crowdy Studio policy and kill operations are privileged,
+revision-guarded control-plane actions and are intentionally not included as a
+generic copy-paste quickstart. Use the
+[policy guide](agentic-crowdy-studio-policy), generated field descriptions, and
+[operator runbook](/operators/agentic-crowdy-studio). The player-facing
+quickstart uses the normal CrowdyJS SDK.
+
 > Responses are representative. Send `Authorization: Bearer <token>` on every request
 > (except the public marketplace reads). `BigInt` values are decimal strings; `*Cents`
 > fields are minor currency units.

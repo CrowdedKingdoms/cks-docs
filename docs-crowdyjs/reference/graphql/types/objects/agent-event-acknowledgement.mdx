@@ -1,0 +1,38 @@
+---
+id: agent-event-acknowledgement
+title: AgentEventAcknowledgement
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Monotonic event acknowledgement result.
+
+
+```graphql
+type AgentEventAcknowledgement {
+  throughSeq: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentEventAcknowledgement.<b>throughSeq</b></code>](#through-seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#through-seq\}
+Highest persisted contiguous acknowledged sequence.
+
+
+
+
+### Returned By
+
+[`crowdyStudioAgentAcknowledgeEvents`](/reference/graphql/operations/mutations/crowdy-studio-agent-acknowledge-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

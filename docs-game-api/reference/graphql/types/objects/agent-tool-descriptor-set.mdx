@@ -1,0 +1,43 @@
+---
+id: agent-tool-descriptor-set
+title: AgentToolDescriptorSet
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Effective mode/policy-filtered descriptor registry.
+
+
+```graphql
+type AgentToolDescriptorSet {
+  registryDigest: String!
+  tools: [AgentToolDescriptor!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolDescriptorSet.<b>registryDigest</b></code>](#registry-digest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#registry-digest\}
+Digest pinned by the current session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolDescriptorSet.<b>tools</b></code>](#tools)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AgentToolDescriptor!]!</b></code>](/reference/graphql/types/objects/agent-tool-descriptor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#tools\}
+Only tools implemented and currently allowed for this session; omitted contract tools are not executable.
+
+
+
+
+### Returned By
+
+[`crowdyStudioAgentToolDescriptors`](/reference/graphql/operations/queries/crowdy-studio-agent-tool-descriptors.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -30,19 +30,19 @@ input UpdateGroupRoleInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateGroupRoleInput.<b>groupRoleId</b></code>](#group-role-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-role-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>UpdateGroupRoleInput.<b>groupRoleId</b></code>](#group-role-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-role-id\}
 The group role id to update.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateGroupRoleInput.<b>roleName</b></code>](#role-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#role-name\} 
+#### [<code style={{ fontWeight: 'normal' }}>UpdateGroupRoleInput.<b>roleName</b></code>](#role-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#role-name\}
 New role name (max 128 chars). Ignored for system roles. Omit to leave unchanged.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateGroupRoleInput.<b>permissions</b></code>](#permissions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permissions\} 
+#### [<code style={{ fontWeight: 'normal' }}>UpdateGroupRoleInput.<b>permissions</b></code>](#permissions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permissions\}
 When provided, REPLACES the role's permission key strings. Each must be a valid group permission key for the group type (max 64 chars, unique). Omit to leave permissions unchanged.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateGroupRoleInput.<b>rank</b></code>](#rank)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#rank\} 
+#### [<code style={{ fontWeight: 'normal' }}>UpdateGroupRoleInput.<b>rank</b></code>](#rank)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#rank\}
 New rank (higher = more senior). Ignored for system roles. Omit to leave unchanged.
 
 

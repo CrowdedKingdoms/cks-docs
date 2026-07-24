@@ -1,0 +1,48 @@
+---
+id: agent-client-attachment
+title: AgentClientAttachment
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Result of attaching a fresh interactive client epoch.
+
+
+```graphql
+type AgentClientAttachment {
+  session: AgentSession!
+  clientEpoch: BigInt!
+  replayAfterSeq: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentClientAttachment.<b>session</b></code>](#session)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentSession!</b></code>](/reference/graphql/types/objects/agent-session.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#session\}
+Session after fencing older epochs.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentClientAttachment.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\}
+New server-issued monotonic client epoch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentClientAttachment.<b>replayAfterSeq</b></code>](#replay-after-seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#replay-after-seq\}
+Persisted contiguous cursor for this client instance; subscribe after this sequence.
+
+
+
+
+### Returned By
+
+[`crowdyStudioAgentAttachClient`](/reference/graphql/operations/mutations/crowdy-studio-agent-attach-client.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

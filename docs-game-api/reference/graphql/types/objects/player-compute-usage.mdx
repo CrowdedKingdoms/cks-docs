@@ -35,39 +35,39 @@ type PlayerComputeUsage {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 The app this view covers.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>hourUnitsUsed</b></code>](#hour-units-used)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#hour-units-used\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>hourUnitsUsed</b></code>](#hour-units-used)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#hour-units-used\}
 Compute units consumed in the current clock hour (modules + automations, all owned grids aggregated).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>dayUnitsUsed</b></code>](#day-units-used)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#day-units-used\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>dayUnitsUsed</b></code>](#day-units-used)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#day-units-used\}
 Compute units consumed in the current clock day.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>unitsPerHour</b></code>](#units-per-hour)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#units-per-hour\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>unitsPerHour</b></code>](#units-per-hour)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#units-per-hour\}
 Effective units&#x005F;per&#x005F;hour developer-policy cap; null when the app sets no hourly quota.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>unitsPerDay</b></code>](#units-per-day)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#units-per-day\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>unitsPerDay</b></code>](#units-per-day)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#units-per-day\}
 Effective units&#x005F;per&#x005F;day developer-policy cap; null when the app sets no daily quota.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>compilesThisHour</b></code>](#compiles-this-hour)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compiles-this-hour\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>compilesThisHour</b></code>](#compiles-this-hour)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compiles-this-hour\}
 Compile submissions counted in the current clock hour.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>maxCompilesPerHour</b></code>](#max-compiles-per-hour)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-compiles-per-hour\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>maxCompilesPerHour</b></code>](#max-compiles-per-hour)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-compiles-per-hour\}
 Effective max&#x005F;compiles&#x005F;per&#x005F;hour policy cap.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>gateStatus</b></code>](#gate-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#gate-status\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>gateStatus</b></code>](#gate-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#gate-status\}
 Replica-synced management player gate for this app: 'active', 'grace', or 'denied'. Non-active pauses this player's modules only; play is untouched.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>gateReason</b></code>](#gate-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#gate-reason\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerComputeUsage.<b>gateReason</b></code>](#gate-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#gate-reason\}
 Typed pause reason when gated: PLAYER&#x005F;WALLET&#x005F;EMPTY, PLAYER&#x005F;SPEND&#x005F;CAP, PLAYER&#x005F;QUOTA&#x005F;EXHAUSTED, or PLAYER&#x005F;COMPUTE&#x005F;KILLED.
 
 

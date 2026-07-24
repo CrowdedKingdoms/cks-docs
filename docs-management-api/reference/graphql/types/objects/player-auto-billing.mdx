@@ -34,35 +34,35 @@ type PlayerAutoBilling {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\}
 The owning player user id.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\}
 Whether auto-recharge is enabled.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>limitCents</b></code>](#limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit-cents\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>limitCents</b></code>](#limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit-cents\}
 Per-period auto-recharge ceiling in cents; null = no limit.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>autoBilledThisPeriodCents</b></code>](#auto-billed-this-period-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#auto-billed-this-period-cents\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>autoBilledThisPeriodCents</b></code>](#auto-billed-this-period-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#auto-billed-this-period-cents\}
 Amount auto-billed so far this period.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>rechargeAmountCents</b></code>](#recharge-amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#recharge-amount-cents\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>rechargeAmountCents</b></code>](#recharge-amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#recharge-amount-cents\}
 Amount charged per auto-recharge.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>lowWaterThresholdCents</b></code>](#low-water-threshold-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#low-water-threshold-cents\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>lowWaterThresholdCents</b></code>](#low-water-threshold-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#low-water-threshold-cents\}
 Balance threshold that triggers a recharge.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>hasPaymentMethod</b></code>](#has-payment-method)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#has-payment-method\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>hasPaymentMethod</b></code>](#has-payment-method)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#has-payment-method\}
 Whether an active vaulted card is attached.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>lastError</b></code>](#last-error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-error\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutoBilling.<b>lastError</b></code>](#last-error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-error\}
 Last auto-recharge failure, if any.
 
 

@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-agent-send-message
+title: crowdyStudioAgentSendMessage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Append one bounded, redacted human message and queue exactly one serialized provider/tool run. Requires an active app-scoped owner, use&#x005F;studio&#x005F;agent, current epoch, fresh Management policy, complete budget reservation, and idempotency key; private source remains separately policy/consent gated.
+
+
+```graphql
+crowdyStudioAgentSendMessage(
+  input: SendAgentMessageInput!
+): AgentRun!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentSendMessage.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SendAgentMessageInput!</b></code>](/reference/graphql/types/inputs/send-agent-message-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+Session, epoch, bounded human intent, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentRun</b></code>](/reference/graphql/types/objects/agent-run.mdx) <Badge class="badge badge--secondary " text="object"/>
+Summary of one durable session run.

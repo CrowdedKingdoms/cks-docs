@@ -27,7 +27,7 @@ createGrid(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>createGrid.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateGridInput!</b></code>](/reference/graphql/types/inputs/create-grid-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+#### [<code style={{ fontWeight: 'normal' }}>createGrid.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateGridInput!</b></code>](/reference/graphql/types/inputs/create-grid-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
 Target app plus the two opposite corners of the grid box, in chunk coordinates. Corners are normalized to a low/high chunk, so their order does not matter.
 
 
@@ -35,5 +35,5 @@ Target app plus the two opposite corners of the grid box, in chunk coordinates. 
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>CreateGridResponse</b></code>](/reference/graphql/types/objects/create-grid-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>CreateGridResponse</b></code>](/reference/graphql/types/objects/create-grid-response.mdx) <Badge class="badge badge--secondary " text="object"/>
 Result of createGrid. This is a hybrid result rather than a thrown error: inspect `error` first. When `error` is NO&#x005F;ERROR the call succeeded and `grid` is populated; otherwise `grid` is null and `error` explains why.

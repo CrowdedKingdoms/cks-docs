@@ -34,35 +34,35 @@ type AppCodeAdmission {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>admissionId</b></code>](#admission-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#admission-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>admissionId</b></code>](#admission-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#admission-id\}
 UUID of this admission record.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 Numeric app id whose code-admission policy owns this entry.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>subjectKind</b></code>](#subject-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CodeAdmissionSubjectKind!</b></code>](/reference/graphql/types/enums/code-admission-subject-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#subject-kind\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>subjectKind</b></code>](#subject-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CodeAdmissionSubjectKind!</b></code>](/reference/graphql/types/enums/code-admission-subject-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#subject-kind\}
 Whether this entry admits code, an author, or an org.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>subjectRef</b></code>](#subject-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#subject-ref\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>subjectRef</b></code>](#subject-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#subject-ref\}
 Stable id of the admitted subject (listing UUID, user id, or org id).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>versionRange</b></code>](#version-range)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-range\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>versionRange</b></code>](#version-range)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-range\}
 Optional P1 version range: exact "3", inclusive "2-5", "&#x003E;=4", or "&#x003C;=9". Null admits all versions; invalid expressions fail closed at runtime.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>admittedBy</b></code>](#admitted-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#admitted-by\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>admittedBy</b></code>](#admitted-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#admitted-by\}
 Numeric user id of the org member who admitted the subject.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>admittedAt</b></code>](#admitted-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#admitted-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>admittedAt</b></code>](#admitted-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#admitted-at\}
 When the entry was admitted.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>revokedAt</b></code>](#revoked-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#revoked-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppCodeAdmission.<b>revokedAt</b></code>](#revoked-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#revoked-at\}
 When the entry was revoked; null while active.
 
 

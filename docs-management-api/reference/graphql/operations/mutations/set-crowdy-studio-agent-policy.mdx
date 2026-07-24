@@ -1,0 +1,39 @@
+---
+id: set-crowdy-studio-agent-policy
+title: setCrowdyStudioAgentPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create or patch an app's Agentic Crowdy Studio policy. Requires 'manage&#x005F;compute'. Omitted values stay unchanged; first creation starts disabled, killed, and deny-all. Model/tool/mode/risk lists are intersected with platform allowlists and every numeric/retention value is clamped down to platform limits. Locked ZDR/collection/body-retention rules and the operator app kill cannot be changed. SIDE EFFECTS: increments Management's publication revision, appends a sanitized audit event, and transactionally notifies Game API to pull crowdy.studio-agent-policy/1. Runtime enforcement changes only after Game API obtains and validates the fresh replica. Stable errors: AGENT&#x005F;POLICY&#x005F;INVALID, AGENT&#x005F;POLICY&#x005F;REVISION&#x005F;CONFLICT, IDEMPOTENCY&#x005F;CONFLICT.
+
+
+```graphql
+setCrowdyStudioAgentPolicy(
+  input: SetCrowdyStudioAgentAppPolicyInput!
+): CrowdyStudioAgentPolicy!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setCrowdyStudioAgentPolicy.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetCrowdyStudioAgentAppPolicyInput!</b></code>](/reference/graphql/types/inputs/set-crowdy-studio-agent-app-policy-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+App policy patch, expected revision, and required idempotency key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentPolicy</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-policy.mdx) <Badge class="badge badge--secondary " text="object"/>
+Management's Agentic Crowdy Studio policy publication. EFFECTIVE values are the fail-closed platform/app intersection; an app can never widen platform models, tools, modes, risks, budgets, retention, or privacy. Game API runtime enforcement still requires a fresh validated replica.

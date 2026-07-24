@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-agent-grant-lease
+title: crowdyStudioAgentGrantLease
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Human-grant a visible PLAY lease with explicit scopes, controlled entity, host capability revision, epoch, context, and 1–600 second duration. Requires PLAY mode, selected grid, app-scoped owner, use&#x005F;studio&#x005F;agent, effective policy, and idempotency key; the model cannot grant or renew it.
+
+
+```graphql
+crowdyStudioAgentGrantLease(
+  input: GrantAgentLeaseInput!
+): AgentLease!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentGrantLease.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GrantAgentLeaseInput!</b></code>](/reference/graphql/types/inputs/grant-agent-lease-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+Session/epoch, explicit scopes/duration, entity/host revision, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentLease</b></code>](/reference/graphql/types/objects/agent-lease.mdx) <Badge class="badge badge--secondary " text="object"/>
+Short-lived context-bound capability. The model cannot create, widen, or renew it.

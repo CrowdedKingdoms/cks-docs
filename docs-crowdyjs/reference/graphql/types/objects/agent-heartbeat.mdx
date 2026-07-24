@@ -1,0 +1,48 @@
+---
+id: agent-heartbeat
+title: AgentHeartbeat
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Server acknowledgement of the 2-second client heartbeat and 5-second Play freshness window.
+
+
+```graphql
+type AgentHeartbeat {
+  serverTime: DateTime!
+  playLeaseFreshUntil: DateTime
+  workspaceLeaseExpiresAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentHeartbeat.<b>serverTime</b></code>](#server-time)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#server-time\}
+Authoritative server receipt time.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentHeartbeat.<b>playLeaseFreshUntil</b></code>](#play-lease-fresh-until)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#play-lease-fresh-until\}
+Play lease remains server-fresh through this instant, bounded by its hard expiry; null without an active Play lease.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentHeartbeat.<b>workspaceLeaseExpiresAt</b></code>](#workspace-lease-expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#workspace-lease-expires-at\}
+Renewed 30-second workspace lease expiry; null when no unchanged connected workspace lease can be renewed.
+
+
+
+
+### Returned By
+
+[`crowdyStudioAgentHeartbeat`](/reference/graphql/operations/mutations/crowdy-studio-agent-heartbeat.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

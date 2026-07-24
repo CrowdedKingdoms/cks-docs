@@ -32,27 +32,27 @@ setAutoBilling(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
 Organization id (BigInt) to configure auto-billing for.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+#### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\}
 Whether to enable off-session auto-billing.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>limitCents</b></code>](#limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit-cents\} 
+#### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>limitCents</b></code>](#limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit-cents\}
 Max auto-billed per period, in cents. Null = no limit.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>rechargeAmountCents</b></code>](#recharge-amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#recharge-amount-cents\} 
+#### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>rechargeAmountCents</b></code>](#recharge-amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#recharge-amount-cents\}
 Amount to top up the wallet by on each auto-recharge, in cents.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>lowWaterThresholdCents</b></code>](#low-water-threshold-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#low-water-threshold-cents\} 
+#### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>lowWaterThresholdCents</b></code>](#low-water-threshold-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#low-water-threshold-cents\}
 Wallet balance at or below which an auto-recharge triggers, in cents.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+#### [<code style={{ fontWeight: 'normal' }}>setAutoBilling.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
 Optional idempotency key. Recommended for retries: replaying with the same key and identical arguments returns the first result instead of re-applying; the same key with different arguments returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
 
 
@@ -60,5 +60,5 @@ Optional idempotency key. Recommended for retries: replaying with the same key a
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>OrgAutoBilling</b></code>](/reference/graphql/types/objects/org-auto-billing.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgAutoBilling</b></code>](/reference/graphql/types/objects/org-auto-billing.mdx) <Badge class="badge badge--secondary " text="object"/>
 Org off-session auto-billing configuration.

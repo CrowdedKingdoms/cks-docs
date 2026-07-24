@@ -29,15 +29,15 @@ actorsConnection(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>actorsConnection.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\} 
+#### [<code style={{ fontWeight: 'normal' }}>actorsConnection.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\}
 Return the first N edges after `after`. Default 50; clamped to 1..200.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>actorsConnection.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\} 
+#### [<code style={{ fontWeight: 'normal' }}>actorsConnection.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\}
 Opaque cursor: return edges after this one. Pass a previous page's `pageInfo.endCursor`. Omit for the first page.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>actorsConnection.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ActorFilterInput</b></code>](/reference/graphql/types/inputs/actor-filter-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+#### [<code style={{ fontWeight: 'normal' }}>actorsConnection.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ActorFilterInput</b></code>](/reference/graphql/types/inputs/actor-filter-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\}
 Optional filters; all provided fields are AND-combined. Omit to page over all of the caller’s actors.
 
 
@@ -45,5 +45,5 @@ Optional filters; all provided fields are AND-combined. Omit to page over all of
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>ActorsConnection</b></code>](/reference/graphql/types/objects/actors-connection.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>ActorsConnection</b></code>](/reference/graphql/types/objects/actors-connection.mdx) <Badge class="badge badge--secondary " text="object"/>
 Relay-style cursor-paginated connection over the caller’s actors (Actor). Page with `first`/`after`; cursors are opaque.

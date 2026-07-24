@@ -1,0 +1,83 @@
+---
+id: crowdy-studio-agent-usage-summary
+title: CrowdyStudioAgentUsageSummary
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Exact aggregate over the returned app/window usage records. Decimal USD remains a string to preserve precision.
+
+
+```graphql
+type CrowdyStudioAgentUsageSummary {
+  requestCount: BigInt!
+  promptTokens: BigInt!
+  completionTokens: BigInt!
+  reasoningTokens: BigInt!
+  cachedTokens: BigInt!
+  toolCalls: BigInt!
+  toolRounds: BigInt!
+  compileCount: BigInt!
+  wallClockMs: BigInt!
+  providerCostUsd: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageSummary.<b>requestCount</b></code>](#request-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#request-count\}
+Provider requests.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageSummary.<b>promptTokens</b></code>](#prompt-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#prompt-tokens\}
+Prompt tokens.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageSummary.<b>completionTokens</b></code>](#completion-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#completion-tokens\}
+Completion tokens.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageSummary.<b>reasoningTokens</b></code>](#reasoning-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reasoning-tokens\}
+Reasoning tokens.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageSummary.<b>cachedTokens</b></code>](#cached-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#cached-tokens\}
+Cached tokens.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageSummary.<b>toolCalls</b></code>](#tool-calls)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-calls\}
+Tool calls.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageSummary.<b>toolRounds</b></code>](#tool-rounds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-rounds\}
+Tool rounds.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageSummary.<b>compileCount</b></code>](#compile-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compile-count\}
+Draft compiles.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageSummary.<b>wallClockMs</b></code>](#wall-clock-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wall-clock-ms\}
+Summed accepted-run wall-clock milliseconds.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageSummary.<b>providerCostUsd</b></code>](#provider-cost-usd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider-cost-usd\}
+Exact summed provider cost in decimal USD.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioAgentUsagePage`](/reference/graphql/types/objects/crowdy-studio-agent-usage-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
