@@ -16,6 +16,30 @@ removals are called out explicitly.
 
 ## 2026-07-24 (latest)
 
+**Game API `v0.20.0` — ensured containers and `$self_container_id`**
+
+Additive Game API release for game-model developers:
+
+- New **`gameModelEnsureContainer`** mutation: an atomic get-or-create for
+  game model containers keyed by an opaque, caller-chosen **`bindingKey`**
+  (scoped to app + type + session). N concurrent callers converge on one
+  container without client-side leader election. Returns the container plus a
+  `created` flag; creation-only inputs (`displayName`, `properties`, …) are
+  ignored when the container already exists. See
+  [Ensured containers](/game-api/game-models#ensured-containers-atomic-get-or-create).
+- `GmContainer` exposes the new nullable **`bindingKey`** field, and
+  `gameModelContainers` accepts a `bindingKey` filter.
+- New **`$self_container_id`** system parameter available in model function
+  bodies, policy `condition` expressions, and notification `args`
+  expressions — it names the container the expression runs against and cannot
+  be spoofed by caller-supplied params. See
+  [Model-driven notifications](/game-api/model-driven-notifications).
+
+Schema change is additive only (nullable column + partial unique index); no
+realtime wire or Replication API impact.
+
+## 2026-07-24
+
 **Agentic Crowdy Studio — finalized development rollout**
 
 The coordinated development stack is deployed: environment release
