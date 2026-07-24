@@ -11,11 +11,13 @@ authority: the model proposes typed tool calls, while CrowdyJS and the Game API
 check the current mode, project, permissions, policy, budget, lease, and any
 required approval before an effect can occur.
 
-:::warning Development pilot
-This is a disabled-by-default development surface. The schema and SDK contract
-do not mean that it is enabled in production or for a particular app. The pilot
-does not authorize production rollout, unattended real-money activity, or
-control outside an explicit Play lease.
+:::warning Finalized development rollout
+Agentic Crowdy Studio is deployed in the tracked development release
+`v0.1.94` with CrowdyJS `12.0.0`, Game API `v0.19.16`, Management API
+`v0.1.193-dev`, and the Blocks with Friends host. Access remains
+policy/permission allowlisted and fail-closed. This is not a production or
+general-availability rollout and does not authorize unattended real-money
+activity or control outside an explicit Play lease.
 :::
 
 ## What each mode can do
@@ -179,23 +181,48 @@ See [Game integration](/game-api/agentic-crowdy-studio) for the host contract.
 
 ## Privacy and OpenRouter disclosure
 
-The development pilot sends model requests from the Game API through
-**OpenRouter**, which may route them to the selected allowlisted model provider.
-Before private project source can be included, both app policy and a separate
-first-use human disclosure/consent decision must allow it. Declining private
-source sharing must leave manual Studio and non-source Ask behavior available
-where policy permits.
+The development rollout sends model requests from the Game API through
+OpenRouter's stable streaming **`/api/v1/chat/completions`** endpoint—not the
+Responses beta. The allowlisted development model is
+`openai/gpt-oss-120b`, selected because its tool endpoint supports Zero Data
+Retention. Before private project source can be included, both app policy and
+a separate first-use human disclosure/consent decision must allow it.
+Declining private source sharing leaves manual Studio and non-source Ask
+behavior available where policy permits.
 
-Provider requests require Zero Data Retention, deny provider data collection,
-and disable provider-hosted plugins, web/search, arbitrary URLs, and remote
-tools. The provider receives no Crowdy credential, cookie, authorization
-header, API key, payment secret, raw browser storage, or continuous world
-stream. IDs used for reasoning are replaced with per-run aliases.
+Every request sets `require_parameters`, requires ZDR, sets
+`data_collection: "deny"`, disables plugins and unsafe fallback, and uses only
+the allowlisted model/caps. Provider multi-tool rounds are rejected or
+serialized locally. Proposed tool names, arguments, and returned outputs remain
+strictly validated against the pinned local descriptors; provider output never
+becomes authority. The provider receives no Crowdy credential, cookie,
+authorization header, API key, payment secret, raw browser storage, or
+continuous world stream. IDs used for reasoning are replaced with per-run
+aliases.
 
 These controls do not mean that selected prompt content stays on the Crowded
 Kingdoms server: the disclosed, bounded context is sent to OpenRouter and the
 routed model provider for inference. Project source, logs, chat, NPC text, and
 tool results are treated as untrusted data and cannot grant authority.
+
+## Validated development evidence
+
+The sanitized `v0.1.94` rollout evidence completed the full path:
+
+- Ask returned its expected exact response.
+- Build read a project file with `workspace.file.read`, then
+  `workspace.file.patch` created a checkpoint and advanced the source revision.
+- The agent-edited source compiled as a draft after adding the ordinary
+  platform ABI boilerplate; there is no agent-only compiler bypass.
+- Play produced a bounded `game.observe` dispatch/result and dispatched
+  `game.control.move`.
+- Human input revoked the Play lease and preempted the run. A late success from
+  the old context was rejected with `AGENT_CONTEXT_STALE`.
+- The deployed BWF bundle, visible takeover banner, and offline/local Stop
+  browser gates passed.
+
+Public evidence intentionally omits account identifiers, session/tool IDs,
+credentials, content hashes, and provider request/response bodies.
 
 ## Budgets, disabled states, and reconnect
 

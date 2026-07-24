@@ -11,10 +11,12 @@ project checkpoints, provider usage, and budgets. CrowdyJS owns the browser
 controller and typed tool gate; a game implements only the
 `crowdy.player-host/1` observation and command boundary.
 
-:::warning Development only
-This contract is present in the development schemas and is disabled by default.
-It is not a claim of production deployment or general availability. The pilot
-does not permit autonomous real-money activity.
+:::warning Finalized development rollout
+The tracked development stack is deployed as environment release `v0.1.94`
+(Game API `v0.19.16`, Management API `v0.1.193-dev`, CrowdyJS `12.0.0`, and
+the BWF host). It remains policy/permission allowlisted and fail-closed. This is
+not production or general availability and does not permit autonomous
+real-money activity.
 :::
 
 ## Authority boundary
@@ -38,6 +40,25 @@ An accepted effect follows this path:
 
 Client checks are defense in depth. A modified game client cannot grant itself
 more platform authority.
+
+## Provider transport
+
+The deployed development adapter streams OpenRouter's stable
+`/api/v1/chat/completions` protocol. It does not use the Responses beta. The
+allowlisted model is `openai/gpt-oss-120b`, whose tool endpoint supports the
+required Zero Data Retention policy.
+
+Every provider request enforces `require_parameters`, `zdr`,
+`data_collection: "deny"`, no plugins, and no unsafe fallback. Model/cost/token
+caps are the platform/app intersection and remain platform-funded. Provider
+multi-tool rounds are rejected or serialized by the Game API; no parallel
+provider proposal can race an approval or browser dispatch. Every proposed tool
+name, input, and output is validated locally against the pinned descriptor
+before it can advance the durable run.
+
+The OpenRouter key is encrypted and injected only into the Game API process. It
+is absent from GraphQL, CrowdyJS, BWF, prompts, events, logs, evidence, and
+provider bodies retained by the platform.
 
 ## Prerequisites
 
@@ -206,6 +227,9 @@ unchanged and connected. Human editor input revokes it.
 
 `runtime.test_draft` is routine Build work only when all target write/run
 permissions and compile quota allow it. It never enables live runtime.
+Agent-authored source uses the same platform SDK ABI exports/boilerplate and
+the same authoritative compiler as human-authored source; there is no
+agent-specific compile path or bypass.
 `runtime.deploy_live` and a LIVE `runtime.invoke` always require a single-use
 approval bound to the saved revision, complete project content/module hash,
 exact target plan, pairing, grid, and live flag. `runtime.stop` is an
@@ -278,14 +302,16 @@ from the same exact schema.
 
 ## Blocks with Friends reference host
 
-The BWF development branch implements the adapter, bounded observation builder,
-exact command router, synchronous player-control gate, and accessible
-game-canvas lease banner. Its snapshots expire after 1.5 seconds and cap nearby
-actors at 64 and voxels at 128. Commands route through shared human intent
-services; routine server-refereed mob combat is supported, while PvP and
-high-risk grid/trust/commerce actions remain unadvertised.
+The BWF adapter is deployed in development release `v0.1.94`. It provides the
+bounded observation builder, exact command router, synchronous player-control
+gate, and accessible game-canvas lease banner. Its snapshots expire after 1.5
+seconds and cap nearby actors at 64 and voxels at 128. Commands route through
+shared human intent services; routine server-refereed mob combat is supported,
+while PvP and high-risk grid/trust/commerce actions remain unadvertised.
 
-This is implementation and test evidence, not a production-availability claim.
-An end-to-end run still requires compatible CrowdyJS 12, Game API, Management
-policy, app configuration, and deployment in the chosen development
-environment.
+Sanitized live evidence exercised `game.observe`, `game.control.move`, and
+human-input takeover. Human input revoked the lease and preempted the run; a
+late browser success from the old context was rejected with
+`AGENT_CONTEXT_STALE`. The deployed bundle plus visible and offline/local Stop
+browser gates passed. Evidence contains no account/session identifiers,
+credentials, hashes, or provider bodies.

@@ -5,16 +5,31 @@ title: Agentic Crowdy Studio operations
 
 # Agentic Crowdy Studio operations
 
-This runbook covers the disabled-by-default Agentic Crowdy Studio development
-pilot. Management owns platform/app policy, allowlists, caps, usage, and kills;
-Game API owns durable runs and enforcement; CrowdyJS/game hosts own immediate
-local takeover.
+This runbook covers the finalized Agentic Crowdy Studio development rollout.
+Management owns platform/app policy, allowlists, caps, usage, and kills; Game
+API owns durable runs and enforcement; CrowdyJS/game hosts own immediate local
+takeover.
 
 :::danger No production or real-money autonomy
 Do not enable this pilot in production. Do not use it for unattended purchases,
 wallet actions, payouts, ownership transfers, or another real-money effect.
 Schema availability and passing development tests are not rollout approval.
 :::
+
+## Tracked development release
+
+The deployed development baseline is:
+
+- environment release **`v0.1.94`** (the final tracked manifest);
+- Game API **`v0.19.16`**;
+- Management API **`v0.1.193-dev`**;
+- CrowdyJS **`12.0.0`**; and
+- the matching BWF bundle and public docs.
+
+The stabilization train used intermediary direct-ingest manifests while the
+provider/runtime gates were repaired. Those manifests are now backfilled into
+release history; `v0.1.94` is the manifest operators should track and redeploy.
+Do not infer a separate supported release from an intermediary ingest record.
 
 ## Control hierarchy
 
@@ -65,10 +80,11 @@ Keep platform lists exact and minimal:
 - modes needed by the current rollout stage; and
 - risk classes already covered by approval/lease tests.
 
-Begin with one model, Ask, `READ_ONLY`, and read tools. Add Build only after
-workspace lease/checkpoint/revision/live-approval tests. Add Play only after the
-game host's observation bounds, shared intent routing, takeover, and external
-Stop tests pass.
+The deployed allowlist uses `openai/gpt-oss-120b` because its OpenRouter tool
+endpoint supports the required ZDR posture. Its model and request/token/cost
+caps remain exact, finite, and platform-funded. For a new app or future model,
+begin with Ask, `READ_ONLY`, and read tools; add Build/Play only after the
+workspace, approval, host, and takeover gates below pass.
 
 Set finite hard limits for:
 
@@ -115,6 +131,13 @@ model allowlist/default, pinned positive model pricing, and durable worker
 configuration. Keep environment allowlists at least as strict as Management
 policy. CI uses the deterministic fake provider and must never receive the
 development credential.
+
+The deployed provider adapter uses OpenRouter's stable streaming
+`/api/v1/chat/completions` endpoint, not the Responses beta. It enforces
+`require_parameters`, `zdr`, `data_collection: "deny"`, no plugins, and no
+unsafe fallback. Multi-tool provider rounds are rejected or serialized
+locally, and all tool names, inputs, and outputs remain locally schema
+validated. The encrypted provider key remains server-only.
 
 S2S notify/pull and usage-ingest credentials are separate environment-scoped
 service credentials. Apply the same write-only injection and redaction rules.
@@ -182,6 +205,26 @@ and Play leases, revoke unconsumed approvals, fence pending browser dispatches,
 and append durable safe reason events. It must not silently resume after the
 kill is released.
 
+## Final rollout evidence
+
+Sanitized live evidence for `v0.1.94` passed:
+
+- Ask returned the expected exact response.
+- Build executed `workspace.file.read`; a checkpointed
+  `workspace.file.patch` advanced the source revision.
+- The agent-edited source compiled as a draft after the ordinary platform ABI
+  boilerplate was added.
+- Play completed a bounded `game.observe` dispatch/result and dispatched
+  `game.control.move`.
+- Human input revoked the lease and preempted the run. A late success was
+  rejected with `AGENT_CONTEXT_STALE`.
+- The deployed BWF bundle, visible takeover UI, and offline/local Stop browser
+  gates passed.
+
+Evidence and public incident notes must omit account identifiers, run/session/
+tool IDs, tokens, content hashes, secret values, and provider request/response
+bodies.
+
 ## Incident / kill procedure
 
 For an app-scoped incident:
@@ -237,9 +280,11 @@ existing operator audit/hold system with explicit owner and scope. Do not
 silently extend agent-table retention or retain provider bodies that were never
 permitted to be stored.
 
-## Activation checklist
+## Expansion / redeployment checklist
 
-Keep the global kill enabled until all are true:
+The tracked `v0.1.94` development rollout passed this gate. For a new app,
+environment, model, or later manifest, keep the relevant kill enabled until all
+are true:
 
 - compatible Management, Game API, CrowdyJS 12, and game-host builds are in the
   selected development environment;

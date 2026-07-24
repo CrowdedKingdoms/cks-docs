@@ -19,12 +19,12 @@ Operators handle:
 | Pricing catalog | `/admin/control-plane/catalog*` |
 | Secrets + audit logs | Secrets / Audit drawers |
 | Compute platform ceilings | GraphQL (`cpComputePlatformCeilings`); admin screen planned |
-| Agentic Crowdy Studio pilot | Management policy/usage GraphQL and the [agent operations runbook](agentic-crowdy-studio) |
+| Agentic Crowdy Studio rollout | Management policy/usage GraphQL and the [agent operations runbook](agentic-crowdy-studio) |
 
-Agentic Crowdy Studio is a disabled-by-default development pilot. Keep its
-global kill enabled until the complete Management → Game API policy-freshness,
-secret-injection, budget, host-takeover, and retention gates pass. It is not
-approved for production or autonomous real-money activity.
+Agentic Crowdy Studio is deployed in tracked development release `v0.1.94`.
+Its app/user/model/caps remain explicitly allowlisted and fail-closed. Apply the
+runbook gate before expanding to another app, model, environment, or manifest.
+It is not approved for production or autonomous real-money activity.
 
 ## Platform compute ceilings
 

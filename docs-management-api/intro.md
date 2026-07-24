@@ -10,9 +10,10 @@ GraphQL service for the **management plane**—everything studios and players ne
 
 - Identity, organizations, RBAC, apps marketplace, app-access tiers, billing, payments,
   quotas, email delivery, and **dedicated environments** (provision, quote, scale, and inspect isolated stacks).
-- Disabled-by-default **Agentic Crowdy Studio development policy**: platform/app
-  allowlists and caps, `use_studio_agent`, emergency kills, privacy/retention,
-  and sanitized platform-funded usage. See
+- **Agentic Crowdy Studio development policy**: platform/app allowlists and
+  caps, `use_studio_agent`, emergency kills, privacy/retention, and sanitized
+  platform-funded usage. Management API `v0.1.193-dev` is deployed in tracked
+  dev release `v0.1.94`; non-allowlisted apps remain fail-closed. See
   [Agentic Crowdy Studio policy](/management-api/agentic-crowdy-studio-policy).
 
 **Entitlements** (who has access at which tier, runtime permission keys on tiers) are defined here. **Spatial grid configuration** (virtual-estate regions and per-user grid grants) lives on the **[Game API](/game-api/intro)** — each app’s `gameApiUrl` in production.

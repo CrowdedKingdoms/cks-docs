@@ -37,7 +37,7 @@
 - [Host discovery](https://docs.crowdedkingdoms.com/game-api/host-discovery) · [Permissions](https://docs.crowdedkingdoms.com/game-api/permissions) · [Grids & permissions](https://docs.crowdedkingdoms.com/game-api/grids-and-permissions)
 - [Teams](https://docs.crowdedkingdoms.com/game-api/teams) · [Channels](https://docs.crowdedkingdoms.com/game-api/channels) · [Avatar state](https://docs.crowdedkingdoms.com/game-api/avatar-state) · [Actor state](https://docs.crowdedkingdoms.com/game-api/actor-state)
 - [Game models](https://docs.crowdedkingdoms.com/game-api/game-models) · [Autonomous processes (NPCs)](https://docs.crowdedkingdoms.com/game-api/autonomous-processes) · [Model-driven notifications](https://docs.crowdedkingdoms.com/game-api/model-driven-notifications)
-- [Agentic Crowdy Studio game integration (development pilot)](https://docs.crowdedkingdoms.com/game-api/agentic-crowdy-studio): durable sessions/events, host adapter, bounded observations/commands, approvals, leases, takeover, and reconnect. Disabled by default; no production or real-money autonomy claim.
+- [Agentic Crowdy Studio game integration (finalized development rollout)](https://docs.crowdedkingdoms.com/game-api/agentic-crowdy-studio): release `v0.1.94`, Game API `v0.19.16`, CrowdyJS `12.0.0`, durable sessions/events, bounded host tools, approvals, leases, takeover, and reconnect. Allowlisted development only; no production or real-money autonomy claim.
 - [Choosing Game APIs (five-tier decision flow + mechanic/genre mappings)](https://docs.crowdedkingdoms.com/game-api/model-vs-compute) · [Compute Modules (server-side Rust/WebAssembly logic)](https://docs.crowdedkingdoms.com/game-api/compute-modules) · [Compute host API reference](https://docs.crowdedkingdoms.com/game-api/compute-host-api) · [Compute tutorial (zero to a live module)](https://docs.crowdedkingdoms.com/game-api/compute-tutorial) · [Compute engines (the full template registry: NPC/mob/world/match/deck/instance/director/matchmaking/market/board/minigame/abilities/movement-warden/territory/racing/possession/liveops — deployable by name via computeDeployTemplate)](https://docs.crowdedkingdoms.com/game-api/compute-engines)
 - [Modeling game concepts (inventory, object permissions, NPCs)](https://docs.crowdedkingdoms.com/game-api/modeling-game-concepts)
 - [GraphQL reference (operations & types)](https://docs.crowdedkingdoms.com/game-api/reference/graphql-overview)
@@ -72,5 +72,5 @@
 
 ## Agentic Crowdy Studio policy and operations (development only)
 
-- [Management app policy](https://docs.crowdedkingdoms.com/management-api/agentic-crowdy-studio-policy): allowlists, `use_studio_agent`, caps, privacy, retention, usage, and replica freshness.
+- [Management app policy](https://docs.crowdedkingdoms.com/management-api/agentic-crowdy-studio-policy): Management API `v0.1.193-dev`, allowlisted `openai/gpt-oss-120b`, platform-funded caps, `use_studio_agent`, privacy, retention, usage, and replica freshness.
 - [Operator runbook](https://docs.crowdedkingdoms.com/operators/agentic-crowdy-studio): platform/app kills, secret injection, freshness monitoring, incident procedure, and purge.

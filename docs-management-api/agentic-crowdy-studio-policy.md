@@ -10,11 +10,12 @@ allowlists, hard budget ceilings, privacy and retention policy, app/operator
 kills, and sanitized provider usage. The Game API owns execution and must
 enforce only a fresh Management policy replica.
 
-:::warning Development pilot
-The surface is disabled and killed by default. A schema field or saved policy
-does not prove that a compatible Game API has synchronized it or that the
-feature is deployed. The pilot is platform-funded, development-only, and does
-not authorize unattended real-money actions.
+:::warning Finalized development rollout
+The allowlisted development rollout is deployed in environment release
+`v0.1.94` with Management API `v0.1.193-dev`, Game API `v0.19.16`,
+CrowdyJS `12.0.0`, and the BWF host. Apps/users outside the explicit rollout
+remain fail-closed. This is not production or general availability and does not
+authorize unattended real-money actions.
 :::
 
 ## Policy layers
@@ -102,6 +103,11 @@ case-sensitive replacement lists. Empty means deny all. A selected model must
 support the complete requested tool and structured-output parameter set; there
 is no fallback to a provider/model that cannot honor the privacy parameters.
 
+The finalized development allowlist uses `openai/gpt-oss-120b` because its
+OpenRouter tool endpoint supports the required Zero Data Retention policy.
+Model choice and request/token/cost caps remain the strict platform/app
+intersection and are platform-funded.
+
 App policy should list only implemented tools needed by the pilot. Game API
 intersects policy again with the current mode and host capabilities, so a
 policy entry does not promise that a descriptor will be advertised.
@@ -136,13 +142,20 @@ wallet. These fields are a future billing seam, not permission to charge.
 
 ## Privacy and retention
 
-OpenRouter is the pilot provider gateway and may route a request to the selected
-allowlisted model provider. Policy locks:
+OpenRouter is the development provider gateway. Game API uses its stable
+streaming `/api/v1/chat/completions` endpoint, not the Responses beta, and may
+route a request to the selected allowlisted model provider. Policy locks:
 
 - Zero Data Retention required;
 - provider data collection denied;
+- `require_parameters` enabled;
+- plugins and unsafe fallback disabled;
 - provider request/response bodies not persisted; and
 - first-use disclosure/consent required before selected private source is sent.
+
+Parallel/multi-tool provider rounds do not widen policy: Game API rejects or
+serializes them locally and validates every tool name/input/output against the
+pinned descriptor.
 
 App policy can disable private-source sharing but cannot bypass disclosure. No
 provider key, token, header, prompt, source body, private reasoning, credential,
