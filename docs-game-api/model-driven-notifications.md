@@ -72,6 +72,31 @@ The arguments you must provide depend on `kind`:
 `state` and `payload` are **base64-encoded** binary, exactly like the equivalent
 fields on the client-initiated spatial sends.
 
+### Naming the container that changed
+
+Arg expressions see the [system params](game-models#permission-effects-functions-that-write-grid-permissions)
+injected into every evaluation — including **`$self_container_id`**, the
+UUID of the container the function ran against. A "container X changed,
+re-pull it" ping therefore needs **no parameters at all**:
+
+```graphql
+notifications: [
+  {
+    kind: "channel"
+    args: [
+      { name: "channel_id", expression: "self.notify_channel_id" }
+      { name: "payload", expression: "concat(\"cmc:\", $self_container_id)" }
+    ]
+  }
+]
+```
+
+This works identically for player invokes and [automation](autonomous-processes)
+runs: an interval automation with `targetMode: "type"` fanning out over N
+containers emits N notifications, each naming its own container — no caller
+exists to fill a `notify_id`-style parameter, and none is needed. Injected
+params cannot be spoofed by a same-named caller param.
+
 ## Delivery semantics
 
 - **Emitted after the change is applied.** A function's notifications fire only
