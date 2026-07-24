@@ -1,6 +1,6 @@
 # Crowded Kingdoms APIs
 
-> Crowded Kingdoms is a platform for massive multiplayer worlds. There are three public APIs: the Management API (identity, organizations, apps marketplace, access tiers, billing, payments, quotas, environments — GraphQL), the Game API (runtime world/replication data and the realtime UDP-proxy subscription stream — GraphQL), and the Replication API / "Buddy" (a binary UDP wire protocol for low-latency spatial replication). Browser clients should use the CrowdyJS TypeScript SDK. All GraphQL calls use an `Authorization: Bearer <token>` header; the token comes from a Management API `login`/`register`. BigInt values are decimal strings; timestamps are ISO-8601 UTC.
+> Crowded Kingdoms is a platform for massive multiplayer worlds. There are three public APIs: the Management API (identity, organizations, apps marketplace, access tiers, billing, payments, quotas, environments — GraphQL), the Game API (runtime world/replication data and the realtime UDP-proxy subscription stream — GraphQL), and the Replication API / "Buddy" (a binary UDP wire protocol for low-latency spatial replication). Browser clients should use the CrowdyJS TypeScript SDK. Passwordless Management sign-in produces an identity session token; mint a separate app-scoped token for Game API/realtime calls. BigInt values are decimal strings; timestamps are ISO-8601 UTC.
 
 ## Start here (for AI agents and integrators)
 
@@ -37,6 +37,7 @@
 - [Host discovery](https://docs.crowdedkingdoms.com/game-api/host-discovery) · [Permissions](https://docs.crowdedkingdoms.com/game-api/permissions) · [Grids & permissions](https://docs.crowdedkingdoms.com/game-api/grids-and-permissions)
 - [Teams](https://docs.crowdedkingdoms.com/game-api/teams) · [Channels](https://docs.crowdedkingdoms.com/game-api/channels) · [Avatar state](https://docs.crowdedkingdoms.com/game-api/avatar-state) · [Actor state](https://docs.crowdedkingdoms.com/game-api/actor-state)
 - [Game models](https://docs.crowdedkingdoms.com/game-api/game-models) · [Autonomous processes (NPCs)](https://docs.crowdedkingdoms.com/game-api/autonomous-processes) · [Model-driven notifications](https://docs.crowdedkingdoms.com/game-api/model-driven-notifications)
+- [Agentic Crowdy Studio game integration (development pilot)](https://docs.crowdedkingdoms.com/game-api/agentic-crowdy-studio): durable sessions/events, host adapter, bounded observations/commands, approvals, leases, takeover, and reconnect. Disabled by default; no production or real-money autonomy claim.
 - [Choosing Game APIs (five-tier decision flow + mechanic/genre mappings)](https://docs.crowdedkingdoms.com/game-api/model-vs-compute) · [Compute Modules (server-side Rust/WebAssembly logic)](https://docs.crowdedkingdoms.com/game-api/compute-modules) · [Compute host API reference](https://docs.crowdedkingdoms.com/game-api/compute-host-api) · [Compute tutorial (zero to a live module)](https://docs.crowdedkingdoms.com/game-api/compute-tutorial) · [Compute engines (the full template registry: NPC/mob/world/match/deck/instance/director/matchmaking/market/board/minigame/abilities/movement-warden/territory/racing/possession/liveops — deployable by name via computeDeployTemplate)](https://docs.crowdedkingdoms.com/game-api/compute-engines)
 - [Modeling game concepts (inventory, object permissions, NPCs)](https://docs.crowdedkingdoms.com/game-api/modeling-game-concepts)
 - [GraphQL reference (operations & types)](https://docs.crowdedkingdoms.com/game-api/reference/graphql-overview)
@@ -59,6 +60,7 @@
 - [Build player mods in Blocks with Friends](https://docs.crowdedkingdoms.com/build-a-game/bwf-mod-development): in-world Monaco/Rust workflow, server+client bundles, author trust, lifecycle, and troubleshooting.
 - [BWF mod authoring helper file](https://docs.crowdedkingdoms.com/helpers/bwf-mod/authoring-checklist.txt) · [Cargo.toml](https://docs.crowdedkingdoms.com/helpers/bwf-mod/Cargo.toml) · [server Rust starter](https://docs.crowdedkingdoms.com/helpers/bwf-mod/server-lib.rs) · [client HUD Rust starter](https://docs.crowdedkingdoms.com/helpers/bwf-mod/client-hud-lib.rs)
 - CrowdyJS guides: [Channels](https://docs.crowdedkingdoms.com/crowdyjs/channels) · [Teams](https://docs.crowdedkingdoms.com/crowdyjs/teams) · [Grids](https://docs.crowdedkingdoms.com/crowdyjs/grids) · [Game model](https://docs.crowdedkingdoms.com/crowdyjs/game-model) · [Automations (NPCs)](https://docs.crowdedkingdoms.com/crowdyjs/automations) · [Model-driven notifications](https://docs.crowdedkingdoms.com/crowdyjs/model-notifications) · [Game Kit (inventory, object permissions, NPCs, genre layers)](https://docs.crowdedkingdoms.com/crowdyjs/game-kit) · [World Stores (SDK-managed actor/chunk/message state)](https://docs.crowdedkingdoms.com/crowdyjs/stores)
+- [Agentic Crowdy Studio player + CrowdyJS quickstart](https://docs.crowdedkingdoms.com/crowdyjs/agentic-crowdy-studio)
 - [CrowdyCPP (portable C++ SDK with native UDP replication) overview](https://docs.crowdedkingdoms.com/crowdycpp/intro)
 - CrowdyCPP guides: [Installation](https://docs.crowdedkingdoms.com/crowdycpp/installation) · [Quick start](https://docs.crowdedkingdoms.com/crowdycpp/quick-start) · [Replication client (native UDP)](https://docs.crowdedkingdoms.com/crowdycpp/replication-client) · [World session (SDK-managed game state)](https://docs.crowdedkingdoms.com/crowdycpp/world-session) · [Game Kit](https://docs.crowdedkingdoms.com/crowdycpp/game-kit) · [Engine integration (Unreal, Godot, Unity)](https://docs.crowdedkingdoms.com/crowdycpp/engine-integration) · [Compatibility & parity](https://docs.crowdedkingdoms.com/crowdycpp/compatibility)
 - [Build a game (tutorial)](https://docs.crowdedkingdoms.com/build-a-game/intro)
@@ -67,3 +69,8 @@
 ## Changelog
 
 - [Releases & changelog](https://docs.crowdedkingdoms.com/releases/intro)
+
+## Agentic Crowdy Studio policy and operations (development only)
+
+- [Management app policy](https://docs.crowdedkingdoms.com/management-api/agentic-crowdy-studio-policy): allowlists, `use_studio_agent`, caps, privacy, retention, usage, and replica freshness.
+- [Operator runbook](https://docs.crowdedkingdoms.com/operators/agentic-crowdy-studio): platform/app kills, secret injection, freshness monitoring, incident procedure, and purge.

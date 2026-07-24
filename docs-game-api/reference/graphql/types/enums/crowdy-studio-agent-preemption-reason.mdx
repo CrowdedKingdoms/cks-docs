@@ -1,0 +1,113 @@
+---
+id: crowdy-studio-agent-preemption-reason
+title: CrowdyStudioAgentPreemptionReason
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Closed CrowdyJS/BWF reason vocabulary for synchronous lease and control preemption.
+
+
+```graphql
+enum CrowdyStudioAgentPreemptionReason {
+  HUMAN_INPUT
+  HUMAN_EDIT
+  HUMAN_STOP
+  ESCAPE
+  DEATH
+  CONTEXT_CHANGED
+  PERMISSION_CHANGED
+  ADMISSION_CHANGED
+  CONTROL_TARGET_CHANGED
+  DISCONNECTED
+  CLIENT_REATTACHED
+  QUOTA_FAILURE
+  BUDGET_FAILURE
+  OPERATOR_KILL
+  LEASE_EXPIRED
+  SESSION_CLOSED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>HUMAN&#x005F;INPUT</b></code>](#human-input) \{#human-input\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>HUMAN&#x005F;EDIT</b></code>](#human-edit) \{#human-edit\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>HUMAN&#x005F;STOP</b></code>](#human-stop) \{#human-stop\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>ESCAPE</b></code>](#escape) \{#escape\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>DEATH</b></code>](#death) \{#death\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>CONTEXT&#x005F;CHANGED</b></code>](#context-changed) \{#context-changed\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>PERMISSION&#x005F;CHANGED</b></code>](#permission-changed) \{#permission-changed\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>ADMISSION&#x005F;CHANGED</b></code>](#admission-changed) \{#admission-changed\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>CONTROL&#x005F;TARGET&#x005F;CHANGED</b></code>](#control-target-changed) \{#control-target-changed\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>DISCONNECTED</b></code>](#disconnected) \{#disconnected\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>CLIENT&#x005F;REATTACHED</b></code>](#client-reattached) \{#client-reattached\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>QUOTA&#x005F;FAILURE</b></code>](#quota-failure) \{#quota-failure\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>BUDGET&#x005F;FAILURE</b></code>](#budget-failure) \{#budget-failure\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>OPERATOR&#x005F;KILL</b></code>](#operator-kill) \{#operator-kill\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>LEASE&#x005F;EXPIRED</b></code>](#lease-expired) \{#lease-expired\}
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPreemptionReason.<b>SESSION&#x005F;CLOSED</b></code>](#session-closed) \{#session-closed\}
+
+
+
+
+
+### Member Of
+
+[`RevokeAgentLeaseInput`](/reference/graphql/types/inputs/revoke-agent-lease-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

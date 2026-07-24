@@ -28,11 +28,11 @@ type TeleportResponse {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>TeleportResponse.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#success\} 
+#### [<code style={{ fontWeight: 'normal' }}>TeleportResponse.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#success\}
 True when the teleport is authorized/accepted; false otherwise (inspect errorCode for the reason).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>TeleportResponse.<b>errorCode</b></code>](#error-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UdpErrorCode!</b></code>](/reference/graphql/types/enums/udp-error-code.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#error-code\} 
+#### [<code style={{ fontWeight: 'normal' }}>TeleportResponse.<b>errorCode</b></code>](#error-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UdpErrorCode!</b></code>](/reference/graphql/types/enums/udp-error-code.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#error-code\}
 ErrorType enum: NO&#x005F;ERROR on success; INVALID&#x005F;APP&#x005F;ID for a non-positive appId; UNAUTHORIZED when the destination is the reserved sentinel (-6,-6,-6) or the user lacks the app "teleport" runtime permission.
 
 

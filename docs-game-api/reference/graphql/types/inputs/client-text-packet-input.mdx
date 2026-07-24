@@ -33,31 +33,31 @@ input ClientTextPacketInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 The ID of the app where the text message is being sent from.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>chunk</b></code>](#chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#chunk\} 
+#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>chunk</b></code>](#chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#chunk\}
 The chunk coordinates where the text message source is located.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\} 
+#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\}
 A unique identifier for the text source (typically the player UUID). Must be exactly 32 bytes when encoded as UTF-8.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>text</b></code>](#text)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#text\} 
+#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>text</b></code>](#text)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#text\}
 The text message content, encoded as UTF-8. This will be displayed to nearby players.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>distance</b></code>](#distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#distance\} 
+#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>distance</b></code>](#distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#distance\}
 Chunk replication distance (0-8). Defaults to 8 for text packets. Clamped to 0-8.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>decayRate</b></code>](#decay-rate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#decay-rate\} 
+#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>decayRate</b></code>](#decay-rate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#decay-rate\}
 Decay algorithm for replication: 0 = none, 1 = exponential, 2 = linear 50%, 3 = linear 25%, 4 = linear 10%, 5 = linear 5%. Defaults to 0 (none) for text packets.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number\} 
+#### [<code style={{ fontWeight: 'normal' }}>ClientTextPacketInput.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number\}
 Client-assigned correlation id for this datagram: a uint8 (0-255) that wraps at gameClientBootstrap.sequenceNumberModulo (256); defaults to 0 if omitted. For CORRELATION ONLY — it is NOT an idempotency key and the server does not dedupe replays. Echoed on any GenericErrorResponse for this send, delivered on the udpNotifications subscription.
 
 

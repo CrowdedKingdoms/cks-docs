@@ -1,0 +1,83 @@
+---
+id: crowdy-studio-agent-player-day-limits-input
+title: CrowdyStudioAgentPlayerDayLimitsInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Patch for per-player/day and app concurrency limits. Omitted values stay unchanged; supplied values are clamped down to platform ceilings.
+
+
+```graphql
+input CrowdyStudioAgentPlayerDayLimitsInput {
+  providerRequests: Int
+  inputTokens: BigInt
+  outputTokens: BigInt
+  reasoningTokens: BigInt
+  totalTokens: BigInt
+  providerCostMicrousd: BigInt
+  toolCalls: Int
+  compiles: Int
+  concurrentSessions: Int
+  concurrentRunsPerApp: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPlayerDayLimitsInput.<b>providerRequests</b></code>](#provider-requests)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provider-requests\}
+Maximum provider requests per player per UTC day.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPlayerDayLimitsInput.<b>inputTokens</b></code>](#input-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#input-tokens\}
+Maximum input tokens per player per UTC day.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPlayerDayLimitsInput.<b>outputTokens</b></code>](#output-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#output-tokens\}
+Maximum output tokens per player per UTC day.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPlayerDayLimitsInput.<b>reasoningTokens</b></code>](#reasoning-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reasoning-tokens\}
+Maximum reasoning tokens per player per UTC day.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPlayerDayLimitsInput.<b>totalTokens</b></code>](#total-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#total-tokens\}
+Maximum total provider tokens per player per UTC day.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPlayerDayLimitsInput.<b>providerCostMicrousd</b></code>](#provider-cost-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provider-cost-microusd\}
+Maximum provider cost per player per UTC day, in micro-USD.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPlayerDayLimitsInput.<b>toolCalls</b></code>](#tool-calls)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tool-calls\}
+Maximum tool calls per player per UTC day.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPlayerDayLimitsInput.<b>compiles</b></code>](#compiles)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compiles\}
+Maximum draft compile submissions per player per UTC day.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPlayerDayLimitsInput.<b>concurrentSessions</b></code>](#concurrent-sessions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#concurrent-sessions\}
+Maximum concurrent Agentic Studio sessions for one player.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPlayerDayLimitsInput.<b>concurrentRunsPerApp</b></code>](#concurrent-runs-per-app)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#concurrent-runs-per-app\}
+Maximum concurrent Agentic Studio runs across the app.
+
+
+
+
+### Member Of
+
+[`SetCrowdyStudioAgentAppPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-app-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SetCrowdyStudioAgentPlatformPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-platform-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

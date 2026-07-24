@@ -1,0 +1,49 @@
+---
+id: crowdy-studio-agent-sessions
+title: crowdyStudioAgentSessions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List the authenticated owner’s Agentic Crowdy Studio sessions in one app using an opaque cursor, newest first. Requires an app-scoped token for appId and use&#x005F;studio&#x005F;agent. The bounded page defaults to 20 and allows 1–50.
+
+
+```graphql
+crowdyStudioAgentSessions(
+  appId: BigInt!
+  after: String
+  first: Int
+): AgentSessionConnection!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentSessions.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+App tenant to list; it must equal the bearer app-token scope.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentSessions.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\}
+Opaque cursor from a previous edge; omit for the first page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentSessions.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\}
+Maximum sessions to return (default 20, allowed 1–50).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentSessionConnection</b></code>](/reference/graphql/types/objects/agent-session-connection.mdx) <Badge class="badge badge--secondary " text="object"/>
+Bounded owner/app session connection.

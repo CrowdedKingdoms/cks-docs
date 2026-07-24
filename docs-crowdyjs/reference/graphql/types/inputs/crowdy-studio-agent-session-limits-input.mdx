@@ -1,0 +1,78 @@
+---
+id: crowdy-studio-agent-session-limits-input
+title: CrowdyStudioAgentSessionLimitsInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Patch for per-session limits. Omitted values stay unchanged; supplied values are clamped down to platform ceilings.
+
+
+```graphql
+input CrowdyStudioAgentSessionLimitsInput {
+  providerRequests: Int
+  inputTokens: BigInt
+  outputTokens: BigInt
+  reasoningTokens: BigInt
+  totalTokens: BigInt
+  providerCostMicrousd: BigInt
+  toolCalls: Int
+  compiles: Int
+  concurrentRuns: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimitsInput.<b>providerRequests</b></code>](#provider-requests)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provider-requests\}
+Maximum provider requests in one session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimitsInput.<b>inputTokens</b></code>](#input-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#input-tokens\}
+Maximum input tokens in one session; positive decimal string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimitsInput.<b>outputTokens</b></code>](#output-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#output-tokens\}
+Maximum output tokens in one session; positive decimal string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimitsInput.<b>reasoningTokens</b></code>](#reasoning-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reasoning-tokens\}
+Maximum reasoning tokens in one session; positive decimal string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimitsInput.<b>totalTokens</b></code>](#total-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#total-tokens\}
+Maximum total provider tokens in one session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimitsInput.<b>providerCostMicrousd</b></code>](#provider-cost-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provider-cost-microusd\}
+Maximum provider cost in one session, in positive micro-USD.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimitsInput.<b>toolCalls</b></code>](#tool-calls)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tool-calls\}
+Maximum tool calls in one session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimitsInput.<b>compiles</b></code>](#compiles)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compiles\}
+Maximum draft compile submissions in one session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentSessionLimitsInput.<b>concurrentRuns</b></code>](#concurrent-runs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#concurrent-runs\}
+Maximum concurrent non-terminal runs in one session.
+
+
+
+
+### Member Of
+
+[`SetCrowdyStudioAgentAppPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-app-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SetCrowdyStudioAgentPlatformPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-platform-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

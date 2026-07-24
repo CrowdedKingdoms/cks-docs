@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-agent-close-session
+title: crowdyStudioAgentCloseSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Permanently close one owner/app session, preempt its active run, revoke leases/approvals/dispatches, detach clients, and start the 30-day agent-data cleanup clock without deleting canonical projects/runtime state. Requires the current epoch and idempotency key.
+
+
+```graphql
+crowdyStudioAgentCloseSession(
+  input: AgentSessionControlInput!
+): AgentSession!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentCloseSession.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentSessionControlInput!</b></code>](/reference/graphql/types/inputs/agent-session-control-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+Open session, current epoch, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentSession</b></code>](/reference/graphql/types/objects/agent-session.mdx) <Badge class="badge badge--secondary " text="object"/>
+Owner/app-scoped durable agent conversation with pinned mode, model, policy, registry, and client epoch.

@@ -27,7 +27,7 @@ gameClientBootstrap(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>gameClientBootstrap.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>gameClientBootstrap.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 The app (game) the client is initializing for, as a BigInt decimal string. Used to scope the returned UDP status and to mirror this app’s entitlements; reuse the same appId when subscribing and on every spatial send.
 
 
@@ -35,5 +35,5 @@ The app (game) the client is initializing for, as a BigInt decimal string. Used 
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>GameClientBootstrap</b></code>](/reference/graphql/types/objects/game-client-bootstrap.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>GameClientBootstrap</b></code>](/reference/graphql/types/objects/game-client-bootstrap.mdx) <Badge class="badge badge--secondary " text="object"/>
 Startup contract for browser game clients. Fetch this after login to initialize protocol/version checks and UDP proxy state in one round trip.

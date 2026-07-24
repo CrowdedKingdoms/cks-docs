@@ -1,0 +1,48 @@
+---
+id: crowdy-studio-agent-mode
+title: CrowdyStudioAgentMode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Human-selected authority mode. The model cannot change modes or elevate itself.
+
+
+```graphql
+enum CrowdyStudioAgentMode {
+  ASK
+  BUILD
+  PLAY
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>ASK</b></code>](#ask) \{#ask\}
+Read bounded project, diagnostics, policy, and host context; no project or game writes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>BUILD</b></code>](#build) \{#build\}
+Permit routine checkpointed project edits under target write permissions and a workspace lease; live deployment remains approval-gated and is not in the dev-pilot catalog.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>PLAY</b></code>](#play) \{#play\}
+Permit only browser-host tools covered by a visible, human-granted, scoped lease; the current dev-pilot catalog exposes no gameplay-effect tool.
+
+
+
+
+### Member Of
+
+[`AgentLifecycleEvent`](/reference/graphql/types/objects/agent-lifecycle-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentSession`](/reference/graphql/types/objects/agent-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentToolDescriptor`](/reference/graphql/types/objects/agent-tool-descriptor.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CreateAgentSessionInput`](/reference/graphql/types/inputs/create-agent-session-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SetAgentModeInput`](/reference/graphql/types/inputs/set-agent-mode-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

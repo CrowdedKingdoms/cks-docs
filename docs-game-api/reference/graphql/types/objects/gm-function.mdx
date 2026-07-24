@@ -41,63 +41,63 @@ type GmFunction {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>functionId</b></code>](#function-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>functionId</b></code>](#function-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-id\}
 Unique function id (UUID).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 The app (tenant) that owns the function.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\}
 Function name (unique per app); used to invoke it.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>containerTypeName</b></code>](#container-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#container-type-name\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>containerTypeName</b></code>](#container-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#container-type-name\}
 Optional container type this function is bound to (null = global).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\}
 Optional description of the function.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>returnType</b></code>](#return-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#return-type\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>returnType</b></code>](#return-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#return-type\}
 Optional declared return value type.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>parameters</b></code>](#parameters)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmFunctionParam!]!</b></code>](/reference/graphql/types/objects/gm-function-param.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#parameters\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>parameters</b></code>](#parameters)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmFunctionParam!]!</b></code>](/reference/graphql/types/objects/gm-function-param.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#parameters\}
 Typed parameters the function accepts.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>mutations</b></code>](#mutations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmFunctionMutation!]!</b></code>](/reference/graphql/types/objects/gm-function-mutation.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#mutations\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>mutations</b></code>](#mutations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmFunctionMutation!]!</b></code>](/reference/graphql/types/objects/gm-function-mutation.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#mutations\}
 The property writes the function performs when invoked.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>returnExpression</b></code>](#return-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#return-expression\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>returnExpression</b></code>](#return-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#return-expression\}
 Optional expression whose value becomes the invoke result.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>invokeScope</b></code>](#invoke-scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-scope\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>invokeScope</b></code>](#invoke-scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-scope\}
 Who may invoke and in what context: player | server | internal.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>invokePolicyJson</b></code>](#invoke-policy-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-policy-json\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>invokePolicyJson</b></code>](#invoke-policy-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#invoke-policy-json\}
 JSON-encoded invoke policy rule tree.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>autonomousInvocable</b></code>](#autonomous-invocable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#autonomous-invocable\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>autonomousInvocable</b></code>](#autonomous-invocable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#autonomous-invocable\}
 Whether an autonomous process (automation/NPC) may use this function as an entry point. Players are unaffected by this flag.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>notifications</b></code>](#notifications)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmFunctionNotification!]!</b></code>](/reference/graphql/types/objects/gm-function-notification.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#notifications\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>notifications</b></code>](#notifications)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmFunctionNotification!]!</b></code>](/reference/graphql/types/objects/gm-function-notification.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#notifications\}
 Declarative realtime notifications the function emits via Buddy after it commits.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>permissionEffects</b></code>](#permission-effects)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmFunctionPermissionEffect!]!</b></code>](/reference/graphql/types/objects/gm-function-permission-effect.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#permission-effects\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>permissionEffects</b></code>](#permission-effects)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmFunctionPermissionEffect!]!</b></code>](/reference/graphql/types/objects/gm-function-permission-effect.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#permission-effects\}
 Declarative grid-permission effects (grant/revoke runtime grid ACL rows) applied atomically with the function's mutations.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>warnings</b></code>](#warnings)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#warnings\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>warnings</b></code>](#warnings)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#warnings\}
 Non-fatal static-analysis warnings from the last upload.
 
 

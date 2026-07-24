@@ -36,43 +36,43 @@ type WalletTransaction {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>transactionId</b></code>](#transaction-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#transaction-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>transactionId</b></code>](#transaction-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#transaction-id\}
 Unique transaction id (BigInt as a decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>walletId</b></code>](#wallet-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wallet-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>walletId</b></code>](#wallet-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wallet-id\}
 Wallet this transaction belongs to (BigInt as a decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
 Organization that owns the wallet (BigInt as a decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#amount-cents\} 
+#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#amount-cents\}
 Signed change applied to the wallet in minor currency units (cents), as a BigInt decimal string: positive credits funds, negative debits funds.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>balanceAfter</b></code>](#balance-after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-after\} 
+#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>balanceAfter</b></code>](#balance-after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-after\}
 Wallet balance in cents immediately after this transaction was applied, as a BigInt decimal string.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>transactionType</b></code>](#transaction-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#transaction-type\} 
+#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>transactionType</b></code>](#transaction-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#transaction-type\}
 What produced this transaction. Known values: "topup" (wallet credit from a checkout/top-up), "usage" (per-app usage charge, negative), "shared&#x005F;usage" (shared-environment usage charge, negative), "reserved&#x005F;throughput" (monthly/prorated reserved egress capacity, negative), "environment&#x005F;usage" (hourly environment cost, negative), "auto&#x005F;recharge" (automatic wallet recharge). Other caller-supplied deposit types are possible.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\}
 Optional human-readable note describing the transaction; null when not set.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>referenceId</b></code>](#reference-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reference-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>referenceId</b></code>](#reference-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reference-id\}
 Optional external reference (e.g. payment-provider charge id or checkout id) linking this transaction to its source; null when not set.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 App that incurred the charge (BigInt as a decimal string), set on usage-type transactions; null for org-level credits such as top-ups.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
 When the transaction was recorded (ISO-8601 UTC timestamp).
 
 

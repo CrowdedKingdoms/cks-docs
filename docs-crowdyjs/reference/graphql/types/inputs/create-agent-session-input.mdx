@@ -1,0 +1,68 @@
+---
+id: create-agent-session-input
+title: CreateAgentSessionInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create an owner/app-scoped session with pinned human mode, project/grid context, model, policy, registry, and provider disclosure choice.
+
+
+```graphql
+input CreateAgentSessionInput {
+  idempotencyKey: String!
+  appId: BigInt!
+  projectId: String
+  gridId: BigInt
+  mode: CrowdyStudioAgentMode!
+  requestedModel: String
+  providerDataConsent: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateAgentSessionInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
+Required retry key. Same owner, operation, key, and input replay the first result; changed input returns IDEMPOTENCY&#x005F;CONFLICT.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateAgentSessionInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+App tenant; the bearer credential must be an unexpired app token for this exact app and the caller must hold use&#x005F;studio&#x005F;agent.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateAgentSessionInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\}
+Optional private owner project UUID. Required for BUILD; cross-owner/app ids return the same not-found shape.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateAgentSessionInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\}
+Optional selected grid context; selection grants no authority.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateAgentSessionInput.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentMode!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#mode\}
+Human-selected initial ASK, BUILD, or PLAY mode.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateAgentSessionInput.<b>requestedModel</b></code>](#requested-model)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#requested-model\}
+Optional requested allowlisted model. Omit for the platform default.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateAgentSessionInput.<b>providerDataConsent</b></code>](#provider-data-consent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provider-data-consent\}
+Optional explicit first-use consent for selected private project source. Omit/false for message-only or metadata-only sessions.
+
+
+
+
+### Member Of
+
+[`crowdyStudioAgentCreateSession`](/reference/graphql/operations/mutations/crowdy-studio-agent-create-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

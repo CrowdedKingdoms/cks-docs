@@ -1,0 +1,63 @@
+---
+id: set-crowdy-studio-agent-operator-app-kill-input
+title: SetCrowdyStudioAgentOperatorAppKillInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator-only per-app emergency kill. App managers cannot clear or override this state.
+
+
+```graphql
+input SetCrowdyStudioAgentOperatorAppKillInput {
+  appId: BigInt!
+  killed: Boolean!
+  reasonCode: String
+  reason: String
+  expectedRevision: BigInt
+  idempotencyKey: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentOperatorAppKillInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+App to kill or release.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentOperatorAppKillInput.<b>killed</b></code>](#killed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#killed\}
+True to kill immediately; false to release the operator kill.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentOperatorAppKillInput.<b>reasonCode</b></code>](#reason-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason-code\}
+Stable reason code (max 64); defaults to AGENT&#x005F;OPERATOR&#x005F;KILLED.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentOperatorAppKillInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\}
+Safe reason text (max 256); no secrets or provider bodies.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentOperatorAppKillInput.<b>expectedRevision</b></code>](#expected-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expected-revision\}
+Optional optimistic app-policy revision.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentOperatorAppKillInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
+Required retry key (1-128 characters). Same key/arguments replay; different arguments fail IDEMPOTENCY&#x005F;CONFLICT.
+
+
+
+
+### Member Of
+
+[`cpSetCrowdyStudioAgentAppKill`](/reference/graphql/operations/mutations/cp-set-crowdy-studio-agent-app-kill.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -1,0 +1,73 @@
+---
+id: agent-tool-result-envelope
+title: AgentToolResultEnvelope
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Complete crowdy.tool-result/1 terminal browser result with exact timing and safe typed error.
+
+
+```graphql
+type AgentToolResultEnvelope {
+  protocolVersion: String!
+  toolCallId: String!
+  status: CrowdyStudioAgentToolResultStatus!
+  outputJson: String
+  error: AgentError
+  observedContextVersion: String!
+  startedAt: DateTime!
+  finishedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelope.<b>protocolVersion</b></code>](#protocol-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#protocol-version\}
+Result version; always 'crowdy.tool-result/1'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelope.<b>toolCallId</b></code>](#tool-call-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-call-id\}
+Matching tool call UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelope.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentToolResultStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-tool-result-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
+Terminal result status.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelope.<b>outputJson</b></code>](#output-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#output-json\}
+Canonical descriptor-validated output JSON, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelope.<b>error</b></code>](#error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentError</b></code>](/reference/graphql/types/objects/agent-error.mdx) <Badge class="badge badge--secondary " text="object"/> \{#error\}
+Safe typed error for non-success, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelope.<b>observedContextVersion</b></code>](#observed-context-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#observed-context-version\}
+Context version observed by the browser executor.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelope.<b>startedAt</b></code>](#started-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#started-at\}
+Browser execution start timestamp.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelope.<b>finishedAt</b></code>](#finished-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#finished-at\}
+Browser execution finish timestamp.
+
+
+
+
+### Member Of
+
+[`AgentToolEvent`](/reference/graphql/types/objects/agent-tool-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

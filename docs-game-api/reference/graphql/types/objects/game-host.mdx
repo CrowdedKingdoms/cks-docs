@@ -29,15 +29,15 @@ type GameHost {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>GameHost.<b>hostUserId</b></code>](#host-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#host-user-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>GameHost.<b>hostUserId</b></code>](#host-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#host-user-id\}
 The user&#x005F;id of the elected host. Stable while this user has at least one fresh row in `actors` for the app; the next-oldest user takes over automatically once the current host stops heartbeating (its rows age past HOST&#x005F;ACTOR&#x005F;FRESHNESS&#x005F;SECONDS) or Buddy idle-evicts its last row.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GameHost.<b>actorCount</b></code>](#actor-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#actor-count\} 
+#### [<code style={{ fontWeight: 'normal' }}>GameHost.<b>actorCount</b></code>](#actor-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#actor-count\}
 How many actors the host user currently owns in this app (always &#x003E;= 1 when this object is returned).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GameHost.<b>earliestActorJoinedAt</b></code>](#earliest-actor-joined-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#earliest-actor-joined-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>GameHost.<b>earliestActorJoinedAt</b></code>](#earliest-actor-joined-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#earliest-actor-joined-at\}
 Timestamp of the host's earliest still-connected actor (`MIN(actors.created_at)` for the host's group). Used as the primary election ordering key.
 
 

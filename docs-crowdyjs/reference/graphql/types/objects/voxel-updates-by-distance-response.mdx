@@ -30,19 +30,19 @@ type VoxelUpdatesByDistanceResponse {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>chunks</b></code>](#chunks)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ChunkVoxelUpdatesResponse!]!</b></code>](/reference/graphql/types/objects/chunk-voxel-updates-response.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#chunks\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>chunks</b></code>](#chunks)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ChunkVoxelUpdatesResponse!]!</b></code>](/reference/graphql/types/objects/chunk-voxel-updates-response.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#chunks\}
 Per-chunk groups of voxel edits, ordered by increasing Chebyshev distance from centerCoordinate.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>centerCoordinate</b></code>](#center-coordinate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#center-coordinate\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>centerCoordinate</b></code>](#center-coordinate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#center-coordinate\}
 The center chunk the search was performed around.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\}
 Echo of the chunk `limit` applied to this page, or null if none was supplied.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>skip</b></code>](#skip)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#skip\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdatesByDistanceResponse.<b>skip</b></code>](#skip)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#skip\}
 Echo of the chunk `skip` applied to this page, or null if none was supplied.
 
 

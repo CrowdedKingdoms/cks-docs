@@ -32,27 +32,27 @@ type AppSharedSubscription {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 App id (BigInt).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
 Owning organization id (BigInt).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>planId</b></code>](#plan-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#plan-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>planId</b></code>](#plan-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#plan-id\}
 Subscribed plan id (BigInt). Null when not on a paid plan.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provider\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provider\}
 Payment provider backing the subscription, e.g. 'stripe'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\}
 Subscription status, e.g. 'active', 'past&#x005F;due', or 'canceled'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>currentPeriodEnd</b></code>](#current-period-end)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#current-period-end\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppSharedSubscription.<b>currentPeriodEnd</b></code>](#current-period-end)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#current-period-end\}
 End of the current paid period (when access lapses if not renewed).
 
 

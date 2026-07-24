@@ -28,11 +28,11 @@ type CreateGridResponse {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateGridResponse.<b>grid</b></code>](#grid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Grid</b></code>](/reference/graphql/types/objects/grid.mdx) <Badge class="badge badge--secondary " text="object"/> \{#grid\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateGridResponse.<b>grid</b></code>](#grid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Grid</b></code>](/reference/graphql/types/objects/grid.mdx) <Badge class="badge badge--secondary " text="object"/> \{#grid\}
 The created grid on success; null when `error` is non-zero.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateGridResponse.<b>error</b></code>](#error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UdpErrorCode!</b></code>](/reference/graphql/types/enums/udp-error-code.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#error\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateGridResponse.<b>error</b></code>](#error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UdpErrorCode!</b></code>](/reference/graphql/types/enums/udp-error-code.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#error\}
 A UDP-style error code (the same ErrorType enum the realtime/UDP servers use). NO&#x005F;ERROR (0) means success; non-zero values describe the failure, e.g. NO&#x005F;MATCHING&#x005F;GRID&#x005F;ASSIGNMENT, GRID&#x005F;OUTSIDE&#x005F;ASSIGNMENT, GRID&#x005F;OVERLAPS&#x005F;EXISTING, GRID&#x005F;ALREADY&#x005F;EXISTS, or UNKNOWN&#x005F;ERROR.
 
 

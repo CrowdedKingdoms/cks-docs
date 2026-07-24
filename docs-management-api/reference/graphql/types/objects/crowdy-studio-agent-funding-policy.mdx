@@ -1,0 +1,53 @@
+---
+id: crowdy-studio-agent-funding-policy
+title: CrowdyStudioAgentFundingPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Funding seam for Agentic Studio. The development pilot is platform-funded and never debits a player wallet; payer/rate-card fields are reserved for a later contract.
+
+
+```graphql
+type CrowdyStudioAgentFundingPolicy {
+  billingMode: String!
+  payerKind: String!
+  rateCardId: String
+  walletDebitEnabled: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentFundingPolicy.<b>billingMode</b></code>](#billing-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#billing-mode\}
+Funding mode. The pilot always returns 'PLATFORM&#x005F;FUNDED'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentFundingPolicy.<b>payerKind</b></code>](#payer-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payer-kind\}
+Future payer kind. The pilot always returns 'PLATFORM'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentFundingPolicy.<b>rateCardId</b></code>](#rate-card-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#rate-card-id\}
+Future rate-card UUID; null throughout the platform-funded pilot.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentFundingPolicy.<b>walletDebitEnabled</b></code>](#wallet-debit-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wallet-debit-enabled\}
+Whether this policy can debit a player wallet. Always false in the pilot.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioAgentPolicy`](/reference/graphql/types/objects/crowdy-studio-agent-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

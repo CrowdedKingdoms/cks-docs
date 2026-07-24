@@ -96,6 +96,388 @@ type UserIdentity {
 }
 
 """
+Per-turn provider/tool/compile limits. Token and cost values are exact decimal BigInt strings; cost is in micro-US-dollars.
+"""
+type CrowdyStudioAgentTurnLimits {
+  """Maximum provider requests in one accepted turn."""
+  providerRequests: Int!
+  """Maximum input tokens in one turn."""
+  inputTokens: BigInt!
+  """Maximum output tokens in one turn."""
+  outputTokens: BigInt!
+  """Maximum reasoning tokens in one turn."""
+  reasoningTokens: BigInt!
+  """Maximum total provider tokens in one turn."""
+  totalTokens: BigInt!
+  """Maximum reserved/reconciled provider cost per turn, in micro-USD."""
+  providerCostMicrousd: BigInt!
+  """Maximum tool calls in one turn."""
+  toolCalls: Int!
+  """Maximum serialized provider/tool rounds in one turn."""
+  toolRounds: Int!
+  """Maximum draft compile submissions in one turn."""
+  compiles: Int!
+  """Maximum turn wall-clock duration in milliseconds."""
+  wallClockMs: Int!
+  """
+  Maximum concurrent provider requests in one turn. The v1 orchestrator still serializes calls.
+  """
+  concurrentProviderRequests: Int!
+}
+
+"""
+Per-session cumulative provider/tool/compile limits and the serialized-run concurrency ceiling.
+"""
+type CrowdyStudioAgentSessionLimits {
+  """Maximum provider requests in one session."""
+  providerRequests: Int!
+  """Maximum input tokens in one session."""
+  inputTokens: BigInt!
+  """Maximum output tokens in one session."""
+  outputTokens: BigInt!
+  """Maximum reasoning tokens in one session."""
+  reasoningTokens: BigInt!
+  """Maximum total provider tokens in one session."""
+  totalTokens: BigInt!
+  """Maximum provider cost in one session, in micro-USD."""
+  providerCostMicrousd: BigInt!
+  """Maximum tool calls in one session."""
+  toolCalls: Int!
+  """Maximum draft compile submissions in one session."""
+  compiles: Int!
+  """
+  Maximum concurrent non-terminal runs in a session. The v1 contract requires one.
+  """
+  concurrentRuns: Int!
+}
+
+"""
+Per-player UTC-day cumulative limits plus player/app concurrency ceilings.
+"""
+type CrowdyStudioAgentPlayerDayLimits {
+  """Maximum provider requests per player per UTC day."""
+  providerRequests: Int!
+  """Maximum input tokens per player per UTC day."""
+  inputTokens: BigInt!
+  """Maximum output tokens per player per UTC day."""
+  outputTokens: BigInt!
+  """Maximum reasoning tokens per player per UTC day."""
+  reasoningTokens: BigInt!
+  """Maximum total provider tokens per player per UTC day."""
+  totalTokens: BigInt!
+  """Maximum provider cost per player per UTC day, in micro-USD."""
+  providerCostMicrousd: BigInt!
+  """Maximum tool calls per player per UTC day."""
+  toolCalls: Int!
+  """Maximum draft compile submissions per player per UTC day."""
+  compiles: Int!
+  """Maximum concurrent sessions for one player."""
+  concurrentSessions: Int!
+  """Maximum concurrent agent runs across the app."""
+  concurrentRunsPerApp: Int!
+}
+
+"""
+Retention ceilings for redacted Agentic Studio data. Provider wire bodies, headers, private reasoning, and individual token deltas always have zero retention and are absent.
+"""
+type CrowdyStudioAgentRetentionPolicy {
+  """Coalesced assistant chunk retention in hours (0-24)."""
+  assistantChunkHours: Int!
+  """
+  Detailed game observation/browser tool-result retention in hours (0-24).
+  """
+  detailedContextHours: Int!
+  """
+  Final messages, redacted events, and checkpoint retention after close in days (0-30).
+  """
+  sessionDataDays: Int!
+  """
+  Provider generation/token/cost and kill metadata retention in days (1-90).
+  """
+  usageDays: Int!
+}
+
+"""
+Provider privacy posture. ZDR and collection denial are locked true; provider request/response bodies are never persisted.
+"""
+type CrowdyStudioAgentPrivacyPolicy {
+  """Whether Zero Data Retention is required. Always true in v1."""
+  requireZdr: Boolean!
+  """
+  Whether routed-provider data collection must be denied. Always true in v1.
+  """
+  denyDataCollection: Boolean!
+  """
+  Whether selected private project source may be sent after the separate human disclosure/consent gate.
+  """
+  allowPrivateSource: Boolean!
+  """
+  Whether first-use human disclosure/consent is required for private source. Always true in v1.
+  """
+  requirePrivateSourceConsent: Boolean!
+  """
+  Whether provider HTTP request/response bodies can be persisted. Always false in v1.
+  """
+  persistProviderBodies: Boolean!
+}
+
+"""
+Funding seam for Agentic Studio. The development pilot is platform-funded and never debits a player wallet; payer/rate-card fields are reserved for a later contract.
+"""
+type CrowdyStudioAgentFundingPolicy {
+  """Funding mode. The pilot always returns 'PLATFORM_FUNDED'."""
+  billingMode: String!
+  """Future payer kind. The pilot always returns 'PLATFORM'."""
+  payerKind: String!
+  """Future rate-card UUID; null throughout the platform-funded pilot."""
+  rateCardId: String
+  """
+  Whether this policy can debit a player wallet. Always false in the pilot.
+  """
+  walletDebitEnabled: Boolean!
+}
+
+"""
+Management's Agentic Crowdy Studio policy publication. EFFECTIVE values are the fail-closed platform/app intersection; an app can never widen platform models, tools, modes, risks, budgets, retention, or privacy. Game API runtime enforcement still requires a fresh validated replica.
+"""
+type CrowdyStudioAgentPolicy {
+  """PLATFORM, APP, or EFFECTIVE projection."""
+  kind: CrowdyStudioAgentPolicyKind!
+  """App id for APP/EFFECTIVE policy; null for platform policy."""
+  appId: BigInt
+  """
+  Whether this Management policy layer/publication is enabled. EFFECTIVE is true only when all required layers are enabled and no kill applies; it does not attest that Game API has synchronized.
+  """
+  enabled: Boolean!
+  """
+  Layer kill state. EFFECTIVE is true when platform, operator-app, or app kill is active.
+  """
+  killSwitch: Boolean!
+  """
+  Operator-only per-app kill state. App policy mutations cannot clear or alter it.
+  """
+  operatorKillSwitch: Boolean!
+  """
+  Stable disable/kill reason code (for example AGENT_OPERATOR_KILLED); null when enabled.
+  """
+  disableReasonCode: String
+  """
+  Safe operator/app reason text; never includes provider bodies or secrets.
+  """
+  disableReason: String
+  """
+  Exact model ids allowed by this layer/intersection. Empty denies all models.
+  """
+  allowedModelIds: [String!]!
+  """
+  Exact crowdy.agent-tools/1 logical tool names allowed by this layer/intersection. Empty denies all tools.
+  """
+  allowedToolNames: [String!]!
+  """Human-selectable modes allowed by this layer/intersection."""
+  allowedModes: [CrowdyStudioAgentMode!]!
+  """
+  Allowed tool risk classes. Required approval classes remain approval-gated even when listed.
+  """
+  allowedRiskClasses: [CrowdyStudioAgentRiskClass!]!
+  """Per-turn hard limits."""
+  turnLimits: CrowdyStudioAgentTurnLimits!
+  """Per-session hard limits."""
+  sessionLimits: CrowdyStudioAgentSessionLimits!
+  """Per-player UTC-day and concurrency hard limits."""
+  playerDayLimits: CrowdyStudioAgentPlayerDayLimits!
+  """Redacted-data retention limits."""
+  retention: CrowdyStudioAgentRetentionPolicy!
+  """Locked provider privacy and private-source controls."""
+  privacy: CrowdyStudioAgentPrivacyPolicy!
+  """Platform-funded pilot/future billing seam."""
+  funding: CrowdyStudioAgentFundingPolicy!
+  """Revision of this stored layer; zero means no app row exists yet."""
+  revision: BigInt!
+  """Platform revision used by an EFFECTIVE projection."""
+  platformRevision: BigInt!
+  """
+  App revision used by an EFFECTIVE projection; zero means missing app policy.
+  """
+  appRevision: BigInt!
+  """
+  Composite Management revision, formatted p<platform revision>:a<app revision>. Game API pins it only after a successful fresh replica pull.
+  """
+  effectiveRevision: String!
+  """Policy row creation time or projection time."""
+  createdAt: DateTime!
+  """Last policy change time or projection time."""
+  updatedAt: DateTime!
+}
+
+"""Whether a policy object is the platform row, app row, or intersection."""
+enum CrowdyStudioAgentPolicyKind {
+  """Operator-owned platform policy and hard ceilings."""
+  PLATFORM
+  """App-owned policy after write-time platform clamping."""
+  APP
+  """Fail-closed intersection of platform, operator-kill, and app policy."""
+  EFFECTIVE
+}
+
+"""
+Human-selected Agentic Crowdy Studio mode. Policy can remove modes but cannot add authority or let the model select one.
+"""
+enum CrowdyStudioAgentMode {
+  """Read-only assistance and proposals."""
+  ASK
+  """
+  Routine project edits and draft tests under ordinary write/run permissions.
+  """
+  BUILD
+  """
+  Game control only while a human-granted, scoped, time-boxed control lease is active.
+  """
+  PLAY
+}
+
+"""
+Tool risk classes from crowdy.agent-tools/1. App policy may only remove platform-allowed classes; locked approval requirements still apply.
+"""
+enum CrowdyStudioAgentRiskClass {
+  """Owner/app-scoped reads with redaction."""
+  READ_ONLY
+  """Reversible Build writes with revision checks and checkpoints."""
+  ROUTINE_WRITE
+  """Routine Play actions requiring a visible human-granted lease."""
+  WORLD_CONTROL
+  """Destructive action; exact human approval required."""
+  DESTRUCTIVE
+  """Trust, consent, or capability change; exact human approval required."""
+  TRUST_CONSENT
+  """Money or commerce action; exact human approval required."""
+  ECONOMIC
+  """Irreversible action; exact human approval required."""
+  IRREVERSIBLE
+}
+
+"""
+One sanitized, platform-funded provider usage record. It contains exact OpenRouter token/cost dimensions but no key, prompt, headers, request/response body, private reasoning, or wallet debit.
+"""
+type CrowdyStudioAgentUsageRecord {
+  """Game API-issued immutable usage UUID."""
+  usageId: String!
+  """App whose agent run consumed usage."""
+  appId: BigInt!
+  """Player whose isolated budget consumed usage."""
+  userId: BigInt!
+  """Game-local Agentic Studio session UUID."""
+  sessionId: String!
+  """Game-local Agentic Studio run UUID."""
+  runId: String!
+  """Provider name; 'openrouter' for the v1 pilot."""
+  provider: String!
+  """
+  Opaque OpenRouter generation id; null when terminal provider accounting was unavailable.
+  """
+  providerGenerationId: String
+  """Resolved allowlisted model id."""
+  resolvedModelId: String!
+  """
+  RECONCILED or RESERVATION_CONSUMED when terminal usage was unavailable.
+  """
+  accountingStatus: String!
+  """Provider request count."""
+  requestCount: BigInt!
+  """OpenRouter prompt token count."""
+  promptTokens: BigInt!
+  """OpenRouter completion token count."""
+  completionTokens: BigInt!
+  """OpenRouter reasoning token count."""
+  reasoningTokens: BigInt!
+  """OpenRouter cached token count."""
+  cachedTokens: BigInt!
+  """Provider-native prompt token count."""
+  nativePromptTokens: BigInt!
+  """Provider-native completion token count."""
+  nativeCompletionTokens: BigInt!
+  """Provider-native reasoning token count."""
+  nativeReasoningTokens: BigInt!
+  """Provider-native cached token count."""
+  nativeCachedTokens: BigInt!
+  """Validated tool calls in the run."""
+  toolCalls: BigInt!
+  """Serialized provider/tool rounds in the run."""
+  toolRounds: BigInt!
+  """Draft compile submissions in the run."""
+  compileCount: BigInt!
+  """
+  Accepted run wall-clock duration in milliseconds, from durable run start to finish.
+  """
+  wallClockMs: BigInt!
+  """Worst-case cost reserved before provider contact, in micro-USD."""
+  reservedCostMicrousd: BigInt!
+  """
+  Exact provider-reported OpenRouter cost in decimal USD (up to 18 fractional digits).
+  """
+  providerCostUsd: String!
+  """Exact upstream inference cost in decimal USD when reported."""
+  upstreamInferenceCostUsd: String
+  """True: OpenRouter ZDR was enforced."""
+  zdrEnforced: Boolean!
+  """True: provider data collection was denied."""
+  dataCollectionDenied: Boolean!
+  """Pinned platform policy revision."""
+  platformPolicyRevision: BigInt!
+  """Pinned app policy revision."""
+  appPolicyRevision: BigInt!
+  """Funding mode; 'PLATFORM_FUNDED' in the pilot."""
+  billingMode: String!
+  """Payer kind; 'PLATFORM' in the pilot."""
+  payerKind: String!
+  """When the provider usage occurred."""
+  occurredAt: DateTime!
+  """When Management API accepted the usage record."""
+  ingestedAt: DateTime!
+}
+
+"""
+Exact aggregate over the returned app/window usage records. Decimal USD remains a string to preserve precision.
+"""
+type CrowdyStudioAgentUsageSummary {
+  """Provider requests."""
+  requestCount: BigInt!
+  """Prompt tokens."""
+  promptTokens: BigInt!
+  """Completion tokens."""
+  completionTokens: BigInt!
+  """Reasoning tokens."""
+  reasoningTokens: BigInt!
+  """Cached tokens."""
+  cachedTokens: BigInt!
+  """Tool calls."""
+  toolCalls: BigInt!
+  """Tool rounds."""
+  toolRounds: BigInt!
+  """Draft compiles."""
+  compileCount: BigInt!
+  """Summed accepted-run wall-clock milliseconds."""
+  wallClockMs: BigInt!
+  """Exact summed provider cost in decimal USD."""
+  providerCostUsd: String!
+}
+
+"""
+Sanitized app usage read model: newest exact records plus an aggregate for the requested window.
+"""
+type CrowdyStudioAgentUsagePage {
+  """Newest usage records, bounded by the requested limit."""
+  records: [CrowdyStudioAgentUsageRecord!]!
+  """
+  Aggregate over the full requested time window, not only returned records.
+  """
+  summary: CrowdyStudioAgentUsageSummary!
+  """Inclusive start of the usage window."""
+  since: DateTime!
+  """Exclusive end of the usage window."""
+  until: DateTime!
+}
+
+"""
 Aggregated lifetime donation totals for a user. LEGACY: donations are no longer purchasable. Returned by the deprecated myDonationData query.
 """
 type UserDonationData {
@@ -3858,6 +4240,37 @@ type Query {
     appId: BigInt!
   ): [GridListing!]!
   """
+  Read the app-owned Agentic Crowdy Studio policy row, or a disabled/killed deny-all projection when no row exists. Requires 'view_compute_diagnostics' on the app. This is configuration only: use crowdyStudioAgentEffectivePolicy to see platform clamp and kill precedence. No provider key, prompt, source, header, request/response body, payer reference, or other secret is exposed.
+  """
+  crowdyStudioAgentPolicy(
+    """App whose stored Agentic Studio policy to read."""
+    appId: BigInt!
+  ): CrowdyStudioAgentPolicy! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
+  """
+  Read Management's fail-closed Agentic Crowdy Studio publication: platform enable/kill, per-app operator kill, app enable/kill, exact model/tool/mode/risk intersections, minimum budgets/retention, locked privacy, and platform-funded billing seam. Requires 'view_compute_diagnostics'. This is the source publication, not proof of current runtime enforcement: Game API must hold a fresh crowdy.studio-agent-policy/1 replica and independently enforce it; missing/stale/malformed replica or an empty model/mode intersection must disable the agent.
+  """
+  crowdyStudioAgentEffectivePolicy(
+    """App whose effective policy intersection to read."""
+    appId: BigInt!
+  ): CrowdyStudioAgentPolicy! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
+  """
+  Read the app's sanitized platform-funded Agentic Studio usage over a bounded time window. Requires 'view_compute_diagnostics'. Returns exact OpenRouter prompt/completion/reasoning/cache/native token and decimal-USD cost dimensions, request/tool/compile/wall counts, and pinned policy revisions. It never returns prompts, source, private reasoning, headers, provider bodies, credentials, payer references, or wallet data; pilot usage never debits a player wallet.
+  """
+  crowdyStudioAgentUsage(
+    """App whose Agentic Studio usage to read."""
+    appId: BigInt!
+    """Inclusive ISO-8601 start time or relative lookback (default 24h)."""
+    since: DateTime
+    """Exclusive ISO-8601 end time (default now)."""
+    until: DateTime
+    """Maximum newest records to return (default 100, max 200)."""
+    limit: Int
+  ): CrowdyStudioAgentUsagePage! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
+  """
+  Operator only (is_operator or is_super_admin). Read the platform Agentic Studio enablement, global emergency kill, model/tool/mode/risk allowlists, budget ceilings, retention/privacy policy, pilot funding seam, timestamps, and revision. No provider credential or request body is stored or returned.
+  """
+  cpCrowdyStudioAgentPlatformPolicy: CrowdyStudioAgentPolicy! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
   All registered GraphQL servers (management-api and game-api) in any state. No auth required. For only routable servers, use activeGraphQLServers.
   """
   graphqlServers: [GraphQLServer!]!
@@ -4286,7 +4699,7 @@ type Mutation {
     idempotencyKey: String
   ): Boolean!
   """
-  Create a new app within an organization. Requires the 'manage_apps' permission on the target org (input.orgId); super admins bypass. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting full runtime permissions, and notifies the game API. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=PUBLIC and status=DRAFT unless overridden in the input.
+  Create a new app within an organization. Requires the 'manage_apps' permission on the target org (input.orgId); super admins bypass. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting baseline runtime permissions and notifies the game API. Elevated capabilities such as use_studio_agent are NOT granted by default and require an explicit tier grant. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=PUBLIC and status=DRAFT unless overridden in the input.
   """
   createApp(
     """Details for the app to create."""
@@ -4803,6 +5216,31 @@ type Mutation {
     """Grid listing config."""
     input: CreateGridListingInput!
   ): GridListing! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "input.appId")
+  """
+  Create or patch an app's Agentic Crowdy Studio policy. Requires 'manage_compute'. Omitted values stay unchanged; first creation starts disabled, killed, and deny-all. Model/tool/mode/risk lists are intersected with platform allowlists and every numeric/retention value is clamped down to platform limits. Locked ZDR/collection/body-retention rules and the operator app kill cannot be changed. SIDE EFFECTS: increments Management's publication revision, appends a sanitized audit event, and transactionally notifies Game API to pull crowdy.studio-agent-policy/1. Runtime enforcement changes only after Game API obtains and validates the fresh replica. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
+  """
+  setCrowdyStudioAgentPolicy(
+    """App policy patch, expected revision, and required idempotency key."""
+    input: SetCrowdyStudioAgentAppPolicyInput!
+  ): CrowdyStudioAgentPolicy! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "input.appId")
+  """
+  Operator only (is_operator or is_super_admin). Patch Management platform Agentic Studio policy and global emergency kill. SIDE EFFECTS: the published kill takes precedence over every app setting, revision increments, a sanitized append-only audit event is written, and transactional replica notifications fan out to every app with Agentic Studio policy. Runtime enforcement changes only when Game API pulls and validates the fresh crowdy.studio-agent-policy/1 envelope; Game API must fail closed if it is missing, malformed, or stale. Hard ZDR/collection/body-retention rules and platform-funded/no-wallet pilot funding cannot be loosened. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
+  """
+  cpSetCrowdyStudioAgentPlatformPolicy(
+    """
+    Platform policy/kill patch, expected revision, and required idempotency key.
+    """
+    input: SetCrowdyStudioAgentPlatformPolicyInput!
+  ): CrowdyStudioAgentPolicy! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
+  Operator only (is_operator or is_super_admin). Publish or release an emergency kill for one app. This state is separate from the app's own kill and always takes precedence in Management's effective envelope; app users cannot clear it. SIDE EFFECTS: revision increment, sanitized audit event, and transactional Game API policy notify. Runtime preemption depends on Game API pulling and enforcing the fresh envelope; releasing the operator kill does not enable the app or clear its own kill. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
+  """
+  cpSetCrowdyStudioAgentAppKill(
+    """
+    Target app, kill state, safe reason, expected revision, and idempotency key.
+    """
+    input: SetCrowdyStudioAgentOperatorAppKillInput!
+  ): CrowdyStudioAgentPolicy! @requiresPermission(scope: "operator", permission: "is_operator")
   """
   Operator only (is_operator). Patches the platform compute ceilings: omitted fields stay unchanged, an explicit null clears that override (game-api falls back to env/default), a value (> 0) sets it. SIDE EFFECTS: fans a replica notify out to every game-api so the new ceilings clamp computeSetPolicy within ~30 seconds without a restart, and writes an audit entry. Lowering a ceiling does not shrink already-stored per-app policies; it rejects future computeSetPolicy values above the new ceiling. Returns the updated ceilings row.
   """
@@ -5577,6 +6015,226 @@ input CreateGridListingInput {
   resalePolicy: String
   """Studio cut (bps) taken on resales, when resale_with_studio_cut."""
   studioCutBps: Int
+}
+
+"""
+Patch an app's Agentic Studio policy. Requires manage_compute. Omitted fields stay unchanged; all supplied authority and limits are clamped to platform policy.
+"""
+input SetCrowdyStudioAgentAppPolicyInput {
+  """Enable or disable this policy layer."""
+  enabled: Boolean
+  """Set or clear this layer kill switch. Kill always wins over enablement."""
+  killSwitch: Boolean
+  """
+  Replacement exact model allowlist (max 64). App values are intersected with the platform allowlist.
+  """
+  allowedModelIds: [String!]
+  """
+  Replacement exact logical tool-name allowlist (max 256). App values are intersected with platform tools.
+  """
+  allowedToolNames: [String!]
+  """
+  Replacement mode allowlist; app values are intersected with platform modes.
+  """
+  allowedModes: [CrowdyStudioAgentMode!]
+  """
+  Replacement risk-class allowlist; app values are intersected with platform classes.
+  """
+  allowedRiskClasses: [CrowdyStudioAgentRiskClass!]
+  """Optional per-turn limit patch."""
+  turnLimits: CrowdyStudioAgentTurnLimitsInput
+  """Optional per-session limit patch."""
+  sessionLimits: CrowdyStudioAgentSessionLimitsInput
+  """Optional per-player/day and concurrency limit patch."""
+  playerDayLimits: CrowdyStudioAgentPlayerDayLimitsInput
+  """Optional retention patch."""
+  retention: CrowdyStudioAgentRetentionPolicyInput
+  """
+  Optional private-source sharing patch; first-use consent remains locked on.
+  """
+  privacy: CrowdyStudioAgentPrivacyPolicyInput
+  """App whose policy is changed."""
+  appId: BigInt!
+  """
+  Optional optimistic revision. Use 0 when creating; a mismatch fails AGENT_POLICY_REVISION_CONFLICT.
+  """
+  expectedRevision: BigInt
+  """
+  Required retry key (1-128 characters). Same key/arguments replay; different arguments fail IDEMPOTENCY_CONFLICT.
+  """
+  idempotencyKey: String!
+}
+
+"""
+Patch for per-turn limits. Omitted values stay unchanged; supplied values must be positive and are clamped down to platform ceilings.
+"""
+input CrowdyStudioAgentTurnLimitsInput {
+  """Maximum provider requests in one turn; positive integer."""
+  providerRequests: Int
+  """Maximum input tokens in one turn; positive decimal string."""
+  inputTokens: BigInt
+  """Maximum output tokens in one turn; positive decimal string."""
+  outputTokens: BigInt
+  """Maximum reasoning tokens in one turn; positive decimal string."""
+  reasoningTokens: BigInt
+  """Maximum total provider tokens in one turn; positive decimal string."""
+  totalTokens: BigInt
+  """Maximum provider cost in one turn, in positive micro-USD."""
+  providerCostMicrousd: BigInt
+  """Maximum tool calls in one turn; positive integer."""
+  toolCalls: Int
+  """Maximum serialized provider/tool rounds in one turn."""
+  toolRounds: Int
+  """Maximum draft compile submissions in one turn."""
+  compiles: Int
+  """Maximum wall-clock duration of one turn in milliseconds."""
+  wallClockMs: Int
+  """Maximum concurrent provider requests in one turn."""
+  concurrentProviderRequests: Int
+}
+
+"""
+Patch for per-session limits. Omitted values stay unchanged; supplied values are clamped down to platform ceilings.
+"""
+input CrowdyStudioAgentSessionLimitsInput {
+  """Maximum provider requests in one session."""
+  providerRequests: Int
+  """Maximum input tokens in one session; positive decimal string."""
+  inputTokens: BigInt
+  """Maximum output tokens in one session; positive decimal string."""
+  outputTokens: BigInt
+  """Maximum reasoning tokens in one session; positive decimal string."""
+  reasoningTokens: BigInt
+  """Maximum total provider tokens in one session."""
+  totalTokens: BigInt
+  """Maximum provider cost in one session, in positive micro-USD."""
+  providerCostMicrousd: BigInt
+  """Maximum tool calls in one session."""
+  toolCalls: Int
+  """Maximum draft compile submissions in one session."""
+  compiles: Int
+  """Maximum concurrent non-terminal runs in one session."""
+  concurrentRuns: Int
+}
+
+"""
+Patch for per-player/day and app concurrency limits. Omitted values stay unchanged; supplied values are clamped down to platform ceilings.
+"""
+input CrowdyStudioAgentPlayerDayLimitsInput {
+  """Maximum provider requests per player per UTC day."""
+  providerRequests: Int
+  """Maximum input tokens per player per UTC day."""
+  inputTokens: BigInt
+  """Maximum output tokens per player per UTC day."""
+  outputTokens: BigInt
+  """Maximum reasoning tokens per player per UTC day."""
+  reasoningTokens: BigInt
+  """Maximum total provider tokens per player per UTC day."""
+  totalTokens: BigInt
+  """Maximum provider cost per player per UTC day, in micro-USD."""
+  providerCostMicrousd: BigInt
+  """Maximum tool calls per player per UTC day."""
+  toolCalls: Int
+  """Maximum draft compile submissions per player per UTC day."""
+  compiles: Int
+  """Maximum concurrent Agentic Studio sessions for one player."""
+  concurrentSessions: Int
+  """Maximum concurrent Agentic Studio runs across the app."""
+  concurrentRunsPerApp: Int
+}
+
+"""
+Retention patch. Values may only shorten the platform policy and the hard pilot maxima.
+"""
+input CrowdyStudioAgentRetentionPolicyInput {
+  """Coalesced assistant chunk retention in hours (0-24)."""
+  assistantChunkHours: Int
+  """Detailed observation/browser result retention in hours (0-24)."""
+  detailedContextHours: Int
+  """Final message/redacted event retention after close in days (0-30)."""
+  sessionDataDays: Int
+  """Generation/token/cost/kill metadata retention in days (1-90)."""
+  usageDays: Int
+}
+
+"""
+App/platform privacy patch. It can disable private-source sharing; ZDR, collection denial, first-use consent, and provider-body non-persistence are locked.
+"""
+input CrowdyStudioAgentPrivacyPolicyInput {
+  """
+  Allow selected private source only after the separate human disclosure/consent gate.
+  """
+  allowPrivateSource: Boolean
+}
+
+"""
+Operator-only platform policy patch. Omitted values stay unchanged; hard v1 privacy and retention maxima still apply.
+"""
+input SetCrowdyStudioAgentPlatformPolicyInput {
+  """Enable or disable this policy layer."""
+  enabled: Boolean
+  """Set or clear this layer kill switch. Kill always wins over enablement."""
+  killSwitch: Boolean
+  """
+  Replacement exact model allowlist (max 64). App values are intersected with the platform allowlist.
+  """
+  allowedModelIds: [String!]
+  """
+  Replacement exact logical tool-name allowlist (max 256). App values are intersected with platform tools.
+  """
+  allowedToolNames: [String!]
+  """
+  Replacement mode allowlist; app values are intersected with platform modes.
+  """
+  allowedModes: [CrowdyStudioAgentMode!]
+  """
+  Replacement risk-class allowlist; app values are intersected with platform classes.
+  """
+  allowedRiskClasses: [CrowdyStudioAgentRiskClass!]
+  """Optional per-turn limit patch."""
+  turnLimits: CrowdyStudioAgentTurnLimitsInput
+  """Optional per-session limit patch."""
+  sessionLimits: CrowdyStudioAgentSessionLimitsInput
+  """Optional per-player/day and concurrency limit patch."""
+  playerDayLimits: CrowdyStudioAgentPlayerDayLimitsInput
+  """Optional retention patch."""
+  retention: CrowdyStudioAgentRetentionPolicyInput
+  """
+  Optional private-source sharing patch; first-use consent remains locked on.
+  """
+  privacy: CrowdyStudioAgentPrivacyPolicyInput
+  """Optional optimistic platform revision."""
+  expectedRevision: BigInt
+  """Stable kill reason code (max 64); used only while killSwitch is true."""
+  killReasonCode: String
+  """
+  Safe operator-facing kill reason (max 256); no secrets or provider bodies.
+  """
+  killReason: String
+  """
+  Required retry key (1-128 characters). Same key/arguments replay; different arguments fail IDEMPOTENCY_CONFLICT.
+  """
+  idempotencyKey: String!
+}
+
+"""
+Operator-only per-app emergency kill. App managers cannot clear or override this state.
+"""
+input SetCrowdyStudioAgentOperatorAppKillInput {
+  """App to kill or release."""
+  appId: BigInt!
+  """True to kill immediately; false to release the operator kill."""
+  killed: Boolean!
+  """Stable reason code (max 64); defaults to AGENT_OPERATOR_KILLED."""
+  reasonCode: String
+  """Safe reason text (max 256); no secrets or provider bodies."""
+  reason: String
+  """Optional optimistic app-policy revision."""
+  expectedRevision: BigInt
+  """
+  Required retry key (1-128 characters). Same key/arguments replay; different arguments fail IDEMPOTENCY_CONFLICT.
+  """
+  idempotencyKey: String!
 }
 
 """

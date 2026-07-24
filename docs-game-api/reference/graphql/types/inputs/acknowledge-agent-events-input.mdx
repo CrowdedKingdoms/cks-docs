@@ -1,0 +1,53 @@
+---
+id: acknowledge-agent-events-input
+title: AcknowledgeAgentEventsInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Monotonically acknowledge the highest contiguous applied event.
+
+
+```graphql
+input AcknowledgeAgentEventsInput {
+  idempotencyKey: String!
+  sessionId: String!
+  clientEpoch: BigInt!
+  throughSeq: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AcknowledgeAgentEventsInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
+Required retry key. Same owner, operation, key, and input replay the first result; changed input returns IDEMPOTENCY&#x005F;CONFLICT.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AcknowledgeAgentEventsInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+Owner/app session UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AcknowledgeAgentEventsInput.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\}
+Current attached client epoch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AcknowledgeAgentEventsInput.<b>throughSeq</b></code>](#through-seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#through-seq\}
+Highest contiguous applied sequence. It cannot move backward or exceed committed history.
+
+
+
+
+### Member Of
+
+[`crowdyStudioAgentAcknowledgeEvents`](/reference/graphql/operations/mutations/crowdy-studio-agent-acknowledge-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

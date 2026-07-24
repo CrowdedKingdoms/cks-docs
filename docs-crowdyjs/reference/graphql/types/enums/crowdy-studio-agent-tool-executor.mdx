@@ -1,0 +1,43 @@
+---
+id: crowdy-studio-agent-tool-executor
+title: CrowdyStudioAgentToolExecutor
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Trusted boundary that executes a typed tool.
+
+
+```graphql
+enum CrowdyStudioAgentToolExecutor {
+  SERVER
+  BROWSER
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolExecutor.<b>SERVER</b></code>](#server) \{#server\}
+Game API invokes an owner-scoped domain service; never shell or arbitrary GraphQL.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolExecutor.<b>BROWSER</b></code>](#browser) \{#browser\}
+The attached CrowdyJS host executes once after epoch/context/lease validation.
+
+
+
+
+### Member Of
+
+[`AgentToolDescriptor`](/reference/graphql/types/objects/agent-tool-descriptor.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentToolEvent`](/reference/graphql/types/objects/agent-tool-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

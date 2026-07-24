@@ -28,11 +28,11 @@ orgUsageSummary(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>orgUsageSummary.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>orgUsageSummary.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
 Organization id (BigInt) to roll up usage for.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>orgUsageSummary.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#since\} 
+#### [<code style={{ fontWeight: 'normal' }}>orgUsageSummary.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#since\}
 Start of the aggregation window (ISO-8601 DateTime or relative duration such as 1d, 7d, 1h) up to now. Defaults to 7d when omitted.
 
 
@@ -40,5 +40,5 @@ Start of the aggregation window (ISO-8601 DateTime or relative duration such as 
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>OrgUsageSummary</b></code>](/reference/graphql/types/objects/org-usage-summary.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgUsageSummary</b></code>](/reference/graphql/types/objects/org-usage-summary.mdx) <Badge class="badge badge--secondary " text="object"/>
 Org-level rollup of replication/GraphQL byte totals and GraphQL op counts across all apps in the organization for the time window.

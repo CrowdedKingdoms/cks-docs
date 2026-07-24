@@ -31,23 +31,23 @@ enum CheckoutStatus {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>PENDING</b></code>](#pending) \{#pending\} 
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>PENDING</b></code>](#pending) \{#pending\}
 Created and awaiting payment. Initial state right after createCheckout; the user has not finished paying yet.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>COMPLETED</b></code>](#completed) \{#completed\} 
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>COMPLETED</b></code>](#completed) \{#completed\}
 Payment succeeded and the purpose side effect was applied (e.g. wallet credited). Terminal success state.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>FAILED</b></code>](#failed) \{#failed\} 
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>FAILED</b></code>](#failed) \{#failed\}
 Payment attempt failed or was declined; see the checkout `error` field for details. Terminal failure state.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>EXPIRED</b></code>](#expired) \{#expired\} 
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>EXPIRED</b></code>](#expired) \{#expired\}
 The provider session expired before payment completed (see `expiresAt`). Terminal state.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>CANCELED</b></code>](#canceled) \{#canceled\} 
+#### [<code style={{ fontWeight: 'normal' }}>CheckoutStatus.<b>CANCELED</b></code>](#canceled) \{#canceled\}
 The user abandoned or canceled the checkout before completion. Terminal state.
 
 

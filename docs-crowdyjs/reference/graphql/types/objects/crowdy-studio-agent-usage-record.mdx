@@ -1,0 +1,198 @@
+---
+id: crowdy-studio-agent-usage-record
+title: CrowdyStudioAgentUsageRecord
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One sanitized, platform-funded provider usage record. It contains exact OpenRouter token/cost dimensions but no key, prompt, headers, request/response body, private reasoning, or wallet debit.
+
+
+```graphql
+type CrowdyStudioAgentUsageRecord {
+  usageId: String!
+  appId: BigInt!
+  userId: BigInt!
+  sessionId: String!
+  runId: String!
+  provider: String!
+  providerGenerationId: String
+  resolvedModelId: String!
+  accountingStatus: String!
+  requestCount: BigInt!
+  promptTokens: BigInt!
+  completionTokens: BigInt!
+  reasoningTokens: BigInt!
+  cachedTokens: BigInt!
+  nativePromptTokens: BigInt!
+  nativeCompletionTokens: BigInt!
+  nativeReasoningTokens: BigInt!
+  nativeCachedTokens: BigInt!
+  toolCalls: BigInt!
+  toolRounds: BigInt!
+  compileCount: BigInt!
+  wallClockMs: BigInt!
+  reservedCostMicrousd: BigInt!
+  providerCostUsd: String!
+  upstreamInferenceCostUsd: String
+  zdrEnforced: Boolean!
+  dataCollectionDenied: Boolean!
+  platformPolicyRevision: BigInt!
+  appPolicyRevision: BigInt!
+  billingMode: String!
+  payerKind: String!
+  occurredAt: DateTime!
+  ingestedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>usageId</b></code>](#usage-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#usage-id\}
+Game API-issued immutable usage UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+App whose agent run consumed usage.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\}
+Player whose isolated budget consumed usage.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+Game-local Agentic Studio session UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\}
+Game-local Agentic Studio run UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider\}
+Provider name; 'openrouter' for the v1 pilot.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>providerGenerationId</b></code>](#provider-generation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provider-generation-id\}
+Opaque OpenRouter generation id; null when terminal provider accounting was unavailable.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>resolvedModelId</b></code>](#resolved-model-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#resolved-model-id\}
+Resolved allowlisted model id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>accountingStatus</b></code>](#accounting-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#accounting-status\}
+RECONCILED or RESERVATION&#x005F;CONSUMED when terminal usage was unavailable.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>requestCount</b></code>](#request-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#request-count\}
+Provider request count.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>promptTokens</b></code>](#prompt-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#prompt-tokens\}
+OpenRouter prompt token count.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>completionTokens</b></code>](#completion-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#completion-tokens\}
+OpenRouter completion token count.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>reasoningTokens</b></code>](#reasoning-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reasoning-tokens\}
+OpenRouter reasoning token count.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>cachedTokens</b></code>](#cached-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#cached-tokens\}
+OpenRouter cached token count.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>nativePromptTokens</b></code>](#native-prompt-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#native-prompt-tokens\}
+Provider-native prompt token count.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>nativeCompletionTokens</b></code>](#native-completion-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#native-completion-tokens\}
+Provider-native completion token count.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>nativeReasoningTokens</b></code>](#native-reasoning-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#native-reasoning-tokens\}
+Provider-native reasoning token count.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>nativeCachedTokens</b></code>](#native-cached-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#native-cached-tokens\}
+Provider-native cached token count.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>toolCalls</b></code>](#tool-calls)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-calls\}
+Validated tool calls in the run.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>toolRounds</b></code>](#tool-rounds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-rounds\}
+Serialized provider/tool rounds in the run.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>compileCount</b></code>](#compile-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compile-count\}
+Draft compile submissions in the run.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>wallClockMs</b></code>](#wall-clock-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wall-clock-ms\}
+Accepted run wall-clock duration in milliseconds, from durable run start to finish.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>reservedCostMicrousd</b></code>](#reserved-cost-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-cost-microusd\}
+Worst-case cost reserved before provider contact, in micro-USD.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>providerCostUsd</b></code>](#provider-cost-usd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider-cost-usd\}
+Exact provider-reported OpenRouter cost in decimal USD (up to 18 fractional digits).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>upstreamInferenceCostUsd</b></code>](#upstream-inference-cost-usd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#upstream-inference-cost-usd\}
+Exact upstream inference cost in decimal USD when reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>zdrEnforced</b></code>](#zdr-enforced)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#zdr-enforced\}
+True: OpenRouter ZDR was enforced.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>dataCollectionDenied</b></code>](#data-collection-denied)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#data-collection-denied\}
+True: provider data collection was denied.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>platformPolicyRevision</b></code>](#platform-policy-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#platform-policy-revision\}
+Pinned platform policy revision.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>appPolicyRevision</b></code>](#app-policy-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-policy-revision\}
+Pinned app policy revision.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>billingMode</b></code>](#billing-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#billing-mode\}
+Funding mode; 'PLATFORM&#x005F;FUNDED' in the pilot.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>payerKind</b></code>](#payer-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payer-kind\}
+Payer kind; 'PLATFORM' in the pilot.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>occurredAt</b></code>](#occurred-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#occurred-at\}
+When the provider usage occurred.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentUsageRecord.<b>ingestedAt</b></code>](#ingested-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#ingested-at\}
+When Management API accepted the usage record.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioAgentUsagePage`](/reference/graphql/types/objects/crowdy-studio-agent-usage-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -35,39 +35,39 @@ input CreatePlayerAutomationInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 App containing the owned grid.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\}
 Grid that confines the automation.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\}
 Name unique for the current owner in this grid.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\}
 Optional description.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>triggerJson</b></code>](#trigger-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-json\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>triggerJson</b></code>](#trigger-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-json\}
 Strict trigger JSON. Schedule: &#x007B;"kind":"schedule","scheduleKind":"interval","intervalMs":2000&#x007D; or cron with cronExpr. Event: &#x007B;"kind":"event","eventKind":"owner&#x005F;container&#x005F;changed|grid&#x005F;actor&#x005F;changed|grid&#x005F;voxel&#x005F;changed|compute&#x005F;event"&#x007D;; compute&#x005F;event may include eventName.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>actionJson</b></code>](#action-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action-json\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>actionJson</b></code>](#action-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action-json\}
 Strict action JSON. Use &#x007B;"kind":"studio&#x005F;model&#x005F;invoke","functionName":"...","selfContainerId":"...","params":&#x007B;&#x007D;&#x007D; or &#x007B;"kind":"player&#x005F;compute&#x005F;invoke","moduleName":"...","exportName":"...","params":&#x007B;&#x007D;&#x007D;. Selectors and caller identity are forbidden.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>maxRunsPerMinute</b></code>](#max-runs-per-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-runs-per-minute\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>maxRunsPerMinute</b></code>](#max-runs-per-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-runs-per-minute\}
 Per-automation run limit per rolling minute. Default 60; minimum 1.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>failureThreshold</b></code>](#failure-threshold)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#failure-threshold\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>failureThreshold</b></code>](#failure-threshold)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#failure-threshold\}
 Consecutive failures before the circuit opens. Default 5; minimum 1.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>cooldownMs</b></code>](#cooldown-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cooldown-ms\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreatePlayerAutomationInput.<b>cooldownMs</b></code>](#cooldown-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cooldown-ms\}
 Circuit cooldown in milliseconds. Default 60000; minimum 1.
 
 

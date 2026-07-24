@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-agent-revoke-lease
+title: crowdyStudioAgentRevokeLease
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Immediately and idempotently revoke one owner/session lease. This safety action remains available without waiting for provider/model progress and does not require approval; requires an app-scoped owner, current epoch, and idempotency key.
+
+
+```graphql
+crowdyStudioAgentRevokeLease(
+  input: RevokeAgentLeaseInput!
+): AgentLease!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentRevokeLease.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RevokeAgentLeaseInput!</b></code>](/reference/graphql/types/inputs/revoke-agent-lease-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+Session, epoch, lease UUID, and retry key.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentLease</b></code>](/reference/graphql/types/objects/agent-lease.mdx) <Badge class="badge badge--secondary " text="object"/>
+Short-lived context-bound capability. The model cannot create, widen, or renew it.

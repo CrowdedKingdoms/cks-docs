@@ -28,11 +28,11 @@ setupSharedPaymentMethod(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>setupSharedPaymentMethod.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>setupSharedPaymentMethod.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
 Organization id (BigInt) to vault a payment method for.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setupSharedPaymentMethod.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+#### [<code style={{ fontWeight: 'normal' }}>setupSharedPaymentMethod.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
 Optional idempotency key. Recommended for retries: replaying with the same key and identical arguments returns the first result instead of re-applying; the same key with different arguments returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
 
 
@@ -40,5 +40,5 @@ Optional idempotency key. Recommended for retries: replaying with the same key a
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>PaymentMethodSetup</b></code>](/reference/graphql/types/objects/payment-method-setup.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>PaymentMethodSetup</b></code>](/reference/graphql/types/objects/payment-method-setup.mdx) <Badge class="badge badge--secondary " text="object"/>
 Stripe SetupIntent handle the browser uses to vault a card for auto-billing.

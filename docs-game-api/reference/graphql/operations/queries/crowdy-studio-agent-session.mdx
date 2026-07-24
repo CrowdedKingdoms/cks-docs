@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-agent-session
+title: crowdyStudioAgentSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Return one durable Agentic Crowdy Studio session plus its active run, leases, and pending approval. Requires an unexpired app-scoped token, use&#x005F;studio&#x005F;agent, and exact session owner/app visibility; missing and foreign ids return AGENT&#x005F;SESSION&#x005F;NOT&#x005F;FOUND.
+
+
+```graphql
+crowdyStudioAgentSession(
+  sessionId: String!
+): AgentSession!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentSession.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+Owner/app session UUID to load.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentSession</b></code>](/reference/graphql/types/objects/agent-session.mdx) <Badge class="badge badge--secondary " text="object"/>
+Owner/app-scoped durable agent conversation with pinned mode, model, policy, registry, and client epoch.

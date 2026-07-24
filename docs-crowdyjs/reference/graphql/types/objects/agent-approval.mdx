@@ -1,0 +1,82 @@
+---
+id: agent-approval
+title: AgentApproval
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Short-lived single-use human decision bound to one tool call and canonical argument hash.
+
+
+```graphql
+type AgentApproval {
+  approvalId: String!
+  toolCallId: String!
+  argumentHash: String!
+  status: CrowdyStudioAgentApprovalStatus!
+  safeSummary: String!
+  clientEpoch: BigInt!
+  expiresAt: DateTime!
+  approved: Boolean!
+  rejected: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApproval.<b>approvalId</b></code>](#approval-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#approval-id\}
+Stable approval UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApproval.<b>toolCallId</b></code>](#tool-call-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-call-id\}
+Tool call UUID this decision binds.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApproval.<b>argumentHash</b></code>](#argument-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#argument-hash\}
+Canonical sha256 argument/context binding shown to the human.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApproval.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentApprovalStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-approval-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
+Current single-use lifecycle.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApproval.<b>safeSummary</b></code>](#safe-summary)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#safe-summary\}
+Safe bounded domain summary shown before approval.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApproval.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\}
+Attached client epoch authorized to decide.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApproval.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\}
+Hard decision/consumption expiry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApproval.<b>approved</b></code>](#approved)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#approved\}
+True when this response granted/consumed the approval.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApproval.<b>rejected</b></code>](#rejected)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#rejected\}
+True when this response denied the approval.
+
+
+
+
+### Returned By
+
+[`crowdyStudioAgentApproveTool`](/reference/graphql/operations/mutations/crowdy-studio-agent-approve-tool.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`crowdyStudioAgentRejectTool`](/reference/graphql/operations/mutations/crowdy-studio-agent-reject-tool.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`AgentSession`](/reference/graphql/types/objects/agent-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

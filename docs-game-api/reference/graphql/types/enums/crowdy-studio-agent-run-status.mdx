@@ -1,0 +1,78 @@
+---
+id: crowdy-studio-agent-run-status
+title: CrowdyStudioAgentRunStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Serialized durable state of one accepted human message and its provider/tool loop.
+
+
+```graphql
+enum CrowdyStudioAgentRunStatus {
+  QUEUED
+  RUNNING
+  WAITING_FOR_TOOL
+  WAITING_FOR_APPROVAL
+  PAUSED
+  SUCCEEDED
+  FAILED
+  CANCELLED
+  PREEMPTED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRunStatus.<b>QUEUED</b></code>](#queued) \{#queued\}
+Durably accepted and awaiting a worker claim.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRunStatus.<b>RUNNING</b></code>](#running) \{#running\}
+Owned by one leased orchestrator worker.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRunStatus.<b>WAITING&#x005F;FOR&#x005F;TOOL</b></code>](#waiting-for-tool) \{#waiting-for-tool\}
+Waiting for one matching browser tool result.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRunStatus.<b>WAITING&#x005F;FOR&#x005F;APPROVAL</b></code>](#waiting-for-approval) \{#waiting-for-approval\}
+Waiting for a short-lived exact human decision.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRunStatus.<b>PAUSED</b></code>](#paused) \{#paused\}
+Recoverable human pause; resume revalidates context.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRunStatus.<b>SUCCEEDED</b></code>](#succeeded) \{#succeeded\}
+Finished with a canonical assistant message.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRunStatus.<b>FAILED</b></code>](#failed) \{#failed\}
+Terminal typed failure; inspect errorCode.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRunStatus.<b>CANCELLED</b></code>](#cancelled) \{#cancelled\}
+Terminal human cancellation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRunStatus.<b>PREEMPTED</b></code>](#preempted) \{#preempted\}
+Terminal safety preemption caused by context/control loss.
+
+
+
+
+### Member Of
+
+[`AgentRun`](/reference/graphql/types/objects/agent-run.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentRunEvent`](/reference/graphql/types/objects/agent-run-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,63 @@
+---
+id: decide-agent-tool-input
+title: DecideAgentToolInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Approve or reject one exact pending tool call by its displayed argument hash.
+
+
+```graphql
+input DecideAgentToolInput {
+  idempotencyKey: String!
+  sessionId: String!
+  clientEpoch: BigInt!
+  toolCallId: String!
+  argumentHash: String!
+  reason: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>DecideAgentToolInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
+Required retry key. Same owner, operation, key, and input replay the first result; changed input returns IDEMPOTENCY&#x005F;CONFLICT.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DecideAgentToolInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+Owner/app session UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DecideAgentToolInput.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\}
+Current attached client epoch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DecideAgentToolInput.<b>toolCallId</b></code>](#tool-call-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-call-id\}
+Pending tool call UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DecideAgentToolInput.<b>argumentHash</b></code>](#argument-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#argument-hash\}
+Exact sha256 hash displayed by APPROVAL&#x005F;REQUESTED; substitutions and stale contexts fail.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DecideAgentToolInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\}
+Optional bounded human rejection reason.
+
+
+
+
+### Member Of
+
+[`crowdyStudioAgentApproveTool`](/reference/graphql/operations/mutations/crowdy-studio-agent-approve-tool.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`crowdyStudioAgentRejectTool`](/reference/graphql/operations/mutations/crowdy-studio-agent-reject-tool.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

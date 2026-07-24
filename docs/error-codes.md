@@ -62,6 +62,26 @@ payload under the same key returns `IDEMPOTENCY_CONFLICT`. Keys expire after 24h
 nullable field may resolve to `null` with a corresponding `errors` entry while the rest
 of `data` is populated. Always inspect `errors` even when `data` is present.
 
+### Agentic Crowdy Studio stable errors
+
+Agent failures use stable `AGENT_*` codes both at the GraphQL boundary and
+inside typed run/tool events. `message` is safe explanatory text; branch on
+`code` plus `retryable`, and use `remediation` / `requiredScope` when present.
+
+| Codes | Meaning and action |
+|---|---|
+| `AGENT_DISABLED`, `AGENT_OPERATOR_KILLED`, `AGENT_PERMISSION_DENIED`, `AGENT_SCOPE_DENIED`, `AGENT_MODEL_NOT_ALLOWED` | Policy or authority does not allow the operation. Do not retry until an authorized human/operator changes the relevant state. |
+| `AGENT_DISCONNECTED`, `AGENT_CLIENT_REATTACHED`, `AGENT_CLIENT_EPOCH_STALE`, `AGENT_EVENT_GAP` | Local control is already cleared. Attach a fresh epoch, replay/fill durable history, then require explicit human resume; Play needs a new lease. |
+| `AGENT_CONTEXT_CHANGED`, `AGENT_CONTEXT_STALE`, `AGENT_HOST_CAPABILITY_CHANGED`, `AGENT_OBSERVATION_STALE`, `AGENT_CONTROL_TARGET_CHANGED`, `CROWDY_STUDIO_REVISION_CONFLICT` | Refetch the project/game/host context. Never apply an old approval, lease, observation, or revision. |
+| `AGENT_APPROVAL_REQUIRED`, `AGENT_APPROVAL_MISMATCH`, `AGENT_APPROVAL_EXPIRED`, `AGENT_APPROVAL_DENIED`, `AGENT_APPROVAL_REVOKED` | Show the exact current safe summary/hash or return control to the human. Never approve automatically. |
+| `AGENT_LEASE_REQUIRED`, `AGENT_LEASE_EXPIRED`, `AGENT_LEASE_REVOKED`, `AGENT_LEASE_SCOPE_MISSING` | No valid control scope exists. Stop intent; only a human can grant a new Play lease. |
+| `AGENT_BUDGET_EXHAUSTED`, `AGENT_QUOTA_EXHAUSTED`, `AGENT_RATE_LIMITED`, `AGENT_PROVIDER_UNAVAILABLE` | Stop the current run. Retry only when `retryable` and after current budget/quota/policy revalidation. |
+| `AGENT_TOOL_UNKNOWN`, `AGENT_TOOL_VERSION_UNSUPPORTED`, `AGENT_TOOL_INPUT_INVALID`, `AGENT_TOOL_OUTPUT_INVALID`, `AGENT_TOOL_FAILED`, `AGENT_TOOL_TIMEOUT` | Treat the exact descriptor/schema as authoritative. Do not invent fallback tools or raw API calls. |
+| `AGENT_TOOL_OUTCOME_UNKNOWN` | The effect may have happened. Inspect authoritative state and do not blind-retry. |
+
+See [Agentic Crowdy Studio](/crowdyjs/agentic-crowdy-studio) for reconnect,
+approval, checkpoint, budget, and human-takeover semantics.
+
 ### Consent
 
 The portal browser handoff has a consent gate for **untrusted** apps. Minting a portal

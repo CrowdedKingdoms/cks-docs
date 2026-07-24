@@ -30,19 +30,19 @@ type PlayerCodeAdmissionQueueEntry {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAdmissionQueueEntry.<b>listing</b></code>](#listing)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListing!</b></code>](/reference/graphql/types/objects/player-code-listing.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#listing\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAdmissionQueueEntry.<b>listing</b></code>](#listing)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeListing!</b></code>](/reference/graphql/types/objects/player-code-listing.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#listing\}
 The listing under review.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAdmissionQueueEntry.<b>admissionState</b></code>](#admission-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeAdmissionState!</b></code>](/reference/graphql/types/enums/player-code-admission-state.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#admission-state\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAdmissionQueueEntry.<b>admissionState</b></code>](#admission-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeAdmissionState!</b></code>](/reference/graphql/types/enums/player-code-admission-state.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#admission-state\}
 The listing's admission standing in this app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAdmissionQueueEntry.<b>admissionId</b></code>](#admission-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#admission-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAdmissionQueueEntry.<b>admissionId</b></code>](#admission-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#admission-id\}
 UUID of the admission entry that admits (or last admitted) this listing — matched on the code subject, its author, or its owning org. Null while pending.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAdmissionQueueEntry.<b>matchedSubjectKind</b></code>](#matched-subject-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#matched-subject-kind\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAdmissionQueueEntry.<b>matchedSubjectKind</b></code>](#matched-subject-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#matched-subject-kind\}
 Which allow-list subject matched: 'code', 'author', or 'org'. Null while pending.
 
 

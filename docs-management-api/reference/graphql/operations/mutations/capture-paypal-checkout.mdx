@@ -28,11 +28,11 @@ capturePaypalCheckout(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>capturePaypalCheckout.<b>orderId</b></code>](#order-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#order-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>capturePaypalCheckout.<b>orderId</b></code>](#order-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#order-id\}
 PayPal order id returned on the approval redirect (the `token` query parameter). Identifies the approved order to capture.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>capturePaypalCheckout.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+#### [<code style={{ fontWeight: 'normal' }}>capturePaypalCheckout.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
 Optional idempotency key. Recommended for retries: replaying with the same key and identical arguments returns the first result instead of re-applying; the same key with different arguments returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
 
 

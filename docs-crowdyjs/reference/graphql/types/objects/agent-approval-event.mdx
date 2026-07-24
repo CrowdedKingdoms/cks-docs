@@ -1,0 +1,116 @@
+---
+id: agent-approval-event
+title: AgentApprovalEvent
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Typed exact-argument human approval event.
+
+
+```graphql
+type AgentApprovalEvent implements AgentEventBase {
+  protocolVersion: String!
+  eventId: String!
+  sessionId: String!
+  seq: BigInt!
+  type: CrowdyStudioAgentEventType!
+  runId: String
+  version: String!
+  createdAt: DateTime!
+  approvalId: String!
+  toolCallId: String!
+  argumentHash: String!
+  status: CrowdyStudioAgentApprovalStatus!
+  safeSummary: String!
+  reasons: [String!]!
+  expiresAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>protocolVersion</b></code>](#protocol-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#protocol-version\}
+Event envelope version; always 'crowdy.agent-event/1'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\}
+Stable event UUID for deduplication.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+Owning session UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>seq</b></code>](#seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#seq\}
+Strictly increasing session sequence as a decimal BigInt.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentEventType!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-event-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#type\}
+Stable version 1 event discriminator.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\}
+Related run UUID, or null for session-only facts.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\}
+Versioned event payload contract.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+Commit timestamp.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>approvalId</b></code>](#approval-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#approval-id\}
+Stable approval UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>toolCallId</b></code>](#tool-call-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-call-id\}
+Bound tool call UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>argumentHash</b></code>](#argument-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#argument-hash\}
+Canonical displayed argument hash.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentApprovalStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-approval-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
+Required approval lifecycle status.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>safeSummary</b></code>](#safe-summary)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#safe-summary\}
+Safe domain summary retained without raw arguments.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>reasons</b></code>](#reasons)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reasons\}
+Bounded server-authored reasons for requiring approval.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentApprovalEvent.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\}
+Hard approval expiry.
+
+
+
+
+### Interfaces
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentEventBase</b></code>](/reference/graphql/types/interfaces/agent-event-base.mdx) <Badge class="badge badge--secondary " text="interface"/>
+Common identity/order fields on every typed durable agent event variant.
+
+
+
+
+### Implemented By
+
+[`CrowdyStudioAgentEvent`](/reference/graphql/types/unions/crowdy-studio-agent-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/>

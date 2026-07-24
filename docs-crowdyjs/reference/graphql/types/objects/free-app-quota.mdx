@@ -33,31 +33,31 @@ type FreeAppQuota {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
 Organization id (BigInt).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>quota</b></code>](#quota)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#quota\} 
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>quota</b></code>](#quota)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#quota\}
 Total free shared app slots granted to the org.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>usedFree</b></code>](#used-free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#used-free\} 
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>usedFree</b></code>](#used-free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#used-free\}
 Free slots currently in use.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>paidApps</b></code>](#paid-apps)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#paid-apps\} 
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>paidApps</b></code>](#paid-apps)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#paid-apps\}
 Apps on a paid subscription (do not consume free slots).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>reservedApps</b></code>](#reserved-apps)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-apps\} 
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>reservedApps</b></code>](#reserved-apps)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-apps\}
 Apps with reserved throughput (premium; do not consume free slots).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>remainingFree</b></code>](#remaining-free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#remaining-free\} 
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>remainingFree</b></code>](#remaining-free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#remaining-free\}
 Free slots still available (quota − usedFree).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>apps</b></code>](#apps)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[FreeAppQuotaApp!]!</b></code>](/reference/graphql/types/objects/free-app-quota-app.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#apps\} 
+#### [<code style={{ fontWeight: 'normal' }}>FreeAppQuota.<b>apps</b></code>](#apps)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[FreeAppQuotaApp!]!</b></code>](/reference/graphql/types/objects/free-app-quota-app.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#apps\}
 Shared apps with free-slot / reserved / paid credit status.
 
 

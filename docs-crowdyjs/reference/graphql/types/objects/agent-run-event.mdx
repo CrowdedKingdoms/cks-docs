@@ -1,0 +1,101 @@
+---
+id: agent-run-event
+title: AgentRunEvent
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Typed run lifecycle event.
+
+
+```graphql
+type AgentRunEvent implements AgentEventBase {
+  protocolVersion: String!
+  eventId: String!
+  sessionId: String!
+  seq: BigInt!
+  type: CrowdyStudioAgentEventType!
+  runId: String
+  version: String!
+  createdAt: DateTime!
+  status: CrowdyStudioAgentRunStatus!
+  code: String
+  reason: String
+  error: AgentError
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRunEvent.<b>protocolVersion</b></code>](#protocol-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#protocol-version\}
+Event envelope version; always 'crowdy.agent-event/1'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRunEvent.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\}
+Stable event UUID for deduplication.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRunEvent.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+Owning session UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRunEvent.<b>seq</b></code>](#seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#seq\}
+Strictly increasing session sequence as a decimal BigInt.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRunEvent.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentEventType!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-event-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#type\}
+Stable version 1 event discriminator.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRunEvent.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\}
+Related run UUID, or null for session-only facts.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRunEvent.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\}
+Versioned event payload contract.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRunEvent.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+Commit timestamp.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRunEvent.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentRunStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-run-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
+Required durable run status carried by this event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRunEvent.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#code\}
+Stable terminal error code, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRunEvent.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\}
+Stable terminal/preemption reason, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRunEvent.<b>error</b></code>](#error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentError</b></code>](/reference/graphql/types/objects/agent-error.mdx) <Badge class="badge badge--secondary " text="object"/> \{#error\}
+Safe typed error envelope when present.
+
+
+
+
+### Interfaces
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentEventBase</b></code>](/reference/graphql/types/interfaces/agent-event-base.mdx) <Badge class="badge badge--secondary " text="interface"/>
+Common identity/order fields on every typed durable agent event variant.
+
+
+
+
+### Implemented By
+
+[`CrowdyStudioAgentEvent`](/reference/graphql/types/unions/crowdy-studio-agent-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/>

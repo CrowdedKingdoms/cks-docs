@@ -1,0 +1,68 @@
+---
+id: crowdy-studio-agent-tool-risk
+title: CrowdyStudioAgentToolRisk
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Server-classified effect risk; app policy may only tighten it.
+
+
+```graphql
+enum CrowdyStudioAgentToolRisk {
+  READ_ONLY
+  ROUTINE_WRITE
+  WORLD_CONTROL
+  DESTRUCTIVE
+  TRUST_CONSENT
+  ECONOMIC
+  IRREVERSIBLE
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolRisk.<b>READ&#x005F;ONLY</b></code>](#read-only) \{#read-only\}
+No canonical state mutation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolRisk.<b>ROUTINE&#x005F;WRITE</b></code>](#routine-write) \{#routine-write\}
+Reversible expected-revision write with checkpointing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolRisk.<b>WORLD&#x005F;CONTROL</b></code>](#world-control) \{#world-control\}
+Routine game control requiring an explicit Play scope.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolRisk.<b>DESTRUCTIVE</b></code>](#destructive) \{#destructive\}
+Possible data/path loss; exact human approval required.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolRisk.<b>TRUST&#x005F;CONSENT</b></code>](#trust-consent) \{#trust-consent\}
+Changes trust or consent; exact human approval required.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolRisk.<b>ECONOMIC</b></code>](#economic) \{#economic\}
+Moves or commits value; exact human approval required.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolRisk.<b>IRREVERSIBLE</b></code>](#irreversible) \{#irreversible\}
+Cannot be safely undone; exact human approval required.
+
+
+
+
+### Member Of
+
+[`AgentToolDescriptor`](/reference/graphql/types/objects/agent-tool-descriptor.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

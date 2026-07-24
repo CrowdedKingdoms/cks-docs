@@ -1,0 +1,53 @@
+---
+id: agent-event-connection
+title: AgentEventConnection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Bounded ordered history connection, exclusive of the supplied afterSeq.
+
+
+```graphql
+type AgentEventConnection {
+  edges: [AgentEventEdge!]!
+  pageInfo: AgentPageInfo!
+  events: [CrowdyStudioAgentEvent!]!
+  hasMore: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentEventConnection.<b>edges</b></code>](#edges)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AgentEventEdge!]!</b></code>](/reference/graphql/types/objects/agent-event-edge.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#edges\}
+Events in ascending contiguous sequence order.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentEventConnection.<b>pageInfo</b></code>](#page-info)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentPageInfo!</b></code>](/reference/graphql/types/objects/agent-page-info.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#page-info\}
+History page metadata.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentEventConnection.<b>events</b></code>](#events)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentEvent!]!</b></code>](/reference/graphql/types/unions/crowdy-studio-agent-event.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="union"/> \{#events\}
+SDK-compatible ordered typed events.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentEventConnection.<b>hasMore</b></code>](#has-more)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#has-more\}
+SDK-compatible history continuation indicator.
+
+
+
+
+### Returned By
+
+[`crowdyStudioAgentHistory`](/reference/graphql/operations/queries/crowdy-studio-agent-history.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

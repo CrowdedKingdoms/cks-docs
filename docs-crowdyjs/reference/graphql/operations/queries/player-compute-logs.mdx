@@ -30,19 +30,19 @@ playerComputeLogs(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>playerComputeLogs.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeLogs.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 App containing the owned grid.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>playerComputeLogs.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeLogs.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\}
 Owned grid whose failures to list.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>playerComputeLogs.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeLogs.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\}
 Optional: only failures of this module. Omit for all.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>playerComputeLogs.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeLogs.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\}
 Max entries to return (default 50, max 200).
 
 
@@ -50,5 +50,5 @@ Max entries to return (default 50, max 200).
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>PlayerWasmModuleRun</b></code>](/reference/graphql/types/objects/player-wasm-module-run.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerWasmModuleRun</b></code>](/reference/graphql/types/objects/player-wasm-module-run.mdx) <Badge class="badge badge--secondary " text="object"/>
 One execution of a player module (init/tick/invoke/event), attributed to the grid owner it ran as. The per-run twin of the studio WasmModuleRun, scoped to grids the caller currently owns.

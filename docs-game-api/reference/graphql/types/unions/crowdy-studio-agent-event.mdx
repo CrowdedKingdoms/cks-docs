@@ -1,0 +1,68 @@
+---
+id: crowdy-studio-agent-event
+title: CrowdyStudioAgentEvent
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Typed union of ordered, replayable version 1 session facts. Delivery is at-least-once; seq and eventId support deduplication.
+
+
+```graphql
+union CrowdyStudioAgentEvent = AgentLifecycleEvent | AgentMessageEvent | AgentRunEvent | AgentToolEvent | AgentApprovalEvent | AgentLeaseEvent | AgentCheckpointEvent | AgentBudgetEvent
+```
+
+
+### Possible types
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEvent.<b>AgentLifecycleEvent</b></code>](/reference/graphql/types/objects/agent-lifecycle-event.mdx) <Badge class="badge badge--secondary " text="object"/>
+Typed session/client/mode/context lifecycle event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEvent.<b>AgentMessageEvent</b></code>](/reference/graphql/types/objects/agent-message-event.mdx) <Badge class="badge badge--secondary " text="object"/>
+Typed bounded user or assistant text event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEvent.<b>AgentRunEvent</b></code>](/reference/graphql/types/objects/agent-run-event.mdx) <Badge class="badge badge--secondary " text="object"/>
+Typed run lifecycle event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEvent.<b>AgentToolEvent</b></code>](/reference/graphql/types/objects/agent-tool-event.mdx) <Badge class="badge badge--secondary " text="object"/>
+Typed tool event. JSON fields are descriptor-versioned and validated against the descriptor returned by crowdyStudioAgentToolDescriptors; they are never arbitrary executor input.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEvent.<b>AgentApprovalEvent</b></code>](/reference/graphql/types/objects/agent-approval-event.mdx) <Badge class="badge badge--secondary " text="object"/>
+Typed exact-argument human approval event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEvent.<b>AgentLeaseEvent</b></code>](/reference/graphql/types/objects/agent-lease-event.mdx) <Badge class="badge badge--secondary " text="object"/>
+Typed workspace/Play lease lifecycle event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEvent.<b>AgentCheckpointEvent</b></code>](/reference/graphql/types/objects/agent-checkpoint-event.mdx) <Badge class="badge badge--secondary " text="object"/>
+Typed immutable private project checkpoint event.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentEvent.<b>AgentBudgetEvent</b></code>](/reference/graphql/types/objects/agent-budget-event.mdx) <Badge class="badge badge--secondary " text="object"/>
+Typed provider budget reservation or reconciliation event; no wallet debit occurs in the platform-funded pilot.
+
+
+
+
+### Returned By
+
+[`crowdyStudioAgentEvents`](/reference/graphql/operations/subscriptions/crowdy-studio-agent-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>
+
+### Member Of
+
+[`AgentEventConnection`](/reference/graphql/types/objects/agent-event-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentEventEdge`](/reference/graphql/types/objects/agent-event-edge.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

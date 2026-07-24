@@ -16,6 +16,12 @@ a short-lived **app-scoped token** minted with `client.portal` — see
 tokens](#authentication-session-vs-app-scoped-tokens). Native UDP to Buddy servers
 uses the [Replication API](/replication-api/intro) directly, not CrowdyJS.
 
+CrowdyJS **v12** also adds the disabled-by-default
+[Agentic Crowdy Studio](agentic-crowdy-studio) development contract. The
+app-token `client.crowdyStudioAgent` transport and integrated Ask/Build/Play
+dock provide durable events, exact approvals, checkpoints, scoped Play leases,
+and reconnect fencing. This is not a production availability claim.
+
 ## Install
 
 ```bash
@@ -48,7 +54,7 @@ are namespaced by audience:
 
 | Audience | Sub-clients | Notes |
 |---|---|---|
-| **Game-client** (browser-safe) | `auth`, `users`, `udp`, `world(...)`, `chunks`, `voxels`, `actors`, `avatars`, `state`, `teleport`, `host`, `channels`, `teams`, `gameModel`, `serverStatus` | Safe to drive from an untrusted browser. `auth`/`users` use the identity **session token**; the world & realtime surfaces require an **app-scoped token**. |
+| **Game-client** (browser-safe) | `auth`, `users`, `udp`, `world(...)`, `chunks`, `voxels`, `actors`, `avatars`, `state`, `teleport`, `host`, `channels`, `teams`, `gameModel`, `serverStatus`, `playerCompute`, `crowdyStudio`, `crowdyStudioAgent` | Safe to drive from an untrusted browser with the documented token and server policy. `auth`/`users` use the identity **session token**; world, Studio, agent, and realtime surfaces require an **app-scoped token**. Agent model access remains server-side and separately requires `use_studio_agent`. |
 | **Studio-admin** (token whose user holds `manage_apps`) | `organizations`, `apps`, `appAccess`, `billing`, `payments`, `quotas`, `environments`, `usage`, `sharedEnvironment`, `gameApps` ([grids](grids)) — also grouped under `client.admin.*` | Privileged org/app administration. Requires a user with the `manage_apps` permission (or an org token). Not end-user-safe — see the note below. |
 | **Operator** (`is_operator`) | `client.operator` | Platform control plane (environments, change orders, secrets, releases, audit). Internal tooling only. |
 

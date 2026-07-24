@@ -27,7 +27,7 @@ playerComputeUsage(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>playerComputeUsage.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeUsage.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 App whose player usage to report.
 
 
@@ -35,5 +35,5 @@ App whose player usage to report.
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>PlayerComputeUsage</b></code>](/reference/graphql/types/objects/player-compute-usage.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerComputeUsage</b></code>](/reference/graphql/types/objects/player-compute-usage.mdx) <Badge class="badge badge--secondary " text="object"/>
 The caller's player-compute spend and quota view for one app (P2): unit usage in the current clock hour/day, the effective policy limits, compile-quota utilization, and the replica-synced wallet/spend-cap gate state. Units follow the platform formula GREATEST(cpu ms, fuel/22M); player automation units are included.

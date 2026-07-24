@@ -32,27 +32,27 @@ input RollbackVoxelUpdatesInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelUpdatesInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelUpdatesInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 Id of the app whose voxels to roll back (decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelUpdatesInput.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelUpdatesInput.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\}
 Id of the user (decimal string) whose edits within the window will be reverted.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelUpdatesInput.<b>from</b></code>](#from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#from\} 
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelUpdatesInput.<b>from</b></code>](#from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#from\}
 Inclusive start of the time window of edits to revert.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelUpdatesInput.<b>to</b></code>](#to)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#to\} 
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelUpdatesInput.<b>to</b></code>](#to)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#to\}
 Inclusive end of the time window of edits to revert.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelUpdatesInput.<b>dryRun</b></code>](#dry-run)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#dry-run\} 
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelUpdatesInput.<b>dryRun</b></code>](#dry-run)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#dry-run\}
 When true (the DEFAULT), only computes and returns the planned reversions WITHOUT writing anything; set false to actually apply the rollback (DESTRUCTIVE — mutates world state).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelUpdatesInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelUpdatesInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
 Optional idempotency key. Recommended for retries: replaying with the same key and identical input returns the first result instead of re-applying; the same key with different input returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
 
 

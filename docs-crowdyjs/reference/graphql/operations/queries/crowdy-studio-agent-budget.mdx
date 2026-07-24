@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-agent-budget
+title: crowdyStudioAgentBudget
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Return every effective TURN, SESSION, and PLAYER&#x005F;DAY request/token/reasoning/cost/tool-round/wall-clock/tool-call/compile dimension with reserved, consumed, and non-negative remaining values. The pilot is platform-funded and this owner/app query never debits a wallet.
+
+
+```graphql
+crowdyStudioAgentBudget(
+  sessionId: String!
+): AgentBudget!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentBudget.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+Owner/app session UUID whose budget should be read.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentBudget</b></code>](/reference/graphql/types/objects/agent-budget.mdx) <Badge class="badge badge--secondary " text="object"/>
+Complete platform-funded budget across turn, session, and player-day dimensions.

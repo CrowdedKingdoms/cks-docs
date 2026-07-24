@@ -1,0 +1,58 @@
+---
+id: crowdy-studio-agent-tool-result-status
+title: CrowdyStudioAgentToolResultStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Terminal result reported once by a browser executor.
+
+
+```graphql
+enum CrowdyStudioAgentToolResultStatus {
+  SUCCEEDED
+  FAILED
+  CANCELLED
+  TIMED_OUT
+  OUTCOME_UNKNOWN
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolResultStatus.<b>SUCCEEDED</b></code>](#succeeded) \{#succeeded\}
+Effect and typed output are known successful.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolResultStatus.<b>FAILED</b></code>](#failed) \{#failed\}
+Effect is known failed with a typed safe error.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolResultStatus.<b>CANCELLED</b></code>](#cancelled) \{#cancelled\}
+Known cancelled before successful effect.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolResultStatus.<b>TIMED&#x005F;OUT</b></code>](#timed-out) \{#timed-out\}
+Browser deadline elapsed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolResultStatus.<b>OUTCOME&#x005F;UNKNOWN</b></code>](#outcome-unknown) \{#outcome-unknown\}
+Effect may have happened; server fails the run without retrying.
+
+
+
+
+### Member Of
+
+[`AgentToolResultEnvelope`](/reference/graphql/types/objects/agent-tool-result-envelope.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentToolResultEnvelopeInput`](/reference/graphql/types/inputs/agent-tool-result-envelope-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

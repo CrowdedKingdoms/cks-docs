@@ -48,6 +48,7 @@
     "@docusaurus/types": "3.10.1",
     "@playwright/test": "^1.52.0",
     "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.2.3",
     "tsx": "^4.19.4",
     "typescript": "~5.6.2"
   },

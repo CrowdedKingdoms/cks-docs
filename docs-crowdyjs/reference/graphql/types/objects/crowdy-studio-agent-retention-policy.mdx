@@ -1,0 +1,53 @@
+---
+id: crowdy-studio-agent-retention-policy
+title: CrowdyStudioAgentRetentionPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Retention ceilings for redacted Agentic Studio data. Provider wire bodies, headers, private reasoning, and individual token deltas always have zero retention and are absent.
+
+
+```graphql
+type CrowdyStudioAgentRetentionPolicy {
+  assistantChunkHours: Int!
+  detailedContextHours: Int!
+  sessionDataDays: Int!
+  usageDays: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRetentionPolicy.<b>assistantChunkHours</b></code>](#assistant-chunk-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#assistant-chunk-hours\}
+Coalesced assistant chunk retention in hours (0-24).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRetentionPolicy.<b>detailedContextHours</b></code>](#detailed-context-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#detailed-context-hours\}
+Detailed game observation/browser tool-result retention in hours (0-24).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRetentionPolicy.<b>sessionDataDays</b></code>](#session-data-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-data-days\}
+Final messages, redacted events, and checkpoint retention after close in days (0-30).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRetentionPolicy.<b>usageDays</b></code>](#usage-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#usage-days\}
+Provider generation/token/cost and kill metadata retention in days (1-90).
+
+
+
+
+### Member Of
+
+[`CrowdyStudioAgentPolicy`](/reference/graphql/types/objects/crowdy-studio-agent-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

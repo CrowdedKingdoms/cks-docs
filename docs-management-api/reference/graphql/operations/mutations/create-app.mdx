@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Create a new app within an organization. Requires the 'manage&#x005F;apps' permission on the target org (input.orgId); super admins bypass. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting full runtime permissions, and notifies the game API. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=PUBLIC and status=DRAFT unless overridden in the input.
+Create a new app within an organization. Requires the 'manage&#x005F;apps' permission on the target org (input.orgId); super admins bypass. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting baseline runtime permissions and notifies the game API. Elevated capabilities such as use&#x005F;studio&#x005F;agent are NOT granted by default and require an explicit tier grant. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=PUBLIC and status=DRAFT unless overridden in the input.
 
 
 ```graphql
@@ -27,7 +27,7 @@ createApp(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>createApp.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateAppInput!</b></code>](/reference/graphql/types/inputs/create-app-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+#### [<code style={{ fontWeight: 'normal' }}>createApp.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateAppInput!</b></code>](/reference/graphql/types/inputs/create-app-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
 Details for the app to create.
 
 
@@ -35,5 +35,5 @@ Details for the app to create.
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>App</b></code>](/reference/graphql/types/objects/app.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>App</b></code>](/reference/graphql/types/objects/app.mdx) <Badge class="badge badge--secondary " text="object"/>
 A publishable application (game/experience) owned by an organization. Its discoverability is controlled by visibility and its lifecycle by status.

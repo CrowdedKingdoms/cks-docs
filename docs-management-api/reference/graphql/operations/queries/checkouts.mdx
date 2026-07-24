@@ -29,11 +29,11 @@ checkouts(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>checkouts.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CheckoutFilterInput</b></code>](/reference/graphql/types/inputs/checkout-filter-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\} 
+#### [<code style={{ fontWeight: 'normal' }}>checkouts.<b>filter</b></code>](#filter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CheckoutFilterInput</b></code>](/reference/graphql/types/inputs/checkout-filter-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#filter\}
 Optional filters (provider, purpose, status, userId, orgId, appId), AND-combined. Omit to return all checkouts.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>checkouts.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+#### [<code style={{ fontWeight: 'normal' }}>checkouts.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit\}
 :::warning[DEPRECATED]
 
 Use checkoutsConnection(first:, after:) instead. See /overview/pagination.
@@ -43,7 +43,7 @@ Use checkoutsConnection(first:, after:) instead. See /overview/pagination.
 Maximum number of checkouts to return. Default 50; clamped to the range 1-200.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>checkouts.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+#### [<code style={{ fontWeight: 'normal' }}>checkouts.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\}
 :::warning[DEPRECATED]
 
 Use checkoutsConnection(first:, after:) instead. See /overview/pagination.
@@ -57,5 +57,5 @@ Number of checkouts to skip for offset/limit pagination. Default 0; negative val
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>CheckoutsPage</b></code>](/reference/graphql/types/objects/checkouts-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>CheckoutsPage</b></code>](/reference/graphql/types/objects/checkouts-page.mdx) <Badge class="badge badge--secondary " text="object"/>
 A page of checkouts with offset/limit pagination metadata.

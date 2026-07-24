@@ -28,11 +28,11 @@ releaseClaimedGrid(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>releaseClaimedGrid.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>releaseClaimedGrid.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 App containing the claimed grid. The bearer app token must be scoped to this app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>releaseClaimedGrid.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>releaseClaimedGrid.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\}
 Id returned by claimGridChunk for the owner-created self-claimed grid to release.
 
 
@@ -40,5 +40,5 @@ Id returned by claimGridChunk for the owner-created self-claimed grid to release
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>ReleaseClaimedGridResult</b></code>](/reference/graphql/types/objects/release-claimed-grid-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>ReleaseClaimedGridResult</b></code>](/reference/graphql/types/objects/release-claimed-grid-result.mdx) <Badge class="badge badge--secondary " text="object"/>
 Result of releasing a grid created by the caller through claimGridChunk. The ownership, direct/effective ACL, and grid have been removed atomically, making its chunk claimable again.

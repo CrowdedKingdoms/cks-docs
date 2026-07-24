@@ -33,31 +33,31 @@ input CreateAppInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
 Numeric id of the organization that will own the app. The caller must hold the manage&#x005F;apps permission on this org.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\}
 Display name of the app (1-256 characters).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\}
 URL-safe slug (1-128 chars, lowercase letters, numbers and dashes only). Must be unique within the org.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\}
 Optional short plain-text description for listings.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>visibility</b></code>](#visibility)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppVisibility</b></code>](/reference/graphql/types/enums/app-visibility.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#visibility\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>visibility</b></code>](#visibility)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppVisibility</b></code>](/reference/graphql/types/enums/app-visibility.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#visibility\}
 Optional initial visibility. Defaults to PUBLIC when omitted.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppStatus</b></code>](/reference/graphql/types/enums/app-status.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppStatus</b></code>](/reference/graphql/types/enums/app-status.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#status\}
 Optional initial lifecycle status. Defaults to LIVE when omitted.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>metadata</b></code>](#metadata)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata\} 
+#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>metadata</b></code>](#metadata)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata\}
 Optional JSON-encoded marketplace metadata string (see App.metadata). Defaults to an empty object when omitted.
 
 

@@ -27,7 +27,7 @@ grantGridPermissions(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>grantGridPermissions.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GrantGridPermissionsInput!</b></code>](/reference/graphql/types/inputs/grant-grid-permissions-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+#### [<code style={{ fontWeight: 'normal' }}>grantGridPermissions.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GrantGridPermissionsInput!</b></code>](/reference/graphql/types/inputs/grant-grid-permissions-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
 The app, grid, and target user, the runtime permission keys to grant, and an optional expiry timestamp.
 
 
@@ -35,5 +35,5 @@ The app, grid, and target user, the runtime permission keys to grant, and an opt
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>GridUserPermissions</b></code>](/reference/graphql/types/objects/grid-user-permissions.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>GridUserPermissions</b></code>](/reference/graphql/types/objects/grid-user-permissions.mdx) <Badge class="badge badge--secondary " text="object"/>
 A user's effective (materialized) runtime permissions on one grid: the flattened union of direct + group grants, with expired grants excluded, that Buddy enforces.

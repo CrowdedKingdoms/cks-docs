@@ -1,0 +1,53 @@
+---
+id: crowdy-studio-agent-retention-policy-input
+title: CrowdyStudioAgentRetentionPolicyInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Retention patch. Values may only shorten the platform policy and the hard pilot maxima.
+
+
+```graphql
+input CrowdyStudioAgentRetentionPolicyInput {
+  assistantChunkHours: Int
+  detailedContextHours: Int
+  sessionDataDays: Int
+  usageDays: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRetentionPolicyInput.<b>assistantChunkHours</b></code>](#assistant-chunk-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#assistant-chunk-hours\}
+Coalesced assistant chunk retention in hours (0-24).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRetentionPolicyInput.<b>detailedContextHours</b></code>](#detailed-context-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#detailed-context-hours\}
+Detailed observation/browser result retention in hours (0-24).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRetentionPolicyInput.<b>sessionDataDays</b></code>](#session-data-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-data-days\}
+Final message/redacted event retention after close in days (0-30).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentRetentionPolicyInput.<b>usageDays</b></code>](#usage-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#usage-days\}
+Generation/token/cost/kill metadata retention in days (1-90).
+
+
+
+
+### Member Of
+
+[`SetCrowdyStudioAgentAppPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-app-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SetCrowdyStudioAgentPlatformPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-platform-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

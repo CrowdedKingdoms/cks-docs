@@ -27,7 +27,7 @@ cpSetComputePlatformCeilings(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>cpSetComputePlatformCeilings.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CpSetComputePlatformCeilingsInput!</b></code>](/reference/graphql/types/inputs/cp-set-compute-platform-ceilings-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+#### [<code style={{ fontWeight: 'normal' }}>cpSetComputePlatformCeilings.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CpSetComputePlatformCeilingsInput!</b></code>](/reference/graphql/types/inputs/cp-set-compute-platform-ceilings-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
 Ceiling patch: at least one field; omitted = unchanged, explicit null = clear override, value (&#x003E; 0) = set.
 
 
@@ -35,5 +35,5 @@ Ceiling patch: at least one field; omitted = unchanged, explicit null = clear ov
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>CpComputePlatformCeilings</b></code>](/reference/graphql/types/objects/cp-compute-platform-ceilings.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>CpComputePlatformCeilings</b></code>](/reference/graphql/types/objects/cp-compute-platform-ceilings.mdx) <Badge class="badge badge--secondary " text="object"/>
 Operator-set platform ceilings for the per-app WASM compute policy. Each field caps the matching wasm&#x005F;module&#x005F;policy knob platform-wide: game-api rejects computeSetPolicy values above the ceiling. A null field means no operator override is stored — game-api falls back to its COMPUTE&#x005F;PLATFORM&#x005F;MAX&#x005F;&#x002A; env var (bootstrap default), then to the built-in code default. Edits propagate to game-api replicas via replica sync and apply within ~30 seconds, without a game-api restart.

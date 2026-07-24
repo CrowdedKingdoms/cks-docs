@@ -28,11 +28,11 @@ gameModelAutomationStats(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationStats.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationStats.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
 The app (tenant) whose automation activity to summarize.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationStats.<b>windowMinutes</b></code>](#window-minutes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#window-minutes\} 
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationStats.<b>windowMinutes</b></code>](#window-minutes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#window-minutes\}
 Look-back window in minutes (default 60, max 1440).
 
 
@@ -40,5 +40,5 @@ Look-back window in minutes (default 60, max 1440).
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>GmAutomationStats</b></code>](/reference/graphql/types/objects/gm-automation-stats.mdx) <Badge class="badge badge--secondary " text="object"/> 
+#### [<code style={{ fontWeight: 'normal' }}><b>GmAutomationStats</b></code>](/reference/graphql/types/objects/gm-automation-stats.mdx) <Badge class="badge badge--secondary " text="object"/>
 Aggregate automation activity for an app over a recent window: throughput, failure rate, compute, and a per-automation breakdown. The "what are my NPCs doing" view.
