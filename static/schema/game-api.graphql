@@ -3195,11 +3195,11 @@ enum CrowdyStudioAgentMode {
   """
   ASK
   """
-  Permit routine checkpointed project edits under target write permissions and a workspace lease; live deployment remains approval-gated and is not in the dev-pilot catalog.
+  Permit routine checkpointed project edits and draft tests under target write/run permissions and a workspace lease; live deployment is available only through an exact human approval.
   """
   BUILD
   """
-  Permit only browser-host tools covered by a visible, human-granted, scoped lease; the current dev-pilot catalog exposes no gameplay-effect tool.
+  Permit bounded browser-host observation and gameplay tools only through a visible, human-granted, scoped lease; human input and policy/context changes preempt control immediately.
   """
   PLAY
 }
