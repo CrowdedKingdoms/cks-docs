@@ -14,7 +14,45 @@ marked `@deprecated` in the schema (visible in the
 the stated removal date. Greenfield surfaces may be finalized without aliases; those
 removals are called out explicitly.
 
-## 2026-07-23 (latest)
+## 2026-07-24 (latest)
+
+**Agentic Crowdy Studio — finalized development rollout**
+
+The coordinated development stack is deployed: environment release
+**`v0.1.94`** with Game API **`v0.19.16`**, Management API
+**`v0.1.193-dev`**, CrowdyJS **`12.0.0`**, the matching Blocks with Friends
+bundle, and these public docs. This is a finalized **development** rollout—not
+production or general availability—and it does not authorize unattended
+real-money activity.
+
+- OpenRouter now uses the stable streaming
+  **`/api/v1/chat/completions`** transport, not the Responses beta. Requests
+  enforce `require_parameters`, ZDR, `data_collection: "deny"`, no plugins, and
+  no unsafe fallback. Multi-tool provider rounds are rejected or serialized
+  locally; every tool name, input, and output remains strictly validated
+  against the local pinned descriptor.
+- The allowlisted development model is **`openai/gpt-oss-120b`** because its
+  tool endpoint supports ZDR. Model, request/token/cost caps, and usage remain
+  platform allowlisted and funded. The provider key remains encrypted and
+  server-only.
+- Sanitized live evidence passed Ask's expected exact response; Build
+  `workspace.file.read`; checkpointed `workspace.file.patch` with a source
+  revision advance; and an agent-edited draft compile after ordinary platform
+  ABI boilerplate was added.
+- Play completed a bounded `game.observe` dispatch/result and dispatched
+  `game.control.move`. Human input then revoked the lease and preempted the run;
+  a late success from the old context was rejected with
+  `AGENT_CONTEXT_STALE`.
+- The deployed BWF bundle, visible takeover banner, and offline/local Stop
+  browser gates passed.
+- **Stabilization train:** `v0.1.94` is the final tracked environment manifest.
+  Intermediary direct-ingest manifests used during stabilization are backfilled
+  into release history and are not separate supported targets.
+
+The public record deliberately excludes account identifiers, session/tool IDs,
+credentials, content hashes, secret values, and provider bodies.
+
+## 2026-07-23
 
 **Development preview — Agentic Crowdy Studio (CrowdyJS 12, Game API,
 Management API, Blocks with Friends)**
