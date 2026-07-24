@@ -109,11 +109,69 @@ const props = JSON.parse(state.propertiesJson); // only properties you may see
 
 `containers`, `container`, and `traverse` round out the read surface.
 
+## Active player count
+
+`client.gameModel.activePlayerCount(appId)` reads the app-wide count of active
+**app-scoped gameplay sessions**:
+
+```ts
+const snapshot = await client.gameModel.activePlayerCount("1");
+
+console.log(
+  snapshot.activePlayerCount,
+  snapshot.status,       // "FRESH" | "PARTIAL" | "UNAVAILABLE"
+  snapshot.observedAt,   // nullable
+  snapshot.revision,
+);
+```
+
+The client must hold a bearer app-scoped token matching `appId`.
+`activePlayerCount` is best-known in every response, but only a `FRESH`
+snapshot is authoritative. Treat `PARTIAL` and `UNAVAILABLE` as degraded
+freshness, never as an authoritative zero.
+
+This is a session gauge, not a distinct-user, actor, game-model-session, host,
+or per-server count. A session remains visible until explicit disconnect or
+deauthorization, token expiry, or inactivity expiry. Abandoned sessions can
+linger for roughly 120 seconds plus observation latency, and a brief reconnect
+overlap can transiently count twice.
+
+Use `activePlayerCountChanged({ appId }, handlers)` for post-observation
+changes:
+
+```ts
+const unsubscribe = client.gameModel.activePlayerCountChanged(
+  { appId: "1" },
+  {
+    next: (change) => {
+      console.log(
+        change.previousCount,
+        change.currentCount,
+        change.delta,
+        change.revision,
+        change.observedAt,
+      );
+    },
+    error: (error) => console.error(error),
+  },
+);
+
+// Stop watching when this app view is disposed.
+unsubscribe();
+```
+
+The subscription is best-effort and does not provide the initial value. Open
+it and then query `activePlayerCount(appId)` on startup; deduplicate by
+`revision`. Re-query after reconnect and whenever revisions indicate a gap.
+See [Game Models → Active player count](/game-api/game-models#active-player-count-app-scoped-sessions)
+for the raw GraphQL operations and full freshness contract.
+
 ## Reacting to changes
 
-Clients **pull** model state — there is no server-push subscription. Poll the
-event log with `events` (filter by session, container, function, or success), or
-re-read `containerState` after a change:
+Clients **pull** authoritative container state. Use the best-effort,
+metadata-only `containerChanged(...)` subscription as a prompt to re-read,
+poll the event log with `events` (filter by session, container, function, or
+success), or re-read `containerState` after a change:
 
 ```ts
 const recent = await client.gameModel.events({ appId: "1", sessionId });

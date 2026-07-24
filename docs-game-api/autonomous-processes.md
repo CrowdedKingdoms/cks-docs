@@ -147,11 +147,12 @@ gameModelUpsertAutomation(input: {
 server dispatcher claims due automations and runs them; multiple API replicas
 share the load without double-firing.
 
-### Event (model activity)
+### Event (model or app activity)
 
 Fire an automation in reaction to a function invocation, a direct property
-write, or a container creation. Matching happens **in the API server**
-post-commit (never a database trigger):
+write, a container creation, or an observed app player-count change. Model
+activity is matched after commit; player-count activity is matched after
+observation:
 
 ```graphql
 mutation {
@@ -167,12 +168,99 @@ mutation {
 `onEvent` is `function_invoked` (filter by `functionName`), `property_changed`
 (filter by `containerTypeName` / `propertyKey`, fired by direct
 `gameModelSetProperty` writes), or `container_created` (filter by
-`containerTypeName`). `debounceMs` coalesces bursts.
+`containerTypeName`). It can also be `player_count_changed`, described below.
+`debounceMs` coalesces bursts.
 
 `property_changed` deliveries to **compute modules** additionally carry the
 `oldValue`/`newValue` delta, so a module reacting to a write doesn't spend a
 data op re-reading the container it was just told about (see
 [Compute Modules — events](compute-modules)).
+
+#### Player-count changes
+
+`onEvent: "player_count_changed"` runs an ordinary event automation when the
+app's active-player gauge changes. That gauge counts active **app-scoped
+gameplay sessions**, not distinct users, actor rows, game-model sessions, or
+load on one server. See
+[Active player count](game-models#active-player-count-app-scoped-sessions) for
+its expiry, freshness, and recovery semantics.
+
+Each run receives four dynamic params:
+
+- `previous_player_count`
+- `current_player_count`
+- `player_count_delta`
+- `player_count_revision`
+
+Event values override same-named static values in the automation's
+`paramsJson`. For this event, `debounceMs` is trailing-edge coalescing: one run
+keeps the first previous count and the latest current count and revision in the
+window, with the delta for that coalesced transition. Do not set
+`functionName`, `containerTypeName`, or `propertyKey`; those filters are invalid
+for `player_count_changed`.
+
+This is still a normal automation. Its entry point must be
+`autonomousInvocable`, and the same invoke guard, gas/depth/time budgets,
+fan-out limits, cascade controls, failure circuit, spend gate, run history, and
+metering apply.
+
+The following end-to-end configuration assumes `<world-container-id>` is an
+existing app-global (`sessionId: null`) `World` container whose type defines the
+four integer properties written by the function:
+
+```graphql
+mutation ConfigurePlayerCountAutomation {
+  upsertFunction: gameModelUpsertFunction(input: {
+    appId: "1"
+    name: "record_player_count"
+    containerTypeName: "World"
+    parameters: [
+      { name: "previous_player_count", valueType: "int", required: true }
+      { name: "current_player_count", valueType: "int", required: true }
+      { name: "player_count_delta", valueType: "int", required: true }
+      { name: "player_count_revision", valueType: "int", required: true }
+    ]
+    mutations: [
+      { target: "self", property: "previous_player_count",
+        expression: "$previous_player_count" }
+      { target: "self", property: "current_player_count",
+        expression: "$current_player_count" }
+      { target: "self", property: "player_count_delta",
+        expression: "$player_count_delta" }
+      { target: "self", property: "player_count_revision",
+        expression: "$player_count_revision" }
+    ]
+    invokeScope: "server"
+    invokePolicyJson: "{\"type\":\"is_automation\"}"
+    autonomousInvocable: true
+  }) {
+    name
+    autonomousInvocable
+  }
+
+  upsertAutomation: gameModelUpsertAutomation(input: {
+    appId: "1"
+    name: "record_player_count"
+    functionName: "record_player_count"
+    targetMode: "global"
+    selfContainerId: "<world-container-id>"
+    triggerType: "event"
+    failureThreshold: 5
+  }) {
+    name
+    circuitState
+  }
+
+  upsertTrigger: gameModelUpsertAutomationTrigger(input: {
+    appId: "1"
+    automationName: "record_player_count"
+    onEvent: "player_count_changed"
+    debounceMs: 1000
+  }) {
+    triggerId
+  }
+}
+```
 
 ## Selectors: choosing targets from model data
 

@@ -1,0 +1,63 @@
+---
+id: game-model-active-player-count-change
+title: GameModelActivePlayerCountChange
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One durable transition between complete app-scoped active gameplay-session counts. Delivery is cross-replica but best-effort; deduplicate by revision and requery gameModelActivePlayerCount after reconnect or a revision gap.
+
+
+```graphql
+type GameModelActivePlayerCountChange {
+  appId: BigInt!
+  previousCount: Int!
+  currentCount: Int!
+  delta: Int!
+  revision: BigInt!
+  observedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelActivePlayerCountChange.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+The app whose complete active-session count changed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelActivePlayerCountChange.<b>previousCount</b></code>](#previous-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#previous-count\}
+Last complete active gameplay-session count before this transition.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelActivePlayerCountChange.<b>currentCount</b></code>](#current-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#current-count\}
+New complete active gameplay-session count after this transition.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelActivePlayerCountChange.<b>delta</b></code>](#delta)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#delta\}
+Signed change: currentCount minus previousCount.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelActivePlayerCountChange.<b>revision</b></code>](#revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#revision\}
+Durable monotonic app revision for this transition. Use it to deduplicate and detect gaps.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelActivePlayerCountChange.<b>observedAt</b></code>](#observed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#observed-at\}
+Latest fresh Buddy heartbeat represented by the new count.
+
+
+
+
+### Returned By
+
+[`gameModelActivePlayerCountChanged`](/reference/graphql/operations/subscriptions/game-model-active-player-count-changed.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/>

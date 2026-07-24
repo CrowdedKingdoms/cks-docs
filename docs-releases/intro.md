@@ -16,6 +16,42 @@ removals are called out explicitly.
 
 ## 2026-07-24 (latest)
 
+**Game API v0.21.0 + CrowdyJS 12.2.0 + CrowdyCPP 0.15.0 — app-scoped active player-count events (additive)**
+
+- New `gameModelActivePlayerCount(appId)` snapshot returns the best-known
+  app-wide gameplay-session count plus `status` (`FRESH` / `PARTIAL` /
+  `UNAVAILABLE`), nullable `observedAt`, and `revision`. Only `FRESH` is
+  authoritative; missing telemetry is never silently reported as an
+  authoritative zero. Requests require a bearer app-scoped token matching
+  `appId`.
+- New best-effort, post-observation
+  `gameModelActivePlayerCountChanged(appId)` subscription publishes
+  `previousCount`, `currentCount`, `delta`, `revision`, and `observedAt`.
+  Consumers deduplicate by revision and re-query the snapshot on startup,
+  reconnect, or a revision gap.
+- The gauge counts active app-scoped gameplay sessions, not distinct users,
+  actors, game-model sessions, or per-server load. Explicit disconnect or
+  deauthorization, token expiry, and inactivity expiry remove a session;
+  abandoned sessions can linger for roughly 120 seconds plus observation
+  latency, and brief reconnect overlap can transiently count twice.
+- Automations can use
+  `gameModelUpsertAutomationTrigger(onEvent: "player_count_changed")`.
+  Runs receive `previous_player_count`, `current_player_count`,
+  `player_count_delta`, and `player_count_revision`; event values override
+  same-named static params. `debounceMs` uses trailing-edge coalescing, while
+  model-event filters are invalid. Existing autonomous-function guards,
+  budgets, circuit breakers, and metering still apply.
+- CrowdyJS exposes `client.gameModel.activePlayerCount(appId)` and
+  `client.gameModel.activePlayerCountChanged({ appId }, handlers)`.
+- CrowdyCPP exposes typed `gameModel().activePlayerCount(appId)` sync/async
+  reads and `gameModel().activePlayerCountChanged(appId, callbacks)` over its
+  GraphQL subscription client.
+
+See [Game Models → Active player count](/game-api/game-models#active-player-count-app-scoped-sessions)
+and [Autonomous processes → Player-count changes](/game-api/autonomous-processes#player-count-changes).
+
+## 2026-07-24
+
 **Game API `v0.20.0` — ensured containers and `$self_container_id`**
 
 Additive Game API release for game-model developers:
