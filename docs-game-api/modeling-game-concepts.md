@@ -197,8 +197,8 @@ inventory functions also work on it). A player without the key gets
 spoof, because both properties are read by the server inside the policy.
 
 `condition` expressions can read `self`, the call's params, and the injected
-values `$caller_user_id`, `$current_turn_user_id`, `$self_owner_id`, and
-`$session_id`.
+values `$caller_user_id`, `$current_turn_user_id`, `$self_owner_id`,
+`$session_id`, and `$self_container_id`.
 
 ### "Player X has movement permission on chunk X → they can enter it and open the door"
 

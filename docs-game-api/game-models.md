@@ -149,7 +149,8 @@ sources freely:
   permission (optionally on a specific grid), tying logic to world regions.
 - `condition` — an arbitrary expression that must evaluate to `true`. It can read
   `self`, the call's params, and the injected values `$caller_user_id`,
-  `$current_turn_user_id`, `$self_owner_id`, `$session_id`.
+  `$current_turn_user_id`, `$self_owner_id`, `$session_id`,
+  `$self_container_id`.
 
 ```json
 { "type": "and", "rules": [
@@ -252,6 +253,52 @@ unless an admin or automation sets an owner explicitly.
 | **member** / **owner** | Defaults to **caller** | Admins may set; non-admins cannot set another user |
 | **admin** | Stays **null** (shared/world) | Admin/automation may set explicitly |
 
+### Ensured containers (atomic get-or-create)
+
+When N clients all need the **same shared container** — one boss, one chest,
+one world object every connected player sees identically — use
+`gameModelEnsureContainer` instead of electing a leader to
+create-then-search. It atomically gets-or-creates a container keyed by an
+opaque, client-derived **`bindingKey`** (≤ 128 chars), unique per
+`(appId, typeName, sessionId)`; a `null` session scopes the key app-globally:
+
+```graphql
+mutation {
+  gameModelEnsureContainer(input: {
+    appId: "1",
+    typeName: "TitanAssaultAttributes",
+    bindingKey: "boss:titan-1",
+    # used ONLY when this call creates the row:
+    displayName: "Boss",
+    metadataJson: "{\"tier\":3}"
+  }) {
+    container { containerId typeName bindingKey ownerUserId }
+    created   # true for exactly ONE of any set of concurrent ensures
+  }
+}
+```
+
+- **Atomic under concurrency.** Any number of simultaneous ensures of the same
+  key converge on one row (a partial unique index is the arbiter); all callers
+  get the same `containerId` and exactly one response carries `created: true`.
+  Duplicate rows are impossible by schema, and the object can be ensured with
+  zero players connected (e.g. by a deploy tool).
+- **Exists ⇒ read.** When the row already exists the ensure behaves like a
+  read: creation-only fields (`displayName`, `description`, `metadataJson`,
+  `properties`, `ownerUserId`) are ignored and the type's `instantiableBy` is
+  not enforced.
+- **Not-exists ⇒ create.** Creation is authorized exactly like
+  `gameModelCreateContainer` (`instantiableBy` + the ownership rules above), so
+  a caller who may not instantiate the type errors only in the not-exists case.
+- **Read back by key.** `bindingKey` is returned on the container object, and
+  `gameModelContainers(appId, typeName, bindingKey, ...)` is the get-by-key
+  read.
+- **Keys are not yet policy-governed.** Any caller who may instantiate the type
+  may claim a key first, so give shared world objects an
+  **admin-instantiable** type: existing rows stay readable by everyone while
+  only app admins (or automations) can create the keyed row, and authoritative
+  writes stay governed by invoke policies rather than row ownership.
+
 Turns are explicit and developer-driven: `gameModelSetSessionTurn` records whose
 turn it is (the current turn holder, the elected host, or an app admin may set
 it), and the `is_current_turn` requirement reads it. You implement your own turn
@@ -285,8 +332,10 @@ arithmetic on a missing value) the transaction is rolled back, `success` is
 - `gameModelContainer(appId, containerId)` — container metadata.
 - `gameModelContainerState(appId, containerId)` — visible properties as a JSON
   object.
-- `gameModelContainers(appId, typeName, sessionId, where, limit, offset)` —
-  list instances. `where` (requires `typeName`) filters by up to 8
+- `gameModelContainers(appId, typeName, sessionId, bindingKey, where, limit, offset)` —
+  list instances. `bindingKey` narrows to a container
+  [ensured](#ensured-containers-atomic-get-or-create) under that key.
+  `where` (requires `typeName`) filters by up to 8
   AND-combined property predicates `{ key, op, valueJson }` — ops `==`,
   `!=`, `<`, `>`, `<=`, `>=`; missing properties fall back to the type
   default (the same predicate shape [automation
@@ -521,10 +570,11 @@ Semantics and safety:
   recomputes the materialized ACL, so Buddy's movement/voxel enforcement and
   every `grid_permission` policy check see the change at commit.
 - **System params.** `$caller_user_id`, `$current_turn_user_id`,
-  `$self_owner_id`, and `$session_id` are injected into function-body and
-  effect expressions (they cannot be spoofed by a same-named caller param), so
-  "grant to whoever invoked" is just `$caller_user_id`. This applies to your
-  `mutations` expressions too.
+  `$self_owner_id`, `$session_id`, and `$self_container_id` (the acting
+  container's UUID) are injected into function-body, effect, and
+  [notification-arg](model-driven-notifications) expressions (they cannot be
+  spoofed by a same-named caller param), so "grant to whoever invoked" is just
+  `$caller_user_id`. This applies to your `mutations` expressions too.
 - **Bounded.** At most 4 effects per function, each charged against the
   invocation's gas budget; the target user must hold active app access to
   receive a grant; per-grid `grid_permission_limits` still cap what is

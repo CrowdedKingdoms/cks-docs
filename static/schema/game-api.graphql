@@ -1877,6 +1877,22 @@ type GmContainer {
   ownerUserId: BigInt
   """JSON object of developer metadata."""
   metadataJson: String!
+  """
+  Opaque client-derived key the container was ensured under (unique per appId + typeName + sessionId), or null when it was created without one.
+  """
+  bindingKey: String
+}
+
+"""
+Result of gameModelEnsureContainer: the resolved container plus whether this call inserted it.
+"""
+type GmEnsureContainerResult {
+  """The container all ensures of this key converge on."""
+  container: GmContainer!
+  """
+  True when THIS call created the row; false when it resolved an existing one (creation-only input fields were ignored).
+  """
+  created: Boolean!
 }
 
 """
@@ -4543,7 +4559,7 @@ type Query {
     containerId: String!
   ): GmContainer!
   """
-  List containers in an app, optionally filtered by container type and/or session, by property predicates (`where`, requires typeName; the same predicate shape automation selectors use — missing properties fall back to the type default), and paged with offset/limit over the stable created-at ordering. Requires a valid token.
+  List containers in an app, optionally filtered by container type and/or session, by bindingKey (get-by-key read of an ensured container), by property predicates (`where`, requires typeName; the same predicate shape automation selectors use — missing properties fall back to the type default), and paged with offset/limit over the stable created-at ordering. Requires a valid token.
   """
   gameModelContainers(
     """The app (tenant) whose containers to list."""
@@ -4554,6 +4570,10 @@ type Query {
     Optional: only containers in this session. Omit for all (including app-global).
     """
     sessionId: String
+    """
+    Optional: only containers ensured under this binding key (see gameModelEnsureContainer). Combine with typeName and sessionId for a get-by-key read of the single shared row.
+    """
+    bindingKey: String
     """
     Optional property predicates (max 8, AND-combined). Requires typeName. Ops: '==', '!=', '<', '>', '<=', '>='. Values are JSON-encoded.
     """
@@ -5877,6 +5897,15 @@ type Mutation {
     """
     input: CreateContainerInput!
   ): GmContainer!
+  """
+  Atomically get-or-create a container by an opaque bindingKey, unique per (appId, typeName, sessionId). Concurrent ensures with the same key all return the SAME containerId and exactly one response has created: true — no client-side leader election or list-then-create coordination is needed for shared world objects. When the row already exists this behaves like a read (creation-only fields are ignored and the type's instantiableBy rule is NOT enforced); when it does not exist, creation is authorized exactly like gameModelCreateContainer (instantiableBy + owner rules), so a caller who may not instantiate the type errors only in the not-exists case. NOTE: bindingKey is client-supplied and not yet policy-governed; shared world objects should use admin-instantiable types so only app admins can create the keyed row. Requires a valid token.
+  """
+  gameModelEnsureContainer(
+    """
+    The app, optional session, container type, the binding key, and the display name / owner / metadata / initial properties applied only if this call creates the row.
+    """
+    input: EnsureContainerInput!
+  ): GmEnsureContainerResult!
   """
   Delete a container instance. Cascades its instance properties and any edges connected to it. Allowed for an app admin or the container owner. Requires a valid token. DESTRUCTIVE. Returns true if a container was deleted.
   """
@@ -7281,7 +7310,7 @@ input NotificationArgInput {
 }
 
 """
-A declarative grid-permission effect the function applies TRANSACTIONALLY with its property mutations: grant or revoke runtime grid permissions (the same ACL Buddy enforces on movement/voxel writes) driven by game logic. Expressions are compiled server-side and evaluated in the invocation context (params plus the injected $caller_user_id / $self_owner_id / $session_id / $current_turn_user_id). If an effect fails, the whole invocation rolls back. Applied effects are recorded on the invocation event.
+A declarative grid-permission effect the function applies TRANSACTIONALLY with its property mutations: grant or revoke runtime grid permissions (the same ACL Buddy enforces on movement/voxel writes) driven by game logic. Expressions are compiled server-side and evaluated in the invocation context (params plus the injected $caller_user_id / $self_owner_id / $session_id / $current_turn_user_id / $self_container_id). If an effect fails, the whole invocation rolls back. Applied effects are recorded on the invocation event.
 """
 input FunctionPermissionEffectInput {
   """
@@ -7623,6 +7652,36 @@ input CreateContainerInput {
   """JSON object of metadata."""
   metadataJson: String
   """Initial property values for the container."""
+  properties: [SeedPropertyInput!]
+}
+
+"""
+Atomically get-or-create a container by an opaque binding key. The key is unique per (appId, typeName, sessionId); concurrent ensures converge on one row. Creation-only fields are ignored when the row already exists.
+"""
+input EnsureContainerInput {
+  """The app (tenant) the container belongs to."""
+  appId: BigInt!
+  """
+  Optional session scoping the key and the container (omit for app-global). Two sessions may hold the same bindingKey independently.
+  """
+  sessionId: String
+  """The container type to resolve or instantiate."""
+  typeName: String!
+  """
+  Opaque client-derived key (max 128 chars) identifying the shared container within (appId, typeName, sessionId). All concurrent ensures with the same key return the same containerId.
+  """
+  bindingKey: String!
+  """Human-friendly display name. Used ONLY when this call creates the row."""
+  displayName: String!
+  """Optional description. Used ONLY when this call creates the row."""
+  description: String
+  """
+  Owner user id, same rules as CreateContainerInput (defaults to the caller for member/owner types, shared null for admin types). Used ONLY when this call creates the row.
+  """
+  ownerUserId: BigInt
+  """JSON object of metadata. Used ONLY when this call creates the row."""
+  metadataJson: String
+  """Initial property values. Used ONLY when this call creates the row."""
   properties: [SeedPropertyInput!]
 }
 

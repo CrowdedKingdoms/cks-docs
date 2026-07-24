@@ -1,0 +1,39 @@
+---
+id: game-model-ensure-container
+title: gameModelEnsureContainer
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Atomically get-or-create a container by an opaque bindingKey, unique per (appId, typeName, sessionId). Concurrent ensures with the same key all return the SAME containerId and exactly one response has created: true — no client-side leader election or list-then-create coordination is needed for shared world objects. When the row already exists this behaves like a read (creation-only fields are ignored and the type's instantiableBy rule is NOT enforced); when it does not exist, creation is authorized exactly like gameModelCreateContainer (instantiableBy + owner rules), so a caller who may not instantiate the type errors only in the not-exists case. NOTE: bindingKey is client-supplied and not yet policy-governed; shared world objects should use admin-instantiable types so only app admins can create the keyed row. Requires a valid token.
+
+
+```graphql
+gameModelEnsureContainer(
+  input: EnsureContainerInput!
+): GmEnsureContainerResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEnsureContainer.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EnsureContainerInput!</b></code>](/reference/graphql/types/inputs/ensure-container-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, optional session, container type, the binding key, and the display name / owner / metadata / initial properties applied only if this call creates the row.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmEnsureContainerResult</b></code>](/reference/graphql/types/objects/gm-ensure-container-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Result of gameModelEnsureContainer: the resolved container plus whether this call inserted it.
