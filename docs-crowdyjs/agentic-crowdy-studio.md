@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20
+sidebar_position: 21
 title: Agentic Crowdy Studio
 ---
 
@@ -58,6 +58,15 @@ background bot authority: no valid lease means no control.
 Use the normal CrowdyJS surfaces. `game.crowdyStudioAgent` is the typed,
 app-token transport; the controller owns replay, acknowledgements, epochs, and
 reconnect. Do not build a raw GraphQL loop or give a model `client.graphql`.
+
+Games embedding the studio through CrowdyJS 12.1's
+[`createCrowdyStudioEmbed`](crowdy-studio-embed) get this assembly for free:
+the embed passes the agent block automatically when the client exposes
+`crowdyStudioAgent` and the game supplies a `playerHost`, and its
+`onAgentMounted` hook hands the game the pieces to bind the SDK's
+`PlayerControlGate` and `AgentControlBanner` safety chrome
+(`@crowdedkingdoms/crowdyjs/player-host`). The manual mount below remains the
+underlying contract.
 
 ```ts
 import {mountCrowdyStudio} from '@crowdedkingdoms/crowdyjs/crowdy-studio';

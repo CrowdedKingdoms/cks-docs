@@ -43,7 +43,9 @@ your app:
    (`player-glue-worker`) that instantiates the gas-injected WASM, enforces a
    per-dispatch fuel budget and wall-clock watchdog, and recycles the instance
    on a trap. It has no DOM, no tokens, no `fetch`, and imports only the fixed
-   `ck.*` host functions.
+   `ck.*` host functions. Since CrowdyJS 12.1, games bundle it directly from
+   the `@crowdedkingdoms/crowdyjs/player-glue-worker` subpath (for example
+   Vite's `?worker&url`) instead of copying a worker wrapper.
 2. **The broker** (`PlayerCodeBroker`) — the trusted boundary on the page. It
    is the only thing that talks to the SDK and the session. It:
    - runs artifacts **only** when their content hash matches what the platform
@@ -81,6 +83,13 @@ are not offered.
 
 ## Mounting Crowdy Studio
 
+Most games should not call `mountCrowdyStudio` directly: CrowdyJS 12.1's
+[embed kit](crowdy-studio-embed) (`createCrowdyStudioEmbed`) wraps it in the
+proven dock/fullscreen shell — splitter, focus trap, Context drawer, HUD sink,
+and `ck-crowdy-studio-embed-*` styles — leaving the game to supply only claim
+gating, input suppression, layout hooks, and (where permitted) the host-call
+router. The rest of this section documents the underlying mount contract.
+
 CrowdyJS 11 exposes a project-first `mountCrowdyStudio` surface for in-game
 authoring. This finalized greenfield surface has no compatibility aliases. A
 project is private cloud state owned by one player and can contain both a
@@ -115,6 +124,7 @@ compiler remains the only authoritative compile decision.
 
 ```ts
 import { mountCrowdyStudio } from '@crowdedkingdoms/crowdyjs/crowdy-studio';
+import workerUrl from '@crowdedkingdoms/crowdyjs/player-glue-worker?worker&url';
 
 const handle = await mountCrowdyStudio(hostElement, {
   playerCompute: client.playerCompute,
@@ -123,7 +133,7 @@ const handle = await mountCrowdyStudio(hostElement, {
   appId,
   gridId,                // a grid the player currently owns
   grid: { low, high },   // chunk-AABB the broker clamps to
-  workerUrl: '/player-glue-worker.js',
+  workerUrl, // same-origin module worker bundled from the SDK subpath
   targetPermissions: {
     SERVER: { canWrite: true, canRun: true },
     CLIENT: { canWrite: true, canRun: true },
