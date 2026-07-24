@@ -143,8 +143,17 @@ export default defineConfig({
   },
   optimizeDeps: {
     // Pre-bundling would inline the SDK into .vite/deps and break the
-    // worker URL resolution in dev.
-    exclude: ['@crowdedkingdoms/crowdyjs'],
+    // worker URL resolution in dev. The @codingame pair must also stay
+    // un-bundled so the VS Code service overrides register against the
+    // same module instance the editor API reads from (a pre-bundled copy
+    // fails with "…is not supported. You are using a feature without
+    // registering the corresponding service override" and the studio
+    // falls back to the basic editor).
+    exclude: [
+      '@crowdedkingdoms/crowdyjs',
+      '@codingame/monaco-vscode-editor-api',
+      '@codingame/monaco-vscode-api',
+    ],
     include: [
       '@crowdedkingdoms/crowdyjs > vscode-jsonrpc',
       '@crowdedkingdoms/crowdyjs > vscode-languageserver-protocol',
