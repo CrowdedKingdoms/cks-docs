@@ -304,6 +304,74 @@ turn it is (the current turn holder, the elected host, or an app admin may set
 it), and the `is_current_turn` requirement reads it. You implement your own turn
 order; the server just enforces it.
 
+## Active player count (app-scoped sessions)
+
+`gameModelActivePlayerCount` reports an app-wide gauge of active **app-scoped
+gameplay sessions**. It is not a count of distinct users, actor rows,
+game-model sessions, host candidates, or load on one game server. A user with
+two overlapping gameplay sessions can therefore contribute two to the count.
+
+Both the snapshot and subscription require
+`Authorization: Bearer <app-token>`, and that token's app scope must match
+`appId`.
+
+```graphql
+query ActivePlayerCount {
+  gameModelActivePlayerCount(appId: "1") {
+    appId
+    activePlayerCount
+    status
+    observedAt
+    revision
+  }
+}
+```
+
+`activePlayerCount` is always the best-known count; interpret it together with
+`status`:
+
+- **`FRESH`** — the observation is complete and authoritative.
+- **`PARTIAL`** — some current telemetry is missing, so the count is useful as
+  a best-known value but is not authoritative.
+- **`UNAVAILABLE`** — a current authoritative observation is unavailable. The
+  returned count is still best-known, not proof that nobody is active.
+
+`observedAt` is nullable when no observation time is available. Never turn a
+`PARTIAL` or `UNAVAILABLE` result, missing telemetry, or a null `observedAt`
+into an authoritative zero.
+
+Once counted, a gameplay session remains active until explicit disconnect or
+deauthorization, token expiry, or inactivity expiry. An abandoned session can
+remain visible for roughly 120 seconds plus observation latency. A quick
+reconnect can briefly overlap the old session and count twice, so this gauge is
+appropriate for presence, scaling hints, and automations—not billing or
+distinct-user analytics.
+
+Subscribe for post-observation changes:
+
+```graphql
+subscription ActivePlayerCountChanged {
+  gameModelActivePlayerCountChanged(appId: "1") {
+    appId
+    previousCount
+    currentCount
+    delta
+    revision
+    observedAt
+  }
+}
+```
+
+Delivery is best-effort and the stream is not an initial snapshot. On startup,
+open the subscription and immediately query `gameModelActivePlayerCount`;
+deduplicate snapshot/change data by `revision`. Re-query after reconnect and
+whenever revisions indicate a gap. The snapshot's `status` remains the
+authority on freshness; receiving a change does not imply that later snapshot
+telemetry is `FRESH`.
+
+An app admin can feed the same transitions into an
+[`onEvent: "player_count_changed"` automation](autonomous-processes#player-count-changes).
+
 ## Invoking a function
 
 ```graphql

@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-List containers in an app, optionally filtered by container type and/or session, by property predicates (`where`, requires typeName; the same predicate shape automation selectors use — missing properties fall back to the type default), and paged with offset/limit over the stable created-at ordering. Requires a valid token.
+List containers in an app, optionally filtered by container type and/or session, by bindingKey (get-by-key read of an ensured container), by property predicates (`where`, requires typeName; the same predicate shape automation selectors use — missing properties fall back to the type default), and paged with offset/limit over the stable created-at ordering. Requires a valid token.
 
 
 ```graphql
@@ -23,6 +23,7 @@ gameModelContainers(
   appId: BigInt!
   typeName: String
   sessionId: String
+  bindingKey: String
   where: [GmPropertyPredicateInput!]
   limit: Int
   offset: Int
@@ -42,6 +43,10 @@ Optional: only containers of this type. Omit for all types.
 
 #### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
 Optional: only containers in this session. Omit for all (including app-global).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>bindingKey</b></code>](#binding-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#binding-key\}
+Optional: only containers ensured under this binding key (see gameModelEnsureContainer). Combine with typeName and sessionId for a get-by-key read of the single shared row.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>where</b></code>](#where)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmPropertyPredicateInput!]</b></code>](/reference/graphql/types/inputs/gm-property-predicate-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#where\}

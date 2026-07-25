@@ -28,6 +28,7 @@ type GmContainer {
   description: String
   ownerUserId: BigInt
   metadataJson: String!
+  bindingKey: String
 }
 ```
 
@@ -66,6 +67,10 @@ The owning user, or null if unowned.
 JSON object of developer metadata.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>GmContainer.<b>bindingKey</b></code>](#binding-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#binding-key\}
+Opaque client-derived key the container was ensured under (unique per appId + typeName + sessionId), or null when it was created without one.
+
+
 
 
 ### Returned By
@@ -74,4 +79,4 @@ JSON object of developer metadata.
 
 ### Member Of
 
-[`GmTraverseResult`](/reference/graphql/types/objects/gm-traverse-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`GmEnsureContainerResult`](/reference/graphql/types/objects/gm-ensure-container-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GmTraverseResult`](/reference/graphql/types/objects/gm-traverse-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

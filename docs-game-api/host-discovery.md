@@ -16,6 +16,14 @@ Two read paths exist:
 
 CrowdyJS wraps both as `client.host.get(appId)` and `client.host.amIHost(appId)`.
 
+:::note[Actor count is not active player count]
+`gameHost.actorCount` counts actors owned by the elected host. It is not app
+concurrency. For the app-wide gauge of active app-scoped gameplay sessions,
+use
+[`gameModelActivePlayerCount`](game-models#active-player-count-app-scoped-sessions);
+that gauge is neither a distinct-user count nor a host/actor count.
+:::
+
 :::important[UI convenience vs authoritative gating]
 `gameHost` / `amIGameHost` (and CrowdyJS `client.host.*`) are **informational**. The Game API does not gate other operations on host status from these queries, and Buddy does not validate UDP messages against the host UUID.
 

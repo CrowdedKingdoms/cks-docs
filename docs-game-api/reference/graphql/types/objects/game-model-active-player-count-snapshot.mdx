@@ -1,0 +1,58 @@
+---
+id: game-model-active-player-count-snapshot
+title: GameModelActivePlayerCountSnapshot
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A point-in-time app-scoped count of active gameplay sessions. This counts sessions, not actors or distinct users; one user with multiple active sessions contributes multiple players. Status states whether the fleet-wide count is complete.
+
+
+```graphql
+type GameModelActivePlayerCountSnapshot {
+  appId: BigInt!
+  activePlayerCount: Int!
+  status: GameModelPlayerCountStatus!
+  observedAt: DateTime
+  revision: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelActivePlayerCountSnapshot.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+The app whose active gameplay sessions were counted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelActivePlayerCountSnapshot.<b>activePlayerCount</b></code>](#active-player-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#active-player-count\}
+Active gameplay sessions currently reported for the app. For PARTIAL this is the best-known sum from supported fresh Buddies; for UNAVAILABLE it is zero because no live report can be observed. Check status before treating it as a complete fleet total.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelActivePlayerCountSnapshot.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GameModelPlayerCountStatus!</b></code>](/reference/graphql/types/enums/game-model-player-count-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
+Whether activePlayerCount is complete (FRESH), a supported-Buddy subset (PARTIAL), or unavailable because no Buddy heartbeat is fresh (UNAVAILABLE).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelActivePlayerCountSnapshot.<b>observedAt</b></code>](#observed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#observed-at\}
+Latest heartbeat time represented by this observation, or null when no fresh Buddy is available.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelActivePlayerCountSnapshot.<b>revision</b></code>](#revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#revision\}
+Durable monotonic revision of complete count changes. Zero means the app is untracked or has not changed after its silent baseline. Partial and unavailable observations never advance it.
+
+
+
+
+### Returned By
+
+[`gameModelActivePlayerCount`](/reference/graphql/operations/queries/game-model-active-player-count.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

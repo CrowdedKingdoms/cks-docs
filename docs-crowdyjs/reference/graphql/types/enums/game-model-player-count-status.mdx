@@ -1,0 +1,48 @@
+---
+id: game-model-player-count-status
+title: GameModelPlayerCountStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Completeness of an app-scoped active gameplay-session count across the fresh Buddy fleet.
+
+
+```graphql
+enum GameModelPlayerCountStatus {
+  FRESH
+  PARTIAL
+  UNAVAILABLE
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelPlayerCountStatus.<b>FRESH</b></code>](#fresh) \{#fresh\}
+At least one non-Offline Buddy heartbeat is fresh and every fresh Buddy supports version 1 app-scoped counts. The count is complete.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelPlayerCountStatus.<b>PARTIAL</b></code>](#partial) \{#partial\}
+At least one non-Offline Buddy heartbeat is fresh, but one or more fresh Buddies do not support app-scoped counts. The count is only the best-known supported-Buddy sum and does not advance change revisions.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelPlayerCountStatus.<b>UNAVAILABLE</b></code>](#unavailable) \{#unavailable\}
+No non-Offline Buddy heartbeat is fresh enough to observe. The count is unavailable and does not advance change revisions.
+
+
+
+
+### Member Of
+
+[`GameModelActivePlayerCountSnapshot`](/reference/graphql/types/objects/game-model-active-player-count-snapshot.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

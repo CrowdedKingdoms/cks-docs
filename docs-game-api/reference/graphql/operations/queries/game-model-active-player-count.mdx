@@ -1,0 +1,39 @@
+---
+id: game-model-active-player-count
+title: gameModelActivePlayerCount
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Read the best-known app-scoped number of active gameplay sessions across fresh non-Offline Buddy servers. This counts sessions, not actors or distinct users. FRESH is a complete fleet total; PARTIAL is only the supported-Buddy subset; UNAVAILABLE has no fresh observation. Partial/unavailable samples never create count-change revisions. Requires an app-scoped token for this exact app.
+
+
+```graphql
+gameModelActivePlayerCount(
+  appId: BigInt!
+): GameModelActivePlayerCountSnapshot!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelActivePlayerCount.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+App whose active gameplay-session count to read. Must match the app-scoped bearer token.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GameModelActivePlayerCountSnapshot</b></code>](/reference/graphql/types/objects/game-model-active-player-count-snapshot.mdx) <Badge class="badge badge--secondary " text="object"/>
+A point-in-time app-scoped count of active gameplay sessions. This counts sessions, not actors or distinct users; one user with multiple active sessions contributes multiple players. Status states whether the fleet-wide count is complete.
