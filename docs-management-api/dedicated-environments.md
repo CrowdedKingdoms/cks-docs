@@ -6,6 +6,13 @@ title: Dedicated environments
 
 # Dedicated environments
 
+:::warning Retired
+Dedicated customer environments no longer exist. All apps run on the shared
+platform (the unified Crowded Kingdoms API on the galaxy database). The
+operations below are no longer served; this page is kept for historical
+reference only.
+:::
+
 A **dedicated environment** is an isolated stack — Game API, database, and the
 Buddy replication runtime — provisioned for your organization. Apps linked to an
 environment route their players to that environment's Game API instead of the

@@ -6,6 +6,17 @@ title: Introduction
 
 # Management API
 
+:::info The Management API is now part of the unified Crowded Kingdoms API
+The separate management server has been retired: identity, organizations,
+apps, billing, marketplace, and studio policy are served by the **same
+GraphQL endpoint as the [Game API](/game-api/intro)** (one server, one
+schema, one bearer token). Every operation documented in this section still
+exists with the same names and shapes — only the endpoint is shared now. The
+published SDL at [`/schema/management-api.graphql`](pathname:///schema/management-api.graphql)
+is the unified schema. Dedicated customer environments were retired with the
+split; see [Dedicated environments](/management-api/dedicated-environments).
+:::
+
 GraphQL service for the **management plane**—everything studios and players need before connecting a game client:
 
 - Identity, organizations, RBAC, apps marketplace, app-access tiers, billing, payments,
