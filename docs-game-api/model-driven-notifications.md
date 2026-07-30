@@ -97,6 +97,58 @@ containers emits N notifications, each naming its own container — no caller
 exists to fill a `notify_id`-style parameter, and none is needed. Injected
 params cannot be spoofed by a same-named caller param.
 
+## Signals: a notification with nothing to mutate {#signals}
+
+A function does **not** need any mutations. Leave `mutations` empty and the
+function becomes a pure **signal**: invoking it pushes an event to clients and
+changes no state. This is what you want when a client should just *react* — play
+an effect, start a sequence, run a function in Unreal — and there is no property
+worth replicating to stand in for the message.
+
+```graphql
+mutation {
+  gameModelUpsertFunction(input: {
+    appId: "1"
+    name: "announceBossWave"
+    containerTypeName: "BP_Boss"
+    invokeScope: "server"
+    autonomousInvocable: true
+    parameters: [{ name: "wave", valueType: "int" }]
+    mutations: []
+    notifications: [
+      {
+        kind: "spatial"
+        emitAs: "server_event"
+        args: [
+          { name: "chunk_x", expression: "self.chunk_x" }
+          { name: "chunk_y", expression: "self.chunk_y" }
+          { name: "chunk_z", expression: "self.chunk_z" }
+          # Your own event id. Clients switch on this to pick a handler.
+          { name: "event_type", expression: "4201" }
+          { name: "distance", expression: "64" }
+        ]
+      }
+    ]
+  }) { name }
+}
+```
+
+`event_type` is a 16-bit number you allocate — it is the name of the signal on
+the wire, and how a client decides which handler to run. Add a `state` arg when
+the signal carries data (base64 bytes); omit it for a bare ping.
+
+Because `autonomousInvocable: true` is set, an
+[automation](autonomous-processes) or a
+[timer](autonomous-processes#timers) can fire this signal with no player
+involved — a scheduled automation on `BP_Boss` that announces each wave, for
+instance. On the client the signal arrives on the `ServerEventNotification`
+handler you already have: `handlers.serverEvent` in CrowdyCPP, or
+`serverEvent` / the `EventRouter` in CrowdyJS.
+
+Prefer `kind: "channel"` over `spatial` when the audience is a group rather than
+a place — a channel broadcast needs no chunk coordinates, which is easier when
+the container has no meaningful position.
+
 ## Delivery semantics
 
 - **Emitted after the change is applied.** A function's notifications fire only

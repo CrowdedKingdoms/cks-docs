@@ -1,0 +1,68 @@
+---
+id: schedule-invoke-input
+title: ScheduleInvokeInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Arm a one-shot timer that invokes a function after a delay. The target function must be autonomousInvocable, because the timer fires headlessly with no player in the request.
+
+
+```graphql
+input ScheduleInvokeInput {
+  appId: BigInt!
+  functionName: String!
+  selfContainerId: String!
+  delayMs: Int!
+  paramsJson: String
+  sessionId: String
+  dedupeKey: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ScheduleInvokeInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ScheduleInvokeInput.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+The function to invoke when the timer fires. Must be autonomousInvocable.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ScheduleInvokeInput.<b>selfContainerId</b></code>](#self-container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#self-container-id\} 
+The 'self' container the delayed invocation runs against. Must belong to the app, and match the function's bound container type when it has one.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ScheduleInvokeInput.<b>delayMs</b></code>](#delay-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#delay-ms\} 
+Delay in milliseconds before the timer fires. Must be at least the app's minTimerDelayMs and at most 30 days.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ScheduleInvokeInput.<b>paramsJson</b></code>](#params-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#params-json\} 
+JSON object of parameters passed to the delayed invocation. Defaults to '&#x007B;&#x007D;'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ScheduleInvokeInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+Session for the delayed invocation. Defaults to the container's own session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ScheduleInvokeInput.<b>dedupeKey</b></code>](#dedupe-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#dedupe-key\} 
+Optional app-scoped key. Re-arming the same key replaces the pending timer instead of adding another, which makes "reset the countdown" a single call.
+
+
+
+
+### Member Of
+
+[`gameModelScheduleInvoke`](/reference/graphql/operations/mutations/game-model-schedule-invoke.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
