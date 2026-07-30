@@ -184,7 +184,7 @@ reads as "when `OnBossWave` runs on a boss". Omit a filter to match every value.
 `debounceMs` coalesces bursts: the first fire in the window wins and the rest
 are dropped (`player_count_changed` coalesces on the trailing edge instead).
 
-### Write sources: which property writes count {#write-sources}
+### Write sources
 
 A property can change two ways, and a `property_changed` trigger chooses which
 it observes with `writeSource`:
@@ -296,7 +296,7 @@ mutation ConfigurePlayerCountAutomation {
 }
 ```
 
-## Timers: run something once, after a delay {#timers}
+## Timers
 
 Schedules repeat and events react. A **timer** is the third shape: *"do this
 once, N milliseconds from now."* Use it for a countdown, a wind-up before an

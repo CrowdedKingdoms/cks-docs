@@ -97,7 +97,7 @@ containers emits N notifications, each naming its own container — no caller
 exists to fill a `notify_id`-style parameter, and none is needed. Injected
 params cannot be spoofed by a same-named caller param.
 
-## Signals: a notification with nothing to mutate {#signals}
+## Signals
 
 A function does **not** need any mutations. Leave `mutations` empty and the
 function becomes a pure **signal**: invoking it pushes an event to clients and
