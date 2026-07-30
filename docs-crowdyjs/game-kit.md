@@ -399,6 +399,14 @@ Event-triggered `drops` roll a pooled *unrolled* `LootRoll` when the event
 fires — automations mutate, they cannot create containers, so keep a small
 pool of pre-created rolls per table.
 
+`drops`, quest `advanceOn`, and NPC event behaviors all take the same trigger
+filters, including `writeSource`. That one matters whenever you trigger on
+`onEvent: 'property_changed'`: kit state is written by functions, not by client
+`setProperty` calls, so watching a property like a mob's `hp` needs
+`writeSource: 'function'` (or `'any'`). Without it the trigger matches only
+direct writes and quietly never fires — see
+[write sources](/game-api/autonomous-processes#write-sources).
+
 ## Quests
 
 `questsBlueprint()` + `kit.quests`: an admin `QuestDef` catalog and
@@ -469,10 +477,37 @@ await kit.matches.finish(match, winnerUserId);        // event-automation hook p
 The lifecycle functions declare a **channel notification** — Buddy pings
 every member with `"match_changed"` post-commit, and clients re-pull.
 `scoreAuthority` picks the referee (`'host'` default | `'server'` |
-`'automation'`); a `turnTick` option adds the counter-based turn timer (see
-[timers without a clock](#cooldowns-and-timers-without-a-clock)). For
-rating/leaderboard updates, attach an event automation to `end_match`
-(`function_invoked`).
+`'automation'`). For rating/leaderboard updates, attach an event automation to
+`end_match` (`function_invoked`).
+
+### Turn deadlines
+
+`matchesBlueprint({ turnTimer: { delayMs } })` gives each turn a wall-clock
+deadline. `start_match` and `begin_turn` arm a
+[one-shot timer](/game-api/autonomous-processes#timers) deduped per match, so
+opening the next turn replaces the previous deadline rather than stacking
+another; when it fires, `expire_turn` records the expiry and pings the match
+channel, which your clients are already listening to.
+
+```ts
+const bp = matchesBlueprint({ turnTimer: { delayMs: 30_000 } });
+// endTurn opens the incoming turn (arming its deadline) before handing over.
+await kit.matches.endTurn(match, nextUserId);
+// Whoever referees the match reacts to the ping:
+if (turnExpired(await kit.matches.get(match.metaId))) {
+  await kit.matches.endTurn(match, playerAfter(nextUserId));
+}
+```
+
+`turnExpired()` is the comparison `turn_expired_seq >= turn_seq`, which is also
+what makes a late fire harmless: a deadline that was already claimed when the
+player beat the clock is stamped with the older turn, so it records a lower
+sequence and never reads as expired. Finishing a match advances the sequence
+for the same reason.
+
+The older `turnTick` option still works — it bumps a `tick_count` counter on
+every active match on an interval — but a deadline is cheaper and exact, so
+`turnTick` is deprecated and will go away in the next major.
 
 ## Decks and hidden information
 
@@ -615,16 +650,26 @@ the channel, and typed snapshots refresh themselves.
 
 ### Cooldowns and timers without a clock
 
-Expressions have no `now()` — by design (deterministic replay, no
-wall-clock races). Model time with:
+Expressions still have no `now()` — by design (deterministic replay, no
+wall-clock races). What you get instead is scheduled execution. Model time
+with:
 
-- **Interval automations** that flip `ready` flags or decrement counters
-  (status-effect ticks, shop restocks, crop growth).
+- **One-shot timers** for a deadline on a particular thing: a function
+  declares a [`timers` effect](/game-api/autonomous-processes#timers) and arms
+  it transactionally with its own mutations. Give it a `dedupeKey` and
+  re-arming replaces the pending fire instead of queueing another. This is how
+  `matchesBlueprint({ turnTimer })` expires a turn.
+- **Interval automations** for genuinely recurring work that is not about any
+  one entity's deadline (status-effect ticks, shop restocks, crop growth).
+  Reach for these when the answer to "how many timers would this be?" is "one
+  per row".
 - **TTL permission-effect grants** as timed capabilities (rentals, buffs
   that expire — `plotBlueprint({ rentable: true })`).
-- **Turn/round counters** for turn games: `matchesBlueprint({ turnTick })`
-  bumps `tick_count` on active matches; store the tick at turn start and
-  treat `tick_count - turn_started_tick >= N` as the timeout.
+
+Since a fire can land after the thing it was armed for has moved on, stamp the
+timer with what it was armed for and compare on arrival — `turnTimer` passes
+the turn sequence and keeps the recorded expiry monotonic, so a late fire
+lands below the open turn and is ignored.
 
 ### Catalog vs. instance
 
