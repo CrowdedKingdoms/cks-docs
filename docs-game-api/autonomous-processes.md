@@ -20,7 +20,8 @@ An automation is a small row you author. It binds:
 
 - an **entry point** — one of your `autonomous_invocable` functions plus the
   container(s) to run it against,
-- a **trigger** — a schedule (interval or cron) or a model **event**,
+- a **trigger** — a schedule (interval or cron), a model **event**, or a
+  one-shot [timer](#timers),
 - an optional **run-as identity**, and
 - a **safety budget** (fan-out, gas, timeout, failure threshold).
 
@@ -165,11 +166,44 @@ mutation {
 }
 ```
 
-`onEvent` is `function_invoked` (filter by `functionName`), `property_changed`
-(filter by `containerTypeName` / `propertyKey`, fired by direct
-`gameModelSetProperty` writes), or `container_created` (filter by
-`containerTypeName`). It can also be `player_count_changed`, described below.
-`debounceMs` coalesces bursts.
+Each `onEvent` matches on its own set of filters. A filter that does not apply
+to the event is **rejected** at authoring time, because such a trigger could
+never match:
+
+| `onEvent` | Filters | Fired by |
+| --------- | ------- | -------- |
+| `function_invoked` | `functionName`, `containerTypeName` | any successful invoke that committed — player, automation, or timer |
+| `property_changed` | `containerTypeName`, `propertyKey`, `writeSource` | a property write (see [write sources](#write-sources)) |
+| `container_created` | `containerTypeName` | `gameModelCreateContainer` / `gameModelEnsureContainer` |
+| `player_count_changed` | none | a complete app player-count transition (below) |
+
+For `function_invoked`, `containerTypeName` is the type of the invocation's
+**`self` container** — so `{ functionName: "OnBossWave", containerTypeName: "BP_Boss" }`
+reads as "when `OnBossWave` runs on a boss". Omit a filter to match every value.
+
+`debounceMs` coalesces bursts: the first fire in the window wins and the rest
+are dropped (`player_count_changed` coalesces on the trailing edge instead).
+
+### Write sources: which property writes count {#write-sources}
+
+A property can change two ways, and a `property_changed` trigger chooses which
+it observes with `writeSource`:
+
+| `writeSource` | Observes |
+| ------------- | -------- |
+| `any` (default) | both of the below |
+| `direct` | a `gameModelSetProperty` call — a write made *outside* a function |
+| `function` | a mutation applied *inside* a `gameModelInvoke`, automation run, or timer fire |
+
+This matters more than it sounds. Most game logic writes properties from inside
+functions, so a trigger watching `waveIndex` on a boss will only see the change
+if `writeSource` includes `function`. New triggers default to `any` and see
+everything; triggers authored before `writeSource` existed remain `direct`-only
+until you update them.
+
+A function-sourced `property_changed` inherits the invoking call's cascade
+depth, so `invoke → property_changed → automation → invoke` chains are bounded
+by `maxCascadeDepth` rather than restarting the count.
 
 `property_changed` deliveries to **compute modules** additionally carry the
 `oldValue`/`newValue` delta, so a module reacting to a write doesn't spend a
@@ -262,6 +296,106 @@ mutation ConfigurePlayerCountAutomation {
 }
 ```
 
+## Timers: run something once, after a delay {#timers}
+
+Schedules repeat and events react. A **timer** is the third shape: *"do this
+once, N milliseconds from now."* Use it for a countdown, a wind-up before an
+attack, a delayed cleanup, or a wave that advances a few seconds after the last
+one died.
+
+A timer is durable — it is stored in the database, not in a server's memory, so
+it survives an API restart — and exactly one replica claims it, so it fires once.
+
+### Arming a timer from your game logic
+
+The usual way is a `timers` effect on a function, which arms the timer **in the
+same transaction** as that function's mutations. If the invocation rolls back,
+nothing was scheduled; if it commits, the delayed work is guaranteed:
+
+```graphql
+mutation {
+  gameModelUpsertFunction(input: {
+    appId: "1"
+    name: "startBossWave"
+    containerTypeName: "BP_Boss"
+    autonomousInvocable: true
+    mutations: [
+      { target: "self", property: "waveIndex", expression: "self.waveIndex + 1" }
+    ]
+    timers: [
+      {
+        functionName: "startBossWave"        # re-arm itself: a repeating wave
+        target: "self"                       # defaults to self
+        delayMsExpression: "self.waveDelayMs"
+        dedupeKey: "boss_wave"               # optional; see below
+        params: [{ name: "wave", expression: "self.waveIndex" }]
+      }
+    ]
+  }) { name timers { functionName delayMsExpression } }
+}
+```
+
+Expressions are evaluated **when the timer is armed**, on post-mutation state —
+so `self.waveIndex` above is the value this invocation just wrote, and the fired
+invocation receives it as a parameter.
+
+| Field | Meaning |
+| ----- | ------- |
+| `functionName` | The function to invoke. Must be `autonomousInvocable`. |
+| `target` | Container reference for the delayed invocation's `self`. Defaults to `self`. |
+| `delayMsExpression` | Delay in ms. Floored by the app's `minTimerDelayMs`, capped at 30 days. |
+| `dedupeKeyExpression` | Optional app-scoped key. Re-arming the same key **replaces** the pending timer. |
+| `params` | `{ name, expression }` values bound into the delayed invocation. |
+
+A function may declare up to 4 timers.
+
+`dedupeKey` is what makes "reset the countdown" a single call instead of a
+cancel-then-arm race, and it is also a safety valve: a hot function that re-arms
+the same key cannot flood the timer queue.
+
+### Arming a timer directly
+
+`gameModelScheduleInvoke` arms one from outside a function — useful for tooling
+and tests. It requires app-admin (`manage_apps`), because a timer fires headless
+with system authority rather than a player's; player-driven delays belong in a
+`timers` effect, where your authored logic decides:
+
+```graphql
+mutation {
+  gameModelScheduleInvoke(input: {
+    appId: "1"
+    functionName: "startBossWave"
+    selfContainerId: "<boss-uuid>"
+    delayMs: 5000
+    paramsJson: "{\"wave\":3}"
+    dedupeKey: "boss_wave"
+  }) { timerId fireAt }
+}
+```
+
+Inspect and cancel pending timers with `gameModelTimers` and
+`gameModelCancelTimer` (by `timerId` or `dedupeKey`). A timer disappears from
+`gameModelTimers` the instant it is claimed, so an empty list means nothing is
+*scheduled* — not that nothing ran. Look at `gameModelAutomationRuns` for fires
+that already happened; they appear with `triggerSource: "timer"` and a null
+`automationId`.
+
+### What bounds a timer
+
+A fired timer runs the same guard chain as an automation run: the app kill
+switch, the spend/budget gate, the per-app runs/minute bucket, and the cascade
+ceiling. It also bills as the same `automation_compute_units` metric.
+
+Crucially, a fire runs **one cascade level deeper** than whatever armed it. A
+function that re-arms itself therefore terminates at `maxCascadeDepth` instead of
+looping forever — so a self-rescheduling wave is a *bounded* chain, not a
+substitute for an interval schedule. If you want an unbounded repeat, use
+`triggerType: "schedule"`.
+
+Because timers fire headlessly, the target must be `autonomousInvocable`.
+`gameModelUpsertFunction` warns at authoring time if a timer's target is missing
+or not opted in, rather than letting it fail minutes later when it fires.
+
 ## Selectors: choosing targets from model data
 
 The expression language is intentionally loop-free, so "find the nearest living
@@ -343,8 +477,10 @@ automation degrades gracefully instead of taking down your game:
    chain fails the run instead of crashing.
 2. **Run** — `maxTargets` caps fan-out; `runTimeoutMs` bounds the whole run; an
    automation never overlaps itself.
-3. **Cascade** — event-triggered runs carry a depth; exceeding the app's
-   `maxCascadeDepth` is dropped. A per-app runs/minute token bucket sheds excess.
+3. **Cascade** — event-triggered runs and timer fires carry a depth; exceeding
+   the app's `maxCascadeDepth` is dropped. This is what terminates a
+   function-writes-property-fires-automation chain, and a function that re-arms
+   its own timer. A per-app runs/minute token bucket sheds excess.
 4. **Failure circuit** — `failureThreshold` consecutive failures **open** the
    circuit and pause the automation for `cooldownMs` (then a half-open probe);
    one success closes it. Re-enable (and reset) with
@@ -352,13 +488,13 @@ automation degrades gracefully instead of taking down your game:
 5. **Budget** — if your app is denied/over its spend cap, all automations pause
    automatically (the runtime gate).
 6. **Platform** — per-app ceilings (`maxAutomations`, `minIntervalMs`,
-   `maxFanout`, `maxCascadeDepth`, `globalRunsPerMinute`), set with
-   `gameModelSetAutomationPolicy`.
+   `maxFanout`, `maxCascadeDepth`, `globalRunsPerMinute`, `minTimerDelayMs`,
+   `maxPendingTimers`), set with `gameModelSetAutomationPolicy`.
 
 ## Billing
 
-Automation runs never go through a player request, so they are metered
-explicitly. Each run records `computeUnits` (wall-clock + per-invocation /
+Automation runs and timer fires never go through a player request, so they are
+metered explicitly. Each run records `computeUnits` (wall-clock + per-invocation /
 per-mutation weighting); the game-api ships per-app/minute totals to the
 management plane, where they bill against your app under the
 `automation_compute_units` metric (with a free hourly allowance). On a shared
@@ -392,6 +528,38 @@ query { gameModelAppDiagnostics(appId: "1") {
 Automation-driven invocations are tagged in the event log: `gameModelEvents`
 returns `callerKind` (`player` | `automation` | `system`) and `automationId`, so
 you can tell NPC actions from player actions.
+
+### Why isn't my event trigger firing?
+
+Start with the trigger itself. `gameModelAutomationTriggers` reports whether each
+trigger has ever matched, and flags configuration that cannot work:
+
+```graphql
+query { gameModelAutomationTriggers(appId: "1") {
+  onEvent functionName containerTypeName propertyKey writeSource
+  lastMatchedAt matchCount24h warnings
+} }
+```
+
+- **`warnings` is non-empty** — the trigger has a filter its event does not match
+  on, so it can never fire. Recreate it without that filter. (New triggers are
+  rejected at creation for this; warnings surface older rows.)
+- **`lastMatchedAt` is null while the event is definitely happening** — the
+  filters are too narrow. Remove them one at a time: `functionName` must match
+  exactly, and `containerTypeName` on `function_invoked` must be the type of the
+  invocation's `self` container.
+- **A `property_changed` trigger never fires, but the property is changing** —
+  the write is coming from inside a function and the trigger's `writeSource` is
+  `direct`. See [write sources](#write-sources).
+- **`lastMatchedAt` is recent but nothing happened** — the fire reached a run
+  that a guard dropped. Check `gameModelAutomationRuns` for `circuitAction`
+  (`cascade_dropped`, `rate_limited`, `budget_paused`, `app_disabled`).
+- **Nothing anywhere, and the invoke failed** — a `function_invoked` event is
+  only emitted after a *successful* commit. A rolled-back invoke emits nothing;
+  look for `success: false` rows in `gameModelEvents`.
+- **Manual runs work but the trigger doesn't** — `gameModelRunAutomation`
+  bypasses trigger matching entirely, so a working manual run tells you the
+  automation is fine and isolates the problem to the trigger.
 
 ## Worked example: a self-playing enemy team
 

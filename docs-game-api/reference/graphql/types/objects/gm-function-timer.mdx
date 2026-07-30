@@ -1,0 +1,58 @@
+---
+id: gm-function-timer
+title: GmFunctionTimer
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A declarative one-shot timer the function arms transactionally with its mutations: invoke another function after a delay. Fires exactly once, survives replica restarts, and is bounded by the app's automation guardrails.
+
+
+```graphql
+type GmFunctionTimer {
+  functionName: String!
+  target: String!
+  delayMsExpression: String!
+  dedupeKeyExpression: String
+  params: [GmTimerParam!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionTimer.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+The function invoked when the timer fires.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionTimer.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#target\} 
+Container reference (source) the delayed invocation runs against, e.g. "self".
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionTimer.<b>delayMsExpression</b></code>](#delay-ms-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#delay-ms-expression\} 
+The expression (source) resolving the delay in milliseconds.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionTimer.<b>dedupeKeyExpression</b></code>](#dedupe-key-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#dedupe-key-expression\} 
+Optional expression (source) resolving the app-scoped dedupe key; re-arming the same key replaces the pending timer.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionTimer.<b>params</b></code>](#params)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmTimerParam!]!</b></code>](/reference/graphql/types/objects/gm-timer-param.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#params\} 
+Parameters bound into the delayed invocation.
+
+
+
+
+### Member Of
+
+[`GmFunction`](/reference/graphql/types/objects/gm-function.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
