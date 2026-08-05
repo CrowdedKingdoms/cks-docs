@@ -8,7 +8,7 @@ title: Dedicated environments
 
 :::warning Retired
 Dedicated customer environments no longer exist. All apps run on the shared
-platform (the unified Crowded Kingdoms API on the galaxy database). The
+platform (the unified Crowded Kingdoms API on its PostgreSQL/Citus database). The
 operations below are no longer served; this page is kept for historical
 reference only.
 :::
