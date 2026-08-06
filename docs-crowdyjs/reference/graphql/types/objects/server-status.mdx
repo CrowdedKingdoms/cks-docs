@@ -27,6 +27,7 @@ type ServerStatus {
   status: ServerState!
   peers: Int!
   clients: Int!
+  drainRequested: Boolean!
   cpuPeakPct: Float
   clientRecvMsgsPerSec: Float
   clientRecvBytesPerSec: Float
@@ -39,7 +40,6 @@ type ServerStatus {
   clientSendIndividualMsgsPerSec: Float
   updatedAt: DateTime!
   createdAt: DateTime!
-  drainRequested: Boolean!
 }
 ```
 
@@ -72,6 +72,10 @@ Number of peer (server-to-server P2P) connections this server currently holds.
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>clients</b></code>](#clients)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#clients\} 
 Number of game clients currently connected to this server. serverWithLeastClients uses this to balance load across the fleet.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>drainRequested</b></code>](#drain-requested)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#drain-requested\} 
+True while the infra control plane is taking this server out of service (autoscale scale-in, or an in-place update). Excluded from serverWithLeastClients immediately; the server then reports Stopping and sends every client a reconnect command so they migrate elsewhere. Never set by the server itself.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>cpuPeakPct</b></code>](#cpu-peak-pct)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cpu-peak-pct\} 
@@ -120,10 +124,6 @@ When this status row was last updated (server heartbeat). Use to judge how fresh
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 When this server was first registered in the fleet.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>drainRequested</b></code>](#drain-requested)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#drain-requested\} 
-True while the infra control plane is taking this server out of service (autoscale scale-in, or an in-place update). Excluded from serverWithLeastClients immediately; the server then reports Stopping and sends every client a reconnect command so they migrate elsewhere. Never set by the server itself.
 
 
 

@@ -23,9 +23,10 @@ type GmAutomationRun {
   runId: String!
   appId: BigInt!
   flowId: String
-  automationId: String!
+  automationId: String
   automationName: String!
   triggerSource: String!
+  triggerId: String
   parentRunId: String
   cascadeDepth: Int!
   startedAt: DateTime!
@@ -40,7 +41,6 @@ type GmAutomationRun {
   errorMessage: String
   circuitAction: String
   computeUnits: Int!
-  triggerId: String
 }
 ```
 
@@ -59,7 +59,7 @@ The app (tenant).
 Flow correlation id: shared with gm event-log rows and compute module runs triggered by the same entry call (player invoke / automation run / computeInvoke).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>automationId</b></code>](#automation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>automationId</b></code>](#automation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#automation-id\} 
 The automation that ran, or null for a timer fire (which has no owning automation).
 
 
@@ -69,6 +69,10 @@ The automation name at run time, or the invoked function name for a timer fire.
 
 #### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>triggerSource</b></code>](#trigger-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-source\} 
 What triggered the run: schedule | event | manual | cascade | timer.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>triggerId</b></code>](#trigger-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-id\} 
+The event trigger that matched, when the run came from one. Null for schedule, manual, and timer-fired runs.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>parentRunId</b></code>](#parent-run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#parent-run-id\} 
@@ -125,10 +129,6 @@ Circuit action taken (e.g. opened, half&#x005F;open&#x005F;retry, budget&#x005F;
 
 #### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>computeUnits</b></code>](#compute-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compute-units\} 
 Billed compute units for this run.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>GmAutomationRun.<b>triggerId</b></code>](#trigger-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-id\} 
-The event trigger that matched, when the run came from one. Null for schedule, manual, and timer-fired runs.
 
 
 

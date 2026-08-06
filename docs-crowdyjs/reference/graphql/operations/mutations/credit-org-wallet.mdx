@@ -1,0 +1,53 @@
+---
+id: credit-org-wallet
+title: creditOrgWallet
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR ONLY. Credits an organization wallet without a payment provider, for seeding a test environment or making an operator adjustment, and records it in the wallet ledger as an "admin&#x005F;credit" transaction. Use this instead of writing to org&#x005F;wallets by hand: it creates the wallet if absent, repairs a missing wallet id, and moves the balance and the ledger row together in one transaction. Pass a referenceId to make retries idempotent. SIDE EFFECT: re-evaluates the runtime gate for every shared app in the org, so a credit that clears an insufficient&#x005F;funds denial lifts it immediately instead of leaving the app refusing clients.
+
+
+```graphql
+creditOrgWallet(
+  orgId: BigInt!
+  amountCents: BigInt!
+  reason: String!
+  referenceId: String
+): WalletTransaction!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>creditOrgWallet.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization whose wallet is credited.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>creditOrgWallet.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#amount-cents\} 
+Amount to add, in minor units (cents) of the wallet currency, as a BigInt decimal string. Must be positive — this mutation only credits.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>creditOrgWallet.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Why the credit is being made. Stored as the ledger description, so write it for whoever reads the ledger later rather than for yourself.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>creditOrgWallet.<b>referenceId</b></code>](#reference-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reference-id\} 
+Optional caller-supplied key. Replaying the same referenceId returns the original transaction instead of crediting twice.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>WalletTransaction</b></code>](/reference/graphql/types/objects/wallet-transaction.mdx) <Badge class="badge badge--secondary " text="object"/>

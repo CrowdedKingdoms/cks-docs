@@ -27,8 +27,8 @@ type GmAutomationTrigger {
   functionName: String
   containerTypeName: String
   propertyKey: String
-  debounceMs: Int!
   writeSource: String!
+  debounceMs: Int!
   lastMatchedAt: DateTime
   matchCount24h: Int!
   warnings: [String!]!
@@ -66,12 +66,12 @@ Filter: only this container type. Always null for player&#x005F;count&#x005F;cha
 Filter: only this property key. Always null for player&#x005F;count&#x005F;changed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>debounceMs</b></code>](#debounce-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#debounce-ms\} 
-Debounce window in ms. player&#x005F;count&#x005F;changed coalesces on the trailing edge; other model events use their existing leading-edge behavior.
-
-
 #### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>writeSource</b></code>](#write-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#write-source\} 
 property&#x005F;changed only: which writes are observed — "direct" (gameModelSetProperty), "function" (a mutation applied inside an invoke, automation run, or timer fire), or "any". Always "any" for other events, which ignore it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>debounceMs</b></code>](#debounce-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#debounce-ms\} 
+Debounce window in ms. player&#x005F;count&#x005F;changed coalesces on the trailing edge; other model events use their existing leading-edge behavior.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>lastMatchedAt</b></code>](#last-matched-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-matched-at\} 
