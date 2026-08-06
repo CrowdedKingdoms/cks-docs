@@ -21,7 +21,7 @@ Legacy donation/property-token data; these products are no longer purchasable. R
 
 :::
 
-Returns the authenticated user's lifetime donation totals. Requires a valid session token. LEGACY: donations are no longer purchasable; retained for historical display only.
+Lifetime donation totals for the authenticated user, summed across every app. Requires a valid game token.
 
 
 ```graphql
@@ -31,5 +31,4 @@ myDonationData: UserDonationData! @deprecated
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>UserDonationData</b></code>](/reference/graphql/types/objects/user-donation-data.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Aggregated lifetime donation totals for a user. LEGACY: donations are no longer purchasable. Returned by the deprecated myDonationData query.
+#### [<code style={{ fontWeight: 'normal' }}><b>UserDonationData</b></code>](/reference/graphql/types/objects/user-donation-data.mdx) <Badge class="badge badge--secondary " text="object"/>

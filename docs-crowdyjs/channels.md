@@ -24,16 +24,15 @@ import {
 } from '@crowdedkingdoms/crowdyjs';
 
 const identity = createCrowdyClient({
-  managementUrl: 'https://dev-management-api.crowdedkingdoms.com',
+  httpUrl: 'https://api.dev.crowdedkingdoms.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),
 });
 await identity.auth.devLogin('player@example.com'); // passwordless sign-in (dev/test); see /crowdyjs/readme#sign-in-with-clientauth-passwordless
 
 const appToken = await identity.portal.mintAppToken('1');
 const game = createCrowdyClient({
-  managementUrl: 'https://dev-management-api.crowdedkingdoms.com',
-  httpUrl: appToken.gameApiUrl ?? 'https://dev-game-api.crowdedkingdoms.com',
-  wsUrl: appToken.gameApiWsUrl ?? 'wss://dev-game-api.crowdedkingdoms.com',
+  httpUrl: appToken.gameApiUrl ?? 'https://api.dev.crowdedkingdoms.com/graphql',
+  wsUrl: appToken.gameApiWsUrl ?? 'wss://api.dev.crowdedkingdoms.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:app:1'),
 });
 game.setToken(appToken.token);

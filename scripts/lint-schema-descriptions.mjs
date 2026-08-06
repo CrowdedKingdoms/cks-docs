@@ -22,12 +22,23 @@ const SCHEMAS = [
 let errors = 0;
 let warnings = 0;
 
+// A schema this gate cannot read is a schema it cannot fail on, so a missing file is
+// an error rather than a skip. It used to `console.warn` and `continue`, which meant
+// the gate would have gone on reporting OK over a deleted SDL indefinitely.
+let linted = 0;
+
 for (const { name, file, strict } of SCHEMAS) {
   const path = resolve(repo, file);
   if (!existsSync(path)) {
-    console.warn(`[lint:schema] skip (missing): ${file}`);
+    console.error(
+      `[lint:schema] ERROR missing: ${file}\n` +
+        `  Run \`npm run sdl:gen\` to republish it. Refusing to pass over a schema ` +
+        `that was not checked.`,
+    );
+    errors++;
     continue;
   }
+  linted += 1;
   const schema = buildSchema(readFileSync(path, 'utf8'));
   const roots = [schema.getQueryType(), schema.getMutationType(), schema.getSubscriptionType()].filter(Boolean);
 
@@ -79,7 +90,20 @@ for (const { name, file, strict } of SCHEMAS) {
 }
 
 if (errors > 0) {
-  console.error(`\n[lint:schema] FAIL: ${errors} required description(s) missing (${warnings} warning(s)).`);
+  console.error(`\n[lint:schema] FAIL: ${errors} error(s) (${warnings} warning(s)).`);
   process.exit(1);
 }
-console.log(`\n[lint:schema] OK (${warnings} warning(s)). All required public root fields/args are documented.`);
+
+// Second count, derived a different way: pass only if every declared schema was
+// actually opened. Zero findings over zero schemas is not a pass.
+if (linted !== SCHEMAS.length) {
+  console.error(
+    `\n[lint:schema] FAIL: linted ${linted}/${SCHEMAS.length} schema(s). ` +
+      `A schema that was never read cannot fail this gate.`,
+  );
+  process.exit(1);
+}
+console.log(
+  `\n[lint:schema] OK (${warnings} warning(s)). ${linted}/${SCHEMAS.length} schemas checked; ` +
+    `all required public root fields/args are documented.`,
+);

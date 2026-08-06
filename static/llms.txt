@@ -1,19 +1,19 @@
 # Crowded Kingdoms APIs
 
-> Crowded Kingdoms is a platform for massive multiplayer worlds. There are three public APIs: the Management API (identity, organizations, apps marketplace, access tiers, billing, payments, quotas, environments — GraphQL), the Game API (runtime world/replication data and the realtime UDP-proxy subscription stream — GraphQL), and the Replication API / "Buddy" (a binary UDP wire protocol for low-latency spatial replication). Browser clients should use the CrowdyJS TypeScript SDK. Passwordless Management sign-in produces an identity session token; mint a separate app-scoped token for Game API/realtime calls. BigInt values are decimal strings; timestamps are ISO-8601 UTC.
+> Crowded Kingdoms is a platform for massive multiplayer worlds. There are two public APIs: one GraphQL API serving both the management surface (identity, organizations, apps marketplace, access tiers, billing, payments, quotas) and the game surface (runtime world/replication data and the realtime UDP-proxy subscription stream), and the Replication API / "Buddy" (a binary UDP wire protocol for low-latency spatial replication). The management and game surfaces are ONE endpoint — there is no separate management host to configure. Browser clients should use the CrowdyJS TypeScript SDK. Passwordless sign-in produces an identity session token; mint a separate app-scoped token for gameplay and realtime calls. Apps live in a single datacenter, so mintAppToken and gameClientBootstrap return the endpoint to use for that app — follow it rather than hardcoding a host. BigInt values are decimal strings; timestamps are ISO-8601 UTC.
 
 ## Start here (for AI agents and integrators)
 
 - [For AI agents — quickstart & end-to-end workflows](https://docs.crowdedkingdoms.com/overview/for-ai-agents): get a dev-tier key, the SDL/introspection URLs, and the most common flows (register → token → host discovery → spatial send; and the studio-backend economy flow).
-- [Overview / client workflow](https://docs.crowdedkingdoms.com/overview/client-workflow): the two-endpoint model (Management API + Game API).
+- [Overview / client workflow](https://docs.crowdedkingdoms.com/overview/client-workflow): one endpoint, two token types, and how an app's datacenter endpoint is discovered.
 - [Discord community support](https://discord.gg/x7tMKGwHf): ask questions and get help from the Crowded Kingdoms community.
 
 ## Schema (downloadable SDL)
 
-- [Management API SDL](https://docs.crowdedkingdoms.com/schema/management-api.graphql)
-- [Game API SDL](https://docs.crowdedkingdoms.com/schema/game-api.graphql)
+- [Full SDL](https://docs.crowdedkingdoms.com/schema/game-api.graphql) - the complete unified schema; start here.
+- [Management-surface SDL](https://docs.crowdedkingdoms.com/schema/management-api.graphql) - the same schema filtered to identity/orgs/apps/billing, for reading that surface alone.
 - [CrowdyJS SDL](https://docs.crowdedkingdoms.com/schema/crowdyjs.graphql)
-- Introspection is enabled on the dev tier; the GraphQL Playground is served at each API's `/graphql` endpoint.
+- Introspection is enabled on the dev tier; the GraphQL Playground is served at the API's `/graphql` endpoint.
 
 ## Conventions (read before calling)
 
@@ -22,14 +22,14 @@
 - [Rate limits and query cost](https://docs.crowdedkingdoms.com/overview/rate-limits)
 - [Authentication (Game API: bearer token + ws connection_init)](https://docs.crowdedkingdoms.com/game-api/authentication)
 
-## Management API (GraphQL — identity, apps, billing)
+## Management surface (identity, apps, billing) — same endpoint as the game surface
 
-- [Management API intro](https://docs.crowdedkingdoms.com/management-api/intro)
-- [Management API guide](https://docs.crowdedkingdoms.com/management-api/readme)
+- [Management surface intro](https://docs.crowdedkingdoms.com/management-api/intro)
+- [Guide](https://docs.crowdedkingdoms.com/management-api/readme)
 - [GraphQL reference (operations & types)](https://docs.crowdedkingdoms.com/management-api/reference/graphql-overview)
-- [Dedicated environments](https://docs.crowdedkingdoms.com/management-api/dedicated-environments) · [Shared environment](https://docs.crowdedkingdoms.com/management-api/shared-environment) · [Game setup](https://docs.crowdedkingdoms.com/management-api/game-setup)
+- [Dedicated environments (RETIRED)](https://docs.crowdedkingdoms.com/management-api/dedicated-environments) · [Shared environment](https://docs.crowdedkingdoms.com/management-api/shared-environment) · [Game setup](https://docs.crowdedkingdoms.com/management-api/game-setup)
 
-## Game API (GraphQL — world data + realtime UDP proxy)
+## Game surface (world data + realtime UDP proxy) — same endpoint
 
 - [Game API intro](https://docs.crowdedkingdoms.com/game-api/intro)
 - [Authentication](https://docs.crowdedkingdoms.com/game-api/authentication)
@@ -72,5 +72,5 @@
 
 ## Agentic Crowdy Studio policy and operations (development only)
 
-- [Management app policy](https://docs.crowdedkingdoms.com/management-api/agentic-crowdy-studio-policy): Management API `v0.1.193-dev`, allowlisted `openai/gpt-oss-120b`, platform-funded caps, `use_studio_agent`, privacy, retention, usage, and replica freshness.
+- [Studio agent policy](https://docs.crowdedkingdoms.com/management-api/agentic-crowdy-studio-policy): allowlisted `openai/gpt-oss-120b`, platform-funded caps, `use_studio_agent`, privacy, retention, usage, and replica freshness.
 - [Operator runbook](https://docs.crowdedkingdoms.com/operators/agentic-crowdy-studio): platform/app kills, secret injection, freshness monitoring, incident procedure, and purge.

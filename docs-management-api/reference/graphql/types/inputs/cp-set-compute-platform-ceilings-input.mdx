@@ -29,6 +29,8 @@ input CpSetComputePlatformCeilingsInput {
   maxDbOpsPerTick: Int
   maxEgressMsgsPerMin: Int
   maxEgressBytesPerMin: BigInt
+  maxStateWritesPerMin: Int
+  maxStateBytesPerMin: BigInt
 }
 ```
 
@@ -69,6 +71,14 @@ Max module-emitted replication messages per minute. &#x003E; 0; explicit null cl
 
 #### [<code style={{ fontWeight: 'normal' }}>CpSetComputePlatformCeilingsInput.<b>maxEgressBytesPerMin</b></code>](#max-egress-bytes-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-bytes-per-min\} 
 Max module-emitted replication bytes per minute (decimal string). &#x003E; 0; explicit null clears the override; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpSetComputePlatformCeilingsInput.<b>maxStateWritesPerMin</b></code>](#max-state-writes-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-state-writes-per-min\} 
+Max module state saves per minute. &#x003E; 0; explicit null clears the override; omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CpSetComputePlatformCeilingsInput.<b>maxStateBytesPerMin</b></code>](#max-state-bytes-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-state-bytes-per-min\} 
+Max module state bytes written per minute (decimal string). &#x003E; 0; explicit null clears the override; omit to leave unchanged.
 
 
 

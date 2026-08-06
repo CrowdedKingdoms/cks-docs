@@ -44,55 +44,55 @@ type User {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
-Unique user id (primary key). BigInt serialized as a string.
+Unique user id and primary key. BigInt serialized as a decimal string.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
-Account email address. Null for soft-deleted / anonymized accounts.
+Account email; null for anonymized/soft-deleted accounts.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>gamertag</b></code>](#gamertag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#gamertag\} 
-Public display name. Null until set, or after account deletion.
+Public display name; null if unset or anonymized. Unique in combination with `disambiguation`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>disambiguation</b></code>](#disambiguation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#disambiguation\} 
-Discriminator paired with gamertag; the (gamertag, disambiguation) pair is unique.
+Discriminator paired with `gamertag` to form a unique handle; null if unset.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 
-Opaque base64-encoded client state blob. Null when unset.
+User-level state blob, base64-encoded binary (management-owned). Null when cleared.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>isConfirmed</b></code>](#is-confirmed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-confirmed\} 
-True once the user has confirmed their email address.
+Whether the account email has been confirmed.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-Account creation timestamp.
+Account creation timestamp (ISO-8601).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>grantEarlyAccess</b></code>](#grant-early-access)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grant-early-access\} 
-Base early-access entitlement flag for this account (before any admin override).
+Whether the user qualifies for early access through normal eligibility (the free-play window/rollout).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>grantEarlyAccessOverride</b></code>](#grant-early-access-override)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grant-early-access-override\} 
-Admin override that force-enables early access regardless of the base flag/window. Set via setEarlyAccessOverride (super-admin only).
+Admin override forcing early access on/off regardless of normal eligibility (set via `setEarlyAccessOverride`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
-Optional primary/home organization id (BigInt as string), if the account is tied to one. Full org membership is modeled via org&#x005F;members; see myOrganizations.
+Organization the user belongs to, or null. BigInt serialized as a decimal string.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>externalId</b></code>](#external-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#external-id\} 
-Optional external identity-provider id for federated / SSO accounts.
+External identity-provider id for federated accounts, or null.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>userType</b></code>](#user-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-type\} 
-Account type discriminator (e.g. 'direct'); becomes 'deleted' after soft-delete. Mutable by super admins via updateUserType.
+Account type, e.g. "direct" or "deleted".
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>isSuperAdmin</b></code>](#is-super-admin)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-super-admin\} 
-Platform super-admin flag. When true the user bypasses all org permission checks platform-wide. Managed via setSuperAdmin (super-admin only).
+Whether the user holds platform super-admin privileges (toggled via `setSuperAdmin`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>isOperator</b></code>](#is-operator)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-operator\} 
@@ -100,9 +100,9 @@ Company-employee flag that grants access to control-plane / operator features. I
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>permissionsForOrg</b></code>](#permissions-for-org)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permissions-for-org\} 
-The current user's effective permission keys on the given org. Empty if not a member. Always full set if super admin.
+The user's effective permission keys on the given org (empty if not a member; full set if super admin). Requires a valid bearer game token.
 ##### [<code style={{ fontWeight: 'normal' }}>User.permissionsForOrg.<b>orgId</b></code>](#user-permissions-for-org-org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-permissions-for-org-org-id\} 
-Organization id (BigInt as string) to evaluate the parent user's effective permissions against.
+Organization id (BigInt sent as a decimal string) to evaluate the user against.
 
 
 

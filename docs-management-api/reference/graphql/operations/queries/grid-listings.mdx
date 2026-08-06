@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-The app's active grid listings (studio catalog + store browse).
+Browse the app's grid listings (P4b): blueprints that stamp a fresh grid per purchase, or concrete grids. Buying confers ownership + keys + quota preset atomically.
 
 
 ```graphql
@@ -28,7 +28,7 @@ gridListings(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>gridListings.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
-App whose grid listings to view.
+App whose grid listings to browse.
 
 
 
@@ -36,4 +36,4 @@ App whose grid listings to view.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>GridListing</b></code>](/reference/graphql/types/objects/grid-listing.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A studio grid listing (07 §1.1): a blueprint that stamps a fresh grid per sale, or a concrete grid. Purchase confers grid&#x005F;ownership + the listed keys + quota preset atomically.
+A grid listing available in the app store (P4b): a blueprint that stamps a fresh grid per purchase, or a concrete grid. Buying it confers grid&#x005F;ownership + the listed player-code keys + the quota preset atomically.

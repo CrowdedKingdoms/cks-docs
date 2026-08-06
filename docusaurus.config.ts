@@ -2,12 +2,17 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
-const managementSchema =
-  process.env.CKS_DOCS_MANAGEMENT_SCHEMA ?? '../cks-management-api/schema.gql';
-const gameSchema =
-  process.env.CKS_DOCS_GAME_SCHEMA ?? '../cks-game-api/schema.gql';
-const crowdyJsSchema =
-  process.env.CKS_DOCS_CROWDYJS_SCHEMA ?? '../CrowdyJS/schema.gql';
+// The reference generators read the PUBLISHED SDL under static/schema/, not the sibling
+// API checkouts, so the reference and the schema the site serves are generated from the
+// same bytes and cannot drift apart. `npm run sdl:gen` refreshes those files from the
+// sibling repos and runs first in `prebuild`.
+//
+// There is no management schema source: cks-management-api was retired 2026-08-06 and
+// its SDL is now derived from the unified cks-game-api schema by sdl:gen, filtered to
+// scripts/management-surface.json.
+const managementSchema = './static/schema/management-api.graphql';
+const gameSchema = './static/schema/game-api.graphql';
+const crowdyJsSchema = './static/schema/crowdyjs.graphql';
 
 const config: Config = {
   title: 'Crowded Kingdoms Docs',

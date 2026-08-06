@@ -33,21 +33,35 @@ CrowdyJS targets browsers by default and uses native `fetch`, `WebSocket`,
 `crypto`, `btoa`, and `atob`. Node tools can use the SDK if they provide
 browser-compatible globals for realtime connections.
 
-## Two-endpoint architecture
+## One endpoint, two token types
 
-The SDK talks to two GraphQL base URLs:
+The SDK talks to **one** GraphQL base URL, configured as `httpUrl` (and `wsUrl` for
+realtime). What separates the surfaces is the token, not the host:
 
-| Sub-client | Endpoint config | Use |
+| Sub-client | Token | Use |
 |---|---|---|
-| `client.auth`, `client.users`, `client.apps`, `client.platform` | `managementUrl` | Passwordless identity (`requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`, `devLogin`, `availableLoginProviders`, `myIdentities`/`linkIdentity`/`unlinkIdentity`, `logout`, `me`, `updateGamertag`), app routing reads (`apps.routeFor`), and public platform config (`platform.config`). |
-| `client.chunks`, `client.voxels`, `client.actors`, `client.avatars`, `client.teleport`, `client.state`, `client.host`, `client.serverStatus`, `client.channels`, `client.teams`, `client.gameModel`, `client.udp` | `httpUrl` / `wsUrl` | World data, avatars, channels & teams, game models (incl. [automations](automations) and [model-driven notifications](model-notifications)), the GraphQL UDP proxy subscription, and game-client bootstrap. `client.host` covers host election (`get` / `amIHost`) and `heartbeat` — see [Host discovery](/game-api/host-discovery). |
+| `client.auth`, `client.users`, `client.apps`, `client.platform` | identity session | Passwordless identity (`requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`, `devLogin`, `availableLoginProviders`, `myIdentities`/`linkIdentity`/`unlinkIdentity`, `logout`, `me`, `updateGamertag`), app routing reads (`apps.routeFor`), and public platform config (`platform.config`). |
+| `client.chunks`, `client.voxels`, `client.actors`, `client.avatars`, `client.teleport`, `client.state`, `client.host`, `client.serverStatus`, `client.channels`, `client.teams`, `client.gameModel`, `client.udp` | app-scoped | World data, avatars, channels & teams, game models (incl. [automations](automations) and [model-driven notifications](model-notifications)), the GraphQL UDP proxy subscription, and game-client bootstrap. `client.host` covers host election (`get` / `amIHost`) and `heartbeat` — see [Host discovery](/game-api/host-discovery). |
 
-Each client has one `AuthState`. Drive identity (`auth`, `users`, `apps`, `platform`, `portal`) from a client holding the **identity session token**, and the world/realtime surfaces from a per-game client holding that app's **app-scoped token** — see [Authentication: session vs app-scoped tokens](#authentication-session-vs-app-scoped-tokens).
+Each client has one `AuthState`, so you still build **two clients**: an identity client
+holding the session token, and a per-game client holding that app's app-scoped token —
+see [Authentication: session vs app-scoped tokens](#authentication-session-vs-app-scoped-tokens).
+
+The two clients need not share a URL. An app lives in one datacenter, so `mintAppToken`
+returns the `gameApiUrl` / `gameApiWsUrl` for that app, and the per-game client should
+use them.
+
+:::note[Upgrading from v13 or earlier]
+`managementUrl`, `managementGraphqlEndpoint` and the `client.management` escape hatch
+were removed when the separate management server was retired. Point `httpUrl` at the
+API and delete the `managementUrl` line; use `client.graphql` where you used
+`client.management`.
+:::
 
 ### Full sub-client surface
 
-As of v6 (completed in v6.1), CrowdyJS wraps the **full** public Management + Game
-API surface — every non-deprecated root field has a typed method, with Relay
+As of v6 (completed in v6.1), CrowdyJS wraps the **full** public API
+surface — every non-deprecated root field has a typed method, with Relay
 `*Connection` cursor-pagination variants alongside the legacy offset lists. (v7
 then made gameplay require an app-scoped token — see [Authentication: session vs
 app-scoped tokens](#authentication-session-vs-app-scoped-tokens).) The surfaces
@@ -84,14 +98,13 @@ For integration testing on the shared dev tier (current game env **`dev1`**), se
 
 ```ts
 createCrowdyClient({
-  managementUrl: 'https://api.dev.crowdedkingdoms.com',
-  httpUrl: 'https://game.dev1.dev.cks-env.com/graphql',
-  wsUrl: 'wss://game.dev1.dev.cks-env.com/graphql',
+  httpUrl: 'https://api.dev.crowdedkingdoms.com/graphql',
+  wsUrl: 'wss://api.dev.crowdedkingdoms.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore(),
 });
 ```
 
-This single client covers identity and routing reads. For gameplay you still mint an app-scoped token and drive the Game API from a per-game client — see [Authentication: session vs app-scoped tokens](#authentication-session-vs-app-scoped-tokens) and [Dev tier (client integration)](/management-ui/dev-tier).
+This single client covers identity and routing reads. For gameplay you still mint an app-scoped token and drive the world surfaces from a per-game client — see [Authentication: session vs app-scoped tokens](#authentication-session-vs-app-scoped-tokens) and [Dev tier (client integration)](/management-ui/dev-tier).
 
 Register at [https://app.dev.crowdedkingdoms.com/register](https://app.dev.crowdedkingdoms.com/register) — no shared admin account required.
 
@@ -134,12 +147,12 @@ See [Sign-in with `client.auth`](#sign-in-with-clientauth-passwordless) below.
 
 Use the **two-client pattern**: an identity client on the Overworld/hub origin
 holding the session token, and a separate per-game client holding the app token.
-They share only `managementUrl`, never a token store:
+They never share a token store:
 
 ```ts
 // Identity client (Overworld origin) — holds the session token.
 const identity = createCrowdyClient({
-  managementUrl: 'https://management-api.example.com',
+  httpUrl: 'https://api.example.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),
 });
 // Passwordless sign-in (stores the session token). Magic link / social in
@@ -151,7 +164,6 @@ const appToken = await identity.portal.mintAppToken(appId);
 const game = createCrowdyClient({
   httpUrl: appToken.gameApiUrl!,
   wsUrl: appToken.gameApiWsUrl!,
-  managementUrl: 'https://management-api.example.com',
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:app:' + appId),
 });
 game.setToken(appToken.token);
@@ -203,12 +215,12 @@ import {
   createCrowdyClient,
 } from '@crowdedkingdoms/crowdyjs';
 
-const managementUrl = 'https://management-api.example.com';
+const apiUrl = 'https://api.example.com/graphql';
 const appId = '1';
 
 // Identity client: restore or sign in (passwordless) for the identity session token.
 const identity = createCrowdyClient({
-  managementUrl,
+  httpUrl: apiUrl,
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),
 });
 
@@ -225,7 +237,6 @@ const appToken = await identity.portal.mintAppToken(appId);
 const game = createCrowdyClient({
   httpUrl: appToken.gameApiUrl!,
   wsUrl: appToken.gameApiWsUrl!,
-  managementUrl,
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:app:' + appId),
   realtime: {
     retryAttempts: 8,
@@ -234,12 +245,12 @@ const game = createCrowdyClient({
 });
 game.setToken(appToken.token);
 
-// gameClientBootstrap is a Game API call, so it runs on the per-game client.
+// gameClientBootstrap needs the app-scoped token, so it runs on the per-game client.
 const bootstrap = await game.serverStatus.gameClientBootstrap(appId);
 console.log(bootstrap.versionInfo.minimumClientVersion);
 ```
 
-Always set `managementUrl` explicitly for new integrations. If omitted, the SDK falls back to `httpUrl` for legacy single-host deployments.
+Note that the per-game client uses the URLs the mint returned, not `apiUrl`: those name the datacenter holding the app. The identity client can stay on the shared origin.
 
 ## Game loop lifecycle
 

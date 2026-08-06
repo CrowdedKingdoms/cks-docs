@@ -4127,12 +4127,14 @@ type PlayerPulse {
 }
 
 """
-A registered GraphQL API server instance in the fleet (either a management-api or a game-api, see `kind`), with reachability addresses and basic host telemetry. Returned by graphqlServers (all) and activeGraphQLServers (only ReadyForClients). Use this for service discovery; realtime/UDP play still goes through the game-api UDP proxy.
+A registered GraphQL API server instance in the fleet, with reachability addresses and basic host telemetry. Returned by graphqlServers (all) and activeGraphQLServers (only ReadyForClients). Use this for service discovery; realtime/UDP play still goes through the game-api UDP proxy.
 """
 type GraphQLServer {
   """Unique id of this GraphQL server registration."""
   graphqlServerId: ID!
-  """Logical kind of GraphQL service: 'management-api' or 'game-api'."""
+  """
+  Logical kind of GraphQL service. Every current server is 'game-api', which serves both the management and game surfaces; 'management-api' appears only on rows predating their unification.
+  """
   kind: String
   """
   Internal/private IPv4 address of this server. Use publicIp4 for external reachability.
@@ -7292,7 +7294,7 @@ type Query {
   """
   serverWithLeastClients: ServerStatus!
   """
-  List every registered GraphQL API server (both management-api and game-api kinds), regardless of health/state. No authentication required. For service discovery; to route clients, prefer activeGraphQLServers (filters to healthy servers).
+  List every registered GraphQL API server regardless of health/state. No authentication required. For service discovery; to route clients, prefer activeGraphQLServers (filters to healthy servers).
   """
   graphqlServers: [GraphQLServer!]!
   """
@@ -10132,7 +10134,7 @@ type Mutation {
     chunkZ: Int
   ): GridPurchaseResult!
   """
-  Create a marketplace listing (free mode) for code the caller authors — personally, or org-owned via ownerOrgId (DN-9; requires manage_compute in that org). SIDE EFFECTS: the catalog row is written on cks-management-api with an ownership audit entry and replica-synced back. Publishing never uploads source; versions snapshot artifact hashes only.
+  Create a marketplace listing (free mode) for code the caller authors — personally, or org-owned via ownerOrgId (DN-9; requires manage_compute in that org). SIDE EFFECTS: writes the catalog row with an ownership audit entry. Publishing never uploads source; versions snapshot artifact hashes only.
   """
   publishPlayerCode(
     """App, display metadata, license mode, and optional owning org."""

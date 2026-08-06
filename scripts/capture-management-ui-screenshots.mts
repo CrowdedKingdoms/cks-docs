@@ -3,7 +3,7 @@
  * Capture Management UI screenshots for cks-docs.
  *
  * Prerequisites:
- *   - cks-management-api on :3001
+ *   - cks-game-api on :3001 (serves the management surface)
  *   - cks-management-ui on :5173
  *   - Postgres with local seed (crowded-kingdom-studios + local env)
  *
@@ -35,7 +35,7 @@ async function preflight(): Promise<void> {
   for (const [name, url, init] of [
     ['management-ui', `${baseURL}/login`, undefined] as const,
     [
-      'management-api',
+      'ck-api',
       `${apiURL}/graphql`,
       {
         method: 'POST' as const,
@@ -51,7 +51,7 @@ async function preflight(): Promise<void> {
       const hint =
         name === 'management-ui'
           ? 'cd cks-management-ui && npm run dev -- --host 127.0.0.1 --port 5173'
-          : 'cd cks-management-api && npm run start:dev';
+          : 'cd cks-game-api && npm run start:dev';
       console.error(
         `Preflight failed for ${name}: ${err instanceof Error ? err.message : err}`,
       );

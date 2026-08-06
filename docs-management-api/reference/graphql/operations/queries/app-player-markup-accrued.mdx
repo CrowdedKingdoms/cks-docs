@@ -36,4 +36,4 @@ App whose accrued markup to total.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
-64-bit integer. Sent and received as a decimal string (e.g. "123"), never a JSON number, to avoid precision loss for values beyond 2^53. On input, provide a string literal; on output, the value is serialized as a string.
+Arbitrary-precision signed integer (used for 64-bit ids and chunk coordinates such as appId, userId and chunk x/y/z). ALWAYS transmitted as a base-10 decimal STRING in BOTH directions — send it quoted (e.g. "1024", "-5") and read it back as a string; never use a raw JSON number, because large values overflow IEEE-754 doubles. The server rejects any value that is not a valid integer string.

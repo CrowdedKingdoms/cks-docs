@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A studio grid listing (07 §1.1): a blueprint that stamps a fresh grid per sale, or a concrete grid. Purchase confers grid&#x005F;ownership + the listed keys + quota preset atomically.
+A grid listing available in the app store (P4b): a blueprint that stamps a fresh grid per purchase, or a concrete grid. Buying it confers grid&#x005F;ownership + the listed player-code keys + the quota preset atomically.
 
 
 ```graphql
@@ -28,8 +28,8 @@ type GridListing {
   priceCents: Int!
   conferredPermissionKeys: [String!]!
   resalePolicy: String!
-  studioCutBps: Int!
-  status: String!
+  studioCutBps: Int
+  status: String
 }
 ```
 
@@ -65,14 +65,14 @@ Player-code keys conferred on purchase.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GridListing.<b>resalePolicy</b></code>](#resale-policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#resale-policy\} 
-Resale policy: 'no&#x005F;resale', 'resale&#x005F;free', or 'resale&#x005F;with&#x005F;studio&#x005F;cut'.
+Resale policy for the grid.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridListing.<b>studioCutBps</b></code>](#studio-cut-bps)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#studio-cut-bps\} 
+#### [<code style={{ fontWeight: 'normal' }}>GridListing.<b>studioCutBps</b></code>](#studio-cut-bps)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#studio-cut-bps\} 
 Studio cut (bps) on resale, when applicable.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridListing.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+#### [<code style={{ fontWeight: 'normal' }}>GridListing.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
 Catalog status: 'active' or 'delisted'.
 
 

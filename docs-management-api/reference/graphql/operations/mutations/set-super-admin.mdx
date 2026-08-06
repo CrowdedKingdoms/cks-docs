@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Super-admin only. Grants or revokes platform super-admin (users.is&#x005F;super&#x005F;admin), which bypasses every org permission check platform-wide. Requires the caller to be a super admin. SIDE EFFECT: changes the target user's platform privileges.
+ADMIN PRIVILEGE CHANGE: grants or revokes platform super-admin on the target user, changing their privileges across the whole platform. Requires a super-admin bearer game token (and the management API enabled).
 
 
 ```graphql
@@ -29,11 +29,11 @@ setSuperAdmin(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>setSuperAdmin.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
-Target user id (BigInt as string).
+Target user id (BigInt as a decimal string).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setSuperAdmin.<b>value</b></code>](#value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#value\} 
-true to grant super admin, false to revoke.
+true grants super-admin; false revokes it.
 
 
 

@@ -6,7 +6,11 @@ title: Overview
 
 # Overview
 
-Crowded Kingdoms provides APIs that individuals and studios can use to create online games with unlimited player density (UPD). There are three distinct APIs: management, game, and replication. There is a central **management environment** (identity, orgs, billing, app registry) and a **shared game platform** where customer apps run by default — one managed Game API fleet per tier, scoped by `appId`. Platform operators can provision **dedicated environments** (isolated Game API + database + Buddy per org) for internal or enterprise use; that path is not self-service in the customer portal.
+Crowded Kingdoms provides APIs that individuals and studios can use to create online games with unlimited player density (UPD). There are **two**: one GraphQL API, and the replication (UDP) protocol.
+
+The GraphQL API has two surfaces — **management** (identity, orgs, billing, app registry) and **game** (world data and realtime) — but they are one service at one endpoint, documented separately here because they are read at different times. What separates them is the token, not the host: sign-in yields an identity session token, and gameplay needs an app-scoped token minted from it.
+
+Customer apps run on a shared platform scoped by `appId`. An app lives in **one datacenter**, so the API tells your client which endpoint to use for that app rather than expecting you to know. Dedicated per-org environments were retired without replacement.
 
 SDKs wrap these APIs in a more user-friendly interface and paradigm.
 
@@ -16,16 +20,15 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 
 ## APIs
 
-### Management  
-- A GraphQL API at [https://api.crowdedkingdoms.com/graphql](https://api.crowdedkingdoms.com/graphql) (dev: [https://api.dev.crowdedkingdoms.com/graphql](https://api.dev.crowdedkingdoms.com/graphql))
+### Management surface
+- On the GraphQL API at [https://api.crowdedkingdoms.com/graphql](https://api.crowdedkingdoms.com/graphql) (dev: [https://api.dev.crowdedkingdoms.com/graphql](https://api.dev.crowdedkingdoms.com/graphql))
 - Manage user and org accounts
 - Configure marketplace settings for apps (games)
 - Create apps on the shared platform; manage billing and wallet
 
-### Game 
-- A GraphQL API on the **shared platform** for customer apps (discover URL via `platformConfig` or `app.gameApiUrl`)
-- Dev tier shared endpoint: [https://game.shared.dev.cks-env.com/graphql](https://game.shared.dev.cks-env.com/graphql)
-- Dedicated environments (operator-provisioned) host one or more apps on org-specific Game API hosts
+### Game surface
+- The same GraphQL API, for world data and realtime
+- Call it at the app's own endpoint — `mintAppToken` and `gameClientBootstrap` return `gameApiUrl` / `gameApiWsUrl`, and `platformConfig` / `app.gameApiUrl` also carry it
 - Used to get assigned a replication server
 - Authenticated with an **app-scoped token** (minted per app from your identity session token — see [Portals & app-scoped tokens](/management-api/portals-and-app-tokens)), not the login session token
 - Provides functionality to manage game state, permissions, settings, teams, channels, chunks, and more

@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A registered GraphQL server instance (management-api or game-api) with its network addresses, health metrics, and lifecycle state.
+A registered GraphQL API server instance in the fleet, with reachability addresses and basic host telemetry. Returned by graphqlServers (all) and activeGraphQLServers (only ReadyForClients). Use this for service discovery; realtime/UDP play still goes through the game-api UDP proxy.
 
 
 ```graphql
@@ -29,6 +29,7 @@ type GraphQLServer {
   publicIp4: String
   publicIp6: String
   apiPort: Int!
+  publicHostname: String
   status: ServerState!
   cpuUsagePct: Float
   memoryUsagePct: Float
@@ -42,63 +43,67 @@ type GraphQLServer {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>graphqlServerId</b></code>](#graphql-server-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID!</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#graphql-server-id\} 
-Auto-incrementing server registry id.
+Unique id of this GraphQL server registration.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#kind\} 
-Logical kind of GraphQL service: 'management-api' or 'game-api'.
+Logical kind of GraphQL service. Every current server is 'game-api', which serves both the management and game surfaces; 'management-api' appears only on rows predating their unification.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>ip4</b></code>](#ip-4)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ip-4\} 
-
+Internal/private IPv4 address of this server. Use publicIp4 for external reachability.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>ip6</b></code>](#ip-6)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ip-6\} 
-
+Internal/private IPv6 address of this server. Use publicIp6 for external reachability.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>runtimeServerId</b></code>](#runtime-server-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#runtime-server-id\} 
-
+UUID of the runtime/Buddy (cks-udp-api) instance this API server is paired with, if any.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>providerInstanceId</b></code>](#provider-instance-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provider-instance-id\} 
-
+Cloud provider instance id of the underlying host, if known.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>publicIp4</b></code>](#public-ip-4)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#public-ip-4\} 
-
+Public IPv4 address clients use to reach this server, if assigned.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>publicIp6</b></code>](#public-ip-6)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#public-ip-6\} 
-
+Public IPv6 address clients use to reach this server, if assigned.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>apiPort</b></code>](#api-port)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#api-port\} 
-TCP port the GraphQL API listens on (default 4000).
+TCP port the GraphQL/HTTP API listens on (default 4000).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>publicHostname</b></code>](#public-hostname)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#public-hostname\} 
+Public hostname clients can reach this instance on directly over TLS, e.g. `ck-api-2.gxca.prod.cp.cks-env.com`. Null when the instance has no public DNS name or certificate yet, in which case it is reachable only through the shared load balancer and must not be connected to directly. Prefer the `gameApiUrl` returned by mintAppToken over building a URL from this field: that call already picks a low-load instance for you.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ServerState!</b></code>](/reference/graphql/types/enums/server-state.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
-Lifecycle state. Only ReadyForClients servers should receive client traffic (see activeGraphQLServers).
+Current lifecycle state (see ServerState). activeGraphQLServers returns only ReadyForClients.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>cpuUsagePct</b></code>](#cpu-usage-pct)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cpu-usage-pct\} 
-Most recently reported CPU utilization, as a percentage (0–100).
+Current CPU utilization percentage (0-100) of the host, if reported.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>memoryUsagePct</b></code>](#memory-usage-pct)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#memory-usage-pct\} 
-Most recently reported memory utilization, as a percentage (0–100).
+Current memory utilization percentage (0-100) of the host, if reported.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>loadAverage1m</b></code>](#load-average-1-m)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#load-average-1-m\} 
-1-minute load average reported by the host.
+1-minute load average of the host, if reported.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
-
+When this server was first registered in the fleet.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
-
+When this server row was last updated (heartbeat). Use to judge freshness.
 
 
 

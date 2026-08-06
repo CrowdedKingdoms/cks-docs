@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Current server version plus the minimum client version required to connect; used by clients to gate/prompt upgrades. No auth required.
+Current server version and the minimum client version the server accepts. No authentication required. Compare your client build against minimumClientVersion before connecting and prompt an update if it is too old.
 
 
 ```graphql
@@ -25,4 +25,5 @@ versionInfo: ServerVersionInfo!
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>ServerVersionInfo</b></code>](/reference/graphql/types/objects/server-version-info.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>ServerVersionInfo</b></code>](/reference/graphql/types/objects/server-version-info.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Server version plus the minimum client version the server will accept. A client whose build is older than minimumClientVersion should prompt the user to update before connecting.

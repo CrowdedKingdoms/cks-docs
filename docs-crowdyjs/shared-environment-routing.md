@@ -31,7 +31,7 @@ import {
 
 // Identity client (Overworld/hub origin): holds the session token.
 const base = createCrowdyClient({
-  managementUrl: 'https://api.crowdedkingdoms.com',
+  httpUrl: 'https://api.crowdedkingdoms.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),
 });
 
@@ -39,11 +39,11 @@ const cfg = await base.platform.config();
 // cfg.sharedGameApiUrl, cfg.sharedGameApiWsUrl, cfg.freeAppsPerOrg
 ```
 
-## Build the Game API client
+## Build the gameplay client
 
 Sign in (passwordless) on the identity client, then **mint an app-scoped token**
 for the app you are entering — gameplay rejects the identity session token. Build
-the Game API client against the app's `gameApiUrl` with its **own** token store and
+the gameplay client against the app's `gameApiUrl` with its **own** token store and
 seed it with the app token:
 
 ```ts
@@ -57,7 +57,6 @@ const gameApiUrl = route.gameApiUrl ?? cfg.sharedGameApiUrl;
 const appToken = await base.portal.mintAppToken(appId);
 
 const game = createCrowdyClient({
-  managementUrl: 'https://api.crowdedkingdoms.com',
   httpUrl: gameApiUrl,
   wsUrl: gameApiUrl.replace(/^http/, 'ws'),
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:app:' + appId),
@@ -66,9 +65,9 @@ game.setToken(appToken.token);
 // drive gameplay through `game`
 ```
 
-The two clients share only `managementUrl`, **not** a token store: `base` keeps
-the identity session token (management plane), while `game` holds the app-scoped
-token for one app. `mintAppToken` also returns `gameApiUrl` / `gameApiWsUrl`, so
+The two clients never share a token store: `base` keeps the identity session
+token, while `game` holds the app-scoped token for one app, and `game` points at
+the app's own datacenter endpoint. `mintAppToken` also returns `gameApiUrl` / `gameApiWsUrl`, so
 you can route from its response instead of `routeFor` for an already-provisioned
 app. Rotate the app token with `game.portal.refresh()` before it expires;
 switching apps mints a fresh per-app token. See
