@@ -27,8 +27,8 @@ input UpdateUserStateInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateUserStateInput.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\}
-New user-level state blob, base64-encoded binary. Omit or send null to clear it.
+#### [<code style={{ fontWeight: 'normal' }}>UpdateUserStateInput.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 
+New user-level state blob, base64-encoded binary, at most 1,048,576 base64 characters (~768 KiB binary); larger payloads draw a structured validation error. Omit or send null to clear it.
 
 
 

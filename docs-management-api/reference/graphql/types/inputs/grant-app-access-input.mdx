@@ -31,23 +31,23 @@ input GrantAppAccessInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>GrantAppAccessInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GrantAppAccessInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 Numeric id of the app to grant access to. The caller must hold manage&#x005F;access&#x005F;tiers on this app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GrantAppAccessInput.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GrantAppAccessInput.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
 Numeric id of the user who should receive access.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GrantAppAccessInput.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GrantAppAccessInput.<b>tierId</b></code>](#tier-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier-id\} 
 Optional tier to grant. When omitted, an existing grant keeps its current tier (no tier change).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GrantAppAccessInput.<b>grantedBy</b></code>](#granted-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#granted-by\}
+#### [<code style={{ fontWeight: 'normal' }}>GrantAppAccessInput.<b>grantedBy</b></code>](#granted-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#granted-by\} 
 Optional audit override for who granted access; defaults to the calling user id. Service grants use "system".
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GrantAppAccessInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
+#### [<code style={{ fontWeight: 'normal' }}>GrantAppAccessInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
 Optional idempotency key. Recommended for retries: replaying with the same key and identical input returns the first result instead of re-applying; the same key with different input returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
 
 

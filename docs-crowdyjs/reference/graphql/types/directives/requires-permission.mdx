@@ -29,13 +29,13 @@ directive @requiresPermission(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>requiresPermission.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scope\}
+#### [<code style={{ fontWeight: 'normal' }}>requiresPermission.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scope\} 
 Permission scope: "org" | "app" | "operator" | "super&#x005F;admin" | "group" | "runtime" | "authenticated".
 
 
-#### [<code style={{ fontWeight: 'normal' }}>requiresPermission.<b>permission</b></code>](#permission)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission\}
+#### [<code style={{ fontWeight: 'normal' }}>requiresPermission.<b>permission</b></code>](#permission)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission\} 
 The required permission key (an org/group/runtime permission key, or a platform flag like is&#x005F;operator / is&#x005F;super&#x005F;admin).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>requiresPermission.<b>scopeArg</b></code>](#scope-arg)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#scope-arg\}
+#### [<code style={{ fontWeight: 'normal' }}>requiresPermission.<b>scopeArg</b></code>](#scope-arg)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#scope-arg\} 
 GraphQL argument path holding the id the permission is checked against (e.g. "orgId", "input.appId", "groupId").

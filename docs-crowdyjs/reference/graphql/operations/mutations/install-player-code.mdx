@@ -31,23 +31,23 @@ installPlayerCode(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>installPlayerCode.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>installPlayerCode.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App that owns the listing.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>installPlayerCode.<b>acquisitionId</b></code>](#acquisition-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquisition-id\}
+#### [<code style={{ fontWeight: 'normal' }}>installPlayerCode.<b>acquisitionId</b></code>](#acquisition-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquisition-id\} 
 UUID of the caller’s acquisition.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>installPlayerCode.<b>consentCapabilityHash</b></code>](#consent-capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#consent-capability-hash\}
+#### [<code style={{ fontWeight: 'normal' }}>installPlayerCode.<b>consentCapabilityHash</b></code>](#consent-capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#consent-capability-hash\} 
 The capability hash of the version being installed, acknowledged by the caller.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>installPlayerCode.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\}
+#### [<code style={{ fontWeight: 'normal' }}>installPlayerCode.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
 Owned target grid for server/bundled listings; omit for a personal client-only install.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>installPlayerCode.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\}
+#### [<code style={{ fontWeight: 'normal' }}>installPlayerCode.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\} 
 Version to pin; defaults to the newest published version.
 
 
@@ -55,5 +55,5 @@ Version to pin; defaults to the newest published version.
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeInstall</b></code>](/reference/graphql/types/objects/player-code-install.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeInstall</b></code>](/reference/graphql/types/objects/player-code-install.mdx) <Badge class="badge badge--secondary " text="object"/> 
 An install of an acquired listing: the pinned version, the consent hash acknowledged, and (for server halves) the owned target grid. Installs pin their version; updating to a newer version is a new consent + install update, never automatic.

@@ -30,19 +30,19 @@ computeInvoke(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>computeInvoke.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>computeInvoke.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app (tenant) that owns the module.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>computeInvoke.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\}
+#### [<code style={{ fontWeight: 'normal' }}>computeInvoke.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
 The module to invoke.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>computeInvoke.<b>exportName</b></code>](#export-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#export-name\}
+#### [<code style={{ fontWeight: 'normal' }}>computeInvoke.<b>exportName</b></code>](#export-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#export-name\} 
 The invoke export (must match an invoke trigger).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>computeInvoke.<b>paramsJson</b></code>](#params-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#params-json\}
+#### [<code style={{ fontWeight: 'normal' }}>computeInvoke.<b>paramsJson</b></code>](#params-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#params-json\} 
 JSON object of parameters passed to the module.
 
 
@@ -50,5 +50,5 @@ JSON object of parameters passed to the module.
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>ComputeInvokeResult</b></code>](/reference/graphql/types/objects/compute-invoke-result.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>ComputeInvokeResult</b></code>](/reference/graphql/types/objects/compute-invoke-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
 The synchronous result of a computeInvoke call. Unlike the spatial send surface (dual-success), this is direct RPC: the module ran and this is its output.

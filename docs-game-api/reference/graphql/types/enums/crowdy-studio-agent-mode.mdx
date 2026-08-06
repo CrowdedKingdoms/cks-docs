@@ -29,15 +29,15 @@ enum CrowdyStudioAgentMode {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>ASK</b></code>](#ask) \{#ask\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>ASK</b></code>](#ask) \{#ask\} 
 Read bounded project, diagnostics, policy, and host context; no project or game writes.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>BUILD</b></code>](#build) \{#build\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>BUILD</b></code>](#build) \{#build\} 
 Permit routine checkpointed project edits and draft tests under target write/run permissions and a workspace lease; live deployment is available only through an exact human approval.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>PLAY</b></code>](#play) \{#play\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>PLAY</b></code>](#play) \{#play\} 
 Permit bounded browser-host observation and gameplay tools only through a visible, human-granted, scoped lease; human input and policy/context changes preempt control immediately.
 
 
@@ -45,4 +45,4 @@ Permit bounded browser-host observation and gameplay tools only through a visibl
 
 ### Member Of
 
-[`AgentLifecycleEvent`](/reference/graphql/types/objects/agent-lifecycle-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentSession`](/reference/graphql/types/objects/agent-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentToolDescriptor`](/reference/graphql/types/objects/agent-tool-descriptor.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CreateAgentSessionInput`](/reference/graphql/types/inputs/create-agent-session-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SetAgentModeInput`](/reference/graphql/types/inputs/set-agent-mode-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
+[`AgentLifecycleEvent`](/reference/graphql/types/objects/agent-lifecycle-event.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentSession`](/reference/graphql/types/objects/agent-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AgentToolDescriptor`](/reference/graphql/types/objects/agent-tool-descriptor.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`CreateAgentSessionInput`](/reference/graphql/types/inputs/create-agent-session-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`CrowdyStudioAgentPolicy`](/reference/graphql/types/objects/crowdy-studio-agent-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SetAgentModeInput`](/reference/graphql/types/inputs/set-agent-mode-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SetCrowdyStudioAgentAppPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-app-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SetCrowdyStudioAgentPlatformPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-platform-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

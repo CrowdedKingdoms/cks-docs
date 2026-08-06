@@ -35,39 +35,39 @@ input EnsureContainerInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app (tenant) the container belongs to.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
 Optional session scoping the key and the container (omit for app-global). Two sessions may hold the same bindingKey independently.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>typeName</b></code>](#type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#type-name\}
+#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>typeName</b></code>](#type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#type-name\} 
 The container type to resolve or instantiate.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>bindingKey</b></code>](#binding-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#binding-key\}
+#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>bindingKey</b></code>](#binding-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#binding-key\} 
 Opaque client-derived key (max 128 chars) identifying the shared container within (appId, typeName, sessionId). All concurrent ensures with the same key return the same containerId.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>displayName</b></code>](#display-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#display-name\}
+#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>displayName</b></code>](#display-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#display-name\} 
 Human-friendly display name. Used ONLY when this call creates the row.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\}
+#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
 Optional description. Used ONLY when this call creates the row.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>ownerUserId</b></code>](#owner-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#owner-user-id\}
+#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>ownerUserId</b></code>](#owner-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#owner-user-id\} 
 Owner user id, same rules as CreateContainerInput (defaults to the caller for member/owner types, shared null for admin types). Used ONLY when this call creates the row.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>metadataJson</b></code>](#metadata-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata-json\}
+#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>metadataJson</b></code>](#metadata-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata-json\} 
 JSON object of metadata. Used ONLY when this call creates the row.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>properties</b></code>](#properties)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[SeedPropertyInput!]</b></code>](/reference/graphql/types/inputs/seed-property-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#properties\}
+#### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>properties</b></code>](#properties)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[SeedPropertyInput!]</b></code>](/reference/graphql/types/inputs/seed-property-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#properties\} 
 Initial property values. Used ONLY when this call creates the row.
 
 

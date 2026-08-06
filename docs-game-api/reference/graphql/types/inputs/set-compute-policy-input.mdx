@@ -33,62 +33,77 @@ input SetComputePolicyInput {
   maxEgressBytesPerMin: BigInt
   failureThreshold: Int
   cooldownMs: Int
+  statePersistMinIntervalMs: Int
+  maxStateWritesPerMin: Int
+  maxStateBytesPerMin: BigInt
 }
 ```
 
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app (tenant).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\}
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
 App-wide kill switch for all compute modules.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxModules</b></code>](#max-modules)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-modules\}
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxModules</b></code>](#max-modules)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-modules\} 
 Max modules the app may define.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxTickHz</b></code>](#max-tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-tick-hz\}
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxTickHz</b></code>](#max-tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-tick-hz\} 
 Max tick rate (Hz) any module may request.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>fuelPerTick</b></code>](#fuel-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-tick\}
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>fuelPerTick</b></code>](#fuel-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-tick\} 
 Fuel budget per tick call.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>fuelPerInvoke</b></code>](#fuel-per-invoke)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-invoke\}
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>fuelPerInvoke</b></code>](#fuel-per-invoke)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-invoke\} 
 Fuel budget per invoke/event call.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxMemoryMb</b></code>](#max-memory-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-memory-mb\}
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxMemoryMb</b></code>](#max-memory-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-memory-mb\} 
 Max guest linear memory (MB).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxRunMs</b></code>](#max-run-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-run-ms\}
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxRunMs</b></code>](#max-run-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-run-ms\} 
 Wall-clock watchdog budget per entry call (ms).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxDbOpsPerTick</b></code>](#max-db-ops-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-db-ops-per-tick\}
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxDbOpsPerTick</b></code>](#max-db-ops-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-db-ops-per-tick\} 
 Max host data-API operations per tick.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxEgressMsgsPerMin</b></code>](#max-egress-msgs-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-msgs-per-min\}
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxEgressMsgsPerMin</b></code>](#max-egress-msgs-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-msgs-per-min\} 
 Max replication messages a module may emit per minute.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxEgressBytesPerMin</b></code>](#max-egress-bytes-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-bytes-per-min\}
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxEgressBytesPerMin</b></code>](#max-egress-bytes-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-bytes-per-min\} 
 Max replication bytes a module may emit per minute.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>failureThreshold</b></code>](#failure-threshold)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#failure-threshold\}
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>failureThreshold</b></code>](#failure-threshold)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#failure-threshold\} 
 Consecutive failures that open a module circuit.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>cooldownMs</b></code>](#cooldown-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cooldown-ms\}
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>cooldownMs</b></code>](#cooldown-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cooldown-ms\} 
 Cooldown (ms) while a module circuit is open.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>statePersistMinIntervalMs</b></code>](#state-persist-min-interval-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state-persist-min-interval-ms\} 
+Minimum gap in milliseconds between saves of a module’s state. Saves made inside the window are combined and the newest one is written, so a module that saves every tick still only writes once per window.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxStateWritesPerMin</b></code>](#max-state-writes-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-state-writes-per-min\} 
+Max state saves a module may write per minute.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetComputePolicyInput.<b>maxStateBytesPerMin</b></code>](#max-state-bytes-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-state-bytes-per-min\} 
+Max state bytes a module may write per minute.
 
 
 

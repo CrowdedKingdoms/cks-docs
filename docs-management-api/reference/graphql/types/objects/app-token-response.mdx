@@ -33,31 +33,31 @@ type AppTokenResponse {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>token</b></code>](#token)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#token\}
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>token</b></code>](#token)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#token\} 
 Opaque app-scoped gameplay token. Send to the target app's Game API as `Authorization: Bearer <token>` (and in the realtime `connectionParams`). Do NOT send it to the Management API for anything other than `me`/`refreshAppToken`.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>gameTokenId</b></code>](#game-token-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#game-token-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>gameTokenId</b></code>](#game-token-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#game-token-id\} 
 Identifier of the underlying game&#x005F;token row, as a String.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app this token is confined to, as a String.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
 ISO-8601 UTC expiry. Call `refreshAppToken` (same app) before this, or re-portal through the Overworld for a different app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-url\}
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-url\} 
 Base HTTPS URL of the Game API that serves this app (null if the app has no dedicated/shared game-api route yet).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>gameApiWsUrl</b></code>](#game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-ws-url\}
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>gameApiWsUrl</b></code>](#game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-ws-url\} 
 WebSocket URL of the Game API that serves this app (wss://), for realtime subscriptions.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>launchUrl</b></code>](#launch-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#launch-url\}
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>launchUrl</b></code>](#launch-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#launch-url\} 
 Browser launch URL for this app (where the player's browser plays it), if configured.
 
 

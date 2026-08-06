@@ -51,103 +51,103 @@ type AgentSession {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>contractVersion</b></code>](#contract-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#contract-version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>contractVersion</b></code>](#contract-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#contract-version\} 
 Session contract version; always 'crowdy.studio-agent/1'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
 Stable session UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App tenant from the app-scoped bearer token.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
 Selected private project UUID, or null. Returned only to its exact owner/app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
 Selected grid id, or null; it does not grant authority.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentMode!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#mode\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentMode!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#mode\} 
 Human-selected current mode.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>requestedModel</b></code>](#requested-model)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#requested-model\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>requestedModel</b></code>](#requested-model)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#requested-model\} 
 Requested model in the effective platform/app allowlist.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>model</b></code>](#model)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#model\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>model</b></code>](#model)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#model\} 
 Selected allowlisted model, matching the SDK session model.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>resolvedModel</b></code>](#resolved-model)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#resolved-model\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>resolvedModel</b></code>](#resolved-model)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#resolved-model\} 
 Resolved routed model after a provider response, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentSessionStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-session-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentSessionStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-session-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
 Current durable session lifecycle.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>providerDataConsent</b></code>](#provider-data-consent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider-data-consent\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>providerDataConsent</b></code>](#provider-data-consent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider-data-consent\} 
 Whether the human accepted first-use disclosure of selected private project source. Messages and metadata do not imply this consent.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>registryDigest</b></code>](#registry-digest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#registry-digest\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>registryDigest</b></code>](#registry-digest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#registry-digest\} 
 Digest of the mode/policy-filtered immutable tool registry.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>providerPolicyVersion</b></code>](#provider-policy-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider-policy-version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>providerPolicyVersion</b></code>](#provider-policy-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider-policy-version\} 
 Opaque platform provider-policy version pinned at creation.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>appPolicyVersion</b></code>](#app-policy-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-policy-version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>appPolicyVersion</b></code>](#app-policy-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-policy-version\} 
 Opaque management app-policy version pinned at creation.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>contextVersion</b></code>](#context-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#context-version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>contextVersion</b></code>](#context-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#context-version\} 
 Current authoritative context version.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>currentClientEpoch</b></code>](#current-client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#current-client-epoch\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>currentClientEpoch</b></code>](#current-client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#current-client-epoch\} 
 Monotonic attached client epoch. A newer attach fences all older tabs.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\} 
 SDK-compatible attached client epoch, or null before attach.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>lastEventSeq</b></code>](#last-event-seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#last-event-seq\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>lastEventSeq</b></code>](#last-event-seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#last-event-seq\} 
 Highest committed durable event sequence.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>activeRun</b></code>](#active-run)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentRun</b></code>](/reference/graphql/types/objects/agent-run.mdx) <Badge class="badge badge--secondary " text="object"/> \{#active-run\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>activeRun</b></code>](#active-run)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentRun</b></code>](/reference/graphql/types/objects/agent-run.mdx) <Badge class="badge badge--secondary " text="object"/> \{#active-run\} 
 Current non-terminal run, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>currentRun</b></code>](#current-run)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentRun</b></code>](/reference/graphql/types/objects/agent-run.mdx) <Badge class="badge badge--secondary " text="object"/> \{#current-run\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>currentRun</b></code>](#current-run)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentRun</b></code>](/reference/graphql/types/objects/agent-run.mdx) <Badge class="badge badge--secondary " text="object"/> \{#current-run\} 
 SDK-compatible current non-terminal run, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>activeLeases</b></code>](#active-leases)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AgentLease!]!</b></code>](/reference/graphql/types/objects/agent-lease.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#active-leases\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>activeLeases</b></code>](#active-leases)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AgentLease!]!</b></code>](/reference/graphql/types/objects/agent-lease.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#active-leases\} 
 Current unexpired leases; bounded to WORKSPACE and PLAY.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>pendingApproval</b></code>](#pending-approval)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentApproval</b></code>](/reference/graphql/types/objects/agent-approval.mdx) <Badge class="badge badge--secondary " text="object"/> \{#pending-approval\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>pendingApproval</b></code>](#pending-approval)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AgentApproval</b></code>](/reference/graphql/types/objects/agent-approval.mdx) <Badge class="badge badge--secondary " text="object"/> \{#pending-approval\} 
 Newest unexpired pending approval, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 Session creation timestamp.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 Latest durable session update.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>closedAt</b></code>](#closed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#closed-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentSession.<b>closedAt</b></code>](#closed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#closed-at\} 
 Close timestamp, or null while open.
 
 

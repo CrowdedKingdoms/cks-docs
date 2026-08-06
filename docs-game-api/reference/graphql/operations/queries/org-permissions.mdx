@@ -1,0 +1,28 @@
+---
+id: org-permissions
+title: orgPermissions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The full seed list of permission keys. Used by the UI to render role editors.
+
+
+```graphql
+orgPermissions: [OrgPermission!]!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgPermission</b></code>](/reference/graphql/types/objects/org-permission.mdx) <Badge class="badge badge--secondary " text="object"/>

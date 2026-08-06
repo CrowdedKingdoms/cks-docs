@@ -36,43 +36,43 @@ type PlayerWalletTransaction {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>transactionId</b></code>](#transaction-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#transaction-id\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>transactionId</b></code>](#transaction-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#transaction-id\} 
 Transaction id.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>walletId</b></code>](#wallet-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wallet-id\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>walletId</b></code>](#wallet-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wallet-id\} 
 The wallet.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
 The owning player user id.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#amount-cents\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#amount-cents\} 
 Signed amount in cents (debits negative).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>balanceAfter</b></code>](#balance-after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-after\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>balanceAfter</b></code>](#balance-after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-after\} 
 Balance after this entry.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>transactionType</b></code>](#transaction-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#transaction-type\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>transactionType</b></code>](#transaction-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#transaction-type\} 
 One of 'topup', 'usage&#x005F;debit', 'auto&#x005F;recharge', 'refund', 'adjustment'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
 Human description.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>referenceId</b></code>](#reference-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reference-id\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>referenceId</b></code>](#reference-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reference-id\} 
 External reference (checkout/PaymentIntent id).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app a usage debit covers; null for wallet-level entries.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 Entry time.
 
 

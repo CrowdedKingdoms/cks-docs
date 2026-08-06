@@ -15,11 +15,17 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Lifetime donation totals for the authenticated user, summed across every app. Requires a valid game token. NOTE: donations are management-owned, so in cks-game-api this throws ForbiddenException — call cks-management-api instead.
+:::warning[DEPRECATED]
+
+Legacy donation/property-token data; these products are no longer purchasable. Retained for historical records.
+
+:::
+
+Lifetime donation totals for the authenticated user, summed across every app. Requires a valid game token.
 
 
 ```graphql
-myDonationData: UserDonationData!
+myDonationData: UserDonationData! @deprecated
 ```
 
 

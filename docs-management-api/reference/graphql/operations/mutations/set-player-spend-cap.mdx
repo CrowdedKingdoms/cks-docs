@@ -30,19 +30,19 @@ setPlayerSpendCap(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>setPlayerSpendCap.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scope\}
+#### [<code style={{ fontWeight: 'normal' }}>setPlayerSpendCap.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scope\} 
 'global' or 'app'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setPlayerSpendCap.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>setPlayerSpendCap.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app for app scope; omit for global.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setPlayerSpendCap.<b>dailyLimitCents</b></code>](#daily-limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#daily-limit-cents\}
+#### [<code style={{ fontWeight: 'normal' }}>setPlayerSpendCap.<b>dailyLimitCents</b></code>](#daily-limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#daily-limit-cents\} 
 Daily ceiling in cents; null = no daily cap.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setPlayerSpendCap.<b>monthlyLimitCents</b></code>](#monthly-limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#monthly-limit-cents\}
+#### [<code style={{ fontWeight: 'normal' }}>setPlayerSpendCap.<b>monthlyLimitCents</b></code>](#monthly-limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#monthly-limit-cents\} 
 Monthly ceiling in cents; null = no monthly cap.
 
 
@@ -50,5 +50,5 @@ Monthly ceiling in cents; null = no monthly cap.
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>PlayerSpendCap</b></code>](/reference/graphql/types/objects/player-spend-cap.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerSpendCap</b></code>](/reference/graphql/types/objects/player-spend-cap.mdx) <Badge class="badge badge--secondary " text="object"/> 
 A player's self-set spend cap (06 §2a): a daily/monthly ceiling globally or per app. The effective runtime limit is min(developer policy, self-cap, wallet balance); hitting a cap pauses that player's mods with PLAYER&#x005F;SPEND&#x005F;CAP, never their play.

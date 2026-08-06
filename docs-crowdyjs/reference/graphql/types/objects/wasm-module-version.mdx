@@ -39,55 +39,55 @@ type WasmModuleVersion {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\} 
 Unique version id (UUID).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>moduleId</b></code>](#module-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-id\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>moduleId</b></code>](#module-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-id\} 
 The module this version belongs to.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app (tenant).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>versionNo</b></code>](#version-no)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-no\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>versionNo</b></code>](#version-no)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-no\} 
 Monotonic version number within the module.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>sourceFilesJson</b></code>](#source-files-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-files-json\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>sourceFilesJson</b></code>](#source-files-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-files-json\} 
 JSON object mapping relative paths to file contents (the uploaded Rust source).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>sourceHash</b></code>](#source-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-hash\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>sourceHash</b></code>](#source-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-hash\} 
 sha256 of the canonicalized source map; keys the compiled-artifact cache together with toolchain/SDK/ABI versions.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>sdkVersion</b></code>](#sdk-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sdk-version\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>sdkVersion</b></code>](#sdk-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sdk-version\} 
 The crowdy-compute-sdk version the source targets.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\} 
 The guest ABI version the source targets.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>compileStatus</b></code>](#compile-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compile-status\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>compileStatus</b></code>](#compile-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compile-status\} 
 Compile status: pending | compiling | succeeded | failed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>compileLog</b></code>](#compile-log)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compile-log\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>compileLog</b></code>](#compile-log)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compile-log\} 
 Compiler output (populated when compilation runs).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>compiledSizeBytes</b></code>](#compiled-size-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compiled-size-bytes\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>compiledSizeBytes</b></code>](#compiled-size-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compiled-size-bytes\} 
 Size of the compiled artifact in bytes (after compile).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>publishedAt</b></code>](#published-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#published-at\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>publishedAt</b></code>](#published-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#published-at\} 
 When this version became the deployed version.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleVersion.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 When this version was uploaded.
 
 

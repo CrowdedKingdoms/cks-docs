@@ -32,27 +32,27 @@ type PlayerPulse {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerPulse.<b>orgLivePlayers</b></code>](#org-live-players)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-live-players\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerPulse.<b>orgLivePlayers</b></code>](#org-live-players)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-live-players\} 
 Current concurrent players for this org (dedicated environments plus active dev boxes).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerPulse.<b>orgAllTimePeak</b></code>](#org-all-time-peak)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-all-time-peak\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerPulse.<b>orgAllTimePeak</b></code>](#org-all-time-peak)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-all-time-peak\} 
 All-time peak concurrent players recorded for this org.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerPulse.<b>orgAllTimePeakAt</b></code>](#org-all-time-peak-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-all-time-peak-at\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerPulse.<b>orgAllTimePeakAt</b></code>](#org-all-time-peak-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-all-time-peak-at\} 
 When the org all-time peak was observed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerPulse.<b>globalLivePlayers</b></code>](#global-live-players)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#global-live-players\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerPulse.<b>globalLivePlayers</b></code>](#global-live-players)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#global-live-players\} 
 Current concurrent players site-wide (dedicated environments plus active dev boxes). Aggregate-only; no per-studio breakdown.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerPulse.<b>percentile</b></code>](#percentile)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#percentile\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerPulse.<b>percentile</b></code>](#percentile)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#percentile\} 
 Share of studios whose all-time peak is at or below this org (0–1). Null when the comparison pool is empty or this org has no peak.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerPulse.<b>poolSize</b></code>](#pool-size)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#pool-size\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerPulse.<b>poolSize</b></code>](#pool-size)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#pool-size\} 
 Number of studios in the percentile comparison pool (studios with all&#x005F;time&#x005F;peak &#x003E; 0).
 
 

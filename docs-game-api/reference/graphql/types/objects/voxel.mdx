@@ -34,35 +34,35 @@ type Voxel {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>voxelUpdateId</b></code>](#voxel-update-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-update-id\}
+#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>voxelUpdateId</b></code>](#voxel-update-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-update-id\} 
 Unique id of this voxel-update row (decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 Id of the app this edit belongs to (decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#coordinates\}
+#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#coordinates\} 
 Address of the chunk that contains the edited voxel.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>location</b></code>](#location)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinates!</b></code>](/reference/graphql/types/objects/voxel-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#location\}
+#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>location</b></code>](#location)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinates!</b></code>](/reference/graphql/types/objects/voxel-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#location\} 
 Local position of the edited voxel within its chunk (0-15 per axis).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>voxelType</b></code>](#voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-type\}
+#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>voxelType</b></code>](#voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-type\} 
 New voxel type id written by this edit (0-255).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\}
+#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 
 BASE64-encoded binary state blob for the voxel (decode from base64); null when no state was set.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>createdBy</b></code>](#created-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-by\}
+#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>createdBy</b></code>](#created-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-by\} 
 Id of the user that made this edit (decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 When the edit was recorded; also serves as the last-modified time for the voxel.
 
 

@@ -30,19 +30,19 @@ appUsageSummary(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>appUsageSummary.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
+#### [<code style={{ fontWeight: 'normal' }}>appUsageSummary.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
 Organization id (BigInt) that owns the app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>appUsageSummary.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>appUsageSummary.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App id (BigInt) to summarize usage for.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>appUsageSummary.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#since\}
+#### [<code style={{ fontWeight: 'normal' }}>appUsageSummary.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#since\} 
 Start of the time range (ISO-8601 DateTime or relative duration such as 1d, 7d, 1h) up to now.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>appUsageSummary.<b>operationLimit</b></code>](#operation-limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#operation-limit\}
+#### [<code style={{ fontWeight: 'normal' }}>appUsageSummary.<b>operationLimit</b></code>](#operation-limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#operation-limit\} 
 Max number of top GraphQL operations to include (default 20).
 
 
@@ -50,5 +50,5 @@ Max number of top GraphQL operations to include (default 20).
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>AppUsageSummary</b></code>](/reference/graphql/types/objects/app-usage-summary.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>AppUsageSummary</b></code>](/reference/graphql/types/objects/app-usage-summary.mdx) <Badge class="badge badge--secondary " text="object"/> 
 Aggregate byte totals plus the top GraphQL operations for one app over the window.

@@ -43,71 +43,71 @@ type GridClientMod {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>attachmentId</b></code>](#attachment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#attachment-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>attachmentId</b></code>](#attachment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#attachment-id\} 
 UUID of the grid attachment.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
 UUID of the marketplace listing, or null for a self-authored attachment.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>listingName</b></code>](#listing-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-name\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>listingName</b></code>](#listing-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-name\} 
 Listing display name.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\} 
 UUID of the pinned marketplace version, or null for a self-authored attachment.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>sourceKind</b></code>](#source-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-kind\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>sourceKind</b></code>](#source-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-kind\} 
 Attachment source: 'marketplace' or 'self&#x005F;authored'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>authorKind</b></code>](#author-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeOwnerKind!</b></code>](/reference/graphql/types/enums/player-code-owner-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#author-kind\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>authorKind</b></code>](#author-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeOwnerKind!</b></code>](/reference/graphql/types/enums/player-code-owner-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#author-kind\} 
 Kind of author whose code this attachment executes.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>authorRef</b></code>](#author-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#author-ref\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>authorRef</b></code>](#author-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#author-ref\} 
 User id or org id of the author, according to authorKind.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>serverVersionId</b></code>](#server-version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#server-version-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>serverVersionId</b></code>](#server-version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#server-version-id\} 
 Immutable self-authored SERVER version declaring the requirement; null for marketplace attachments.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>clientVersionId</b></code>](#client-version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-version-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>clientVersionId</b></code>](#client-version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-version-id\} 
 Immutable self-authored CLIENT version to fetch; null for marketplace attachments.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>clientArtifactHash</b></code>](#client-artifact-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-artifact-hash\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>clientArtifactHash</b></code>](#client-artifact-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-artifact-hash\} 
 Compile artifact hash of the client half. Clients use it as an immutable cache and lifecycle key.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
 The grid the client mod is attached to.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>capabilitySummaryJson</b></code>](#capability-summary-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#capability-summary-json\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>capabilitySummaryJson</b></code>](#capability-summary-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#capability-summary-json\} 
 JSON derived capability summary of the pinned version.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>capabilityHash</b></code>](#capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#capability-hash\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>capabilityHash</b></code>](#capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#capability-hash\} 
 Capability hash a player must consent to before fetching.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>authorCapabilitySummaryJson</b></code>](#author-capability-summary-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#author-capability-summary-json\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>authorCapabilitySummaryJson</b></code>](#author-capability-summary-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#author-capability-summary-json\} 
 JSON aggregate of every active attachment from this author in the grid. This is the summary shown by the one-per-author trust prompt.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>authorCapabilityHash</b></code>](#author-capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#author-capability-hash\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>authorCapabilityHash</b></code>](#author-capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#author-capability-hash\} 
 Hash of authorCapabilitySummaryJson. Any capability widening changes this hash and requires fresh author trust.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>callerConsented</b></code>](#caller-consented)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#caller-consented\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>callerConsented</b></code>](#caller-consented)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#caller-consented\} 
 Whether the calling player has already consented to this attachment.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>callerTrustsAuthor</b></code>](#caller-trusts-author)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#caller-trusts-author\}
+#### [<code style={{ fontWeight: 'normal' }}>GridClientMod.<b>callerTrustsAuthor</b></code>](#caller-trusts-author)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#caller-trusts-author\} 
 Whether the caller's grid-author trust matches the current aggregate author capability hash.
 
 

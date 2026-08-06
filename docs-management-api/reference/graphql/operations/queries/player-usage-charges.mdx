@@ -28,11 +28,11 @@ playerUsageCharges(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>playerUsageCharges.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>playerUsageCharges.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 Optional: only charges for this app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>playerUsageCharges.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\}
+#### [<code style={{ fontWeight: 'normal' }}>playerUsageCharges.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
 Max entries (default 50, max 200).
 
 
@@ -40,5 +40,5 @@ Max entries (default 50, max 200).
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>PlayerUsageCharge</b></code>](/reference/graphql/types/objects/player-usage-charge.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerUsageCharge</b></code>](/reference/graphql/types/objects/player-usage-charge.mdx) <Badge class="badge badge--secondary " text="object"/> 
 One posted player usage charge: a (player, app, closed clock hour) row. amountCents = platformCents + markupCents — players see what the platform charges and what the studio adds (06 §4). The UNIQUE hour key makes the billing tick idempotent.

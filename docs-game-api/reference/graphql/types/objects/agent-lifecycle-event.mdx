@@ -39,55 +39,55 @@ type AgentLifecycleEvent implements AgentEventBase {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>protocolVersion</b></code>](#protocol-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#protocol-version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>protocolVersion</b></code>](#protocol-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#protocol-version\} 
 Event envelope version; always 'crowdy.agent-event/1'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\} 
 Stable event UUID for deduplication.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
 Owning session UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>seq</b></code>](#seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#seq\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>seq</b></code>](#seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#seq\} 
 Strictly increasing session sequence as a decimal BigInt.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentEventType!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-event-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#type\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentEventType!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-event-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#type\} 
 Stable version 1 event discriminator.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\} 
 Related run UUID, or null for session-only facts.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
 Versioned event payload contract.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 Commit timestamp.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentMode</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-mode.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#mode\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentMode</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-mode.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#mode\} 
 Selected mode when this event carries one.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\} 
 Attached client epoch when this event carries one.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>replayAfterSeq</b></code>](#replay-after-seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#replay-after-seq\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>replayAfterSeq</b></code>](#replay-after-seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#replay-after-seq\} 
 Replay cursor returned by attach, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
 Stable lifecycle/preemption reason, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>contextVersion</b></code>](#context-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#context-version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLifecycleEvent.<b>contextVersion</b></code>](#context-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#context-version\} 
 New context version when carried by this event.
 
 
@@ -95,7 +95,7 @@ New context version when carried by this event.
 
 ### Interfaces
 
-#### [<code style={{ fontWeight: 'normal' }}><b>AgentEventBase</b></code>](/reference/graphql/types/interfaces/agent-event-base.mdx) <Badge class="badge badge--secondary " text="interface"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentEventBase</b></code>](/reference/graphql/types/interfaces/agent-event-base.mdx) <Badge class="badge badge--secondary " text="interface"/> 
 Common identity/order fields on every typed durable agent event variant.
 
 

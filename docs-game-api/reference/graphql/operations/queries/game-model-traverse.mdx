@@ -30,19 +30,19 @@ gameModelTraverse(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelTraverse.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>gameModelTraverse.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app (tenant) that owns the graph.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelTraverse.<b>rootId</b></code>](#root-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#root-id\}
+#### [<code style={{ fontWeight: 'normal' }}>gameModelTraverse.<b>rootId</b></code>](#root-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#root-id\} 
 The container UUID to start from.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelTraverse.<b>relationshipType</b></code>](#relationship-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#relationship-type\}
+#### [<code style={{ fontWeight: 'normal' }}>gameModelTraverse.<b>relationshipType</b></code>](#relationship-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#relationship-type\} 
 The edge relationship type to follow.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelTraverse.<b>depth</b></code>](#depth)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#depth\}
+#### [<code style={{ fontWeight: 'normal' }}>gameModelTraverse.<b>depth</b></code>](#depth)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#depth\} 
 How many edge hops to follow from the root. Defaults to 1.
 
 
@@ -50,5 +50,5 @@ How many edge hops to follow from the root. Defaults to 1.
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>GmTraverseResult</b></code>](/reference/graphql/types/objects/gm-traverse-result.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>GmTraverseResult</b></code>](/reference/graphql/types/objects/gm-traverse-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
 The result of a graph traversal: the reachable container nodes and the edges between them.

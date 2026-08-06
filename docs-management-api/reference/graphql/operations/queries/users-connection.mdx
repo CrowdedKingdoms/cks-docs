@@ -29,15 +29,15 @@ usersConnection(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>usersConnection.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\}
+#### [<code style={{ fontWeight: 'normal' }}>usersConnection.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\} 
 Return the first N edges after `after`. Default 50; clamped to 1..200.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>usersConnection.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\}
+#### [<code style={{ fontWeight: 'normal' }}>usersConnection.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\} 
 Opaque cursor: return edges after this one. Pass a previous page's `pageInfo.endCursor`. Omit for the first page.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>usersConnection.<b>query</b></code>](#query)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#query\}
+#### [<code style={{ fontWeight: 'normal' }}>usersConnection.<b>query</b></code>](#query)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#query\} 
 Optional search term. Case-insensitive prefix match over email, gamertag, and disambiguation, plus an exact match on user&#x005F;id. Omit to list all users.
 
 
@@ -45,5 +45,5 @@ Optional search term. Case-insensitive prefix match over email, gamertag, and di
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>UsersConnection</b></code>](/reference/graphql/types/objects/users-connection.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>UsersConnection</b></code>](/reference/graphql/types/objects/users-connection.mdx) <Badge class="badge badge--secondary " text="object"/> 
 A Relay cursor connection over User records. Page with first/after; pass pageInfo.endCursor back as after for the next page.

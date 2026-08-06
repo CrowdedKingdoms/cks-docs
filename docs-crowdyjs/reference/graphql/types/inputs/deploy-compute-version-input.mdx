@@ -31,23 +31,23 @@ input DeployComputeVersionInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app (tenant) that owns the module.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\}
+#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
 The module (by name) this version belongs to.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>sourceFilesJson</b></code>](#source-files-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-files-json\}
+#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>sourceFilesJson</b></code>](#source-files-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-files-json\} 
 JSON object mapping relative paths to file contents. Must include Cargo.toml and src/lib.rs; only .rs files under src/ plus Cargo.toml are allowed. Dependencies are restricted to the platform crate allowlist; build.rs and [build-dependencies] are rejected.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>sdkVersion</b></code>](#sdk-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sdk-version\}
+#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>sdkVersion</b></code>](#sdk-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sdk-version\} 
 The crowdy-compute-sdk version the source targets (must be a platform-supported version, e.g. '0.0.1').
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\}
+#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\} 
 The guest ABI version the source targets (must be platform-supported; currently 0).
 
 

@@ -30,19 +30,19 @@ setPlayerAutoBilling(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>setPlayerAutoBilling.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\}
+#### [<code style={{ fontWeight: 'normal' }}>setPlayerAutoBilling.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
 Whether auto-recharge is enabled.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setPlayerAutoBilling.<b>limitCents</b></code>](#limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit-cents\}
+#### [<code style={{ fontWeight: 'normal' }}>setPlayerAutoBilling.<b>limitCents</b></code>](#limit-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit-cents\} 
 Per-period auto-recharge ceiling; null = no limit.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setPlayerAutoBilling.<b>rechargeAmountCents</b></code>](#recharge-amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#recharge-amount-cents\}
+#### [<code style={{ fontWeight: 'normal' }}>setPlayerAutoBilling.<b>rechargeAmountCents</b></code>](#recharge-amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#recharge-amount-cents\} 
 Amount per recharge (default 1000).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>setPlayerAutoBilling.<b>lowWaterThresholdCents</b></code>](#low-water-threshold-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#low-water-threshold-cents\}
+#### [<code style={{ fontWeight: 'normal' }}>setPlayerAutoBilling.<b>lowWaterThresholdCents</b></code>](#low-water-threshold-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#low-water-threshold-cents\} 
 Balance threshold that triggers a recharge.
 
 
@@ -50,5 +50,5 @@ Balance threshold that triggers a recharge.
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>PlayerAutoBilling</b></code>](/reference/graphql/types/objects/player-auto-billing.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerAutoBilling</b></code>](/reference/graphql/types/objects/player-auto-billing.mdx) <Badge class="badge badge--secondary " text="object"/> 
 Off-session auto-recharge settings for the player wallet (the org auto-billing twin): when enabled with a vaulted card, the player gate tops the wallet up before denying for insufficient funds.

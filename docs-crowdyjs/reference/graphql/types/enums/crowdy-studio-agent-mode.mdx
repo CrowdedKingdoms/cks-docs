@@ -29,16 +29,16 @@ enum CrowdyStudioAgentMode {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>ASK</b></code>](#ask) \{#ask\}
-Read-only assistance and proposals.
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>ASK</b></code>](#ask) \{#ask\} 
+Read bounded project, diagnostics, policy, and host context; no project or game writes.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>BUILD</b></code>](#build) \{#build\}
-Routine project edits and draft tests under ordinary write/run permissions.
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>BUILD</b></code>](#build) \{#build\} 
+Permit routine checkpointed project edits and draft tests under target write/run permissions and a workspace lease; live deployment is available only through an exact human approval.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>PLAY</b></code>](#play) \{#play\}
-Game control only while a human-granted, scoped, time-boxed control lease is active.
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentMode.<b>PLAY</b></code>](#play) \{#play\} 
+Permit bounded browser-host observation and gameplay tools only through a visible, human-granted, scoped lease; human input and policy/context changes preempt control immediately.
 
 
 

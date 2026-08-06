@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Looks up a single user by id. Requires a valid game token. NOTE: the users table is management-owned, so in cks-game-api this throws ForbiddenException directing you to call cks-management-api directly; use that API to read arbitrary users. Use `me` to read the caller’s own profile.
+Looks up a single user by id. Requires a valid game token.
 
 
 ```graphql
@@ -27,7 +27,7 @@ user(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>user.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\}
+#### [<code style={{ fontWeight: 'normal' }}>user.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
 Target user id (BigInt sent as a decimal string).
 
 

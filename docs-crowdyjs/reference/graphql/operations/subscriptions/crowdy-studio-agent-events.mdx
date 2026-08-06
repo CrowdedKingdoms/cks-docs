@@ -29,15 +29,15 @@ crowdyStudioAgentEvents(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentEvents.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentEvents.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
 Owner/app session UUID to replay and tail.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentEvents.<b>afterSeq</b></code>](#after-seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#after-seq\}
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentEvents.<b>afterSeq</b></code>](#after-seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#after-seq\} 
 Exclusive last applied sequence as a non-negative decimal BigInt.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentEvents.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\}
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentEvents.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\} 
 Exact current attached epoch; a newer attach terminates this stream with AGENT&#x005F;CLIENT&#x005F;EPOCH&#x005F;STALE.
 
 
@@ -45,5 +45,5 @@ Exact current attached epoch; a newer attach terminates this stream with AGENT&#
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentEvent</b></code>](/reference/graphql/types/unions/crowdy-studio-agent-event.mdx) <Badge class="badge badge--secondary " text="union"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentEvent</b></code>](/reference/graphql/types/unions/crowdy-studio-agent-event.mdx) <Badge class="badge badge--secondary " text="union"/> 
 Typed union of ordered, replayable version 1 session facts. Delivery is at-least-once; seq and eventId support deduplication.

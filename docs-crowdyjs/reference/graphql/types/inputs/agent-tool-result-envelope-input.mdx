@@ -36,43 +36,43 @@ input AgentToolResultEnvelopeInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>protocolVersion</b></code>](#protocol-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#protocol-version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>protocolVersion</b></code>](#protocol-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#protocol-version\} 
 Result protocol version; must be 'crowdy.tool-result/1'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>toolCallId</b></code>](#tool-call-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-call-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>toolCallId</b></code>](#tool-call-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-call-id\} 
 Dispatched tool call UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentToolResultStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-tool-result-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentToolResultStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-tool-result-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
 Known terminal executor outcome.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>outputJson</b></code>](#output-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#output-json\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>outputJson</b></code>](#output-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#output-json\} 
 Output JSON object required for SUCCEEDED and validated against the pinned descriptor; omit for failures. Maximum 128 KiB.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>errorCode</b></code>](#error-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-code\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>errorCode</b></code>](#error-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-code\} 
 Stable AGENT&#x005F;&#x002A; error code for non-success; omit for SUCCEEDED.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>errorMessage</b></code>](#error-message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-message\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>errorMessage</b></code>](#error-message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-message\} 
 Safe bounded error message for non-success; no stack, source, prompt, headers, or tokens.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>errorRetryable</b></code>](#error-retryable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-retryable\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>errorRetryable</b></code>](#error-retryable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-retryable\} 
 Whether policy permits deliberate retry; defaults false.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>observedContextVersion</b></code>](#observed-context-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#observed-context-version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>observedContextVersion</b></code>](#observed-context-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#observed-context-version\} 
 Exact authoritative context version observed by the host.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>startedAt</b></code>](#started-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#started-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>startedAt</b></code>](#started-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#started-at\} 
 Browser execution start timestamp.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>finishedAt</b></code>](#finished-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#finished-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentToolResultEnvelopeInput.<b>finishedAt</b></code>](#finished-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#finished-at\} 
 Browser execution finish timestamp.
 
 

@@ -32,27 +32,27 @@ input ListVoxelUpdatesByDistanceInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>ListVoxelUpdatesByDistanceInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>ListVoxelUpdatesByDistanceInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 Id of the app whose voxel edits to search (decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ListVoxelUpdatesByDistanceInput.<b>centerCoordinate</b></code>](#center-coordinate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#center-coordinate\}
+#### [<code style={{ fontWeight: 'normal' }}>ListVoxelUpdatesByDistanceInput.<b>centerCoordinate</b></code>](#center-coordinate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#center-coordinate\} 
 Center chunk of the search cube.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ListVoxelUpdatesByDistanceInput.<b>maxDistance</b></code>](#max-distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-distance\}
+#### [<code style={{ fontWeight: 'normal' }}>ListVoxelUpdatesByDistanceInput.<b>maxDistance</b></code>](#max-distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-distance\} 
 Cube radius in chunks measured as Chebyshev distance: matches chunks whose x, y and z each differ from the center by at most this many chunks. Integer, 1-8 inclusive.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ListVoxelUpdatesByDistanceInput.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\}
+#### [<code style={{ fontWeight: 'normal' }}>ListVoxelUpdatesByDistanceInput.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
 Maximum number of CHUNKS (not voxels) to include. Defaults to 1000 when omitted. Must be &#x003E;= 0.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ListVoxelUpdatesByDistanceInput.<b>skip</b></code>](#skip)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#skip\}
+#### [<code style={{ fontWeight: 'normal' }}>ListVoxelUpdatesByDistanceInput.<b>skip</b></code>](#skip)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#skip\} 
 Number of chunks to skip for pagination. Defaults to 0 when omitted. Must be &#x003E;= 0.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ListVoxelUpdatesByDistanceInput.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#since\}
+#### [<code style={{ fontWeight: 'normal' }}>ListVoxelUpdatesByDistanceInput.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#since\} 
 Optional inclusive lower time bound; only edits with createdAt &#x003E;= this timestamp are returned.
 
 

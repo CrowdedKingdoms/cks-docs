@@ -45,79 +45,79 @@ type CrowdyStudioProject {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
 Stable project UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App tenant that isolates this project and all of its source.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>ownerUserId</b></code>](#owner-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#owner-user-id\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>ownerUserId</b></code>](#owner-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#owner-user-id\} 
 User that exclusively owns and may read or modify this project source.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
 Optional grid affinity. It survives a grid transfer and does not itself grant deploy authority.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
 Player-facing project name.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
 Optional private project description.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>serverModuleName</b></code>](#server-module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#server-module-name\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>serverModuleName</b></code>](#server-module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#server-module-name\} 
 Stable crate-style SERVER module name used when the owner chooses to deploy, or null when unassigned.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>clientModuleName</b></code>](#client-module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-module-name\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>clientModuleName</b></code>](#client-module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-module-name\} 
 Stable crate-style CLIENT module name used when the owner chooses to deploy, or null when unassigned.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>pairingPreference</b></code>](#pairing-preference)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioPairingPreference!</b></code>](/reference/graphql/types/enums/crowdy-studio-pairing-preference.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#pairing-preference\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>pairingPreference</b></code>](#pairing-preference)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioPairingPreference!</b></code>](/reference/graphql/types/enums/crowdy-studio-pairing-preference.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#pairing-preference\} 
 Editor presentation preference for the two source targets.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>sdkVersion</b></code>](#sdk-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sdk-version\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>sdkVersion</b></code>](#sdk-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sdk-version\} 
 Pinned crowdy-compute-sdk version used when constructing deploy input.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\} 
 Pinned guest ABI version used when constructing deploy input.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>revision</b></code>](#revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#revision\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>revision</b></code>](#revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#revision\} 
 Monotonic project revision required by optimistic metadata, file, import, and archive mutations.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>archived</b></code>](#archived)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#archived\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>archived</b></code>](#archived)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#archived\} 
 Whether the project is archived. Archived projects remain private and retained but are read-only until unarchived.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>archivedAt</b></code>](#archived-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#archived-at\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>archivedAt</b></code>](#archived-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#archived-at\} 
 Archive timestamp, or null while the project is active.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>fileCount</b></code>](#file-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#file-count\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>fileCount</b></code>](#file-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#file-count\} 
 Total file count across both targets; each target is independently capped at eight.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>totalBytes</b></code>](#total-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total-bytes\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>totalBytes</b></code>](#total-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total-bytes\} 
 Total UTF-8 source bytes across both targets, bounded by target and aggregate owner quotas.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>files</b></code>](#files)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioProjectFile!]!</b></code>](/reference/graphql/types/objects/crowdy-studio-project-file.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#files\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>files</b></code>](#files)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioProjectFile!]!</b></code>](/reference/graphql/types/objects/crowdy-studio-project-file.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#files\} 
 Private project files ordered by target and path. Bounded to eight files per target.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 Project creation timestamp.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 Timestamp of the latest successful project mutation.
 
 

@@ -32,27 +32,27 @@ input SaveCrowdyStudioProjectFilesInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectFilesInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectFilesInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App tenant that owns the private project.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectFilesInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectFilesInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
 Project UUID to mutate.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectFilesInput.<b>expectedRevision</b></code>](#expected-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expected-revision\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectFilesInput.<b>expectedRevision</b></code>](#expected-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expected-revision\} 
 Current project revision used for optimistic concurrency across the entire batch.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectFilesInput.<b>upserts</b></code>](#upserts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioProjectFileInput!]</b></code>](/reference/graphql/types/inputs/crowdy-studio-project-file-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#upserts\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectFilesInput.<b>upserts</b></code>](#upserts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioProjectFileInput!]</b></code>](/reference/graphql/types/inputs/crowdy-studio-project-file-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#upserts\} 
 Files to insert or replace. The batch commits only if all paths and post-save caps are valid.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectFilesInput.<b>deletes</b></code>](#deletes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioProjectFileDeleteInput!]</b></code>](/reference/graphql/types/inputs/crowdy-studio-project-file-delete-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#deletes\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectFilesInput.<b>deletes</b></code>](#deletes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioProjectFileDeleteInput!]</b></code>](/reference/graphql/types/inputs/crowdy-studio-project-file-delete-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#deletes\} 
 Files to remove in the same transaction. A target/path cannot also appear in upserts.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectFilesInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectFilesInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
 Optional 24-hour retry key; recommended because a successful batch increments the expected revision.
 
 

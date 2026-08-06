@@ -37,47 +37,47 @@ enum CrowdyStudioAgentToolCallStatus {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>PROPOSED</b></code>](#proposed) \{#proposed\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>PROPOSED</b></code>](#proposed) \{#proposed\} 
 Validated and recorded, not yet dispatched.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>WAITING&#x005F;FOR&#x005F;APPROVAL</b></code>](#waiting-for-approval) \{#waiting-for-approval\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>WAITING&#x005F;FOR&#x005F;APPROVAL</b></code>](#waiting-for-approval) \{#waiting-for-approval\} 
 Blocked on the exact argument-hash approval.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>DISPATCHED</b></code>](#dispatched) \{#dispatched\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>DISPATCHED</b></code>](#dispatched) \{#dispatched\} 
 Durably sent to the matching attached browser epoch.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>RUNNING</b></code>](#running) \{#running\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>RUNNING</b></code>](#running) \{#running\} 
 Executor began the typed operation.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>SUCCEEDED</b></code>](#succeeded) \{#succeeded\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>SUCCEEDED</b></code>](#succeeded) \{#succeeded\} 
 Typed output validated successfully.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>FAILED</b></code>](#failed) \{#failed\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>FAILED</b></code>](#failed) \{#failed\} 
 Typed executor failure.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>DENIED</b></code>](#denied) \{#denied\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>DENIED</b></code>](#denied) \{#denied\} 
 Human denied the exact proposal.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>TIMED&#x005F;OUT</b></code>](#timed-out) \{#timed-out\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>TIMED&#x005F;OUT</b></code>](#timed-out) \{#timed-out\} 
 The recorded tool deadline elapsed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>CANCELLED</b></code>](#cancelled) \{#cancelled\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>CANCELLED</b></code>](#cancelled) \{#cancelled\} 
 Cancelled before a known successful effect.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>STALE</b></code>](#stale) \{#stale\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>STALE</b></code>](#stale) \{#stale\} 
 Fenced by an epoch or context change.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>OUTCOME&#x005F;UNKNOWN</b></code>](#outcome-unknown) \{#outcome-unknown\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentToolCallStatus.<b>OUTCOME&#x005F;UNKNOWN</b></code>](#outcome-unknown) \{#outcome-unknown\} 
 An effect may have occurred; it is never retried blindly and requires human inspection.
 
 

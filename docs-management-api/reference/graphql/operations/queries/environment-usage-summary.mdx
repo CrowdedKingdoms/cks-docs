@@ -29,15 +29,15 @@ environmentUsageSummary(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>environmentUsageSummary.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
+#### [<code style={{ fontWeight: 'normal' }}>environmentUsageSummary.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
 Organization id (BigInt) that owns the environment.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>environmentUsageSummary.<b>environmentSlug</b></code>](#environment-slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#environment-slug\}
+#### [<code style={{ fontWeight: 'normal' }}>environmentUsageSummary.<b>environmentSlug</b></code>](#environment-slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#environment-slug\} 
 Slug of the environment to report usage for.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>environmentUsageSummary.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#since\}
+#### [<code style={{ fontWeight: 'normal' }}>environmentUsageSummary.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#since\} 
 Start of the time window (ISO-8601 DateTime or relative duration such as 1d, 7d, 1h). Usage is aggregated from this instant up to now.
 
 
@@ -45,5 +45,5 @@ Start of the time window (ISO-8601 DateTime or relative duration such as 1d, 7d,
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>EnvironmentUsageSummary</b></code>](/reference/graphql/types/objects/environment-usage-summary.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>EnvironmentUsageSummary</b></code>](/reference/graphql/types/objects/environment-usage-summary.mdx) <Badge class="badge badge--secondary " text="object"/> 
 Per-minute replication and GraphQL usage time series for an environment, with rate peaks and live Buddy rates.

@@ -25,5 +25,5 @@ refreshAppToken: AppTokenResponse!
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>AppTokenResponse</b></code>](/reference/graphql/types/objects/app-token-response.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>AppTokenResponse</b></code>](/reference/graphql/types/objects/app-token-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
 A short-lived, app-scoped gameplay token (Overworld portal). Confined to a single app: usable only against that app's Game API + Buddy realtime surface (plus read-only `me` and same-app `refreshAppToken`). It CANNOT perform management operations and CANNOT mint tokens for other apps, so a game stack that receives it never gets the player's full identity session.

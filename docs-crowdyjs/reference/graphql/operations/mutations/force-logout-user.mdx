@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-ADMIN/DESTRUCTIVE: revokes ALL of the target user’s sessions by deleting every game&#x005F;token row, forcing re-authentication on every device. Returns true if at least one session was revoked. Requires a super-admin bearer game token (and the management API enabled). NOTE: management-owned in cks-game-api (throws ForbiddenException) — use cks-management-api.
+ADMIN/DESTRUCTIVE: revokes ALL of the target user’s sessions by deleting every game&#x005F;token row, forcing re-authentication on every device. Returns true if at least one session was revoked. Requires a super-admin bearer game token (and the management API enabled).
 
 
 ```graphql
@@ -27,7 +27,7 @@ forceLogoutUser(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>forceLogoutUser.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\}
+#### [<code style={{ fontWeight: 'normal' }}>forceLogoutUser.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
 Target user id whose sessions to revoke (BigInt as a decimal string).
 
 
@@ -35,5 +35,5 @@ Target user id whose sessions to revoke (BigInt as a decimal string).
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
 The `Boolean` scalar type represents `true` or `false`.

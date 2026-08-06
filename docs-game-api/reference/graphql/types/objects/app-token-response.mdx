@@ -1,0 +1,73 @@
+---
+id: app-token-response
+title: AppTokenResponse
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A short-lived, app-scoped gameplay token (Overworld portal). Confined to a single app: usable only against that app's Game API + Buddy realtime surface (plus read-only `me` and same-app `refreshAppToken`). It CANNOT perform management operations and CANNOT mint tokens for other apps, so a game stack that receives it never gets the player's full identity session.
+
+
+```graphql
+type AppTokenResponse {
+  token: String!
+  gameTokenId: String!
+  appId: String!
+  expiresAt: String!
+  gameApiUrl: String
+  gameApiWsUrl: String
+  discoveryUrl: String
+  launchUrl: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>token</b></code>](#token)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#token\} 
+Opaque app-scoped gameplay token. Send to the target app's Game API as `Authorization: Bearer <token>` (and in the realtime `connectionParams`). Do NOT send it to the Management API for anything other than `me`/`refreshAppToken`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>gameTokenId</b></code>](#game-token-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#game-token-id\} 
+Identifier of the underlying game&#x005F;token row, as a String.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app this token is confined to, as a String.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+ISO-8601 UTC expiry. Call `refreshAppToken` (same app) before this, or re-portal through the Overworld for a different app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-url\} 
+Base HTTPS URL of the Game API that serves this app — its OWN datacenter's endpoint when a placement exists, because that is where the app's shards are. Null if the app has no dedicated/shared game-api route yet. Use this for gameplay; use `discoveryUrl` to recover if it stops answering.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>gameApiWsUrl</b></code>](#game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-ws-url\} 
+WebSocket URL of the Game API that serves this app (wss://), for realtime subscriptions.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>discoveryUrl</b></code>](#discovery-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#discovery-url\} 
+Stable entry origin, resolving to every datacenter, that always reaches SOME healthy instance. Use it to re-discover endpoints when `gameApiUrl` stops answering: a token-holding client cannot re-mint, because that needs the identity session it does not have. Never a per-datacenter or per-instance address.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>launchUrl</b></code>](#launch-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#launch-url\} 
+Browser launch URL for this app (where the player's browser plays it), if configured.
+
+
+
+
+### Returned By
+
+[`exchangePortalCode`](/reference/graphql/operations/mutations/exchange-portal-code.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`mintAppToken`](/reference/graphql/operations/mutations/mint-app-token.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`refreshAppToken`](/reference/graphql/operations/mutations/refresh-app-token.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

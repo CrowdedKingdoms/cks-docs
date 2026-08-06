@@ -21,7 +21,7 @@ Legacy donation/property-token data; these products are no longer purchasable. R
 
 :::
 
-The authenticated user’s property-token balances (available, in use, total). Requires a valid game token. NOTE: property tokens are management-owned, so in cks-game-api this throws ForbiddenException — call cks-management-api instead.
+The authenticated user’s property-token balances (available, in use, total). Requires a valid game token.
 
 
 ```graphql
@@ -32,4 +32,3 @@ myPropertyTokens: UserPropertyTokenData! @deprecated
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>UserPropertyTokenData</b></code>](/reference/graphql/types/objects/user-property-token-data.mdx) <Badge class="badge badge--secondary " text="object"/>
-Aggregated property-token balances for a user. LEGACY: property tokens are no longer purchasable. Returned by the deprecated myPropertyTokens query.

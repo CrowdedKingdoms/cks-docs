@@ -28,11 +28,11 @@ gameModelFlow(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelFlow.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>gameModelFlow.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app (tenant) whose flow to stitch.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelFlow.<b>flowId</b></code>](#flow-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#flow-id\}
+#### [<code style={{ fontWeight: 'normal' }}>gameModelFlow.<b>flowId</b></code>](#flow-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#flow-id\} 
 The flow correlation id (UUID) — from the flowId field of a GmEvent, GmAutomationRun, or WasmModuleRun.
 
 
@@ -40,5 +40,5 @@ The flow correlation id (UUID) — from the flowId field of a GmEvent, GmAutomat
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>GmFlowTimeline</b></code>](/reference/graphql/types/objects/gm-flow-timeline.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>GmFlowTimeline</b></code>](/reference/graphql/types/objects/gm-flow-timeline.mdx) <Badge class="badge badge--secondary " text="object"/> 
 The stitched cross-engine timeline for one flow correlation id: every model event, automation run, and compute module run that shares the flow&#x005F;id minted at the entry edge (player invoke / automation run / computeInvoke). Each array is ordered by time ascending, so the three together read as one causal diagnostics trace (e.g. mob kill -&#x003E; compute event -&#x003E; reward grant).

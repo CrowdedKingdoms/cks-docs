@@ -21,7 +21,7 @@ Legacy donation/property-token data; these products are no longer purchasable. R
 
 :::
 
-Lifetime donation totals for the authenticated user, summed across every app. Requires a valid game token. NOTE: donations are management-owned, so in cks-game-api this throws ForbiddenException — call cks-management-api instead.
+Lifetime donation totals for the authenticated user, summed across every app. Requires a valid game token.
 
 
 ```graphql
@@ -32,4 +32,3 @@ myDonationData: UserDonationData! @deprecated
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>UserDonationData</b></code>](/reference/graphql/types/objects/user-donation-data.mdx) <Badge class="badge badge--secondary " text="object"/>
-Aggregated lifetime donation totals for a user. LEGACY: donations are no longer purchasable. Returned by the deprecated myDonationData query.
