@@ -30,19 +30,19 @@ input CancelAgentRunInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>CancelAgentRunInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
+#### [<code style={{ fontWeight: 'normal' }}>CancelAgentRunInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
 Required retry key. Same owner, operation, key, and input replay the first result; changed input returns IDEMPOTENCY&#x005F;CONFLICT.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CancelAgentRunInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+#### [<code style={{ fontWeight: 'normal' }}>CancelAgentRunInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
 Owner/app session UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CancelAgentRunInput.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\}
+#### [<code style={{ fontWeight: 'normal' }}>CancelAgentRunInput.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\} 
 Current attached client epoch.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CancelAgentRunInput.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\}
+#### [<code style={{ fontWeight: 'normal' }}>CancelAgentRunInput.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\} 
 Active run UUID to cancel; omit to cancel the session currentRun.
 
 

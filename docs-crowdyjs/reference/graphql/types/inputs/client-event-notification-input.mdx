@@ -34,35 +34,35 @@ input ClientEventNotificationInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The ID of the app where the event is occurring.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>chunk</b></code>](#chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#chunk\}
+#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>chunk</b></code>](#chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#chunk\} 
 The chunk coordinates where the event is located.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\}
+#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\} 
 A unique identifier for the object controlling this event. Must be exactly 32 bytes when encoded as UTF-8.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>eventType</b></code>](#event-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-type\}
+#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>eventType</b></code>](#event-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-type\} 
 The event type ID (uint16, 0-65535). This is a client-defined enum that determines how the event should be processed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#state\}
+#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 
 The event state data, base64-encoded. The format is defined by the event type and is currently only processed by clients.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>distance</b></code>](#distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#distance\}
+#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>distance</b></code>](#distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#distance\} 
 Chunk replication distance (0-8). Defaults to 8 for events. Clamped to 0-8.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>decayRate</b></code>](#decay-rate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#decay-rate\}
+#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>decayRate</b></code>](#decay-rate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#decay-rate\} 
 Decay algorithm for replication: 0 = none, 1 = exponential, 2 = linear 50%, 3 = linear 25%, 4 = linear 10%, 5 = linear 5%. Defaults to 0 (none) for events.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number\}
+#### [<code style={{ fontWeight: 'normal' }}>ClientEventNotificationInput.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number\} 
 Client-assigned correlation id for this datagram: a uint8 (0-255) that wraps at gameClientBootstrap.sequenceNumberModulo (256); defaults to 0 if omitted. For CORRELATION ONLY — it is NOT an idempotency key and the server does not dedupe replays. Echoed on any GenericErrorResponse for this send, delivered on the udpNotifications subscription.
 
 

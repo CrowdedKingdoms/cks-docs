@@ -1,0 +1,93 @@
+---
+id: gm-timer
+title: GmTimer
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A pending one-shot timer: a delayed invocation that has been armed but has not fired yet. Timers are removed from this list the moment they are claimed for execution.
+
+
+```graphql
+type GmTimer {
+  timerId: String!
+  appId: BigInt!
+  sessionId: String
+  selfContainerId: String!
+  functionName: String!
+  paramsJson: String!
+  fireAt: DateTime!
+  dedupeKey: String
+  cascadeDepth: Int!
+  flowId: String
+  armedBy: String!
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTimer.<b>timerId</b></code>](#timer-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#timer-id\} 
+Unique timer id (UUID).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTimer.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTimer.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+Session the delayed invocation runs in, or null if app-global.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTimer.<b>selfContainerId</b></code>](#self-container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#self-container-id\} 
+Container the delayed invocation runs against ("self").
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTimer.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+The function that will be invoked when it fires.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTimer.<b>paramsJson</b></code>](#params-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#params-json\} 
+JSON object of parameters bound at arm time and passed to the invocation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTimer.<b>fireAt</b></code>](#fire-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#fire-at\} 
+When the timer becomes due.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTimer.<b>dedupeKey</b></code>](#dedupe-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#dedupe-key\} 
+App-scoped dedupe key, or null. Re-arming the same key replaces this timer instead of adding another.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTimer.<b>cascadeDepth</b></code>](#cascade-depth)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#cascade-depth\} 
+Cascade depth inherited from whatever armed the timer. The fired invocation runs one deeper, so timer chains are bounded by the app's maxCascadeDepth.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTimer.<b>flowId</b></code>](#flow-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#flow-id\} 
+Flow correlation id carried from the arming call, so the eventual fire stays visible in gameModelFlow.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTimer.<b>armedBy</b></code>](#armed-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#armed-by\} 
+What armed it: function (a timer effect inside an invoke) | client (gameModelScheduleInvoke) | automation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTimer.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the timer was armed.
+
+
+
+
+### Returned By
+
+[`gameModelScheduleInvoke`](/reference/graphql/operations/mutations/game-model-schedule-invoke.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gameModelTimers`](/reference/graphql/operations/queries/game-model-timers.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

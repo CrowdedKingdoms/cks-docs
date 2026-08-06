@@ -34,35 +34,35 @@ type RollbackVoxelEventResult {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 Id of the app this result belongs to (decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#coordinates\}
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#coordinates\} 
 Address of the chunk that contains the affected voxel.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>location</b></code>](#location)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinates!</b></code>](/reference/graphql/types/objects/voxel-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#location\}
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>location</b></code>](#location)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinates!</b></code>](/reference/graphql/types/objects/voxel-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#location\} 
 Local position of the affected voxel within its chunk.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>fromVoxelType</b></code>](#from-voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#from-voxel-type\}
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>fromVoxelType</b></code>](#from-voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#from-voxel-type\} 
 Voxel type immediately before the rollback (the current value), or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>toVoxelType</b></code>](#to-voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#to-voxel-type\}
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>toVoxelType</b></code>](#to-voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#to-voxel-type\} 
 Voxel type the voxel would be / was reverted to, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>plannedAction</b></code>](#planned-action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#planned-action\}
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>plannedAction</b></code>](#planned-action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#planned-action\} 
 The action computed for this voxel by the rollback (the revert operation to perform).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>applied</b></code>](#applied)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#applied\}
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>applied</b></code>](#applied)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#applied\} 
 True if the change was actually written; false in dry-run mode or when the voxel was skipped.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\}
+#### [<code style={{ fontWeight: 'normal' }}>RollbackVoxelEventResult.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
 Human-readable explanation when a voxel is skipped or an action is taken, or null.
 
 

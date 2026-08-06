@@ -29,15 +29,15 @@ type AgentHeartbeat {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentHeartbeat.<b>serverTime</b></code>](#server-time)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#server-time\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentHeartbeat.<b>serverTime</b></code>](#server-time)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#server-time\} 
 Authoritative server receipt time.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentHeartbeat.<b>playLeaseFreshUntil</b></code>](#play-lease-fresh-until)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#play-lease-fresh-until\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentHeartbeat.<b>playLeaseFreshUntil</b></code>](#play-lease-fresh-until)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#play-lease-fresh-until\} 
 Play lease remains server-fresh through this instant, bounded by its hard expiry; null without an active Play lease.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentHeartbeat.<b>workspaceLeaseExpiresAt</b></code>](#workspace-lease-expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#workspace-lease-expires-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentHeartbeat.<b>workspaceLeaseExpiresAt</b></code>](#workspace-lease-expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#workspace-lease-expires-at\} 
 Renewed 30-second workspace lease expiry; null when no unchanged connected workspace lease can be renewed.
 
 

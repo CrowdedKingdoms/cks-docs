@@ -1,0 +1,50 @@
+---
+id: actor-type
+title: ActorType
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The signed-in identity behind a bearer token.
+
+
+```graphql
+type ActorType {
+  userUuid: String!
+  userId: String!
+  contributorUuid: String!
+  username: String
+  email: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorType.<b>userUuid</b></code>](#user-uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-uuid\} 
+User identity: the users.galaxy&#x005F;row&#x005F;uuid value. The column keeps its historical name; the datastore is PostgreSQL/Citus.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorType.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+Legacy bigint public user id (Buddy / CK wire), as a string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorType.<b>contributorUuid</b></code>](#contributor-uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#contributor-uuid\} 
+Contributor uuid — the votes/content actor.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorType.<b>username</b></code>](#username)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#username\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorType.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#email\}

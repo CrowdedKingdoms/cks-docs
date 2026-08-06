@@ -33,31 +33,31 @@ type PlayerClientArtifact {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\} 
 The served version UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>artifactHash</b></code>](#artifact-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-hash\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>artifactHash</b></code>](#artifact-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-hash\} 
 SHA-256 content hash of the served artifact bytes. The browser broker recomputes it and refuses any artifact whose hash differs, so a side-loaded module cannot run (T7).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>artifactBase64</b></code>](#artifact-base-64)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-base-64\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>artifactBase64</b></code>](#artifact-base-64)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#artifact-base-64\} 
 The gas-injected client WASM artifact, base64-encoded.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>sizeBytes</b></code>](#size-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#size-bytes\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>sizeBytes</b></code>](#size-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#size-bytes\} 
 Artifact size in bytes (&#x003C;= 512 KiB).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\} 
 ABI version the artifact was built for.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>contractJson</b></code>](#contract-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#contract-json\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>contractJson</b></code>](#contract-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#contract-json\} 
 Declared client interop contract (bridge messages) as JSON, when the version pins one.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>clientFuelPerDispatch</b></code>](#client-fuel-per-dispatch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-fuel-per-dispatch\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerClientArtifact.<b>clientFuelPerDispatch</b></code>](#client-fuel-per-dispatch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-fuel-per-dispatch\} 
 Per-dispatch client fuel budget from the resolved player policy; the broker's glue worker traps when a dispatch exceeds it.
 
 

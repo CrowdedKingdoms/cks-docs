@@ -32,27 +32,27 @@ enum ServerState {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Starting</b></code>](#starting) \{#starting\}
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Starting</b></code>](#starting) \{#starting\} 
 Booting / not yet ready: registered but still initializing; do not route client traffic here.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>ReadyForClients</b></code>](#ready-for-clients) \{#ready-for-clients\}
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>ReadyForClients</b></code>](#ready-for-clients) \{#ready-for-clients\} 
 Healthy and accepting client traffic. The only state safe to route to.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Stopping</b></code>](#stopping) \{#stopping\}
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Stopping</b></code>](#stopping) \{#stopping\} 
 Draining / shutting down: finishing in-flight work; do not send new traffic.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Offline</b></code>](#offline) \{#offline\}
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Offline</b></code>](#offline) \{#offline\} 
 Not running or unreachable (e.g. crashed or missed heartbeats).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>NearCapacity</b></code>](#near-capacity) \{#near-capacity\}
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>NearCapacity</b></code>](#near-capacity) \{#near-capacity\} 
 Buddy soft resource overload: excluded from new-client selection until it recovers; existing sessions continue.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Full</b></code>](#full) \{#full\}
+#### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Full</b></code>](#full) \{#full\} 
 Buddy hard resource overload: excluded from new-client selection and actively shedding clients (sends reconnect commands so they migrate elsewhere).
 
 

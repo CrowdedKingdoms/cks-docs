@@ -34,35 +34,35 @@ type PaymentEventRecord {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\}
+#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\} 
 Unique payment-event id (BigInt as a decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaymentProvider!</b></code>](/reference/graphql/types/enums/payment-provider.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#provider\}
+#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PaymentProvider!</b></code>](/reference/graphql/types/enums/payment-provider.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#provider\} 
 Provider that delivered this webhook event.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>externalEventId</b></code>](#external-event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#external-event-id\}
+#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>externalEventId</b></code>](#external-event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#external-event-id\} 
 Provider-assigned event id, unique per provider; used to make webhook handling idempotent.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>eventType</b></code>](#event-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-type\}
+#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>eventType</b></code>](#event-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-type\} 
 Provider event type string (e.g. "checkout.session.completed" for Stripe).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>checkoutId</b></code>](#checkout-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#checkout-id\}
+#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>checkoutId</b></code>](#checkout-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#checkout-id\} 
 Checkout this event was matched to (BigInt as a decimal string); null if it could not be matched.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>processedAt</b></code>](#processed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#processed-at\}
+#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>processedAt</b></code>](#processed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#processed-at\} 
 When the event was successfully processed (ISO-8601 UTC timestamp); null if not yet processed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>error</b></code>](#error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error\}
+#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>error</b></code>](#error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error\} 
 Error message if processing this event failed; null on success.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>PaymentEventRecord.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 When the event was received (ISO-8601 UTC timestamp).
 
 

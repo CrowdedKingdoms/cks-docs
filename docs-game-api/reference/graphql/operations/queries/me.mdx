@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Returns the authenticated user for the bearer game token on this request, or null if the token is missing/invalid. Use this to validate a token and fetch the current player. The token is issued by the Management API login and sent as `Authorization: Bearer <token>` (and, for the udpNotifications WebSocket, in the graphql-transport-ws connection&#x005F;init payload as `Authorization`). game-api does not issue tokens.
+Returns the authenticated user resolved from the token (sent as `Authorization: Bearer <token>`), or null if missing/invalid. Readable with either an identity session token or an app-scoped gameplay token.
 
 
 ```graphql

@@ -35,39 +35,39 @@ input SaveCrowdyStudioLibraryFileInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App tenant. Requires an app-scoped token; ownership is always the authenticated user.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>libraryFileId</b></code>](#library-file-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#library-file-id\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>libraryFileId</b></code>](#library-file-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#library-file-id\} 
 Existing library UUID to update; omit to create a new entry.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>expectedRevision</b></code>](#expected-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expected-revision\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>expectedRevision</b></code>](#expected-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expected-revision\} 
 Required current revision when libraryFileId is supplied; omit on create.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>title</b></code>](#title)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#title\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>title</b></code>](#title)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#title\} 
 Player-facing library title.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>pathHint</b></code>](#path-hint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path-hint\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>pathHint</b></code>](#path-hint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path-hint\} 
 Safe suggested destination path: Cargo.toml or a .rs file below src/.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioTarget!</b></code>](/reference/graphql/types/enums/crowdy-studio-target.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#target\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioTarget!</b></code>](/reference/graphql/types/enums/crowdy-studio-target.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#target\} 
 Compatible project target for this reusable file.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tags\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>tags</b></code>](#tags)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tags\} 
 Optional unique lowercase discovery tags; at most 16, each at most 32 characters.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>content</b></code>](#content)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>content</b></code>](#content)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content\} 
 Private UTF-8 source text, capped at 64 KiB.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
+#### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioLibraryFileInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
 Optional 24-hour retry key.
 
 

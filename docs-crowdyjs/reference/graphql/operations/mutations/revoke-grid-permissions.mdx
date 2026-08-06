@@ -27,7 +27,7 @@ revokeGridPermissions(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>revokeGridPermissions.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RevokeGridPermissionsInput!</b></code>](/reference/graphql/types/inputs/revoke-grid-permissions-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+#### [<code style={{ fontWeight: 'normal' }}>revokeGridPermissions.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RevokeGridPermissionsInput!</b></code>](/reference/graphql/types/inputs/revoke-grid-permissions-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
 The app, grid, and target user; optionally the subset of permission keys to revoke (omit to revoke all of the user's direct grants).
 
 
@@ -35,5 +35,5 @@ The app, grid, and target user; optionally the subset of permission keys to revo
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>GridUserPermissions</b></code>](/reference/graphql/types/objects/grid-user-permissions.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>GridUserPermissions</b></code>](/reference/graphql/types/objects/grid-user-permissions.mdx) <Badge class="badge badge--secondary " text="object"/> 
 A user's effective (materialized) runtime permissions on one grid: the flattened union of direct + group grants, with expired grants excluded, that Buddy enforces.

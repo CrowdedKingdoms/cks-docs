@@ -34,35 +34,35 @@ input SetListingPricingInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App that owns the listing.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\}
+#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
 UUID of the listing to price.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>acquisitionMode</b></code>](#acquisition-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquisition-mode\}
+#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>acquisitionMode</b></code>](#acquisition-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquisition-mode\} 
 Acquisition mode: 'free', 'buy', 'rent', 'time&#x005F;limited', or 'cost&#x005F;limited'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#price-cents\}
+#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#price-cents\} 
 Price in cents (required for all non-free modes; author-set only).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>rentIntervalDays</b></code>](#rent-interval-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#rent-interval-days\}
+#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>rentIntervalDays</b></code>](#rent-interval-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#rent-interval-days\} 
 Rent billing interval in days (rent mode).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>windowDays</b></code>](#window-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#window-days\}
+#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>windowDays</b></code>](#window-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#window-days\} 
 Single fixed window in days (time&#x005F;limited mode).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>unitBudget</b></code>](#unit-budget)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#unit-budget\}
+#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>unitBudget</b></code>](#unit-budget)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#unit-budget\} 
 Compute-unit budget the license grants (cost&#x005F;limited mode).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>licenseTransferable</b></code>](#license-transferable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#license-transferable\}
+#### [<code style={{ fontWeight: 'normal' }}>SetListingPricingInput.<b>licenseTransferable</b></code>](#license-transferable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#license-transferable\} 
 Whether an acquired license may travel with a grid resale (default false; 07 §5.a).
 
 

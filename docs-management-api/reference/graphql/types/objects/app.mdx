@@ -52,107 +52,107 @@ type App {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 Unique numeric identifier of the app (primary key).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
 Numeric id of the organization that owns this app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
 Human-readable display name of the app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#slug\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
 URL-safe slug, unique within the org; combined with the org slug to form the marketplace path. May be null for legacy rows.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
 Short plain-text description shown in listings; also matched by the marketplace free-text filter.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>visibility</b></code>](#visibility)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppVisibility!</b></code>](/reference/graphql/types/enums/app-visibility.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#visibility\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>visibility</b></code>](#visibility)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppVisibility!</b></code>](/reference/graphql/types/enums/app-visibility.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#visibility\} 
 Marketplace discoverability (PUBLIC/UNLISTED/PRIVATE). See AppVisibility.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppStatus!</b></code>](/reference/graphql/types/enums/app-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppStatus!</b></code>](/reference/graphql/types/enums/app-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
 Lifecycle state (DRAFT/LIVE/ARCHIVED). See AppStatus.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>launchUrl</b></code>](#launch-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#launch-url\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>launchUrl</b></code>](#launch-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#launch-url\} 
 Browser destination (origin/URL) a player is redirected to when they portal into this app from the Overworld. Used to route the player and to validate portal redirect URIs.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>isTrusted</b></code>](#is-trusted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-trusted\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>isTrusted</b></code>](#is-trusted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-trusted\} 
 True for first-party/trusted apps: portal entry skips the consent screen. The Overworld (app 1) is trusted. Studio admins cannot set this; it is platform-controlled.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>redirectUris</b></code>](#redirect-uris)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#redirect-uris\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>redirectUris</b></code>](#redirect-uris)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#redirect-uris\} 
 OAuth-style redirect-URI allow-list for the portal handoff. A portal authorization code’s redirect&#x005F;uri must match one of these by origin; empty disallows browser portal entry to this app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>clientType</b></code>](#client-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-type\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>clientType</b></code>](#client-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-type\} 
 OAuth client type: "public" (browser/PKCE, no secret) or "confidential" (server-side, holds a secret). Defaults to "public".
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>metadata</b></code>](#metadata)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>metadata</b></code>](#metadata)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata\} 
 Opaque JSON-encoded string of marketplace media (cover image URL, screenshots, long description, etc.). Stored internally as JSONB; clients must JSON.parse on read and JSON.stringify on write. Null/"&#x007B;&#x007D;" when unset.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 
 Base64-encoded binary blob of the app's persisted runtime/world state; opaque to clients and potentially large. Null when no state has been saved.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>createdBy</b></code>](#created-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-by\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>createdBy</b></code>](#created-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-by\} 
 Numeric user id of the account that created the app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>splitMode</b></code>](#split-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#split-mode\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>splitMode</b></code>](#split-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#split-mode\} 
 True when this app's runtime data lives in a dedicated per-tenant game-api database (rather than the shared game-api). Used together with gameApiUrl to route gameplay calls.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-url\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-url\} 
 Resolved game-api base URL for SDK/runtime calls: the per-tenant URL for dedicated apps, or the shared platform URL for shared apps. Null for legacy or not-yet-deployed apps.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>deploymentTarget</b></code>](#deployment-target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#deployment-target\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>deploymentTarget</b></code>](#deployment-target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#deployment-target\} 
 Where the app runs: "none" (draft / not deployed), "shared" (the shared game-api), or "dedicated" (a provisioned per-tenant environment).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>reservedEgressBytesPerSec</b></code>](#reserved-egress-bytes-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-egress-bytes-per-sec\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>reservedEgressBytesPerSec</b></code>](#reserved-egress-bytes-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-egress-bytes-per-sec\} 
 Reserved sustained egress in bytes/s for shared apps. 0 = free tier; &#x003E;0 bypasses the ~1 MB/s rate limit and incurs a monthly reservation fee.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>runtimeStatus</b></code>](#runtime-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#runtime-status\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>runtimeStatus</b></code>](#runtime-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#runtime-status\} 
 Shared-environment runtime gate, mirrored to the game DB and enforced by game-api + Buddy: "active", "grace", "denied", or "suspended".
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>runtimeDenialReason</b></code>](#runtime-denial-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#runtime-denial-reason\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>runtimeDenialReason</b></code>](#runtime-denial-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#runtime-denial-reason\} 
 When runtimeStatus is not "active", why the runtime is gated: "free&#x005F;allowance", "insufficient&#x005F;funds", "spend&#x005F;cap", or "subscription&#x005F;lapsed". Null when active.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>codeAdmissionMode</b></code>](#code-admission-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code-admission-mode\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>codeAdmissionMode</b></code>](#code-admission-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code-admission-mode\} 
 Player-code censorship mode: "implicit&#x005F;allow" (default/off) or "allow&#x005F;list" (strict admission of every running artifact, including self-authored code).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>gridClaimPolicy</b></code>](#grid-claim-policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-claim-policy\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>gridClaimPolicy</b></code>](#grid-claim-policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-claim-policy\} 
 How a player claim confers grid ownership (D4): "self&#x005F;claim" (the claim right alone; default), "approval" (designated approvers accept claim requests), "invite" (standing invites only), or "marketplace&#x005F;only" (only a marketplace grid purchase; the purchase edge ships in P4b).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>gridClaimApproverUserIds</b></code>](#grid-claim-approver-user-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-claim-approver-user-ids\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>gridClaimApproverUserIds</b></code>](#grid-claim-approver-user-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-claim-approver-user-ids\} 
 Player user ids allowed to approve grid claim requests in "approval" mode. When empty, approval falls back to org staff holding manage&#x005F;compute.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 Timestamp when the app was created.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 Timestamp when the app was last updated.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>org</b></code>](#org)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Organization</b></code>](/reference/graphql/types/objects/organization.mdx) <Badge class="badge badge--secondary " text="object"/> \{#org\}
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>org</b></code>](#org)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Organization</b></code>](/reference/graphql/types/objects/organization.mdx) <Badge class="badge badge--secondary " text="object"/> \{#org\} 
 The organization that owns this app. Null if the owning org cannot be found.
 
 

@@ -29,11 +29,11 @@ usersPaginated(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>usersPaginated.<b>query</b></code>](#query)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#query\}
+#### [<code style={{ fontWeight: 'normal' }}>usersPaginated.<b>query</b></code>](#query)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#query\} 
 Optional search term. Case-insensitive prefix match over email, gamertag, and disambiguation, plus an exact match on user&#x005F;id. Omit to list all users.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>usersPaginated.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit\}
+#### [<code style={{ fontWeight: 'normal' }}>usersPaginated.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
 :::warning[DEPRECATED]
 
 Use usersConnection(first:, after:) instead. See /overview/pagination.
@@ -43,7 +43,7 @@ Use usersConnection(first:, after:) instead. See /overview/pagination.
 Max rows to return. Defaults to 50; clamped to 1-200.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>usersPaginated.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\}
+#### [<code style={{ fontWeight: 'normal' }}>usersPaginated.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
 :::warning[DEPRECATED]
 
 Use usersConnection(first:, after:) instead. See /overview/pagination.
@@ -57,5 +57,5 @@ Rows to skip for pagination. Defaults to 0; negative values are treated as 0.
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>UsersPage</b></code>](/reference/graphql/types/objects/users-page.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>UsersPage</b></code>](/reference/graphql/types/objects/users-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
 One page of users from usersPaginated, plus pagination metadata.

@@ -31,23 +31,23 @@ input FunctionPermissionEffectInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>FunctionPermissionEffectInput.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action\}
+#### [<code style={{ fontWeight: 'normal' }}>FunctionPermissionEffectInput.<b>action</b></code>](#action)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action\} 
 'grant' (upsert direct grants, optionally expiring) or 'revoke' (delete direct grants for the listed keys).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>FunctionPermissionEffectInput.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-keys\}
+#### [<code style={{ fontWeight: 'normal' }}>FunctionPermissionEffectInput.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-keys\} 
 Runtime permission keys to grant/revoke (validated against the runtime&#x005F;permissions catalog, e.g. 'access', 'teleport', 'update&#x005F;voxel&#x005F;data', 'use&#x005F;voice&#x005F;chat').
 
 
-#### [<code style={{ fontWeight: 'normal' }}>FunctionPermissionEffectInput.<b>userExpression</b></code>](#user-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-expression\}
+#### [<code style={{ fontWeight: 'normal' }}>FunctionPermissionEffectInput.<b>userExpression</b></code>](#user-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-expression\} 
 Expression resolving the target user id (int), e.g. "$caller&#x005F;user&#x005F;id" or "self.owner&#x005F;user&#x005F;id".
 
 
-#### [<code style={{ fontWeight: 'normal' }}>FunctionPermissionEffectInput.<b>gridIdExpression</b></code>](#grid-id-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id-expression\}
+#### [<code style={{ fontWeight: 'normal' }}>FunctionPermissionEffectInput.<b>gridIdExpression</b></code>](#grid-id-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id-expression\} 
 Expression resolving the grid id (int) the permissions apply to, e.g. "self.grid&#x005F;id". The grid must belong to the app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>FunctionPermissionEffectInput.<b>ttlSecondsExpression</b></code>](#ttl-seconds-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ttl-seconds-expression\}
+#### [<code style={{ fontWeight: 'normal' }}>FunctionPermissionEffectInput.<b>ttlSecondsExpression</b></code>](#ttl-seconds-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ttl-seconds-expression\} 
 Grant only: optional expression resolving a TTL in seconds (int &#x003E; 0) after which the grant expires (rentals/leases), e.g. '86400'. Omit for a non-expiring grant.
 
 

@@ -30,19 +30,19 @@ crowdyStudioAgentUsage(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentUsage.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentUsage.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App whose Agentic Studio usage to read.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentUsage.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#since\}
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentUsage.<b>since</b></code>](#since)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#since\} 
 Inclusive ISO-8601 start time or relative lookback (default 24h).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentUsage.<b>until</b></code>](#until)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#until\}
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentUsage.<b>until</b></code>](#until)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#until\} 
 Exclusive ISO-8601 end time (default now).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentUsage.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\}
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioAgentUsage.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
 Maximum newest records to return (default 100, max 200).
 
 
@@ -50,5 +50,5 @@ Maximum newest records to return (default 100, max 200).
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentUsagePage</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-usage-page.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentUsagePage</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-usage-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
 Sanitized app usage read model: newest exact records plus an aggregate for the requested window.

@@ -15,11 +15,17 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-The authenticated user’s property-token balances (available, in use, total). Requires a valid game token. NOTE: property tokens are management-owned, so in cks-game-api this throws ForbiddenException — call cks-management-api instead.
+:::warning[DEPRECATED]
+
+Legacy donation/property-token data; these products are no longer purchasable. Retained for historical records.
+
+:::
+
+The authenticated user’s property-token balances (available, in use, total). Requires a valid game token.
 
 
 ```graphql
-myPropertyTokens: UserPropertyTokenData!
+myPropertyTokens: UserPropertyTokenData! @deprecated
 ```
 
 

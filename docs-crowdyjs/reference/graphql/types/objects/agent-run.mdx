@@ -37,47 +37,47 @@ type AgentRun {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\} 
 Stable run UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentRunStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-run-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentRunStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-run-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
 Current serialized state.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>providerRounds</b></code>](#provider-rounds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider-rounds\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>providerRounds</b></code>](#provider-rounds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider-rounds\} 
 Provider rounds already attempted in this run.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>toolCalls</b></code>](#tool-calls)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-calls\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>toolCalls</b></code>](#tool-calls)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tool-calls\} 
 Descriptor-pinned tool calls already recorded.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>errorCode</b></code>](#error-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-code\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>errorCode</b></code>](#error-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-code\} 
 Stable terminal error code, or null while non-terminal/successful.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>terminalReason</b></code>](#terminal-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#terminal-reason\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>terminalReason</b></code>](#terminal-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#terminal-reason\} 
 Stable preemption/cancellation reason, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
 SDK-compatible terminal/preemption reason, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>startedAt</b></code>](#started-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#started-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>startedAt</b></code>](#started-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#started-at\} 
 Worker start timestamp, or null while queued.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>finishedAt</b></code>](#finished-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#finished-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>finishedAt</b></code>](#finished-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#finished-at\} 
 Terminal timestamp, or null while active.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 Run acceptance timestamp.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>cancelled</b></code>](#cancelled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#cancelled\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentRun.<b>cancelled</b></code>](#cancelled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#cancelled\} 
 True when the durable run status is CANCELLED.
 
 

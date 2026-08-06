@@ -34,23 +34,23 @@ voxelUpdateHistoryConnection(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 Id of the app whose voxel edit history to read (decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\}
+#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
 Optional filter: only return history entries made by this user id (decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>from</b></code>](#from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#from\}
+#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>from</b></code>](#from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#from\} 
 Optional inclusive start of the changed-at time window.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>to</b></code>](#to)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#to\}
+#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>to</b></code>](#to)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#to\} 
 Optional inclusive end of the changed-at time window.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit\}
+#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
 :::warning[DEPRECATED]
 
 Use voxelUpdateHistoryConnection(first:, after:) instead. See /overview/pagination. Removal no earlier than 2027-01-01. (Ignored by voxelUpdateHistoryConnection, which shares these args.)
@@ -60,7 +60,7 @@ Use voxelUpdateHistoryConnection(first:, after:) instead. See /overview/paginati
 Maximum number of entries to return. DEFAULTS to 500 when omitted; allowed range is 1-50000.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\}
+#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
 :::warning[DEPRECATED]
 
 Use voxelUpdateHistoryConnection(first:, after:) instead. See /overview/pagination. Removal no earlier than 2027-01-01. (Ignored by voxelUpdateHistoryConnection, which shares these args.)
@@ -70,11 +70,11 @@ Use voxelUpdateHistoryConnection(first:, after:) instead. See /overview/paginati
 Number of entries to skip for pagination. Defaults to 0 when omitted; allowed range is 0-1000000.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\}
+#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\} 
 Return the first N edges after `after`. Default 50; clamped to 1..200.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\}
+#### [<code style={{ fontWeight: 'normal' }}>voxelUpdateHistoryConnection.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\} 
 Opaque cursor: return edges after this one. Pass a previous page's `pageInfo.endCursor`. Omit for the first page.
 
 
@@ -82,5 +82,5 @@ Opaque cursor: return edges after this one. Pass a previous page's `pageInfo.end
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>VoxelUpdateHistoryConnection</b></code>](/reference/graphql/types/objects/voxel-update-history-connection.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>VoxelUpdateHistoryConnection</b></code>](/reference/graphql/types/objects/voxel-update-history-connection.mdx) <Badge class="badge badge--secondary " text="object"/> 
 Relay-style cursor-paginated connection over voxel edit history entries (VoxelUpdateHistoryEvent). Page with `first`/`after`; cursors are opaque.

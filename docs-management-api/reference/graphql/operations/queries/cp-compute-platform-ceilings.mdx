@@ -25,5 +25,5 @@ cpComputePlatformCeilings: CpComputePlatformCeilings!
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>CpComputePlatformCeilings</b></code>](/reference/graphql/types/objects/cp-compute-platform-ceilings.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>CpComputePlatformCeilings</b></code>](/reference/graphql/types/objects/cp-compute-platform-ceilings.mdx) <Badge class="badge badge--secondary " text="object"/> 
 Operator-set platform ceilings for the per-app WASM compute policy. Each field caps the matching wasm&#x005F;module&#x005F;policy knob platform-wide: game-api rejects computeSetPolicy values above the ceiling. A null field means no operator override is stored — game-api falls back to its COMPUTE&#x005F;PLATFORM&#x005F;MAX&#x005F;&#x002A; env var (bootstrap default), then to the built-in code default. Edits propagate to game-api replicas via replica sync and apply within ~30 seconds, without a game-api restart.

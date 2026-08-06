@@ -30,19 +30,19 @@ enum AppRuntimeStatus {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeStatus.<b>ACTIVE</b></code>](#active) \{#active\}
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeStatus.<b>ACTIVE</b></code>](#active) \{#active\} 
 Allowed to run; clients may connect.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeStatus.<b>GRACE</b></code>](#grace) \{#grace\}
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeStatus.<b>GRACE</b></code>](#grace) \{#grace\} 
 Still running on a temporary allowance (e.g. low funds) but at risk of being denied soon.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeStatus.<b>DENIED</b></code>](#denied) \{#denied\}
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeStatus.<b>DENIED</b></code>](#denied) \{#denied\} 
 Blocked from running now (e.g. insufficient funds, spend cap hit, or free allowance exhausted); recoverable once the cause clears.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeStatus.<b>SUSPENDED</b></code>](#suspended) \{#suspended\}
+#### [<code style={{ fontWeight: 'normal' }}>AppRuntimeStatus.<b>SUSPENDED</b></code>](#suspended) \{#suspended\} 
 Hard-stopped (e.g. lapsed subscription); requires action to restore.
 
 

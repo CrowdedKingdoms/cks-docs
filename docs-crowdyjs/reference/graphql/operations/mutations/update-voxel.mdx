@@ -27,7 +27,7 @@ updateVoxel(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>updateVoxel.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateVoxelInput!</b></code>](/reference/graphql/types/inputs/update-voxel-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\}
+#### [<code style={{ fontWeight: 'normal' }}>updateVoxel.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateVoxelInput!</b></code>](/reference/graphql/types/inputs/update-voxel-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
 
 
 
@@ -35,5 +35,5 @@ updateVoxel(
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>Voxel</b></code>](/reference/graphql/types/objects/voxel.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>Voxel</b></code>](/reference/graphql/types/objects/voxel.mdx) <Badge class="badge badge--secondary " text="object"/> 
 A recorded edit to a single voxel (one row of the voxel&#x005F;updates log): the app/chunk/local-position that changed, the new voxel type, an optional state blob, and who/when. Returned by listVoxels, getVoxelList and listVoxelUpdatesByDistance; created by updateVoxel. A background maintenance job later folds these edits into the chunk grid.

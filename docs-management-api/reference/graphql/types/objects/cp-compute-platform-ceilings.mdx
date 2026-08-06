@@ -37,47 +37,47 @@ type CpComputePlatformCeilings {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxModules</b></code>](#max-modules)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-modules\}
+#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxModules</b></code>](#max-modules)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-modules\} 
 Max compute modules per app (wasm&#x005F;module&#x005F;policy.max&#x005F;modules ceiling). Null = no override (game-api bootstrap default 100).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxTickHz</b></code>](#max-tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-tick-hz\}
+#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxTickHz</b></code>](#max-tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-tick-hz\} 
 Max tick trigger rate in Hz per module (max&#x005F;tick&#x005F;hz ceiling). Null = no override (game-api bootstrap default 60).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>fuelPerTick</b></code>](#fuel-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-tick\}
+#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>fuelPerTick</b></code>](#fuel-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-tick\} 
 Max deterministic fuel budget per tick (fuel&#x005F;per&#x005F;tick ceiling; decimal string). Null = no override (game-api bootstrap default 10000000000).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>fuelPerInvoke</b></code>](#fuel-per-invoke)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-invoke\}
+#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>fuelPerInvoke</b></code>](#fuel-per-invoke)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-invoke\} 
 Max deterministic fuel budget per invoke (fuel&#x005F;per&#x005F;invoke ceiling; decimal string). Null = no override (game-api bootstrap default 50000000000).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxMemoryMb</b></code>](#max-memory-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-memory-mb\}
+#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxMemoryMb</b></code>](#max-memory-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-memory-mb\} 
 Max WASM linear memory per module instance in MiB (max&#x005F;memory&#x005F;mb ceiling). Null = no override (game-api bootstrap default 512).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxRunMs</b></code>](#max-run-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-run-ms\}
+#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxRunMs</b></code>](#max-run-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-run-ms\} 
 Max wall-clock watchdog deadline per entry call in milliseconds (max&#x005F;run&#x005F;ms ceiling). Null = no override (game-api bootstrap default 5000).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxDbOpsPerTick</b></code>](#max-db-ops-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-db-ops-per-tick\}
+#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxDbOpsPerTick</b></code>](#max-db-ops-per-tick)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-db-ops-per-tick\} 
 Max host data-API operations per tick (max&#x005F;db&#x005F;ops&#x005F;per&#x005F;tick ceiling). Null = no override (game-api bootstrap default 500).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxEgressMsgsPerMin</b></code>](#max-egress-msgs-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-msgs-per-min\}
+#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxEgressMsgsPerMin</b></code>](#max-egress-msgs-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-msgs-per-min\} 
 Max module-emitted replication messages per minute (max&#x005F;egress&#x005F;msgs&#x005F;per&#x005F;min ceiling). Null = no override (game-api bootstrap default 60000).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxEgressBytesPerMin</b></code>](#max-egress-bytes-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-bytes-per-min\}
+#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>maxEgressBytesPerMin</b></code>](#max-egress-bytes-per-min)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-egress-bytes-per-min\} 
 Max module-emitted replication bytes per minute (max&#x005F;egress&#x005F;bytes&#x005F;per&#x005F;min ceiling; decimal string). Null = no override (game-api bootstrap default 100000000).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\}
+#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 When the ceilings row was last updated (UTC).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>updatedByUserId</b></code>](#updated-by-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#updated-by-user-id\}
+#### [<code style={{ fontWeight: 'normal' }}>CpComputePlatformCeilings.<b>updatedByUserId</b></code>](#updated-by-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#updated-by-user-id\} 
 users.user&#x005F;id of the operator who last updated the ceilings. Null when never edited.
 
 

@@ -33,31 +33,31 @@ type ChunkClaimResult {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\}
+#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
 Id of the one-chunk grid created for this claim.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>lowChunk</b></code>](#low-chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#low-chunk\}
+#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>lowChunk</b></code>](#low-chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#low-chunk\} 
 Low corner of the claimed grid. It equals highChunk because a player claim covers exactly one chunk.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>highChunk</b></code>](#high-chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#high-chunk\}
+#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>highChunk</b></code>](#high-chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#high-chunk\} 
 High corner of the claimed grid. It equals lowChunk because a player claim covers exactly one chunk.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>policy</b></code>](#policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GridClaimPolicy!</b></code>](/reference/graphql/types/enums/grid-claim-policy.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#policy\}
+#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>policy</b></code>](#policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GridClaimPolicy!</b></code>](/reference/graphql/types/enums/grid-claim-policy.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#policy\} 
 App claim policy applied by the server. This mutation succeeds only for SELF&#x005F;CLAIM.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>ownership</b></code>](#ownership)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GridOwnership!</b></code>](/reference/graphql/types/objects/grid-ownership.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#ownership\}
+#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>ownership</b></code>](#ownership)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GridOwnership!</b></code>](/reference/graphql/types/objects/grid-ownership.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#ownership\} 
 New current user ownership record created atomically with the grid.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>moddable</b></code>](#moddable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#moddable\}
+#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>moddable</b></code>](#moddable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#moddable\} 
 True when the effective ACL contains both write and run permission for at least one player-code target (server or client).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>effectivePermissionKeys</b></code>](#effective-permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#effective-permission-keys\}
+#### [<code style={{ fontWeight: 'normal' }}>ChunkClaimResult.<b>effectivePermissionKeys</b></code>](#effective-permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#effective-permission-keys\} 
 Full effective runtime permission-key set materialized for the caller on the new grid after grid limits are applied.
 
 

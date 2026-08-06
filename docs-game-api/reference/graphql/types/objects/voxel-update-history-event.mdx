@@ -34,35 +34,35 @@ type VoxelUpdateHistoryEvent {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\}
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
 Unique id of this history entry (decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 Id of the app this change belongs to (decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#coordinates\}
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#coordinates\} 
 Address of the chunk that contains the changed voxel.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>location</b></code>](#location)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinates!</b></code>](/reference/graphql/types/objects/voxel-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#location\}
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>location</b></code>](#location)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinates!</b></code>](/reference/graphql/types/objects/voxel-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#location\} 
 Local position of the changed voxel within its chunk.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>oldVoxelType</b></code>](#old-voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#old-voxel-type\}
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>oldVoxelType</b></code>](#old-voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#old-voxel-type\} 
 Voxel type before the change, or null if the voxel did not previously exist.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>newVoxelType</b></code>](#new-voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#new-voxel-type\}
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>newVoxelType</b></code>](#new-voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#new-voxel-type\} 
 Voxel type after the change, or null if the voxel was cleared/removed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>changedBy</b></code>](#changed-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#changed-by\}
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>changedBy</b></code>](#changed-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#changed-by\} 
 Id of the user that made the change (decimal string), or null if unknown.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>changedAt</b></code>](#changed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#changed-at\}
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateHistoryEvent.<b>changedAt</b></code>](#changed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#changed-at\} 
 Timestamp when the change occurred.
 
 

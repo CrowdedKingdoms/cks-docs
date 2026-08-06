@@ -29,15 +29,15 @@ enum GameModelPlayerCountStatus {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>GameModelPlayerCountStatus.<b>FRESH</b></code>](#fresh) \{#fresh\}
+#### [<code style={{ fontWeight: 'normal' }}>GameModelPlayerCountStatus.<b>FRESH</b></code>](#fresh) \{#fresh\} 
 At least one non-Offline Buddy heartbeat is fresh and every fresh Buddy supports version 1 app-scoped counts. The count is complete.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GameModelPlayerCountStatus.<b>PARTIAL</b></code>](#partial) \{#partial\}
+#### [<code style={{ fontWeight: 'normal' }}>GameModelPlayerCountStatus.<b>PARTIAL</b></code>](#partial) \{#partial\} 
 At least one non-Offline Buddy heartbeat is fresh, but one or more fresh Buddies do not support app-scoped counts. The count is only the best-known supported-Buddy sum and does not advance change revisions.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GameModelPlayerCountStatus.<b>UNAVAILABLE</b></code>](#unavailable) \{#unavailable\}
+#### [<code style={{ fontWeight: 'normal' }}>GameModelPlayerCountStatus.<b>UNAVAILABLE</b></code>](#unavailable) \{#unavailable\} 
 No non-Offline Buddy heartbeat is fresh enough to observe. The count is unavailable and does not advance change revisions.
 
 

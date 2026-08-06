@@ -36,43 +36,43 @@ type PlayerWasmModuleVersion {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\} 
 Version UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>moduleId</b></code>](#module-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-id\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>moduleId</b></code>](#module-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-id\} 
 Parent module UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>versionNo</b></code>](#version-no)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-no\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>versionNo</b></code>](#version-no)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version-no\} 
 Monotonic version number.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerComputeTarget!</b></code>](/reference/graphql/types/enums/player-compute-target.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#target\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerComputeTarget!</b></code>](/reference/graphql/types/enums/player-compute-target.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#target\} 
 Compile target.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>sourceFilesJson</b></code>](#source-files-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#source-files-json\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>sourceFilesJson</b></code>](#source-files-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#source-files-json\} 
 JSON source map. Null for non-authors of closed-source code; P1 exposes no moderation override.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>openSource</b></code>](#open-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#open-source\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>openSource</b></code>](#open-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#open-source\} 
 Whether anyone may read this immutable version source.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>compileStatus</b></code>](#compile-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compile-status\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>compileStatus</b></code>](#compile-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compile-status\} 
 pending, compiling, succeeded, or failed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>compileLog</b></code>](#compile-log)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compile-log\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>compileLog</b></code>](#compile-log)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compile-log\} 
 Compiler log; visible to the author.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>compiledSizeBytes</b></code>](#compiled-size-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compiled-size-bytes\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>compiledSizeBytes</b></code>](#compiled-size-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compiled-size-bytes\} 
 Final instrumented/optimized artifact size.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 Version creation time.
 
 

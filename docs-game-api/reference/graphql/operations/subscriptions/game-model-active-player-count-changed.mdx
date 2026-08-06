@@ -27,7 +27,7 @@ gameModelActivePlayerCountChanged(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelActivePlayerCountChanged.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>gameModelActivePlayerCountChanged.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App whose complete count transitions to stream. Must match the app-scoped bearer token.
 
 
@@ -35,5 +35,5 @@ App whose complete count transitions to stream. Must match the app-scoped bearer
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>GameModelActivePlayerCountChange</b></code>](/reference/graphql/types/objects/game-model-active-player-count-change.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>GameModelActivePlayerCountChange</b></code>](/reference/graphql/types/objects/game-model-active-player-count-change.mdx) <Badge class="badge badge--secondary " text="object"/> 
 One durable transition between complete app-scoped active gameplay-session counts. Delivery is cross-replica but best-effort; deduplicate by revision and requery gameModelActivePlayerCount after reconnect or a revision gap.

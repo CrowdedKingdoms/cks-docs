@@ -28,42 +28,62 @@ type GmAutomationTrigger {
   containerTypeName: String
   propertyKey: String
   debounceMs: Int!
+  writeSource: String!
+  lastMatchedAt: DateTime
+  matchCount24h: Int!
+  warnings: [String!]!
 }
 ```
 
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>triggerId</b></code>](#trigger-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>triggerId</b></code>](#trigger-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-id\} 
 Unique trigger id (UUID).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app (tenant).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>automationId</b></code>](#automation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>automationId</b></code>](#automation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-id\} 
 The automation this trigger fires.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>onEvent</b></code>](#on-event)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#on-event\}
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>onEvent</b></code>](#on-event)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#on-event\} 
 Observed event: function&#x005F;invoked | property&#x005F;changed | container&#x005F;created | player&#x005F;count&#x005F;changed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\}
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
 Filter: only this function name. Always null for player&#x005F;count&#x005F;changed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>containerTypeName</b></code>](#container-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#container-type-name\}
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>containerTypeName</b></code>](#container-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#container-type-name\} 
 Filter: only this container type. Always null for player&#x005F;count&#x005F;changed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>propertyKey</b></code>](#property-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#property-key\}
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>propertyKey</b></code>](#property-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#property-key\} 
 Filter: only this property key. Always null for player&#x005F;count&#x005F;changed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>debounceMs</b></code>](#debounce-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#debounce-ms\}
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>debounceMs</b></code>](#debounce-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#debounce-ms\} 
 Debounce window in ms. player&#x005F;count&#x005F;changed coalesces on the trailing edge; other model events use their existing leading-edge behavior.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>writeSource</b></code>](#write-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#write-source\} 
+property&#x005F;changed only: which writes are observed — "direct" (gameModelSetProperty), "function" (a mutation applied inside an invoke, automation run, or timer fire), or "any". Always "any" for other events, which ignore it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>lastMatchedAt</b></code>](#last-matched-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-matched-at\} 
+When this trigger last matched an event and dispatched a run, or null if it has never matched. A trigger that stays null while its event is happening is almost always a filter that cannot match — see warnings.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>matchCount24h</b></code>](#match-count-24-h)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#match-count-24-h\} 
+Runs this trigger dispatched in the last 24 hours, including runs a guard then dropped. Fires suppressed by debounceMs never reach a run and are not counted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationTrigger.<b>warnings</b></code>](#warnings)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#warnings\} 
+Authoring problems detected for this trigger, empty when healthy. Reported rather than silently never firing.
 
 
 

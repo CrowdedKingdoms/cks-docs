@@ -28,11 +28,11 @@ type DeleteGridResponse {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>DeleteGridResponse.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\}
+#### [<code style={{ fontWeight: 'normal' }}>DeleteGridResponse.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
 The deleted grid id on success; null when `error` is non-zero.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeleteGridResponse.<b>error</b></code>](#error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UdpErrorCode!</b></code>](/reference/graphql/types/enums/udp-error-code.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#error\}
+#### [<code style={{ fontWeight: 'normal' }}>DeleteGridResponse.<b>error</b></code>](#error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UdpErrorCode!</b></code>](/reference/graphql/types/enums/udp-error-code.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#error\} 
 A UDP-style error code (the same ErrorType enum the realtime/UDP servers use). NO&#x005F;ERROR (0) means success; non-zero values describe the failure, e.g. GRID&#x005F;NOT&#x005F;FOUND, CANNOT&#x005F;DELETE&#x005F;DEFAULT&#x005F;WORLD&#x005F;GRID, GRID&#x005F;HAS&#x005F;NESTED&#x005F;CHILDREN, or UNKNOWN&#x005F;ERROR.
 
 

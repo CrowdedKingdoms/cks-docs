@@ -31,23 +31,23 @@ input RevokeAgentLeaseInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>RevokeAgentLeaseInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\}
+#### [<code style={{ fontWeight: 'normal' }}>RevokeAgentLeaseInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
 Required retry key. Same owner, operation, key, and input replay the first result; changed input returns IDEMPOTENCY&#x005F;CONFLICT.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RevokeAgentLeaseInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+#### [<code style={{ fontWeight: 'normal' }}>RevokeAgentLeaseInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
 Owner/app session UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RevokeAgentLeaseInput.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\}
+#### [<code style={{ fontWeight: 'normal' }}>RevokeAgentLeaseInput.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\} 
 Current attached client epoch.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RevokeAgentLeaseInput.<b>leaseId</b></code>](#lease-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#lease-id\}
+#### [<code style={{ fontWeight: 'normal' }}>RevokeAgentLeaseInput.<b>leaseId</b></code>](#lease-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#lease-id\} 
 Lease UUID to revoke.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>RevokeAgentLeaseInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentPreemptionReason</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-preemption-reason.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#reason\}
+#### [<code style={{ fontWeight: 'normal' }}>RevokeAgentLeaseInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentPreemptionReason</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-preemption-reason.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#reason\} 
 Optional strict CrowdyJS/BWF preemption reason; defaults to HUMAN&#x005F;STOP.
 
 

@@ -31,23 +31,23 @@ gameModelAutomationRuns(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationRuns.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationRuns.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app (tenant) whose runs to list.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationRuns.<b>automationName</b></code>](#automation-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#automation-name\}
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationRuns.<b>automationName</b></code>](#automation-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#automation-name\} 
 Optional: only runs of this automation. Omit for all.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationRuns.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#success\}
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationRuns.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#success\} 
 Optional: filter by outcome (true = succeeded, false = failed).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationRuns.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\}
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationRuns.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
 Max runs to return (default 50, max 200).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationRuns.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\}
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAutomationRuns.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
 Number of runs to skip (pagination).
 
 
@@ -55,5 +55,5 @@ Number of runs to skip (pagination).
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>GmAutomationRun</b></code>](/reference/graphql/types/objects/gm-automation-run.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>GmAutomationRun</b></code>](/reference/graphql/types/objects/gm-automation-run.mdx) <Badge class="badge badge--secondary " text="object"/> 
 One execution of an automation: its target/fan-out + invocation counts, timing, outcome, circuit action, and billed compute. The monitoring + billing record.

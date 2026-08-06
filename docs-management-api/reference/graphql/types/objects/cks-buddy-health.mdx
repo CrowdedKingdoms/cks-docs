@@ -35,39 +35,39 @@ type CksBuddyHealth {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>registered</b></code>](#registered)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#registered\}
+#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>registered</b></code>](#registered)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#registered\} 
 False when no server&#x005F;status row exists for this environment.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>ip4</b></code>](#ip-4)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ip-4\}
+#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>ip4</b></code>](#ip-4)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ip-4\} 
 Public IPv4 of the Buddy UDP runtime VM, if registered.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>clientPort</b></code>](#client-port)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-port\}
+#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>clientPort</b></code>](#client-port)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-port\} 
 UDP port clients connect to on the Buddy server.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#status\}
+#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
 Buddy-reported server state from server&#x005F;status (e.g. 'ReadyForClients').
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>clients</b></code>](#clients)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#clients\}
+#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>clients</b></code>](#clients)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#clients\} 
 Currently connected client count reported by Buddy.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\}
+#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 Timestamp of the last server&#x005F;status heartbeat (game DB).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>heartbeatAgeSec</b></code>](#heartbeat-age-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#heartbeat-age-sec\}
+#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>heartbeatAgeSec</b></code>](#heartbeat-age-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#heartbeat-age-sec\} 
 Seconds since server&#x005F;status.updated&#x005F;at (game DB heartbeat).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>isStale</b></code>](#is-stale)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-stale\}
+#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>isStale</b></code>](#is-stale)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-stale\} 
 True when heartbeat is missing or older than the staleness threshold (~30s). Game-api rejects assignment when age &#x003E; ~11s.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>troubleshootingHint</b></code>](#troubleshooting-hint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#troubleshooting-hint\}
+#### [<code style={{ fontWeight: 'normal' }}>CksBuddyHealth.<b>troubleshootingHint</b></code>](#troubleshooting-hint)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#troubleshooting-hint\} 
 Operator-facing hint when multiplayer assignment may fail.
 
 

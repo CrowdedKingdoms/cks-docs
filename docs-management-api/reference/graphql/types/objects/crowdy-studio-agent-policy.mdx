@@ -49,95 +49,95 @@ type CrowdyStudioAgentPolicy {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentPolicyKind!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-policy-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#kind\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentPolicyKind!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-policy-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#kind\} 
 PLATFORM, APP, or EFFECTIVE projection.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App id for APP/EFFECTIVE policy; null for platform policy.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
 Whether this Management policy layer/publication is enabled. EFFECTIVE is true only when all required layers are enabled and no kill applies; it does not attest that Game API has synchronized.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>killSwitch</b></code>](#kill-switch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#kill-switch\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>killSwitch</b></code>](#kill-switch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#kill-switch\} 
 Layer kill state. EFFECTIVE is true when platform, operator-app, or app kill is active.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>operatorKillSwitch</b></code>](#operator-kill-switch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#operator-kill-switch\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>operatorKillSwitch</b></code>](#operator-kill-switch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#operator-kill-switch\} 
 Operator-only per-app kill state. App policy mutations cannot clear or alter it.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>disableReasonCode</b></code>](#disable-reason-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#disable-reason-code\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>disableReasonCode</b></code>](#disable-reason-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#disable-reason-code\} 
 Stable disable/kill reason code (for example AGENT&#x005F;OPERATOR&#x005F;KILLED); null when enabled.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>disableReason</b></code>](#disable-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#disable-reason\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>disableReason</b></code>](#disable-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#disable-reason\} 
 Safe operator/app reason text; never includes provider bodies or secrets.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>allowedModelIds</b></code>](#allowed-model-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#allowed-model-ids\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>allowedModelIds</b></code>](#allowed-model-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#allowed-model-ids\} 
 Exact model ids allowed by this layer/intersection. Empty denies all models.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>allowedToolNames</b></code>](#allowed-tool-names)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#allowed-tool-names\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>allowedToolNames</b></code>](#allowed-tool-names)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#allowed-tool-names\} 
 Exact crowdy.agent-tools/1 logical tool names allowed by this layer/intersection. Empty denies all tools.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>allowedModes</b></code>](#allowed-modes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentMode!]!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#allowed-modes\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>allowedModes</b></code>](#allowed-modes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentMode!]!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#allowed-modes\} 
 Human-selectable modes allowed by this layer/intersection.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>allowedRiskClasses</b></code>](#allowed-risk-classes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentRiskClass!]!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-risk-class.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#allowed-risk-classes\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>allowedRiskClasses</b></code>](#allowed-risk-classes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentRiskClass!]!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-risk-class.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#allowed-risk-classes\} 
 Allowed tool risk classes. Required approval classes remain approval-gated even when listed.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>turnLimits</b></code>](#turn-limits)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentTurnLimits!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-turn-limits.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#turn-limits\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>turnLimits</b></code>](#turn-limits)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentTurnLimits!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-turn-limits.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#turn-limits\} 
 Per-turn hard limits.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>sessionLimits</b></code>](#session-limits)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentSessionLimits!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-session-limits.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#session-limits\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>sessionLimits</b></code>](#session-limits)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentSessionLimits!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-session-limits.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#session-limits\} 
 Per-session hard limits.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>playerDayLimits</b></code>](#player-day-limits)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentPlayerDayLimits!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-player-day-limits.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#player-day-limits\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>playerDayLimits</b></code>](#player-day-limits)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentPlayerDayLimits!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-player-day-limits.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#player-day-limits\} 
 Per-player UTC-day and concurrency hard limits.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>retention</b></code>](#retention)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentRetentionPolicy!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-retention-policy.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#retention\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>retention</b></code>](#retention)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentRetentionPolicy!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-retention-policy.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#retention\} 
 Redacted-data retention limits.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>privacy</b></code>](#privacy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentPrivacyPolicy!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-privacy-policy.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#privacy\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>privacy</b></code>](#privacy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentPrivacyPolicy!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-privacy-policy.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#privacy\} 
 Locked provider privacy and private-source controls.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>funding</b></code>](#funding)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentFundingPolicy!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-funding-policy.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#funding\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>funding</b></code>](#funding)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentFundingPolicy!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-funding-policy.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#funding\} 
 Platform-funded pilot/future billing seam.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>revision</b></code>](#revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#revision\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>revision</b></code>](#revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#revision\} 
 Revision of this stored layer; zero means no app row exists yet.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>platformRevision</b></code>](#platform-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#platform-revision\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>platformRevision</b></code>](#platform-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#platform-revision\} 
 Platform revision used by an EFFECTIVE projection.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>appRevision</b></code>](#app-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-revision\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>appRevision</b></code>](#app-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-revision\} 
 App revision used by an EFFECTIVE projection; zero means missing app policy.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>effectiveRevision</b></code>](#effective-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#effective-revision\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>effectiveRevision</b></code>](#effective-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#effective-revision\} 
 Composite Management revision, formatted p&#x003C;platform revision&#x003E;:a&#x003C;app revision&#x003E;. Game API pins it only after a successful fresh replica pull.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 Policy row creation time or projection time.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\}
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 Last policy change time or projection time.
 
 

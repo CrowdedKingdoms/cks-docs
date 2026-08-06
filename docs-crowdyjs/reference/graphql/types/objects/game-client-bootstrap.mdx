@@ -29,46 +29,61 @@ type GameClientBootstrap {
   maxReplicationDistance: Int!
   maxDecayRate: Int!
   sequenceNumberModulo: Int!
+  binaryRelayEnabled: Boolean!
+  binaryRelayPath: String!
+  binaryRelayProtocol: String!
 }
 ```
 
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app (game) this bootstrap was requested for, echoed back. A BigInt as a decimal string. Reuse this exact appId to scope the udpNotifications subscription and on every spatial send for this play session.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>me</b></code>](#me)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>User!</b></code>](/reference/graphql/types/objects/user.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#me\}
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>me</b></code>](#me)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>User!</b></code>](/reference/graphql/types/objects/user.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#me\} 
 The authenticated user resolved from the bearer game token on the request. Use this for the local player identity instead of a separate `me` call.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>versionInfo</b></code>](#version-info)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ServerVersionInfo!</b></code>](/reference/graphql/types/objects/server-version-info.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#version-info\}
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>versionInfo</b></code>](#version-info)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ServerVersionInfo!</b></code>](/reference/graphql/types/objects/server-version-info.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#version-info\} 
 Current server version and the minimum client version the server accepts. Compare your build against minimumClientVersion before connecting; prompt the player to update if it is too old.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>udpProxyConnectionStatus</b></code>](#udp-proxy-connection-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UdpProxyConnectionStatus!</b></code>](/reference/graphql/types/objects/udp-proxy-connection-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#udp-proxy-connection-status\}
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>udpProxyConnectionStatus</b></code>](#udp-proxy-connection-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UdpProxyConnectionStatus!</b></code>](/reference/graphql/types/objects/udp-proxy-connection-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#udp-proxy-connection-status\} 
 UDP proxy session status for this game token at bootstrap time. connected is false until you open a session (via connectUdpProxy, any send&#x002A; mutation, or subscribing to udpNotifications); fetching the bootstrap does not open one.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>realtimeProtocol</b></code>](#realtime-protocol)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#realtime-protocol\}
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>realtimeProtocol</b></code>](#realtime-protocol)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#realtime-protocol\} 
 GraphQL WebSocket subprotocol expected by udpNotifications.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>subscriptionName</b></code>](#subscription-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#subscription-name\}
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>subscriptionName</b></code>](#subscription-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#subscription-name\} 
 GraphQL subscription field that carries UDP proxy notifications.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>maxReplicationDistance</b></code>](#max-replication-distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-replication-distance\}
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>maxReplicationDistance</b></code>](#max-replication-distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-replication-distance\} 
 Maximum allowed value for the `distance` (chunk fan-out radius) field on spatial sends. Currently 8; the server clamps send `distance` to 0..this. distance is the number of chunks outward the message is replicated.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>maxDecayRate</b></code>](#max-decay-rate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-decay-rate\}
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>maxDecayRate</b></code>](#max-decay-rate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-decay-rate\} 
 Maximum allowed value for the `decayRate` (named attenuation algorithm id) field on spatial sends. Currently 5; the server clamps send `decayRate` to 0..this. decayRate selects how the message attenuates with distance (0 = none).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>sequenceNumberModulo</b></code>](#sequence-number-modulo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number-modulo\}
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>sequenceNumberModulo</b></code>](#sequence-number-modulo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number-modulo\} 
 The modulus the per-message sequenceNumber wraps at (256), i.e. sequenceNumber is a uint8 in 0-255. sequenceNumber exists ONLY to correlate asynchronous responses/errors (delivered on udpNotifications) with the send that produced them — it is NOT an idempotency key, and the server does not dedupe replays.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>binaryRelayEnabled</b></code>](#binary-relay-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#binary-relay-enabled\} 
+Whether this server exposes the binary realtime relay (crowdy-relay-v1): a raw WebSocket endpoint at binaryRelayPath that relays complete client-signed Buddy wire datagrams as BINARY frames in both directions, replacing the GraphQL send&#x002A;/udpNotifications hot path. When false, use the GraphQL realtime surface.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>binaryRelayPath</b></code>](#binary-relay-path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#binary-relay-path\} 
+HTTP path of the binary realtime relay WebSocket endpoint on this origin (e.g. "/realtime"). Connect with `?appId=<appId>` and offer the binaryRelayProtocol subprotocol; authenticate with an app-scoped bearer token via the Authorization header, a `bearer.<base64url(token)>` subprotocol entry, or `?token=`. Wire format: cks docs, client-wire-formats.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>binaryRelayProtocol</b></code>](#binary-relay-protocol)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#binary-relay-protocol\} 
+Required WebSocket subprotocol for the binary realtime relay. The client must offer it during the upgrade; the server selects it. Currently "crowdy-relay-v1".
 
 
 

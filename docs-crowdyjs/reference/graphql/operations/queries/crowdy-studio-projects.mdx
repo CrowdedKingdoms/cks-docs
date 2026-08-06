@@ -30,19 +30,19 @@ crowdyStudioProjects(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioProjects.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioProjects.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App tenant to list. The bearer token must be scoped to this exact app.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioProjects.<b>includeArchived</b></code>](#include-archived)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#include-archived\}
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioProjects.<b>includeArchived</b></code>](#include-archived)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#include-archived\} 
 True to include retained archived projects; omitted/false returns active projects only.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioProjects.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\}
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioProjects.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
 Maximum projects to return (default 25, allowed 1–50).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioProjects.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\}
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioProjects.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
 Number of owner-scoped projects to skip (default 0, maximum 10000).
 
 
@@ -50,5 +50,5 @@ Number of owner-scoped projects to skip (default 0, maximum 10000).
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioProject</b></code>](/reference/graphql/types/objects/crowdy-studio-project.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioProject</b></code>](/reference/graphql/types/objects/crowdy-studio-project.mdx) <Badge class="badge badge--secondary " text="object"/> 
 A private, revisioned Crowdy Studio project owned by one user in one app. Optional grid affinity and module names are authoring hints only; deployment still rechecks current grid ownership and target-specific permissions.

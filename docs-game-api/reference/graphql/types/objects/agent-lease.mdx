@@ -39,55 +39,55 @@ type AgentLease {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>leaseId</b></code>](#lease-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#lease-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>leaseId</b></code>](#lease-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#lease-id\} 
 Stable lease UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentLeaseType!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-lease-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#kind\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentLeaseType!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-lease-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#kind\} 
 WORKSPACE or PLAY.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentLeaseStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-lease-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentLeaseStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-lease-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
 Required lease lifecycle status.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\} 
 Bound attached browser epoch.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scopes\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scopes\} 
 Explicit maximum scopes carried by this lease.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>holder</b></code>](#holder)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#holder\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>holder</b></code>](#holder)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#holder\} 
 Human-visible lease holder alias.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>contextVersion</b></code>](#context-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#context-version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>contextVersion</b></code>](#context-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#context-version\} 
 Authoritative context version bound to the lease.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>controlledEntityId</b></code>](#controlled-entity-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#controlled-entity-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>controlledEntityId</b></code>](#controlled-entity-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#controlled-entity-id\} 
 Controlled entity for PLAY, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>hostCapabilityRevision</b></code>](#host-capability-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#host-capability-revision\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>hostCapabilityRevision</b></code>](#host-capability-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#host-capability-revision\} 
 Host capability revision for PLAY, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>expectedProjectRevision</b></code>](#expected-project-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expected-project-revision\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>expectedProjectRevision</b></code>](#expected-project-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expected-project-revision\} 
 Expected project revision for WORKSPACE, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>grantedAt</b></code>](#granted-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#granted-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>grantedAt</b></code>](#granted-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#granted-at\} 
 Lease grant timestamp.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
 Hard expiry; the model cannot renew it.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>revokedReason</b></code>](#revoked-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#revoked-reason\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLease.<b>revokedReason</b></code>](#revoked-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#revoked-reason\} 
 Stable revoke/expiry reason, or null while active.
 
 

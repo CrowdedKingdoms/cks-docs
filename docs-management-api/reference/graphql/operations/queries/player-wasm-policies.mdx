@@ -27,7 +27,7 @@ playerWasmPolicies(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>playerWasmPolicies.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>playerWasmPolicies.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App whose player policies to list.
 
 
@@ -35,5 +35,5 @@ App whose player policies to list.
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>PlayerWasmPolicy</b></code>](/reference/graphql/types/objects/player-wasm-policy.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerWasmPolicy</b></code>](/reference/graphql/types/objects/player-wasm-policy.mdx) <Badge class="badge badge--secondary " text="object"/> 
 One player-compute policy row (06 §3): developer-set per-player/cohort clamps evaluated most-specific-wins (user &#x003E; grid &#x003E; tier &#x003E; app&#x005F;default), every knob additionally clamped by the app's studio policy at runtime. Management is authoritative in P2; rows replica-sync to the game runtime.

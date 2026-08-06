@@ -30,19 +30,19 @@ playerCodeClientArtifact(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>playerCodeClientArtifact.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>playerCodeClientArtifact.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App that owns the listing.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>playerCodeClientArtifact.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\}
+#### [<code style={{ fontWeight: 'normal' }}>playerCodeClientArtifact.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
 UUID of the marketplace listing. Required for an acquirer fetch; omit when fetching a grid attachment by attachmentId.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>playerCodeClientArtifact.<b>attachmentId</b></code>](#attachment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#attachment-id\}
+#### [<code style={{ fontWeight: 'normal' }}>playerCodeClientArtifact.<b>attachmentId</b></code>](#attachment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#attachment-id\} 
 UUID of a grid client attachment. Supports marketplace and self-authored visitor fetches and binds entitlement to the exact attachment.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>playerCodeClientArtifact.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\}
+#### [<code style={{ fontWeight: 'normal' }}>playerCodeClientArtifact.<b>versionId</b></code>](#version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#version-id\} 
 Optional version pin; must match the live install/attachment version.
 
 
@@ -50,5 +50,5 @@ Optional version pin; must match the live install/attachment version.
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>PlayerClientArtifact</b></code>](/reference/graphql/types/objects/player-client-artifact.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerClientArtifact</b></code>](/reference/graphql/types/objects/player-client-artifact.mdx) <Badge class="badge badge--secondary " text="object"/> 
 A compiled CLIENT-target player artifact plus the metadata the browser broker needs to run it (player compute P3). Served only to the current grid owner who authored the version, holding run&#x005F;client&#x005F;code, when the app's admission mode admits the code. The bytes are the gas-injected wasm32-unknown-unknown module; clientFuelPerDispatch is the per-dispatch fuel budget the glue worker enforces locally.

@@ -28,11 +28,11 @@ type GenericErrorResponse {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>GenericErrorResponse.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number\}
+#### [<code style={{ fontWeight: 'normal' }}>GenericErrorResponse.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number\} 
 Echoes the sequenceNumber of the request that failed (a uint8, 0-255, wrapping at modulo 256) so you can correlate this error with the send&#x002A; mutation that produced it. Correlation only — it is not an idempotency key.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GenericErrorResponse.<b>errorCode</b></code>](#error-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UdpErrorCode!</b></code>](/reference/graphql/types/enums/udp-error-code.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#error-code\}
+#### [<code style={{ fontWeight: 'normal' }}>GenericErrorResponse.<b>errorCode</b></code>](#error-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UdpErrorCode!</b></code>](/reference/graphql/types/enums/udp-error-code.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#error-code\} 
 Error code indicating the reason for the failure.
 
 

@@ -27,7 +27,7 @@ createSellerAccountSession(
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>createSellerAccountSession.<b>country</b></code>](#country)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#country\}
+#### [<code style={{ fontWeight: 'normal' }}>createSellerAccountSession.<b>country</b></code>](#country)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#country\} 
 ISO country code for the payout account (first call only).
 
 
@@ -35,5 +35,5 @@ ISO country code for the payout account (first call only).
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>SellerAccountSession</b></code>](/reference/graphql/types/objects/seller-account-session.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>SellerAccountSession</b></code>](/reference/graphql/types/objects/seller-account-session.mdx) <Badge class="badge badge--secondary " text="object"/> 
 An Account Session for Stripe's EMBEDDED Connect components: the browser initializes Connect.js with the publishable key + this short-lived client secret and mounts the account-onboarding / payouts / balances components INSIDE the platform UI — sellers never leave for a Stripe-hosted page. Re-request on expiry. The hosted-link flow (beginSellerOnboarding) remains the fallback.

@@ -30,19 +30,19 @@ input ChunkUpdateInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>ChunkUpdateInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>ChunkUpdateInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 Id of the app that owns the chunk (decimal string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ChunkUpdateInput.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#coordinates\}
+#### [<code style={{ fontWeight: 'normal' }}>ChunkUpdateInput.<b>coordinates</b></code>](#coordinates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinatesInput!</b></code>](/reference/graphql/types/inputs/chunk-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#coordinates\} 
 Address of the chunk to create or update.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ChunkUpdateInput.<b>voxels</b></code>](#voxels)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#voxels\}
+#### [<code style={{ fontWeight: 'normal' }}>ChunkUpdateInput.<b>voxels</b></code>](#voxels)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#voxels\} 
 Optional BASE64-encoded dense voxel grid. The DECODED buffer must be exactly 4096 bytes: one voxel-type byte (0-255) per voxel, indexed x + y&#x002A;16 + z&#x002A;256 (x,y,z in 0-15). Omit to leave the existing grid unchanged.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ChunkUpdateInput.<b>voxelStates</b></code>](#voxel-states)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[VoxelStateInput!]</b></code>](/reference/graphql/types/inputs/voxel-state-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#voxel-states\}
+#### [<code style={{ fontWeight: 'normal' }}>ChunkUpdateInput.<b>voxelStates</b></code>](#voxel-states)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[VoxelStateInput!]</b></code>](/reference/graphql/types/inputs/voxel-state-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#voxel-states\} 
 Optional per-voxel state overrides to write; each entry is also recorded as an individual voxel update. Omit to leave existing states unchanged.
 
 

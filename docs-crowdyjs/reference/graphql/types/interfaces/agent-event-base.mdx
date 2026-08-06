@@ -34,35 +34,35 @@ interface AgentEventBase {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>protocolVersion</b></code>](#protocol-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#protocol-version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>protocolVersion</b></code>](#protocol-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#protocol-version\} 
 Event envelope version; always 'crowdy.agent-event/1'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\} 
 Stable event UUID for deduplication.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
 Owning session UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>seq</b></code>](#seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#seq\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>seq</b></code>](#seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#seq\} 
 Strictly increasing session sequence as a decimal BigInt.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentEventType!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-event-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#type\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentEventType!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-event-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#type\} 
 Stable version 1 event discriminator.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\} 
 Related run UUID, or null for session-only facts.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
 Versioned event payload contract.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentEventBase.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 Commit timestamp.
 
 

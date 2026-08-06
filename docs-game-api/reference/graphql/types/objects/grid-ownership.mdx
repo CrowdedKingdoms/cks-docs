@@ -35,39 +35,39 @@ type GridOwnership {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>gridOwnershipId</b></code>](#grid-ownership-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-ownership-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>gridOwnershipId</b></code>](#grid-ownership-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-ownership-id\} 
 UUID of the ownership history row.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
 Owned grid id.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 App that contains the grid.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>ownerKind</b></code>](#owner-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GridOwnerKind!</b></code>](/reference/graphql/types/enums/grid-owner-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#owner-kind\}
+#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>ownerKind</b></code>](#owner-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GridOwnerKind!</b></code>](/reference/graphql/types/enums/grid-owner-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#owner-kind\} 
 Kind of current owner. P1 supports USER.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>ownerRef</b></code>](#owner-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#owner-ref\}
+#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>ownerRef</b></code>](#owner-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#owner-ref\} 
 Numeric user/group/org id selected by ownerKind.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>tenure</b></code>](#tenure)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GridTenure!</b></code>](/reference/graphql/types/enums/grid-tenure.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#tenure\}
+#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>tenure</b></code>](#tenure)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GridTenure!</b></code>](/reference/graphql/types/enums/grid-tenure.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#tenure\} 
 Permanent ownership or an expiring rental.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>acquiredVia</b></code>](#acquired-via)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquired-via\}
+#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>acquiredVia</b></code>](#acquired-via)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquired-via\} 
 Audit origin of this ownership (for example studio&#x005F;grant, self&#x005F;claim, self&#x005F;claim&#x005F;chunk, transfer, or marketplace). self&#x005F;claim&#x005F;chunk identifies a grid created by claimGridChunk and eligible for owner release.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>acquiredAt</b></code>](#acquired-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquired-at\}
+#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>acquiredAt</b></code>](#acquired-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquired-at\} 
 When this ownership began.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\}
+#### [<code style={{ fontWeight: 'normal' }}>GridOwnership.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
 Rental expiry; null for permanent ownership.
 
 

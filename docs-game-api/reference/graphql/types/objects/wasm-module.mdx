@@ -30,6 +30,8 @@ type WasmModule {
   circuitState: String!
   consecutiveFailures: Int!
   cooldownUntil: DateTime
+  breakerLatchedAt: DateTime
+  breakerReason: String
   lastError: String
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -39,55 +41,63 @@ type WasmModule {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>moduleId</b></code>](#module-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-id\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>moduleId</b></code>](#module-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-id\} 
 Unique module id (UUID).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
 The app (tenant) that owns the module.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
 Module name (unique per app); the upsert key.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
 Optional description.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
 Whether the module may run. New modules start disabled; enable after a successful compile.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>alwaysOn</b></code>](#always-on)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#always-on\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>alwaysOn</b></code>](#always-on)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#always-on\} 
 Whether the module runs without active players (world simulation). Policy-gated.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>currentVersionId</b></code>](#current-version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#current-version-id\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>currentVersionId</b></code>](#current-version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#current-version-id\} 
 The deployed version id (UUID). Null until first deploy.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>circuitState</b></code>](#circuit-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#circuit-state\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>circuitState</b></code>](#circuit-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#circuit-state\} 
 Circuit-breaker state: closed | open | half&#x005F;open.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>consecutiveFailures</b></code>](#consecutive-failures)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#consecutive-failures\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>consecutiveFailures</b></code>](#consecutive-failures)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#consecutive-failures\} 
 Current consecutive-failure count.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>cooldownUntil</b></code>](#cooldown-until)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cooldown-until\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>cooldownUntil</b></code>](#cooldown-until)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cooldown-until\} 
 When the open circuit may retry (half-open).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>lastError</b></code>](#last-error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-error\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>breakerLatchedAt</b></code>](#breaker-latched-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#breaker-latched-at\} 
+When this module was stopped for exceeding a resource limit. Null when it is running normally. Unlike the circuit breaker this does not clear on its own: deploy a new version, or ask an admin to reset it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>breakerReason</b></code>](#breaker-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#breaker-reason\} 
+What the module exceeded and what to change, when it has been stopped for a resource limit. Null when it is running normally.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>lastError</b></code>](#last-error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-error\} 
 Last error recorded for this module.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 When the module was created.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\}
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
 When the module was last updated.
 
 
@@ -95,4 +105,4 @@ When the module was last updated.
 
 ### Returned By
 
-[`computeDeployTemplate`](/reference/graphql/operations/mutations/compute-deploy-template.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`computeModule`](/reference/graphql/operations/queries/compute-module.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`computeModules`](/reference/graphql/operations/queries/compute-modules.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`computeSetModuleEnabled`](/reference/graphql/operations/mutations/compute-set-module-enabled.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`computeUpsertModule`](/reference/graphql/operations/mutations/compute-upsert-module.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+[`computeDeployTemplate`](/reference/graphql/operations/mutations/compute-deploy-template.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`computeModule`](/reference/graphql/operations/queries/compute-module.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`computeModules`](/reference/graphql/operations/queries/compute-modules.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`computeResetBreaker`](/reference/graphql/operations/mutations/compute-reset-breaker.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`computeSetModuleEnabled`](/reference/graphql/operations/mutations/compute-set-module-enabled.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`computeUpsertModule`](/reference/graphql/operations/mutations/compute-upsert-module.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

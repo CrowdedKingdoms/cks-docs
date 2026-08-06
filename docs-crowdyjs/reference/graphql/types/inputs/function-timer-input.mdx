@@ -1,0 +1,58 @@
+---
+id: function-timer-input
+title: FunctionTimerInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A declarative one-shot timer the function arms TRANSACTIONALLY with its property mutations: "invoke this function again in N ms". The timer survives replica restarts and is claimed by the same dispatcher that runs scheduled automations, so it fires exactly once. Rolling back the invocation arms nothing. The target function must be autonomousInvocable, because a timer fires headlessly with no player in the request.
+
+
+```graphql
+input FunctionTimerInput {
+  functionName: String!
+  target: String
+  delayMsExpression: String!
+  dedupeKeyExpression: String
+  params: [TimerParamInput!]
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>FunctionTimerInput.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+The function to invoke when the timer fires. Must exist and be autonomousInvocable.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FunctionTimerInput.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#target\} 
+Container reference the delayed invocation runs against, e.g. "self" (default) or "$target&#x005F;id".
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FunctionTimerInput.<b>delayMsExpression</b></code>](#delay-ms-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#delay-ms-expression\} 
+Expression resolving the delay in milliseconds (int &#x003E; 0), floored by the app's minTimerDelayMs policy.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FunctionTimerInput.<b>dedupeKeyExpression</b></code>](#dedupe-key-expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#dedupe-key-expression\} 
+Optional expression resolving an app-scoped string key. Re-arming the same key replaces the pending timer instead of queueing another fire, so a repeatedly invoked function cannot flood the timer queue.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FunctionTimerInput.<b>params</b></code>](#params)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[TimerParamInput!]</b></code>](/reference/graphql/types/inputs/timer-param-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#params\} 
+Parameters bound into the delayed invocation. Expressions are evaluated at arm time on post-mutation state, so the fired invocation sees the values the arming logic decided.
+
+
+
+
+### Member Of
+
+[`SeedFunctionInput`](/reference/graphql/types/inputs/seed-function-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpsertFunctionInput`](/reference/graphql/types/inputs/upsert-function-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

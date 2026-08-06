@@ -25,5 +25,5 @@ graphqlServers: [GraphQLServer!]!
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>GraphQLServer</b></code>](/reference/graphql/types/objects/graph-qlserver.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>GraphQLServer</b></code>](/reference/graphql/types/objects/graph-qlserver.mdx) <Badge class="badge badge--secondary " text="object"/> 
 A registered GraphQL API server instance in the fleet (either a management-api or a game-api, see `kind`), with reachability addresses and basic host telemetry. Returned by graphqlServers (all) and activeGraphQLServers (only ReadyForClients). Use this for service discovery; realtime/UDP play still goes through the game-api UDP proxy.

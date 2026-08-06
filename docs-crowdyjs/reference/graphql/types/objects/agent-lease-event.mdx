@@ -47,87 +47,87 @@ type AgentLeaseEvent implements AgentEventBase {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>protocolVersion</b></code>](#protocol-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#protocol-version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>protocolVersion</b></code>](#protocol-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#protocol-version\} 
 Event envelope version; always 'crowdy.agent-event/1'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>eventId</b></code>](#event-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-id\} 
 Stable event UUID for deduplication.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
 Owning session UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>seq</b></code>](#seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#seq\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>seq</b></code>](#seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#seq\} 
 Strictly increasing session sequence as a decimal BigInt.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentEventType!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-event-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#type\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentEventType!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-event-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#type\} 
 Stable version 1 event discriminator.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\} 
 Related run UUID, or null for session-only facts.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
 Versioned event payload contract.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 Commit timestamp.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>leaseId</b></code>](#lease-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#lease-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>leaseId</b></code>](#lease-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#lease-id\} 
 Stable lease UUID.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentLeaseType!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-lease-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#kind\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentLeaseType!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-lease-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#kind\} 
 WORKSPACE or PLAY.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentLeaseStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-lease-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentLeaseStatus!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-lease-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
 Required lease lifecycle status.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>clientEpoch</b></code>](#client-epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-epoch\} 
 Bound attached client epoch.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scopes\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scopes\} 
 Explicit scopes carried when granted; empty otherwise.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>holder</b></code>](#holder)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#holder\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>holder</b></code>](#holder)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#holder\} 
 Human-visible lease holder alias.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>contextVersion</b></code>](#context-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#context-version\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>contextVersion</b></code>](#context-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#context-version\} 
 Authoritative context version bound to this lease.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>controlledEntityId</b></code>](#controlled-entity-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#controlled-entity-id\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>controlledEntityId</b></code>](#controlled-entity-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#controlled-entity-id\} 
 Controlled entity identifier for PLAY, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>hostCapabilityRevision</b></code>](#host-capability-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#host-capability-revision\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>hostCapabilityRevision</b></code>](#host-capability-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#host-capability-revision\} 
 Host capability revision for PLAY, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>expectedProjectRevision</b></code>](#expected-project-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expected-project-revision\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>expectedProjectRevision</b></code>](#expected-project-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expected-project-revision\} 
 Expected project revision for WORKSPACE, or null.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>grantedAt</b></code>](#granted-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#granted-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>grantedAt</b></code>](#granted-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#granted-at\} 
 Lease grant timestamp.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
 Hard lease expiry.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\}
+#### [<code style={{ fontWeight: 'normal' }}>AgentLeaseEvent.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
 Stable revoke/expiry reason, or null.
 
 
@@ -135,7 +135,7 @@ Stable revoke/expiry reason, or null.
 
 ### Interfaces
 
-#### [<code style={{ fontWeight: 'normal' }}><b>AgentEventBase</b></code>](/reference/graphql/types/interfaces/agent-event-base.mdx) <Badge class="badge badge--secondary " text="interface"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentEventBase</b></code>](/reference/graphql/types/interfaces/agent-event-base.mdx) <Badge class="badge badge--secondary " text="interface"/> 
 Common identity/order fields on every typed durable agent event variant.
 
 
