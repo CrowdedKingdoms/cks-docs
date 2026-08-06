@@ -101,7 +101,7 @@ mutation DevLogin {
 #    games at a different origin use the PKCE portal flow instead — see CrowdyJS.)
 mutation Enter {
   mintAppToken(input: { appId: "1" }) {
-    token expiresAt gameApiUrl gameApiWsUrl
+    token expiresAt gameApiUrl gameApiWsUrl discoveryUrl
   }
 }
 

@@ -28,7 +28,7 @@ mutation Enter($appId: BigInt!) {
   mintAppToken(input: { appId: $appId }) {
     token          # 64-char app-scoped token -- use this for all Game API requests
     gameTokenId    # numeric ID (informational)
-    appId expiresAt gameApiUrl gameApiWsUrl
+    appId expiresAt gameApiUrl gameApiWsUrl discoveryUrl
   }
 }
 ```

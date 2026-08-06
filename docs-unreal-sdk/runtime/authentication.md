@@ -253,7 +253,7 @@ firing its success delegate, via the Management API `mintAppToken` mutation (bea
 ```graphql
 mutation Enter($appId: BigInt!) {
   mintAppToken(input: { appId: $appId }) {
-    token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl launchUrl
+    token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl discoveryUrl launchUrl
   }
 }
 ```

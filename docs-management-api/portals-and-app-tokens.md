@@ -38,7 +38,7 @@ A client that already holds the session token can mint directly:
 ```graphql
 mutation Enter($appId: BigInt!) {
   mintAppToken(input: { appId: $appId }) {
-    token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl launchUrl
+    token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl discoveryUrl launchUrl
   }
 }
 ```
@@ -46,6 +46,14 @@ mutation Enter($appId: BigInt!) {
 Send `Authorization: Bearer <session token>`. Free/open apps auto-grant access on
 first mint; paid apps require an existing entitlement (else `FORBIDDEN`). Use the
 returned `token` against `gameApiUrl` / `gameApiWsUrl`.
+
+**Keep `discoveryUrl`, and do not confuse it with `gameApiUrl`.** `gameApiUrl` is the ONE
+datacenter holding this app's data, which is where gameplay must go. `discoveryUrl` is the
+shared origin, resolving to every datacenter — it is the only address that survives losing
+one, and therefore the only way back when the endpoint you were given stops answering.
+That matters most for exactly this flow: a client holding only an app token **cannot
+re-mint**, because minting needs the session token it does not have. See
+[Datacenters and endpoint routing](/game-api/datacenter-routing).
 
 For native clients (Unreal/Unity, desktop, console, mobile, custom launchers), see
 **[Native & non-browser clients](/management-api/native-clients)** for the full
@@ -83,7 +91,7 @@ session token never leaves the Overworld:
    ```graphql
    mutation Exchange($input: ExchangePortalCodeInput!) {
      exchangePortalCode(input: $input) {
-       token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl launchUrl
+       token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl discoveryUrl launchUrl
      }
    }
    ```

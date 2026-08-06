@@ -94,7 +94,7 @@ Stable entry point that always resolves to SOME healthy API instance — the env
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-url\} 
-HTTPS origin the client should use for GraphQL right now. Under direct connect this is the specific instance serving you (e.g. https://ck-api-2.…), which is NOT interchangeable with other instances for an open realtime session; otherwise it is the shared load balancer. If requests here start failing, fall back to discoveryUrl.
+HTTPS origin the client should use for GraphQL right now: the app's OWN datacenter, because that is where its shards live and a query answered elsewhere crosses a WAN silently. Under direct connect it is one specific instance in that datacenter, which is NOT interchangeable with other instances for an open realtime session. Not to be confused with discoveryUrl, which is the shared origin resolving to every datacenter — fall back to that if requests here start failing.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>gameApiWsUrl</b></code>](#game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-ws-url\} 

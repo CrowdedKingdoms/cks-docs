@@ -87,7 +87,7 @@ token. Mint a token for **its own** app and play with it.
 ```graphql
 mutation Enter($appId: BigInt!) {
   mintAppToken(input: { appId: $appId }) {
-    token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl launchUrl
+    token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl discoveryUrl launchUrl
   }
 }
 ```
@@ -140,7 +140,7 @@ the hub.
    ```graphql
    mutation Exchange($input: ExchangePortalCodeInput!) {
      exchangePortalCode(input: $input) {
-       token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl launchUrl
+       token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl discoveryUrl launchUrl
      }
    }
    # { "input": { "code": "<one-time>", "codeVerifier": "<verifier>" } }
