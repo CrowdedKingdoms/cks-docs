@@ -82,7 +82,7 @@ const sections: CardSection[] = [
       {
         title: 'Management API',
         description:
-          'Manage organizations, applications, access, billing, and dedicated environments.',
+          'Organizations, applications, access, and billing — a surface of the one Crowded Kingdoms API.',
         to: '/management-api/intro',
       },
       {

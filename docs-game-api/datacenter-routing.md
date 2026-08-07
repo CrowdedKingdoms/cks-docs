@@ -60,7 +60,6 @@ import { createCrowdyClient } from '@crowdedkingdoms/crowdyjs';
 let client = createCrowdyClient({
   httpUrl: 'https://ck.prod.cp.cks-env.com/graphql',
   wsUrl: 'wss://ck.prod.cp.cks-env.com/graphql',
-  managementUrl: 'https://ck.prod.cp.cks-env.com',
   realtime: {
     // The SHARED origin, and it stays that way for the life of the client.
     discoveryUrl: 'https://ck.prod.cp.cks-env.com/graphql',
@@ -75,8 +74,7 @@ if (bootstrap.gameApiUrl && bootstrap.gameApiUrl !== currentEndpoint) {
   client = createCrowdyClient({
     httpUrl: bootstrap.gameApiUrl,
     wsUrl: bootstrap.gameApiWsUrl,
-    managementUrl: 'https://ck.prod.cp.cks-env.com',
-    // Unchanged. This is the point.
+      // Unchanged. This is the point.
     realtime: { discoveryUrl: 'https://ck.prod.cp.cks-env.com/graphql' },
   });
   client.setToken(appToken);

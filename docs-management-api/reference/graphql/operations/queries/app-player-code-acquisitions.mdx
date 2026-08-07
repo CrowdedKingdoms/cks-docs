@@ -36,4 +36,4 @@ Numeric app id whose acquisitions to view.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>PlayerCodeAcquisition</b></code>](/reference/graphql/types/objects/player-code-acquisition.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A player’s entitlement to a listing. Free acquisitions write the same row shape paid ones will in P4b (expiry/unit-budget fields exist but stay dormant); uninstall never deletes this row (audit).
+The caller's entitlement to a listing (mode 'free' in P4a). Uninstalling never deletes this row; it is the audit trail P4b attaches payment to.

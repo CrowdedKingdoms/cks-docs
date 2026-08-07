@@ -34,8 +34,8 @@ type GmFunction {
   autonomousInvocable: Boolean!
   notifications: [GmFunctionNotification!]!
   permissionEffects: [GmFunctionPermissionEffect!]!
-  warnings: [String!]!
   timers: [GmFunctionTimer!]!
+  warnings: [String!]!
 }
 ```
 
@@ -98,12 +98,12 @@ Declarative realtime notifications the function emits via Buddy after it commits
 Declarative grid-permission effects (grant/revoke runtime grid ACL rows) applied atomically with the function's mutations.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>warnings</b></code>](#warnings)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#warnings\} 
-Non-fatal static-analysis warnings from the last upload.
-
-
 #### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>timers</b></code>](#timers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmFunctionTimer!]!</b></code>](/reference/graphql/types/objects/gm-function-timer.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#timers\} 
 Declarative one-shot timers armed atomically with the function's mutations.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>warnings</b></code>](#warnings)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#warnings\} 
+Non-fatal static-analysis warnings from the last upload.
 
 
 

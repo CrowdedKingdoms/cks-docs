@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A listing's standing under an app's allow-list: ADMITTED (an active code/author/org admission matches), PENDING (no admission yet — browsable but uninstallable), or REVOKED (a previous admission was revoked; installs drain).
+A listing's standing under this app's admission mode: ADMITTED (installable), PENDING (browsable but uninstallable in allow&#x005F;list apps), or REVOKED (installs drain).
 
 
 ```graphql
@@ -45,4 +45,4 @@ enum PlayerCodeAdmissionState {
 
 ### Member Of
 
-[`PlayerCodeAdmissionQueueEntry`](/reference/graphql/types/objects/player-code-admission-queue-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`PlayerCodeAdmissionQueueEntry`](/reference/graphql/types/objects/player-code-admission-queue-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`PlayerCodeListing`](/reference/graphql/types/objects/player-code-listing.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

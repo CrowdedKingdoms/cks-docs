@@ -34,7 +34,7 @@ function hashPassword(password: string): string {
   return execSync(
     `node -e 'process.stdout.write(require("bcrypt").hashSync(process.argv[1], 10))' ${JSON.stringify(password)}`,
     {
-      cwd: path.join(process.cwd(), '../cks-management-api'),
+      cwd: path.join(process.cwd(), '../cks-game-api'),
       encoding: 'utf8',
     },
   ).trim();

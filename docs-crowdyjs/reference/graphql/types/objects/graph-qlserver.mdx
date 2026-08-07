@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A registered GraphQL API server instance in the fleet (either a management-api or a game-api, see `kind`), with reachability addresses and basic host telemetry. Returned by graphqlServers (all) and activeGraphQLServers (only ReadyForClients). Use this for service discovery; realtime/UDP play still goes through the game-api UDP proxy.
+A registered GraphQL API server instance in the fleet, with reachability addresses and basic host telemetry. Returned by graphqlServers (all) and activeGraphQLServers (only ReadyForClients). Use this for service discovery; realtime/UDP play still goes through the game-api UDP proxy.
 
 
 ```graphql
@@ -29,6 +29,7 @@ type GraphQLServer {
   publicIp4: String
   publicIp6: String
   apiPort: Int!
+  publicHostname: String
   status: ServerState!
   cpuUsagePct: Float
   memoryUsagePct: Float
@@ -46,7 +47,7 @@ Unique id of this GraphQL server registration.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#kind\} 
-Logical kind of GraphQL service: 'management-api' or 'game-api'.
+Logical kind of GraphQL service. Every current server is 'game-api', which serves both the management and game surfaces; 'management-api' appears only on rows predating their unification.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>ip4</b></code>](#ip-4)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ip-4\} 
@@ -75,6 +76,10 @@ Public IPv6 address clients use to reach this server, if assigned.
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>apiPort</b></code>](#api-port)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#api-port\} 
 TCP port the GraphQL/HTTP API listens on (default 4000).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>publicHostname</b></code>](#public-hostname)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#public-hostname\} 
+Public hostname clients can reach this instance on directly over TLS, e.g. `ck-api-2.gxca.prod.cp.cks-env.com`. Null when the instance has no public DNS name or certificate yet, in which case it is reachable only through the shared load balancer and must not be connected to directly. Prefer the `gameApiUrl` returned by mintAppToken over building a URL from this field: that call already picks a low-load instance for you.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GraphQLServer.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ServerState!</b></code>](/reference/graphql/types/enums/server-state.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 

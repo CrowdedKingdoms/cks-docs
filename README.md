@@ -14,19 +14,31 @@ Production deploy uses `npx docusaurus build` (see `.github/workflows/deploy-doc
 
 ## Maintainers: regenerate GraphQL reference
 
-Requires API schema files checked out next to this repo:
+`npm run sdl:gen` refreshes `static/schema/*.graphql` from the sibling API checkouts,
+and `npm run graphql:gen` builds the reference **from those published files** — so the
+reference and the SDL the site serves are generated from the same bytes. `prebuild`
+runs them in that order.
 
-| Docs tab | Schema source |
-| -------- | ------------- |
-| Management API | `../cks-management-api/schema.gql` (identity, tiers, billing — no grid mutations) |
-| Game API | `../cks-game-api/schema.gql` (world data, grids, teams/groups, avatar state — boot game-api once so this file is current; it is gitignored in that repo) |
-| CrowdyJS | `../CrowdyJS/schema.gql` (regenerate when CrowdyJS schema is updated) |
+| Docs tab | Published SDL | Source |
+| -------- | ------------- | ------ |
+| Management API | `static/schema/management-api.graphql` | **Derived**, not a repo: the unified schema filtered to the root fields in [`scripts/management-surface.json`](scripts/management-surface.json) |
+| Game API | `static/schema/game-api.graphql` | `../cks-game-api/schema.gql` (the whole unified schema) |
+| CrowdyJS | `static/schema/crowdyjs.graphql` | `../CrowdyJS/schema.gql` |
+
+There is no `cks-management-api` checkout to keep — that repo was retired on
+2026-08-06 when the management plane was absorbed into `cks-game-api`. The management
+tab survives as a filtered view so the surface stays readable on its own.
 
 ```bash
-# Game API schema is written on boot (see ../cks-game-api/README.md):
-#   cd ../cks-game-api && npm run start:dev   # wait for Nest to start, then stop
-npm run graphql:gen   # or npm run build (runs graphql:gen via prebuild)
+# Regenerate the game-api schema first if the API changed:
+#   cd ../cks-game-api && npm run schema:generate
+npm run sdl:gen && npm run graphql:gen     # or npm run build, which runs both
 ```
+
+Both `sdl:gen` and `lint:schema` **fail** on a missing source rather than skipping it.
+Adding a management root field to `cks-game-api` means adding it to
+`scripts/management-surface.json` too, or it will not appear in the management
+reference; removing one fails `sdl:gen` until it is moved to `retired` with a reason.
 
 Do not hand-edit generated Markdown under `reference/graphql/`.
 
@@ -47,7 +59,7 @@ Full procedure (CORS, placeholders, troubleshooting): [internal runbook](../inte
 
 ### Prerequisites
 
-1. **cks-management-api** on port `3001` (`npm run start:dev`).
+1. **cks-game-api** on port `3001` (`npm run start:dev`) — it serves the management surface the UI calls.
 2. **cks-management-ui** on port `5173`, with API URLs pointing at localhost (CORS allows `http://localhost:5173`):
 
    ```bash
@@ -57,7 +69,7 @@ Full procedure (CORS, placeholders, troubleshooting): [internal runbook](../inte
    npm run dev -- --host 127.0.0.1 --port 5173
    ```
 
-3. Local DB seeded and a super-admin password you know (reset via your team’s management-api local-dev runbook if the seed hash is unknown).
+3. Local DB seeded and a super-admin password you know (reset via your team’s local-dev runbook if the seed hash is unknown).
 
 ### Capture
 

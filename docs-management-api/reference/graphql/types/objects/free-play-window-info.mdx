@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Status of the recurring free-play window during which gameplay is open without entitlement.
+No description
 
 
 ```graphql
@@ -30,15 +30,15 @@ type FreePlayWindowInfo {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>FreePlayWindowInfo.<b>isCurrentlyActive</b></code>](#is-currently-active)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-currently-active\} 
-True if the free-play window is open right now.
+True if a free-play window is active right now.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>FreePlayWindowInfo.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
-Human-readable summary of the free-play schedule.
+Human-readable description of the free-play schedule.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>FreePlayWindowInfo.<b>nextWindowStart</b></code>](#next-window-start)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#next-window-start\} 
-ISO 8601 timestamp when the next free-play window begins, or null if not applicable.
+ISO-8601 start time of the next free-play window, or null if none.
 
 
 

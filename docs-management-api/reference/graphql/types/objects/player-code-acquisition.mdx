@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A player’s entitlement to a listing. Free acquisitions write the same row shape paid ones will in P4b (expiry/unit-budget fields exist but stay dormant); uninstall never deletes this row (audit).
+The caller's entitlement to a listing (mode 'free' in P4a). Uninstalling never deletes this row; it is the audit trail P4b attaches payment to.
 
 
 ```graphql
@@ -23,10 +23,13 @@ type PlayerCodeAcquisition {
   acquisitionId: String!
   listingId: String!
   appId: BigInt!
-  acquirerUserId: BigInt!
   mode: PlayerCodeAcquisitionMode!
   status: String!
+  expiresAt: DateTime
+  unitBudget: BigInt
+  unitsConsumed: BigInt!
   acquiredAt: DateTime!
+  acquirerUserId: BigInt
   revokedAt: DateTime
 }
 ```
@@ -43,23 +46,35 @@ UUID of the acquired listing.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAcquisition.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
-Numeric app id of the listing.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAcquisition.<b>acquirerUserId</b></code>](#acquirer-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquirer-user-id\} 
-Numeric user id of the acquirer.
+App of the listing.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAcquisition.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerCodeAcquisitionMode!</b></code>](/reference/graphql/types/enums/player-code-acquisition-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#mode\} 
-Acquisition mode (always FREE in P4a).
+Acquisition mode: FREE, BUY (perpetual), RENT (renewable window), TIME&#x005F;LIMITED (single window), or COST&#x005F;LIMITED (compute-unit budget).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAcquisition.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
 Entitlement status: 'active' or 'revoked'.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAcquisition.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+Expiry for RENT/TIME&#x005F;LIMITED; null for perpetual (FREE/BUY) or unit-budgeted (COST&#x005F;LIMITED). Past expiry drains installs until renewed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAcquisition.<b>unitBudget</b></code>](#unit-budget)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#unit-budget\} 
+Compute-unit budget for COST&#x005F;LIMITED; null otherwise.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAcquisition.<b>unitsConsumed</b></code>](#units-consumed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#units-consumed\} 
+Compute units consumed so far (advances against unitBudget).
+
+
 #### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAcquisition.<b>acquiredAt</b></code>](#acquired-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#acquired-at\} 
-When the listing was acquired.
+When acquired.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAcquisition.<b>acquirerUserId</b></code>](#acquirer-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#acquirer-user-id\} 
+Numeric user id of the acquirer (management catalog reads).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerCodeAcquisition.<b>revokedAt</b></code>](#revoked-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#revoked-at\} 

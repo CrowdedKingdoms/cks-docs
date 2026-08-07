@@ -2,9 +2,9 @@
  * E2E: app-first onboarding (story wiki: studio-owner-creates-an-app-with-hosting).
  *
  * Prerequisites:
- *   - cks-management-api on :3001
+ *   - cks-game-api on :3001 (serves the management surface)
  *   - cks-management-ui on :5173 (localhost GraphQL / CORS)
- *   - Postgres reachable for wallet seeding (optional E2E_DATABASE_URL or local cks_management)
+ *   - Postgres reachable for wallet seeding (optional E2E_DATABASE_URL or the local CK database)
  *   - OVH catalog synced (datacenter + flavor lists non-empty)
  */
 import { execSync } from 'node:child_process';
@@ -37,11 +37,11 @@ function fundOrgWalletBySlug(orgSlug: string, cents = 500_000): void {
 async function preflight(): Promise<void> {
   for (const [name, url] of [
     ['management-ui', process.env.E2E_BASE_URL ?? 'http://localhost:5173/login'],
-    ['management-api', `${apiURL}/graphql`],
+    ['ck-api', `${apiURL}/graphql`],
   ] as const) {
     try {
       const init =
-        name === 'management-api'
+        name === 'ck-api'
           ? {
               method: 'POST' as const,
               headers: { 'Content-Type': 'application/json' },

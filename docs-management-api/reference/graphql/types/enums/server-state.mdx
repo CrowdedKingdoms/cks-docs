@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Lifecycle/capacity state of a registered server or Buddy. Only ReadyForClients servers should receive client traffic.
+Lifecycle/capacity state of a game/GraphQL server in the fleet. Only ReadyForClients servers should receive new client connections; serverWithLeastClients and activeGraphQLServers already filter to healthy, non-overloaded servers.
 
 
 ```graphql
@@ -33,27 +33,27 @@ enum ServerState {
 ### Values
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Starting</b></code>](#starting) \{#starting\} 
-Booting / not yet ready: registered but still initializing; do not route client traffic here.
+The server is booting and not yet accepting clients. Do not route new connections here; wait for ReadyForClients.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>ReadyForClients</b></code>](#ready-for-clients) \{#ready-for-clients\} 
-Healthy and accepting client traffic. The only state safe to route to.
+The server is healthy and accepting clients. This is the only state safe to route new connections to.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Stopping</b></code>](#stopping) \{#stopping\} 
-Draining / shutting down: finishing in-flight work; do not send new traffic.
+The server is draining and shutting down: existing sessions may continue briefly but no new clients should be routed here.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Offline</b></code>](#offline) \{#offline\} 
-Not running or unreachable (e.g. crashed or missed heartbeats).
+The server is down or unreachable (failed health checks). Do not route any traffic here.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>NearCapacity</b></code>](#near-capacity) \{#near-capacity\} 
-Buddy soft resource overload: excluded from new-client selection until it recovers; existing sessions continue.
+Soft resource overload (a CPU core or system memory has been high for several seconds). Existing sessions continue, but the server is excluded from serverWithLeastClients so no new clients are routed here until it recovers.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerState.<b>Full</b></code>](#full) \{#full\} 
-Buddy hard resource overload: excluded from new-client selection and actively shedding clients (sends reconnect commands so they migrate elsewhere).
+Hard resource overload. Like NearCapacity (excluded from new-client selection), and the server is also actively shedding clients: it sends each affected client a reconnect command and drops their session after a short grace period so they migrate to another server.
 
 
 

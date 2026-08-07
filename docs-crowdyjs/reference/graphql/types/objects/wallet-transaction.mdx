@@ -57,7 +57,7 @@ Wallet balance in cents immediately after this transaction was applied, as a Big
 
 
 #### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>transactionType</b></code>](#transaction-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#transaction-type\} 
-What produced this transaction. Known values: "topup" (wallet credit from a checkout/top-up), "usage" (per-app usage charge, negative), "shared&#x005F;usage" (shared-environment usage charge, negative), "reserved&#x005F;throughput" (monthly/prorated reserved egress capacity, negative), "environment&#x005F;usage" (hourly environment cost, negative), "auto&#x005F;recharge" (automatic wallet recharge). Other caller-supplied deposit types are possible.
+What produced this transaction. Known values: "topup" (wallet credit from a checkout/top-up), "usage" (per-app usage charge, negative), "shared&#x005F;usage" (shared-environment usage charge, negative), "reserved&#x005F;throughput" (monthly/prorated reserved egress capacity, negative), "environment&#x005F;usage" (hourly environment cost, negative), "auto&#x005F;recharge" (automatic wallet recharge), "agent&#x005F;usage" (Crowdy Studio agent run charged at provider cost, negative), "admin&#x005F;credit" (operator credit applied without a payment provider). Other caller-supplied deposit types are possible.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>WalletTransaction.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
@@ -80,7 +80,7 @@ When the transaction was recorded (ISO-8601 UTC timestamp).
 
 ### Returned By
 
-[`walletTransactions`](/reference/graphql/operations/queries/wallet-transactions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+[`creditOrgWallet`](/reference/graphql/operations/mutations/credit-org-wallet.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`walletTransactions`](/reference/graphql/operations/queries/wallet-transactions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
 
 ### Member Of
 

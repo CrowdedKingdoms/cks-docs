@@ -26,9 +26,10 @@ The webhook reconciliation is idempotent: it is keyed by
 
 ## 1. Environment variables
 
-Set these in `cks-management-api/.env` (and mirror into the AWS Secrets Manager
-secret the deployed task definition reads). The relevant block in `example.env`
-already documents the same keys.
+Set these in `cks-game-api/.env`, which serves the management surface these
+endpoints belong to. The relevant block in `example.env` already documents the same
+keys. For a deployed environment they are control-plane secrets — file them through
+the infra control plane rather than editing a host by hand.
 
 ### Required
 
@@ -54,8 +55,8 @@ already documents the same keys.
 
 ## 2. Webhook endpoints
 
-Both providers need to point at the live **management API** deployment (`cks-management-api`).
-Webhook paths:
+Both providers need to point at the live Crowded Kingdoms API deployment, which serves
+the management surface. Webhook paths:
 
 | Provider | URL | Method | Notes |
 | --- | --- | --- | --- |
@@ -63,8 +64,7 @@ Webhook paths:
 | Stripe (legacy) | `POST {API_BASE_URL}/stripe/<event-type>` | POST | Backward-compat alias that forwards to the same webhook handler as `/webhooks/stripe`. The `<event-type>` segment is ignored (the body always carries the authoritative `type`). Re-point Stripe to `/webhooks/stripe` when convenient. |
 | PayPal | `POST {API_BASE_URL}/webhooks/paypal` | POST | PayPal sends `application/json` plus `PayPal-Auth-Algo` / `PayPal-Cert-Url` / `PayPal-Transmission-Id` / `PayPal-Transmission-Sig` / `PayPal-Transmission-Time` headers. The provider validates by calling PayPal's `/v1/notifications/verify-webhook-signature`, so `PAYPAL_WEBHOOK_ID` must match the webhook subscription. |
 
-`{API_BASE_URL}` is whatever the public URL of your management API environment is
-(e.g. `https://dev-management-api.crowdedkingdoms.com` for dev). For local testing
+`{API_BASE_URL}` is the public URL of your Crowded Kingdoms API deployment. For local testing
 behind a public reverse proxy, use that public origin (for example
 `https://local.cks-env.com/webhooks/stripe` and
 `https://local.cks-env.com/webhooks/paypal`) and put the local endpoint values
@@ -120,9 +120,8 @@ inline `price_data` from the `amountCents` you pass to `createCheckout`.
 ### c. Test mode
 
 Use `sk_test_...` keys and the Stripe-provided test card numbers
-(`4242 4242 4242 4242`). The dev DB connection in `cks-management-api/.env` already
-points at the dev cluster, so you can validate the full webhook -> ledger
-loop end-to-end before flipping to live keys.
+(`4242 4242 4242 4242`) so you can validate the full webhook -> ledger loop
+end-to-end before flipping to live keys.
 
 ---
 

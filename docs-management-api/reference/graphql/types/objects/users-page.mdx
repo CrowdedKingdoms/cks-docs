@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-One page of users from usersPaginated, plus pagination metadata.
+No description
 
 
 ```graphql
@@ -29,11 +29,11 @@ type UsersPage {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>UsersPage.<b>items</b></code>](#items)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[User!]!</b></code>](/reference/graphql/types/objects/user.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#items\} 
-Users on this page.
+Users on the current page, ordered by ascending user id.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UsersPage.<b>pageInfo</b></code>](#page-info)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PageInfo!</b></code>](/reference/graphql/types/objects/page-info.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#page-info\} 
-Pagination metadata: totalCount, limit, and offset.
+Pagination metadata: totalCount, applied limit, and applied offset.
 
 
 
