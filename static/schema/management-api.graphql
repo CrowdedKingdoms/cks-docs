@@ -448,6 +448,36 @@ type AuthMethodResult {
   hasPassword: Boolean!
 }
 
+"""
+Lifecycle/capacity state of a game/GraphQL server in the fleet. Only ReadyForClients servers should receive new client connections; serverWithLeastClients and activeGraphQLServers already filter to healthy, non-overloaded servers.
+"""
+enum ServerState {
+  """
+  The server is booting and not yet accepting clients. Do not route new connections here; wait for ReadyForClients.
+  """
+  Starting
+  """
+  The server is healthy and accepting clients. This is the only state safe to route new connections to.
+  """
+  ReadyForClients
+  """
+  The server is draining and shutting down: existing sessions may continue briefly but no new clients should be routed here.
+  """
+  Stopping
+  """
+  The server is down or unreachable (failed health checks). Do not route any traffic here.
+  """
+  Offline
+  """
+  Soft resource overload (a CPU core or system memory has been high for several seconds). Existing sessions continue, but the server is excluded from serverWithLeastClients so no new clients are routed here until it recovers.
+  """
+  NearCapacity
+  """
+  Hard resource overload. Like NearCapacity (excluded from new-client selection), and the server is also actively shedding clients: it sends each affected client a reconnect command and drops their session after a short grace period so they migrate to another server.
+  """
+  Full
+}
+
 type OrgPermission {
   """
   Stable permission key used in role grants (e.g. 'manage_members', 'manage_tokens').
@@ -674,36 +704,6 @@ enum CodeAdmissionSubjectKind {
   CODE
   AUTHOR
   ORG
-}
-
-"""
-Lifecycle/capacity state of a game/GraphQL server in the fleet. Only ReadyForClients servers should receive new client connections; serverWithLeastClients and activeGraphQLServers already filter to healthy, non-overloaded servers.
-"""
-enum ServerState {
-  """
-  The server is booting and not yet accepting clients. Do not route new connections here; wait for ReadyForClients.
-  """
-  Starting
-  """
-  The server is healthy and accepting clients. This is the only state safe to route new connections to.
-  """
-  ReadyForClients
-  """
-  The server is draining and shutting down: existing sessions may continue briefly but no new clients should be routed here.
-  """
-  Stopping
-  """
-  The server is down or unreachable (failed health checks). Do not route any traffic here.
-  """
-  Offline
-  """
-  Soft resource overload (a CPU core or system memory has been high for several seconds). Existing sessions continue, but the server is excluded from serverWithLeastClients so no new clients are routed here until it recovers.
-  """
-  NearCapacity
-  """
-  Hard resource overload. Like NearCapacity (excluded from new-client selection), and the server is also actively shedding clients: it sends each affected client a reconnect command and drops their session after a short grace period so they migrate to another server.
-  """
-  Full
 }
 
 """
