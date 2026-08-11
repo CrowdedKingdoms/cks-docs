@@ -1,0 +1,88 @@
+---
+id: crowdy-studio-agent-catalog
+title: CrowdyStudioAgentCatalog
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The answering ck-api instance's Agentic Studio capability: the models it carries with their pinned prices, the implemented tool registry with risk classes, and the full mode and risk-class value sets a policy may draw from. This is deployed configuration, not stored policy — a platform policy naming anything absent here is accepted and then runs nothing.
+
+
+```graphql
+type CrowdyStudioAgentCatalog {
+  instanceEnabled: Boolean!
+  instanceId: String
+  datacenterCode: String
+  provider: String!
+  platformPolicyVersion: String!
+  defaultModelId: String
+  registryDigest: String!
+  modes: [CrowdyStudioAgentMode!]!
+  riskClasses: [CrowdyStudioAgentRiskClass!]!
+  models: [CrowdyStudioAgentCatalogModel!]!
+  tools: [CrowdyStudioAgentCatalogTool!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalog.<b>instanceEnabled</b></code>](#instance-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#instance-enabled\} 
+Whether CROWDY&#x005F;STUDIO&#x005F;AGENT&#x005F;ENABLED is set on this instance. False means every list below is empty and no policy can make the agent run here.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalog.<b>instanceId</b></code>](#instance-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#instance-id\} 
+Which process answered (CKS&#x005F;RUNTIME&#x005F;SERVER&#x005F;ID or hostname), because this is a per-instance answer.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalog.<b>datacenterCode</b></code>](#datacenter-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#datacenter-code\} 
+The answering instance's datacenter (CK&#x005F;DATACENTER), or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalog.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider\} 
+Provider the instance would route to: 'openrouter', or 'fake' outside production.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalog.<b>platformPolicyVersion</b></code>](#platform-policy-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#platform-policy-version\} 
+Platform policy contract version the instance enforces.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalog.<b>defaultModelId</b></code>](#default-model-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#default-model-id\} 
+Default model id, or null when the agent is disabled here.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalog.<b>registryDigest</b></code>](#registry-digest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#registry-digest\} 
+Digest over the whole compiled-in tool registry. Two instances reporting different digests are running different tool sets.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalog.<b>modes</b></code>](#modes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentMode!]!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#modes\} 
+Every mode value a policy allowlist may contain.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalog.<b>riskClasses</b></code>](#risk-classes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentRiskClass!]!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-risk-class.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#risk-classes\} 
+Every risk-class value a policy allowlist may contain.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalog.<b>models</b></code>](#models)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentCatalogModel!]!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-catalog-model.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#models\} 
+Models this instance carries, sorted by id. Empty when the agent is disabled here.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalog.<b>tools</b></code>](#tools)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentCatalogTool!]!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-catalog-tool.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#tools\} 
+Implemented tools, sorted by logical name. Present whether or not the agent is enabled, because the registry is compiled in.
+
+
+
+
+### Returned By
+
+[`cpCrowdyStudioAgentCatalog`](/reference/graphql/operations/queries/cp-crowdy-studio-agent-catalog.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

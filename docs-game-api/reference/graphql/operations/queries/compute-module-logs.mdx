@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Diagnostic log lines for an app's compute modules, newest first. Phase 1 surfaces failed-run errors; the runtime adds guest log output when modules execute. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
+Diagnostic log lines for an app's compute modules, newest first: failed-run errors from the runtime plus guest ck.log output. Complete across the fleet — each line carries the instance that produced it. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
 
 
 ```graphql

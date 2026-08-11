@@ -1,0 +1,48 @@
+---
+id: placeable-datacenters
+title: PlaceableDatacenters
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The datacenter choices this deployment offers for app creation, plus the two facts a caller needs to interpret an empty list.
+
+
+```graphql
+type PlaceableDatacenters {
+  datacenters: [PlaceableDatacenter!]!
+  placementEnforced: Boolean!
+  servedBy: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenters.<b>datacenters</b></code>](#datacenters)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[PlaceableDatacenter!]!</b></code>](/reference/graphql/types/objects/placeable-datacenter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#datacenters\} 
+Every datacenter this deployment knows how to route to, sorted by code, including any that cannot currently hold an app. EMPTY means the control plane has never pushed a datacenter topology here, in which case createApp refuses every datacenter and the remedy is a change order (pg:upsert&#x005F;datacenter&#x005F;topology) rather than a different argument.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenters.<b>placementEnforced</b></code>](#placement-enforced)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#placement-enforced\} 
+Whether this deployment actually places apps by datacenter. True on any Citus tier: the datacenter is verified at creation and an unknown or empty one is refused. False on a single-node deployment (a developer machine, the CI database), where there is exactly one place an app can be, the argument is still required but cannot be verified, and the single entry returned is a formality. A caller should present a choice when this is true and need not when it is false.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenters.<b>servedBy</b></code>](#served-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#served-by\} 
+The datacenter of the instance that answered this call, or null if it was not told its own. Present so a picker can SAY which datacenter it is talking to; deliberately NOT a default. The published origin is a multivalue record over every datacenter's load balancer, so the instance answering is whichever one DNS picked, and defaulting to it would place apps by exactly the accident createApp's required argument exists to remove.
+
+
+
+
+### Returned By
+
+[`placeableDatacenters`](/reference/graphql/operations/queries/placeable-datacenters.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

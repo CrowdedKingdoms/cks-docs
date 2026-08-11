@@ -1,0 +1,158 @@
+---
+id: user-code-fault-kind
+title: UserCodeFaultKind
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What went wrong, at the granularity an operator would alert on and a developer would fix. One kind per distinguishable remedy: an expression timeout and a watchdog termination are both "ran too long" and are kept apart because one rolls back a transaction and the other kills a worker thread.
+
+
+```graphql
+enum UserCodeFaultKind {
+  EXPRESSION_TIMEOUT
+  GAS_EXHAUSTED
+  CALL_LIMIT_EXCEEDED
+  EXPRESSION_ERROR
+  WASM_TRAP
+  FUEL_EXHAUSTED
+  MEMORY_EXCEEDED
+  WATCHDOG_TERMINATED
+  MODULE_LOAD_FAILED
+  BINDING_MISMATCH
+  RESPONSE_TOO_LARGE
+  SANDBOX_POISONED
+  WORKER_EXIT
+  HOST_CALL_FAILED
+  UNKNOWN_HOST_FUNCTION
+  INTERNAL_ERROR
+  DB_OPS_EXCEEDED
+  EGRESS_BUDGET_EXCEEDED
+  STATE_WRITE_BUDGET_EXCEEDED
+  RATE_LIMIT_EXCEEDED
+  QUOTA_EXHAUSTED
+  CONTRACT_VALIDATION_FAILED
+  PLATFORM_BUSY
+  CIRCUIT_OPEN
+  DISABLED_BY_POLICY
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>EXPRESSION&#x005F;TIMEOUT</b></code>](#expression-timeout) \{#expression-timeout\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>GAS&#x005F;EXHAUSTED</b></code>](#gas-exhausted) \{#gas-exhausted\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>CALL&#x005F;LIMIT&#x005F;EXCEEDED</b></code>](#call-limit-exceeded) \{#call-limit-exceeded\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>EXPRESSION&#x005F;ERROR</b></code>](#expression-error) \{#expression-error\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>WASM&#x005F;TRAP</b></code>](#wasm-trap) \{#wasm-trap\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>FUEL&#x005F;EXHAUSTED</b></code>](#fuel-exhausted) \{#fuel-exhausted\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>MEMORY&#x005F;EXCEEDED</b></code>](#memory-exceeded) \{#memory-exceeded\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>WATCHDOG&#x005F;TERMINATED</b></code>](#watchdog-terminated) \{#watchdog-terminated\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>MODULE&#x005F;LOAD&#x005F;FAILED</b></code>](#module-load-failed) \{#module-load-failed\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>BINDING&#x005F;MISMATCH</b></code>](#binding-mismatch) \{#binding-mismatch\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>RESPONSE&#x005F;TOO&#x005F;LARGE</b></code>](#response-too-large) \{#response-too-large\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>SANDBOX&#x005F;POISONED</b></code>](#sandbox-poisoned) \{#sandbox-poisoned\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>WORKER&#x005F;EXIT</b></code>](#worker-exit) \{#worker-exit\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>HOST&#x005F;CALL&#x005F;FAILED</b></code>](#host-call-failed) \{#host-call-failed\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>UNKNOWN&#x005F;HOST&#x005F;FUNCTION</b></code>](#unknown-host-function) \{#unknown-host-function\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>INTERNAL&#x005F;ERROR</b></code>](#internal-error) \{#internal-error\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>DB&#x005F;OPS&#x005F;EXCEEDED</b></code>](#db-ops-exceeded) \{#db-ops-exceeded\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>EGRESS&#x005F;BUDGET&#x005F;EXCEEDED</b></code>](#egress-budget-exceeded) \{#egress-budget-exceeded\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>STATE&#x005F;WRITE&#x005F;BUDGET&#x005F;EXCEEDED</b></code>](#state-write-budget-exceeded) \{#state-write-budget-exceeded\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>RATE&#x005F;LIMIT&#x005F;EXCEEDED</b></code>](#rate-limit-exceeded) \{#rate-limit-exceeded\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>QUOTA&#x005F;EXHAUSTED</b></code>](#quota-exhausted) \{#quota-exhausted\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>CONTRACT&#x005F;VALIDATION&#x005F;FAILED</b></code>](#contract-validation-failed) \{#contract-validation-failed\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>PLATFORM&#x005F;BUSY</b></code>](#platform-busy) \{#platform-busy\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>CIRCUIT&#x005F;OPEN</b></code>](#circuit-open) \{#circuit-open\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultKind.<b>DISABLED&#x005F;BY&#x005F;POLICY</b></code>](#disabled-by-policy) \{#disabled-by-policy\} 
+
+
+
+
+
+### Member Of
+
+[`UserCodeFaultRecord`](/reference/graphql/types/objects/user-code-fault-record.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`userCodeFaults`](/reference/graphql/operations/queries/user-code-faults.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`UserCodeFaultSummaryEntry`](/reference/graphql/types/objects/user-code-fault-summary-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

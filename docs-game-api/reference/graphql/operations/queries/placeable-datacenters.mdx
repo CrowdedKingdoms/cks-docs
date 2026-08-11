@@ -1,0 +1,29 @@
+---
+id: placeable-datacenters
+title: placeableDatacenters
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The datacenters this deployment can create an app in. Call this before createApp and use a returned `code` as input.datacenter: the argument is REQUIRED and permanent, because an app is distributed on its app&#x005F;id and all of its data lives in one datacenter for the life of the app. Requires authentication. Offer only entries with placeable=true; an empty list means no datacenter topology has been pushed here and app creation will refuse until it has. Cheap and stable — the answer changes only when the fleet does, and it is served from Citus reference tables on whichever instance answers.
+
+
+```graphql
+placeableDatacenters: PlaceableDatacenters!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlaceableDatacenters</b></code>](/reference/graphql/types/objects/placeable-datacenters.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The datacenter choices this deployment offers for app creation, plus the two facts a caller needs to interpret an empty list.

@@ -1,0 +1,58 @@
+---
+id: app-compute-budget-info
+title: AppComputeBudgetInfo
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An app's compute allowance in units per minute, spanning the expression engine and both WASM tiers. Absent when no allowance has been set for the app, in which case the app is measured against the platform reference allowance and is never refused.
+
+
+```graphql
+type AppComputeBudgetInfo {
+  appId: BigInt!
+  unitsPerMinute: BigInt!
+  enforce: Boolean!
+  note: String
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app the allowance belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>unitsPerMinute</b></code>](#units-per-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#units-per-minute\} 
+Compute units this app may consume per minute.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>enforce</b></code>](#enforce)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enforce\} 
+When false the allowance is observed and recorded and nothing is refused (the ship default). When true, exceeding it refuses further model invokes until the minute rolls. Enforcement additionally requires the fleet kill switch to be in its default position, so a true here can still be observing.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>note</b></code>](#note)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#note\} 
+Why this number was chosen. Recorded because an allowance with no stated basis is a number the next operator cannot safely change.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When the allowance was last written.
+
+
+
+
+### Returned By
+
+[`appComputeBudget`](/reference/graphql/operations/queries/app-compute-budget.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setAppComputeBudget`](/reference/graphql/operations/mutations/set-app-compute-budget.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

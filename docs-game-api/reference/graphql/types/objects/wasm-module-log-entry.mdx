@@ -25,6 +25,7 @@ type WasmModuleLogEntry {
   level: String!
   message: String!
   triggerSource: String
+  instanceId: String
 }
 ```
 
@@ -49,6 +50,10 @@ The log message.
 
 #### [<code style={{ fontWeight: 'normal' }}>WasmModuleLogEntry.<b>triggerSource</b></code>](#trigger-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-source\} 
 The entry that produced the line: init | tick | event | invoke.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmModuleLogEntry.<b>instanceId</b></code>](#instance-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#instance-id\} 
+Which ck-api instance produced the line. Null for runtime error lines, which are read back from the run table rather than attributed to an instance. Present on guest ck.log lines, which used to be served from the answering replica's memory and so silently excluded every other instance's output.
 
 
 

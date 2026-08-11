@@ -1922,6 +1922,18 @@ enum CrowdyStudioAgentMode {
   PLAY
 }
 
+"""Trusted boundary that executes a typed tool."""
+enum CrowdyStudioAgentToolExecutor {
+  """
+  Game API invokes an owner-scoped domain service; never shell or arbitrary GraphQL.
+  """
+  SERVER
+  """
+  The attached CrowdyJS host executes once after epoch/context/lease validation.
+  """
+  BROWSER
+}
+
 """
 Per-turn provider/tool/compile limits. Token and cost values are exact decimal BigInt strings; cost is in micro-US-dollars.
 """
@@ -2582,6 +2594,88 @@ type ServerVersionInfo {
   serverVersion: VersionInfo!
   """Minimum accepted client version"""
   minimumClientVersion: VersionInfo!
+}
+
+"""
+One model the answering ck-api instance carries, with the pinned price it will meter against.
+"""
+type CrowdyStudioAgentCatalogModel {
+  """Exact provider model id, as a policy would name it."""
+  modelId: String!
+  """
+  Whether this is the instance's default model (CROWDY_STUDIO_AGENT_DEFAULT_MODEL).
+  """
+  isDefault: Boolean!
+  """
+  Whether the instance would accept a run on this model: it is in the instance allowlist and has a positive pinned price in both directions. A zero price is only reachable with the non-production fake provider, which cannot reserve cost.
+  """
+  selectable: Boolean!
+  """Pinned input price in micro-USD per million tokens."""
+  inputMicrosPerMillion: Int!
+  """Pinned output price in micro-USD per million tokens."""
+  outputMicrosPerMillion: Int!
+}
+
+"""
+One implemented crowdy.agent-tools/1 tool, named exactly as a policy allowlist must name it.
+"""
+type CrowdyStudioAgentCatalogTool {
+  """
+  Logical dotted tool name. This is the string an allowedToolNames entry must equal.
+  """
+  name: String!
+  """What the tool does, from its canonical descriptor."""
+  summary: String!
+  """Trusted boundary that runs it: SERVER or BROWSER."""
+  executor: CrowdyStudioAgentToolExecutor!
+  """Modes the tool is available in."""
+  modes: [CrowdyStudioAgentMode!]!
+  """
+  Server-classified risk. Allowing the class is necessary but not sufficient: an approval-gated tool still requires exact human approval.
+  """
+  riskClass: CrowdyStudioAgentRiskClass!
+  """Whether every call needs exact human approval regardless of policy."""
+  approvalRequired: Boolean!
+}
+
+"""
+The answering ck-api instance's Agentic Studio capability: the models it carries with their pinned prices, the implemented tool registry with risk classes, and the full mode and risk-class value sets a policy may draw from. This is deployed configuration, not stored policy — a platform policy naming anything absent here is accepted and then runs nothing.
+"""
+type CrowdyStudioAgentCatalog {
+  """
+  Whether CROWDY_STUDIO_AGENT_ENABLED is set on this instance. False means every list below is empty and no policy can make the agent run here.
+  """
+  instanceEnabled: Boolean!
+  """
+  Which process answered (CKS_RUNTIME_SERVER_ID or hostname), because this is a per-instance answer.
+  """
+  instanceId: String
+  """The answering instance's datacenter (CK_DATACENTER), or null."""
+  datacenterCode: String
+  """
+  Provider the instance would route to: 'openrouter', or 'fake' outside production.
+  """
+  provider: String!
+  """Platform policy contract version the instance enforces."""
+  platformPolicyVersion: String!
+  """Default model id, or null when the agent is disabled here."""
+  defaultModelId: String
+  """
+  Digest over the whole compiled-in tool registry. Two instances reporting different digests are running different tool sets.
+  """
+  registryDigest: String!
+  """Every mode value a policy allowlist may contain."""
+  modes: [CrowdyStudioAgentMode!]!
+  """Every risk-class value a policy allowlist may contain."""
+  riskClasses: [CrowdyStudioAgentRiskClass!]!
+  """
+  Models this instance carries, sorted by id. Empty when the agent is disabled here.
+  """
+  models: [CrowdyStudioAgentCatalogModel!]!
+  """
+  Implemented tools, sorted by logical name. Present whether or not the agent is enabled, because the registry is compiled in.
+  """
+  tools: [CrowdyStudioAgentCatalogTool!]!
 }
 
 """
@@ -3294,6 +3388,10 @@ type Query {
   Current server version and the minimum client version the server accepts. No authentication required. Compare your client build against minimumClientVersion before connecting and prompt an update if it is too old.
   """
   versionInfo: ServerVersionInfo!
+  """
+  Operator only (is_operator or is_super_admin). What the ANSWERING ck-api instance carries for Agentic Studio: allowlisted models with their pinned micro-USD prices, the implemented crowdy.agent-tools/1 tools with risk classes, and the complete mode and risk-class value sets a policy may draw from. It is deployed configuration read from that one process, not stored policy and not a fleet-wide claim, so it reports which instance and datacenter answered. A platform policy may name a model or tool absent here: the write succeeds, the value is stored and echoed back, and no run can use it.
+  """
+  cpCrowdyStudioAgentCatalog: CrowdyStudioAgentCatalog! @requiresPermission(scope: "operator", permission: "is_operator")
 }
 
 """
@@ -3550,7 +3648,7 @@ type Mutation {
   """
   logout: Boolean!
   """
-  Ends every active session for the authenticated user (deletes all their game_tokens and records revocations). Requires a valid session token.
+  Ends every active session for the authenticated user: deletes every session token and every app-scoped gameplay token derived from one, so the user is signed out of the platform and of every game they had entered. Takes effect immediately — a deleted token stops authenticating on its next request rather than at its next refresh. Requires a valid session token.
   """
   logoutAllDevices: Boolean!
   """
@@ -3643,7 +3741,7 @@ type Mutation {
     idempotencyKey: String
   ): Boolean!
   """
-  Create a new app within an organization. Requires the 'manage_apps' permission on the target org (input.orgId); super admins bypass. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting baseline runtime permissions and notifies the game API. Elevated capabilities such as use_studio_agent are NOT granted by default and require an explicit tier grant. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=PUBLIC and status=DRAFT unless overridden in the input.
+  Create a new app within an organization. Requires the 'manage_apps' permission on the target org (input.orgId); super admins bypass. REQUIRES A DATACENTER (input.datacenter): the app is distributed on its app_id, so all of its data lives in one datacenter, and the id is chosen at creation so that it does. Query placeableDatacenters first for the codes this deployment accepts. Creation FAILS — rather than producing an unroutable app — if the named datacenter is unknown to this deployment or holds no shards. SIDE EFFECTS: also provisions a free, open-by-default "Default" access tier granting baseline runtime permissions and notifies the game API. Elevated capabilities such as use_studio_agent are NOT granted by default and require an explicit tier grant. Slug must be unique within the org (a duplicate slug fails). New apps default to visibility=PUBLIC and status=DRAFT unless overridden in the input.
   """
   createApp(
     """Details for the app to create."""
@@ -3724,7 +3822,7 @@ type Mutation {
   """
   authorizeApp(input: AuthorizeAppInput!): AppAuthorizationGrant!
   """
-  Revoke a previously-granted app authorization and immediately revoke the user's live app tokens for it. Requires a SESSION token.
+  Withdraw consent for an app and immediately invalidate every app-scoped token the authenticated user holds for it, whichever session minted them — the tokens stop authenticating on their next request, not at their next refresh. Atomic: if the tokens cannot be invalidated, consent is left in place and this returns an error, so a successful response is the only state in which access has actually been withdrawn. Does NOT sign the user out: their identity session and their tokens for other apps are untouched. Returns false when there was nothing to revoke (no active grant and no live tokens), which makes a repeat call safe. Requires a SESSION token.
   """
   revokeAppAuthorization(
     """
@@ -4331,6 +4429,10 @@ input CreateAppInput {
   URL-safe slug (1-128 chars, lowercase letters, numbers and dashes only). Must be unique within the org.
   """
   slug: String!
+  """
+  Datacenter the app will live in, e.g. 'or' or 'va'. Query placeableDatacenters for the accepted codes and whether each can currently hold an app. REQUIRED and permanent: an app is distributed on app_id, so all of its data lives on one node in one datacenter and that is fixed when the id is minted. Creation FAILS if the datacenter is unknown to this deployment or holds no capacity, rather than creating an app that cannot be routed. There is no default — the instance answering this call may be in a different datacenter from the one you want. Moving an app afterwards is an operator action.
+  """
+  datacenter: String!
   """Optional short plain-text description for listings."""
   description: String
   """Optional initial visibility. Defaults to PUBLIC when omitted."""

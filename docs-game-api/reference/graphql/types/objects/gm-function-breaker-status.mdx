@@ -1,0 +1,53 @@
+---
+id: gm-function-breaker-status
+title: GmFunctionBreakerStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The player-invoke breaker's mode and thresholds on the answering instance, with this app's circuits. The mode decides whether any of it refuses anything.
+
+
+```graphql
+type GmFunctionBreakerStatus {
+  mode: String!
+  failureThreshold: Int!
+  cooldownMs: Int!
+  circuits: [GmFunctionCircuit!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionBreakerStatus.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#mode\} 
+'shadow' (default: the state machine runs in full, every call is admitted, and shadowRefusals counts what enforcement would have refused), 'enforce' (the same state machine, refusing), or 'off' (no state, no measurement). Read from GM&#x005F;FUNCTION&#x005F;BREAKER&#x005F;MODE on the instance that answered.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionBreakerStatus.<b>failureThreshold</b></code>](#failure-threshold)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#failure-threshold\} 
+Consecutive failed player invokes of one function before its circuit opens.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionBreakerStatus.<b>cooldownMs</b></code>](#cooldown-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#cooldown-ms\} 
+How long an open circuit waits before admitting one probe, in milliseconds.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionBreakerStatus.<b>circuits</b></code>](#circuits)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmFunctionCircuit!]!</b></code>](/reference/graphql/types/objects/gm-function-circuit.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#circuits\} 
+Circuits for this app, non-closed first, then by consecutive failures. Only functions that have failed at least once appear.
+
+
+
+
+### Returned By
+
+[`gameModelFunctionCircuits`](/reference/graphql/operations/queries/game-model-function-circuits.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

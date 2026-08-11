@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Ends every active session for the authenticated user (deletes all their game&#x005F;tokens and records revocations). Requires a valid session token.
+Ends every active session for the authenticated user: deletes every session token and every app-scoped gameplay token derived from one, so the user is signed out of the platform and of every game they had entered. Takes effect immediately — a deleted token stops authenticating on its next request rather than at its next refresh. Requires a valid session token.
 
 
 ```graphql

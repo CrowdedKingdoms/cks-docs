@@ -1,0 +1,54 @@
+---
+id: set-app-compute-budget
+title: setAppComputeBudget
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set an app's compute allowance in units per minute, spanning the model expression engine and both WASM tiers. One unit is one millisecond of measured execution time. An over-ceiling value is REFUSED naming the ceiling (6000000 units per minute) rather than accepted and clamped, so the value reported back is always the value in force. Set enforce to true to refuse invokes when the allowance is exceeded; leave it false to record the decision and admit, which is what produces the measurements a threshold should be chosen from. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+setAppComputeBudget(
+  appId: BigInt!
+  unitsPerMinute: Int!
+  enforce: Boolean = false
+  note: String
+): AppComputeBudgetInfo!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setAppComputeBudget.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) to set an allowance for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setAppComputeBudget.<b>unitsPerMinute</b></code>](#units-per-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#units-per-minute\} 
+Compute units per minute; a positive integer no greater than 6000000.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setAppComputeBudget.<b>enforce</b></code>](#enforce)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#enforce\} 
+True to refuse model invokes once the allowance is exceeded. False (the default) records the decision and admits.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setAppComputeBudget.<b>note</b></code>](#note)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#note\} 
+Why this number was chosen. Recorded so the next operator can change it safely.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppComputeBudgetInfo</b></code>](/reference/graphql/types/objects/app-compute-budget-info.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An app's compute allowance in units per minute, spanning the expression engine and both WASM tiers. Absent when no allowance has been set for the app, in which case the app is measured against the platform reference allowance and is never refused.
