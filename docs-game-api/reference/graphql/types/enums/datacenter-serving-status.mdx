@@ -1,0 +1,48 @@
+---
+id: datacenter-serving-status
+title: DatacenterServingStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Whether a datacenter currently has a ck-api instance able to serve clients. Three-valued on purpose: "nothing is serving there" and "the liveness signal could not be read" look identical through a boolean and call for opposite reactions.
+
+
+```graphql
+enum DatacenterServingStatus {
+  SERVING
+  NOT_SERVING
+  UNKNOWN
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>DatacenterServingStatus.<b>SERVING</b></code>](#serving) \{#serving\} 
+At least one instance in that datacenter has heartbeated within the freshness window and is not draining.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DatacenterServingStatus.<b>NOT&#x005F;SERVING</b></code>](#not-serving) \{#not-serving\} 
+The signal was readable and reported no instance able to take a client there. An app placed here would be created and stored correctly, and its players would be told the app is temporarily offline until an instance returns.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DatacenterServingStatus.<b>UNKNOWN</b></code>](#unknown) \{#unknown\} 
+The liveness signal itself could not be read or trusted. Must NOT be presented as an outage: a fleet-wide heartbeat failure once made every datacenter look dead while all of them were fine, and healthy players were told their app was offline.
+
+
+
+
+### Member Of
+
+[`PlaceableDatacenter`](/reference/graphql/types/objects/placeable-datacenter.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

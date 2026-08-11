@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-One recorded compute execution (init / tick batch / event / invoke): timing, fuel, host-call counts, outcome. Written by the runtime (Phase 2); empty until modules execute.
+One recorded compute execution: timing, fuel, host-call counts, outcome. NOT a sample of all executions — a successful tick is deliberately not recorded here, because ticks are high-frequency and aggregate into per-minute usage instead, so this table holds every failure plus demand-driven runs plus the reload that follows a terminated worker. Counting rows here to get a success rate gives roughly 50% against a true 0.1-1.6%; computeModuleStats and computeAppDiagnostics read the per-minute rollups for that. Use this for what happened on an individual run and for flow correlation.
 
 
 ```graphql

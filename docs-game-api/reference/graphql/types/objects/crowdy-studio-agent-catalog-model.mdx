@@ -1,0 +1,58 @@
+---
+id: crowdy-studio-agent-catalog-model
+title: CrowdyStudioAgentCatalogModel
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One model the answering ck-api instance carries, with the pinned price it will meter against.
+
+
+```graphql
+type CrowdyStudioAgentCatalogModel {
+  modelId: String!
+  isDefault: Boolean!
+  selectable: Boolean!
+  inputMicrosPerMillion: Int!
+  outputMicrosPerMillion: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalogModel.<b>modelId</b></code>](#model-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#model-id\} 
+Exact provider model id, as a policy would name it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalogModel.<b>isDefault</b></code>](#is-default)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-default\} 
+Whether this is the instance's default model (CROWDY&#x005F;STUDIO&#x005F;AGENT&#x005F;DEFAULT&#x005F;MODEL).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalogModel.<b>selectable</b></code>](#selectable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#selectable\} 
+Whether the instance would accept a run on this model: it is in the instance allowlist and has a positive pinned price in both directions. A zero price is only reachable with the non-production fake provider, which cannot reserve cost.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalogModel.<b>inputMicrosPerMillion</b></code>](#input-micros-per-million)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#input-micros-per-million\} 
+Pinned input price in micro-USD per million tokens.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalogModel.<b>outputMicrosPerMillion</b></code>](#output-micros-per-million)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#output-micros-per-million\} 
+Pinned output price in micro-USD per million tokens.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioAgentCatalog`](/reference/graphql/types/objects/crowdy-studio-agent-catalog.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

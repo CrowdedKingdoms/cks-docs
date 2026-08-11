@@ -90,7 +90,7 @@ What the module exceeded and what to change, when it has been stopped for a reso
 
 
 #### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>lastError</b></code>](#last-error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-error\} 
-Last error recorded for this module.
+The single most recent error string, overwritten by each new failure and CLEARED by the next success — so a module that fails intermittently reports null between failures. Do not read this as a health signal: use userCodeFaultSummary, which keeps every fault with its kind and blame. Kept for the "what went wrong just now" case it is genuinely good at.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 

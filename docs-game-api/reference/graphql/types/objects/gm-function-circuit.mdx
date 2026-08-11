@@ -1,0 +1,78 @@
+---
+id: gm-function-circuit
+title: GmFunctionCircuit
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One model function's circuit on the player-invoke path. Rows are created lazily on a function's first failure, so a function absent from this list has never failed.
+
+
+```graphql
+type GmFunctionCircuit {
+  appId: BigInt!
+  functionName: String!
+  circuitState: String!
+  consecutiveFailures: Int!
+  cooldownUntil: DateTime
+  openedAt: DateTime
+  totalOpens: BigInt!
+  shadowRefusals: BigInt!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionCircuit.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App the function belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionCircuit.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+Function name as a player invokes it, matching gm&#x005F;function&#x005F;defs.name. A renamed function starts with a clean circuit.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionCircuit.<b>circuitState</b></code>](#circuit-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#circuit-state\} 
+'closed', 'open', or 'half&#x005F;open'. In shadow mode an open circuit refuses nothing: read it as 'this function has been failing', not 'players are being blocked'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionCircuit.<b>consecutiveFailures</b></code>](#consecutive-failures)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#consecutive-failures\} 
+Failed player invokes with no success in between. One success resets it to zero, which is what makes the threshold mean a broken function rather than a busy one.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionCircuit.<b>cooldownUntil</b></code>](#cooldown-until)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cooldown-until\} 
+When an open circuit next admits one probe, and the window that probe holds. Null when closed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionCircuit.<b>openedAt</b></code>](#opened-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#opened-at\} 
+When the circuit last opened. Null if it never has.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionCircuit.<b>totalOpens</b></code>](#total-opens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total-opens\} 
+Lifetime openings. A function that opens once a week and one that opens every minute are different problems, and circuitState cannot tell them apart.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionCircuit.<b>shadowRefusals</b></code>](#shadow-refusals)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#shadow-refusals\} 
+Player invokes admitted in shadow mode that enforcement WOULD have refused. This is the measurement: it answers what switching enforcement on would have cost players. Never incremented in enforce mode, where those calls are refused instead.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmFunctionCircuit.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When the circuit row last changed.
+
+
+
+
+### Member Of
+
+[`GmFunctionBreakerStatus`](/reference/graphql/types/objects/gm-function-breaker-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -133,6 +133,7 @@
       "checkoutsConnection",
       "commerceRiskQueue",
       "cpComputePlatformCeilings",
+      "cpCrowdyStudioAgentCatalog",
       "cpCrowdyStudioAgentPlatformPolicy",
       "crowdyStudioAgentEffectivePolicy",
       "crowdyStudioAgentPolicy",

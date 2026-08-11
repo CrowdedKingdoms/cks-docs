@@ -1,0 +1,39 @@
+---
+id: app-compute-budget
+title: appComputeBudget
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An app's stored compute allowance, or null when none has been set — in which case the app is measured against the platform reference allowance and is never refused. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+appComputeBudget(
+  appId: BigInt!
+): AppComputeBudgetInfo
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appComputeBudget.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose allowance to read.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppComputeBudgetInfo</b></code>](/reference/graphql/types/objects/app-compute-budget-info.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An app's compute allowance in units per minute, spanning the expression engine and both WASM tiers. Absent when no allowance has been set for the app, in which case the app is measured against the platform reference allowance and is never refused.

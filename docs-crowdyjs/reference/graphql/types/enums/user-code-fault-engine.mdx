@@ -1,0 +1,48 @@
+---
+id: user-code-fault-engine
+title: UserCodeFaultEngine
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Which engine ran the code that faulted: the model expression engine, studio WASM compute, or player WASM compute.
+
+
+```graphql
+enum UserCodeFaultEngine {
+  EXPRESSION
+  STUDIO_WASM
+  PLAYER_WASM
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultEngine.<b>EXPRESSION</b></code>](#expression) \{#expression\} 
+The model expression engine: declarative JSON ASTs bounded by gas and a wall-clock deadline.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultEngine.<b>STUDIO&#x005F;WASM</b></code>](#studio-wasm) \{#studio-wasm\} 
+Studio WASM compute: Rust compiled by the pinned toolchain and run in a worker-thread sandbox.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultEngine.<b>PLAYER&#x005F;WASM</b></code>](#player-wasm) \{#player-wasm\} 
+Player WASM compute: the same compiler and sandbox at a lower trust tier, owned by a player.
+
+
+
+
+### Member Of
+
+[`UserCodeFaultRecord`](/reference/graphql/types/objects/user-code-fault-record.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`userCodeFaults`](/reference/graphql/operations/queries/user-code-faults.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`UserCodeFaultSummaryEntry`](/reference/graphql/types/objects/user-code-fault-summary-entry.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

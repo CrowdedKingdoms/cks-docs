@@ -23,6 +23,7 @@ input CreateAppInput {
   orgId: BigInt!
   name: String!
   slug: String!
+  datacenter: String!
   description: String
   visibility: AppVisibility
   status: AppStatus
@@ -43,6 +44,10 @@ Display name of the app (1-256 characters).
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
 URL-safe slug (1-128 chars, lowercase letters, numbers and dashes only). Must be unique within the org.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>datacenter</b></code>](#datacenter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#datacenter\} 
+Datacenter the app will live in, e.g. 'or' or 'va'. Query placeableDatacenters for the accepted codes and whether each can currently hold an app. REQUIRED and permanent: an app is distributed on app&#x005F;id, so all of its data lives on one node in one datacenter and that is fixed when the id is minted. Creation FAILS if the datacenter is unknown to this deployment or holds no capacity, rather than creating an app that cannot be routed. There is no default — the instance answering this call may be in a different datacenter from the one you want. Moving an app afterwards is an operator action.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateAppInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 

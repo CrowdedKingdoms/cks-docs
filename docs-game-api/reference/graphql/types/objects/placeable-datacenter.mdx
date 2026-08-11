@@ -1,0 +1,63 @@
+---
+id: placeable-datacenter
+title: PlaceableDatacenter
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One datacenter an app can be created in. The `code` is exactly what createApp takes as input.datacenter.
+
+
+```graphql
+type PlaceableDatacenter {
+  code: String!
+  gameApiUrl: String
+  gameApiWsUrl: String
+  placeable: Boolean!
+  appShardCount: Int!
+  serving: DatacenterServingStatus!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenter.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code\} 
+Datacenter code, e.g. 'or' or 'va'. Pass this verbatim as createApp's input.datacenter; it is compared lowercase.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenter.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-url\} 
+HTTPS GraphQL origin clients of an app in this datacenter should use. Null only where no topology has been pushed, which on a Citus deployment means the datacenter cannot yet be reached and on a single-node one means there is nothing to route. Informational for a picker: createApp does not need it, and appDiscovery is what a client reads per app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenter.<b>gameApiWsUrl</b></code>](#game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-ws-url\} 
+The wss:// form of gameApiUrl. Null under the same conditions.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenter.<b>placeable</b></code>](#placeable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#placeable\} 
+Whether createApp will accept this datacenter right now. False means it holds no shards of the app colocation group, so no app id can hash into it and creation would fail after exhausting its candidates. Do not offer a false entry as a choice — show it as unavailable, because dropping it hides a half-built datacenter from the only person who would notice.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenter.<b>appShardCount</b></code>](#app-shard-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-shard-count\} 
+How many shards of the app colocation group this datacenter currently holds. This is the placement odds: createApp mints candidate app ids until one hashes into the requested datacenter, so a datacenter holding half the shards is satisfied in about two attempts. Zero means unplaceable. Always 0 on a deployment that distributes nothing, where the number does not exist and `placeable` is true regardless — read `placeable`, not this, to decide whether a choice is offerable.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlaceableDatacenter.<b>serving</b></code>](#serving)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DatacenterServingStatus!</b></code>](/reference/graphql/types/enums/datacenter-serving-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#serving\} 
+Whether any ck-api instance in this datacenter is currently serving clients. NOT part of whether an app can be PLACED here: placement is about where the data lands and survives a datacenter being down, while this is about whether players could connect today. A datacenter that is placeable but NOT&#x005F;SERVING will hold the app fine and answer its clients with APP&#x005F;UNAVAILABLE until an instance comes back, so it is worth warning about and wrong to forbid. UNKNOWN means the liveness signal itself could not be read and must not be shown as an outage — a fleet-wide heartbeat failure once made every datacenter look dead while all of them were fine.
+
+
+
+
+### Member Of
+
+[`PlaceableDatacenters`](/reference/graphql/types/objects/placeable-datacenters.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
