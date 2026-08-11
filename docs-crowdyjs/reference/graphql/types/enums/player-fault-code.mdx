@@ -1,0 +1,108 @@
+---
+id: player-fault-code
+title: PlayerFaultCode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What a player-facing surface may be told about a failure that came from code the platform did not write. Deliberately coarser than the internal fault taxonomy: it says what a player can act on and never names an engine, a module, a function or a limit. The full detail is in the developer surfaces (gameModelEvents, computeModuleRuns, userCodeFaults).
+
+
+```graphql
+enum PlayerFaultCode {
+  USER_CODE_ERROR
+  USER_CODE_TOO_SLOW
+  USER_CODE_LIMIT_EXCEEDED
+  PLATFORM_BUSY
+  PLATFORM_ERROR
+  BUDGET_EXCEEDED
+  RATE_LIMITED
+  QUOTA_EXHAUSTED
+  TEMPORARILY_DISABLED
+  INVALID_REQUEST
+  NOT_ALLOWED
+  NOT_FOUND
+  UNAUTHENTICATED
+  WRONG_DATACENTER
+  APP_UNAVAILABLE
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>USER&#x005F;CODE&#x005F;ERROR</b></code>](#user-code-error) \{#user-code-error\} 
+The app's own code failed while running.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>USER&#x005F;CODE&#x005F;TOO&#x005F;SLOW</b></code>](#user-code-too-slow) \{#user-code-too-slow\} 
+The app's own code ran past the time it is allowed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>USER&#x005F;CODE&#x005F;LIMIT&#x005F;EXCEEDED</b></code>](#user-code-limit-exceeded) \{#user-code-limit-exceeded\} 
+The app's own code exceeded a per-call resource ceiling (gas, fuel, memory, depth, database operations, response size).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>PLATFORM&#x005F;BUSY</b></code>](#platform-busy) \{#platform-busy\} 
+The platform could not start the work in time. The app's code never ran. Retrying is correct.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>PLATFORM&#x005F;ERROR</b></code>](#platform-error) \{#platform-error\} 
+A platform failure. Retrying is reasonable.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>BUDGET&#x005F;EXCEEDED</b></code>](#budget-exceeded) \{#budget-exceeded\} 
+A per-minute allowance for this app is spent; it returns on the next window.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>RATE&#x005F;LIMITED</b></code>](#rate-limited) \{#rate-limited\} 
+This caller is asking too often. `retryAfterMs` is carried in error extensions when it is known.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>QUOTA&#x005F;EXHAUSTED</b></code>](#quota-exhausted) \{#quota-exhausted\} 
+A metered allowance is spent and does not return on its own.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>TEMPORARILY&#x005F;DISABLED</b></code>](#temporarily-disabled) \{#temporarily-disabled\} 
+A breaker is open or an operator switch is off for this subject.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>INVALID&#x005F;REQUEST</b></code>](#invalid-request) \{#invalid-request\} 
+The arguments did not satisfy the function's contract.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>NOT&#x005F;ALLOWED</b></code>](#not-allowed) \{#not-allowed\} 
+An invoke policy or permission refused this caller.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>NOT&#x005F;FOUND</b></code>](#not-found) \{#not-found\} 
+The named function, module or export does not exist for this app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>UNAUTHENTICATED</b></code>](#unauthenticated) \{#unauthenticated\} 
+No valid credential was presented.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>WRONG&#x005F;DATACENTER</b></code>](#wrong-datacenter) \{#wrong-datacenter\} 
+This app is served from another datacenter. The error extensions carry `gameApiUrl`; move there and retry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>APP&#x005F;UNAVAILABLE</b></code>](#app-unavailable) \{#app-unavailable\} 
+The app's datacenter has no instance able to serve clients. No endpoint is named, on purpose — there is nowhere to send the client.
+
+
+
+
+### Member Of
+
+[`PlayerFaultInfo`](/reference/graphql/types/objects/player-fault-info.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

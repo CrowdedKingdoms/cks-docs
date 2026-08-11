@@ -1,0 +1,48 @@
+---
+id: player-fault-info
+title: PlayerFaultInfo
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Why an invocation failed, in the only vocabulary a player may be shown: a stable code, whose problem it is, and whether repeating the identical call could succeed. It carries no message, no engine name and no internal detail by design — blame attribution is the platform's job and presentation is the game's.
+
+
+```graphql
+type PlayerFaultInfo {
+  code: PlayerFaultCode!
+  blame: UserCodeFaultBlame!
+  retryable: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultInfo.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerFaultCode!</b></code>](/reference/graphql/types/enums/player-fault-code.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#code\} 
+A stable, enumerated reason. Branch on this rather than on any text.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultInfo.<b>blame</b></code>](#blame)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UserCodeFaultBlame!</b></code>](/reference/graphql/types/enums/user-code-fault-blame.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#blame\} 
+Whose problem this is. The one question a game cannot answer for itself.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultInfo.<b>retryable</b></code>](#retryable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#retryable\} 
+True when repeating the identical call could succeed with nothing else changing. About the caller's options, not about how long a fix takes: an open breaker is retryable because it closes itself, while a spent plan allowance is not.
+
+
+
+
+### Member Of
+
+[`GmInvokeResult`](/reference/graphql/types/objects/gm-invoke-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

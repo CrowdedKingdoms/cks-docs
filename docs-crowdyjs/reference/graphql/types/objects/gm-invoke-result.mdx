@@ -25,7 +25,8 @@ type GmInvokeResult {
   success: Boolean!
   returnValueJson: String
   mutationsApplied: [GmMutationApplied!]!
-  errorMessage: String
+  fault: PlayerFaultInfo
+  errorMessage: String @deprecated
 }
 ```
 
@@ -52,8 +53,18 @@ JSON-encoded return value.
 The property writes that were applied (empty if none / on failure).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>GmInvokeResult.<b>errorMessage</b></code>](#error-message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#error-message\} 
-Error message when success is false (e.g. authority denied or evaluation error).
+#### [<code style={{ fontWeight: 'normal' }}>GmInvokeResult.<b>fault</b></code>](#fault)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerFaultInfo</b></code>](/reference/graphql/types/objects/player-fault-info.mdx) <Badge class="badge badge--secondary " text="object"/> \{#fault\} 
+Why the invocation failed, when it did: a stable code, whose problem it is, and whether retrying could help. Null when success is true. This is the field to branch on — it is the platform's blame attribution, and rendering is the game's decision.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmInvokeResult.<b>errorMessage</b></code>](#error-message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#error-message\} 
+:::warning[DEPRECATED]
+
+Read `fault` instead and choose your own wording. This field no longer carries the engine's error text and will be removed once no client depends on it.
+
+:::
+
+A platform-authored sentence matching `fault`, safe to show a player. It carries no engine detail on purpose (decision D4): the failing expression, the timeout and the gas figures are in gameModelEvents and the fault record, where a developer reads them and a player does not.
 
 
 
