@@ -1,0 +1,48 @@
+---
+id: user-code-fault-blame
+title: UserCodeFaultBlame
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Whose problem a failure is. The platform attributes blame; the game decides what to render. PLATFORM means ours and a retry is reasonable; AUTHOR means the app's own code and the same call will fail the same way; BUDGET means an allowance is spent and nothing is broken.
+
+
+```graphql
+enum UserCodeFaultBlame {
+  PLATFORM
+  AUTHOR
+  BUDGET
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultBlame.<b>PLATFORM</b></code>](#platform) \{#platform\} 
+Ours. The app's code is not at fault — it may not have run at all.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultBlame.<b>AUTHOR</b></code>](#author) \{#author\} 
+The app's own code or configuration. Repeating the call gets the same answer.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultBlame.<b>BUDGET</b></code>](#budget) \{#budget\} 
+A metered allowance for this app or caller is spent. Nothing is broken.
+
+
+
+
+### Member Of
+
+[`PlayerFaultInfo`](/reference/graphql/types/objects/player-fault-info.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

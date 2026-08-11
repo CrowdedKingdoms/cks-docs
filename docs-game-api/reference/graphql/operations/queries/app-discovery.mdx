@@ -1,0 +1,39 @@
+---
+id: app-discovery
+title: appDiscovery
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Resolve where one or more apps are placed, WITHOUT authenticating. Call this before login and connect to the returned gameApiUrl, so the session and app token are both written in the app's own datacenter instead of across a WAN. Pass every app a launcher might switch to and cache the result; placement changes rarely and only an operator can change it. An app with no placement comes back with nulls, which means 'keep using the shared origin'.
+
+
+```graphql
+appDiscovery(
+  appIds: [BigInt!]!
+): [AppDiscovery!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appDiscovery.<b>appIds</b></code>](#app-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-ids\} 
+The apps to resolve, as BigInt decimal strings. Unknown or unplaced ids are returned with null endpoints rather than omitted, so a caller can tell "not placed" from "not asked".
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppDiscovery</b></code>](/reference/graphql/types/objects/app-discovery.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Where one app lives, and therefore which origin a client should talk to before it does anything else. Public: this is the same information the published DNS names already expose.

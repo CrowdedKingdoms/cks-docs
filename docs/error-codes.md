@@ -62,6 +62,82 @@ payload under the same key returns `IDEMPOTENCY_CONFLICT`. Keys expire after 24h
 nullable field may resolve to `null` with a corresponding `errors` entry while the rest
 of `data` is populated. Always inspect `errors` even when `data` is present.
 
+### When code you wrote fails: `blame`, `retryable` and the fault codes
+
+Three entry points run code the platform did not write — `gameModelInvoke`,
+`computeInvoke` and `playerComputeInvoke`. A failure on one of them is answered with a
+fault: a stable `code`, a **`blame`**, and a **`retryable`** flag. Nothing else comes
+back. The engine's own error text, the sandbox's fault kind, the failing expression and
+any internal identifiers stay on the server, where the app's developer reads them in
+`gameModelEvents` and `computeModuleRuns`.
+
+That is deliberate, and the reason is worth stating: the caller of these operations is
+usually a **player**, not the developer. A player shown `Evaluation timed out` learns
+nothing they can act on, and the game that displayed it has put the platform's words on
+its own screen. **Blame attribution is the platform's job; presentation is yours.**
+
+`blame` answers the one question a client cannot answer for itself:
+
+| `extensions.blame` | Meaning | What a game should usually do |
+|---|---|---|
+| `PLATFORM` | Ours. The app's code may not have run at all. | Retry when `retryable`; otherwise say something went wrong on our side. |
+| `AUTHOR` | The app's own code or configuration. Repeating the call gets the same answer. | Do not retry. Show your own wording for "that did not work". |
+| `BUDGET` | A metered allowance for the app or the caller is spent. Nothing is broken. | Back off. `retryable` says whether the allowance returns on its own. |
+
+`retryable` is about the **caller's** options, not about how long a fix takes: an open
+breaker is retryable because it closes itself after a cooldown, while a spent plan
+allowance is not, even though neither is a bug.
+
+| `extensions.code` | `blame` | Meaning |
+|---|---|---|
+| `USER_CODE_ERROR` | `AUTHOR` | The app's own code failed while running. |
+| `USER_CODE_TOO_SLOW` | `AUTHOR` | It ran past the time it is allowed. |
+| `USER_CODE_LIMIT_EXCEEDED` | `AUTHOR` | It exceeded a per-call ceiling (gas, fuel, memory, depth, database operations, response size). |
+| `INVALID_REQUEST` | `AUTHOR` | The arguments did not satisfy the function's declared contract. |
+| `NOT_ALLOWED` | `AUTHOR` | An invoke policy or permission refused this caller. |
+| `NOT_FOUND` | `AUTHOR` | The named function, module or export does not exist for this app. |
+| `PLATFORM_BUSY` | `PLATFORM` | We could not start the work in time. The app's code never ran. Retry. |
+| `PLATFORM_ERROR` | `PLATFORM` | A platform failure. Retrying is reasonable. |
+| `TEMPORARILY_DISABLED` | either | A breaker is open, or an operator switch is off. `blame` distinguishes them. |
+| `BUDGET_EXCEEDED` | `BUDGET` | A per-minute allowance is spent; it returns on the next window. |
+| `RATE_LIMITED` | `BUDGET` | This caller is asking too often. `extensions.retryAfterMs` when known. |
+| `QUOTA_EXHAUSTED` | `BUDGET` | A metered allowance is spent and does not return on its own. |
+| `WRONG_DATACENTER` | `PLATFORM` | This app is served elsewhere. `extensions.gameApiUrl` names where; move and retry. |
+| `APP_UNAVAILABLE` | `PLATFORM` | The app's datacenter has no instance able to serve. **No endpoint is named, on purpose** — do not fall back to a cached one, it is in the datacenter that is down. |
+
+**`gameModelInvoke` reports in band, not as an error.** An authority denial or an
+evaluation failure is a gameplay verdict, so the mutation succeeds and the result carries
+`success: false` with a `fault { code blame retryable }` object. It also carries the
+event id and any writes that did apply, which is why it is not thrown. `computeInvoke` and
+`playerComputeInvoke` have no result to return on failure and therefore throw, with the
+same three values in `extensions`.
+
+In CrowdyJS, `playerFaultOf(errorOrResult)` reads both carriers and returns one
+`{ code, blame, retryable }`, and a thrown fault arrives as `CrowdyUserCodeFaultError`
+(a subclass of `CrowdyGraphQLError`, so existing handlers keep working).
+
+```json
+{
+  "errors": [
+    {
+      "message": "The service is busy. Please try again in a moment.",
+      "path": ["computeInvoke"],
+      "extensions": {
+        "code": "PLATFORM_BUSY",
+        "blame": "PLATFORM",
+        "retryable": true,
+        "remediation": "Ours, not the app's: the work could not be STARTED in time."
+      }
+    }
+  ],
+  "data": null
+}
+```
+
+`GmInvokeResult.errorMessage` still exists and is **deprecated**. It now carries a
+platform-authored sentence matching `fault` rather than the engine's text, so it is safe
+to show a player as-is — but prefer `fault` and your own wording.
+
 ### Agentic Crowdy Studio stable errors
 
 Agent failures use stable `AGENT_*` codes both at the GraphQL boundary and

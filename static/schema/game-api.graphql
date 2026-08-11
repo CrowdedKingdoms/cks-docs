@@ -5449,6 +5449,86 @@ type GmTimer {
 }
 
 """
+Why an invocation failed, in the only vocabulary a player may be shown: a stable code, whose problem it is, and whether repeating the identical call could succeed. It carries no message, no engine name and no internal detail by design — blame attribution is the platform's job and presentation is the game's.
+"""
+type PlayerFaultInfo {
+  """A stable, enumerated reason. Branch on this rather than on any text."""
+  code: PlayerFaultCode!
+  """
+  Whose problem this is. The one question a game cannot answer for itself.
+  """
+  blame: UserCodeFaultBlame!
+  """
+  True when repeating the identical call could succeed with nothing else changing. About the caller's options, not about how long a fix takes: an open breaker is retryable because it closes itself, while a spent plan allowance is not.
+  """
+  retryable: Boolean!
+}
+
+"""
+What a player-facing surface may be told about a failure that came from code the platform did not write. Deliberately coarser than the internal fault taxonomy: it says what a player can act on and never names an engine, a module, a function or a limit. The full detail is in the developer surfaces (gameModelEvents, computeModuleRuns, userCodeFaults).
+"""
+enum PlayerFaultCode {
+  """The app's own code failed while running."""
+  USER_CODE_ERROR
+  """The app's own code ran past the time it is allowed."""
+  USER_CODE_TOO_SLOW
+  """
+  The app's own code exceeded a per-call resource ceiling (gas, fuel, memory, depth, database operations, response size).
+  """
+  USER_CODE_LIMIT_EXCEEDED
+  """
+  The platform could not start the work in time. The app's code never ran. Retrying is correct.
+  """
+  PLATFORM_BUSY
+  """A platform failure. Retrying is reasonable."""
+  PLATFORM_ERROR
+  """
+  A per-minute allowance for this app is spent; it returns on the next window.
+  """
+  BUDGET_EXCEEDED
+  """
+  This caller is asking too often. `retryAfterMs` is carried in error extensions when it is known.
+  """
+  RATE_LIMITED
+  """A metered allowance is spent and does not return on its own."""
+  QUOTA_EXHAUSTED
+  """A breaker is open or an operator switch is off for this subject."""
+  TEMPORARILY_DISABLED
+  """The arguments did not satisfy the function's contract."""
+  INVALID_REQUEST
+  """An invoke policy or permission refused this caller."""
+  NOT_ALLOWED
+  """The named function, module or export does not exist for this app."""
+  NOT_FOUND
+  """No valid credential was presented."""
+  UNAUTHENTICATED
+  """
+  This app is served from another datacenter. The error extensions carry `gameApiUrl`; move there and retry.
+  """
+  WRONG_DATACENTER
+  """
+  The app's datacenter has no instance able to serve clients. No endpoint is named, on purpose — there is nowhere to send the client.
+  """
+  APP_UNAVAILABLE
+}
+
+"""
+Whose problem a failure is. The platform attributes blame; the game decides what to render. PLATFORM means ours and a retry is reasonable; AUTHOR means the app's own code and the same call will fail the same way; BUDGET means an allowance is spent and nothing is broken.
+"""
+enum UserCodeFaultBlame {
+  """Ours. The app's code is not at fault — it may not have run at all."""
+  PLATFORM
+  """
+  The app's own code or configuration. Repeating the call gets the same answer.
+  """
+  AUTHOR
+  """
+  A metered allowance for this app or caller is spent. Nothing is broken.
+  """
+  BUDGET
+}
+
+"""
 A studio-defined container type: the schema for a kind of runtime entity (like a class).
 """
 type GmContainerType {
@@ -5783,9 +5863,13 @@ type GmInvokeResult {
   """The property writes that were applied (empty if none / on failure)."""
   mutationsApplied: [GmMutationApplied!]!
   """
-  Error message when success is false (e.g. authority denied or evaluation error).
+  Why the invocation failed, when it did: a stable code, whose problem it is, and whether retrying could help. Null when success is true. This is the field to branch on — it is the platform's blame attribution, and rendering is the game's decision.
   """
-  errorMessage: String
+  fault: PlayerFaultInfo
+  """
+  A platform-authored sentence matching `fault`, safe to show a player. It carries no engine detail on purpose (decision D4): the failing expression, the timeout and the gas figures are in gameModelEvents and the fault record, where a developer reads them and a player does not.
+  """
+  errorMessage: String @deprecated(reason: "Read `fault` instead and choose your own wording. This field no longer carries the engine's error text and will be removed once no client depends on it.")
 }
 
 """An audit-log entry recording one function invocation and its outcome."""

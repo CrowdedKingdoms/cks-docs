@@ -1,0 +1,53 @@
+---
+id: app-discovery
+title: AppDiscovery
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Where one app lives, and therefore which origin a client should talk to before it does anything else. Public: this is the same information the published DNS names already expose.
+
+
+```graphql
+type AppDiscovery {
+  appId: BigInt!
+  datacenterCode: String
+  gameApiUrl: String
+  gameApiWsUrl: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppDiscovery.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app this entry describes, echoed back so a batched result can be matched to its request.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppDiscovery.<b>datacenterCode</b></code>](#datacenter-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#datacenter-code\} 
+Datacenter code the app is placed in (for example `or`, `va`), or null if the app has no placement yet.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppDiscovery.<b>gameApiUrl</b></code>](#game-api-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-url\} 
+HTTPS GraphQL origin for this app's OWN datacenter. Move here BEFORE authenticating: logging in through the shared origin writes the session on whichever datacenter DNS happened to pick, and the app token then has to be minted across a WAN. Null when the app has no placement, in which case keep using the shared origin.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppDiscovery.<b>gameApiWsUrl</b></code>](#game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-ws-url\} 
+The wss:// form of gameApiUrl, for the subscription socket and the binary relay.
+
+
+
+
+### Returned By
+
+[`appDiscovery`](/reference/graphql/operations/queries/app-discovery.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -29,6 +29,8 @@ type ServerStatus {
   clients: Int!
   drainRequested: Boolean!
   cpuPeakPct: Float
+  cpuCount: Int
+  routerThreads: Int
   clientRecvMsgsPerSec: Float
   clientRecvBytesPerSec: Float
   clientSendMsgsPerSec: Float
@@ -71,7 +73,7 @@ Number of peer (server-to-server P2P) connections this server currently holds.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>clients</b></code>](#clients)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#clients\} 
-Number of game clients currently connected to this server. serverWithLeastClients uses this to balance load across the fleet.
+Number of game clients currently connected to this server. serverWithLeastClients balances on this DIVIDED BY routerThreads, not on the raw count, so that a server with four fan-out workers takes roughly four times the clients of a server with one.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>drainRequested</b></code>](#drain-requested)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#drain-requested\} 
@@ -80,6 +82,14 @@ True while the infra control plane is taking this server out of service (autosca
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>cpuPeakPct</b></code>](#cpu-peak-pct)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cpu-peak-pct\} 
 Peak CPU utilization percentage (0-100) observed in the last reporting window. Null until reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>cpuCount</b></code>](#cpu-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#cpu-count\} 
+CPU cores available to this server. Reported by the server itself; null on a build that predates capacity reporting. Informational — client balancing divides by routerThreads, not by cores.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>routerThreads</b></code>](#router-threads)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#router-threads\} 
+Independent fan-out workers (RouterWorkers) on this server, which is how much of it there is for the purpose of placing a client. serverWithLeastClients divides the client count by this value. Null on a build that predates capacity reporting, and treated as 1, which balances every server equally as before.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ServerStatus.<b>clientRecvMsgsPerSec</b></code>](#client-recv-msgs-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-recv-msgs-per-sec\} 
