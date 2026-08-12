@@ -117,6 +117,8 @@ only through a function's `mutations` list, never inside an expression.
 - Conditional: `if(self.hp > 0, self.hp - $dmg, 0)`
 - Builtins: `max min abs floor ceil round clamp pow sqrt len concat to_int
   to_float to_string rand rand_int not is_null coalesce`
+- List builtins (see [Lists](#lists)): `at set_at append remove_at index_of
+  array`
 - Permission/grid reads (see
   [Reading permissions from expressions](#reading-permissions-from-expressions)):
   `has_grid_permission has_chunk_permission grid_at grid_contains grid_min
@@ -125,6 +127,47 @@ only through a function's `mutations` list, never inside an expression.
 
 Within one invocation, a later mutation sees the values written by earlier
 mutations.
+
+**Argument counts are checked when you upload the function**, not when a player
+calls it, and the error names what the builtin takes. Two long-standing spellings
+are refused by this: `max` and `rand_int` take exactly two arguments, and `rand`
+takes none, so `max(self.hp)` and `rand(1)` are rejected at upload. They never
+worked at runtime either — only the moment you find out has changed. Stored
+functions are not re-checked, so an existing app keeps running until the next time
+it re-uploads a function that was already broken.
+
+### Lists
+
+Array properties have six builtins. All of them are pure: they return a new list
+and never modify the one you passed.
+
+| Builtin | Returns |
+| --- | --- |
+| `at(list, i)` | the item at index `i`; an error if `i` is out of range |
+| `set_at(list, i, v)` | the list with index `i` replaced by `v` |
+| `append(list, v)` | the list with `v` added at the end |
+| `remove_at(list, i)` | the list with index `i` removed; an error if out of range |
+| `index_of(list, v)` | the index of the first `v`, or **-1** if it is not there |
+| `array(v1, v2, …)` | a new list of the arguments; `array()` is the empty list |
+
+**A property that was never written reads as nothing, and every one of these
+treats that as the empty list.** So `append(self.members, $caller_user_id)` on a
+brand-new container stores a one-item list rather than failing, `index_of` on it
+returns -1, and `at` on it returns nothing. The one exception is `remove_at`,
+which is an out-of-range error, because removing index 0 of an empty list has no
+answer. A list that a function did not change is never written back as `[]`.
+
+`index_of` compares values exactly the way `==` does, so
+`index_of(l, x) >= 0` and a `==` test over the same values can never disagree.
+
+**There is a 1000-item cap per list, and it is enforced inside the builtins**
+rather than at the point of storage — `append` onto a 1000-item list is refused
+with an error naming the cap even when your expression was going to discard the
+result, because a bounded stored value does not bound the work of building an
+oversized one. `array(...)` and `set_at` enforce it identically. At the sizes a
+game actually uses (a camp's members, a squad, inventory slots) you will not come
+near it: an append onto a 990-item list costs about 2 ms end to end, most of that
+the database read.
 
 ## Authority: deciding who may invoke a function
 
@@ -394,6 +437,91 @@ mutation {
 If authority fails you get an authorization error. If the logic errors (e.g.
 arithmetic on a missing value) the transaction is rolled back, `success` is
 `false`, and the attempt is still recorded.
+
+## Concurrency: two players writing the same property
+
+A mutation reads the property's old value, evaluates your expression, and writes
+the result. When two invocations of that overlap, the naive outcome is that both
+compute from the same starting value and the second write silently replaces the
+first — both callers are told they succeeded and one of them is not there.
+
+**The engine prevents that, for every mutation, and you do not have to do
+anything to get it.** No version numbers, no retry loop, no locking of your own.
+There are two mechanisms and the difference between them is worth knowing, because
+it is the difference between *exactly-once* and *correct but serialised*.
+
+### The four shapes that are atomic
+
+These compile to a single database statement that recomputes from the row's own
+live value, so a caller that loses the race re-evaluates against what the winner
+actually committed. No lock is taken and nothing is retried.
+
+| What you write | Guarantee |
+| --- | --- |
+| `p = if(index_of(p, X) < 0, append(p, X), p)` | **exactly-once** — add to a set |
+| `p = if(index_of(p, X) >= 0, remove_at(p, index_of(p, X)), p)` | **idempotent** — remove one entry |
+| `p = append(p, X)` | lossless, but see below |
+| `p = p + N` / `p = p - N`, integers | lossless |
+
+Both orderings of each conditional work (`if(absent, add, p)` and
+`if(present, p, add)`), as do the equivalent spellings of the bound (`< 0`,
+`== -1`, `<= -1`; `>= 0`, `!= -1`, `> -1`). `X` must be an `int`, `string`, `bool`
+or `null` — which covers `$caller_user_id`, the case this exists for.
+
+```
+// enter: exactly-once, however many players arrive in the same instant
+self.members = if(index_of(self.members, $caller_user_id) < 0,
+                  append(self.members, $caller_user_id),
+                  self.members)
+
+// leave: removes one entry, and does nothing if they were not in it
+self.members = if(index_of(self.members, $caller_user_id) >= 0,
+                  remove_at(self.members, index_of(self.members, $caller_user_id)),
+                  self.members)
+```
+
+Written that way, a player who sends enter three times because their connection
+flapped is in the camp once, and a disconnect that fires leave twice removes one
+entry.
+
+### Everything else is protected by a lock
+
+Any other mutation that **reads the property it writes** takes a short lock on the
+container row before the first read, so the guarantee is unconditional rather than
+a property of the shape you happened to write. That includes a guard that is not
+the containment test, a `set_at` or `remove_at` at a literal index, anything that
+reads a *different* property to decide this one's value, and anything routed
+through `fn:`. A write that does **not** read what it writes takes nothing —
+there is no update to lose.
+
+You do not have to know which branch you are on to be correct. The reason to
+prefer the guarded form anyway is contention: the lock is held across an
+evaluation, so callers to one hot container queue, and it is the locked path where
+a busy refusal becomes likely.
+
+### What you still must not assume
+
+- **A bare `append` is not exactly-once.** It will not lose anyone's entry, but it
+  will happily add the same player twice if they send enter twice. That is
+  `append` doing what it says. Use the guarded form whenever "already there?"
+  matters.
+- **Two properties written by one function are atomic together; two separate
+  invokes are not.** If a `members` list and a `headcount` must agree, write them
+  in the same function — they commit or roll back together. Across two invokes
+  there is no such guarantee and no way to give you one.
+- **A very hot single property still has a ceiling.** Writes to one row are
+  serialised by the database and a call has a time budget, so beyond a certain
+  rate some callers are **refused rather than served late**. The refusal is
+  *ours*: `blame: PLATFORM`, `retryable: true`, it does not count against your
+  function and it never arrives as "your code timed out". Retrying is the correct
+  response. Unlike an authority denial or an evaluation failure — which come back
+  in band as `success: false` with a `fault` — this one is a thrown error, so read
+  it from `errors[].extensions` (see [Error codes](/overview/error-codes)). If a single
+  list is genuinely taking hundreds of writes a second, split it: per squad, per
+  region, per shard of the roster.
+- **Order within a list is not stable under concurrency.** Two players entering
+  together land in an order nobody controls. Never use a position as identity —
+  use `index_of`.
 
 ## Reading state and the graph
 

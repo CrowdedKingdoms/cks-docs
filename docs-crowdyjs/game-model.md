@@ -197,3 +197,11 @@ See [Game Models](/game-api/game-models) for the full concept guide, the
 expression language, the authority model, and property visibility. For
 ready-made mappings of common concepts (inventory, lockable objects, NPCs)
 onto this API, see the [Game Kit](/crowdyjs/game-kit).
+
+Two parts of that guide are worth reading before you write a function that
+several players call at once: the
+[list builtins](/game-api/game-models#lists) (`at`, `set_at`, `append`,
+`remove_at`, `index_of`, `array`), and
+[what happens when two players write the same property](/game-api/game-models#concurrency-two-players-writing-the-same-property)
+— which shapes are atomic, which are protected by a lock, and why a
+roster update should be written as the guarded form.

@@ -105,12 +105,22 @@ allowance is not, even though neither is a bug.
 | `WRONG_DATACENTER` | `PLATFORM` | This app is served elsewhere. `extensions.gameApiUrl` names where; move and retry. |
 | `APP_UNAVAILABLE` | `PLATFORM` | The app's datacenter has no instance able to serve. **No endpoint is named, on purpose** — do not fall back to a cached one, it is in the datacenter that is down. |
 
-**`gameModelInvoke` reports in band, not as an error.** An authority denial or an
-evaluation failure is a gameplay verdict, so the mutation succeeds and the result carries
-`success: false` with a `fault { code blame retryable }` object. It also carries the
-event id and any writes that did apply, which is why it is not thrown. `computeInvoke` and
-`playerComputeInvoke` have no result to return on failure and therefore throw, with the
-same three values in `extensions`.
+**`gameModelInvoke` reports a gameplay verdict in band, not as an error.** An authority
+denial or an evaluation failure is a verdict, so the mutation succeeds and the result
+carries `success: false` with a `fault { code blame retryable }` object. It also carries
+the event id and any writes that did apply, which is why it is not thrown. `computeInvoke`
+and `playerComputeInvoke` have no result to return on failure and therefore throw, with
+the same three values in `extensions`.
+
+**A `PLATFORM`-blamed refusal is the exception, and `gameModelInvoke` throws it.** When
+the platform declines to *start* the work — no connection available, or a
+[contended property](/game-api/game-models#concurrency-two-players-writing-the-same-property)
+whose lock could not be taken in time — there is no result to report in band: the whole
+transaction rolled back and no event row was written, deliberately, so that a refusal we
+issued cannot trip the app's own circuit breaker. So handle both carriers on this field:
+`success: false` with a `fault`, and a thrown error whose `extensions` carry the same
+`blame` and `retryable`. Branching on those two is what stays correct; they are the
+contract, and a refusal that is ours is always `blame: PLATFORM` with `retryable: true`.
 
 In CrowdyJS, `playerFaultOf(errorOrResult)` reads both carriers and returns one
 `{ code, blame, retryable }`, and a thrown fault arrives as `CrowdyUserCodeFaultError`
