@@ -2077,6 +2077,22 @@ type CrowdyStudioAgentFundingPolicy {
 }
 
 """
+One allowed Agentic Studio mode that cannot perform the work the mode exists for, because the tool or risk-class allowlist excludes every tool that would do it. This is a capability shortfall, not a permission failure: the policy really is enabled and the mode really is allowed, so no disable reason code describes it.
+"""
+type CrowdyStudioAgentCapabilityGap {
+  """The allowed mode that has nothing useful to call."""
+  mode: CrowdyStudioAgentMode!
+  """
+  Stable code. NO_TOOLS: the tool allowlist is empty, so the agent can only talk. NO_WRITE_RISK: tools are allowed but every risk class that would let this mode change something is not, so BUILD can read and cannot build, and PLAY can observe and cannot act.
+  """
+  code: String!
+  """
+  Safe operator-facing explanation naming the missing risk classes. Never includes provider bodies or secrets.
+  """
+  detail: String!
+}
+
+"""
 Management's Agentic Crowdy Studio policy publication. EFFECTIVE values are the fail-closed platform/app intersection; an app can never widen platform models, tools, modes, risks, budgets, retention, or privacy. Game API runtime enforcement still requires a fresh validated replica.
 """
 type CrowdyStudioAgentPolicy {
@@ -2109,15 +2125,19 @@ type CrowdyStudioAgentPolicy {
   """
   allowedModelIds: [String!]!
   """
-  Exact crowdy.agent-tools/1 logical tool names allowed by this layer/intersection. Empty denies all tools.
+  Exact crowdy.agent-tools/1 logical tool names allowed by this layer/intersection. Empty means opposite things at the two layers: on PLATFORM it denies every tool, because the platform layer is the ceiling; on APP it expresses no narrowing, so EFFECTIVE inherits the platform list unchanged. An app therefore cannot reach a tool the platform has not published, and an operator who later adds one widens every app that names none.
   """
   allowedToolNames: [String!]!
   """Human-selectable modes allowed by this layer/intersection."""
   allowedModes: [CrowdyStudioAgentMode!]!
   """
-  Allowed tool risk classes. Required approval classes remain approval-gated even when listed.
+  Allowed tool risk classes. Required approval classes remain approval-gated even when listed. Empty follows the same rule as allowedToolNames: deny-all on PLATFORM, inherit-the-platform on APP. An EFFECTIVE policy can never be enabled with an empty list, because crowdy.studio-agent-policy/1 requires a non-empty risk intersection; that case reports AGENT_SCOPE_DENIED.
   """
   allowedRiskClasses: [CrowdyStudioAgentRiskClass!]!
+  """
+  Allowed modes that cannot do what the mode is for, derived from this layer's own tool and risk allowlists. Read this on the EFFECTIVE projection: an empty list is the only thing that entitles a caller to report an unblocked chain, because "enabled with a null disableReasonCode" is true of a dock whose BUILD mode has no tool it may call. On PLATFORM and APP it describes that layer in isolation and is not a claim about the intersection.
+  """
+  capabilityGaps: [CrowdyStudioAgentCapabilityGap!]!
   """Per-turn hard limits."""
   turnLimits: CrowdyStudioAgentTurnLimits!
   """Per-session hard limits."""
