@@ -1,8 +1,18 @@
 name: Deploy Docs to S3 and CloudFront
 
+# Deploys on an environment-prefixed release tag rather than on a branch push.
+#
+# There is ONE docs origin (crowded-kingdoms-docs behind CloudFront E2YPEQES1PFPQN) and no
+# per-tier docs sites, so only `prod/` tags deploy: the `prod` branch now does what `main`
+# did. A `dev/v*` or `test/v*` tag here deliberately does NOTHING — that is not an oversight,
+# it is the deferred question of whether per-tier docs origins should exist at all. Until the
+# operator decides, dev and test get the lint/build in docs-ci.yml and no deploy. If per-tier
+# origins are ever created, add their tag filters and select the bucket by `guard`'s `tier`
+# output, which is already published for that purpose.
+
 on:
   push:
-    branches: [main]
+    tags: ['prod/v*.*.*']
   workflow_dispatch:
 
 env:
@@ -11,8 +21,54 @@ env:
   CLOUDFRONT_DISTRIBUTION_ID: E2YPEQES1PFPQN
 
 jobs:
+  guard:
+    name: Prove the release tier
+    runs-on: ubuntu-latest
+    outputs:
+      tier: ${{ steps.resolve.outputs.tier }}
+      version: ${{ steps.resolve.outputs.version }}
+    steps:
+      # fetch-depth: 0 because the gate asks `git merge-base --is-ancestor`, and with the
+      # default shallow clone the merge base is not in the graph — the check would refuse a
+      # valid tag. Credentials stay PERSISTED (do not add persist-credentials: false): the
+      # gate runs `git fetch origin +refs/heads/<tier>:...` to read the branch itself rather
+      # than trusting a remote-tracking ref that a shallow clone never wrote.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve tier and version from the tag
+        if: github.ref_type == 'tag'
+        id: resolve
+        run: ./scripts/ci/resolve-release-tier.sh
+
+      - name: Prove the gate still refuses
+        # ~0.5s, and it runs here rather than only in a unit suite because this is the job
+        # whose refusal matters. It builds a real repository with real branches and asserts
+        # both directions; a gate that has never been observed refusing is not passing, it
+        # is unproven.
+        if: github.ref_type == 'tag'
+        run: ./scripts/ci/resolve-release-tier.test.sh
+
+      - name: Refuse a manual dispatch from anywhere but prod
+        # workflow_dispatch hands GITHUB_REF a BRANCH, which the tag gate refuses outright, so
+        # without this step the guard would be vacuous on the one path a human drives by hand.
+        # The single docs origin is the prod site: dispatching from dev would publish dev's
+        # content to it. The ref goes through the environment rather than into the script text
+        # because `${{ }}` interpolation is string substitution into the shell.
+        if: github.ref_type != 'tag'
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          if [ "$REF" != "refs/heads/prod" ]; then
+            echo "::error::a manual docs deploy publishes the one production docs origin, so it may only run from 'prod' (got '$REF')"
+            exit 1
+          fi
+          echo "manual dispatch from prod"
+
   deploy-docs:
     name: Deploy Docs
+    needs: guard
     runs-on: ubuntu-latest
 
     steps:

@@ -6,10 +6,18 @@ name: Docs CI
 # Note: `npx docusaurus build` skips the npm `prebuild`, so it uses the committed
 # reference/SDL (the sibling API repos are not checked out here). Maintainers regenerate
 # the reference + SDL locally with `npm run build` (which runs graphql:gen + sdl:gen).
+#
+# Triggers are deliberately unrestricted by branch. This used to be `pull_request` against
+# `main` alone, which under the three-branch model would have run NOTHING on a PR into dev,
+# test or prod — the checks would have gone quiet without ever reporting a failure, which is
+# the worst way for a gate to stop working. `push: ["**"]` additionally covers the promotion
+# merges themselves (dev -> test -> prod), which arrive as pushes and would otherwise ship a
+# broken build straight to the branch a `prod/` tag is cut from.
 
 on:
   pull_request:
-    branches: [main]
+  push:
+    branches: ["**"]
   workflow_dispatch:
 
 jobs:
