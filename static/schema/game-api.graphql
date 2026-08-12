@@ -7788,7 +7788,7 @@ type Query {
     appId: BigInt!
   ): CrowdyStudioAgentPolicy! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
   """
-  Read Management's fail-closed Agentic Crowdy Studio publication: platform enable/kill, per-app operator kill, app enable/kill, exact model/tool/mode/risk intersections, minimum budgets/retention, locked privacy, and platform-funded billing seam. Requires 'view_compute_diagnostics'. This is the source publication, not proof of current runtime enforcement: Game API must hold a fresh crowdy.studio-agent-policy/1 replica and independently enforce it; missing/stale/malformed replica or an empty model/mode intersection must disable the agent.
+  Read Management's fail-closed Agentic Crowdy Studio publication: platform enable/kill, per-app operator kill, app enable/kill, the resolved model/tool/mode/risk lists (models and modes are the platform/app intersection; a tool or risk list the app left empty is inherited from the platform whole, because empty at a layer that can only narrow means no narrowing), minimum budgets/retention, locked privacy, and platform-funded billing seam. Requires 'view_compute_diagnostics'. This is the source publication, not proof of current runtime enforcement: Game API must hold a fresh crowdy.studio-agent-policy/1 replica and independently enforce it; missing/stale/malformed replica or an empty model/mode intersection must disable the agent.
   """
   crowdyStudioAgentEffectivePolicy(
     """App whose effective policy intersection to read."""
@@ -9910,14 +9910,14 @@ type Mutation {
     input: CreateGridListingInput!
   ): GridListing! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "input.appId")
   """
-  Create or patch an app's Agentic Crowdy Studio policy. Requires 'manage_compute'. Omitted values stay unchanged; first creation starts disabled, killed, and deny-all. Model/tool/mode/risk lists are intersected with platform allowlists and every numeric/retention value is clamped down to platform limits. Locked ZDR/collection/body-retention rules and the operator app kill cannot be changed. SIDE EFFECTS: increments Management's publication revision, appends a sanitized audit event, and transactionally notifies Game API to pull crowdy.studio-agent-policy/1. Runtime enforcement changes only after Game API obtains and validates the fresh replica. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
+  Create or patch an app's Agentic Crowdy Studio policy. Requires 'manage_compute'. Omitted values stay unchanged; first creation starts disabled, killed, and deny-all. A model/tool/mode/risk list naming anything outside the platform allowlist is REFUSED with AGENT_POLICY_INVALID quoting the platform's current list, rather than silently reduced; a list you do send is stored exactly as sent and can only narrow, and omitting it entirely means 'no narrowing', which inherits the platform's list live on every read. Numeric and retention values are still clamped down to platform limits. Locked ZDR/collection/body-retention rules and the operator app kill cannot be changed. SIDE EFFECTS: increments Management's publication revision and appends a sanitized audit event. NOTHING IS PUSHED TO GAME API: its runtime pulls crowdy.studio-agent-policy/1, obtaining a replica the first time a permitted caller asks about an app that has none, and re-pulling an existing replica once it passes refreshAfter (two thirds of its 60s validity). A change therefore reaches enforcement within about a minute for an app already in use, and not at all until someone asks for one that is not. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
   """
   setCrowdyStudioAgentPolicy(
     """App policy patch, expected revision, and required idempotency key."""
     input: SetCrowdyStudioAgentAppPolicyInput!
   ): CrowdyStudioAgentPolicy! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "input.appId")
   """
-  Operator only (is_operator or is_super_admin). Patch Management platform Agentic Studio policy and global emergency kill. SIDE EFFECTS: the published kill takes precedence over every app setting, revision increments, a sanitized append-only audit event is written, and transactional replica notifications fan out to every app with Agentic Studio policy. Runtime enforcement changes only when Game API pulls and validates the fresh crowdy.studio-agent-policy/1 envelope; Game API must fail closed if it is missing, malformed, or stale. Hard ZDR/collection/body-retention rules and platform-funded/no-wallet pilot funding cannot be loosened. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
+  Operator only (is_operator or is_super_admin). Patch Management platform Agentic Studio policy and global emergency kill. SIDE EFFECTS: the published kill takes precedence over every app setting, the revision increments, and a sanitized append-only audit event is written. NOTHING IS FANNED OUT TO APPS: Game API pulls crowdy.studio-agent-policy/1 per app, so a platform change reaches an app that already holds a replica within about a minute (refreshAfter is two thirds of a 60s validity) and reaches an app with no replica only when a permitted caller next asks about it. Game API must fail closed if the envelope is missing, malformed, or stale. Narrowing the platform lists narrows every app immediately on its next read, including apps that expressed no narrowing of their own. Hard ZDR/collection/body-retention rules and platform-funded/no-wallet pilot funding cannot be loosened. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
   """
   cpSetCrowdyStudioAgentPlatformPolicy(
     """
@@ -9926,7 +9926,7 @@ type Mutation {
     input: SetCrowdyStudioAgentPlatformPolicyInput!
   ): CrowdyStudioAgentPolicy! @requiresPermission(scope: "operator", permission: "is_operator")
   """
-  Operator only (is_operator or is_super_admin). Publish or release an emergency kill for one app. This state is separate from the app's own kill and always takes precedence in Management's effective envelope; app users cannot clear it. SIDE EFFECTS: revision increment, sanitized audit event, and transactional Game API policy notify. Runtime preemption depends on Game API pulling and enforcing the fresh envelope; releasing the operator kill does not enable the app or clear its own kill. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
+  Operator only (is_operator or is_super_admin). Publish or release an emergency kill for one app. This state is separate from the app's own kill and always takes precedence in Management's effective envelope; app users cannot clear it. SIDE EFFECTS: revision increment and a sanitized audit event. NOTHING IS PUSHED TO GAME API: preemption takes effect when its runtime next pulls this app's crowdy.studio-agent-policy/1 replica, which is within about a minute for an app already holding one and not at all for an app that does not until a permitted caller asks. Releasing the operator kill does not enable the app or clear its own kill. Stable errors: AGENT_POLICY_INVALID, AGENT_POLICY_REVISION_CONFLICT, IDEMPOTENCY_CONFLICT.
   """
   cpSetCrowdyStudioAgentAppKill(
     """
@@ -11917,19 +11917,19 @@ input SetCrowdyStudioAgentAppPolicyInput {
   """Set or clear this layer kill switch. Kill always wins over enablement."""
   killSwitch: Boolean
   """
-  Replacement exact model allowlist (max 64). App values are intersected with the platform allowlist.
+  Replacement exact model allowlist (max 64). On an APP patch every id must already be in the platform allowlist or the whole write is refused with AGENT_POLICY_INVALID naming that list; values are never silently dropped. On the PLATFORM patch this list IS the ceiling. Empty denies all models at either layer.
   """
   allowedModelIds: [String!]
   """
-  Replacement exact logical tool-name allowlist (max 256). App values are intersected with platform tools.
+  Replacement exact logical tool-name allowlist (max 256). On an APP patch every name must already be in the platform allowlist or the whole write is refused with AGENT_POLICY_INVALID naming that list, and what you do send is stored exactly as sent; OMIT the field to express no narrowing, which inherits the platform list live on every read. Sending an empty array on an APP patch clears a narrowing and is therefore also "no narrowing", not "deny all". On the PLATFORM patch this list is the ceiling and empty denies every tool.
   """
   allowedToolNames: [String!]
   """
-  Replacement mode allowlist; app values are intersected with platform modes.
+  Replacement mode allowlist. On an APP patch every mode must already be in the platform allowlist or the whole write is refused with AGENT_POLICY_INVALID naming that list. Empty denies every mode at either layer; there is no inherit-on-empty for modes.
   """
   allowedModes: [CrowdyStudioAgentMode!]
   """
-  Replacement risk-class allowlist; app values are intersected with platform classes.
+  Replacement risk-class allowlist. On an APP patch every class must already be in the platform allowlist or the whole write is refused with AGENT_POLICY_INVALID naming that list, and what you do send is stored exactly as sent; OMIT the field to express no narrowing, which inherits the platform list live on every read. On the PLATFORM patch this list is the ceiling and empty denies every class.
   """
   allowedRiskClasses: [CrowdyStudioAgentRiskClass!]
   """Optional per-turn limit patch."""
@@ -12067,19 +12067,19 @@ input SetCrowdyStudioAgentPlatformPolicyInput {
   """Set or clear this layer kill switch. Kill always wins over enablement."""
   killSwitch: Boolean
   """
-  Replacement exact model allowlist (max 64). App values are intersected with the platform allowlist.
+  Replacement exact model allowlist (max 64). On an APP patch every id must already be in the platform allowlist or the whole write is refused with AGENT_POLICY_INVALID naming that list; values are never silently dropped. On the PLATFORM patch this list IS the ceiling. Empty denies all models at either layer.
   """
   allowedModelIds: [String!]
   """
-  Replacement exact logical tool-name allowlist (max 256). App values are intersected with platform tools.
+  Replacement exact logical tool-name allowlist (max 256). On an APP patch every name must already be in the platform allowlist or the whole write is refused with AGENT_POLICY_INVALID naming that list, and what you do send is stored exactly as sent; OMIT the field to express no narrowing, which inherits the platform list live on every read. Sending an empty array on an APP patch clears a narrowing and is therefore also "no narrowing", not "deny all". On the PLATFORM patch this list is the ceiling and empty denies every tool.
   """
   allowedToolNames: [String!]
   """
-  Replacement mode allowlist; app values are intersected with platform modes.
+  Replacement mode allowlist. On an APP patch every mode must already be in the platform allowlist or the whole write is refused with AGENT_POLICY_INVALID naming that list. Empty denies every mode at either layer; there is no inherit-on-empty for modes.
   """
   allowedModes: [CrowdyStudioAgentMode!]
   """
-  Replacement risk-class allowlist; app values are intersected with platform classes.
+  Replacement risk-class allowlist. On an APP patch every class must already be in the platform allowlist or the whole write is refused with AGENT_POLICY_INVALID naming that list, and what you do send is stored exactly as sent; OMIT the field to express no narrowing, which inherits the platform list live on every read. On the PLATFORM patch this list is the ceiling and empty denies every class.
   """
   allowedRiskClasses: [CrowdyStudioAgentRiskClass!]
   """Optional per-turn limit patch."""
