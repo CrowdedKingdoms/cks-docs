@@ -31,6 +31,7 @@ type CrowdyStudioAgentPolicy {
   allowedToolNames: [String!]!
   allowedModes: [CrowdyStudioAgentMode!]!
   allowedRiskClasses: [CrowdyStudioAgentRiskClass!]!
+  capabilityGaps: [CrowdyStudioAgentCapabilityGap!]!
   turnLimits: CrowdyStudioAgentTurnLimits!
   sessionLimits: CrowdyStudioAgentSessionLimits!
   playerDayLimits: CrowdyStudioAgentPlayerDayLimits!
@@ -82,7 +83,7 @@ Exact model ids allowed by this layer/intersection. Empty denies all models.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>allowedToolNames</b></code>](#allowed-tool-names)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#allowed-tool-names\} 
-Exact crowdy.agent-tools/1 logical tool names allowed by this layer/intersection. Empty denies all tools.
+Exact crowdy.agent-tools/1 logical tool names allowed by this layer/intersection. Empty means opposite things at the two layers: on PLATFORM it denies every tool, because the platform layer is the ceiling; on APP it expresses no narrowing, so EFFECTIVE inherits the platform list unchanged. An app therefore cannot reach a tool the platform has not published, and an operator who later adds one widens every app that names none.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>allowedModes</b></code>](#allowed-modes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentMode!]!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#allowed-modes\} 
@@ -90,7 +91,11 @@ Human-selectable modes allowed by this layer/intersection.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>allowedRiskClasses</b></code>](#allowed-risk-classes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentRiskClass!]!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-risk-class.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#allowed-risk-classes\} 
-Allowed tool risk classes. Required approval classes remain approval-gated even when listed.
+Allowed tool risk classes. Required approval classes remain approval-gated even when listed. Empty follows the same rule as allowedToolNames: deny-all on PLATFORM, inherit-the-platform on APP. An EFFECTIVE policy can never be enabled with an empty list, because crowdy.studio-agent-policy/1 requires a non-empty risk intersection; that case reports AGENT&#x005F;SCOPE&#x005F;DENIED.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>capabilityGaps</b></code>](#capability-gaps)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentCapabilityGap!]!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-capability-gap.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#capability-gaps\} 
+Allowed modes that cannot do what the mode is for, derived from this layer's own tool and risk allowlists. Read this on the EFFECTIVE projection: an empty list is the only thing that entitles a caller to report an unblocked chain, because "enabled with a null disableReasonCode" is true of a dock whose BUILD mode has no tool it may call. On PLATFORM and APP it describes that layer in isolation and is not a claim about the intersection.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentPolicy.<b>turnLimits</b></code>](#turn-limits)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentTurnLimits!</b></code>](/reference/graphql/types/objects/crowdy-studio-agent-turn-limits.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#turn-limits\} 

@@ -1,0 +1,48 @@
+---
+id: crowdy-studio-agent-capability-gap
+title: CrowdyStudioAgentCapabilityGap
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One allowed Agentic Studio mode that cannot perform the work the mode exists for, because the tool or risk-class allowlist excludes every tool that would do it. This is a capability shortfall, not a permission failure: the policy really is enabled and the mode really is allowed, so no disable reason code describes it.
+
+
+```graphql
+type CrowdyStudioAgentCapabilityGap {
+  mode: CrowdyStudioAgentMode!
+  code: String!
+  detail: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCapabilityGap.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentMode!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#mode\} 
+The allowed mode that has nothing useful to call.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCapabilityGap.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code\} 
+Stable code. NO&#x005F;TOOLS: the tool allowlist is empty, so the agent can only talk. NO&#x005F;WRITE&#x005F;RISK: tools are allowed but every risk class that would let this mode change something is not, so BUILD can read and cannot build, and PLAY can observe and cannot act.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCapabilityGap.<b>detail</b></code>](#detail)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#detail\} 
+Safe operator-facing explanation naming the missing risk classes. Never includes provider bodies or secrets.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioAgentPolicy`](/reference/graphql/types/objects/crowdy-studio-agent-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
