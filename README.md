@@ -25,9 +25,11 @@ runs them in that order.
 | Game API | `static/schema/game-api.graphql` | `../cks-game-api/schema.gql` (the whole unified schema) |
 | CrowdyJS | `static/schema/crowdyjs.graphql` | `../CrowdyJS/schema.gql` |
 
-There is no `cks-management-api` checkout to keep — that repo was retired on
-2026-08-06 when the management plane was absorbed into `cks-game-api`. The management
-tab survives as a filtered view so the surface stays readable on its own.
+There is no `cks-management-api` **checkout** to keep, and it is not a
+running service or a schema source. The GitHub repo still exists (not
+archived; default branch `dev`). The management plane was absorbed into
+`cks-game-api` on 2026-08-06. The management tab is a filtered view of the
+unified schema so that surface stays readable on its own.
 
 ```bash
 # Regenerate the game-api schema first if the API changed:
@@ -101,7 +103,7 @@ Optional env vars:
 | --- | ------- |
 | `E2E_EMAIL` / `E2E_PASSWORD` | Reuse an existing user instead of registering |
 | `E2E_ORG_SLUG` | Org slug when reusing a user (wallet is funded automatically) |
-| `E2E_DB_NAME` | Postgres database name (default `cks_local_management_db`) |
+| `E2E_DB_NAME` | Postgres database name (default in the helper is still `cks_local_management_db`; the live CK database is `crowded_kingdoms`) |
 | `E2E_BASE_URL` / `E2E_API_URL` | Override UI/API origins |
 
 The test skips when the OVH datacenter catalog is empty (local dev without catalog sync).

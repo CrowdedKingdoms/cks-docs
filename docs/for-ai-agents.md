@@ -19,12 +19,16 @@ the raw GraphQL access described below.
 
 ## The surface at a glance
 
+There is **one GraphQL endpoint**. The two rows below are surfaces of that API,
+not two hosts. Do not set `managementUrl`. Gameplay is PostgreSQL + Citus, not
+galaxy. CrowdyJS **14.1.0** is current on npm (14.0.0 is also published).
+
 | API | Protocol | Use it for |
 |-----|----------|------------|
-| **Management API** | GraphQL (HTTP) | Identity, organizations, the apps marketplace, access tiers, billing, payments, quotas, and dedicated/shared environments. This is the **studio-backend** surface. |
-| **Game API** | GraphQL (HTTP + WebSocket) | Runtime world data (chunks, voxels, actors, avatars) and the realtime **UDP-proxy** subscription/spatial-send surface. This is the **game-client** surface — authenticated with an **app-scoped token** (not the identity session token). |
+| **Management surface** | GraphQL (HTTP) | Identity, organizations, the apps marketplace, access tiers, billing, payments, quotas. Studio-backend operations. Dedicated customer environments were retired. |
+| **Game surface** | GraphQL (HTTP + WebSocket) | Runtime world data (chunks, voxels, actors, avatars) and the realtime **UDP-proxy** subscription/spatial-send surface. Authenticated with an **app-scoped token** (not the identity session token). |
 | **Replication API (Buddy)** | Binary UDP | Lowest-latency native spatial replication. Most clients use the Game API UDP-proxy instead and never touch raw UDP. Buddy authenticates only app-scoped tokens. |
-| **CrowdyJS** | TypeScript SDK | Browser clients — wraps passwordless sign-in, `client.portal` (app-scoped tokens / PKCE / consent), the Game API, and the UDP proxy. Use one identity client plus a per-game client. Prefer it for web. |
+| **CrowdyJS** | TypeScript SDK | Browser clients — wraps passwordless sign-in, `client.portal` (app-scoped tokens / PKCE / consent), and the unified GraphQL API including the UDP proxy. Use one identity client plus a per-game client. Prefer it for web. |
 
 ## Get the schema
 
