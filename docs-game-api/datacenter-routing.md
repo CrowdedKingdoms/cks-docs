@@ -86,12 +86,13 @@ itself. On an older build, setting it changes nothing.
 
 ## What happens if you skip step 3
 
-Two possibilities, depending on how the environment is configured.
+**You are refused, and told where to go.** This is not configurable and is not tier
+specific: a gameplay call for an app held elsewhere is always refused.
 
-**Nothing visible.** Your queries are answered by a datacenter that does not hold your
-shards, correctly and slowly, indefinitely. This is the outcome to be afraid of.
-
-**A refusal naming where to go**, if the environment enforces routing:
+It used to be one of two outcomes, and the other was worse — your queries answered
+correctly and slowly by a datacenter that does not hold your shards, indefinitely, with
+nothing logged. If you are reading an older copy of this page that describes that as a
+possibility, it is out of date.
 
 ```json
 {
@@ -113,7 +114,18 @@ endpoint is in the extensions specifically so you do not have to parse the messa
 retry against the same endpoint will fail identically, forever.
 
 Requests that name no app, and the identity surface, are never refused this way: any
-datacenter can answer them.
+datacenter can answer them. That is what makes the shared origin usable for a first
+connection, and it is why `discoveryUrl` remains the way back.
+
+### The same rule applies to your UDP server
+
+`serverWithLeastClients` hands out a Buddy **in your app's own datacenter, or none**. If
+that datacenter has no healthy Buddy it refuses with `NO_LOCAL_BUDDY` rather than giving
+you one somewhere else — because every gameplay write for that session would then cross a
+WAN, and you would not notice: each write still succeeds.
+
+Treat it the way you would treat `APP_UNAVAILABLE`. Retry, and do not fall back to a
+cached server from another datacenter.
 
 ## If your app moves
 
@@ -123,8 +135,7 @@ client is holding stops being the right one, and there is no push notification.
 `gameClientBootstrap` is the answer, and it must be re-read rather than cached for the
 life of a session. A client that re-reads it on reconnect follows a move without anyone
 intervening. A client that cached the endpoint on first launch stays on the old datacenter
-until it is restarted — and if enforcement is on, it starts receiving `WRONG_DATACENTER`
-instead.
+until it is restarted, and starts receiving `WRONG_DATACENTER` instead.
 
 This is also why testing the re-route with a **fresh** client proves nothing. A fresh
 client reads the placement on its first bootstrap and looks correct even if re-discovery
