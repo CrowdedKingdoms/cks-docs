@@ -57,7 +57,7 @@ Balance after this entry.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>transactionType</b></code>](#transaction-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#transaction-type\} 
-One of 'topup', 'usage&#x005F;debit', 'auto&#x005F;recharge', 'refund', 'adjustment'.
+What produced this entry. The complete set of values this API writes: "topup" (credit from a completed checkout, positive), "auto&#x005F;recharge" (off-session automatic recharge, positive), "payout&#x005F;credit" (marketplace seller payout, positive), "refund" (marketplace refund returned to the buyer, positive), "usage&#x005F;debit" (hourly player-compute metered charge for one closed clock hour, negative), "purchase" (marketplace purchase, negative), "adjustment" (operator or dispute-clawback correction, signed).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
