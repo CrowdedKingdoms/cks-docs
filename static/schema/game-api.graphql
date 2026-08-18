@@ -1367,7 +1367,9 @@ One field that moved, with the value it held before. Reported so a price change 
 type RateChangeType {
   scope: RateScope!
   metric: String!
-  """One of "priceCents", "freePerHour" or "freePerMonth"."""
+  """
+  One of "priceCents", "unitLabel", "unitQuantity", "freePerHour" or "freePerMonth".
+  """
   field: String!
   """
   The value before this call, as a decimal string. "none" when there was no allowance row.
@@ -9705,7 +9707,7 @@ type Mutation {
   """
   runSharedUsageBillingTick: Boolean! @requiresPermission(scope: "operator", permission: "is_operator")
   """
-  OPERATOR ONLY. Sets a metered dimension's price, its hourly free allowance, or both, and returns the new row alongside the values that moved. THIS IS THE ONLY SANCTIONED WAY TO CHANGE A PRICE: the schema seeds use ON CONFLICT DO NOTHING, so before this mutation existed a rate reached a tier once at install and changing it afterwards required a full tier rebuild or a hand-written UPDATE on the coordinator. Refuses an unknown or unmetered metric (a rate for a dimension nothing meters bills nobody while appearing configured), refuses a negative value, and refuses a call that would change nothing. NOT RETROACTIVE: charges already written are history and the tick is idempotent per closed hour, so a new rate applies to hours billed from now on. Takes effect within about a minute — both billing ticks reload the card on every run, so no restart is needed.
+  OPERATOR ONLY. Sets a metered dimension's price, the UNIT that price is quoted in, its free allowances, or any combination, and returns the new row alongside the values that moved. THIS IS THE ONLY SANCTIONED WAY TO CHANGE A PRICE OR A UNIT: the schema seeds use ON CONFLICT DO NOTHING, so a rate reaches a tier once at install and a unit corrected in the declaration never reaches a tier that already exists. Refuses an unknown or unmetered metric (a rate for a dimension nothing meters bills nobody while appearing configured), refuses a negative price, refuses unitLabel without unitQuantity (which would restate the rate card while the arithmetic kept the old divisor), and refuses a call that would change nothing. A unit change that also moves the money needs acknowledgeRepricing: true, so restating a price and cutting it cannot be confused. NOT RETROACTIVE: charges already written are history and the tick is idempotent per closed hour, so a new rate applies to hours billed from now on. Takes effect within about a minute — both billing ticks reload the card on every run, so no restart is needed.
   """
   setBillingRate(
     """Which dimension to reprice, the new price and/or allowance, and why."""
@@ -11867,6 +11869,18 @@ input SetRateCardInput {
   New price in cents per unitQuantity raw units. Must be >= 0; 0 means meter but do not charge. Omit to leave the price unchanged. Fractional values are accepted (the column is NUMERIC(20,6)).
   """
   priceCents: Float
+  """
+  New human unit this price is quoted in, e.g. "GiB" or "GiB-mo". Must be supplied together with unitQuantity: a label on its own restates the rate card while the arithmetic keeps the old divisor. Omit both to leave the unit unchanged.
+  """
+  unitLabel: String
+  """
+  New number of raw metric units one priceCents charge covers, as a BigInt decimal string. Must be > 0 and supplied together with unitLabel. Needed because every rate seed is ON CONFLICT DO NOTHING, so a unit corrected in the declaration never reaches a tier that is already installed.
+  """
+  unitQuantity: BigInt
+  """
+  Required when a unit change also changes the money. Restating 15c per GiB as 1.396984c per 100 MB is the same price and needs nothing; changing 20c per 100 MB to 20c per GiB-month is a 7841x cut and must be stated deliberately. The mutation refuses rather than guessing which one you meant.
+  """
+  acknowledgeRepricing: Boolean
   """
   New hourly free allowance in raw metric units, as a BigInt decimal string. Must be >= 0. Omit to leave the allowance unchanged.
   """
