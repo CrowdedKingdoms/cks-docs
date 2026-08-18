@@ -1,0 +1,39 @@
+---
+id: set-billing-rate
+title: setBillingRate
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR ONLY. Sets a metered dimension's price, its hourly free allowance, or both, and returns the new row alongside the values that moved. THIS IS THE ONLY SANCTIONED WAY TO CHANGE A PRICE: the schema seeds use ON CONFLICT DO NOTHING, so before this mutation existed a rate reached a tier once at install and changing it afterwards required a full tier rebuild or a hand-written UPDATE on the coordinator. Refuses an unknown or unmetered metric (a rate for a dimension nothing meters bills nobody while appearing configured), refuses a negative value, and refuses a call that would change nothing. NOT RETROACTIVE: charges already written are history and the tick is idempotent per closed hour, so a new rate applies to hours billed from now on. Takes effect within about a minute — both billing ticks reload the card on every run, so no restart is needed.
+
+
+```graphql
+setBillingRate(
+  input: SetRateCardInput!
+): SetRateCardResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setBillingRate.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetRateCardInput!</b></code>](/reference/graphql/types/inputs/set-rate-card-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Which dimension to reprice, the new price and/or allowance, and why.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>SetRateCardResult</b></code>](/reference/graphql/types/objects/set-rate-card-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The result of setting a rate: the new row and what moved.

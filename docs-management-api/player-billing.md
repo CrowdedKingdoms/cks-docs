@@ -43,9 +43,9 @@ wallet, with no org permission involved:
 
 Player usage bills on closed clock hours, exactly like org shared-usage
 billing: minute counters ship from the game runtime, the biller prices the
-hour's overage above the **player free allowance** at the **player rate
-card**, and debits the wallet once per `(player, app, hour)` — the charge
-ledger is idempotent.
+hour's usage above the **monthly trial budget** at the **player rate card**,
+and debits the wallet once per `(player, app, hour)` — the charge ledger is
+idempotent.
 
 Each posted charge (`playerUsageCharges`) splits two components the player
 always sees separately:
@@ -55,11 +55,25 @@ always sees separately:
 - `markupCents` — the studio's configured markup for that app, if any.
 
 The per-metric snapshot on the charge records used/free/billable quantities
-for compute units, automation units, and compile dimensions.
+for compute units, automation units, egress, storage and compile dimensions.
 
-A small per-player hourly free allowance means trying player code never
-requires funding a wallet first — usage within the allowance charges nothing
-and keeps an empty wallet fully active.
+## The free trial
+
+Every player gets a **monthly trial budget of 250,000 compute units in each
+app** — a pooled allowance covering module compute and automation together,
+reset on the first of each UTC month. Trying player code never requires
+funding a wallet first: usage inside the trial charges nothing and keeps an
+empty wallet fully active.
+
+There is **no hourly free allowance**. Any recurring hourly figure would make a
+small mod free forever, which is not what a trial is for; a monthly budget lets
+a player experiment freely and asks sustained play to pay. As a rough guide,
+250,000 units is about 14 hours of a light always-on mod at the default 5 Hz
+tick, or about an hour of a database-heavy one.
+
+Charges below one cent are **carried forward** rather than rounded up, so a
+player running something tiny is billed what they actually used over the month
+instead of a rounded-up cent every hour.
 
 ## Spend caps and the player gate
 
@@ -87,7 +101,7 @@ Studio-facing controls (org permissions in parentheses):
 | `playerWasmPolicies` / `setPlayerWasmPolicy` / `deletePlayerWasmPolicy` (`manage_compute`) | Per-player/cohort clamps at `app_default`, `tier`, `grid`, or `user` scope: module counts, tick/fuel/memory/egress budgets, `unitsPerHour`/`unitsPerDay` quotas, `maxCompilesPerHour`, container-create caps |
 | `playerRateMarkup` / `setPlayerRateMarkup` (`view_billing` / `manage_billing`) | Markup in basis points on the platform base price — the studio's usage-revenue stream, always shown to players as a separate component |
 | `appPlayerUsage` (`view_compute_diagnostics`) | Per-player usage aggregate: top spenders, quota utilization, compiles, cents charged |
-| `appPlayerMarkupAccrued` (`view_billing`) | Total markup income accrued (paid out via the marketplace payout ledger when it ships) |
+| `appPlayerMarkupAccrued` (`view_billing`) | Total markup income earned. Each charge's markup is **credited to the organization wallet in the same transaction as the player's debit**, and appears in the org ledger as `markup_payout` — so this total and the money in the wallet cannot drift apart |
 | `playerComputeSetSwitch` / `playerComputeSwitches` (Game API) | The kill ladder: immediate stop at player/grid/app scope, quota state retained |
 
 Management is authoritative for the player policy table; changes
