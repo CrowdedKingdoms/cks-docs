@@ -1,0 +1,58 @@
+---
+id: rate-change-type
+title: RateChangeType
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One field that moved, with the value it held before. Reported so a price change is auditable from the response rather than reconstructed afterwards.
+
+
+```graphql
+type RateChangeType {
+  scope: RateScope!
+  metric: String!
+  field: String!
+  previous: String!
+  updated: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>RateChangeType.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RateScope!</b></code>](/reference/graphql/types/enums/rate-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RateChangeType.<b>metric</b></code>](#metric)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#metric\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RateChangeType.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#field\} 
+One of "priceCents", "unitLabel", "unitQuantity", "freePerHour" or "freePerMonth".
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RateChangeType.<b>previous</b></code>](#previous)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#previous\} 
+The value before this call, as a decimal string. "none" when there was no allowance row.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RateChangeType.<b>updated</b></code>](#updated)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated\} 
+The value after this call, as a decimal string.
+
+
+
+
+### Member Of
+
+[`SetRateCardResult`](/reference/graphql/types/objects/set-rate-card-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

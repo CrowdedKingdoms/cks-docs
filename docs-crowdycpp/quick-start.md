@@ -13,7 +13,7 @@ with CrowdyCPP handling the mechanics.
 
 The steps:
 
-1. Sign in with an **identity client** (Management API).
+1. Sign in with an **identity client** (session token, same GraphQL origin).
 2. Mint an **app-scoped token** and build a **per-game client**.
 3. Connect the **native replication client** (server assignment + UDP).
 4. Drive a **world session** from your game loop.
@@ -21,7 +21,8 @@ The steps:
 ## 1. Identity client and sign-in
 
 Sign-in is passwordless (magic link, social/OIDC, or the dev bypass) and
-yields an **identity session token** valid only for the Management API:
+yields an **identity session token**. There is one API origin — do not set
+`managementUrl` (removed in CrowdyCPP 0.20.0 / CrowdyJS 14):
 
 ```cpp
 #include <crowdy/crowdy.hpp>
@@ -29,7 +30,7 @@ yields an **identity session token** valid only for the Management API:
 using namespace crowdy;
 
 ClientConfig identityCfg;
-identityCfg.managementUrl = "https://management.example.com";
+identityCfg.httpUrl = "https://ck.example.com";
 CrowdyClient identity(std::move(identityCfg));
 
 // Dev bypass — development/test servers only; production apps use the
@@ -48,7 +49,7 @@ auto minted = identity.portal().mintAppToken(appId);
 
 ClientConfig gameCfg;
 gameCfg.httpUrl = minted.gameApiUrl;
-gameCfg.managementUrl = "https://management.example.com";
+gameCfg.discoveryUrl = minted.discoveryUrl;  // shared origin if the instance dies
 CrowdyClient game(std::move(gameCfg));
 game.setToken(minted.token);
 ```

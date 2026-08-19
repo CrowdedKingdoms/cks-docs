@@ -1,0 +1,49 @@
+---
+id: set-org-billing-exempt
+title: setOrgBillingExempt
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR ONLY. Sets or clears an organization billing exemption. When true, org-wallet debits and money-driven runtime denials are skipped; usage is still metered and every waived amount is written to org&#x005F;billing&#x005F;waivers. Does not waive player-wallet charges, failure breakers, or the per-minute compute budget. reason is required when setting true. SIDE EFFECT: re-evaluates the runtime gate for every shared app in the org, so clearing the exemption re-denies immediately instead of waiting for the next hourly tick.
+
+
+```graphql
+setOrgBillingExempt(
+  orgId: BigInt!
+  exempt: Boolean!
+  reason: String!
+): BillingExemptOrgType!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setOrgBillingExempt.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization to exempt or un-exempt.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setOrgBillingExempt.<b>exempt</b></code>](#exempt)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#exempt\} 
+true to skip org charges and money-driven denials; false to restore them.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setOrgBillingExempt.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Why the exemption is being set or cleared. Required (non-empty after trim) when exempt is true.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>BillingExemptOrgType</b></code>](/reference/graphql/types/objects/billing-exempt-org-type.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An organization whose wallet is not debited and whose apps are not denied for funds. Usage is still metered; waived amounts are in org&#x005F;billing&#x005F;waivers.

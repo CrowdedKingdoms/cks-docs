@@ -99,6 +99,21 @@ installed** (see below). Always check the response for `errors` before proceedin
 - **`gameTokenId`** (from the app token in step 1) — still required in spatial
   message tails.
 
+:::caution[The Buddy you get is always in your app's datacenter, or there is none]
+
+The selector is pinned to the datacenter holding your app's data. If that
+datacenter has no healthy Buddy, this **refuses with `NO_LOCAL_BUDDY`** instead of
+handing you one somewhere else.
+
+That is deliberate, and the refusal is the useful behaviour: a remote Buddy would
+work, in the sense that every gameplay write would succeed, while each one crossed
+a WAN. Nothing would error and nothing would log — you would only see it as latency
+nobody could attribute.
+
+So treat it like `APP_UNAVAILABLE`: retry, and do not reuse a server you cached
+while connected to a different datacenter.
+:::
+
 :::caution[Use the app token, not the session token]
 Call `serverWithLeastClients` with the **app-scoped** token as the Bearer. The
 identity session token is rejected on the Game API, and Buddy only installs a

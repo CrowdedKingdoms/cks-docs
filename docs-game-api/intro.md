@@ -6,11 +6,15 @@ title: Introduction
 
 # Game API
 
-GraphQL API for **runtime / world / replication**:
+GraphQL API for **runtime / world / replication**. It is the **same server and
+the same URL** as the [Management API](/management-api/intro) surface — one
+schema, one bearer-token scheme. Gameplay rows live in **PostgreSQL + Citus**
+(`crowded_kingdoms`, distributed by `app_id`), not galaxy.
 
-- Uses identity, apps, and entitlements from the **[Management API](/management-api/intro)** — bearer tokens and tier entitlements are validated there. Does not replace management mutations such as billing or user registration.
+- Identity, apps, billing and entitlements are the management *surface* of this
+  API — there is no second host to configure.
 - Serves chunks, voxels, actors, avatars, app user state, the **GraphQL UDP proxy** (for browsers), **[Game Models](/game-api/game-models)**, **[Compute Modules](/game-api/compute-modules)** (server-side Rust/WebAssembly logic), **[teams](/game-api/teams)** and **[channels](/game-api/channels)**, the Buddy server registry, and game-client bootstrap.
-- **Studio grids** — `createGrid`, `grantGridPermissions`, `revokeGridPermissions`, and related queries. Grid data is stored in the **per-tenant game database**; tier/access checks still come from management.
+- **Studio grids** — `createGrid`, `grantGridPermissions`, `revokeGridPermissions`, and related queries. Grid data is stored in the Citus cluster next to the rest of the app; tier/access checks are the same API's management surface.
 - **Agentic Crowdy Studio development rollout** — durable owner/app
   Ask/Build/Play sessions, ordered events, exact tools, approvals, checkpoints,
   budgets, and revocable Play leases. Game API `v0.19.16` is deployed in
