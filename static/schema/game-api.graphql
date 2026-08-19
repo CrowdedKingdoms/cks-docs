@@ -5636,6 +5636,8 @@ type GmTimer {
 
 """
 Why an invocation failed, in the only vocabulary a player may be shown: a stable code, whose problem it is, and whether repeating the identical call could succeed. It carries no message, no engine name and no internal detail by design — blame attribution is the platform's job and presentation is the game's.
+
+IT CARRIES NO TIMING, AND NOTHING THAT NEEDS TIMING ARRIVES HERE. A refusal that can tell you how long to wait — `RATE_LIMITED` above all — is THROWN, with `extensions.retryAfterMs`, and never returned in band on a result. So `retryable: true` here means "try again", not "try again after N milliseconds", and a client with nothing but this object is right to use its own backoff. `expression-fault.classifier.spec.ts` holds that split rather than leaving it to how the code happens to be arranged.
 """
 type PlayerFaultInfo {
   """A stable, enumerated reason. Branch on this rather than on any text."""
@@ -5673,7 +5675,7 @@ enum PlayerFaultCode {
   """
   BUDGET_EXCEEDED
   """
-  This caller is asking too often. `retryAfterMs` is carried in error extensions when it is known.
+  This caller is asking too often. It arrives ONLY as a thrown error, never in band on a result, and `extensions.retryAfterMs` carries the wait. That number is the milliseconds REMAINING in the current fixed window at the moment the refusal was built, not a fixed backoff, so a second refusal inside the same window carries a smaller number: treat it as a deadline from receipt and do not reuse a cached one.
   """
   RATE_LIMITED
   """A metered allowance is spent and does not return on its own."""
