@@ -12,42 +12,54 @@ Give every visitor a session automatically — no login form, no password.
 
 ## Pattern
 
-Crowded Kingdoms is **passwordless** — there is no `register`/`login` and no
-password. On the **dev tier** the **dev bypass** is enabled, so `devLogin` issues a
-session for any email in one call. Generate a stable guest email on first visit and
-sign in with it:
+A guest is a **real account the browser creates for itself**: a generated email and
+a generated password, both stored locally. There is no login form, and the account
+is a normal one — the player can add a magic link or a social identity to it later
+and keep their progress.
+
+This used to be one call to a dev bypass. That bypass is gone (see the note
+below), and the replacement is barely longer, because a brand-new address is
+exactly the case where `register` returns a session immediately.
 
 ```ts
-const guestEmail =
-  JSON.parse(localStorage.getItem('guest') ?? 'null')?.email ??
-  `guest-${crypto.randomUUID().slice(0, 8)}@demo.local`;
+const stored = JSON.parse(localStorage.getItem('guest') ?? 'null');
+const guest = stored ?? {
+  email: `guest-${crypto.randomUUID().slice(0, 8)}@demo.local`,
+  // Generated, kept locally, never shown. It is what lets this browser get back
+  // into the SAME account tomorrow -- lose it and the guest is a new player.
+  password: `Aa1!${crypto.randomUUID()}`,
+};
 
-// Dev bypass (dev tier): one-call passwordless session. The account is created on
-// first sign-in and matched by email afterwards, so the same guest email = same account.
-await client.auth.devLogin(guestEmail);
-localStorage.setItem('guest', JSON.stringify({ email: guestEmail }));
+await client.auth.register(guest);
+localStorage.setItem('guest', JSON.stringify(guest));
 ```
 
 On subsequent visits, restore the stored session first and only sign in again if it
-has lapsed:
+has lapsed. Note this is `login`, not `register`: the address exists now, and
+`register` would refuse it.
 
 ```ts
 await client.session.restore();
 if (!client.session.getToken()) {
-  await client.auth.devLogin(guestEmail);
+  await client.auth.login(guest);
 }
 ```
 
-Store the guest email separately from the bearer token. `BrowserLocalStorageTokenStore`
-holds whichever token is current — the identity **session token** right after sign-in,
-then the **app-scoped token** once you mint it (below).
+Store the guest credentials separately from the bearer token.
+`BrowserLocalStorageTokenStore` holds whichever token is current — the identity
+**session token** right after sign-in, then the **app-scoped token** once you mint
+it (below).
 
-:::note[Bypass disabled? Use a magic link]
-`devLogin` only works where the dev bypass is on (`DEV_AUTH_BYPASS`, i.e. local/dev/test
-including the dev tier) and returns `FORBIDDEN` otherwise. For a real "guest" flow in
-production, swap it for the magic link: `client.auth.requestLoginLink({ email })` then
-`client.auth.completeLoginLink(token)` (the token arrives by email), or a social
-provider. See [Sign in (passwordless)](/management-api/authentication).
+:::note[Why not a magic link?]
+A magic link needs the player to open an inbox, which is exactly the friction a
+guest flow exists to avoid. Password is the automatic path. If you would rather
+not hold a password in `localStorage`, `requestLoginLink` is the alternative and
+costs you the inbox round trip.
+
+The **dev bypass this chapter used to recommend is gone** — `devLogin` was deleted
+on 2026-08-20, along with the `devToken` shortcut, because both handed out a
+session with no proof that the caller owned the address. Nothing replaces them on
+any tier. See [Sign in](/management-api/authentication).
 :::
 
 ## Mint an app-scoped token for gameplay
@@ -66,7 +78,9 @@ client.setToken(appToken.token); // gameplay now uses the app-scoped token
 
 ## Reset
 
-Provide a "Reset guest" control that clears the stored guest email and calls `client.auth.logout()`.
+Provide a "Reset guest" control that clears the stored guest credentials and calls
+`client.auth.logout()`. Clearing them is what makes the next visit a new player;
+the old account still exists and is simply unreachable from this browser.
 
 ## Exit criteria
 

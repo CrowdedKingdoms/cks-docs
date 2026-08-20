@@ -41,11 +41,12 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
 
 ## Global conventions
 
-- **Auth (passwordless, two tokens):** sign-in on the Management API is
-  **passwordless** — there is no `login`/`register`. Obtain an **identity session
-  token** with a magic link (`requestLoginLink` → `completeLoginLink`), a social
-  provider (`socialLoginStart` → `socialLoginComplete`; enabled providers in
-  `availableLoginProviders`), or — in dev/test (`DEV_AUTH_BYPASS=true`) — `devLogin`.
+- **Auth (two tokens):** obtain an **identity session token** with email +
+  password (`register` for a new account, `login` for an existing one), a magic
+  link (`requestLoginLink` → `completeLoginLink`), or a social provider
+  (`socialLoginStart` → `socialLoginComplete`; enabled providers in
+  `availableLoginProviders`). **Password is the one that needs no inbox and no
+  browser**, so it is usually the right choice for an agent.
   That session token is a **management-plane** credential and is **rejected for
   gameplay**; the Game API + realtime/UDP surface require an **app-scoped token**
   confined to one app. Mint one from the session token with
@@ -78,24 +79,26 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
 
 ## Get a sandbox key
 
-Use the **dev tier** to sign in (passwordless), create an org and an app, and obtain your
-identity session token without touching production data (then `mintAppToken` per app for
-gameplay). On any environment with the **dev bypass** enabled (`DEV_AUTH_BYPASS=true` —
-local/dev/test), an agent can get a session in one call with `devLogin(input:{ email })`
-(and `requestLoginLink` returns `devToken` directly, no inbox); otherwise use the magic
-link or a social provider — see [Sign in (passwordless)](/management-api/authentication).
+Use the **dev tier** to sign in, create an org and an app, and obtain your identity
+session token without touching production data (then `mintAppToken` per app for
+gameplay). `register(registerUserInput:{ email, password })` gives an agent a session
+in one call on any environment, and needs no inbox — see
+[Sign in](/management-api/authentication).
+
+There is no dev bypass to shortcut this. `devLogin` and the `devToken` field were
+deleted on 2026-08-20; every environment authenticates the same way.
 Start at [Dev tier](/management-ui/dev-tier) and
 [Create your first app](/management-ui/create-your-first-app).
 
 ## Workflow 1 — realtime gameplay (recommended path)
 
 ```graphql
-# 1) Authenticate (Management API, passwordless). Returns the identity SESSION token.
-#    Dev/test (DEV_AUTH_BYPASS): devLogin is a one-call session. In production use the
-#    magic link (requestLoginLink -> completeLoginLink) or social (socialLoginStart ->
-#    socialLoginComplete) instead. See /management-api/authentication.
-mutation DevLogin {
-  devLogin(input: { email: "player@example.com" }) {
+# 1) Authenticate (Management API). Returns the identity SESSION token.
+#    `register` for an address that has never been seen; `login` to return to an
+#    existing account. Magic link and social are the other two paths and need an
+#    inbox or a browser. See /management-api/authentication.
+mutation Register {
+  register(registerUserInput: { email: "player@example.com", password: "..." }) {
     token   # session token — management-plane only; mint an app token next
   }
 }

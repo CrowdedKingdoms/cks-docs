@@ -1,0 +1,63 @@
+---
+id: billing-exempt-org-type
+title: BillingExemptOrgType
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An organization whose wallet is not debited and whose apps are not denied for funds. Usage is still metered; waived amounts are in org&#x005F;billing&#x005F;waivers.
+
+
+```graphql
+type BillingExemptOrgType {
+  orgId: BigInt!
+  name: String!
+  slug: String!
+  reason: String!
+  setAt: DateTime!
+  setBy: BigInt
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingExemptOrgType.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization id (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingExemptOrgType.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Organization name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingExemptOrgType.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
+Organization slug.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingExemptOrgType.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Why the exemption exists. Required when setting it true.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingExemptOrgType.<b>setAt</b></code>](#set-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#set-at\} 
+When the exemption was last set true.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingExemptOrgType.<b>setBy</b></code>](#set-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#set-by\} 
+Operator user&#x005F;id who last set the exemption true.
+
+
+
+
+### Returned By
+
+[`billingExemptOrgs`](/reference/graphql/operations/queries/billing-exempt-orgs.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setOrgBillingExempt`](/reference/graphql/operations/mutations/set-org-billing-exempt.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

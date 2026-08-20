@@ -65,19 +65,17 @@ The sign-in page's layout reflects the order it recommends:
 - An **"or continue with email"** divider.
 - **Email + password** -- the standard "Log In" button.
 - **"Email me a sign-in link"** -- magic-link sign-in, reusing the email field above.
-- A muted **"Dev sign-in (dev servers only)"** button, for servers running `DEV_AUTH_BYPASS`.
+- An **email + password** sign-in, which works against every server.
 - The **organization token** field, tucked behind a "Use an organization token instead" toggle at the
   bottom, since it is the management-only option.
 
 Two things that trip people up the first time:
 
-- **"Continue with Mock"** is a server-exposed test-only OAuth provider, present only when the backend
-  runs with `DEV_AUTH_BYPASS`. It lets you exercise the full browser sign-in flow (system browser,
-  redirect, consent) without a real account or provider credentials. It never appears on a production
-  backend.
-- **"Email me a sign-in link" can sign you in instantly with no email sent** -- but only against a dev
-  backend. There, the server returns a token that skips the email round-trip entirely. Against a
-  production backend it behaves as expected: it emails a one-time link and waits for you to click it.
+- **There is no "Continue with Mock" and no instant sign-in link any more.** The mock OAuth provider
+  and the token the server used to hand back from "Email me a sign-in link" were both parts of the dev
+  auth bypass, deleted on 2026-08-20. The sign-in link now always arrives by email, on every backend,
+  so a backend with email delivery switched off cannot complete that flow at all -- use email +
+  password there.
 
 :::note
 Grids are admin-plane only. Every grid operation requires the `manage_apps` permission, and there is no player-scoped grid query. Grid authoring lives in Crowdy Studio, not in game code.

@@ -25,7 +25,7 @@ confined to that one app.
 Everything below starts from an identity **session token**, which you get from a
 passwordless sign-in on the Management API — there is no password. Briefly:
 `requestLoginLink` → `completeLoginLink` (magic link), `socialLoginStart` →
-`socialLoginComplete` (social/OIDC), or `devLogin` (dev/test only). The full flow
+`socialLoginComplete` (social/OIDC), or `login`/`register` (email + password). The full flow
 is in **[Sign in (passwordless)](/management-api/authentication)**. Hold the
 session token on your identity origin and mint app tokens from it as below.
 

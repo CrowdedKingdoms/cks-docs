@@ -48,8 +48,9 @@ your app:
 
 **Magic link.** `requestLoginLink({ email, redirectUri })` → the email link opens
 the system browser → it redirects to your scheme/loopback carrying the one-time
-token → `completeLoginLink(token)`. In dev (`DEV_AUTH_BYPASS`) `requestLoginLink`
-returns `devToken` directly, so tests skip the inbox.
+token → `completeLoginLink(token)`. The token arrives only by email; an automated
+test should `register` an account it holds the password to rather than trying to
+skip the inbox.
 
 **Social / OIDC.** Drive the OAuth dance in the **system browser** —
 `ASWebAuthenticationSession` (iOS/macOS), Chrome Custom Tabs (Android), or AppAuth
@@ -65,8 +66,10 @@ mutation Start($input: SocialLoginStartInput!) {
 Open `authorizeUrl`; the provider returns `code` (+ your `state`) to the
 redirect; finish with `socialLoginComplete({ provider, code, state })`.
 
-**Dev bypass.** `devLogin({ email })` returns a session in one call on
-local/dev/test (`DEV_AUTH_BYPASS`); `FORBIDDEN` in production.
+**Email + password.** `register({ email, password })` creates the account and
+returns a session; `login({ email, password })` returns to an existing one. This
+is the path that needs no browser and no inbox, so it is usually the right one
+for a headless or automated client.
 
 :::caution[Register your native redirect URIs]
 The server validates `redirectUri` **origins** for magic-link and social flows.

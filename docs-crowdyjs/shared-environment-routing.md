@@ -47,7 +47,7 @@ the gameplay client against the app's `gameApiUrl` with its **own** token store 
 seed it with the app token:
 
 ```ts
-await base.auth.devLogin('player@example.com'); // passwordless sign-in (dev/test)
+await base.auth.login({ email: 'player@example.com', password });
 
 const route = await base.apps.routeFor(appId);
 const gameApiUrl = route.gameApiUrl ?? cfg.sharedGameApiUrl;

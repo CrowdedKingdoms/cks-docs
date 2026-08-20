@@ -50,19 +50,19 @@ Set or clear this layer kill switch. Kill always wins over enablement.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentPlatformPolicyInput.<b>allowedModelIds</b></code>](#allowed-model-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#allowed-model-ids\} 
-Replacement exact model allowlist (max 64). App values are intersected with the platform allowlist.
+Replacement exact model allowlist (max 64). On an APP patch every id must already be in the platform allowlist or the whole write is refused with AGENT&#x005F;POLICY&#x005F;INVALID naming that list; values are never silently dropped. On the PLATFORM patch this list IS the ceiling. Empty denies all models at either layer.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentPlatformPolicyInput.<b>allowedToolNames</b></code>](#allowed-tool-names)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#allowed-tool-names\} 
-Replacement exact logical tool-name allowlist (max 256). App values are intersected with platform tools.
+Replacement exact logical tool-name allowlist (max 256). On an APP patch every name must already be in the platform allowlist or the whole write is refused with AGENT&#x005F;POLICY&#x005F;INVALID naming that list, and what you do send is stored exactly as sent; OMIT the field to express no narrowing, which inherits the platform list live on every read. Sending an empty array on an APP patch clears a narrowing and is therefore also "no narrowing", not "deny all". On the PLATFORM patch this list is the ceiling and empty denies every tool.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentPlatformPolicyInput.<b>allowedModes</b></code>](#allowed-modes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentMode!]</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-mode.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#allowed-modes\} 
-Replacement mode allowlist; app values are intersected with platform modes.
+Replacement mode allowlist. On an APP patch every mode must already be in the platform allowlist or the whole write is refused with AGENT&#x005F;POLICY&#x005F;INVALID naming that list. Empty denies every mode at either layer; there is no inherit-on-empty for modes.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentPlatformPolicyInput.<b>allowedRiskClasses</b></code>](#allowed-risk-classes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentRiskClass!]</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-risk-class.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="enum"/> \{#allowed-risk-classes\} 
-Replacement risk-class allowlist; app values are intersected with platform classes.
+Replacement risk-class allowlist. On an APP patch every class must already be in the platform allowlist or the whole write is refused with AGENT&#x005F;POLICY&#x005F;INVALID naming that list, and what you do send is stored exactly as sent; OMIT the field to express no narrowing, which inherits the platform list live on every read. On the PLATFORM patch this list is the ceiling and empty denies every class.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentPlatformPolicyInput.<b>turnLimits</b></code>](#turn-limits)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentTurnLimitsInput</b></code>](/reference/graphql/types/inputs/crowdy-studio-agent-turn-limits-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#turn-limits\} 

@@ -21,7 +21,7 @@ Runtime game data (chunks, voxels, actors, grids, grid permissions, UDP) lives i
 
 ## Authentication
 
-- **Passwordless sign-in**: there is no password. A user signs in with a **magic link**, a **social/OIDC** provider, or the **dev bypass**, and receives a bearer **identity session token** (64-character hex). Send `Authorization: Bearer <token>` on Management API GraphQL requests. Full flow — `requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`, `devLogin`, and federated identities — is in **[Sign in (passwordless)](/management-api/authentication)**.
+- **Sign-in**: a user signs in with **email + password**, a **magic link**, or a **social/OIDC** provider, and receives a bearer **identity session token** (64-character hex). Send `Authorization: Bearer <token>` on Management API GraphQL requests. Full flow — `register`/`login`, `requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`, and federated identities — is in **[Sign in](/management-api/authentication)**.
 - **Identity session token is management-plane only**: it is **not** valid for the Game API / realtime / UDP. To play, mint a short-lived **app-scoped token** from it (`mintAppToken`, or the browser portal flow); see **[Portals & app-scoped tokens](/management-api/portals-and-app-tokens)**.
 - **Org automation**: create an **org token** in the Management UI (or via GraphQL) for server-side automation with your org’s permissions.
 

@@ -30,7 +30,7 @@ the emailed URL to receive an identity **session token**:
 
 ```graphql
 mutation Request($input: RequestLoginLinkInput!) {
-  requestLoginLink(input: $input) { sent devToken }
+  requestLoginLink(input: $input) { sent }
 }
 ```
 
@@ -39,7 +39,7 @@ mutation Request($input: RequestLoginLinkInput!) {
 ```
 
 ```json
-{ "data": { "requestLoginLink": { "sent": true, "devToken": null } } }
+{ "data": { "requestLoginLink": { "sent": true } } }
 ```
 
 ```graphql
@@ -56,10 +56,11 @@ mutation Complete($input: CompleteLoginLinkInput!) {
 { "data": { "completeLoginLink": { "token": "ServerIssuedSessionToken", "gameTokenId": "9001", "user": { "userId": "777", "email": "owner@example.com" } } } }
 ```
 
-> Social sign-in uses `socialLoginStart` → `socialLoginComplete`; in dev
-> (`DEV_AUTH_BYPASS=true`) `devLogin(input:{email})` returns a session in one call and
-> `requestLoginLink` returns `devToken` directly. See
-> [Sign in (passwordless)](/management-api/authentication).
+> Email + password is `register(registerUserInput:{email,password})` for a new
+> account and `login(loginUserInput:{email,password})` for an existing one; social
+> sign-in uses `socialLoginStart` → `socialLoginComplete`. The magic-link token
+> arrives only by email — there is no way to read it out of the response. See
+> [Sign in](/management-api/authentication).
 
 ## 2. Browse the marketplace (public, no auth)
 

@@ -15,7 +15,7 @@ Supplement to **[Create your first app](/management-ui/create-your-first-app)** 
 - One account can link **multiple sign-in methods** (e.g. a Google identity and a magic-link email); they resolve to the same account by verified email.
 - After sign-in, users **with no organization** land on **My Orgs** (`/orgs`) with a split path: share **User ID** to join an existing org, or **create a new organization**.
 
-For the underlying mutations (`requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`, `devLogin`), see the **[Management API → Sign in (passwordless)](/management-api/authentication)**.
+For the underlying mutations (`login`/`register`, `requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`), see the **[Management API → Sign in](/management-api/authentication)**.
 
 ## Your account
 

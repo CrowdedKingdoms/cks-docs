@@ -1,0 +1,43 @@
+---
+id: rate-scope
+title: RateScope
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Which rate card. SHARED prices organization metered usage for shared-environment apps (billed hourly to the org wallet as "shared&#x005F;usage"). PLAYER prices player compute (billed hourly to the player wallet as "usage&#x005F;debit").
+
+
+```graphql
+enum RateScope {
+  SHARED
+  PLAYER
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>RateScope.<b>SHARED</b></code>](#shared) \{#shared\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RateScope.<b>PLAYER</b></code>](#player) \{#player\} 
+
+
+
+
+
+### Member Of
+
+[`billingRateCard`](/reference/graphql/operations/queries/billing-rate-card.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`RateCardEntryType`](/reference/graphql/types/objects/rate-card-entry-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RateChangeType`](/reference/graphql/types/objects/rate-change-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`SetRateCardInput`](/reference/graphql/types/inputs/set-rate-card-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
