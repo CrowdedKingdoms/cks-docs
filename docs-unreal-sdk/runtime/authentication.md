@@ -74,15 +74,21 @@ void Register(const FString& Email, const FString& Password, FOnAuthSuccess OnSu
 
 `Register` creates the account and signs in; both feed the same mint pipeline as every other method.
 
-### Dev bypass
+### Email + password
 
 ```cpp
 UFUNCTION(BlueprintCallable, Category="Crowdy SDK|Authentication")
-void DevLogin(const FString& Email, FOnAuthSuccess OnSuccess, FOnAuthError OnError);
+void Login(const FString& Email, const FString& Password, FOnAuthSuccess OnSuccess, FOnAuthError OnError);
+
+UFUNCTION(BlueprintCallable, Category="Crowdy SDK|Authentication")
+void Register(const FString& Email, const FString& Password, FOnAuthSuccess OnSuccess, FOnAuthError OnError);
 ```
 
-Only works against a server running `DEV_AUTH_BYPASS`; a production server rejects it with `FORBIDDEN`
-via `OnError`.
+Works against every server. `Register` returns a session only for an address it is
+creating; one that already has an account is refused, so fall back to `Login`.
+
+The `DevLogin` entry point is **gone** — the server-side bypass it called was
+deleted on 2026-08-20, so it can only fail.
 
 ### Magic link
 

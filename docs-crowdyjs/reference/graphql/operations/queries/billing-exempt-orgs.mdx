@@ -1,0 +1,29 @@
+---
+id: billing-exempt-orgs
+title: billingExemptOrgs
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR ONLY. Every organization currently marked billing&#x005F;exempt. An exemption nobody can enumerate is an exemption that outlives its reason.
+
+
+```graphql
+billingExemptOrgs: [BillingExemptOrgType!]!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>BillingExemptOrgType</b></code>](/reference/graphql/types/objects/billing-exempt-org-type.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An organization whose wallet is not debited and whose apps are not denied for funds. Usage is still metered; waived amounts are in org&#x005F;billing&#x005F;waivers.

@@ -105,9 +105,9 @@ const identity = createCrowdyClient({
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),
 });
 
-// Passwordless sign-in. The dev tier enables the dev bypass, so devLogin issues a
-// session in one call; in production use requestLoginLink/completeLoginLink or social.
-await identity.auth.devLogin('you@example.com');
+// Sign in. Email + password works on every tier; magic link needs email delivery,
+// which the dev tier does not have, and social needs configured provider credentials.
+await identity.auth.login({ email: 'you@example.com', password });
 
 // Mint an app-scoped token for your app, then drive gameplay from a per-game client.
 const appToken = await identity.portal.mintAppToken('<your-app-id>');
@@ -154,7 +154,7 @@ If gameplay fails, confirm you are sending an **app-scoped token** for this app 
 The API exposes an interactive GraphQL playground at its `/graphql` path:
 [https://api.dev.crowdedkingdoms.com/graphql](https://api.dev.crowdedkingdoms.com/graphql).
 
-Use it for sign-in (`devLogin`, or `requestLoginLink`/`completeLoginLink`), `me`, `createApp` and `mintAppToken`, and for gameplay queries — for those, pass `Authorization: Bearer <app-scoped token>` from `mintAppToken` (the identity session token is rejected for gameplay). Gameplay for an app placed in another datacenter must be run against that app's own `gameApiUrl`.
+Use it for sign-in (`login`/`register`, or `requestLoginLink`/`completeLoginLink`), `me`, `createApp` and `mintAppToken`, and for gameplay queries — for those, pass `Authorization: Bearer <app-scoped token>` from `mintAppToken` (the identity session token is rejected for gameplay). Gameplay for an app placed in another datacenter must be run against that app's own `gameApiUrl`.
 
 ## Related guides
 

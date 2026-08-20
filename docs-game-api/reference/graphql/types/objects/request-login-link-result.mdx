@@ -21,7 +21,6 @@ Result of requesting a magic link.
 ```graphql
 type RequestLoginLinkResult {
   sent: Boolean!
-  devToken: String
 }
 ```
 
@@ -30,10 +29,6 @@ type RequestLoginLinkResult {
 
 #### [<code style={{ fontWeight: 'normal' }}>RequestLoginLinkResult.<b>sent</b></code>](#sent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sent\} 
 Always true (does not reveal whether the email exists).
-
-
-#### [<code style={{ fontWeight: 'normal' }}>RequestLoginLinkResult.<b>devToken</b></code>](#dev-token)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#dev-token\} 
-DEV ONLY: when DEV&#x005F;AUTH&#x005F;BYPASS is enabled (so no email is delivered), the one-time token to pass to completeLoginLink. Always null in production.
 
 
 

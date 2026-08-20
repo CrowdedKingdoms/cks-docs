@@ -1,0 +1,29 @@
+---
+id: run-shared-usage-billing-tick
+title: runSharedUsageBillingTick
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR ONLY. Runs the shared-usage billing tick once. It still bills only the last CLOSED clock hour — it will not charge an open hour. Use this to prove a closed-hour debit without waiting for the ~60s cron. Backdating usage rows is a local-test fixture, not something this mutation does on a live tier.
+
+
+```graphql
+runSharedUsageBillingTick: Boolean!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.
