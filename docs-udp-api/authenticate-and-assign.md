@@ -17,22 +17,20 @@ and the Game API only accept app-scoped tokens). See
 ### Sign in (passwordless)
 
 Sign in on the **Management API** GraphQL endpoint to get the identity session
-token. There is no password — use a magic link, a social provider, or (dev/test
-only) the dev bypass:
+token. Email + password, a magic link, or a social provider — the same three
+paths on every environment:
 
 ```graphql
-# Dev/test (DEV_AUTH_BYPASS). In production use requestLoginLink -> completeLoginLink
-# or socialLoginStart -> socialLoginComplete instead.
-mutation DevLogin($input: DevLoginInput!) {
-  devLogin(input: $input) {
+mutation Login($loginUserInput: LoginUserInput!) {
+  login(loginUserInput: $loginUserInput) {
     token                      # identity SESSION token — management-plane only
     user { userId email gamertag }
   }
 }
-# variables: { "input": { "email": "player@example.com" } }
+# variables: { "loginUserInput": { "email": "player@example.com", "password": "..." } }
 ```
 
-See **[Sign in (passwordless)](/management-api/authentication)** for the magic-link
+See **[Sign in](/management-api/authentication)** for the magic-link
 and social flows.
 
 ### Mint an app token

@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Operator only (is&#x005F;operator or is&#x005F;super&#x005F;admin). Publish or release an emergency kill for one app. This state is separate from the app's own kill and always takes precedence in Management's effective envelope; app users cannot clear it. SIDE EFFECTS: revision increment, sanitized audit event, and transactional Game API policy notify. Runtime preemption depends on Game API pulling and enforcing the fresh envelope; releasing the operator kill does not enable the app or clear its own kill. Stable errors: AGENT&#x005F;POLICY&#x005F;INVALID, AGENT&#x005F;POLICY&#x005F;REVISION&#x005F;CONFLICT, IDEMPOTENCY&#x005F;CONFLICT.
+Operator only (is&#x005F;operator or is&#x005F;super&#x005F;admin). Publish or release an emergency kill for one app. This state is separate from the app's own kill and always takes precedence in Management's effective envelope; app users cannot clear it. SIDE EFFECTS: revision increment and a sanitized audit event. NOTHING IS PUSHED TO GAME API: preemption takes effect when its runtime next pulls this app's crowdy.studio-agent-policy/1 replica, which is within about a minute for an app already holding one and not at all for an app that does not until a permitted caller asks. Releasing the operator kill does not enable the app or clear its own kill. Stable errors: AGENT&#x005F;POLICY&#x005F;INVALID, AGENT&#x005F;POLICY&#x005F;REVISION&#x005F;CONFLICT, IDEMPOTENCY&#x005F;CONFLICT.
 
 
 ```graphql

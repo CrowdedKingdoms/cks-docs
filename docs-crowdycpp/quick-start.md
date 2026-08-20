@@ -35,7 +35,7 @@ CrowdyClient identity(std::move(identityCfg));
 
 // Dev bypass — development/test servers only; production apps use the
 // magic-link or social flows on client.auth().
-auto login = identity.auth().devLogin("player@example.com");
+auto login = identity.auth().login("player@example.com", password);
 ```
 
 ## 2. App token and per-game client

@@ -1,0 +1,39 @@
+---
+id: billing-rate-card
+title: billingRateCard
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR ONLY. The metered rate card for a scope: every priced dimension with its unit, price and hourly free allowance. SHARED is organization usage billed to the org wallet as "shared&#x005F;usage"; PLAYER is player compute billed to the player wallet as "usage&#x005F;debit". A dimension priced at 0 is metered but not charged. Read-only.
+
+
+```graphql
+billingRateCard(
+  scope: RateScope!
+): [RateCardEntryType!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>billingRateCard.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RateScope!</b></code>](/reference/graphql/types/enums/rate-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
+Which card to read.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>RateCardEntryType</b></code>](/reference/graphql/types/objects/rate-card-entry-type.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One priced dimension: its rate and, where it has one, its hourly free allowance. A dimension with a price of 0 is metered but not charged.

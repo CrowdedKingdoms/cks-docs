@@ -21,6 +21,7 @@ Aggregate compute activity for an app over a recent window: throughput, failure 
 ```graphql
 type WasmComputeStats {
   windowMinutes: Int!
+  aggregatedThrough: DateTime!
   totalRuns: Int!
   failedRuns: Int!
   failureRatePct: Float!
@@ -38,8 +39,12 @@ type WasmComputeStats {
 The window size in minutes.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>WasmComputeStats.<b>aggregatedThrough</b></code>](#aggregated-through)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#aggregated-through\} 
+The instant through which these totals are complete. Activity is counted from per-minute usage rollups that each instance buffers in memory and writes every few seconds, so entry calls made after this instant are NOT included yet. Read it before concluding anything from a zero: `totalRuns: 0` with an `aggregatedThrough` a few seconds in the past means "nothing aggregated yet", not "nothing ran". Poll until `aggregatedThrough` is later than the run you are looking for.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>WasmComputeStats.<b>totalRuns</b></code>](#total-runs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total-runs\} 
-Total runs in the window.
+Total entry calls (ticks + invocations) in the window, complete through `aggregatedThrough`.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>WasmComputeStats.<b>failedRuns</b></code>](#failed-runs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#failed-runs\} 

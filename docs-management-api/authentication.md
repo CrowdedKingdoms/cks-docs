@@ -1,18 +1,29 @@
 ---
 sidebar_position: 3
-title: Sign in (passwordless)
+title: Sign in
 ---
 
-# Sign in (passwordless)
+# Sign in
 
-Crowded Kingdoms is **passwordless**. There is **no email + password login and no
-registration form** — accounts are created on first sign-in. A user authenticates
-one of three ways, and every path returns an identity **session token** (an
-`AuthResponse`):
+A user authenticates one of three ways, and every path returns an identity
+**session token** (an `AuthResponse`):
 
+- **Email + password** — `register` to create an account, `login` to return to one.
 - **Magic link** — a one-time link emailed to the address.
 - **Social / OIDC** — a federated provider (e.g. Google).
-- **Dev bypass** — a direct sign-in for local/dev/test only (never production).
+
+These are peers on one email-keyed account rather than alternatives: an account
+created by magic link can later add a password, and signing in with Google and
+with a magic link for the same verified address resolves to the same account.
+
+:::caution[The dev bypass is gone]
+`devLogin` and the `devToken` field on `requestLoginLink` were **removed on
+2026-08-20** — deleted, not disabled, so no environment variable brings them
+back. `devLogin` returned a session for any address with no proof of ownership,
+and `devToken` put the emailed one-time token in the response body where any
+unauthenticated caller could read it. Automated clients should `register` an
+account they hold the password to.
+:::
 
 The session token is a **management-plane** credential. It is **not valid for
 gameplay**: to play, mint a short-lived **app-scoped token** from it — see
@@ -20,7 +31,7 @@ gameplay**: to play, mint a short-lived **app-scoped token** from it — see
 [Game API → Authentication](/game-api/authentication).
 
 :::note[Browser clients]
-CrowdyJS wraps every flow below behind `client.auth` (passwordless) — see
+CrowdyJS wraps every flow below behind `client.auth` — see
 [CrowdyJS → Authentication](/crowdyjs/readme#authentication-session-vs-app-scoped-tokens).
 You rarely hand-write these mutations in a browser.
 :::
@@ -50,14 +61,13 @@ Two steps. Request a link, then complete the sign-in with the token from it.
 mutation Request($input: RequestLoginLinkInput!) {
   requestLoginLink(input: $input) {
     sent
-    devToken   # DEV ONLY: present when DEV_AUTH_BYPASS is on (no email is sent); else null
   }
 }
 # variables: { "input": { "email": "player@example.com", "redirectUri": "https://app.example.com/auth/callback" } }
 ```
 
 ```graphql
-# 2) Complete sign-in with the token from the link (or devToken in dev). Public —
+# 2) Complete sign-in with the token from the link. Public —
 #    the token authorizes the call; throws if invalid/expired/already used.
 mutation Complete($input: CompleteLoginLinkInput!) {
   completeLoginLink(input: $input) { token gameTokenId user { userId email } }
@@ -66,9 +76,10 @@ mutation Complete($input: CompleteLoginLinkInput!) {
 ```
 
 The `redirectUri` origin must be an allowed app/UI origin; it defaults to the
-platform sign-in page. In development (`DEV_AUTH_BYPASS=true`) no email is
-delivered — `requestLoginLink` returns the `devToken` directly so tests and local
-flows can call `completeLoginLink` without an inbox.
+platform sign-in page. The token leaves **only** by email; there is no way to
+read it out of the response. An environment with email delivery switched off
+therefore cannot complete a magic-link sign-in at all — use email + password
+there.
 
 ## Social / OIDC
 
@@ -105,25 +116,41 @@ The framework is **provider-agnostic**. Today it ships:
 | Provider | Enabled when |
 |---|---|
 | **`google`** | `GOOGLE_CLIENT_ID` **and** `GOOGLE_CLIENT_SECRET` are configured on the server. |
-| **`mock`** | Dev only — appears **only** when `DEV_AUTH_BYPASS=true`. Never in production. |
+
 
 `availableLoginProviders` reflects exactly what is configured, so drive your
 sign-in UI from it rather than hard-coding provider buttons.
 
-## Dev bypass
+## Email + password
 
-`devLogin` returns a session for an email **without** email or social
-verification. It is active **only** when the server runs with
-`DEV_AUTH_BYPASS=true` (local, dev, and test environments) and throws `FORBIDDEN`
-otherwise. It is used by tests and fixtures and is **never** enabled in
-production.
+`register` creates the account and returns a session immediately. `login`
+returns to an existing one.
 
 ```graphql
-mutation Dev($input: DevLoginInput!) {
-  devLogin(input: $input) { token gameTokenId user { userId email } }
+mutation Register($registerUserInput: RegisterUserInput!) {
+  register(registerUserInput: $registerUserInput) { token gameTokenId user { userId email } }
 }
-# variables: { "input": { "email": "player@example.com" } }
+# variables: { "registerUserInput": { "email": "player@example.com", "password": "..." } }
 ```
+
+```graphql
+mutation Login($loginUserInput: LoginUserInput!) {
+  login(loginUserInput: $loginUserInput) { token gameTokenId user { userId email } }
+}
+# variables: { "loginUserInput": { "email": "player@example.com", "password": "..." } }
+```
+
+Two behaviours to code against, because both are easy to meet by accident:
+
+- **`register` on an address that already has an account does not sign you in.**
+  The password is attached *pending email confirmation* and the mutation throws.
+  This stops somebody who only knows an address from claiming a password on an
+  account they do not control. Fall back to `login`.
+- **`login` refuses an unconfirmed password when the account has another
+  verified sign-in method**, with *"Confirm your email to enable password sign-in
+  for this account."* The remedy is the emailed confirmation link, not a
+  different password. A password-only account signs in immediately, because
+  there is no other method to protect.
 
 ## Federated identities (linking sign-in methods)
 
@@ -159,6 +186,7 @@ query Mine { myIdentities { identityId provider subject email emailVerified last
   always `true`); one-time link tokens are single-use and short-lived.
 - Restrict your own frontends' CORS and redirect origins to trusted hosts; the
   server validates `redirectUri` origins for both magic-link and social flows.
-- The dev bypass (`devLogin` + the `mock` provider) must never be enabled in
-  production. `availableLoginProviders` and the presence of `devToken` are the
-  machine-readable signals that it is on.
+- There is no environment in which authentication is weaker. The dev bypass
+  (`devLogin`, the `mock` provider, and `devToken`) used to make non-production
+  tiers different, which meant a deploy could get security wrong; it is deleted
+  rather than switched off, so there is nothing left to configure incorrectly.
