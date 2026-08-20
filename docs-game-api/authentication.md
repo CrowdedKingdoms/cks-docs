@@ -10,9 +10,9 @@ Sign-in happens on the **[Management API](/management-api/intro)**, which is
 handed to a game. A user signs in with a magic link, a social provider, or the
 dev bypass; that returns an identity **session token**. The Game API never sees
 that flow and never receives a password — it only accepts the **app-scoped token**
-minted downstream. See **[Sign in (passwordless)](/management-api/authentication)**
-for `requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`,
-`devLogin`, and `me`.
+minted downstream. See **[Sign in](/management-api/authentication)** for
+`register`/`login`, `requestLoginLink`/`completeLoginLink`,
+`socialLoginStart`/`socialLoginComplete`, and `me`.
 
 ## Gameplay requires an app-scoped token
 

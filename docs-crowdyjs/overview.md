@@ -40,7 +40,7 @@ realtime). What separates the surfaces is the token, not the host:
 
 | Sub-client | Token | Use |
 |---|---|---|
-| `client.auth`, `client.users`, `client.apps`, `client.platform` | identity session | Passwordless identity (`requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`, `devLogin`, `availableLoginProviders`, `myIdentities`/`linkIdentity`/`unlinkIdentity`, `logout`, `me`, `updateGamertag`), app routing reads (`apps.routeFor`), and public platform config (`platform.config`). |
+| `client.auth`, `client.users`, `client.apps`, `client.platform` | identity session | Identity (`login`/`register`, `requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`, `availableLoginProviders`, `myIdentities`/`linkIdentity`/`unlinkIdentity`, `logout`, `me`, `updateGamertag`), app routing reads (`apps.routeFor`), and public platform config (`platform.config`). |
 | `client.chunks`, `client.voxels`, `client.actors`, `client.avatars`, `client.teleport`, `client.state`, `client.host`, `client.serverStatus`, `client.channels`, `client.teams`, `client.gameModel`, `client.udp` | app-scoped | World data, avatars, channels & teams, game models (incl. [automations](automations) and [model-driven notifications](model-notifications)), the GraphQL UDP proxy subscription, and game-client bootstrap. `client.host` covers host election (`get` / `amIHost`) and `heartbeat` — see [Host discovery](/game-api/host-discovery). |
 
 Each client has one `AuthState`, so you still build **two clients**: an identity client
@@ -115,8 +115,8 @@ Register at [https://app.dev.crowdedkingdoms.com/register](https://app.dev.crowd
 CrowdyJS uses two kinds of token and **gameplay does not accept the session
 token** (see [Portals & app-scoped tokens](/management-api/portals-and-app-tokens)):
 
-- **Identity session token** — returned by a passwordless `client.auth` sign-in
-  (`completeLoginLink`, `socialLoginComplete`, or `devLogin`) and stored on the
+- **Identity session token** — returned by any `client.auth` sign-in (`login`,
+  `register`, `completeLoginLink`, or `socialLoginComplete`) and stored on the
   client automatically. A management-plane credential (account, studio admin) and
   the **only** thing that can mint app tokens. It is **rejected for gameplay** (the
   Game API and the realtime/UDP surface reject it).
@@ -155,9 +155,9 @@ const identity = createCrowdyClient({
   httpUrl: 'https://api.example.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),
 });
-// Passwordless sign-in (stores the session token). Magic link / social in
-// production; devLogin shown here for dev/test (DEV_AUTH_BYPASS).
-await identity.auth.devLogin('player@example.com');
+// Sign in (stores the session token). Email + password here; magic link and
+// social are the other two paths and behave the same from this point on.
+await identity.auth.login({ email: 'player@example.com', password });
 
 // Native / same-origin: mint an app token, then build the per-game client.
 const appToken = await identity.portal.mintAppToken(appId);
@@ -181,12 +181,13 @@ returns an `AuthResponse` and stores the session token on the identity client:
 
 ```ts
 // Magic link: request, then complete with the token from the emailed URL.
-const { devToken } = await identity.auth.requestLoginLink({
+await identity.auth.requestLoginLink({
   email: 'player@example.com',
   redirectUri: 'https://app.example.com/auth/callback',
 });
-// In dev (DEV_AUTH_BYPASS) devToken is returned directly; in prod it arrives by email.
-await identity.auth.completeLoginLink(tokenFromLinkOrDevToken);
+// The token arrives ONLY by email -- there is no way to read it out of the
+// response. An automated caller should register an account instead.
+await identity.auth.completeLoginLink(tokenFromLink);
 
 // Social / OIDC: drive your buttons from the enabled providers.
 const providers = await identity.auth.availableLoginProviders(); // e.g. ['google']
@@ -197,8 +198,9 @@ const { authorizeUrl, state } = await identity.auth.socialLoginStart(
 window.location.assign(authorizeUrl); // …provider redirects back with ?code & ?state
 await identity.auth.socialLoginComplete({ provider: 'google', code, state });
 
-// Dev / test only (DEV_AUTH_BYPASS): one-call session.
-await identity.auth.devLogin('player@example.com');
+// Email + password: the path that needs neither an inbox nor a browser.
+await identity.auth.register({ email: 'player@example.com', password }); // new account
+await identity.auth.login({ email: 'player@example.com', password });    // existing one
 ```
 
 An account can link multiple sign-in methods: `identity.auth.myIdentities()`,
@@ -226,9 +228,9 @@ const identity = createCrowdyClient({
 
 await identity.session.restore();
 if (!identity.session.getToken()) {
-  // Passwordless sign-in — magic link / social in production. devLogin shown here
-  // for dev/test (DEV_AUTH_BYPASS). See #sign-in-with-clientauth-passwordless.
-  await identity.auth.devLogin('player@example.com');
+  // Sign in. Email + password shown; magic link and social are the other paths.
+  // See #sign-in-with-clientauth-passwordless.
+  await identity.auth.login({ email: 'player@example.com', password });
 }
 
 // Mint an app-scoped token, then build a per-game client that holds it.
@@ -254,7 +256,7 @@ Note that the per-game client uses the URLs the mint returned, not `apiUrl`: tho
 
 ## Game loop lifecycle
 
-1. On the identity client, sign in (passwordless) with `identity.auth.completeLoginLink()` / `socialLoginComplete()` / `devLogin()`, or `identity.session.restore()`.
+1. On the identity client, sign in with `identity.auth.login()` / `register()` / `completeLoginLink()` / `socialLoginComplete()`, or `identity.session.restore()`.
 2. Mint an app-scoped token for the target app — `identity.portal.mintAppToken(appId)` (same-origin/native) or the PKCE portal flow for a different origin — and build a per-game client that holds it (`game.setToken(appToken.token)`). See [Authentication: session vs app-scoped tokens](#authentication-session-vs-app-scoped-tokens).
 3. Subscribe to UDP proxy notifications with `game.udp.subscribe(handlers, appId)` (or `game.world(appId).subscribe(handlers)`). The `appId` is **required** — the Game API scopes each realtime session to one app.
 4. Join a chunk by sending an initial actor update.

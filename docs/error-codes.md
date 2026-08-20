@@ -36,7 +36,7 @@ GraphQL responses carry errors in the top-level `errors` array. Each entry has a
 
 | `extensions.code` | Meaning | Remediation |
 |---|---|---|
-| `UNAUTHENTICATED` | No bearer token, or it is invalid/expired. | For Management API calls, sign in again (passwordless: magic link, social, or `devLogin`) for the **session token** — see [Sign in (passwordless)](/management-api/authentication). For the **Game API + realtime subscriptions**, send an **app-scoped token** (`mintAppToken` / portal flow) as the Bearer (and in the ws `connection_init` payload) — the session token is rejected there. |
+| `UNAUTHENTICATED` | No bearer token, or it is invalid/expired. | For Management API calls, sign in again (password, magic link, or social) for the **session token** — see [Sign in](/management-api/authentication). For the **Game API + realtime subscriptions**, send an **app-scoped token** (`mintAppToken` / portal flow) as the Bearer (and in the ws `connection_init` payload) — the session token is rejected there. |
 | `FORBIDDEN` | Authenticated, but the token lacks the required permission for this field. | Each operation's description and its `@requiresPermission` directive name the permission; `extensions.requiredPermission` carries the key. Use a token/role that holds it. |
 | `SCOPE_MISSING` | The token is scoped to a different org/app than the request targets. | Use a token minted for the requested org/app, or a full-scope org token. |
 | `BAD_USER_INPUT` | An argument failed validation (wrong type, out of range, missing required field). | Check the argument descriptions in the SDL; `BigInt` must be a string, enums must be exact names. |

@@ -1,0 +1,63 @@
+---
+id: crowdy-studio-agent-catalog-tool
+title: CrowdyStudioAgentCatalogTool
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One implemented crowdy.agent-tools/1 tool, named exactly as a policy allowlist must name it.
+
+
+```graphql
+type CrowdyStudioAgentCatalogTool {
+  name: String!
+  summary: String!
+  executor: CrowdyStudioAgentToolExecutor!
+  modes: [CrowdyStudioAgentMode!]!
+  riskClass: CrowdyStudioAgentRiskClass!
+  approvalRequired: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalogTool.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Logical dotted tool name. This is the string an allowedToolNames entry must equal.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalogTool.<b>summary</b></code>](#summary)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#summary\} 
+What the tool does, from its canonical descriptor.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalogTool.<b>executor</b></code>](#executor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentToolExecutor!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-tool-executor.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#executor\} 
+Trusted boundary that runs it: SERVER or BROWSER.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalogTool.<b>modes</b></code>](#modes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioAgentMode!]!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#modes\} 
+Modes the tool is available in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalogTool.<b>riskClass</b></code>](#risk-class)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentRiskClass!</b></code>](/reference/graphql/types/enums/crowdy-studio-agent-risk-class.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#risk-class\} 
+Server-classified risk. Allowing the class is necessary but not sufficient: an approval-gated tool still requires exact human approval.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentCatalogTool.<b>approvalRequired</b></code>](#approval-required)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#approval-required\} 
+Whether every call needs exact human approval regardless of policy.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioAgentCatalog`](/reference/graphql/types/objects/crowdy-studio-agent-catalog.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

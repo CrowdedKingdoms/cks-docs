@@ -41,7 +41,6 @@
       "deleteOrgRole",
       "deletePlayerWasmPolicy",
       "deleteQuota",
-      "devLogin",
       "exchangePortalCode",
       "forceLogoutUser",
       "grantAppAccess",

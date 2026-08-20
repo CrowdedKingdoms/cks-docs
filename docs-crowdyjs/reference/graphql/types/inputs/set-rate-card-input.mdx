@@ -1,0 +1,78 @@
+---
+id: set-rate-card-input
+title: SetRateCardInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input SetRateCardInput {
+  scope: RateScope!
+  metric: String!
+  priceCents: Float
+  unitLabel: String
+  unitQuantity: BigInt
+  acknowledgeRepricing: Boolean
+  freePerHour: BigInt
+  freePerMonth: BigInt
+  reason: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RateScope!</b></code>](/reference/graphql/types/enums/rate-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
+Which card to edit.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>metric</b></code>](#metric)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#metric\} 
+The metered dimension to reprice. Refused unless the platform actually meters it: a rate for an unmetered metric bills nobody while appearing configured.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#price-cents\} 
+New price in cents per unitQuantity raw units. Must be &#x003E;= 0; 0 means meter but do not charge. Omit to leave the price unchanged. Fractional values are accepted (the column is NUMERIC(20,6)).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>unitLabel</b></code>](#unit-label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#unit-label\} 
+New human unit this price is quoted in, e.g. "GiB" or "GiB-mo". Must be supplied together with unitQuantity: a label on its own restates the rate card while the arithmetic keeps the old divisor. Omit both to leave the unit unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>unitQuantity</b></code>](#unit-quantity)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#unit-quantity\} 
+New number of raw metric units one priceCents charge covers, as a BigInt decimal string. Must be &#x003E; 0 and supplied together with unitLabel. Needed because every rate seed is ON CONFLICT DO NOTHING, so a unit corrected in the declaration never reaches a tier that is already installed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>acknowledgeRepricing</b></code>](#acknowledge-repricing)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#acknowledge-repricing\} 
+Required when a unit change also changes the money. Restating 15c per GiB as 1.396984c per 100 MB is the same price and needs nothing; changing 20c per 100 MB to 20c per GiB-month is a 7841x cut and must be stated deliberately. The mutation refuses rather than guessing which one you meant.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>freePerHour</b></code>](#free-per-hour)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#free-per-hour\} 
+New hourly free allowance in raw metric units, as a BigInt decimal string. Must be &#x003E;= 0. Omit to leave the allowance unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>freePerMonth</b></code>](#free-per-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#free-per-month\} 
+New monthly free allowance in raw metric units, as a BigInt decimal string. Must be &#x003E;= 0. On the PLAYER card with metric player&#x005F;wasm&#x005F;compute&#x005F;units this is the pooled monthly TRIAL BUDGET per (player, app) — the only sanctioned way to change it on a live tier. Omit to leave it unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Why this price is changing. Required: a rate change with no stated reason is not auditable after the fact. Recorded in the operator log with the before and after values.
+
+
+
+
+### Member Of
+
+[`setBillingRate`](/reference/graphql/operations/mutations/set-billing-rate.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
