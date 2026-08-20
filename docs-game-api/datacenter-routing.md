@@ -18,7 +18,7 @@ The platform database is PostgreSQL with Citus, distributed on `app_id`. Every r
 app — chunks, actors, grids, compute state — lives on shards in a single datacenter, and
 an app is deliberately placed in one rather than spread across several.
 
-The published origin, `ck.<tier>.cp.cks-env.com`, is a multi-value DNS record over every
+The published origin, `ck.<tier>.v7.cks-env.com`, is a multi-value DNS record over every
 datacenter's load balancer. There is no single front door: whichever datacenter DNS hands
 you answers your first request. That is intentional, because a single front door is a
 single thing to lose.
@@ -58,11 +58,11 @@ import { createCrowdyClient } from '@crowdedkingdoms/crowdyjs';
 
 // 1. Connect to the published origin. Any datacenter answers.
 let client = createCrowdyClient({
-  httpUrl: 'https://ck.prod.cp.cks-env.com/graphql',
-  wsUrl: 'wss://ck.prod.cp.cks-env.com/graphql',
+  httpUrl: 'https://ck.prod.v7.cks-env.com/graphql',
+  wsUrl: 'wss://ck.prod.v7.cks-env.com/graphql',
   realtime: {
     // The SHARED origin, and it stays that way for the life of the client.
-    discoveryUrl: 'https://ck.prod.cp.cks-env.com/graphql',
+    discoveryUrl: 'https://ck.prod.v7.cks-env.com/graphql',
   },
 });
 
@@ -75,7 +75,7 @@ if (bootstrap.gameApiUrl && bootstrap.gameApiUrl !== currentEndpoint) {
     httpUrl: bootstrap.gameApiUrl,
     wsUrl: bootstrap.gameApiWsUrl,
       // Unchanged. This is the point.
-    realtime: { discoveryUrl: 'https://ck.prod.cp.cks-env.com/graphql' },
+    realtime: { discoveryUrl: 'https://ck.prod.v7.cks-env.com/graphql' },
   });
   client.setToken(appToken);
 }
@@ -97,11 +97,11 @@ possibility, it is out of date.
 ```json
 {
   "errors": [{
-    "message": "App 42 is served from datacenter 'or', not 'va'. Reconnect to https://ck-or.prod.cp.cks-env.com and retry. …",
+    "message": "App 42 is served from datacenter 'or', not 'va'. Reconnect to https://ck-or.prod.v7.cks-env.com and retry. …",
     "extensions": {
       "code": "WRONG_DATACENTER",
-      "gameApiUrl": "https://ck-or.prod.cp.cks-env.com",
-      "gameApiWsUrl": "wss://ck-or.prod.cp.cks-env.com",
+      "gameApiUrl": "https://ck-or.prod.v7.cks-env.com",
+      "gameApiWsUrl": "wss://ck-or.prod.v7.cks-env.com",
       "appDatacenter": "or",
       "servedBy": "va"
     }
