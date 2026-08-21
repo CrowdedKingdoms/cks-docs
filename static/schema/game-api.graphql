@@ -1072,7 +1072,7 @@ type OrgRetirementType {
   """When it was retired."""
   retiredAt: DateTime!
   """
-  Wallet balance in cents at the moment of retirement. This money is FROZEN, not refunded and not forfeited: whether a retired balance should be returned or written off is an operator decision that has not been taken, and retirement deliberately does not settle it.
+  Wallet balance in cents at the moment of retirement. This money is FROZEN indefinitely, not refunded and not forfeited — the operator decided that on 2026-08-21. It is recorded here rather than only in the wallet so that every organization holding frozen money is enumerable from one table if the policy is ever revisited.
   """
   balanceCentsAtRetirement: BigInt!
   """
@@ -1084,7 +1084,7 @@ type OrgRetirementType {
   """
   appsArchived: Int!
   """
-  True when the caller had to pass acknowledgeFrozenBalance because the org held money.
+  True when the caller had to pass acknowledgeFrozenBalance because the org held money, which is frozen indefinitely rather than refunded or forfeited.
   """
   frozenBalanceAcknowledged: Boolean!
   """When the retirement was reversed, or null while it is in force."""
@@ -9578,7 +9578,7 @@ type Mutation {
     loginUserInput: LoginUserInput!
   ): AuthResponse!
   """
-  Registers a new email + password account: creates the (initially unconfirmed) account, emails a confirmation link, and returns an AuthResponse with a session `token` for immediate use (send as `Authorization: Bearer <token>`). If an account already exists for the email (e.g. created via magic link/social), the password is attached pending email confirmation and no session is returned (throws CONFLICT). Public.
+  Registers a new email + password account: creates the (initially unconfirmed) account, emails a confirmation link, and returns an AuthResponse with a session `token` for immediate use (send as `Authorization: Bearer <token>`). If an account already exists for the email (e.g. created via magic link/social), the password is attached pending email confirmation and no session is returned, refused with extensions.code EMAIL_ALREADY_REGISTERED (409). It is a routine outcome rather than a fault, and it reached clients as INTERNAL_SERVER_ERROR before v1.60.0, which is why several of them match it by its message text. Public.
   """
   register(
     """
@@ -9615,7 +9615,7 @@ type Mutation {
     email: String!
   ): Boolean!
   """
-  Changes the authenticated user's password after verifying the current password. Requires a valid session token. Returns true on success; throws if the current password is wrong. Existing sessions are not revoked.
+  Changes the authenticated user's password after verifying the current password. Requires a valid session token. Returns true on success. Refuses with extensions.code INVALID_CURRENT_PASSWORD (403) when the current password is wrong, and PASSWORD_NOT_SET (409) when the account has no password to change — use setInitialPassword for that, which needs only the session. NEITHER of those means the session is invalid, and neither is UNAUTHENTICATED: both were until v1.60.0, so a client that signs the user out on UNAUTHENTICATED was signing them out over a typo. Existing sessions are not revoked.
   """
   changePassword(
     """The user's current password, for verification."""
@@ -9624,7 +9624,7 @@ type Mutation {
     newPassword: String!
   ): Boolean!
   """
-  Adds a password to the signed-in account when it does not have one yet — for an account created by magic link or a social provider, which previously had no in-product way to add password sign-in. Requires a valid session token; the session is the proof of account control, so the password is usable immediately and no email confirmation is needed. Throws CONFLICT if a password is already set (use changePassword, which verifies the current one). A security notification is emailed to the account address. Existing sessions are not revoked.
+  Adds a password to the signed-in account when it does not have one yet — for an account created by magic link or a social provider, which previously had no in-product way to add password sign-in. Requires a valid session token; the session is the proof of account control, so the password is usable immediately and no email confirmation is needed. Refuses with extensions.code PASSWORD_ALREADY_SET (409) when a password is already set — use changePassword, which verifies the current one, or the reset flow if it is forgotten. (Before v1.60.0 that refusal reached clients as INTERNAL_SERVER_ERROR while this description said CONFLICT, so a client could only recognise it by the message text.) A security notification is emailed to the account address. Existing sessions are not revoked.
   """
   setInitialPassword(
     """The password to set (min 8 characters)."""
@@ -9679,7 +9679,7 @@ type Mutation {
     status: String!
   ): Organization! @requiresPermission(scope: "super_admin", permission: "is_super_admin")
   """
-  OPERATOR ONLY. Retires an organization: sets organizations.status to 'retired', stamps deleted_at, archives its apps, and writes a tombstone to org_retirements. RETIREMENT IS A STATE, NOT A DELETION — no wallet_transactions, org_billing_waivers, app_shared_usage_charges or other ledger row is altered or removed, so an auditor can still reconstruct exactly what this organization spent, with the same joins as before, indefinitely. There is deliberately no purge and no retention window: destroying financial records is an operator and legal decision, not this mutation's. AFTER RETIREMENT the org's API tokens stop authenticating, its members lose every org permission (super admins excepted, so this is reversible), and it is excluded from the caller's organization list — but it is still readable by id and slug, because a retired org that answers like a missing one is worse than one that says what it is. Refuses unless expectedSlug matches the org named by orgId, and refuses an organization holding money unless acknowledgeFrozenBalance is passed. Reverse it with reinstateOrganization.
+  OPERATOR ONLY. Retires an organization: sets organizations.status to 'retired', stamps deleted_at, archives its apps, and writes a tombstone to org_retirements. RETIREMENT IS A STATE, NOT A DELETION — no wallet_transactions, org_billing_waivers, app_shared_usage_charges or other ledger row is altered or removed, so an auditor can still reconstruct exactly what this organization spent, with the same joins as before, indefinitely. There is no purge and no retention window, by decision rather than by omission: org ledger rows are retained forever (operator decision, 2026-08-21), so retirement is only ever a state. A retired organization's remaining wallet balance is FROZEN indefinitely by the same decision — held, not refunded and not forfeited — and the amount is recorded on the tombstone. AFTER RETIREMENT the org's API tokens stop authenticating, its members lose every org permission (super admins excepted, so this is reversible), and it is excluded from the caller's organization list — but it is still readable by id and slug, because a retired org that answers like a missing one is worse than one that says what it is. Refuses unless expectedSlug matches the org named by orgId, and refuses an organization holding money unless acknowledgeFrozenBalance is passed. Reverse it with reinstateOrganization.
   """
   retireOrganization(
     """Which organization, proof you mean it, and why."""
@@ -11315,7 +11315,7 @@ type Mutation {
     input: CreateCrowdyStudioProjectInput!
   ): CrowdyStudioProject!
   """
-  Optimistically save selected private project metadata and increment its monotonic revision. Requires an app-scoped token and exact project ownership. A stale expectedRevision returns CONFLICT; grid affinity remains an authoring hint and never bypasses player-compute deployment checks.
+  Optimistically save selected private project metadata and increment its monotonic revision. Requires an app-scoped token and exact project ownership. A stale expectedRevision is refused with extensions.code CROWDY_STUDIO_REVISION_CONFLICT (HTTP 409) — that exact string, not CONFLICT, which is what an earlier wording of this sentence implied and what one SDK consequently matched on; grid affinity remains an authoring hint and never bypasses player-compute deployment checks.
   """
   crowdyStudioProjectSaveMetadata(
     """
@@ -11880,9 +11880,13 @@ input RetireOrganizationInput {
   """
   reason: String!
   """
-  Required when the organization holds a non-zero wallet balance. Retirement FREEZES that balance in place; it is not refunded and not forfeited. Refusing by default rather than omitting the case is deliberate — an unreachable dangerous path guarantees the danger and removes the fix.
+  Required when the organization holds a non-zero wallet balance. Retirement FREEZES that balance indefinitely: the money is held, deliberately, and is neither refunded nor forfeited. That is settled policy (operator decision, 2026-08-21), not a placeholder for one. The amount is recorded on the tombstone so every organization it applies to stays enumerable if the policy is ever revisited. Refusing by default rather than omitting the case is deliberate — an unreachable dangerous path guarantees the danger and removes the fix.
   """
   acknowledgeFrozenBalance: Boolean
+  """
+  Required when the organization is a tier's DURABLE PROBE ORGANIZATION — the `<family>-<tier>` org scripts/probe-org.sh reuses on every run. Retiring one frees nothing: the slug stays taken, organizationBySlug keeps returning it, and the next probe run fails on a bare permission denial days later, so the cost lands on somebody else. The refusal names the family and tells you that reinstateOrganization is the way back.
+  """
+  acknowledgeProbeInfrastructure: Boolean
 }
 
 """Which retired organization to put back, and why."""
@@ -14070,7 +14074,7 @@ input SaveCrowdyStudioProjectMetadataInput {
   """Project UUID to update."""
   projectId: String!
   """
-  Current project revision. A stale value returns CONFLICT with CROWDY_STUDIO_REVISION_CONFLICT.
+  Current project revision. A stale value is refused with extensions.code CROWDY_STUDIO_REVISION_CONFLICT (HTTP 409); branch on that exact code, not on CONFLICT.
   """
   expectedRevision: BigInt!
   """
@@ -14106,7 +14110,7 @@ input SaveCrowdyStudioProjectInput {
   """Project UUID to update."""
   projectId: String!
   """
-  Current project revision. A stale value returns CONFLICT with CROWDY_STUDIO_REVISION_CONFLICT and applies no metadata or file writes.
+  Current project revision. A stale value is refused with extensions.code CROWDY_STUDIO_REVISION_CONFLICT (HTTP 409) — that exact code, not CONFLICT — and applies no metadata or file writes.
   """
   expectedRevision: BigInt!
   """

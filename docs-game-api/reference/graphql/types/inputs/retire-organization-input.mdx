@@ -24,6 +24,7 @@ input RetireOrganizationInput {
   expectedSlug: String!
   reason: String!
   acknowledgeFrozenBalance: Boolean
+  acknowledgeProbeInfrastructure: Boolean
 }
 ```
 
@@ -43,7 +44,11 @@ Why this organization is being retired. Required and stored on the tombstone.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RetireOrganizationInput.<b>acknowledgeFrozenBalance</b></code>](#acknowledge-frozen-balance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#acknowledge-frozen-balance\} 
-Required when the organization holds a non-zero wallet balance. Retirement FREEZES that balance in place; it is not refunded and not forfeited. Refusing by default rather than omitting the case is deliberate — an unreachable dangerous path guarantees the danger and removes the fix.
+Required when the organization holds a non-zero wallet balance. Retirement FREEZES that balance indefinitely: the money is held, deliberately, and is neither refunded nor forfeited. That is settled policy (operator decision, 2026-08-21), not a placeholder for one. The amount is recorded on the tombstone so every organization it applies to stays enumerable if the policy is ever revisited. Refusing by default rather than omitting the case is deliberate — an unreachable dangerous path guarantees the danger and removes the fix.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RetireOrganizationInput.<b>acknowledgeProbeInfrastructure</b></code>](#acknowledge-probe-infrastructure)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#acknowledge-probe-infrastructure\} 
+Required when the organization is a tier's DURABLE PROBE ORGANIZATION — the `<family>-<tier>` org scripts/probe-org.sh reuses on every run. Retiring one frees nothing: the slug stays taken, organizationBySlug keeps returning it, and the next probe run fails on a bare permission denial days later, so the cost lands on somebody else. The refusal names the family and tells you that reinstateOrganization is the way back.
 
 
 
