@@ -1,0 +1,44 @@
+---
+id: send-test-email
+title: sendTestEmail
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only (is&#x005F;operator). Sends a plain test message to one address and returns the SES message id. SIDE EFFECTS: a real outbound email billed to the shared SES identity, and a `send` row in email&#x005F;events. Prefer the AWS mailbox simulator (success@ / bounce@ / complaint@simulator.amazonses.com), which exercises the whole path without touching a real inbox or a real reputation. `sent: true` with `simulated: true` means SEND&#x005F;EMAILS is off and nothing left the building -- read both fields.
+
+
+```graphql
+sendTestEmail(
+  to: String!
+  subject: String
+): SendTestEmailResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>sendTestEmail.<b>to</b></code>](#to)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#to\} 
+Recipient. The mailbox simulator is preferred.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>sendTestEmail.<b>subject</b></code>](#subject)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#subject\} 
+Optional subject; a dated default is used when omitted.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>SendTestEmailResult</b></code>](/reference/graphql/types/objects/send-test-email-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Result of an operator test send.

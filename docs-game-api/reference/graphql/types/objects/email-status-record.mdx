@@ -1,0 +1,83 @@
+---
+id: email-status-record
+title: EmailStatusRecord
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An address's stored deliverability record. Absent (null) until SES reports something about the address.
+
+
+```graphql
+type EmailStatusRecord {
+  email: String!
+  status: String!
+  bounceType: String
+  bounceSubType: String
+  complaintType: String
+  messageId: String
+  lastEventType: String
+  lastEventAt: String
+  deliveryAttempts: Int
+  isPermanentFailure: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailStatusRecord.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailStatusRecord.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+valid | bounced | complained.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailStatusRecord.<b>bounceType</b></code>](#bounce-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#bounce-type\} 
+Permanent | Transient | Undetermined, from SES.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailStatusRecord.<b>bounceSubType</b></code>](#bounce-sub-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#bounce-sub-type\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailStatusRecord.<b>complaintType</b></code>](#complaint-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#complaint-type\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailStatusRecord.<b>messageId</b></code>](#message-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#message-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailStatusRecord.<b>lastEventType</b></code>](#last-event-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-event-type\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailStatusRecord.<b>lastEventAt</b></code>](#last-event-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-event-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailStatusRecord.<b>deliveryAttempts</b></code>](#delivery-attempts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#delivery-attempts\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailStatusRecord.<b>isPermanentFailure</b></code>](#is-permanent-failure)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#is-permanent-failure\} 
+True once SES has reported a permanent bounce or a complaint. This is what stops the address being sent to again.
+
+
+
+
+### Member Of
+
+[`EmailDeliverability`](/reference/graphql/types/objects/email-deliverability.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

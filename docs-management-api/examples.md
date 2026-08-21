@@ -23,9 +23,10 @@ quickstart uses the normal CrowdyJS SDK.
 > (except the public marketplace reads). `BigInt` values are decimal strings; `*Cents`
 > fields are minor currency units.
 
-## 1. Authenticate (passwordless)
+## 1. Authenticate
 
-Sign-in is passwordless. Request a magic link, then complete it with the token from
+Sign in with email and a password, a magic link, or a social provider. The magic-link
+flow below requests a link, then completes it with the token from
 the emailed URL to receive an identity **session token**:
 
 ```graphql

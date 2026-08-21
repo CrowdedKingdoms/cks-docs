@@ -10,7 +10,7 @@ Supplement to **[Create your first app](/management-ui/create-your-first-app)** 
 
 ## Sign in
 
-- Sign-in is **passwordless** — there is no password to choose, forget, or reset. Sign in with a **magic link** (enter your email; Crowded Kingdoms sends a one-time link) or a **social provider** (e.g. Google). Your account is **created automatically on first sign-in**.
+- Sign in with **email and a password**, a **magic link** (enter your email; Crowded Kingdoms sends a one-time link), or a **social provider** (e.g. Google). These are peers on one email-keyed account, not alternatives: an account created by magic link can add a password later. A magic-link or social account is **created automatically on first sign-in**.
 - The portal stores a session token for GraphQL requests after sign-in.
 - One account can link **multiple sign-in methods** (e.g. a Google identity and a magic-link email); they resolve to the same account by verified email.
 - After sign-in, users **with no organization** land on **My Orgs** (`/orgs`) with a split path: share **User ID** to join an existing org, or **create a new organization**.

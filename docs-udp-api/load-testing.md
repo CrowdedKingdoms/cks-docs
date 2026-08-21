@@ -9,7 +9,7 @@ title: Load testing
 open-source load tester for games built on the Replication API. It simulates
 any number of native game clients that sign in, enter your app, and walk
 around the world exchanging actor updates — using exactly the flow documented
-in this tab: passwordless-compatible sign-in, **[mint an app token](/replication-api/authenticate-and-assign)**,
+in this tab: sign-in, **[mint an app token](/replication-api/authenticate-and-assign)**,
 `serverWithLeastClients`, then HMAC-signed `ACTOR_UPDATE_REQUEST_2` traffic
 over UDP. Because it drives the same public APIs and wire protocol as your
 real clients, its numbers reflect what real players will experience.
@@ -54,7 +54,7 @@ for real players (see
    `FORBIDDEN` for an unentitled account and the run aborts with the
    account's email. The derived emails are predictable, so grant them ahead
    of time — the repo ships
-   [`scripts/grant-access.sh`](https://github.com/CrowdedKingdoms/cks-loadtest/blob/main/scripts/grant-access.sh),
+   [`scripts/grant-access.sh`](https://github.com/CrowdedKingdoms/cks-loadtest/blob/prod/scripts/grant-access.sh),
    an owner-side helper that grants every derived account a chosen tier via
    `grantAppAccess` (run the load tester once first so the accounts exist).
 3. **The granted tier must carry runtime permissions** — at minimum
@@ -100,7 +100,7 @@ file (precedence: CLI > env > file). A minimal run:
 ./build/cks-loadtest \
   --email you@studio.com \
   --password 'your-password' \
-  --management-api-url https://api.crowdedkingdoms.com \
+  --management-api-url https://ck.prod.v7.cks-env.com \
   --app-id 42 \
   --clients 100 --update-hz 10 --duration-sec 300
 ```

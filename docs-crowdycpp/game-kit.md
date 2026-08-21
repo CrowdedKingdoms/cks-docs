@@ -109,7 +109,7 @@ consequences:
   automations key on the automation name.
 
 The full deploy-then-play program is
-[`examples/kit_seed_and_play.cpp`](https://github.com/CrowdedKingdoms/CrowdyCPP/blob/main/examples/kit_seed_and_play.cpp)
+[`examples/kit_seed_and_play.cpp`](https://github.com/CrowdedKingdoms/CrowdyCPP/blob/prod/examples/kit_seed_and_play.cpp)
 in the SDK repository. For the blueprint catalog and per-layer guides, the
 [CrowdyJS Game Kit](/crowdyjs/game-kit) documentation applies directly —
 the layers, options, and conventions are the same.

@@ -17,7 +17,21 @@ Read [README.md](README.md) for preview, SDL regen, and screenshot/e2e helpers.
   Adding a management root field to ck-api without listing it there hides it
   from the management tab; removing one fails `sdl:gen` until it is moved to
   `retired` with a reason.
-- **CrowdyJS** npm `latest` is **14.1.0**; 14.0.0 is also published.
+- **That derivation is an ORDERING CONSTRAINT between two repos, and this is
+  the only page on the docs side that says so.** `sdl:gen` reads the sibling
+  **working checkout** `../cks-game-api/schema.gql` — whatever branch it
+  happens to be on — and `die()`s rather than warning when an allowlisted root
+  field is not in it (`N allowlisted management root field(s) are no longer in
+  the unified schema`). So **`cks-docs` must never reach a branch ahead of
+  `cks-game-api` on that same branch.** Allowlist a field on `dev` and promote
+  `cks-docs` to `test` before ck-api gets there, and every `test` build of this
+  site fails — not on a page, on `prebuild`. Promote `cks-game-api` first,
+  every time. The failure reads like a broken allowlist and is really a
+  promotion order.
+- **CrowdyJS** npm `latest` is **15.0.0** — a breaking major that **removed
+  `devLogin`** and added **`auth.login` / `auth.register`**. The SDK is NOT
+  passwordless; any page here still saying so is stale. Verify before quoting:
+  `npm view @crowdedkingdoms/crowdyjs version`.
 - GitHub default is **`prod`**. Trunks: `dev` / `test` / `prod`. Only
   `prod/vX.Y.Z` deploys the site. `dev` and `test` lint and build.
 

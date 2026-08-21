@@ -89,5 +89,5 @@ Which surface goes where:
 - Web Console: account and security administration.
 
 :::note
-Token sign-in gives management-only access. It cannot do game-plane authoring such as teams and channels. Sign in with your account (passwordless — magic link or social) when you need full authoring.
+Token sign-in gives management-only access. It cannot do game-plane authoring such as teams and channels. Sign in with your account (email + password, magic link, or social) when you need full authoring.
 :::

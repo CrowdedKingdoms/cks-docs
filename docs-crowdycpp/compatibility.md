@@ -28,7 +28,7 @@ deployments:
 CrowdyCPP mirrors [CrowdyJS](/crowdyjs/intro) — same domains, same
 [two-token model](/management-api/portals-and-app-tokens), same error codes —
 and the SDK repository verifies that claim mechanically with a generated
-[parity matrix](https://github.com/CrowdedKingdoms/CrowdyCPP/blob/main/docs/parity-matrix.md).
+[parity matrix](https://github.com/CrowdedKingdoms/CrowdyCPP/blob/prod/docs/parity-matrix.md).
 The guarantees:
 
 - **Full GraphQL root-field coverage.** Every non-deprecated Management API
@@ -60,9 +60,9 @@ replication surface (fan-out, distance/decay, negative auth, cross-app
 isolation, cross-server, soak), the world-data and management surfaces, the
 [WorldSession](/crowdycpp/world-session) data structures, and all 15
 [Game Kit](/crowdycpp/game-kit) layers. See
-[`tests/e2e/`](https://github.com/CrowdedKingdoms/CrowdyCPP/tree/main/tests/e2e)
+[`tests/e2e/`](https://github.com/CrowdedKingdoms/CrowdyCPP/tree/prod/tests/e2e)
 (configure with `CROWDY_E2E_*` environment variables) and the
-[coverage matrix](https://github.com/CrowdedKingdoms/CrowdyCPP/blob/main/docs/e2e-coverage.md),
+[coverage matrix](https://github.com/CrowdedKingdoms/CrowdyCPP/blob/prod/docs/e2e-coverage.md),
 which accounts for every scenario in the platform's other e2e suites. The
 suites double as runnable, real-world usage examples for each surface.
 

@@ -24,7 +24,7 @@ and the recommended hybrid pattern, see
 - Environment for the CLI:
 
 ```bash
-export CROWDY_MANAGEMENT_URL=https://api.dev.crowdedkingdoms.com   # management root
+export CROWDY_MANAGEMENT_URL=https://ck.dev.v7.cks-env.com   # management root
 export CROWDY_GAME_URL=https://game.dev.crowdedkingdoms.com/graphql
 export APP_ID=<your app id>
 export ADMIN_EMAIL=<your email>        # dev environments (or ADMIN_TOKEN=<app token>)

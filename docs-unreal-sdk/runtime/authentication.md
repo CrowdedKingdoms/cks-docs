@@ -27,7 +27,7 @@ password sign-in is a first-class, permanent method, not a legacy path being pha
 Gameplay then needs an **app-scoped token** minted from the session token. For the transport-level
 details of sign-in and the app-token patterns, see
 [Native & non-browser clients](/management-api/native-clients) and
-[Sign in (passwordless)](/management-api/authentication).
+[Sign in](/management-api/authentication).
 
 :::tip
 The recommended place to wire up authentication is a Widget Blueprint, such as a sign-in screen. Use the

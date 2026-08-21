@@ -68,7 +68,7 @@ The custom build image is automatically managed through GitHub workflows:
 ### Build Image Workflow (`.github/workflows/build-image.yml`)
 
 - **Triggers**: 
-  - Push to `dev` or `main` branches when `Dockerfile.build`, `package*.json`, or the workflow file changes
+  - Push to the `dev` branch when `Dockerfile.build`, `package*.json`, or the workflow file changes
   - Manual dispatch with `workflow_dispatch`
 
 - **What it does**:
@@ -119,7 +119,7 @@ The build image should be updated when:
 The build image will automatically rebuild when:
 - `Dockerfile.build` is modified
 - `package.json` or `package-lock.json` is modified
-- Changes are pushed to `dev` or `main` branches
+- Changes are pushed to the `dev` branch
 
 ### Manual Updates
 
