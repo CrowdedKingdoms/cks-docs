@@ -14,7 +14,7 @@ client signs in, obtains an **app-specific token**, and uses it for gameplay.
 
 The model is unchanged:
 
-- **Identity session token** — from a [passwordless sign-in](/management-api/authentication).
+- **Identity session token** — from a [sign-in](/management-api/authentication) (email + password, magic link, or social).
   A *management-plane* credential that can mint app tokens; **rejected for
   gameplay**. Keep it in the OS secure store; never hand it to a game stack you
   don't control.
@@ -23,7 +23,7 @@ The model is unchanged:
   traffic. This is what a native game actually plays with.
 
 ```text
-sign in (passwordless)  ->  identity SESSION token
+sign in                 ->  identity SESSION token
         |                         |
         |                         v
         |                   mint an APP-SCOPED token  (mintAppToken / portal code)
@@ -32,14 +32,14 @@ sign in (passwordless)  ->  identity SESSION token
                           Game API (Bearer) + UDP (HMAC)  ->  play
 ```
 
-## Step 1 — Sign in (passwordless)
+## Step 1 — Sign in
 
 There is no password. A native client runs one of the
-[passwordless flows](/management-api/authentication) and stores the returned
+[the sign-in flows](/management-api/authentication) and stores the returned
 **session token** in the OS secure store (Keychain, Android Keystore, Windows
 DPAPI/Credential Manager, libsecret) — not a plaintext file.
 
-The web examples in [Sign in (passwordless)](/management-api/authentication) use a
+The web examples in [Sign in](/management-api/authentication) use a
 `redirectUri` on a web origin. On native, use a redirect the OS can hand back to
 your app:
 

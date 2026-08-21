@@ -98,8 +98,8 @@ For integration testing on the shared dev tier (current game env **`dev1`**), se
 
 ```ts
 createCrowdyClient({
-  httpUrl: 'https://api.dev.crowdedkingdoms.com/graphql',
-  wsUrl: 'wss://api.dev.crowdedkingdoms.com/graphql',
+  httpUrl: 'https://ck.dev.v7.cks-env.com/graphql',
+  wsUrl: 'wss://ck.dev.v7.cks-env.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore(),
 });
 ```
@@ -211,7 +211,7 @@ await identity.auth.login({ email: 'player@example.com', password });    // exis
 An account can link multiple sign-in methods: `identity.auth.myIdentities()`,
 `identity.auth.linkIdentity({ provider, code, state })`, and
 `identity.auth.unlinkIdentity(identityId)` (which refuses to remove your last sign-in
-method). See [Sign in (passwordless)](/management-api/authentication) for the full
+method). See [Sign in](/management-api/authentication) for the full
 model.
 
 ## Quick start
@@ -225,7 +225,7 @@ import {
 const apiUrl = 'https://api.example.com/graphql';
 const appId = '1';
 
-// Identity client: restore or sign in (passwordless) for the identity session token.
+// Identity client: restore a session, or sign in, for the identity session token.
 const identity = createCrowdyClient({
   httpUrl: apiUrl,
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),
@@ -234,7 +234,7 @@ const identity = createCrowdyClient({
 await identity.session.restore();
 if (!identity.session.getToken()) {
   // Sign in. Email + password shown; magic link and social are the other paths.
-  // See #sign-in-with-clientauth-passwordless.
+  // See #sign-in-with-clientauth.
   await identity.auth.login({ email: 'player@example.com', password });
 }
 

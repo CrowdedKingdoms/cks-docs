@@ -19,7 +19,7 @@ Org permissions control which tabs a member sees (for example, only owners can i
 
 ## New studio owner journey
 
-1. **Register and sign in** — create your account at `/register` (passwordless magic link or social sign-in).
+1. **Register and sign in** — create your account at `/register` with email and a password, a magic link, or a social provider.
 2. **Join or create an organization** — share your **User ID** with an org owner to get invited, or create a new studio from **My Orgs** (`/orgs`).
 3. **Get started** — app-first wizard: name your game, complete billing setup if required, create on the **shared platform**.
 4. **Connect clients** — mint an app-scoped token and point your game at the shared Game API URL.

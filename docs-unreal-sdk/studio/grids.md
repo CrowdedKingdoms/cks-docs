@@ -28,7 +28,7 @@ Grids are part of the management plane, not the game plane.
 :::warning
 Do not try to drive grid operations from gameplay code.
 
-If you sign in to Crowdy Studio with an organization token, you can manage grids, but token sign-in cannot do game-plane authoring such as teams and channels. Use passwordless account sign-in (magic link or social) for full authoring.
+If you sign in to Crowdy Studio with an organization token, you can manage grids, but token sign-in cannot do game-plane authoring such as teams and channels. Use account sign-in (email + password, magic link, or social) for full authoring.
 :::
 
 ## Open the Grid page

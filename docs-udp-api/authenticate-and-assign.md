@@ -9,12 +9,13 @@ title: Authenticate and assign
 
 Native UDP gameplay uses an **app-scoped token** — a credential confined to one
 app. Getting one is two steps: sign in to get your **identity session token**,
-then mint an app token from it. Sign-in is **passwordless** — the session token it
+then mint an app token from it. Sign in with email + password, a magic link, or a
+social provider — the session token it
 returns is a *management-plane* credential and is **rejected for gameplay** (Buddy
 and the Game API only accept app-scoped tokens). See
 **[Portals & app-scoped tokens](/management-api/portals-and-app-tokens)**.
 
-### Sign in (passwordless)
+### Sign in
 
 Sign in on the **Management API** GraphQL endpoint to get the identity session
 token. Email + password, a magic link, or a social provider — the same three

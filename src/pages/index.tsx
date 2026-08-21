@@ -40,7 +40,7 @@ const sections: CardSection[] = [
       {
         title: 'Authentication',
         description:
-          'Passwordless sign-in, session tokens, and app-scoped access.',
+          'Email + password, magic link or social sign-in, session tokens, and app-scoped access.',
         to: '/management-api/authentication',
       },
     ],

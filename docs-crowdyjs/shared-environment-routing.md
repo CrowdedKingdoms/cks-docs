@@ -31,7 +31,7 @@ import {
 
 // Identity client (Overworld/hub origin): holds the session token.
 const base = createCrowdyClient({
-  httpUrl: 'https://api.crowdedkingdoms.com/graphql',
+  httpUrl: 'https://ck.prod.v7.cks-env.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),
 });
 

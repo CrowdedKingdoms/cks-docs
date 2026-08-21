@@ -35,7 +35,7 @@ Crowdy Studio is a dockable editor tab, so you can leave it open while you work.
 
 Sign in on the Home page. You have two options:
 
-- **Account sign-in** (password, magic link, dev sign-in, or social provider). Crowded Kingdoms provides you with various sign-in options. This gives you full authoring access, including game-plane authoring such as Teams and Channels. See [Sign in (passwordless)](/management-api/authentication).
+- **Account sign-in** (email + password, magic link, or social provider; the dev sign-in was removed on 2026-08-20). Crowded Kingdoms provides you with various sign-in options. This gives you full authoring access, including game-plane authoring such as Teams and Channels. See [Sign in](/management-api/authentication).
 - **Organization token**. This gives you management-only access. Token sign-in cannot do game-plane authoring.
 
 For first-time setup, sign in with your account.
