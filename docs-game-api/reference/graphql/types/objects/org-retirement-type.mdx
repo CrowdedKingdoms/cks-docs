@@ -69,7 +69,7 @@ When it was retired.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>balanceCentsAtRetirement</b></code>](#balance-cents-at-retirement)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-cents-at-retirement\} 
-Wallet balance in cents at the moment of retirement. This money is FROZEN, not refunded and not forfeited: whether a retired balance should be returned or written off is an operator decision that has not been taken, and retirement deliberately does not settle it.
+Wallet balance in cents at the moment of retirement. This money is FROZEN indefinitely, not refunded and not forfeited — the operator decided that on 2026-08-21. It is recorded here rather than only in the wallet so that every organization holding frozen money is enumerable from one table if the policy is ever revisited.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>walletTxnCountAtRetirement</b></code>](#wallet-txn-count-at-retirement)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wallet-txn-count-at-retirement\} 
@@ -81,7 +81,7 @@ How many of the org apps were archived by the retirement. Apps already archived 
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>frozenBalanceAcknowledged</b></code>](#frozen-balance-acknowledged)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#frozen-balance-acknowledged\} 
-True when the caller had to pass acknowledgeFrozenBalance because the org held money.
+True when the caller had to pass acknowledgeFrozenBalance because the org held money, which is frozen indefinitely rather than refunded or forfeited.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>reinstatedAt</b></code>](#reinstated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reinstated-at\} 
