@@ -83,13 +83,13 @@ type User {
 }
 
 """
-A federated / passwordless sign-in identity linked to a user account (a social provider, an emailed magic link, or the dev bypass).
+A sign-in identity linked to a user account: a social provider, an emailed magic link, or a password.
 """
 type UserIdentity {
   identityId: ID!
   userId: ID!
   """
-  The identity provider: 'google' | 'apple' | 'discord' | 'email' (magic link) | 'dev' (dev bypass).
+  The identity provider: 'google' | 'apple' | 'discord' | 'email' (magic link) | 'password'. 'dev' is a RETIRED value that appears on identities created before the dev sign-in bypass was removed; it cannot be created and cannot be signed in with.
   """
   provider: String!
   """
