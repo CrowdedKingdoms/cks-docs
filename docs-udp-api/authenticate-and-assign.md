@@ -9,12 +9,13 @@ title: Authenticate and assign
 
 Native UDP gameplay uses an **app-scoped token** — a credential confined to one
 app. Getting one is two steps: sign in to get your **identity session token**,
-then mint an app token from it. Sign-in is **passwordless** — the session token it
+then mint an app token from it. Sign in with email + password, a magic link, or a
+social provider — the session token it
 returns is a *management-plane* credential and is **rejected for gameplay** (Buddy
 and the Game API only accept app-scoped tokens). See
 **[Portals & app-scoped tokens](/management-api/portals-and-app-tokens)**.
 
-### Sign in (passwordless)
+### Sign in
 
 Sign in on the **Management API** GraphQL endpoint to get the identity session
 token. Email + password, a magic link, or a social provider — the same three
@@ -99,17 +100,27 @@ installed** (see below). Always check the response for `errors` before proceedin
 
 :::caution[The Buddy you get is always in your app's datacenter, or there is none]
 
-The selector is pinned to the datacenter holding your app's data. If that
-datacenter has no healthy Buddy, this **refuses with `NO_LOCAL_BUDDY`** instead of
-handing you one somewhere else.
+The selector is pinned to the datacenter holding your app's data, and it never hands
+you one somewhere else. That is deliberate: a remote Buddy would work, in the sense
+that every gameplay write would succeed, while each one crossed a WAN. Nothing would
+error and nothing would log — you would only see it as latency nobody could attribute.
 
-That is deliberate, and the refusal is the useful behaviour: a remote Buddy would
-work, in the sense that every gameplay write would succeed, while each one crossed
-a WAN. Nothing would error and nothing would log — you would only see it as latency
-nobody could attribute.
+**The refusal says which of three situations you are in.** Read
+`extensions.code`:
 
-So treat it like `APP_UNAVAILABLE`: retry, and do not reuse a server you cached
-while connected to a different datacenter.
+- **`WRONG_DATACENTER`** — you called this on a datacenter that does not hold the app.
+  It carries `gameApiUrl` and `gameApiWsUrl`; reconnect there and retry. **This is the
+  common case**, because the shared origin `ck.<tier-root>` resolves to every
+  datacenter, so a client that has not re-discovered lands on the wrong one about half
+  the time. CrowdyJS and CrowdyCPP follow it for you.
+- **`APP_UNAVAILABLE`** — the app's own datacenter is not serving. No endpoint, on
+  purpose. Retry.
+- **`NO_LOCAL_BUDDY`** — you are on the right datacenter and it has no healthy Buddy.
+  No endpoint, because there is nowhere else to go. Retry and report it; this one
+  needs an operator.
+
+In every case, do not reuse a server you cached while connected to a different
+datacenter.
 :::
 
 :::caution[Use the app token, not the session token]

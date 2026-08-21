@@ -8,8 +8,8 @@ slug: readme
 
 Browser-first SDK for Crowded Kingdoms game clients. CrowdyJS wraps the
 Management API identity surface and the Game API world / GraphQL UDP-proxy
-surface behind typed clients. As of **v8**, `client.auth` is **passwordless**
-(magic link, social/OIDC, or the dev bypass — **no `login`/`register`**) and
+surface behind typed clients. As of **v15**, `client.auth` signs in with
+**`login` / `register`** (email + password), magic link, or social/OIDC, and
 returns an **identity session token** for the Management API, while gameplay uses
 a short-lived **app-scoped token** minted with `client.portal` — see
 [Authentication: session vs app-scoped
@@ -79,7 +79,7 @@ gives you a typed wrapper; the caller still needs the right token and permission
 :::note[Studio-admin is about who you authenticate as, not where the code runs]
 The studio-admin surfaces have exactly one extra gate: the caller must be a
 logged-in user who holds `manage_apps` on the org. The management-surface
-operations use the **identity session token** passwordless sign-in returns — there is no separate "admin
+operations use the **identity session token** sign-in returns — there is no separate "admin
 token" type. (The one Game API studio-admin surface, `gameApps` ([grids](grids)),
 runs on the Game API and so needs an **app-scoped token** for the target app — a
 studio admin can `mintAppToken` for their own app even without player
@@ -98,8 +98,8 @@ For integration testing on the shared dev tier (current game env **`dev1`**), se
 
 ```ts
 createCrowdyClient({
-  httpUrl: 'https://api.dev.crowdedkingdoms.com/graphql',
-  wsUrl: 'wss://api.dev.crowdedkingdoms.com/graphql',
+  httpUrl: 'https://ck.dev.v7.cks-env.com/graphql',
+  wsUrl: 'wss://ck.dev.v7.cks-env.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore(),
 });
 ```
@@ -124,8 +124,8 @@ token** (see [Portals & app-scoped tokens](/management-api/portals-and-app-token
   the Bearer for that app's Game API + realtime surface. Refresh or re-portal
   before it expires.
 
-Sign-in itself is **passwordless** — `client.auth` has **no `login`/`register`**.
-See [Sign-in with `client.auth`](#sign-in-with-clientauth-passwordless) below.
+Sign-in uses `client.auth.login` / `client.auth.register`, or a magic link, or
+social/OIDC. See [Sign-in with `client.auth`](#sign-in-with-clientauth) below.
 
 `client.portal` wraps minting, the browser handoff, **and consent**:
 
@@ -174,10 +174,15 @@ See [Portals & app-scoped tokens](/management-api/portals-and-app-tokens) for th
 full mint / PKCE / refresh narrative and [Game API →
 Authentication](/game-api/authentication).
 
-### Sign-in with `client.auth` (passwordless)
+### Sign-in with `client.auth`
 
-There is **no `client.auth.login`/`register`**. Pick one passwordless path; each
-returns an `AuthResponse` and stores the session token on the identity client:
+**`client.auth.login(email, password)` and `client.auth.register(...)` are the
+primary path** as of 15.0.0. Magic link and social/OIDC remain. Each returns an
+`AuthResponse` and stores the session token on the identity client.
+
+> Until 15.0.0 this SDK was passwordless and these pages said `login` and
+> `register` did **not exist**. They do. The `devLogin` bypass they also
+> advertised has been removed from the SDK and from every tier.
 
 ```ts
 // Magic link: request, then complete with the token from the emailed URL.
@@ -206,7 +211,7 @@ await identity.auth.login({ email: 'player@example.com', password });    // exis
 An account can link multiple sign-in methods: `identity.auth.myIdentities()`,
 `identity.auth.linkIdentity({ provider, code, state })`, and
 `identity.auth.unlinkIdentity(identityId)` (which refuses to remove your last sign-in
-method). See [Sign in (passwordless)](/management-api/authentication) for the full
+method). See [Sign in](/management-api/authentication) for the full
 model.
 
 ## Quick start
@@ -220,7 +225,7 @@ import {
 const apiUrl = 'https://api.example.com/graphql';
 const appId = '1';
 
-// Identity client: restore or sign in (passwordless) for the identity session token.
+// Identity client: restore a session, or sign in, for the identity session token.
 const identity = createCrowdyClient({
   httpUrl: apiUrl,
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),
@@ -229,7 +234,7 @@ const identity = createCrowdyClient({
 await identity.session.restore();
 if (!identity.session.getToken()) {
   // Sign in. Email + password shown; magic link and social are the other paths.
-  // See #sign-in-with-clientauth-passwordless.
+  // See #sign-in-with-clientauth.
   await identity.auth.login({ email: 'player@example.com', password });
 }
 

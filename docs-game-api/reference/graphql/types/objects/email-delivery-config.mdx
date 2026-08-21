@@ -1,0 +1,58 @@
+---
+id: email-delivery-config
+title: EmailDeliveryConfig
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+How this API instance is configured to send mail. Read it before concluding that a missing email is a bug: an instance with sendingEnabled=false composes every message and hands none of them to SES.
+
+
+```graphql
+type EmailDeliveryConfig {
+  sendingEnabled: Boolean!
+  fromAddress: String!
+  configurationSet: String
+  region: String!
+  suppressedDomains: [String!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailDeliveryConfig.<b>sendingEnabled</b></code>](#sending-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sending-enabled\} 
+SEND&#x005F;EMAILS. False means nothing reaches SES from this instance.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailDeliveryConfig.<b>fromAddress</b></code>](#from-address)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#from-address\} 
+The From address (EMAIL&#x005F;FROM).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailDeliveryConfig.<b>configurationSet</b></code>](#configuration-set)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#configuration-set\} 
+SES&#x005F;CONFIGURATION&#x005F;SET. Null or empty means sends carry no configuration set, so SES publishes NO delivery or bounce events for them and this tier learns nothing about its own mail.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailDeliveryConfig.<b>region</b></code>](#region)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#region\} 
+AWS&#x005F;REGION used for SES.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailDeliveryConfig.<b>suppressedDomains</b></code>](#suppressed-domains)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#suppressed-domains\} 
+Domain suffixes refused before SES is consulted (EMAIL&#x005F;SUPPRESS&#x005F;DOMAINS).
+
+
+
+
+### Returned By
+
+[`emailDeliveryConfig`](/reference/graphql/operations/queries/email-delivery-config.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -5,12 +5,13 @@ title: Authentication
 
 # Authentication
 
-Sign-in happens on the **[Management API](/management-api/intro)**, which is
-**passwordless** — there is no email + password login and no password is ever
-handed to a game. A user signs in with a magic link, a social provider, or the
-dev bypass; that returns an identity **session token**. The Game API never sees
-that flow and never receives a password — it only accepts the **app-scoped token**
-minted downstream. See **[Sign in](/management-api/authentication)** for
+Sign-in happens on the **[Management API](/management-api/intro)**. A user signs
+in with **email + password** (`login` / `register`), a magic link, or a social
+provider; that returns an identity **session token**. **No password is ever
+handed to a game**: the Game API never sees that flow and only accepts the
+**app-scoped token** minted downstream — which is the property that actually
+matters, and the one the old wording tried to express by calling the platform
+passwordless. There is **no dev bypass**; `devLogin` was removed from every tier. See **[Sign in](/management-api/authentication)** for
 `register`/`login`, `requestLoginLink`/`completeLoginLink`,
 `socialLoginStart`/`socialLoginComplete`, and `me`.
 
@@ -34,7 +35,7 @@ Grid operations (`createGrid`, `grantGridPermissions`, …) also run on the Game
 
 ## Typical flow
 
-1. **Sign in** on the Management API (passwordless) for the identity **session token** — magic link, social, or the dev bypass. See [Sign in (passwordless)](/management-api/authentication).
+1. **Sign in** on the Management API for the identity **session token** — email + password (`login` / `register`), magic link, or social. See [Sign in](/management-api/authentication).
 2. **Mint an app-scoped token** for the app you are entering — `mintAppToken` (same-origin/native) or the browser portal flow (cross-origin). Untrusted apps require user consent first; the Overworld (app 1) is trusted and skips it. See [Portals & app-scoped tokens](/management-api/portals-and-app-tokens) (and [Native & non-browser clients](/management-api/native-clients) for Unreal/Unity/desktop/console/mobile).
 3. **Use the app token** as the Bearer for all Game API HTTP requests and in the realtime `connection_init` payload. Rotate it with `refreshAppToken` before `expiresAt`.
 

@@ -10,7 +10,7 @@ GraphQL/HTTP API for Crowded Kingdoms **management** concerns:
 
 | Area | Examples |
 | ---- | -------- |
-| Identity | **Passwordless** sign-in (magic link, social/OIDC, dev bypass), federated identities (`myIdentities`/`linkIdentity`), `me`. |
+| Identity | Sign-in by **email + password**, magic link, or social/OIDC; federated identities (`myIdentities`/`linkIdentity`), `me`. The dev bypass was removed on 2026-08-20. |
 | Organizations | Members, roles, permissions, org tokens. |
 | Apps marketplace | Apps metadata, access tiers, `app_user_access` grants, purchases. |
 | Runtime catalog | `runtimePermissions` query — keys that can be assigned on tiers (not grid grants). |
@@ -29,7 +29,7 @@ Runtime game data (chunks, voxels, actors, grids, grid permissions, UDP) lives i
 
 Production and staging base URLs are **per organization and environment**. Crowded Kingdoms provides hostnames when your dedicated environment is ready, or use the endpoints shown in the Management UI environment detail page.
 
-**Dev tier (integration testing):** shared management host `https://api.dev.crowdedkingdoms.com` — see **[Dev tier (client integration)](/management-ui/dev-tier)** for the full two-URL setup and current game environment URLs.
+**Dev tier (integration testing):** shared management host `https://ck.dev.v7.cks-env.com` — see **[Dev tier (client integration)](/management-ui/dev-tier)** for the full two-URL setup and current game environment URLs.
 
 ## Environment operations
 

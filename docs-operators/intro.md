@@ -54,7 +54,7 @@ ceilings: `maxModules`, `maxTickHz`, `fuelPerTick`, `fuelPerInvoke`,
 ## First super admin (bootstrap)
 
 There is no special admin login — the platform is
-[passwordless](/management-api/authentication) for everyone. The **first** super
+[the ordinary sign-in flows](/management-api/authentication) for everyone. The **first** super
 admin is bootstrapped from config, because granting super admin (`setSuperAdmin`)
 itself requires an existing super admin.
 
@@ -64,7 +64,7 @@ permission check** (and also covers operator access). Bootstrap it once:
 1. Deploy the Management API with **`SUPER_ADMIN_BOOTSTRAP_USER_IDS`** set to the
    user id(s) to promote (deployments typically ship
    `SUPER_ADMIN_BOOTSTRAP_USER_IDS=1`).
-2. Have the root admin **sign in for the first time** through the normal passwordless
+2. Have the root admin **sign in for the first time** through the normal
    flow — a magic link or social provider in production, or the dev bypass in
    dev/test. Accounts are created on first sign-in, and because this is the first
    account it becomes **`user_id = 1`**.

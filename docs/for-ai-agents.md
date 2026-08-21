@@ -21,14 +21,15 @@ the raw GraphQL access described below.
 
 There is **one GraphQL endpoint**. The two rows below are surfaces of that API,
 not two hosts. Do not set `managementUrl`. Gameplay is PostgreSQL + Citus, not
-galaxy. CrowdyJS **14.1.0** is current on npm (14.0.0 is also published).
+galaxy. CrowdyJS **15.0.0** is current on npm — it removed `devLogin` and added
+`auth.login` / `auth.register`.
 
 | API | Protocol | Use it for |
 |-----|----------|------------|
 | **Management surface** | GraphQL (HTTP) | Identity, organizations, the apps marketplace, access tiers, billing, payments, quotas. Studio-backend operations. Dedicated customer environments were retired. |
 | **Game surface** | GraphQL (HTTP + WebSocket) | Runtime world data (chunks, voxels, actors, avatars) and the realtime **UDP-proxy** subscription/spatial-send surface. Authenticated with an **app-scoped token** (not the identity session token). |
 | **Replication API (Buddy)** | Binary UDP | Lowest-latency native spatial replication. Most clients use the Game API UDP-proxy instead and never touch raw UDP. Buddy authenticates only app-scoped tokens. |
-| **CrowdyJS** | TypeScript SDK | Browser clients — wraps passwordless sign-in, `client.portal` (app-scoped tokens / PKCE / consent), and the unified GraphQL API including the UDP proxy. Use one identity client plus a per-game client. Prefer it for web. |
+| **CrowdyJS** | TypeScript SDK | Browser clients — wraps sign-in (`auth.login` / `auth.register`, magic link, social), `client.portal` (app-scoped tokens / PKCE / consent), and the unified GraphQL API including the UDP proxy. Use one identity client plus a per-game client. Prefer it for web. |
 
 ## Get the schema
 
@@ -55,7 +56,7 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
   **session token** on Management API requests, the **app-scoped token** on Game API
   HTTP requests and in the `graphql-transport-ws` `connection_init` payload. App
   tokens expire (~30 min) — `refreshAppToken` before then. See
-  [Sign in (passwordless)](/management-api/authentication),
+  [Sign in](/management-api/authentication),
   [Portals & app-scoped tokens](/management-api/portals-and-app-tokens), and
   [Game API → Authentication](/game-api/authentication).
 - **`BigInt`** is transmitted as a **decimal string** in both directions (e.g. `"123"`),
@@ -157,7 +158,7 @@ session; call `disconnectUdpProxy` to close it. Browser clients should use
 
 ## Workflow 2 — native UDP (advanced, lowest latency)
 
-For native clients that bypass the GraphQL proxy: sign in (passwordless) for the identity
+For native clients that bypass the GraphQL proxy: sign in for the identity
 session token, **mint an app-scoped token** for the app (`mintAppToken`), discover a server with the
 Game API `serverWithLeastClients` (app-token Bearer), then send the binary long-spatial
 message to the server's client port `9091` with an HMAC computed from your 64-octet

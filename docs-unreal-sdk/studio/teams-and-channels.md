@@ -22,7 +22,7 @@ Crowdy Studio is one way to do this. The same create, update, delete, role, and 
 The Studio pages themselves are editor-only native UI, not Blueprint nodes. What you author here is the same data the runtime reads and writes.
 
 :::note
-Authoring teams and channels is game-plane work, so it needs a full sign-in. Sign in with your account (passwordless — magic link or social). Token sign-in gives management-only access and cannot author teams or channels.
+Authoring teams and channels is game-plane work, so it needs a full sign-in. Sign in with your account (email + password, magic link, or social). Token sign-in gives management-only access and cannot author teams or channels.
 :::
 
 ## Open Crowdy Studio

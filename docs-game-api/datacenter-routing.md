@@ -119,13 +119,23 @@ connection, and it is why `discoveryUrl` remains the way back.
 
 ### The same rule applies to your UDP server
 
-`serverWithLeastClients` hands out a Buddy **in your app's own datacenter, or none**. If
-that datacenter has no healthy Buddy it refuses with `NO_LOCAL_BUDDY` rather than giving
-you one somewhere else — because every gameplay write for that session would then cross a
-WAN, and you would not notice: each write still succeeds.
+`serverWithLeastClients` hands out a Buddy **in your app's own datacenter, or none**. It
+never gives you one somewhere else, because every gameplay write for that session would
+then cross a WAN and you would not notice: each write still succeeds.
 
-Treat it the way you would treat `APP_UNAVAILABLE`. Retry, and do not fall back to a
-cached server from another datacenter.
+**Its refusal tells you which of three situations you are in, and only one of them needs
+an operator.**
+
+| Code | What happened | What to do |
+|---|---|---|
+| `WRONG_DATACENTER` | You called it on a datacenter that does not hold this app. **This is the common one** — the shared origin resolves to every datacenter, so a client that skipped step 3 lands here about half the time. | Read `extensions.gameApiUrl` and reconnect, exactly as above. CrowdyJS and CrowdyCPP do this for you. |
+| `APP_UNAVAILABLE` | The app's own datacenter is not serving at all. No endpoint is named, on purpose. | Retry. Do not fall back to a cached server. |
+| `NO_LOCAL_BUDDY` | You are already **on** the app's datacenter and it has no healthy Buddy. No endpoint is named, because there is nowhere else to go. | Retry, and tell us — this one needs an operator. |
+
+The distinction is new as of ck-api v1.55.0. Before that, all three answered
+`NO_LOCAL_BUDDY` with no endpoint, so a client in the wrong datacenter was told a true
+thing it could do nothing with. If your client treats `NO_LOCAL_BUDDY` as fatal and you
+are seeing it on a shared origin, that is what you were hitting.
 
 ## If your app moves
 

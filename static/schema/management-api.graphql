@@ -83,13 +83,13 @@ type User {
 }
 
 """
-A federated / passwordless sign-in identity linked to a user account (a social provider, an emailed magic link, or the dev bypass).
+A sign-in identity linked to a user account: a social provider, an emailed magic link, or a password.
 """
 type UserIdentity {
   identityId: ID!
   userId: ID!
   """
-  The identity provider: 'google' | 'apple' | 'discord' | 'email' (magic link) | 'dev' (dev bypass).
+  The identity provider: 'google' | 'apple' | 'discord' | 'email' (magic link) | 'password'. 'dev' is a RETIRED value that appears on identities created before the dev sign-in bypass was removed; it cannot be created and cannot be signed in with.
   """
   provider: String!
   """
@@ -3642,6 +3642,13 @@ type Mutation {
     """The user's current password, for verification."""
     currentPassword: String!
     """The new password to set (min 8 characters)."""
+    newPassword: String!
+  ): Boolean!
+  """
+  Adds a password to the signed-in account when it does not have one yet — for an account created by magic link or a social provider, which previously had no in-product way to add password sign-in. Requires a valid session token; the session is the proof of account control, so the password is usable immediately and no email confirmation is needed. Throws CONFLICT if a password is already set (use changePassword, which verifies the current one). A security notification is emailed to the account address. Existing sessions are not revoked.
+  """
+  setInitialPassword(
+    """The password to set (min 8 characters)."""
     newPassword: String!
   ): Boolean!
   """

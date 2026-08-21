@@ -31,7 +31,7 @@ import {
 
 // Identity client (Overworld/hub origin): holds the session token.
 const base = createCrowdyClient({
-  httpUrl: 'https://api.crowdedkingdoms.com/graphql',
+  httpUrl: 'https://ck.prod.v7.cks-env.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),
 });
 
@@ -41,7 +41,8 @@ const cfg = await base.platform.config();
 
 ## Build the gameplay client
 
-Sign in (passwordless) on the identity client, then **mint an app-scoped token**
+Sign in on the identity client (`auth.login` / `auth.register`, magic link, or
+social), then **mint an app-scoped token**
 for the app you are entering — gameplay rejects the identity session token. Build
 the gameplay client against the app's `gameApiUrl` with its **own** token store and
 seed it with the app token:

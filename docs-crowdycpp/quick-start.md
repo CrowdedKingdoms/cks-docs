@@ -20,8 +20,9 @@ The steps:
 
 ## 1. Identity client and sign-in
 
-Sign-in is passwordless (magic link, social/OIDC, or the dev bypass) and
-yields an **identity session token**. There is one API origin — do not set
+Sign-in is `auth().login(email, password)` or `registerUser(...)`, a magic link,
+or social/OIDC, and yields an **identity session token**. (`devLogin` was removed
+in CrowdyCPP 0.26.0 / CrowdyJS 15.0.0, along with the tier-side bypass.) There is one API origin — do not set
 `managementUrl` (removed in CrowdyCPP 0.20.0 / CrowdyJS 14):
 
 ```cpp

@@ -10,8 +10,9 @@ full identity. An **Overworld** (a hub app — **app 1**, which is trusted) can
 portal players into other games, and each game's stack only ever receives a token
 confined to that one app.
 
-- **Identity session token** — returned by a **passwordless sign-in** (magic link,
-  social/OIDC, or the dev bypass — see [Sign in (passwordless)](/management-api/authentication)).
+- **Identity session token** — returned by a **sign-in**: email + password, a
+  magic link, or social/OIDC — see [Sign in](/management-api/authentication).
+  The dev bypass was removed from every tier on 2026-08-20.
   It is a *management-plane* credential (account, studio admin) and the **only**
   thing that can mint app tokens. It is **not valid for gameplay**: the Game API
   and the realtime/UDP surface reject it. Keep it on your trusted identity origin;
@@ -20,13 +21,13 @@ confined to that one app.
   app. Used as the Bearer against that app's Game API + realtime surface. A
   compromised or third-party game only ever sees a token for its own app.
 
-## Sign in first (passwordless)
+## Sign in first
 
 Everything below starts from an identity **session token**, which you get from a
-passwordless sign-in on the Management API — there is no password. Briefly:
+sign-in on the CK GraphQL API — email + password, magic link, or social. Briefly:
 `requestLoginLink` → `completeLoginLink` (magic link), `socialLoginStart` →
 `socialLoginComplete` (social/OIDC), or `login`/`register` (email + password). The full flow
-is in **[Sign in (passwordless)](/management-api/authentication)**. Hold the
+is in **[Sign in](/management-api/authentication)**. Hold the
 session token on your identity origin and mint app tokens from it as below.
 
 ## Minting an app token
@@ -57,7 +58,7 @@ re-mint**, because minting needs the session token it does not have. See
 
 For native clients (Unreal/Unity, desktop, console, mobile, custom launchers), see
 **[Native & non-browser clients](/management-api/native-clients)** for the full
-passwordless sign-in → mint → play flow and the launcher / PKCE-loopback handoff
+sign-in → mint → play flow and the launcher / PKCE-loopback handoff
 patterns.
 
 ### Browser handoff (OAuth2 Authorization Code + PKCE)
