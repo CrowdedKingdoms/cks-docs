@@ -9,7 +9,9 @@ slug: readme
 Browser-first SDK for Crowded Kingdoms game clients. CrowdyJS wraps the
 Management API identity surface and the Game API world / GraphQL UDP-proxy
 surface behind typed clients. As of **v15**, `client.auth` signs in with
-**`login` / `register`** (email + password), magic link, or social/OIDC, and
+**`login` / `register`** (email + password), magic link, or social/OIDC — and as
+of **v15.1** it also manages passwords ([reset, change, and adding a first
+one](#managing-passwords)). Sign-in
 returns an **identity session token** for the Management API, while gameplay uses
 a short-lived **app-scoped token** minted with `client.portal` — see
 [Authentication: session vs app-scoped
@@ -213,6 +215,67 @@ An account can link multiple sign-in methods: `identity.auth.myIdentities()`,
 `identity.auth.unlinkIdentity(identityId)` (which refuses to remove your last sign-in
 method). See [Sign in](/management-api/authentication) for the full
 model.
+
+### Managing passwords
+
+**New in 15.1.0.** The API has served these four throughout; the SDK wrapped
+none of them until now, so a game shipping CrowdyJS could sign a player in and
+then had no first-class way to let them set or change the password behind it.
+
+Which one applies is decided by **what the caller has already proven**, not by
+what they want to do:
+
+```ts
+// Not signed in, or signed in and cannot remember it: email a reset link.
+await identity.auth.requestPasswordReset('player@example.com'); // always true
+await identity.auth.resetPassword({ token: tokenFromEmail, newPassword });
+
+// Signed in, and the account has a password.
+await identity.auth.changePassword({ currentPassword, newPassword });
+
+// Signed in, and it has none -- a magic-link or social-only account.
+await identity.auth.setInitialPassword(newPassword);
+```
+
+`identity.auth.checkAuthMethod(email)` returns `hasPassword` for an address
+before sign-in, which is how you decide which form to show.
+
+**`setInitialPassword` refuses an account that already has a password**, and
+that is deliberate rather than an inconvenience to route around: without the
+refusal it would be `changePassword` with the current-password check deleted,
+and that check is what stops a stolen session from replacing a credential the
+owner still knows. **It also emails a security notification** to the account
+address on success — tell your user that, because they are about to receive it.
+
+:::caution The error CODE cannot tell these apart
+Three different conditions arrive as `UNAUTHENTICATED` — wrong current password,
+an account with no password, and an expired session — and
+`setInitialPassword`'s refusal arrives as `INTERNAL_SERVER_ERROR` even though
+the schema calls it a `CONFLICT`. Branching on the code signs a user out over a
+typo. The SDK exports three predicates so you do not have to carry the strings:
+
+```ts
+import {
+  isPasswordAlreadySetError,
+  isNoPasswordSetError,
+  isInvalidCurrentPasswordError,
+} from '@crowdedkingdoms/crowdyjs';
+
+try {
+  await identity.auth.setInitialPassword(newPassword);
+} catch (e) {
+  if (isPasswordAlreadySetError(e)) {
+    // They already have one. Ask for it rather than replacing it blind.
+    await identity.auth.changePassword({ currentPassword, newPassword });
+  } else throw e;
+}
+```
+:::
+
+Neither `resetPassword` nor `changePassword` revokes existing sessions; follow
+either with `identity.auth.logoutAllDevices()` if that is the intent. Full
+semantics, including the exact refusal wording, are in
+[Managing passwords](/management-api/authentication#managing-passwords).
 
 ## Quick start
 

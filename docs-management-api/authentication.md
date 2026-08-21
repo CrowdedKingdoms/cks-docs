@@ -152,6 +152,66 @@ Two behaviours to code against, because both are easy to meet by accident:
   different password. A password-only account signs in immediately, because
   there is no other method to protect.
 
+## Managing passwords
+
+Four mutations, and which one applies is decided by **what the caller has
+already proven** rather than by what they want to do:
+
+| Mutation | Needs | Use when |
+|---|---|---|
+| `requestPasswordReset(email)` | nothing (public) | the user is not signed in, or has forgotten the password |
+| `resetPassword(resetPasswordInput: { token, newPassword })` | the token from the emailed link | completing the above |
+| `changePassword(currentPassword, newPassword)` | a session **and** the current password | an ordinary change |
+| `setInitialPassword(newPassword)` | a session, and the account must have **no** password | adding password sign-in to a magic-link or social account |
+
+`checkAuthMethod(input: { email })` answers `hasPassword` for an address before
+sign-in, without revealing whether the address is registered.
+
+```graphql
+# Signed in, and the account has no password yet (magic link or social only).
+mutation Add($newPassword: String!) { setInitialPassword(newPassword: $newPassword) }
+```
+
+```graphql
+# Signed in, and it does.
+mutation Change($currentPassword: String!, $newPassword: String!) {
+  changePassword(currentPassword: $currentPassword, newPassword: $newPassword)
+}
+```
+
+**`setInitialPassword` refuses an account that already has a password**, and
+that refusal is the point: without it, the mutation would be `changePassword`
+with the current-password check deleted, and that check is what stops a stolen
+session from replacing a credential the owner still knows. The password it sets
+works immediately — the session is the proof of account control, so there is no
+confirmation email to wait for — and **a security notification is emailed to the
+account address**. That notification is deliberately the mitigation rather than
+a refusal: a stolen session can already attach durable attacker-controlled
+access with `linkIdentity`, so refusing here would close nothing while leaving
+the legitimate user of a passwordless account with no way in at all.
+
+Neither `resetPassword` nor `changePassword` revokes existing sessions. Follow
+either with `logoutAllDevices` if that is what you want.
+
+### Telling the refusals apart
+
+**The GraphQL error code cannot do it, so match on the message.** Verified
+against a live tier:
+
+| Condition | `extensions.code` | Message begins | Remedy |
+|---|---|---|---|
+| `setInitialPassword`, password already set | `INTERNAL_SERVER_ERROR` | *"This account already has a password."* | `changePassword` |
+| `changePassword`, no password set | `UNAUTHENTICATED` | *"No password is set on this account."* | `setInitialPassword` |
+| `changePassword`, wrong current password | `UNAUTHENTICATED` | *"Invalid current password"* | ask again |
+| any, session expired | `UNAUTHENTICATED` | — | sign in again |
+
+The first is a `CONFLICT` in the schema description and does **not** arrive as
+one, the same way `register`'s collision does not. The last three share a code,
+so a client that branches on the code alone signs a user out over a typo. The
+CrowdyJS SDK ships `isPasswordAlreadySetError`, `isNoPasswordSetError` and
+`isInvalidCurrentPasswordError` so you do not have to carry the strings —
+see [Managing passwords](/crowdyjs/readme#managing-passwords).
+
 ## Federated identities (linking sign-in methods)
 
 An account can have several linked sign-in identities (a Google identity, an email
