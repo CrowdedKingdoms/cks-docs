@@ -128,9 +128,9 @@ unchanged states, sends keyframes periodically, and falls back to cheap
 heartbeats while you idle — see [World session](/crowdycpp/world-session).
 
 The complete program is
-[`examples/walker.cpp`](https://github.com/CrowdedKingdoms/CrowdyCPP/blob/main/examples/walker.cpp)
+[`examples/walker.cpp`](https://github.com/CrowdedKingdoms/CrowdyCPP/blob/prod/examples/walker.cpp)
 in the SDK repository; run two instances against the same app and each prints
 the other's actor. For the Game Kit equivalent (deploy a blueprint, play with
 the runtime helpers), see
-[`examples/kit_seed_and_play.cpp`](https://github.com/CrowdedKingdoms/CrowdyCPP/blob/main/examples/kit_seed_and_play.cpp)
+[`examples/kit_seed_and_play.cpp`](https://github.com/CrowdedKingdoms/CrowdyCPP/blob/prod/examples/kit_seed_and_play.cpp)
 and the [Game Kit](/crowdycpp/game-kit) page.

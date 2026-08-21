@@ -54,7 +54,7 @@ for real players (see
    `FORBIDDEN` for an unentitled account and the run aborts with the
    account's email. The derived emails are predictable, so grant them ahead
    of time — the repo ships
-   [`scripts/grant-access.sh`](https://github.com/CrowdedKingdoms/cks-loadtest/blob/main/scripts/grant-access.sh),
+   [`scripts/grant-access.sh`](https://github.com/CrowdedKingdoms/cks-loadtest/blob/prod/scripts/grant-access.sh),
    an owner-side helper that grants every derived account a chosen tier via
    `grantAppAccess` (run the load tester once first so the accounts exist).
 3. **The granted tier must carry runtime permissions** — at minimum
