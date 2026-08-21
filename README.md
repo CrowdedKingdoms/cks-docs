@@ -57,7 +57,7 @@ The site is held to an agent-readiness standard so external AI agents / integrat
 
 Screenshots for the [Apps on the shared platform](/management-ui/environments) and [Connecting to your app](/management-ui/connecting) guides live under `static/img/management-ui/`. Regenerate them with Playwright when the UI changes.
 
-Full procedure (CORS, placeholders, troubleshooting): [internal runbook](../internal-server-docs/wiki/runbooks/refresh-management-ui-doc-screenshots.md) in `internal-server-docs`.
+Full procedure (CORS, placeholders, troubleshooting): `internal runbook` in `internal-server-docs`.
 
 ### Prerequisites
 

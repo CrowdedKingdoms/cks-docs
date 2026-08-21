@@ -41,7 +41,8 @@ const cfg = await base.platform.config();
 
 ## Build the gameplay client
 
-Sign in (passwordless) on the identity client, then **mint an app-scoped token**
+Sign in on the identity client (`auth.login` / `auth.register`, magic link, or
+social), then **mint an app-scoped token**
 for the app you are entering — gameplay rejects the identity session token. Build
 the gameplay client against the app's `gameApiUrl` with its **own** token store and
 seed it with the app token:

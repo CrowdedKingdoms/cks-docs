@@ -17,7 +17,10 @@ Read [README.md](README.md) for preview, SDL regen, and screenshot/e2e helpers.
   Adding a management root field to ck-api without listing it there hides it
   from the management tab; removing one fails `sdl:gen` until it is moved to
   `retired` with a reason.
-- **CrowdyJS** npm `latest` is **14.1.0**; 14.0.0 is also published.
+- **CrowdyJS** npm `latest` is **15.0.0** — a breaking major that **removed
+  `devLogin`** and added **`auth.login` / `auth.register`**. The SDK is NOT
+  passwordless; any page here still saying so is stale. Verify before quoting:
+  `npm view @crowdedkingdoms/crowdyjs version`.
 - GitHub default is **`prod`**. Trunks: `dev` / `test` / `prod`. Only
   `prod/vX.Y.Z` deploys the site. `dev` and `test` lint and build.
 
