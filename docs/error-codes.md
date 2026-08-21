@@ -104,7 +104,7 @@ allowance is not, even though neither is a bug.
 | `QUOTA_EXHAUSTED` | `BUDGET` | A metered allowance is spent and does not return on its own. |
 | `WRONG_DATACENTER` | `PLATFORM` | This app is served elsewhere. `extensions.gameApiUrl` names where; move and retry. |
 | `APP_UNAVAILABLE` | `PLATFORM` | The app's datacenter has no instance able to serve. **No endpoint is named, on purpose** — do not fall back to a cached one, it is in the datacenter that is down. |
-| `NO_LOCAL_BUDDY` | `PLATFORM` | `serverWithLeastClients` found no healthy UDP server in the app's own datacenter, and **will not hand you one elsewhere** — every gameplay write for that session would cross a WAN, invisibly, because each write still succeeds. Retry; do not reuse a cached server from another datacenter. |
+| `NO_LOCAL_BUDDY` | `PLATFORM` | You are **on** the app's own datacenter and it has no healthy UDP server. **No endpoint is named, because there is nowhere else to go** — a Buddy elsewhere would make every gameplay write cross a WAN, invisibly, because each write still succeeds. Retry, and report it: this one needs an operator. If you called `serverWithLeastClients` on the *wrong* datacenter you get `WRONG_DATACENTER` instead, with an endpoint to move to. |
 
 **`gameModelInvoke` reports a gameplay verdict in band, not as an error.** An authority
 denial or an evaluation failure is a verdict, so the mutation succeeds and the result
