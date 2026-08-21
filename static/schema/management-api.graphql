@@ -3599,7 +3599,7 @@ type Mutation {
     loginUserInput: LoginUserInput!
   ): AuthResponse!
   """
-  Registers a new email + password account: creates the (initially unconfirmed) account, emails a confirmation link, and returns an AuthResponse with a session `token` for immediate use (send as `Authorization: Bearer <token>`). If an account already exists for the email (e.g. created via magic link/social), the password is attached pending email confirmation and no session is returned (throws CONFLICT). Public.
+  Registers a new email + password account: creates the (initially unconfirmed) account, emails a confirmation link, and returns an AuthResponse with a session `token` for immediate use (send as `Authorization: Bearer <token>`). If an account already exists for the email (e.g. created via magic link/social), the password is attached pending email confirmation and no session is returned, refused with extensions.code EMAIL_ALREADY_REGISTERED (409). It is a routine outcome rather than a fault, and it reached clients as INTERNAL_SERVER_ERROR before v1.60.0, which is why several of them match it by its message text. Public.
   """
   register(
     """
@@ -3636,7 +3636,7 @@ type Mutation {
     email: String!
   ): Boolean!
   """
-  Changes the authenticated user's password after verifying the current password. Requires a valid session token. Returns true on success; throws if the current password is wrong. Existing sessions are not revoked.
+  Changes the authenticated user's password after verifying the current password. Requires a valid session token. Returns true on success. Refuses with extensions.code INVALID_CURRENT_PASSWORD (403) when the current password is wrong, and PASSWORD_NOT_SET (409) when the account has no password to change — use setInitialPassword for that, which needs only the session. NEITHER of those means the session is invalid, and neither is UNAUTHENTICATED: both were until v1.60.0, so a client that signs the user out on UNAUTHENTICATED was signing them out over a typo. Existing sessions are not revoked.
   """
   changePassword(
     """The user's current password, for verification."""
@@ -3645,7 +3645,7 @@ type Mutation {
     newPassword: String!
   ): Boolean!
   """
-  Adds a password to the signed-in account when it does not have one yet — for an account created by magic link or a social provider, which previously had no in-product way to add password sign-in. Requires a valid session token; the session is the proof of account control, so the password is usable immediately and no email confirmation is needed. Throws CONFLICT if a password is already set (use changePassword, which verifies the current one). A security notification is emailed to the account address. Existing sessions are not revoked.
+  Adds a password to the signed-in account when it does not have one yet — for an account created by magic link or a social provider, which previously had no in-product way to add password sign-in. Requires a valid session token; the session is the proof of account control, so the password is usable immediately and no email confirmation is needed. Refuses with extensions.code PASSWORD_ALREADY_SET (409) when a password is already set — use changePassword, which verifies the current one, or the reset flow if it is forgotten. (Before v1.60.0 that refusal reached clients as INTERNAL_SERVER_ERROR while this description said CONFLICT, so a client could only recognise it by the message text.) A security notification is emailed to the account address. Existing sessions are not revoked.
   """
   setInitialPassword(
     """The password to set (min 8 characters)."""
