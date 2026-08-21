@@ -55,11 +55,12 @@ That is not an oversight; see the header comment in `.github/workflows/deploy-do
   happens to be on — and `die()`s rather than warning when an allowlisted root
   field is not in it (`N allowlisted management root field(s) are no longer in
   the unified schema`). So **`cks-docs` must never reach a branch ahead of
-  `cks-game-api` on that same branch.** Allowlist a field on `dev` and promote
-  `cks-docs` to `test` before ck-api gets there, and every `test` build of this
-  site fails — not on a page, on `prebuild`. Promote `cks-game-api` first,
-  every time. The failure reads like a broken allowlist and is really a
-  promotion order.
+  `cks-game-api` on that same branch.** Promote `cks-game-api` first, every
+  time. The failure reads like a broken allowlist and is really a promotion
+  order. **CI cannot catch this**: `sdl:gen` runs from `prebuild` and both
+  workflows build with `npx docusaurus build`, which skips it — so a docs branch
+  ahead of ck-api deploys green and publishes an SDL naming a field the tier does
+  not serve. Nothing reports that. The rule is the only enforcement.
 - **CrowdyJS** npm `latest` is **15.0.0** — a breaking major that **removed
   `devLogin`** and added **`auth.login` / `auth.register`**. The SDK is NOT
   passwordless; any page here still saying so is stale. Verify before quoting:

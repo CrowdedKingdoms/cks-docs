@@ -364,7 +364,7 @@ type Organization {
   """user_id of the organization owner (BigInt as string)."""
   ownerUserId: BigInt!
   """
-  Lifecycle status, e.g. 'active' or 'frozen'. Set platform-wide via setOrgStatus.
+  Lifecycle status: 'active', 'frozen' (setOrgStatus) or 'retired' (retireOrganization). A retired organization still resolves by id and slug — it is a state, not a deletion, and its whole ledger is intact — but it grants its members no permissions, its API tokens no longer authenticate, and it is omitted from myOrganizations.
   """
   status: String!
   """When the organization was created."""
@@ -1051,6 +1051,48 @@ type OrgTokenWithSecret {
   expiresAt: DateTime
   """When the token was created."""
   createdAt: DateTime!
+}
+
+"""
+A record of one organization retirement. Retirement is a STATE, not a deletion: every ledger row the organization ever wrote is still present and still references it, so what the org spent stays reconstructable with the same joins as before. This row says who retired it, why, and what it was holding at the time.
+"""
+type OrgRetirementType {
+  """Retirement record id (BigInt as a decimal string)."""
+  retirementId: BigInt!
+  """The retired organization (BigInt as a decimal string)."""
+  orgId: BigInt!
+  """The organization slug as it stood when it was retired."""
+  orgSlug: String!
+  """The organization name."""
+  orgName: String!
+  """Why the organization was retired."""
+  reason: String!
+  """Operator user_id who retired it."""
+  retiredByUserId: BigInt!
+  """When it was retired."""
+  retiredAt: DateTime!
+  """
+  Wallet balance in cents at the moment of retirement. This money is FROZEN, not refunded and not forfeited: whether a retired balance should be returned or written off is an operator decision that has not been taken, and retirement deliberately does not settle it.
+  """
+  balanceCentsAtRetirement: BigInt!
+  """
+  How many org wallet_transactions rows existed at retirement. All of them are still there — this number is the claim that the ledger survived, stated at the moment it would have been easiest to lose.
+  """
+  walletTxnCountAtRetirement: BigInt!
+  """
+  How many of the org apps were archived by the retirement. Apps already archived are not counted and are not touched.
+  """
+  appsArchived: Int!
+  """
+  True when the caller had to pass acknowledgeFrozenBalance because the org held money.
+  """
+  frozenBalanceAcknowledged: Boolean!
+  """When the retirement was reversed, or null while it is in force."""
+  reinstatedAt: DateTime
+  """Operator user_id who reinstated the organization."""
+  reinstatedByUserId: BigInt
+  """Why the organization was reinstated."""
+  reinstatedReason: String
 }
 
 """
@@ -7569,6 +7611,10 @@ type Query {
     orgId: BigInt!
   ): [OrgToken!]! @requiresPermission(scope: "org", permission: "manage_tokens", scopeArg: "orgId")
   """
+  OPERATOR ONLY. Every organization currently retired, newest first. A retirement nobody can enumerate is indistinguishable from an organization that was quietly lost.
+  """
+  retiredOrganizations: [OrgRetirementType!]! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
   Public marketplace listing of apps. PUBLIC: no authentication required. Returns ONLY apps with visibility=PUBLIC AND status=LIVE (drafts, unlisted, private, and archived apps are never returned). Use myApps or appsForOrg for caller-visible or org-scoped apps. Results are ordered newest-first and paginated via pageInfo.
   """
   apps(
@@ -9624,14 +9670,28 @@ type Mutation {
   """
   createOrganization(input: CreateOrganizationInput!): Organization!
   """
-  Super admin only. Used to freeze/unfreeze orgs platform-wide. SIDE EFFECT: sets organizations.status, which gates the org's platform access.
+  Super admin only. Used to freeze/unfreeze orgs platform-wide. SIDE EFFECT: sets organizations.status. What that gates today is narrower than it sounds: a non-'active' status stops the org's API TOKENS from authenticating, but it does not remove its members' permissions, so a frozen org's signed-in members can still act. Refuses 'retired' in either direction — retirement is retireOrganization, which writes a tombstone.
   """
   setOrgStatus(
     """Organization id (BigInt as string)."""
     orgId: BigInt!
-    """New status, e.g. 'active' or 'frozen'."""
+    """New status, e.g. 'active' or 'frozen'. 'retired' is refused here."""
     status: String!
   ): Organization! @requiresPermission(scope: "super_admin", permission: "is_super_admin")
+  """
+  OPERATOR ONLY. Retires an organization: sets organizations.status to 'retired', stamps deleted_at, archives its apps, and writes a tombstone to org_retirements. RETIREMENT IS A STATE, NOT A DELETION — no wallet_transactions, org_billing_waivers, app_shared_usage_charges or other ledger row is altered or removed, so an auditor can still reconstruct exactly what this organization spent, with the same joins as before, indefinitely. There is deliberately no purge and no retention window: destroying financial records is an operator and legal decision, not this mutation's. AFTER RETIREMENT the org's API tokens stop authenticating, its members lose every org permission (super admins excepted, so this is reversible), and it is excluded from the caller's organization list — but it is still readable by id and slug, because a retired org that answers like a missing one is worse than one that says what it is. Refuses unless expectedSlug matches the org named by orgId, and refuses an organization holding money unless acknowledgeFrozenBalance is passed. Reverse it with reinstateOrganization.
+  """
+  retireOrganization(
+    """Which organization, proof you mean it, and why."""
+    input: RetireOrganizationInput!
+  ): OrgRetirementType! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
+  OPERATOR ONLY. Reverses a retirement: the organization returns to status 'active', deleted_at is cleared, and the tombstone records who put it back and why rather than being deleted. Its apps are LEFT ARCHIVED — un-archiving is archiveApp's inverse and belongs to whoever decides which apps should serve traffic again. Refuses an organization that is not currently retired.
+  """
+  reinstateOrganization(
+    """Which organization to put back, and why."""
+    input: ReinstateOrganizationInput!
+  ): OrgRetirementType! @requiresPermission(scope: "operator", permission: "is_operator")
   """
   Mints a new org API token and returns the plaintext token exactly once - save it, since subsequent queries only show metadata. Requires the 'manage_tokens' permission on the target org (super admins bypass).
   """
@@ -11805,6 +11865,32 @@ input CreateOrganizationInput {
   Unique URL slug; lowercase letters, numbers, and dashes only (1-128 characters).
   """
   slug: String!
+}
+
+"""Which organization to retire, proof that you mean that one, and why."""
+input RetireOrganizationInput {
+  """Organization to retire (BigInt as a decimal string)."""
+  orgId: BigInt!
+  """
+  The slug the organization must currently have. Refused if it does not match, which is what stops a mistyped or copy-pasted id from retiring a paying customer. There is no bulk form of this mutation for the same reason.
+  """
+  expectedSlug: String!
+  """
+  Why this organization is being retired. Required and stored on the tombstone.
+  """
+  reason: String!
+  """
+  Required when the organization holds a non-zero wallet balance. Retirement FREEZES that balance in place; it is not refunded and not forfeited. Refusing by default rather than omitting the case is deliberate — an unreachable dangerous path guarantees the danger and removes the fix.
+  """
+  acknowledgeFrozenBalance: Boolean
+}
+
+"""Which retired organization to put back, and why."""
+input ReinstateOrganizationInput {
+  """Organization to reinstate (BigInt as a decimal string)."""
+  orgId: BigInt!
+  """Why the retirement is being reversed. Required and stored."""
+  reason: String!
 }
 
 input CreateOrgTokenInput {

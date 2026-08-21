@@ -1,0 +1,39 @@
+---
+id: reinstate-organization
+title: reinstateOrganization
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR ONLY. Reverses a retirement: the organization returns to status 'active', deleted&#x005F;at is cleared, and the tombstone records who put it back and why rather than being deleted. Its apps are LEFT ARCHIVED — un-archiving is archiveApp's inverse and belongs to whoever decides which apps should serve traffic again. Refuses an organization that is not currently retired.
+
+
+```graphql
+reinstateOrganization(
+  input: ReinstateOrganizationInput!
+): OrgRetirementType!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>reinstateOrganization.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ReinstateOrganizationInput!</b></code>](/reference/graphql/types/inputs/reinstate-organization-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Which organization to put back, and why.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgRetirementType</b></code>](/reference/graphql/types/objects/org-retirement-type.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A record of one organization retirement. Retirement is a STATE, not a deletion: every ledger row the organization ever wrote is still present and still references it, so what the org spent stays reconstructable with the same joins as before. This row says who retired it, why, and what it was holding at the time.
