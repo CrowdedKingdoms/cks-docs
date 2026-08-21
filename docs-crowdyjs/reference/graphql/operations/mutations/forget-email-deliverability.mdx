@@ -1,0 +1,39 @@
+---
+id: forget-email-deliverability
+title: forgetEmailDeliverability
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only (is&#x005F;operator). Deletes the stored deliverability rows for one address (email&#x005F;status and email&#x005F;events) and returns how many rows went. Exists so a verification run is not reading the previous run's events, and so an address suppressed by a bounce that has since been fixed can be given another chance. Returns 0 when there was nothing stored.
+
+
+```graphql
+forgetEmailDeliverability(
+  email: String!
+): Int!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>forgetEmailDeliverability.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
+Address to clear. Matched exactly.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.

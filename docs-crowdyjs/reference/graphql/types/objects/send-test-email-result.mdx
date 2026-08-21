@@ -1,0 +1,53 @@
+---
+id: send-test-email-result
+title: SendTestEmailResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Result of an operator test send.
+
+
+```graphql
+type SendTestEmailResult {
+  sent: Boolean!
+  messageId: String
+  simulated: Boolean!
+  refusedReason: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SendTestEmailResult.<b>sent</b></code>](#sent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sent\} 
+Whether the send was attempted AND accepted. False means refused (suppressed domain, or a prior permanent bounce) or that SES rejected it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SendTestEmailResult.<b>messageId</b></code>](#message-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#message-id\} 
+The SES message id when a message was actually handed to SES. Null when sending is disabled on this instance, which is reported as sent=true by the same rule the product flows use, so READ THIS FIELD to tell a real send from a simulated one.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SendTestEmailResult.<b>simulated</b></code>](#simulated)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#simulated\} 
+True when SEND&#x005F;EMAILS is off and the message was logged rather than sent. sent=true with simulated=true means nothing left the building.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SendTestEmailResult.<b>refusedReason</b></code>](#refused-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#refused-reason\} 
+Why a send was refused, when it was.
+
+
+
+
+### Returned By
+
+[`sendTestEmail`](/reference/graphql/operations/mutations/send-test-email.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

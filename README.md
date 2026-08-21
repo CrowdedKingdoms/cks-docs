@@ -53,16 +53,24 @@ branches, and `sdl:gen` enforces it by dying rather than warning:
   Mutation.setInitialPassword
 ```
 
-That is what a `cks-docs` branch **ahead of** `cks-game-api` looks like. Allowlist
-a new root field on `dev`, promote `cks-docs` to `test` before ck-api reaches
-`test`, and every `test` build of this site fails in `prebuild` — before any page
-renders. The message names the allowlist, so it reads like a bad entry when it is
-really a promotion order.
+That is what a `cks-docs` branch **ahead of** `cks-game-api` looks like: allowlist
+a new root field on `dev`, then try to regenerate with your sibling checkout on
+`test` before ck-api reaches `test`. The message names the allowlist, so it reads
+like a bad entry when it is really a promotion order.
+
+**And CI will not tell you.** `sdl:gen` runs from npm `prebuild`, and both
+workflows deliberately build with `npx docusaurus build`, which skips `prebuild`
+and serves the committed artifacts. So the deploy is unaffected and green — which
+means the mismatch is invisible in CI and reaches the published site instead. The
+site can advertise a management root field that the tier's API does not serve,
+which is worse than a failed build, because nothing reports it. It happened on
+2026-08-21: `Mutation.setInitialPassword` was published on the prod docs site
+while prod's ck-api was still on the release before it.
 
 **Rule: for any change that adds a root field, `cks-game-api` reaches a branch
-first and `cks-docs` follows.** Removing one is the mirror image and is safe in
-the other direction: move it to `retired` in `cks-docs` first, then drop it from
-ck-api.
+first and `cks-docs` follows.** Nothing enforces it — the rule is the enforcement.
+Removing one is the mirror image and is safe in the other direction: move it to
+`retired` in `cks-docs` first, then drop it from ck-api.
 
 Do not hand-edit generated Markdown under `reference/graphql/`.
 

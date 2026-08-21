@@ -330,17 +330,73 @@ mutation {
   read: creation-only fields (`displayName`, `description`, `metadataJson`,
   `properties`, `ownerUserId`) are ignored and the type's `instantiableBy` is
   not enforced.
-- **Not-exists ⇒ create.** Creation is authorized exactly like
-  `gameModelCreateContainer` (`instantiableBy` + the ownership rules above), so
-  a caller who may not instantiate the type errors only in the not-exists case.
+- **Not-exists ⇒ create.** Creation is authorized like
+  `gameModelCreateContainer` (`instantiableBy` + the ownership rules above)
+  **and** by the type's `bindPolicy` (below), so a caller who may not
+  instantiate the type, or may not claim keys for it, errors only in the
+  not-exists case.
 - **Read back by key.** `bindingKey` is returned on the container object, and
   `gameModelContainers(appId, typeName, bindingKey, ...)` is the get-by-key
   read.
-- **Keys are not yet policy-governed.** Any caller who may instantiate the type
-  may claim a key first, so give shared world objects an
-  **admin-instantiable** type: existing rows stay readable by everyone while
-  only app admins (or automations) can create the keyed row, and authoritative
-  writes stay governed by invoke policies rather than row ownership.
+
+#### Who may CLAIM a key: `bindPolicy`
+
+**Read this before using an ensured container for anything shared.**
+
+`bindingKey` is supplied by the client, and whoever creates the keyed row
+becomes its **owner**. On a `member`- or `owner`-instantiable type that means
+any entitled player can claim a key before its rightful user does — and because
+`owner_of_self` reads `ownerUserId` off that same row, the squatter then passes
+every `owner_of_self` invoke policy on the type and the legitimate player is
+refused. The invoke policy does not protect you here; it is the thing that gets
+inverted.
+
+Two ways to close it, and a shared object needs one of them:
+
+1. **An admin-instantiable type.** Existing rows stay readable by everyone,
+   while only app admins and automations can create the keyed row.
+2. **A `bindPolicy` on the container type.** Same JSON shape as a function's
+   `invokePolicyJson` — the same `AuthorityRule` tree, evaluated the same way:
+
+```graphql
+mutation {
+  gameModelUpsertContainerType(input: {
+    appId: "1",
+    typeName: "TitanAssaultAttributes",
+    displayName: "Boss attributes",
+    instantiableBy: "member",
+    bindPolicyJson: "{\"type\":\"is_host\"}"
+  }) { typeName bindPolicyJson }
+}
+```
+
+- **Omit it and nothing changes.** No `bindPolicy` means binding is governed by
+  `instantiableBy` alone, which is how ensured containers behaved before the
+  field existed.
+- **It governs creation only.** Resolving a key that already exists is a read
+  and is never refused by a bind policy — otherwise no client could see a
+  shared object it did not create.
+- **App admins bypass it**, exactly as they bypass invoke policies.
+- **Three requirements are refused**, because a bind is what *creates* the
+  container and there is no acting container to resolve them against:
+  `owner_of_self`, `is_current_turn` and `condition`. You get a `BAD_REQUEST`
+  naming the leaf when you author one. Everything else composes as usual:
+  `is_host`, `is_participant`, `is_automation`, `group_permission`,
+  `grid_permission`, `tier_feature`, `allow`, and `and` / `or` / `not`.
+- **Per-player containers.** If your key identifies a *player's* object rather
+  than a world object, `{"type":"is_participant"}` limits claims to the session,
+  but it does not stop one participant claiming another's key. For that, derive
+  the key server-side or make the type admin-instantiable and ensure it from an
+  automation.
+
+**Rolling one out onto a live game.** Adding a `bindPolicy` to a type whose
+players are already binding keys can refuse the very players it is meant to
+protect. Set `GM_BIND_POLICY_MODE=shadow` on the tier first: a bind the policy
+*would* have refused is admitted and counted on the type, and
+`scripts/report-bind-policy-shadow.mjs` prints the count. A policy at zero
+refusals is safe to enforce; one that is accumulating them is refusing real
+players. The default is `enforce`, and an unrecognised value falls back to
+`shadow`.
 
 Turns are explicit and developer-driven: `gameModelSetSessionTurn` records whose
 turn it is (the current turn holder, the elected host, or an app admin may set

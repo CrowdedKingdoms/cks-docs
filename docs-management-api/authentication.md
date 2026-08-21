@@ -152,6 +152,73 @@ Two behaviours to code against, because both are easy to meet by accident:
   different password. A password-only account signs in immediately, because
   there is no other method to protect.
 
+## Managing passwords
+
+Four mutations, and which one applies is decided by **what the caller has
+already proven** rather than by what they want to do:
+
+| Mutation | Needs | Use when |
+|---|---|---|
+| `requestPasswordReset(email)` | nothing (public) | the user is not signed in, or has forgotten the password |
+| `resetPassword(resetPasswordInput: { token, newPassword })` | the token from the emailed link | completing the above |
+| `changePassword(currentPassword, newPassword)` | a session **and** the current password | an ordinary change |
+| `setInitialPassword(newPassword)` | a session, and the account must have **no** password | adding password sign-in to a magic-link or social account |
+
+`checkAuthMethod(input: { email })` answers `hasPassword` for an address before
+sign-in, without revealing whether the address is registered.
+
+```graphql
+# Signed in, and the account has no password yet (magic link or social only).
+mutation Add($newPassword: String!) { setInitialPassword(newPassword: $newPassword) }
+```
+
+```graphql
+# Signed in, and it does.
+mutation Change($currentPassword: String!, $newPassword: String!) {
+  changePassword(currentPassword: $currentPassword, newPassword: $newPassword)
+}
+```
+
+**`setInitialPassword` refuses an account that already has a password**, and
+that refusal is the point: without it, the mutation would be `changePassword`
+with the current-password check deleted, and that check is what stops a stolen
+session from replacing a credential the owner still knows. The password it sets
+works immediately — the session is the proof of account control, so there is no
+confirmation email to wait for — and **a security notification is emailed to the
+account address**. That notification is deliberately the mitigation rather than
+a refusal: a stolen session can already attach durable attacker-controlled
+access with `linkIdentity`, so refusing here would close nothing while leaving
+the legitimate user of a passwordless account with no way in at all.
+
+Neither `resetPassword` nor `changePassword` revokes existing sessions. Follow
+either with `logoutAllDevices` if that is what you want.
+
+### Telling the refusals apart
+
+Each refusal has its own `extensions.code` from **ck-api v1.60.0**. Verified
+against a live tier:
+
+| Condition | `extensions.code` | HTTP | Message begins | Remedy |
+|---|---|---|---|---|
+| `setInitialPassword`, password already set | `PASSWORD_ALREADY_SET` | 409 | *"This account already has a password."* | `changePassword` |
+| `changePassword`, no password set | `PASSWORD_NOT_SET` | 409 | *"No password is set on this account."* | `setInitialPassword` |
+| `changePassword`, wrong current password | `INVALID_CURRENT_PASSWORD` | 403 | *"Invalid current password"* | ask again |
+| `register`, address already has an account | `EMAIL_ALREADY_REGISTERED` | 409 | *"An account with this email already exists."* | follow the emailed link |
+| any, session expired or absent | `UNAUTHENTICATED` | 401 | — | sign in again |
+
+**Only the last one means the session is bad.** That row is the reason the other
+four exist: before v1.60.0 the first two shared `UNAUTHENTICATED` with it and
+the other two arrived as `INTERNAL_SERVER_ERROR`, so a client branching on the
+code either signed a user out for mistyping their current password or reported a
+routine outcome as a server fault. If you must support a tier older than
+v1.60.0, branch on `extensions.httpStatus` (always correct) or on the message
+text, which is unchanged in both directions and will stay that way.
+
+The CrowdyJS SDK ships `isPasswordAlreadySetError`, `isNoPasswordSetError`,
+`isInvalidCurrentPasswordError` and `isAlreadyRegisteredError`, each of which
+accepts the code *and* the older wording, so you do not have to carry either —
+see [Managing passwords](/crowdyjs/readme#managing-passwords).
+
 ## Federated identities (linking sign-in methods)
 
 An account can have several linked sign-in identities (a Google identity, an email

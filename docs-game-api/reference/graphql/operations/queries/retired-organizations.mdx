@@ -1,0 +1,29 @@
+---
+id: retired-organizations
+title: retiredOrganizations
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR ONLY. Every organization currently retired, newest first. A retirement nobody can enumerate is indistinguishable from an organization that was quietly lost.
+
+
+```graphql
+retiredOrganizations: [OrgRetirementType!]!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgRetirementType</b></code>](/reference/graphql/types/objects/org-retirement-type.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A record of one organization retirement. Retirement is a STATE, not a deletion: every ledger row the organization ever wrote is still present and still references it, so what the org spent stays reconstructable with the same joins as before. This row says who retired it, why, and what it was holding at the time.
