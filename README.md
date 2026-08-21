@@ -42,6 +42,28 @@ Adding a management root field to `cks-game-api` means adding it to
 `scripts/management-surface.json` too, or it will not appear in the management
 reference; removing one fails `sdl:gen` until it is moved to `retired` with a reason.
 
+### Promote `cks-game-api` before `cks-docs`, on every branch
+
+The management source above is not a tier or a URL — it is the sibling **working
+checkout**, on whatever branch it is on. So the allowlist couples the two repos'
+branches, and `sdl:gen` enforces it by dying rather than warning:
+
+```
+[sdl:gen] FATAL: 1 allowlisted management root field(s) are no longer in the unified schema:
+  Mutation.setInitialPassword
+```
+
+That is what a `cks-docs` branch **ahead of** `cks-game-api` looks like. Allowlist
+a new root field on `dev`, promote `cks-docs` to `test` before ck-api reaches
+`test`, and every `test` build of this site fails in `prebuild` — before any page
+renders. The message names the allowlist, so it reads like a bad entry when it is
+really a promotion order.
+
+**Rule: for any change that adds a root field, `cks-game-api` reaches a branch
+first and `cks-docs` follows.** Removing one is the mirror image and is safe in
+the other direction: move it to `retired` in `cks-docs` first, then drop it from
+ck-api.
+
 Do not hand-edit generated Markdown under `reference/graphql/`.
 
 ## Maintainers: agent-readiness (SDL, llms.txt, lint)
