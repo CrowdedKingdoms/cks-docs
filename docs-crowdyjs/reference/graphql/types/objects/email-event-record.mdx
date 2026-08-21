@@ -1,0 +1,58 @@
+---
+id: email-event-record
+title: EmailEventRecord
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One recorded SES event for an address: the `send` this API wrote when it handed the message to SES, or a `delivery` / `bounce` / `complaint` / `delivery_delay` that arrived back on the SNS webhook.
+
+
+```graphql
+type EmailEventRecord {
+  email: String!
+  messageId: String
+  eventType: String!
+  eventSubtype: String
+  createdAt: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailEventRecord.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
+Recipient address the event concerns.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailEventRecord.<b>messageId</b></code>](#message-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#message-id\} 
+SES message id. Present on the `send` row this API writes and on the feedback events SES publishes for it, which is what lets one send be matched to its own delivery rather than a previous run's.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailEventRecord.<b>eventType</b></code>](#event-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#event-type\} 
+send | delivery | bounce | complaint | delivery&#x005F;delay. Lower-case, as stored.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailEventRecord.<b>eventSubtype</b></code>](#event-subtype)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#event-subtype\} 
+Event detail where SES supplies one: `Permanent/General` for a bounce, the complaint feedback type for a complaint.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EmailEventRecord.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the row was written (ISO 8601).
+
+
+
+
+### Member Of
+
+[`EmailDeliverability`](/reference/graphql/types/objects/email-deliverability.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

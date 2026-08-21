@@ -45,8 +45,32 @@ GraphQL responses carry errors in the top-level `errors` array. Each entry has a
 | `NOT_FOUND` | The referenced entity does not exist or is not visible to you. | Verify the ID and that your token can see it. |
 | `CONFLICT` | The request conflicts with current state (incl. an idempotency key still processing). | Refetch and retry if appropriate. |
 | `IDEMPOTENCY_CONFLICT` | An `idempotencyKey` was reused with **different** request parameters. | Use a new key, or resend the byte-identical request to replay the first result. See [pagination/idempotency notes](/overview/for-ai-agents#agent-gotchas). |
+| `EMAIL_ALREADY_REGISTERED` | `register` was called for an address that already has an account. The password was attached pending email confirmation and **no session was issued**. | Routine, not a fault. Have the user follow the emailed link, or sign in with their existing method. Do not retry the registration. |
+| `PASSWORD_ALREADY_SET` | `setInitialPassword` on an account that already has a password. | Use `changePassword` (which verifies the current one), or `requestPasswordReset`. The session is valid — do not sign the user out. |
+| `PASSWORD_NOT_SET` | `changePassword` on an account with no password to change. | Use `setInitialPassword`, which needs only the session. The session is valid — do not sign the user out. |
+| `INVALID_CURRENT_PASSWORD` | `changePassword` was given the wrong current password. | Ask again, or offer `requestPasswordReset`. The session is valid — do not sign the user out. |
 | `RATE_LIMITED` | A rate/usage limit was exceeded. | Back off and retry with exponential backoff. |
 | `INTERNAL_SERVER_ERROR` | Unexpected server error. | Safe to retry idempotent reads; do **not** blind-retry non-idempotent mutations (send an `idempotencyKey` instead). |
+
+:::caution Codes changed in ck-api v1.60.0 — check the tier before you branch
+
+Until v1.60.0, **only four HTTP statuses reached you as a distinct code** (400, 401,
+403, 422). Everything else — every `NOT_FOUND`, every `CONFLICT` — arrived as
+`INTERNAL_SERVER_ERROR` with the real status in `extensions.httpStatus`. That is fixed,
+and the four password/registration codes above are new in the same release.
+
+Two consequences if you are writing a client today:
+
+- **Against an older tier, branch on `extensions.httpStatus`**, which was always correct,
+  or on the message. `extensions.code` was not usable for these.
+- **The three `changePassword`/`setInitialPassword` refusals used to arrive as
+  `UNAUTHENTICATED`**, which is also what an expired session looks like. A client that
+  signs the user out on `UNAUTHENTICATED` was signing them out for mistyping a password.
+  None of the new codes means the session is bad.
+
+`CROWDY_STUDIO_REVISION_CONFLICT` is a related trap that was never a mapping bug: it is
+its own code, **not** `CONFLICT` with a detail message. Branch on the exact string.
+:::
 
 **`requiredPermission` and the directive.** Permission-gated fields carry a machine-readable
 `@requiresPermission(scope:, permission:, scopeArg:)` directive in the SDL/introspection, so

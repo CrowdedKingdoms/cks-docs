@@ -1,0 +1,39 @@
+---
+id: retire-organization
+title: retireOrganization
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR ONLY. Retires an organization: sets organizations.status to 'retired', stamps deleted&#x005F;at, archives its apps, and writes a tombstone to org&#x005F;retirements. RETIREMENT IS A STATE, NOT A DELETION — no wallet&#x005F;transactions, org&#x005F;billing&#x005F;waivers, app&#x005F;shared&#x005F;usage&#x005F;charges or other ledger row is altered or removed, so an auditor can still reconstruct exactly what this organization spent, with the same joins as before, indefinitely. There is deliberately no purge and no retention window: destroying financial records is an operator and legal decision, not this mutation's. AFTER RETIREMENT the org's API tokens stop authenticating, its members lose every org permission (super admins excepted, so this is reversible), and it is excluded from the caller's organization list — but it is still readable by id and slug, because a retired org that answers like a missing one is worse than one that says what it is. Refuses unless expectedSlug matches the org named by orgId, and refuses an organization holding money unless acknowledgeFrozenBalance is passed. Reverse it with reinstateOrganization.
+
+
+```graphql
+retireOrganization(
+  input: RetireOrganizationInput!
+): OrgRetirementType!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>retireOrganization.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RetireOrganizationInput!</b></code>](/reference/graphql/types/inputs/retire-organization-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+Which organization, proof you mean it, and why.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgRetirementType</b></code>](/reference/graphql/types/objects/org-retirement-type.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A record of one organization retirement. Retirement is a STATE, not a deletion: every ledger row the organization ever wrote is still present and still references it, so what the org spent stays reconstructable with the same joins as before. This row says who retired it, why, and what it was holding at the time.
