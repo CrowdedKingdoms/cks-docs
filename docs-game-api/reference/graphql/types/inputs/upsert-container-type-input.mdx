@@ -27,6 +27,7 @@ input UpsertContainerTypeInput {
   instantiableBy: String
   defaultPropertyVisibility: String
   metadataJson: String
+  bindPolicyJson: String
 }
 ```
 
@@ -59,6 +60,10 @@ public | owner | hidden default for this type's properties.
 
 #### [<code style={{ fontWeight: 'normal' }}>UpsertContainerTypeInput.<b>metadataJson</b></code>](#metadata-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata-json\} 
 JSON object of metadata.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertContainerTypeInput.<b>bindPolicyJson</b></code>](#bind-policy-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#bind-policy-json\} 
+Who may CREATE a container of this type under a client-supplied bindingKey (gameModelEnsureContainer). Same JSON shape as a function invokePolicyJson — an AuthorityRule tree — except that owner&#x005F;of&#x005F;self, is&#x005F;current&#x005F;turn and condition are refused, because a bind creates the container and there is no acting container to resolve them against. Omit it (the default) and binding is governed by the type's instantiableBy alone, which is the behaviour before this field existed. Resolving an EXISTING key is unaffected: it is a read. For a shared world object, &#x007B;"type":"is&#x005F;host"&#x007D; or instantiableBy: admin stops one player from squatting the key and becoming its owner.
 
 
 
