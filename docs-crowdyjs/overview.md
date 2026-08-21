@@ -247,12 +247,16 @@ and that check is what stops a stolen session from replacing a credential the
 owner still knows. **It also emails a security notification** to the account
 address on success — tell your user that, because they are about to receive it.
 
-:::caution The error CODE cannot tell these apart
-Three different conditions arrive as `UNAUTHENTICATED` — wrong current password,
-an account with no password, and an expired session — and
-`setInitialPassword`'s refusal arrives as `INTERNAL_SERVER_ERROR` even though
-the schema calls it a `CONFLICT`. Branching on the code signs a user out over a
-typo. The SDK exports three predicates so you do not have to carry the strings:
+:::caution Do not branch on `UNAUTHENTICATED` here
+Each refusal has its own `extensions.code` from ck-api **v1.60.0**:
+`PASSWORD_ALREADY_SET`, `PASSWORD_NOT_SET`, `INVALID_CURRENT_PASSWORD`. Before
+that release the first two shared `UNAUTHENTICATED` with a genuinely expired
+session and the third arrived as `INTERNAL_SERVER_ERROR`, so a client reading
+the code signed a user out for mistyping their current password.
+
+Use the predicates rather than either. Each one accepts the new code **and** the
+older wording, so the same build works against a tier that has not deployed
+v1.60.0 — which matters here, because games pin this SDK exactly:
 
 ```ts
 import {
@@ -270,6 +274,9 @@ try {
   } else throw e;
 }
 ```
+
+None of the three means the session is gone. Sign the user out only on
+`UNAUTHENTICATED`, which now says only that.
 :::
 
 Neither `resetPassword` nor `changePassword` revokes existing sessions; follow

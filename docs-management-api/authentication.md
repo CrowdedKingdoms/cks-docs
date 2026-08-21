@@ -195,21 +195,28 @@ either with `logoutAllDevices` if that is what you want.
 
 ### Telling the refusals apart
 
-**The GraphQL error code cannot do it, so match on the message.** Verified
+Each refusal has its own `extensions.code` from **ck-api v1.60.0**. Verified
 against a live tier:
 
-| Condition | `extensions.code` | Message begins | Remedy |
-|---|---|---|---|
-| `setInitialPassword`, password already set | `INTERNAL_SERVER_ERROR` | *"This account already has a password."* | `changePassword` |
-| `changePassword`, no password set | `UNAUTHENTICATED` | *"No password is set on this account."* | `setInitialPassword` |
-| `changePassword`, wrong current password | `UNAUTHENTICATED` | *"Invalid current password"* | ask again |
-| any, session expired | `UNAUTHENTICATED` | — | sign in again |
+| Condition | `extensions.code` | HTTP | Message begins | Remedy |
+|---|---|---|---|---|
+| `setInitialPassword`, password already set | `PASSWORD_ALREADY_SET` | 409 | *"This account already has a password."* | `changePassword` |
+| `changePassword`, no password set | `PASSWORD_NOT_SET` | 409 | *"No password is set on this account."* | `setInitialPassword` |
+| `changePassword`, wrong current password | `INVALID_CURRENT_PASSWORD` | 403 | *"Invalid current password"* | ask again |
+| `register`, address already has an account | `EMAIL_ALREADY_REGISTERED` | 409 | *"An account with this email already exists."* | follow the emailed link |
+| any, session expired or absent | `UNAUTHENTICATED` | 401 | — | sign in again |
 
-The first is a `CONFLICT` in the schema description and does **not** arrive as
-one, the same way `register`'s collision does not. The last three share a code,
-so a client that branches on the code alone signs a user out over a typo. The
-CrowdyJS SDK ships `isPasswordAlreadySetError`, `isNoPasswordSetError` and
-`isInvalidCurrentPasswordError` so you do not have to carry the strings —
+**Only the last one means the session is bad.** That row is the reason the other
+four exist: before v1.60.0 the first two shared `UNAUTHENTICATED` with it and
+the other two arrived as `INTERNAL_SERVER_ERROR`, so a client branching on the
+code either signed a user out for mistyping their current password or reported a
+routine outcome as a server fault. If you must support a tier older than
+v1.60.0, branch on `extensions.httpStatus` (always correct) or on the message
+text, which is unchanged in both directions and will stay that way.
+
+The CrowdyJS SDK ships `isPasswordAlreadySetError`, `isNoPasswordSetError`,
+`isInvalidCurrentPasswordError` and `isAlreadyRegisteredError`, each of which
+accepts the code *and* the older wording, so you do not have to carry either —
 see [Managing passwords](/crowdyjs/readme#managing-passwords).
 
 ## Federated identities (linking sign-in methods)
