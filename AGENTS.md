@@ -16,7 +16,9 @@ question — but it means a correct, reviewed, merged, CI-green fix on `dev` rea
 So a docs fix is three acts, and only the third is visible to anybody:
 
 ```bash
-# 1. land it on prod (PR — prod requires a code-owner review)
+# 1. land it on prod (PR — prod requires a PR, and nothing more today: the ruleset's
+#    code-owner requirement was measured INERT on 2026-08-21, so do not expect a
+#    review to stop anything. Wrapper docs/HANDOFF-OPEN-ITEMS.md 3.1a)
 # 2. tag the commit on prod; the tag must be REACHABLE from origin/prod or the
 #    guard job refuses it
 git tag -a prod/v0.1.2 <sha-on-prod> -m "docs: <what changed>"
