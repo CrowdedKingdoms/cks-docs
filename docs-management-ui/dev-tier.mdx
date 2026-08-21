@@ -57,7 +57,7 @@ Per-developer dev boxes use URLs like `game.<handle>.dev.cks-env.com`. **Shared-
 One endpoint serves everything, but Crowded Kingdoms separates **identity** from
 **gameplay** by credential:
 
-1. **Identity** — passwordless sign-in (magic link, social/OIDC, or the dev bypass), org and app operations. Sign-in returns an **identity session token**, and that token **cannot drive gameplay**.
+1. **Identity** — sign-in (email + password, magic link, or social/OIDC; there is no dev bypass), org and app operations. Sign-in returns an **identity session token**, and that token **cannot drive gameplay**.
 2. **Gameplay** — chunks, voxels, actors, UDP proxy subscriptions, and world mutations. Needs an **app-scoped token** minted from the session token (`mintAppToken`, or the portal PKCE flow), **not** the login token.
 
 See [Client Workflow](/overview/client-workflow) and [Portals & app-scoped tokens](/management-api/portals-and-app-tokens).
