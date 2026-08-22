@@ -63,6 +63,30 @@ That is not an oversight; see the header comment in `.github/workflows/deploy-do
   workflows build with `npx docusaurus build`, which skips it — so a docs branch
   ahead of ck-api deploys green and publishes an SDL naming a field the tier does
   not serve. Nothing reports that. The rule is the only enforcement.
+- **The committed generated files are checked now — but only two of the three
+  hops, and the third is the one that matters.** `npm run check:generated`
+  re-runs the generators and refuses on a difference; Docs CI runs it on every
+  push. What it verifies there is `management-api.graphql` being a correct
+  derivation of the committed game SDL, and the 2361 reference pages being a
+  correct render of `static/schema/`. Both are **self-consistency**, and both
+  stayed green through the drift that caused the gate to be written: on
+  2026-08-21 `static/schema/game-api.graphql` published `Throws CONFLICT` for a
+  refusal that no longer carried that code, and the reference pages matched it
+  exactly, because both had been generated together the previous time.
+  **`npm run check:generated:siblings` is the one that catches that**, because it
+  compares the published SDL to the sibling repos it is copied from — and it
+  cannot run in Docs CI, because that needs a checkout of the private
+  `cks-game-api` from this public repo. Run it before you publish. Every mode
+  prints what it did not check.
+- **`docs-crowdyjs/` is deliberately ONE HOP BEHIND the other two, and that is
+  not drift to fix.** Its pages render `static/schema/crowdyjs.graphql`, which is
+  a copy of `CrowdyJS/schema.gql` — and *that* file is the SDK's mirror, synced
+  **from this site** by CrowdyJS's `npm run schema:sync:prod`. So a schema change
+  reaches `docs-game-api/` on the first publish and `docs-crowdyjs/` only after
+  somebody syncs the mirror and this site is published again. Two publishes, by
+  design. If you find the CrowdyJS reference naming an older error code than the
+  game-api reference beside it, the chain is working; do not "fix" it by editing
+  either generated tree, and do not add a check that demands they agree.
 - **CrowdyJS** npm `latest` is **15.0.0** — a breaking major that **removed
   `devLogin`** and added **`auth.login` / `auth.register`**. The SDK is NOT
   passwordless; any page here still saying so is stale. Verify before quoting:
@@ -77,7 +101,8 @@ That is not an oversight; see the header comment in `.github/workflows/deploy-do
 ## Do not
 
 - Hand-edit generated Markdown under `reference/graphql/` or committed SDL
-  under `static/schema/` except via `sdl:gen` / `graphql:gen`.
+  under `static/schema/` except via `sdl:gen` / `graphql:gen`. `check:generated`
+  refuses this now, and it refuses in Docs CI rather than only on your box.
 - Treat `cks-management-api` as a schema source or a live origin, describe
   galaxy as the game database, treat `pgc-prod` / `gxca-prod` as live, or
   claim CrowdyJS 14.0.0 is unpublished.

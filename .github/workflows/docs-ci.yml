@@ -7,6 +7,16 @@ name: Docs CI
 # reference/SDL (the sibling API repos are not checked out here). Maintainers regenerate
 # the reference + SDL locally with `npm run build` (which runs graphql:gen + sdl:gen).
 #
+# THAT LAST SENTENCE IS WHY `check:generated` EXISTS. 2364 generated files are committed
+# and were regenerated only when somebody remembered; on 2026-08-21 the published SDL went
+# on serving `Throws CONFLICT` for a refusal that no longer carried that code, hours after
+# the prose about it had been corrected. `check:generated` re-runs the generators and
+# refuses on a difference. It runs the two IN-REPO hops here and says out loud that it
+# cannot see the third — whether static/schema/*.graphql still match the sibling repos
+# they are copied from, which needs a checkout of the PRIVATE cks-game-api from this
+# PUBLIC repo. That hop is the one that catches the drift above, and it currently runs
+# only from the wrapper's Loop A on an operator's box. See the script's header.
+#
 # Triggers are deliberately unrestricted by branch. This used to be `pull_request` against
 # `main` alone, which under the three-branch model would have run NOTHING on a PR into dev,
 # test or prod — the checks would have gone quiet without ever reporting a failure, which is
@@ -40,6 +50,18 @@ jobs:
 
       - name: Lint schema descriptions (published SDL)
         run: npm run lint:schema
+
+      # Proves its own refusal before being trusted: three fixtures, one of which
+      # asserts sdl:gen still COPIES the game SDL rather than transforming it, because
+      # the wrapper's cheap byte comparison depends on that and nothing else would say
+      # so. ~1s.
+      - name: Prove the generated-artefact gate still refuses
+        run: npm run check:generated -- --self-test
+
+      # ~30s: re-derives the management SDL and regenerates all 2361 reference pages,
+      # then diffs. Exits 3 rather than 0 if it could not run at all.
+      - name: Committed generated files match their generators
+        run: npm run check:generated
 
       - name: Build docs (link + MDX gate)
         run: npx docusaurus build

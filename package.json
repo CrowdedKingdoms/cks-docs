@@ -8,6 +8,8 @@
     "start": "docusaurus start",
     "graphql:gen": "docusaurus graphql-to-doc:gql-mgmt --force && docusaurus graphql-to-doc:gql-game --force && docusaurus graphql-to-doc:gql-crowdyjs --force",
     "sdl:gen": "node scripts/generate-sdl.mjs",
+    "check:generated": "node scripts/check-generated.mjs",
+    "check:generated:siblings": "node scripts/check-generated.mjs --sources=siblings",
     "lint:schema": "node scripts/lint-schema-descriptions.mjs",
     "lint:game-api-mapping": "node scripts/check-game-api-mapping.mjs",
     "test:examples": "node scripts/test-examples.mjs",
