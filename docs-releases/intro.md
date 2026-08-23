@@ -7,14 +7,45 @@ title: Changelog
 # API changelog
 
 Notable, consumer-facing changes to the public Crowded Kingdoms APIs (Management API,
-Game API, Replication API) and SDKs. Newest first. Breaking changes always ship with a
-deprecation window once a surface is released — deprecated fields keep working and are
-marked `@deprecated` in the schema (visible in the
-[reference](/management-api/reference/graphql-overview) and the downloadable SDL) until
-the stated removal date. Greenfield surfaces may be finalized without aliases; those
-removals are called out explicitly.
+Game API, Replication API) and SDKs. Newest first.
 
-## 2026-08-21 (latest)
+The intent is that a breaking change ships with a deprecation window — the field keeps
+working and is marked `@deprecated` in the schema (visible in the
+[reference](/management-api/reference/graphql-overview) and the downloadable SDL) until
+a stated removal date. **Two removals did not get one**, and both are called out in
+their own entries rather than left to be discovered: the customer-provisioned
+environment surface on [2026-07-27](#2026-07-27) and the dev sign-in bypass on
+[2026-08-20](#2026-08-20). Treat **the published SDL as the authority** on what exists
+today; this page is the record of how it got there.
+
+## 2026-08-22 (latest)
+
+**ck-api v1.61.0 → v1.63.0 — a completed purchase is now fulfilled**
+
+All three releases are on dev, test and production (`prod/v1.63.0`).
+
+- **Purchases were being charged and not fulfilled.** A payment provider tells us a
+  session completed by calling a webhook, and that callback was the half that was
+  broken: the URL each provider held named a host that had been decommissioned, on
+  every tier. The hosted checkout worked, the card was charged and the money moved —
+  and nothing on our side ever heard about it, so no entitlement was granted and no
+  checkout reached `completed`. If you have a customer whose payment succeeded and
+  whose entitlement never arrived, that is this, and it is fixed.
+- **PayPal webhook signatures are verified against PayPal's published certificate**
+  rather than only through the provider's verification endpoint (v1.61.0). Both
+  verdicts must agree, so a forged callback is rejected even if one path is
+  unavailable.
+- **A webhook naming a checkout we no longer hold is recorded instead of dropped**
+  (v1.62.0). It previously failed to insert and was retried forever.
+- **Stripe's `Invoice.subscription` moved in their Basil API version** and we were
+  reading the old location, so subscription-lifecycle events were delivered,
+  verified, recorded — and inert (v1.63.0). Renewals and cancellations act again.
+
+Nothing about the request you make changed: no field was added, removed or renamed
+by any of the three. This is behaviour a client cannot see and can only be told
+about.
+
+## 2026-08-21
 
 **ck-api v1.60.0 + CrowdyJS 15.1.0 — error codes are correct, and a passwordless account can add a password**
 
@@ -45,6 +76,23 @@ Two changes an integrator has to act on, both live on dev, test and production.
 See **[Sign in](/management-api/authentication)** and
 **[Error codes](/overview/error-codes)**.
 
+## 2026-08-20 (email)
+
+**ck-api v1.53.0 — transactional email is actually sent**
+
+- **Magic links, email confirmations and password resets now arrive.** Sending was
+  switched off on every tier before this release, so every flow that depends on the
+  player reading an email could be started and never completed. They are sent from
+  `noreply@crowdedkingdomstudios.com` on dev, test and production.
+- **This is what makes the bypass removal below survivable**, and the order matters:
+  an account the bypass created has no password, and a magic link is the way back
+  into it.
+- **A hard bounce or a spam complaint suppresses an address**, and a later successful
+  delivery clears only a *transient* bounce. If a player reports never receiving
+  anything, a bad address earlier in that address's history is the first thing to
+  check rather than the last.
+- No schema change: no field was added, removed or renamed.
+
 ## 2026-08-20
 
 **BREAKING — the dev sign-in bypass is gone from every tier**
@@ -63,6 +111,71 @@ See **[Sign in](/management-api/authentication)** and
 - An account the bypass created has **no password**, so the bypass going away removes
   the only way it was ever signed into. Sign in with a magic link to that address, then
   `setInitialPassword` (above) to attach one.
+
+## 2026-08-18
+
+**BEHAVIOUR CHANGE — a player's free usage is a monthly trial, not an hourly allowance**
+
+- **There is no hourly free allowance for a player any more.** It is zero. In its place
+  each **(player, app)** pair gets a pooled **monthly trial** — 250,000 compute units
+  by default — after which usage is charged to the player's wallet. An hourly figure
+  made a small mod permanently free, which is not what a trial is for; a monthly pool
+  is spendable in one afternoon or across a month, and it is the same total either way.
+- **Read the allowance rather than assuming it.** `billingRateCard(scope:)` carries the
+  per-metric free monthly and free hourly figures alongside the price. A tier's card is
+  data an operator can correct, so a figure quoted in a client is a figure that will be
+  wrong.
+- **Read the unit as well as the price.** A rate is a price *and* a unit
+  (`unitLabel` / `unitQuantity`), and they are one number: `20c per GiB-month` and
+  `20c per 100 MB-hour` are the same price and differ by four orders of magnitude in
+  what they cost. ck-api v1.50.0 made a rate correction move both together.
+- **Sub-cent usage no longer rounds up per metric.** It carries in whole micro-cents
+  and rounds once across all metrics at the end of the hour. Without that, zero hourly
+  free would have put a floor of roughly 60c–$1.20 a month on a player who does almost
+  nothing.
+- **A developer's markup is paid into the org wallet in the same transaction as the
+  player debit** (ledger entry type `markup_payout`), instead of accruing to a balance
+  nothing ever paid out from.
+- The **org**'s own shared free allowance is a separate figure and is still hourly.
+  Nothing above changes it.
+
+## 2026-07-27
+
+**BREAKING — one API origin, and customer-provisioned environments are retired**
+
+> **Draft — the wording of this entry is under review.** It records a change that
+> reached customers on 2026-07-27 and was never written down here, which is why an
+> integrator could still find a five-step provisioning recipe in these docs a month
+> later.
+
+- **The Management API and the Game API are two surfaces of one origin**, and one
+  server answers both. The separate management service was absorbed on 2026-07-27 and
+  its repository archived. `management-api.graphql` is now that unified SDL — it is the
+  same schema `game-api.graphql` describes, published under both names because the
+  guides are split that way. Base URLs are per **tier**, never per organization.
+- **The customer-provisioned environment surface is gone from the published SDL**:
+  `environmentDatacenters`, `environmentFlavors`, `environmentQuote`,
+  `createEnvironment`, `orgEnvironment`, `linkAppToEnvironment`,
+  `redeployEnvironment` and `environmentRedeployPlan`. Both classes went with it — the
+  multi-VM **dedicated** stack and the single-VM **developer sandbox**
+  (`environmentClass: "dev_single"`). They were **retired without replacement in that
+  form**; there is no per-tenant stack to provision and no API for one.
+- **What to use instead: `publishAppToShared`.** Every app runs on the tier's shared
+  platform, scoped by its `appId`. It has been in the published SDL since this
+  changelog began, so this is a surface being removed rather than a capability
+  arriving: publishing is free under your org's app-slot quota
+  (`platformConfig.freeAppsPerOrg`, default 3) and metered against the org wallet
+  beyond it. Read the app's `gameApiUrl` / `deploymentTarget` before a player joins,
+  and discover the tier's origin from `platformConfig.sharedGameApiUrl` rather than
+  hard-coding it. See **[Shared environment & billing](/management-api/shared-environment)**.
+- **This is not a deprecation window.** The fields are absent, so a call naming one
+  fails to validate against the schema rather than returning a deprecation warning. If
+  you built against them, `publishAppToShared` plus the app's routing fields is the
+  whole migration — there is no per-component flavor, scaling bound or datacenter
+  choice to carry across, because there is no stack to size.
+- **[Dedicated environments](/management-api/dedicated-environments)** is kept as
+  history and carries a retired banner. Contact Crowded Kingdoms if you need
+  enterprise isolation.
 
 ## 2026-07-24
 
@@ -317,6 +430,10 @@ real-money activity, wallet actions, or broad autonomous gameplay.
   players jumped or flew, and NPC heights froze at their seeded values.
 
 **Redeploy dry run: preview what a release will do before running it**
+
+> **Retired 2026-07-27** along with the rest of the customer-provisioned environment
+> surface. `environmentRedeployPlan` is not in the published SDL. See the
+> [2026-07-27 entry](#2026-07-27).
 
 - New Management API query `environmentRedeployPlan(input)` — the DRY RUN
   of `redeployEnvironment`. Same input, read-only: it resolves the same
@@ -962,6 +1079,11 @@ supported side by side with the new methods.
 ## 2026-06-28
 
 **Dedicated environments available to all studios (Management API)**
+
+> **Retired 2026-07-27.** Everything announced below was removed from the published
+> SDL and is no longer served. Nothing here is a surface to build against; see the
+> [2026-07-27 entry](#2026-07-27) and
+> [Shared environment & billing](/management-api/shared-environment).
 
 - You can now create **multi-VM dedicated environments** (`environmentClass: "dedicated"`,
   the default) directly — an isolated Game API fleet, database, and Buddy replication stack
