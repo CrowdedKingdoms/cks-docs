@@ -14,7 +14,57 @@ marked `@deprecated` in the schema (visible in the
 the stated removal date. Greenfield surfaces may be finalized without aliases; those
 removals are called out explicitly.
 
-## 2026-07-24 (latest)
+## 2026-08-21 (latest)
+
+**ck-api v1.60.0 + CrowdyJS 15.1.0 — error codes are correct, and a passwordless account can add a password**
+
+Two changes an integrator has to act on, both live on dev, test and production.
+
+- **`extensions.code` is now correct for roughly 155 refusals.** Until v1.60.0 only
+  four HTTP statuses reached you as a distinct code (400, 401, 403, 422); everything
+  else — every `NOT_FOUND`, every `CONFLICT` — arrived as `INTERNAL_SERVER_ERROR` with
+  the real status in `extensions.httpStatus`. If you branched on `httpStatus` you are
+  unaffected. If you branched on `code`, re-read
+  **[Error codes](/overview/error-codes)** before your next release.
+- **`Throws CONFLICT` no longer appears in any mutation description.** Where a refusal
+  stopped carrying that code, the description stopped claiming it.
+- **New: `setInitialPassword(newPassword)`.** A signed-in user whose account has no
+  password — one created by magic link or a social provider — can add one from the
+  session alone. `changePassword` still requires the current password and now refuses
+  such an account with `PASSWORD_NOT_SET` instead of `UNAUTHENTICATED`.
+- **Four new codes**, all of which mean the session is fine and the user should *not*
+  be signed out: `PASSWORD_ALREADY_SET`, `PASSWORD_NOT_SET`, `INVALID_CURRENT_PASSWORD`,
+  `EMAIL_ALREADY_REGISTERED`. The first three previously arrived as `UNAUTHENTICATED`,
+  which is also what an expired session looks like — so a client that signs the user out
+  on `UNAUTHENTICATED` was signing them out for mistyping a password.
+- **CrowdyJS 15.1.0** wraps all four password mutations (`auth.setInitialPassword`,
+  `auth.changePassword`, `auth.requestPasswordReset`, `auth.resetPassword`) and adds
+  three error-code predicates. Games pin the SDK exactly; there is no caret to carry
+  you onto it.
+
+See **[Sign in](/management-api/authentication)** and
+**[Error codes](/overview/error-codes)**.
+
+## 2026-08-20
+
+**BREAKING — the dev sign-in bypass is gone from every tier**
+
+- **`devLogin` is deleted**, and so is the **`devToken`** field on `requestLoginLink`.
+  Neither exists on dev, test or production; there is no environment in which
+  authentication is weaker than production. `devLogin` returned a session for any
+  address with no proof of ownership, and `devToken` put the emailed one-time token in
+  the response body.
+- **Use `login` / `register` instead.** Email + password has existed throughout and is
+  a first-class permanent method, not a fallback: any page that described this platform
+  as passwordless was wrong.
+- SDK wrappers were removed in **CrowdyJS 15.0.0** and **CrowdyCPP 0.26.0**. The Unreal
+  SDK's `DevLogin` entry point and its **Dev Login** Blueprint node have nothing to call
+  in any build that still ships them.
+- An account the bypass created has **no password**, so the bypass going away removes
+  the only way it was ever signed into. Sign in with a magic link to that address, then
+  `setInitialPassword` (above) to attach one.
+
+## 2026-07-24
 
 **Game API v0.21.0 + CrowdyJS 12.2.0 + CrowdyCPP 0.15.0 — app-scoped active player-count events (additive)**
 

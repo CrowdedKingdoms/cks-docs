@@ -15,7 +15,7 @@ GraphQL/HTTP API for Crowded Kingdoms **management** concerns:
 | Apps marketplace | Apps metadata, access tiers, `app_user_access` grants, purchases. |
 | Runtime catalog | `runtimePermissions` query — keys that can be assigned on tiers (not grid grants). |
 | Billing | Wallets, transactions, budgets, quotas, Stripe/PayPal checkouts. |
-| Environments | List datacenters and flavors, quote and create environments (developer sandbox today; multi-VM dedicated coming soon), link apps, read status and endpoints. |
+| Hosting | Publish an app to the shared platform (`publishAppToShared`) and read its routing fields. Customer-provisioned environments were retired without replacement. |
 
 Runtime game data (chunks, voxels, actors, grids, grid permissions, UDP) lives in the **[Game API](/game-api/intro)**, not here. Studio tools that configure grids must call the app’s **game API** GraphQL endpoint (`gameApiUrl`), not the management endpoint.
 
@@ -27,21 +27,17 @@ Runtime game data (chunks, voxels, actors, grids, grid permissions, UDP) lives i
 
 ## GraphQL endpoint
 
-Production and staging base URLs are **per organization and environment**. Crowded Kingdoms provides hostnames when your dedicated environment is ready, or use the endpoints shown in the Management UI environment detail page.
+There is **one origin per tier**, and the management and game surfaces are two surfaces of it. Base URLs are not per organization: nothing is provisioned for you and no hostname is handed out when a stack is ready, because there is no per-tenant stack.
 
-**Dev tier (integration testing):** shared management host `https://ck.dev.v7.cks-env.com` — see **[Dev tier (client integration)](/management-ui/dev-tier)** for the full two-URL setup and current game environment URLs.
+**Dev tier (integration testing):** `https://ck.dev.v7.cks-env.com` — see **[Dev tier (client integration)](/management-ui/dev-tier)** for the full setup. Discover a tier's origin programmatically from the public `platformConfig` query (`sharedGameApiUrl`, `sharedGameApiWsUrl`) rather than hard-coding it.
 
-## Environment operations
+## Hosting an app
 
-Studios typically:
+Every app runs on the **shared platform**. Publish it with `publishAppToShared` — free under your org's app-slot quota (`platformConfig.freeAppsPerOrg`, default 3), and metered against the org wallet beyond it — then read the app's routing fields (`gameApiUrl`, `deploymentTarget`) before a player joins.
 
-1. Query catalog fields (`environmentDatacenters`, `environmentFlavors`).
-2. `environmentQuote` with the region and class; confirm `canCreate` and wallet balance.
-3. `createEnvironment` with `environmentClass: "dev_single"`, a `flavor`, and your `x25519PublicKeyBase64` (optionally `appIds`).
-4. Poll `orgEnvironment(orgId, slug)` until status is live; read endpoints from `outputs`.
-5. `linkAppToEnvironment` if you didn't link apps at create time.
+See **[Shared environment & billing](/management-api/shared-environment)** for the model and the free allowances, or the **[portal guide](/management-ui/environments)** for the same thing in the Management UI.
 
-See **[Dedicated environments](/management-api/dedicated-environments)** for the full API flow (developer sandbox today; multi-VM dedicated coming soon), or the **[portal guide](/management-ui/environments)** for the same flow in the Management UI.
+The customer-provisioned environment surface — `environmentDatacenters`, `environmentFlavors`, `environmentQuote`, `createEnvironment`, `orgEnvironment`, `linkAppToEnvironment`, `redeployEnvironment` — was **retired without replacement** and is not in the published SDL. **[Dedicated environments](/management-api/dedicated-environments)** is kept for historical reference only.
 
 ## Schema reference
 

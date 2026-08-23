@@ -65,8 +65,9 @@ permission check** (and also covers operator access). Bootstrap it once:
    user id(s) to promote (deployments typically ship
    `SUPER_ADMIN_BOOTSTRAP_USER_IDS=1`).
 2. Have the root admin **sign in for the first time** through the normal
-   flow — a magic link or social provider in production, or the dev bypass in
-   dev/test. Accounts are created on first sign-in, and because this is the first
+   flow — `register`/`login`, a magic link, or a social provider. It is the same
+   flow on every tier: the dev bypass that used to shortcut this on dev/test was
+   removed on 2026-08-20. Accounts are created on first sign-in, and because this is the first
    account it becomes **`user_id = 1`**.
 3. **Restart** the management API. On boot, it idempotently
    sets `is_super_admin = TRUE` for every id in `SUPER_ADMIN_BOOTSTRAP_USER_IDS` that
