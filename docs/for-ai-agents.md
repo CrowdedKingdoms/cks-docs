@@ -21,8 +21,11 @@ the raw GraphQL access described below.
 
 There is **one GraphQL endpoint**. The two rows below are surfaces of that API,
 not two hosts. Do not set `managementUrl`. Gameplay is PostgreSQL + Citus, not
-galaxy. CrowdyJS **15.0.0** is current on npm — it removed `devLogin` and added
-`auth.login` / `auth.register`.
+galaxy. CrowdyJS **15.1.0** is current on npm: 15.0.0 removed `devLogin` and added
+`auth.login` / `auth.register`, and 15.1.0 added the four password-management
+wrappers (`setInitialPassword`, `changePassword`, `requestPasswordReset`,
+`resetPassword`). Verify rather than quoting this line —
+`npm view @crowdedkingdoms/crowdyjs version`.
 
 | API | Protocol | Use it for |
 |-----|----------|------------|
