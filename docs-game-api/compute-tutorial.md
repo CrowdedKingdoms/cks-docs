@@ -24,8 +24,19 @@ and the recommended hybrid pattern, see
 - Environment for the CLI:
 
 ```bash
-export CROWDY_MANAGEMENT_URL=https://ck.dev.v7.cks-env.com   # management root
-export CROWDY_GAME_URL=https://game.dev.crowdedkingdoms.com/graphql
+# Both variables name the SAME origin. There is one GraphQL origin per
+# environment: management and game are two surfaces of it, not two servers.
+# `CROWDY_GAME_URL` carries the `/graphql` path and `CROWDY_MANAGEMENT_URL`
+# does not — that is the only difference between them.
+#
+# Take the origin from `serverStatus.gameClientBootstrap(appId)` (it returns
+# `gameApiUrl` for your app's datacenter) or from your environment's dashboard.
+# Do not copy an origin out of a tutorial: this line named
+# `game.dev.crowdedkingdoms.com` until 2026-08-22, a host from a retired naming
+# generation that has been NXDOMAIN since long before that, so the two exports
+# below disagreed with each other while looking equally plausible.
+export CROWDY_MANAGEMENT_URL=https://<your environment's origin>
+export CROWDY_GAME_URL=https://<your environment's origin>/graphql
 export APP_ID=<your app id>
 export ADMIN_EMAIL=<your email>        # dev environments (or ADMIN_TOKEN=<app token>)
 ```
