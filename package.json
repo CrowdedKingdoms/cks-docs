@@ -6,7 +6,8 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
-    "graphql:gen": "docusaurus graphql-to-doc:gql-mgmt --force && docusaurus graphql-to-doc:gql-game --force && docusaurus graphql-to-doc:gql-crowdyjs --force",
+    "graphql:gen": "CKS_DOCS_TIER=prod docusaurus graphql-to-doc:gql-mgmt --force && CKS_DOCS_TIER=prod docusaurus graphql-to-doc:gql-game --force && CKS_DOCS_TIER=prod docusaurus graphql-to-doc:gql-crowdyjs --force",
+    "//graphql:gen": "The pinned tier is NOT a default creeping back in. Every `docusaurus` subcommand loads docusaurus.config.ts, which since 2026-08-23 refuses without CKS_DOCS_TIER -- so these three needed a value or `check:generated` fails with COULD NOT RUN, which is what happened. The value is arbitrary because the 2361 reference pages are MARKDOWN RENDERED FROM THE SDL and do not depend on the tier: measured by generating with `dev` and with `prod` and diffing the tree, zero changed files either way. Pinning one here is what stops a caller inventing one; `prod` is written rather than `dev` so that a reader who does not check cannot conclude the generated reference is a dev artifact.",
     "sdl:gen": "node scripts/generate-sdl.mjs",
     "check:generated": "node scripts/check-generated.mjs",
     "check:generated:siblings": "node scripts/check-generated.mjs --sources=siblings",
