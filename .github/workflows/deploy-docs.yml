@@ -2,30 +2,35 @@ name: Deploy Docs to S3 and CloudFront
 
 # Deploys on an environment-prefixed release tag rather than on a branch push.
 #
-# There is ONE docs origin (crowded-kingdoms-docs behind CloudFront E2YPEQES1PFPQN) and no
-# per-tier docs sites, so only `prod/` tags deploy: the `prod` branch now does what `main`
-# did. A `dev/v*` or `test/v*` tag here deliberately does NOTHING — that is not an oversight,
-# it is the deferred question of whether per-tier docs origins should exist at all. Until the
-# operator decides, dev and test get the lint/build in docs-ci.yml and no deploy. If per-tier
-# origins are ever created, add their tag filters and select the bucket by `guard`'s `tier`
-# output, which is already published for that purpose.
+# THREE DOCS SITES SINCE 2026-08-23, one per branch, each simply "current" for its branch.
+# There is no Docusaurus versioning; the promotion process is what absorbs churn so the
+# public prod site never sees it. All three tag prefixes deploy now — this file used to say
+# that only `prod/` did, and that a `dev/v*` tag deliberately did nothing pending the
+# operator's decision on whether per-tier origins should exist. The decision was taken and
+# they exist, so the hook that comment described is what the `target` step below is.
+#
+# THE TIER COMES FROM `guard`, WHICH PROVES IT. `resolve-release-tier.sh` refuses a tag whose
+# commit is not contained in that tier's branch — a tag has never been attached to a branch
+# in git, so `dev/v1.2.3` pushed from a feature branch is a valid push that would otherwise
+# publish. The mapping below is consulted only after that gate has passed.
 
 on:
   push:
-    tags: ['prod/v*.*.*']
+    tags:
+      - 'dev/v*.*.*'
+      - 'test/v*.*.*'
+      - 'prod/v*.*.*'
   workflow_dispatch:
-
-env:
-  AWS_REGION: us-east-2
-  S3_BUCKET: crowded-kingdoms-docs
-  CLOUDFRONT_DISTRIBUTION_ID: E2YPEQES1PFPQN
 
 jobs:
   guard:
     name: Prove the release tier
     runs-on: ubuntu-latest
     outputs:
-      tier: ${{ steps.resolve.outputs.tier }}
+      # A tag run gets its tier from the containment gate; a manual dispatch from its branch.
+      # Exactly one of the two steps runs, so the `||` picks whichever produced a value —
+      # and if neither did, `target` below refuses on the empty string rather than guessing.
+      tier: ${{ steps.resolve.outputs.tier || steps.dispatch.outputs.tier }}
       version: ${{ steps.resolve.outputs.version }}
     steps:
       # fetch-depth: 0 because the gate asks `git merge-base --is-ancestor`, and with the
@@ -50,21 +55,31 @@ jobs:
         if: github.ref_type == 'tag'
         run: ./scripts/ci/resolve-release-tier.test.sh
 
-      - name: Refuse a manual dispatch from anywhere but prod
+      - name: Resolve the tier of a manual dispatch from its branch
         # workflow_dispatch hands GITHUB_REF a BRANCH, which the tag gate refuses outright, so
         # without this step the guard would be vacuous on the one path a human drives by hand.
-        # The single docs origin is the prod site: dispatching from dev would publish dev's
-        # content to it. The ref goes through the environment rather than into the script text
-        # because `${{ }}` interpolation is string substitution into the shell.
+        #
+        # It used to refuse anything but `prod`, because there was one docs origin and it was
+        # the production site — dispatching from dev would have published dev's content to it.
+        # Now each branch has its own site, so a dispatch from `dev` publishes DEV, and the
+        # rule that remains is that the branch must BE a tier: a dispatch from a feature
+        # branch has no site to publish to and is still refused. The ref goes through the
+        # environment rather than into the script text because `${{ }}` interpolation is
+        # string substitution into the shell.
         if: github.ref_type != 'tag'
+        id: dispatch
         env:
           REF: ${{ github.ref }}
         run: |
-          if [ "$REF" != "refs/heads/prod" ]; then
-            echo "::error::a manual docs deploy publishes the one production docs origin, so it may only run from 'prod' (got '$REF')"
-            exit 1
-          fi
-          echo "manual dispatch from prod"
+          case "$REF" in
+            refs/heads/dev | refs/heads/test | refs/heads/prod) tier=${REF#refs/heads/} ;;
+            *)
+              echo "::error::a manual docs deploy publishes one of the three per-branch docs sites, so it may only run from dev, test or prod (got '$REF')"
+              exit 1
+              ;;
+          esac
+          echo "tier=$tier" >> "$GITHUB_OUTPUT"
+          echo "manual dispatch publishing the $tier site"
 
   deploy-docs:
     name: Deploy Docs
@@ -72,6 +87,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # WHERE THIS TIER PUBLISHES. Three sites, and the three differ in bucket, distribution
+      # AND region: prod's bucket predates this stack and lives in us-east-2, while the two
+      # created by InfraControlPlane-frontend-cdn on 2026-08-23 are in us-east-1, because
+      # CloudFormation creates a bucket in its stack's region and that stack is pinned to
+      # us-east-1 for CloudFront certificates. A REST origin's region only has to appear in
+      # the origin domain name, so the divergence costs nothing but has to be stated.
+      #
+      # THE `*)` ARM IS NOT DEAD CODE. `guard` can only emit dev, test or prod today, but this
+      # step is what stands between an empty `tier` output and `aws s3 sync build/ s3:// --delete`
+      # against a bucket named by nothing. A missing case fails here, loudly, rather than
+      # deleting a site.
+      - name: Resolve the publish target for this tier
+        id: target
+        env:
+          TIER: ${{ needs.guard.outputs.tier }}
+        run: |
+          case "$TIER" in
+            dev)  bucket=crowded-kingdoms-docs-dev;  dist=E1RMJQ9QWXD0WT; region=us-east-1 ;;
+            test) bucket=crowded-kingdoms-docs-test; dist=E3BXX8G9IC7E0R; region=us-east-1 ;;
+            prod) bucket=crowded-kingdoms-docs;      dist=E2YPEQES1PFPQN; region=us-east-2 ;;
+            *)
+              echo "::error::no publish target for tier '$TIER' — the guard job produced no tier, or a tier this workflow has never been told where to put"
+              exit 1
+              ;;
+          esac
+          {
+            echo "bucket=$bucket"
+            echo "dist=$dist"
+            echo "region=$region"
+          } >> "$GITHUB_OUTPUT"
+          echo "publishing the $TIER site to s3://$bucket ($region) behind $dist"
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -87,29 +134,51 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ steps.target.outputs.region }}
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build docs
         # `npx docusaurus build` skips npm prebuild; committed GraphQL reference is used in CI.
+        #
+        # CKS_DOCS_TIER IS REQUIRED WITH NO DEFAULT, and it comes from the same `guard` output
+        # that chose the bucket — one value, so the site cannot be built for one tier and
+        # published to another's origin. A default of `prod` here would have put prod's
+        # canonical URL and sitemap into the dev bucket with nothing failing.
         run: npx docusaurus build
+        env:
+          CKS_DOCS_TIER: ${{ needs.guard.outputs.tier }}
 
       - name: Sync to S3
         run: |
-          aws s3 sync build/ s3://${{ env.S3_BUCKET }} --delete --exact-timestamps
-          echo "Docs deployed to S3 bucket: ${{ env.S3_BUCKET }}"
+          aws s3 sync build/ s3://${{ steps.target.outputs.bucket }} --delete --exact-timestamps
+          echo "Docs deployed to S3 bucket: ${{ steps.target.outputs.bucket }}"
 
       - name: Invalidate CloudFront
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --distribution-id ${{ steps.target.outputs.dist }} \
             --paths "/*"
-          echo "CloudFront invalidation created for distribution: ${{ env.CLOUDFRONT_DISTRIBUTION_ID }}"
+          echo "CloudFront invalidation created for distribution: ${{ steps.target.outputs.dist }}"
 
-      - name: Deployment complete
+      # FETCH THE SITE, do not report the deploy going green as the outcome. A tool's
+      # narration is a report: `aws s3 sync` printing uploads and `create-invalidation`
+      # returning an id say nothing about what a reader now gets. This asks the live host.
+      - name: Prove the site serves what was just published
+        env:
+          TIER: ${{ needs.guard.outputs.tier }}
         run: |
-          echo "Docs deployment completed successfully"
-          echo "S3 bucket: ${{ env.S3_BUCKET }}"
-          echo "CloudFront distribution: ${{ env.CLOUDFRONT_DISTRIBUTION_ID }}"
+          case "$TIER" in
+            prod) host=docs.crowdedkingdoms.com ;;
+            *)    host=docs.$TIER.crowdedkingdoms.com ;;
+          esac
+          for path in / /overview/intro /schema/game-api.graphql; do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 "https://$host$path")
+            echo "$code  https://$host$path"
+            [ "$code" = "200" ] || { echo "::error::https://$host$path answered $code"; exit 1; }
+          done
+          # A deep link is the whole reason the viewer function exists: an S3 REST origin has
+          # no index-document behaviour, so /overview/intro is a key that does not exist and
+          # answers 403 without it. Checking only `/` would pass with the function detached.
+          echo "deployment complete: $TIER at https://$host"

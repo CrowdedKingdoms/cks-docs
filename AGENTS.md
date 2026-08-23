@@ -3,15 +3,54 @@
 Public Docusaurus site at [docs.crowdedkingdoms.com](https://docs.crowdedkingdoms.com).
 Read [README.md](README.md) for preview, SDL regen, and screenshot/e2e helpers.
 
+## THREE SITES, one per branch — and a build with no tier is refused
+
+Since **2026-08-23** there are three documentation sites, each simply *current* for
+its branch. **There is no Docusaurus versioning** and none is planned: the promotion
+process is what absorbs churn, so the public site never sees it.
+
+| Branch | Site | Marked? | Indexed? |
+|---|---|---|---|
+| `dev` | `docs.dev.crowdedkingdoms.com` | red banner, `Docs · dev` | no — `X-Robots-Tag: noindex` |
+| `test` | `docs.test.crowdedkingdoms.com` | amber banner, `Docs · test` | no — `X-Robots-Tag: noindex` |
+| `prod` | `docs.crowdedkingdoms.com` | **nothing** | yes |
+
+**`CKS_DOCS_TIER` is required and has no default.** A build without it fails with a
+message telling you what to set. That is not friction for its own sake: the tier
+decides the canonical URL, the sitemap, the banner and the `noindex` tag, so a
+default of `prod` would produce a dev site wearing prod's clothes with nothing
+failing anywhere — and **prod's lack of a marking is only trustworthy while the
+marking on the other two cannot be missing by accident.**
+
+```bash
+CKS_DOCS_TIER=prod npm run build   # the site as readers see it
+CKS_DOCS_TIER=dev npm run start    # local preview of the dev site
+```
+
+The hostnames are owned by `CK_DOCS_HOST_BY_TIER` in infra-control-plane's
+`cp-lib/dns-tier.ts` and mirrored in `scripts/cp-tiers.json`; the table in
+`docusaurus.config.ts` mirrors them again for the build. **Prod is deliberately
+unlabelled where the other two carry `.<tier>`**, which is why all three are a table
+rather than a rule.
+
+`robots.txt` is deliberately NOT used for this. `Disallow` blocks *crawling*, not
+*indexing*: a URL a search engine learns from a link can still be indexed with no
+snippet, and the crawler is then forbidden from fetching the `noindex` that would
+have removed it. The header comes from a CloudFront response headers policy and
+covers `/schema/game-api.graphql` too, which cannot carry a meta tag.
+
 ## Editing a page here does not change the site
 
-**Nothing on a branch is published. `docs.crowdedkingdoms.com` is served from a
-single S3 origin that only a `prod/vX.Y.Z` tag writes to.** `deploy-docs.yml`
-triggers on `tags: ['prod/v*.*.*']` and on nothing else; a push to `dev` or `test`
-gets the lint and build in `docs-ci.yml` and no deploy. That is deliberate — there
-is one docs origin, and whether per-tier docs origins should exist is a deferred
-question — but it means a correct, reviewed, merged, CI-green fix on `dev` reaches
-**no reader at all** until somebody cuts a tag.
+**A push publishes nothing on any branch.** All three sites are written only by a
+`<tier>/vX.Y.Z` tag — `deploy-docs.yml` triggers on `dev/v*`, `test/v*` and
+`prod/v*`, and `resolve-release-tier.sh` refuses a tag whose commit is not contained
+in that tier's branch. A push gets the lint and build in `docs-ci.yml` and no deploy.
+So a correct, reviewed, merged, CI-green fix on `dev` reaches **no reader at all**
+until somebody cuts a tag — *including* on dev, which has a site of its own now.
+
+(This section used to say a `dev/v*` tag deliberately did nothing, because there was
+one origin. That was true until 2026-08-23 and is the reason the tag grammar already
+accepted all three prefixes.)
 
 So a docs fix is three acts, and only the third is visible to anybody:
 
@@ -34,8 +73,11 @@ before the branches they pointed at were deleted, exactly as instructed, and wer
 history starts at `prod/v0.1.1`: that was the **first tag this repository ever
 carried**, so the tag-gated deploy had never run once before it.
 
-`dev/v*` and `test/v*` tags are accepted by the tag grammar and deploy nothing.
-That is not an oversight; see the header comment in `.github/workflows/deploy-docs.yml`.
+The same three acts publish `dev` and `test`, to their own sites — tag
+`dev/v0.1.3` on `dev`, then fetch `docs.dev.crowdedkingdoms.com`. The deploy fetches
+three URLs itself before reporting success, including a deep link, because an S3 REST
+origin has no index-document behaviour and `/overview/intro` answers 403 if the
+viewer function is ever detached.
 
 ## Currently true (2026-08-13)
 

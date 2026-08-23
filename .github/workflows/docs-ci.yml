@@ -63,8 +63,42 @@ jobs:
       - name: Committed generated files match their generators
         run: npm run check:generated
 
+      # CKS_DOCS_TIER IS REQUIRED AND HAS NO DEFAULT, so this step has to supply one, and
+      # which one it supplies is part of what the gate checks. Since 2026-08-23 there are
+      # three docs sites, one per branch, and the tier decides the canonical URL, the
+      # sitemap, the non-production banner and the `noindex` meta tag. Build the wrong one
+      # and everything passes while the artifact is wrong.
+      #
+      # ON A PULL REQUEST THIS READS THE BASE, not the head. A `dev` -> `test` promotion
+      # must be judged by TEST's rule before the merge, which is the same reasoning as
+      # Crowdy-Games' SDK-pin gate. On a push it is the branch itself.
+      #
+      # A BRANCH THAT IS NOT A TIER BUILDS AS `dev`, deliberately and only here. This
+      # workflow runs on `branches: ["**"]`, so a feature branch has no tier of its own,
+      # and the alternative to a choice is the build failing on every feature branch —
+      # which would make this gate stop reporting, the exact failure the trigger comment
+      # above exists to prevent. `dev` is the safe pick: every tier's build exercises the
+      # same 2361 pages and the same links, so what the gate measures does not depend on
+      # the tier, and the two things that DO differ (the canonical host and the banner)
+      # are not published from here. Nothing deploys from this workflow.
+      - name: Resolve the docs tier from the branch
+        id: tier
+        env:
+          BASE: ${{ github.base_ref }}
+          HEAD: ${{ github.ref_name }}
+        run: |
+          branch="${BASE:-$HEAD}"
+          case "$branch" in
+            dev | test | prod) tier="$branch" ;;
+            *) tier=dev; echo "::notice::'$branch' is not a tier branch; building as dev" ;;
+          esac
+          echo "tier=$tier" >> "$GITHUB_OUTPUT"
+          echo "building the $tier docs site (branch '$branch')"
+
       - name: Build docs (link + MDX gate)
         run: npx docusaurus build
+        env:
+          CKS_DOCS_TIER: ${{ steps.tier.outputs.tier }}
 
       - name: Smoke-test example operations (skips without a sandbox)
         run: npm run test:examples
