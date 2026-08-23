@@ -14,6 +14,94 @@ const managementSchema = './static/schema/management-api.graphql';
 const gameSchema = './static/schema/game-api.graphql';
 const crowdyJsSchema = './static/schema/crowdyjs.graphql';
 
+// ---------------------------------------------------------------------------------------
+// WHICH SITE THIS BUILD IS.
+//
+// There are three documentation sites, one per branch -- dev, test and prod -- each simply
+// "current" for its branch. There is no Docusaurus versioning: the promotion process is
+// what absorbs churn, so the public prod site never sees it.
+//
+// THERE IS NO DEFAULT, and that is the point rather than an omission. A default of `prod`
+// would produce a dev build wearing prod's clothes: prod's canonical URL in every
+// `<link rel="canonical">`, prod's sitemap, and none of the tier marking -- with nothing
+// failing anywhere. The marking on dev and test is only trustworthy if its ABSENCE means
+// production, so an unset or unrecognised CKS_DOCS_TIER fails the build.
+//
+// A default of `dev` would be worse in the other direction, and it is a trap this project
+// has already paid for: `afterburn` derived a browser-storage namespace from a regex that
+// had stopped matching, so every tier computed the same fallback and three tiers silently
+// shared one namespace. A fallback makes a missing prerequisite indistinguishable from a
+// satisfied one.
+//
+// WHY THE ENVIRONMENT AND NOT THE BRANCH NAME. This file is promoted dev -> test -> prod,
+// so anything branch-specific written into it is resolved by git on every promotion --
+// silently, taking whichever side changed more recently, and just as quiet when it is
+// wrong. Reading the tier from the environment keeps all three branches byte-identical
+// here and puts the decision in the thing that starts the build.
+//
+// The table below is A TABLE AND NOT A RULE, for the same reason the hostnames it mirrors
+// are one in infra-control-plane's `cp-lib/dns-tier.ts`: prod is deliberately UNLABELLED
+// where the other two carry `.<tier>`, so any rule expressing this has a special case in
+// it, and a rule with a special case reads as a rule right up until somebody generalises
+// the special case away.
+// ---------------------------------------------------------------------------------------
+const DOCS_TIERS = {
+  dev: {
+    url: 'https://docs.dev.crowdedkingdoms.com',
+    label: 'dev',
+    banner:
+      'You are reading the <strong>dev</strong> documentation site. It tracks the <code>dev</code> branch and describes software that is not released. The public site is <a href="https://docs.crowdedkingdoms.com">docs.crowdedkingdoms.com</a>.',
+    bannerBackground: '#7f1d1d',
+    noindex: true,
+  },
+  test: {
+    url: 'https://docs.test.crowdedkingdoms.com',
+    label: 'test',
+    banner:
+      'You are reading the <strong>test</strong> documentation site. It tracks the <code>test</code> branch and describes a release candidate. The public site is <a href="https://docs.crowdedkingdoms.com">docs.crowdedkingdoms.com</a>.',
+    bannerBackground: '#78350f',
+    noindex: true,
+  },
+  prod: {
+    url: 'https://docs.crowdedkingdoms.com',
+    label: null,
+    banner: null,
+    bannerBackground: null,
+    noindex: false,
+  },
+} as const;
+
+type DocsTier = keyof typeof DOCS_TIERS;
+
+function resolveDocsTier(): DocsTier {
+  const raw = process.env.CKS_DOCS_TIER;
+  const names = Object.keys(DOCS_TIERS).join('|');
+  if (!raw) {
+    throw new Error(
+      [
+        'CKS_DOCS_TIER is not set, and this build has no default tier.',
+        '',
+        'There are three documentation sites, one per branch, and which one is being built',
+        'decides the canonical URL, the sitemap, whether every page carries a non-production',
+        'banner, and whether search engines are asked not to index it. Guessing any of those',
+        'produces a site that looks right and is wrong, so the build refuses instead.',
+        '',
+        `  CKS_DOCS_TIER=<${names}> npm run build`,
+        '',
+        'Use the tier matching the branch you are on; for a local preview of the site as',
+        'readers see it, use prod.',
+      ].join('\n'),
+    );
+  }
+  if (!(raw in DOCS_TIERS)) {
+    throw new Error(`CKS_DOCS_TIER='${raw}' is not one of ${names}.`);
+  }
+  return raw as DocsTier;
+}
+
+const docsTier = resolveDocsTier();
+const site = DOCS_TIERS[docsTier];
+
 const config: Config = {
   title: 'Crowded Kingdoms Docs',
   tagline: 'Massive worlds. No shards. No ceilings.',
@@ -23,8 +111,31 @@ const config: Config = {
     v4: true,
   },
 
-  url: 'https://docs.crowdedkingdoms.com',
+  url: site.url,
   baseUrl: '/',
+
+  // ONE HEADER PER PAGE, and it does not replace the `X-Robots-Tag` the CloudFront
+  // response headers policy sets on the dev and test distributions -- the two cover
+  // different files. A meta tag can only appear in HTML, so `/schema/game-api.graphql`
+  // (the artifact both SDKs sync from, and the one an integrator is most likely to find
+  // through a search engine) can be excluded only by the header. The header can only be
+  // set by the distribution, so it is absent from a local `npm run serve`, which is why
+  // both exist.
+  //
+  // NEITHER IS `robots.txt`, deliberately. `Disallow: /` blocks CRAWLING, not INDEXING: a
+  // URL a search engine learns from any link can still be indexed with no snippet, and
+  // because the crawler is then forbidden from fetching the page it can never see the
+  // `noindex` that would have removed it. Disallowing is strictly worse than allowing here.
+  ...(site.noindex
+    ? {
+        headTags: [
+          {
+            tagName: 'meta',
+            attributes: {name: 'robots', content: 'noindex, nofollow'},
+          },
+        ],
+      }
+    : {}),
 
   organizationName: 'crowdedkingdomstudios',
   projectName: 'cks-docs',
@@ -240,8 +351,32 @@ const config: Config = {
     colorMode: {
       respectPrefersColorScheme: true,
     },
+    // THE TIER HAS TO BE VISIBLE, because a dev docs site that looks identical to prod is
+    // a support incident waiting to happen: somebody reads a page describing unreleased
+    // behaviour, believes it, and files a bug against production. Two markings, chosen so
+    // that neither one alone has to carry it.
+    //
+    // The bar is `isCloseable: false` -- a banner a reader dismisses once and never sees
+    // again is a banner that is absent for every page after the first, which is the same
+    // failure as not having one. The navbar title carries the tier too, because that is
+    // what stays on screen after the bar scrolls away and what appears in a screenshot
+    // pasted into a bug report.
+    //
+    // Prod gets NEITHER, and that absence is load-bearing: it is what makes the marking on
+    // the other two mean something. See the tier table at the top of this file.
+    ...(site.banner
+      ? {
+          announcementBar: {
+            id: `cks-docs-tier-${docsTier}`,
+            content: site.banner,
+            backgroundColor: site.bannerBackground!,
+            textColor: '#ffffff',
+            isCloseable: false,
+          },
+        }
+      : {}),
     navbar: {
-      title: 'Docs',
+      title: site.label ? `Docs · ${site.label}` : 'Docs',
       logo: {
         alt: 'Crowded Kingdoms',
         src: 'img/wordmark.svg',
