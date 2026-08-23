@@ -162,9 +162,9 @@ belong to the studio:
 
 ### d. Choose where the app runs
 
-Your app needs a **Game API** to serve runtime traffic. Today you provision a **developer sandbox** and link your app to it; that gives the app a `gameApiUrl` and turns on split‑mode routing. See **[Dedicated environments](/management-api/dedicated-environments)** for the step‑by‑step flow.
+Your app needs a **Game API** to serve runtime traffic, and there is one way to get it: the **shared platform**. Publish with `publishAppToShared` and the app is immediately served by that tier's shared Game API fleet, scoped by your `appId`. You do not provision VMs, choose a datacenter, or wait for a stack.
 
-> **Availability:** the **developer sandbox** (`environmentClass: "dev_single"`) is available now. **Shared platform hosting** (`publishAppToShared`) and **multi‑VM dedicated** environments are **coming soon** — the API rejects them for non‑preview accounts today.
+> **Availability:** **shared platform hosting** is the only hosting model. Customer-provisioned environments — the developer sandbox (`environmentClass: "dev_single"`) and multi‑VM dedicated stacks — were **retired without replacement**, and their mutations are no longer in the published SDL. If you are following an older guide that starts with `createEnvironment`, stop: see **[Shared environment & billing](/management-api/shared-environment)** instead.
 
 Whichever hosting you use, query the app's routing fields (`gameApiUrl`, `splitMode`, `deploymentTarget`) before a player joins so the client connects to the right **Game API**. See **[Shared environment & billing](/management-api/shared-environment)** for the shared model and routing fields, and **[Loading an app's Game API](/crowdyjs/shared-environment-routing)** for the client walkthrough.
 

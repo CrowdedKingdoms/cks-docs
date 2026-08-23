@@ -16,10 +16,11 @@ There are two deployment models in the platform:
 - **Shared environment** (customer default) — your app runs on the shared Game API, scoped by your
   `appId`. Free to start; you pay only for metered usage above a free
   allowance.
-- **Dedicated environment** (operator-provisioned) — an isolated Game API + database + replication
-  stack. Not self-service in the customer portal — contact Crowded Kingdoms for enterprise isolation. API reference: **[Dedicated environments](/management-api/dedicated-environments)**.
+- **Dedicated environment** — **retired without replacement.** There is no customer-provisioned
+  stack and no API for one; contact Crowded Kingdoms if you need enterprise isolation.
+  **[Dedicated environments](/management-api/dedicated-environments)** is kept as history.
 
-This page covers the shared environment.
+So in practice there is one model, and this page describes it.
 
 ## Free tier
 

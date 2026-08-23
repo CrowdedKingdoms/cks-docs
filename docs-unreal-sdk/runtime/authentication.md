@@ -21,8 +21,10 @@ password sign-in is a first-class, permanent method, not a legacy path being pha
   the one-call `BeginMagicLinkSignIn`).
 - **Social / OIDC** -- a federated provider (e.g. Google), run in the **system browser** (never an
   embedded webview) via `BeginSocialSignIn`.
-- **Dev bypass** -- a one-call sign-in by email, for local/dev/test only (`DevLogin`); never available
-  in production.
+
+There is **no dev bypass**. `DevLogin` called a server-side shortcut that was deleted from every
+tier on 2026-08-20, so the entry point can only fail wherever it still appears in an older SDK
+build. Use `Login` / `Register` against a dev tier instead.
 
 Gameplay then needs an **app-scoped token** minted from the session token. For the transport-level
 details of sign-in and the app-token patterns, see
@@ -72,23 +74,9 @@ UFUNCTION(BlueprintCallable, Category="Crowdy SDK|Authentication")
 void Register(const FString& Email, const FString& Password, FOnAuthSuccess OnSuccess, FOnAuthError OnError);
 ```
 
-`Register` creates the account and signs in; both feed the same mint pipeline as every other method.
-
-### Email + password
-
-```cpp
-UFUNCTION(BlueprintCallable, Category="Crowdy SDK|Authentication")
-void Login(const FString& Email, const FString& Password, FOnAuthSuccess OnSuccess, FOnAuthError OnError);
-
-UFUNCTION(BlueprintCallable, Category="Crowdy SDK|Authentication")
-void Register(const FString& Email, const FString& Password, FOnAuthSuccess OnSuccess, FOnAuthError OnError);
-```
-
-Works against every server. `Register` returns a session only for an address it is
-creating; one that already has an account is refused, so fall back to `Login`.
-
-The `DevLogin` entry point is **gone** — the server-side bypass it called was
-deleted on 2026-08-20, so it can only fail.
+Works against every server, and both feed the same mint pipeline as every other method.
+`Register` returns a session only for an address it is creating; one that already has an
+account is refused with `EMAIL_ALREADY_REGISTERED`, so fall back to `Login`.
 
 ### Magic link
 
@@ -103,8 +91,11 @@ UFUNCTION(BlueprintCallable, Category="Crowdy SDK|Authentication")
 void CompleteLoginLink(const FString& Token, FOnAuthSuccess OnSuccess, FOnAuthError OnError);
 ```
 
-`FOnLoginLinkSent(bool bSent, FString DevToken)` reports whether the email was sent; on a dev server it
-also returns a `DevToken` you can pass straight to `CompleteLoginLink`, skipping the inbox.
+`FOnLoginLinkSent(bool bSent, FString DevToken)` reports whether the email was sent. **`DevToken` is
+always empty now**: the `devToken` field on `requestLoginLink` was removed on 2026-08-20 along with
+the dev bypass, because it put the emailed one-time token in the response body where anyone who
+could ask for a link could sign in as that address. The player must follow the emailed link on every
+tier.
 
 Or the one-call convenience, which opens a loopback listener on `127.0.0.1`, requests the link with that
 loopback as the redirect, and completes automatically when the player clicks it:
@@ -114,8 +105,8 @@ UFUNCTION(BlueprintCallable, Category="Crowdy SDK|Authentication")
 void BeginMagicLinkSignIn(const FString& Email, FOnAuthSuccess OnSuccess, FOnAuthError OnError);
 ```
 
-On a dev server the server-returned token short-circuits the email/browser round-trip entirely.
-`OnError` fires on failure or if the player never returns (timeout).
+`OnError` fires on failure or if the player never returns (timeout). There is no dev-server
+short-circuit: the round-trip through the player's inbox is the flow on every tier.
 
 ### Social / OIDC
 
@@ -211,13 +202,13 @@ needed.
 
 `CrowdyServices/Public/Subsystem/AsyncActions/CrowdyAuthenticationActions.h` wraps every sign-in call as
 a dedicated latent Blueprint node, each with Success/Error exec pins -- no manual delegate binding
-required:
+required. An SDK build predating 2026-08-20 also ships a **Dev Login** node wrapping `DevLogin`;
+it has nothing to call and always errors.
 
 | Node | Wraps |
 |---|---|
 | **Login** | `Login` |
 | **Register** | `Register` |
-| **Dev Login** | `DevLogin` |
 | **Magic Link Sign In** | `BeginMagicLinkSignIn` |
 | **Social Sign In** | `BeginSocialSignIn` |
 | **Restore Session** | `RestoreSession` |
@@ -341,7 +332,7 @@ The event bindings tie the SDK delegates to your widget:
 The end-to-end sequence from sign-in to the game world:
 
 ```text
-Sign in (password / magic link / social / dev bypass)
+Sign in (password / magic link / social)
   then OnSuccess (FCrowdyAuthResult)     // identity SESSION token (management-plane only), already minted
   then RequestUDPAccess()                // authorizes the UDP session with the app-scoped token
   then OnUDPAddressNotify (bSuccess = true)
