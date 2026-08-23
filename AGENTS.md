@@ -87,9 +87,12 @@ That is not an oversight; see the header comment in `.github/workflows/deploy-do
   design. If you find the CrowdyJS reference naming an older error code than the
   game-api reference beside it, the chain is working; do not "fix" it by editing
   either generated tree, and do not add a check that demands they agree.
-- **CrowdyJS** npm `latest` is **15.0.0** — a breaking major that **removed
-  `devLogin`** and added **`auth.login` / `auth.register`**. The SDK is NOT
-  passwordless; any page here still saying so is stale. Verify before quoting:
+- **CrowdyJS** npm `latest` is **15.1.0** (this line said 15.0.0 until
+  2026-08-22). 15.0.0 was the breaking major that **removed `devLogin`** and
+  added **`auth.login` / `auth.register`**; 15.1.0 added the four
+  password-management wrappers and three error-code predicates. The SDK is NOT
+  passwordless; any page here still saying so is stale. **Verify rather than
+  quoting this line — a version in prose is a version that will be wrong:**
   `npm view @crowdedkingdoms/crowdyjs version`.
 - GitHub default is **`prod`**. Trunks: `dev` / `test` / `prod` — and only those
   three. **`main` was deleted across the project on 2026-08-21**, so a
