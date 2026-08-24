@@ -26,10 +26,11 @@ The webhook reconciliation is idempotent: it is keyed by
 
 ## 1. Environment variables
 
-Set these in `cks-game-api/.env`, which serves the management surface these
-endpoints belong to. The relevant block in `example.env` already documents the same
-keys. For a deployed environment they are control-plane secrets — file them through
-the infra control plane rather than editing a host by hand.
+These are environment variables of the API server that serves the management
+surface these endpoints belong to — the same one origin that serves the game
+surface. For a local run, set them in its environment file; for a deployed
+environment they are managed secrets, so file them through your environment's
+secret configuration rather than editing a host by hand.
 
 ### Required
 
