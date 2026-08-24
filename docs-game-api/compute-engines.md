@@ -15,16 +15,28 @@ properties, so you deploy once and iterate on data, not Rust.
 Still choosing the server-logic tier? Read
 [Model API vs Compute](/game-api/model-vs-compute) first.
 
-Scaffold a private copy with the CLI and deploy it like any module:
+**The platform serves the engines.** They live in a registry on your
+environment, so you never fetch or build one — you list what is there and
+deploy it by name:
 
-```bash
-npm run crowdy-compute -- new my-mobs --engine mob    # npc | mob | world
-npm run crowdy-compute -- deploy my-mobs
+```js
+const templates = await client.compute.templates({ appId: APP_ID });
+
+await client.compute.deployTemplate({
+  appId: APP_ID,
+  templateName: "mob-engine",
+  moduleName: "my-mobs",        // optional; run two parameterizations side by side
+});
 ```
 
-The templates live in `compute-examples/engines/` and double as reference
-implementations — Blocks with Friends' production modules are the same code
-paths parameterized differently.
+Those are the `computeTemplates` query and the `computeDeployTemplate`
+mutation. The second is one call in place of four: it upserts the module,
+publishes the source, binds the engine's triggers, and enables it.
+Compilation is asynchronous — poll with
+`client.compute.waitForCompile(APP_ID, "my-mobs")`.
+
+Blocks with Friends' production modules are these same code paths
+parameterized differently.
 
 ## The kit crates
 
@@ -103,8 +115,11 @@ A kit-sim assembly that runs without players (`alwaysOn`):
 
 ## Session engines (Wave 2)
 
-Six more data-driven templates cover the session genres. Scaffold with
-`crowdy-compute new <name> --engine <match|deck|instance|director|matchmaking|market|board|minigame>`.
+Six more data-driven templates cover the session genres. Deploy any of them by
+name with `computeDeployTemplate` — `match-engine`, `deck-engine`,
+`instance-engine`, `director`, `matchmaking`, `market-engine`, `board-engine`
+and `minigame`. `computeTemplates` lists the registry as your environment
+actually holds it, which is the authoritative answer if this page is behind.
 
 ### match-engine — server-driven match lifecycle
 
@@ -302,9 +317,11 @@ side by side. SDK sugar: `client.compute.deployTemplate(...)` or blueprints
 
 Every engine's invoke exports declare [typed
 contracts](compute-modules) platform-wide: `computeInvoke` params are
-validated before the sandbox runs (structured `BAD_REQUEST` on violations),
-and the `crowdy-compute types` CLI command generates fully typed
-param/result interfaces for the whole fleet.
+validated before the sandbox runs (structured `BAD_REQUEST` on violations).
+Each trigger's contract is readable as `contractJson` from
+`computeModuleTriggers`, so you can generate typed param/result interfaces for
+your own fleet from the platform's own declaration rather than hand-writing
+them.
 
 ## Wire format (what clients decode)
 
@@ -321,11 +338,9 @@ container-id suffix. Flag bits 0-3 are platform-reserved:
 CrowdyJS ships the codec + ready-made lane predicates (`engineLanes()`,
 `enginePoseCodec` in the package root) and CrowdyCPP mirrors them in
 `crowdy/kit/wire.hpp`; see the SDKs' [Game Kit](/crowdyjs/game-kit) pages.
-The layout itself is declared once as a `crowdy-compute lanes` JSON
-(`compute-examples/lanes/actor-pose.example.json`) and generated per
-language — the reference games (Blocks with Friends, Tactical Model
-Simulator) run on these generated codecs in production, locked by
-committed golden byte vectors on the Rust and TypeScript sides, so the
+You do not need to hand-pack these bytes — the reference games (Blocks with
+Friends, Tactical Model Simulator) run on the same codecs in production,
+locked by committed golden byte vectors on the Rust and TypeScript sides, so the
 layout JSONs are the wire source of truth rather than examples.
 Server events use `[u16 LE event type][JSON]` payloads with these reserved
 types (both SDKs ship parsers):

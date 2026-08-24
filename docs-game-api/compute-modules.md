@@ -149,10 +149,12 @@ caches.
 - **Files** — a JSON map of relative paths to contents. `Cargo.toml` and
   `src/lib.rs` are required; only `.rs` files under `src/` (plus `Cargo.toml`)
   are allowed. At most 32 files, 256 KiB per file, 1 MiB total.
-- **Dependencies** — only the platform allowlist: `crowdy-compute-sdk`,
-  `serde`, `serde_json`, `rand`. Compiles run **offline** against a vendored
-  registry; arbitrary crates.io dependencies are rejected at deploy time, not
-  at compile time.
+- **Dependencies** — only the platform allowlist: `crowdy-compute-sdk`, the
+  five game-kit crates (`crowdy-game-kit-core`, `-ai`, `-sim`, `-play`,
+  `-econ`), `serde`, `serde_json` and `rand`. Compiles run **offline** against
+  a vendored registry, so these are resolved for you and are **not fetched
+  from crates.io** — arbitrary crates.io dependencies are rejected at deploy
+  time, not at compile time.
 - **No build-time code** — `build.rs`, a `[package] build = ...` key,
   `[build-dependencies]`, and path/git dependencies are all rejected. Only
   `[package]`, `[lib]`, and `[dependencies]` sections are allowed. Do not
@@ -306,9 +308,9 @@ Types are `int | float | string | bool | object | array`. Declared params are
 validated on `computeInvoke` **before the sandbox runs** — a shape mistake is
 a structured `BAD_REQUEST` naming the violation, not a runtime guest error.
 Undeclared params pass through untouched; `result` is documentation/codegen
-only. Contracts surface on `computeModuleTriggers`, and the
-`crowdy-compute types` CLI command generates TypeScript param/result
-interfaces plus typed invoke wrappers from them.
+only. Contracts surface as `contractJson` on `computeModuleTriggers`, which is
+the declaration to generate TypeScript param/result interfaces and typed
+invoke wrappers from.
 When it is **null, only `manage_compute` holders may invoke** (the safe
 default). Leaves that need a model container context (e.g. `owner_of_self`)
 fail closed here — prefer caller-based leaves (`anyone`, `user_in_list`,
@@ -499,7 +501,7 @@ event — using the [Compute host API](/game-api/compute-host-api) reference.
 ## Related
 
 - [Compute tutorial](/game-api/compute-tutorial) — zero to a live module in
-  under 30 minutes with the `crowdy-compute` CLI, plus five runnable examples.
+  under 30 minutes with CrowdyJS, starting from a ready-made engine.
 - [Compute engines](/game-api/compute-engines) — ready-made, data-driven
   engine templates (NPCs/pets, mobs with refereed combat, weather/farming)
   built on the `crowdy-game-kit` crates. Start here before writing a
