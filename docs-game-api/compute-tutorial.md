@@ -5,145 +5,218 @@ title: "Compute tutorial: zero to a live module"
 
 # Compute tutorial: zero to a live module
 
-This is the fastest path from nothing to a **Rust compute module running on
-your game's servers** — budget 30 minutes end to end, most of it reading. It
-uses the `crowdy-compute` CLI from the
-[compute-examples repository folder](https://github.com/CrowdedKingdoms)
-(`cks-project-root/compute-examples/`), which wraps the
-[Compute Modules](/game-api/compute-modules) GraphQL surface.
+This is the fastest path from nothing to **server-side code running on your
+game's servers** — budget 30 minutes end to end, most of it reading. It uses
+[CrowdyJS](/crowdyjs/intro), the same package your game client already installs, and
+nothing else.
+
+Everything here is the [Compute Modules](/game-api/compute-modules) GraphQL
+surface underneath. The SDK is a typed shortcut to it, not a separate product:
+each step names the field it calls, so you can drop to raw GraphQL — or to any
+other language — at any point.
 
 This tutorial assumes compute is the right tier. For the decision criteria
 and the recommended hybrid pattern, see
 [Model API vs Compute](/game-api/model-vs-compute).
 
-## 0. Prerequisites (~5 min)
+## 0. Prerequisites (~4 min)
 
-- **Node 20+** and the examples folder: `cd compute-examples && npm install`.
-- **An app** you administer (your user needs the org `manage_compute`
-  permission) on an environment with compute enabled.
-- Environment for the CLI:
+- **Node 20+** and the SDK:
 
 ```bash
-# Both variables name the SAME origin. There is one GraphQL origin per
-# environment: management and game are two surfaces of it, not two servers.
-# `CROWDY_GAME_URL` carries the `/graphql` path and `CROWDY_MANAGEMENT_URL`
-# does not — that is the only difference between them.
-#
-# Take the origin from `serverStatus.gameClientBootstrap(appId)` (it returns
-# `gameApiUrl` for your app's datacenter) or from your environment's dashboard.
-# Do not copy an origin out of a tutorial: this line named
-# `game.dev.crowdedkingdoms.com` until 2026-08-22, a host from a retired naming
-# generation that has been NXDOMAIN since long before that, so the two exports
-# below disagreed with each other while looking equally plausible.
-export CROWDY_MANAGEMENT_URL=https://<your environment's origin>
-export CROWDY_GAME_URL=https://<your environment's origin>/graphql
-export APP_ID=<your app id>
-export ADMIN_EMAIL=<your email>        # dev environments (or ADMIN_TOKEN=<app token>)
+npm install @crowdedkingdoms/crowdyjs@15.1.0
 ```
 
-- **Optional** (for local builds before deploying): a Rust toolchain with
-  `rustup target add wasm32-wasip1`. Without it, `check` still validates all
-  the deploy rules and the platform compiles for you on deploy.
+  **Version 15.0.0 or newer is required** — `auth.login` arrived in 15.0.0,
+  which was a breaking release. The compute methods below are in both 15.0.0
+  and 15.1.0. Pin exactly rather than with a caret: a caret never matches a
+  prerelease, so `^15.0.0` silently skips the `dev` and `test` builds.
 
-## 1. Scaffold (~1 min)
+- **An app** you administer. Your user needs the org `manage_compute`
+  permission, on an environment with compute enabled.
 
-```bash
-npm run crowdy-compute -- new my-module
+- **Your environment's GraphQL origin.** Do not copy one out of a tutorial —
+  this page named a dead host for months. Take it from your environment's
+  dashboard, and see below for the per-app URL the platform hands you.
+
+- **Optional**, only for compiling locally before you deploy: a Rust toolchain
+  with `rustup target add wasm32-wasip1`. You do not need it. The platform
+  compiles your source when you deploy.
+
+## 1. Sign in and get a client (~2 min)
+
+```js
+import { createCrowdyClient } from "@crowdedkingdoms/crowdyjs";
+
+const client = createCrowdyClient({
+  httpUrl: "https://<your environment's origin>/graphql",
+  wsUrl:   "https://<your environment's origin>/graphql",
+});
+
+await client.auth.login({ email: "you@example.com", password: process.env.PASSWORD });
+
+const APP_ID = "<your app id>";
+const app = await client.portal.mintAppToken(APP_ID);
+client.setToken(app.token);
 ```
 
-You get a ready-to-deploy crate:
+`mintAppToken` also returns **`gameApiUrl`** and **`gameApiWsUrl`** — the Game
+API actually serving your app, which lives in one datacenter. If they are
+non-null, build your working client with those instead of the origin you
+started from; you will be talking to the datacenter holding your data rather
+than to whichever one DNS chose.
 
-- `my-module/Cargo.toml` — pinned to `crowdy-compute-sdk` and the
-  `crowdy-game-kit-core` utility crate (both platform-vendored).
-- `my-module/src/lib.rs` — a ticking module with durable state
-  (`kit::state::Persisted`), a 10-second heartbeat log (`kit::clock::Every`),
-  and a `status` invoke export (`kit::invoke::Router`).
-- `my-module/deploy.json` — the deployment manifest: module name, triggers
-  (a 2 Hz tick + the `status` export), and optional policy overrides.
+## 2. A live module, with no Rust at all (~3 min)
 
-## 2. Check (~1 min)
+The platform ships a **registry of ready-made engines** and serves them from
+your environment. You do not fetch, build, or vendor them — you name one and
+it deploys. Ask what is available:
 
-```bash
-npm run crowdy-compute -- check my-module
+```js
+const templates = await client.compute.templates({ appId: APP_ID });
+templates.forEach((t) => console.log(t.name, "—", t.description, "| exports:", t.exports));
 ```
 
-This mirrors the platform's deploy validation locally — file layout, size
-caps, the dependency allowlist, no build scripts — and, when you have the
-toolchain, runs a real `cargo build --target wasm32-wasip1` so compile errors
-surface before you deploy.
+That is the `computeTemplates` query. Deploy one:
 
-## 3. Deploy (~2 min)
-
-```bash
-npm run crowdy-compute -- deploy my-module
+```js
+const mod = await client.compute.deployTemplate({
+  appId: APP_ID,
+  templateName: "mob-engine",
+  moduleName: "my-mobs",        // optional; defaults to the template name
+});
 ```
 
-Behind the scenes: `computeUpsertModule` → `computeDeployVersion` (the source
-uploads; a game server compiles it — first compiles take a few seconds,
-unchanged redeploys are skipped via the source hash) → triggers from
-`deploy.json` (created only if missing) → `computeSetModuleEnabled`. Failures
-print the compiler log.
+`computeDeployTemplate` is **one call in place of four**: it upserts the
+module, publishes the template source (deduped by hash), binds the template's
+triggers, and enables it. Compilation runs asynchronously, so wait for it:
 
-## 4. Watch and invoke (~2 min)
-
-```bash
-npm run crowdy-compute -- watch
-# [22:14:05] runs=3 failed=0 fuel=1220  my-module:3r/0f/closed
-#    ... [my-module] 1: my-module alive: 42 ticks
-
-npm run crowdy-compute -- invoke my-module status
-# {"success":true,"ticks":57}
+```js
+const version = await client.compute.waitForCompile(APP_ID, "my-mobs", { timeoutMs: 180_000 });
+console.log(version.compileStatus, version.compiledSizeBytes, "bytes");
 ```
 
-`watch` polls the monitoring queries (`computeModuleStats`,
-`computeModuleLogs`); `invoke` is the synchronous RPC path. That's the whole
-loop: edit `src/lib.rs`, `deploy`, `watch`. You have server-side Rust running
-against your world.
+You now have server-side code running against your world, and you have written
+none. The engines are **data-driven** — behaviour comes from model containers
+such as `MobDef` and `EncounterDef` — so the intended path is to parameterize
+one rather than fork it. See [Compute engines](/game-api/compute-engines).
 
-## 5. Tour the examples (~15 min of reading)
+## 3. Watch it and call it (~3 min)
 
-Each example in `compute-examples/examples/` teaches one capability and
-deploys the same way (`npm run crowdy-compute -- deploy examples/<name>`):
+```js
+const stats = await client.compute.moduleStats({ appId: APP_ID, windowMinutes: 60 });
+const logs  = await client.compute.moduleLogs({ appId: APP_ID, moduleName: "my-mobs", limit: 20 });
+const runs  = await client.compute.moduleRuns({ appId: APP_ID, moduleName: "my-mobs", limit: 20 });
 
-### `tick-counter` — the hello world
-Durable state that survives redeploys and re-leases, tick cadence, invoke
-routing. The scaffold template is this module.
+const result = await client.compute.invoke({
+  appId: APP_ID,
+  moduleName: "my-mobs",
+  exportName: "status",
+  paramsJson: JSON.stringify({}),
+});
+```
 
-### `scoreboard` — reacting to your game
-An **event trigger** (`onEvent: function_invoked`) delivers every model
-function invocation to the module's `on_event` entry point; it tallies scores
-per player and serves `get_top`. This is the pattern for "when players do X,
-the server computes Y".
+Those are `computeModuleStats`, `computeModuleLogs`, `computeModuleRuns` and
+`computeInvoke`. Polling the first three on a timer is the whole of a "watch"
+loop; `invoke` is the synchronous RPC path into a module's exports.
 
-### `npc-pathfinder` — what automations never could
-A\* pathfinding over an obstacle grid, walked at 4 Hz with smooth
-server-driven actor updates (`kit::wire`). Call `layout` to see the grid,
-the current path, and the NPC's position — the server's "thoughts" as JSON.
-Loops, real algorithms, live movement: this is the compute layer's reason to
-exist.
+Note that **`moduleStats` is app-wide, not per-module** — it takes a look-back
+window (default 60 minutes, max 1440) and summarises every module's activity
+together. `moduleLogs` and `moduleRuns` are the two that narrow to one module,
+and `moduleName` is optional on both.
 
-### `world-weather` — a living world
-An `always_on` module (runs with zero players connected) stepping a weather
-state machine; changes broadcast to nearby clients as type-90 server events
-and to **other modules** via `emit_compute_event("weather_changed")` — the
-module-to-module signalling pattern.
+For a health view across every module at once, including breaker state and
+fuel, use `client.compute.appDiagnostics({ appId: APP_ID })`.
 
-### `mini-game` — invoke-driven gameplay
-Rock-paper-scissors as a synchronous RPC: the platform binds `callerUserId`
-server-side (unspoofable), the house move comes from server-held RNG the
-client can never observe, and per-player records persist in module state.
+## 4. Your own module (~8 min)
+
+A module is a small Rust crate compiled to WASM. You upload **source**, as
+plain strings — there is no local build step, no bundler, and no artefact to
+produce. Two files are required:
+
+```js
+const sourceFiles = {
+  "Cargo.toml": `
+[package]
+name = "my-module"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+crowdy-compute-sdk = "0.1.5"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+`.trim(),
+  "src/lib.rs": "/* your module */",
+};
+```
+
+Then the four-step lifecycle the template call did for you:
+
+```js
+await client.compute.upsertModule({ appId: APP_ID, name: "my-module", description: "..." });
+
+await client.compute.deployVersion({
+  appId: APP_ID,
+  moduleName: "my-module",
+  sourceFiles,                 // the SDK JSON-encodes this into sourceFilesJson
+  sdkVersion: "0.1.5",         // must match your Cargo.toml — see below
+  abiVersion: 0,
+});
+
+const v = await client.compute.waitForCompile(APP_ID, "my-module", { timeoutMs: 180_000 });
+if (v.compileStatus !== "succeeded") throw new Error(v.compileLog);
+
+await client.compute.upsertTrigger({
+  appId: APP_ID, moduleName: "my-module", triggerType: "tick", tickHz: 2,
+});
+await client.compute.setModuleEnabled({ appId: APP_ID, name: "my-module", enabled: true });
+```
+
+**Pass `sdkVersion` explicitly and keep it equal to your `Cargo.toml`.** The
+SDK will default it from a constant baked into whichever CrowdyJS version you
+installed, and that constant can lag the platform — 15.1.0 defaults to
+`0.1.3` while `0.1.5` is current. Supported values are `0.0.1` and
+`0.1.0`–`0.1.5`, with ABI `0`; there is no query that lists them, so treat the
+[Compute Modules](/game-api/compute-modules) page as the reference.
+
+Redeploying identical source is wasted work, so check the hash first:
+
+```js
+const [latest] = await client.compute.moduleVersions({ appId: APP_ID, moduleName: "my-module", limit: 1 });
+// latest.sourceHash — compare before calling deployVersion again
+```
+
+The constraints your source must satisfy — the file layout, the size caps, the
+dependency allowlist, and the ban on build scripts — are all listed under
+[writing a module](/game-api/compute-modules#writing-a-module). They are
+enforced at deploy time, so a violation comes back as a `BadRequestException`
+naming the field rather than as a compile error.
+
+## 5. Tour the registry (~10 min of reading)
+
+`computeTemplates` is the catalogue, and it is worth reading through once
+because most games find their shape in it rather than starting from an empty
+crate. Each entry lists its `exports` — the names you can `invoke`.
+
+The registry covers NPC and mob simulation, world simulation, match and
+matchmaking flow, decks and boards, instances and directors, markets,
+minigames, abilities, territory, racing, possession, movement validation, and
+live-ops scheduling.
+
+Because they are parameterized by model containers, two modules can run the
+same engine with different data side by side — that is what the `moduleName`
+override in step 2 is for.
 
 ## Where to go next
 
-- [Compute engines](/game-api/compute-engines) — skip the from-scratch
-  simulation: `crowdy-compute new my-mobs --engine mob` scaffolds a
-  data-driven NPC/mob/world engine you parameterize with containers.
-- [Compute Modules](/game-api/compute-modules) — concepts, lifecycle, limits,
-  billing.
+- [Compute engines](/game-api/compute-engines) — the registry in depth, and
+  which containers parameterize each engine.
+- [Compute Modules](/game-api/compute-modules) — concepts, the full lifecycle,
+  limits, and billing.
 - [Compute host API](/game-api/compute-host-api) — everything a module can
-  call.
-- The `crowdy-game-kit` crate family (used by every example): `kit-core`
-  (durable state, wire codecs, chunk math, presence, cadence, invoke
-  routing, RNG), `kit-ai` (pathfinding/steering/behavior trees), `kit-sim`
-  (day cycle/weather/nodes/growth), `kit-play` (the combat referee) — so
-  your module logic stays about your game.
+  call: world reads and writes, model invocation, actors, events, presence,
+  and randomness.
