@@ -36,4 +36,4 @@ The app (game) whose actors owned by the authenticated user should be kept fresh
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>GameHost</b></code>](/reference/graphql/types/objects/game-host.mdx) <Badge class="badge badge--secondary " text="object"/> 
-The elected host user of a game (app). Election is deterministic across all cks-game-api replicas: among actors that are still fresh (recently heartbeated), the user whose earliest actor was created first wins, with a uuid tiebreaker. Row lifecycle is owned by Buddy (cks-udp-api); liveness (updated&#x005F;at) is owned by game-api's actorHeartbeat mutation.
+The elected host user of a game (app). Election is deterministic across all game-api replicas: among actors that are still fresh (recently heartbeated), the user whose earliest actor was created first wins, with a uuid tiebreaker. Row lifecycle is owned by Buddy, the realtime runtime; liveness (updated&#x005F;at) is owned by game-api's actorHeartbeat mutation.

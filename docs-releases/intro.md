@@ -18,6 +18,18 @@ environment surface on [2026-07-27](#2026-07-27) and the dev sign-in bypass on
 [2026-08-20](#2026-08-20). Treat **the published SDL as the authority** on what exists
 today; this page is the record of how it got there.
 
+:::note `crowdy-compute` is not publicly distributed
+
+Several entries below announce a `crowdy-compute` CLI. It is an internal
+convenience and **has never been published**, so do not go looking for it. The
+entries are left as written because this page is a historical record, and
+nothing they describe is unavailable to you: the CLI only ever called the
+documented `compute*` fields, and CrowdyJS exposes every one of them under
+`client.compute`. The [compute tutorial](/game-api/compute-tutorial) is the
+supported path.
+
+:::
+
 ## 2026-08-22 (latest)
 
 **ck-api v1.61.0 → v1.63.0 — a completed purchase is now fulfilled**
