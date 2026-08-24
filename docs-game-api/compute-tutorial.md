@@ -7,10 +7,21 @@ title: "Compute tutorial: zero to a live module"
 
 This is the fastest path from nothing to a **Rust compute module running on
 your game's servers** — budget 30 minutes end to end, most of it reading. It
-uses the `crowdy-compute` CLI from the
-[compute-examples repository folder](https://github.com/CrowdedKingdoms)
-(`cks-project-root/compute-examples/`), which wraps the
+uses the `crowdy-compute` CLI, a thin wrapper over the
 [Compute Modules](/game-api/compute-modules) GraphQL surface.
+
+:::note The CLI is not published yet
+
+`crowdy-compute` ships with the compute examples bundle, which is **not
+currently available publicly**. Until it is, this page is still the right guide
+to the *shape* of the work, because the CLI does nothing you cannot do yourself:
+scaffolding and validation are purely local conveniences, and every command that
+touches the platform is one or two documented mutations, named where it happens.
+Work straight against the API with
+[Compute Modules](/game-api/compute-modules) for the lifecycle and
+[Compute host API](/game-api/compute-host-api) for what a module may call.
+
+:::
 
 This tutorial assumes compute is the right tier. For the decision criteria
 and the recommended hybrid pattern, see
@@ -18,7 +29,8 @@ and the recommended hybrid pattern, see
 
 ## 0. Prerequisites (~5 min)
 
-- **Node 20+** and the examples folder: `cd compute-examples && npm install`.
+- **Node 20+**, and the examples bundle installed (`npm install` in it) if you
+  have it — see the note above if you do not.
 - **An app** you administer (your user needs the org `manage_compute`
   permission) on an environment with compute enabled.
 - Environment for the CLI:

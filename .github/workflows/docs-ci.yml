@@ -48,6 +48,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # WHAT THIS PUBLIC REPO PUBLISHES, checked for internal references. It ran
+      # nowhere until 2026-08-24, while both SDKs generated from the same upstream
+      # schema had such a gate — and the asymmetry was the defect rather than any
+      # single reference, because the copy nobody had gated is the one where a
+      # sealed-repo name was eventually found. Reads the committed tree, needs no
+      # build, and refuses in under a second.
+      #
+      # It deliberately does NOT gate `cks-game-api`: that would have needed an
+      # allowlist on its first run, which is a statement about the term rather than
+      # the corpus. The script's header has the full reasoning, written down so the
+      # next reader does not have to guess — guessing is what produced the
+      # schema.gql exemption this gate's sibling carried for weeks.
+      - name: Prove the content-policy gate still refuses
+        run: npm run check:content-policy:self-test
+
+      - name: No internal references in published content
+        run: npm run check:content-policy
+
       - name: Lint schema descriptions (published SDL)
         run: npm run lint:schema
 

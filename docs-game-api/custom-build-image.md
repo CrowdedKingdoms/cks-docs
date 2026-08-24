@@ -24,6 +24,19 @@ The custom build image system consists of:
 
 ## Initial Setup
 
+### 0. Name your registry
+
+Every command below reads these three variables, so set them once. They are
+deliberately not filled in: the registry, account and namespace are yours, and
+the management script derives all three from your own AWS credentials rather
+than from anything written here.
+
+```bash
+export AWS_REGION=<your region>                 # e.g. us-east-2
+export ECR_NAMESPACE=<your ecr namespace>       # the path prefix in your registry
+export ECR_REGISTRY=<account-id>.dkr.ecr.$AWS_REGION.amazonaws.com
+```
+
 ### 1. Create ECR Repository
 
 First, you need to create an ECR repository for the build image:
@@ -34,8 +47,8 @@ First, you need to create an ECR repository for the build image:
 
 # Option 2: Create manually via AWS CLI
 aws ecr create-repository \
-  --repository-name crowd-rocks/cks-game-api-build-image \
-  --region us-east-2 \
+  --repository-name "$ECR_NAMESPACE/cks-game-api-build-image" \
+  --region "$AWS_REGION" \
   --image-scanning-configuration scanOnPush=true
 ```
 
@@ -48,9 +61,10 @@ Build and push the first version of the custom build image:
 ./scripts/manage-build-image.sh deploy
 
 # Option 2: Manual commands
-aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 317700178317.dkr.ecr.us-east-2.amazonaws.com
-docker buildx build --platform linux/arm64 -f Dockerfile.build -t 317700178317.dkr.ecr.us-east-2.amazonaws.com/crowd-rocks/cks-game-api-build-image:node-18-alpine .
-docker push 317700178317.dkr.ecr.us-east-2.amazonaws.com/crowd-rocks/cks-game-api-build-image:node-18-alpine
+IMAGE="$ECR_REGISTRY/$ECR_NAMESPACE/cks-game-api-build-image:node-18-alpine"
+aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$ECR_REGISTRY"
+docker buildx build --platform linux/arm64 -f Dockerfile.build -t "$IMAGE" .
+docker push "$IMAGE"
 ```
 
 ### 3. Update GitHub Secrets
@@ -141,7 +155,7 @@ If you get an error about the build image not being found:
 
 1. Check if the ECR repository exists:
    ```bash
-   aws ecr describe-repositories --repository-names crowd-rocks/cks-game-api-build-image --region us-east-2
+   aws ecr describe-repositories --repository-names "$ECR_NAMESPACE/cks-game-api-build-image" --region "$AWS_REGION"
    ```
 
 2. Build and push the image manually:
@@ -180,9 +194,9 @@ If the build image workflow fails:
 
 Key configuration values are defined in:
 
-- **ECR Repository**: `crowd-rocks/cks-game-api-build-image`
+- **ECR Repository**: `$ECR_NAMESPACE/cks-game-api-build-image`
 - **Image Tag**: `node-18-alpine`
-- **AWS Region**: `us-east-2`
+- **AWS Region**: `$AWS_REGION`
 - **Platform**: `linux/arm64`
 
 To change these values, update:
