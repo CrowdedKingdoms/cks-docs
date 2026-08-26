@@ -53,6 +53,30 @@ Your client `JSON.parse`s / `JSON.stringify`s around them.
 As an app admin you declare container types, their property schemas, and your
 functions. You can do it field-by-field or in one `gameModelSeed` call.
 
+:::caution The schema does not travel with the app
+
+A container names its type by string, and that string is not checked when the
+container is made. `gameModelEnsureContainer` will happily create a container
+against a type you never defined and tell you it succeeded. Nothing fails until a
+client tries to bind it, and then the only sign is a line in the client's own log:
+
+```
+[GameModel] InvokeAndApply: no container bound for entity F3B8B18E478BB6E95D9B1980C602CA47
+```
+
+This bites hardest when an app is **recreated, or moved between organizations**.
+Your client goes on making containers as players connect, but container types,
+property definitions, function definitions and automations are not carried over —
+they have to be seeded again. Everything else about the app looks perfectly healthy
+while this is true: tokens mint, access tiers resolve, players connect, the realtime
+path works. Only the model is missing.
+
+So after any app move or recreation, re-run your `gameModelSeed` before you judge
+anything else. If you are already in this state, `gameModelContainerTypes` returning
+an empty list on an app that has containers is the confirmation.
+
+:::
+
 ```graphql
 mutation {
   gameModelSeed(input: {
