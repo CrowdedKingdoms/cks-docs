@@ -72,9 +72,9 @@ npm run demo:verify
 All chapters use these values:
 
 ```text
-ApiHttpUrl=https://ck.dev.v7.cks-env.com/graphql
-GameApiHttpUrl=https://ck.dev.v7.cks-env.com/graphql
-GameApiWsUrl=wss://ck.dev.v7.cks-env.com/graphql
+ApiHttpUrl=https://ck.dev.crowdedkingdoms.com/graphql
+GameApiHttpUrl=https://ck.dev.crowdedkingdoms.com/graphql
+GameApiWsUrl=wss://ck.dev.crowdedkingdoms.com/graphql
 AppId=<your-app-id>
 ```
 

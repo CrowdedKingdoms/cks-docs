@@ -21,7 +21,7 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 ## APIs
 
 ### Management surface
-- On the GraphQL API at [https://ck.prod.v7.cks-env.com/graphql](https://ck.prod.v7.cks-env.com/graphql) (dev: [https://ck.dev.v7.cks-env.com/graphql](https://ck.dev.v7.cks-env.com/graphql))
+- On the GraphQL API at [https://ck.prod.v7.cks-env.com/graphql](https://ck.prod.v7.cks-env.com/graphql) (dev: [https://ck.dev.crowdedkingdoms.com/graphql](https://ck.dev.crowdedkingdoms.com/graphql))
 - Manage user and org accounts
 - Configure marketplace settings for apps (games)
 - Create apps on the shared platform; manage billing and wallet
