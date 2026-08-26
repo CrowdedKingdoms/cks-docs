@@ -13,8 +13,8 @@ Verify connectivity to the Crowded Kingdoms API before writing game logic.
 ## Configuration
 
 ```text
-ApiHttpUrl=https://ck.dev.v7.cks-env.com/graphql
-ApiWsUrl=wss://ck.dev.v7.cks-env.com/graphql
+ApiHttpUrl=https://ck.dev.crowdedkingdoms.com/graphql
+ApiWsUrl=wss://ck.dev.crowdedkingdoms.com/graphql
 AppId=1
 OrgId=1
 ```
@@ -39,8 +39,8 @@ import {
 } from '@crowdedkingdoms/crowdyjs';
 
 const client = createCrowdyClient({
-  httpUrl: 'https://ck.dev.v7.cks-env.com/graphql',
-  wsUrl: 'wss://ck.dev.v7.cks-env.com/graphql',
+  httpUrl: 'https://ck.dev.crowdedkingdoms.com/graphql',
+  wsUrl: 'wss://ck.dev.crowdedkingdoms.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore(),
 });
 ```
