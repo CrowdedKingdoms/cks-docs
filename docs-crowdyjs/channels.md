@@ -24,15 +24,15 @@ import {
 } from '@crowdedkingdoms/crowdyjs';
 
 const identity = createCrowdyClient({
-  httpUrl: 'https://ck.dev.v7.cks-env.com/graphql',
+  httpUrl: 'https://ck.dev.crowdedkingdoms.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),
 });
 await identity.auth.login({ email: 'player@example.com', password }); // see /crowdyjs/readme#sign-in-with-clientauth
 
 const appToken = await identity.portal.mintAppToken('1');
 const game = createCrowdyClient({
-  httpUrl: appToken.gameApiUrl ?? 'https://ck.dev.v7.cks-env.com/graphql',
-  wsUrl: appToken.gameApiWsUrl ?? 'wss://ck.dev.v7.cks-env.com/graphql',
+  httpUrl: appToken.gameApiUrl ?? 'https://ck.dev.crowdedkingdoms.com/graphql',
+  wsUrl: appToken.gameApiWsUrl ?? 'wss://ck.dev.crowdedkingdoms.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:app:1'),
 });
 game.setToken(appToken.token);

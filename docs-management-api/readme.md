@@ -29,7 +29,7 @@ Runtime game data (chunks, voxels, actors, grids, grid permissions, UDP) lives i
 
 There is **one origin per tier**, and the management and game surfaces are two surfaces of it. Base URLs are not per organization: nothing is provisioned for you and no hostname is handed out when a stack is ready, because there is no per-tenant stack.
 
-**Dev tier (integration testing):** `https://ck.dev.v7.cks-env.com` — see **[Dev tier (client integration)](/management-ui/dev-tier)** for the full setup. Discover a tier's origin programmatically from the public `platformConfig` query (`sharedGameApiUrl`, `sharedGameApiWsUrl`) rather than hard-coding it.
+**Dev tier (integration testing):** `https://ck.dev.crowdedkingdoms.com` — see **[Dev tier (client integration)](/management-ui/dev-tier)** for the full setup. Discover a tier's origin programmatically from the public `platformConfig` query (`sharedGameApiUrl`, `sharedGameApiWsUrl`) rather than hard-coding it.
 
 ## Hosting an app
 
