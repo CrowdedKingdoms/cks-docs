@@ -55,7 +55,11 @@ query {
 ```
 
 :::caution[Do not use legacy dev-box URLs]
-There is ONE origin per tier: `ck.<tier>.v7.cks-env.com`. Per-developer dev boxes and the old `game.shared.*` split are retired — those hosts no longer serve. If an app is pinned to a datacenter, `mintAppToken` returns `gameApiUrl` / `gameApiWsUrl` (the per-DC form is `ck-<dc>.<tier>.v7.cks-env.com`); follow what the token returns rather than hardcoding a host.
+There is ONE origin per tier, and on this tier it is `ck.dev.crowdedkingdoms.com`. Per-developer dev boxes and the old `game.shared.*` split are retired — those hosts no longer serve.
+
+**Do not build the host from a template.** This paragraph used to give one, `ck.<tier>.v7.cks-env.com`, and the template is what went stale rather than the advice: the tiers no longer share a root. Dev moved to the brand domain on 2026-08-25 and test on 2026-08-26, while production is still on the older one, so any rule you derive from one tier is wrong for another.
+
+If an app is pinned to a datacenter, `mintAppToken` returns `gameApiUrl` and `gameApiWsUrl`. **Use what the token returns.** That is correct on every tier, survives the next move, and is the only form that names the datacenter holding your app.
 :::
 
 ## Two tokens (required)
