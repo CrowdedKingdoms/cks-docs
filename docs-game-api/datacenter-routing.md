@@ -18,10 +18,17 @@ The platform database is PostgreSQL with Citus, distributed on `app_id`. Every r
 app — chunks, actors, grids, compute state — lives on shards in a single datacenter, and
 an app is deliberately placed in one rather than spread across several.
 
-The published origin, `ck.<tier>.v7.cks-env.com`, is a multi-value DNS record over every
-datacenter's load balancer. There is no single front door: whichever datacenter DNS hands
-you answers your first request. That is intentional, because a single front door is a
-single thing to lose.
+The published origin for a tier — `ck.dev.crowdedkingdoms.com` on the dev tier — is a
+multi-value DNS record over every datacenter's load balancer. There is no single front
+door: whichever datacenter DNS hands you answers your first request. That is intentional,
+because a single front door is a single thing to lose.
+
+This sentence used to give a template, `ck.<tier>.v7.cks-env.com`, and that is worth
+mentioning because the template is the part that expired, not the design. The tiers do not
+share a root any more: dev and test are labels on the brand domain, production is not.
+Build the host from a tier name and you will be right on one tier and wrong on another —
+so take the origin from your tier's own documentation, and the per-datacenter one from the
+API, as below.
 
 So your first request is answered correctly by a datacenter that may not hold your data.
 Identity, organizations, tokens and app access are **reference tables**, replicated to

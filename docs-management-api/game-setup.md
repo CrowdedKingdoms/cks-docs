@@ -217,6 +217,62 @@ A player with an **active tier** on an app is authorized everywhere that matters
 
 ---
 
+## The permission keys
+
+`runtimePermissions` returns the assignable set. There are nine, and the last five are the ones people are surprised by.
+
+| Key | What it allows | App scope | Grid scope |
+| --- | --- | :-: | :-: |
+| `access` | Access an app runtime. Without it nothing else matters. | ✓ | ✓ |
+| `teleport` | Teleport within an app runtime | ✓ | ✓ |
+| `update_voxel_data` | Update voxel data | ✓ | ✓ |
+| `use_voice_chat` | Use voice chat | ✓ | ✓ |
+| `write_server_code` | Author and deploy player **server** code | ✓ | ✓ |
+| `run_server_code` | Run admitted player **server** code | ✓ | ✓ |
+| `write_client_code` | Author and deploy player **client** code | ✓ | ✓ |
+| `run_client_code` | Run admitted player **client** code | ✓ | ✓ |
+| `use_studio_agent` | Use the app-scoped Agentic Crowdy Studio orchestrator | ✓ | — |
+
+The generated default tier carries the **first four**. Everything below the line is opt-in, per tier.
+
+**`run_server_code` is what automations need.** Enabling a player automation requires *effective* `run_server_code`, and so does invoking a server module export. A game whose damage, spawning or scoring runs as an automation will start, connect, replicate actors — and then quietly do nothing — if the tier its players land on omits that key. The symptom is not a permission error in the client; it is automations that never fire, game-model containers that never bind, and actor updates refused for actors nothing registered.
+
+## Two scopes, and the one that does not follow a tier edit
+
+Every key except `use_studio_agent` is checked at **two** scopes, and code execution requires **both**:
+
+- **App scope** — the access tier the player is on.
+- **Grid scope** — a per-user, per-grid row, mirrored from the tier **on the player's first connect**.
+
+That mirroring is one-way and one-time. It is what makes the happy path effortless, and it is the trap:
+
+> **Editing a tier does not re-mirror to players who have already connected.** They keep the grid-scope permissions they were given the first time they entered, however many times you update the tier afterwards. New players get the new set; existing ones do not.
+
+So a permission added to a live game reaches its existing players only if you also grant it at grid scope:
+
+```graphql
+mutation {
+  grantGridPermissions(input: {
+    appId: "APP_ID", gridId: "GRID_ID", userId: "USER_ID",
+    permissionKeys: ["run_server_code", "run_client_code"]
+  }) { __typename }
+}
+```
+
+Two things about that call, both of which return a clear error rather than failing silently:
+
+- It is **app-resident** — send it to the app's own `gameApiUrl` (from `mintAppToken`), not the shared entry name. The shared name answers from whichever datacenter you land in and will tell you to reconnect.
+- It needs an **app-scoped token**, not an identity session token.
+
+## What a new app developer should check first
+
+1. **The default tier's keys.** `appAccessTiers(appId)` — is `isDefault` present, and does it carry what your game actually needs? Four keys is the generated default, not a recommendation.
+2. **`run_server_code` at both scopes**, if you use automations or player code at all.
+3. **The Studio agent policy**, if you use the agent: it is fail-closed on a rebuilt fleet and reports `AGENT_APP_KILLED` until an operator enables it for your app.
+4. **The org runtime wallet** — `app(appId){ runtimeStatus runtimeDenialReason }`. A denied wallet stops server code independently of every permission above, with its own message.
+
+---
+
 ## Quick reference
 
 | Goal | Admin does | Players get access via |

@@ -100,8 +100,8 @@ For integration testing on the shared dev tier (current game env **`dev1`**), se
 
 ```ts
 createCrowdyClient({
-  httpUrl: 'https://ck.dev.v7.cks-env.com/graphql',
-  wsUrl: 'wss://ck.dev.v7.cks-env.com/graphql',
+  httpUrl: 'https://ck.dev.crowdedkingdoms.com/graphql',
+  wsUrl: 'wss://ck.dev.crowdedkingdoms.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore(),
 });
 ```
