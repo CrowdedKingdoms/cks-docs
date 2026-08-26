@@ -51,6 +51,30 @@ Player-code permissions are deliberately excluded. Adding new runtime keys
 does not widen the default tier/grid automatically; server/client code remains
 opt-in.
 
+:::caution[Editing a tier does not reach players who already joined]
+The automatic grid grant above happens **once, when the player is first given app
+access**. It is a snapshot of the tier at that moment, not a live link to it.
+
+So adding a key to a tier later — `run_server_code`, say, to switch on automations —
+reaches every *new* player and **none of the existing ones**. They keep the keys they
+were granted on the way in. Nothing errors: enforcement needs the key at both the app
+and grid layers, so the tier now allows the action and the grid still refuses it.
+
+To bring existing players up, grant the key on the grid as well:
+
+```graphql
+mutation {
+  grantGridPermissions(input: {
+    appId: "APP_ID", gridId: "GRID_ID", userId: "USER_ID",
+    permissionKeys: ["run_server_code"]
+  }) { __typename }
+}
+```
+
+Check who has what with `gridUserPermissions` before and after — a tier that reads
+correctly while a grid row lags behind is the shape this failure takes.
+:::
+
 So a fresh app behaves like an open sandbox: any entitled player can move, build,
 and use voice anywhere — no manual grid or grant setup required. You only do the
 work below when you want to **restrict** something (a non-building safe zone,
