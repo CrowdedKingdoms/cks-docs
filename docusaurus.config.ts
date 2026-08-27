@@ -40,17 +40,19 @@ const crowdyJsSchema = './static/schema/crowdyjs.graphql';
 // here and puts the decision in the thing that starts the build.
 //
 // The table below is A TABLE AND NOT A RULE, for the same reason the hostnames it mirrors
-// are one in infra-control-plane's `cp-lib/dns-tier.ts`: prod is deliberately UNLABELLED
-// where the other two carry `.<tier>`, so any rule expressing this has a special case in
-// it, and a rule with a special case reads as a rule right up until somebody generalises
-// the special case away.
+// are one in infra-control-plane's `cp-lib/dns-tier.ts`. It used to be because prod was
+// deliberately UNLABELLED where the other two carried `.<tier>`; as of the 2026-08-27
+// migration prod carries `prod.` like them and `docs.crowdedkingdoms.com` is an alias
+// rather than the declared host, so all three finally have one shape. That is a reason to
+// keep the table rather than to replace it: prod is the entry that has been the exception,
+// and the moment the exception disappears is the moment a rule looks safe to write.
 // ---------------------------------------------------------------------------------------
 const DOCS_TIERS = {
   dev: {
     url: 'https://docs.dev.crowdedkingdoms.com',
     label: 'dev',
     banner:
-      'You are reading the <strong>dev</strong> documentation site. It tracks the <code>dev</code> branch and describes software that is not released. The public site is <a href="https://docs.crowdedkingdoms.com">docs.crowdedkingdoms.com</a>.',
+      'You are reading the <strong>dev</strong> documentation site. It tracks the <code>dev</code> branch and describes software that is not released. The public site is <a href="https://docs.prod.crowdedkingdoms.com">docs.prod.crowdedkingdoms.com</a>.',
     bannerBackground: '#7f1d1d',
     noindex: true,
   },
@@ -58,12 +60,12 @@ const DOCS_TIERS = {
     url: 'https://docs.test.crowdedkingdoms.com',
     label: 'test',
     banner:
-      'You are reading the <strong>test</strong> documentation site. It tracks the <code>test</code> branch and describes a release candidate. The public site is <a href="https://docs.crowdedkingdoms.com">docs.crowdedkingdoms.com</a>.',
+      'You are reading the <strong>test</strong> documentation site. It tracks the <code>test</code> branch and describes a release candidate. The public site is <a href="https://docs.prod.crowdedkingdoms.com">docs.prod.crowdedkingdoms.com</a>.',
     bannerBackground: '#78350f',
     noindex: true,
   },
   prod: {
-    url: 'https://docs.crowdedkingdoms.com',
+    url: 'https://docs.prod.crowdedkingdoms.com',
     label: null,
     banner: null,
     bannerBackground: null,

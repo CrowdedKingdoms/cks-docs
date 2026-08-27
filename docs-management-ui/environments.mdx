@@ -93,7 +93,7 @@ Keep tokens secret; they grant org-level power equivalent to a highly privileged
 | ------- | --------------- |
 | Cannot connect to Game API | Mint an **app-scoped token** (`mintAppToken`); identity session tokens are rejected for gameplay. |
 | `runtimeStatus` denied | Wallet empty, spend cap hit, or subscription lapsed — see [Shared environment & billing](/management-api/shared-environment). |
-| Wrong Game API URL | Use `app.gameApiUrl` or `platformConfig.sharedGameApiUrl` — do not use legacy per-box URLs like `game.dev1.dev.cks-env.com` unless an operator assigned one. |
+| Wrong Game API URL | Use `app.gameApiUrl` or `platformConfig.sharedGameApiUrl` — do not use legacy per-box URLs like `game.dev1.dev.crowdedkingdoms.com` unless an operator assigned one. |
 | Token expired | Call `refreshAppToken` on the Management API before retrying gameplay. |
 
 ## Next steps

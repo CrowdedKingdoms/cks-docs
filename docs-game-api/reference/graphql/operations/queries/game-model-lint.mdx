@@ -1,0 +1,39 @@
+---
+id: game-model-lint
+title: gameModelLint
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Whether an app's game model hangs together: containers whose type does not exist, functions calling functions that are not defined, timers targeting something that cannot be invoked autonomously, unmatchable automation triggers, and stored definitions that no longer compile. Every check is recomputed on demand — a stored warning goes stale the moment an unrelated object changes, which is exactly how an app can look healthy while being unable to bind anything. ERROR findings are provably broken; WARNING findings are frequently just a mid-edit state. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelLint(
+  appId: BigInt!
+): GmLintResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelLint.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) to lint.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmLintResult</b></code>](/reference/graphql/types/objects/gm-lint-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Whether an app's game model hangs together. Every check is recomputed on demand: a stored warning goes stale the moment an unrelated object changes, which is the failure this replaces.

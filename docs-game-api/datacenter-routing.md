@@ -23,12 +23,12 @@ multi-value DNS record over every datacenter's load balancer. There is no single
 door: whichever datacenter DNS hands you answers your first request. That is intentional,
 because a single front door is a single thing to lose.
 
-This sentence used to give a template, `ck.<tier>.v7.cks-env.com`, and that is worth
-mentioning because the template is the part that expired, not the design. The tiers do not
-share a root any more: dev and test are labels on the brand domain, production is not.
-Build the host from a tier name and you will be right on one tier and wrong on another —
-so take the origin from your tier's own documentation, and the per-datacenter one from the
-API, as below.
+The shape is `ck.<tier>.crowdedkingdoms.com` on all three tiers, production included —
+`ck.prod.crowdedkingdoms.com`, not the unlabelled `ck.crowdedkingdoms.com`, which is an
+alias kept alive for older clients rather than the endpoint to build against. Two earlier
+roots have been retired since August 2026 and a template on either of them is dead, so
+take the origin from your tier's own documentation rather than from memory, and take the
+per-datacenter one from the API, as below.
 
 So your first request is answered correctly by a datacenter that may not hold your data.
 Identity, organizations, tokens and app access are **reference tables**, replicated to
@@ -65,11 +65,11 @@ import { createCrowdyClient } from '@crowdedkingdoms/crowdyjs';
 
 // 1. Connect to the published origin. Any datacenter answers.
 let client = createCrowdyClient({
-  httpUrl: 'https://ck.prod.v7.cks-env.com/graphql',
-  wsUrl: 'wss://ck.prod.v7.cks-env.com/graphql',
+  httpUrl: 'https://ck.prod.crowdedkingdoms.com/graphql',
+  wsUrl: 'wss://ck.prod.crowdedkingdoms.com/graphql',
   realtime: {
     // The SHARED origin, and it stays that way for the life of the client.
-    discoveryUrl: 'https://ck.prod.v7.cks-env.com/graphql',
+    discoveryUrl: 'https://ck.prod.crowdedkingdoms.com/graphql',
   },
 });
 
@@ -82,7 +82,7 @@ if (bootstrap.gameApiUrl && bootstrap.gameApiUrl !== currentEndpoint) {
     httpUrl: bootstrap.gameApiUrl,
     wsUrl: bootstrap.gameApiWsUrl,
       // Unchanged. This is the point.
-    realtime: { discoveryUrl: 'https://ck.prod.v7.cks-env.com/graphql' },
+    realtime: { discoveryUrl: 'https://ck.prod.crowdedkingdoms.com/graphql' },
   });
   client.setToken(appToken);
 }
@@ -104,11 +104,11 @@ possibility, it is out of date.
 ```json
 {
   "errors": [{
-    "message": "App 42 is served from datacenter 'or', not 'va'. Reconnect to https://ck-or.prod.v7.cks-env.com and retry. …",
+    "message": "App 42 is served from datacenter 'or', not 'va'. Reconnect to https://ck-or.prod.crowdedkingdoms.com and retry. …",
     "extensions": {
       "code": "WRONG_DATACENTER",
-      "gameApiUrl": "https://ck-or.prod.v7.cks-env.com",
-      "gameApiWsUrl": "wss://ck-or.prod.v7.cks-env.com",
+      "gameApiUrl": "https://ck-or.prod.crowdedkingdoms.com",
+      "gameApiWsUrl": "wss://ck-or.prod.crowdedkingdoms.com",
       "appDatacenter": "or",
       "servedBy": "va"
     }
