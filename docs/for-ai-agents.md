@@ -21,11 +21,18 @@ the raw GraphQL access described below.
 
 There is **one GraphQL endpoint**. The two rows below are surfaces of that API,
 not two hosts. Do not set `managementUrl`. Gameplay is PostgreSQL + Citus, not
-galaxy. CrowdyJS **15.1.0** is current on npm: 15.0.0 removed `devLogin` and added
-`auth.login` / `auth.register`, and 15.1.0 added the four password-management
+galaxy. CrowdyJS **15.2.0** is current on npm: 15.0.0 removed `devLogin` and added
+`auth.login` / `auth.register`, 15.1.0 added the four password-management
 wrappers (`setInitialPassword`, `changePassword`, `requestPasswordReset`,
-`resetPassword`). Verify rather than quoting this line —
-`npm view @crowdedkingdoms/crowdyjs version`.
+`resetPassword`), and 15.2.0 rebuilt the baked default origin after every tier
+moved onto the brand root — an older build dials a host that no longer exists.
+Verify rather than quoting this line — `npm view @crowdedkingdoms/crowdyjs version`.
+
+**The dist-tag decides the default origin.** `latest` is built for production,
+and `dev` and `test` are separate prereleases (`15.2.0-dev.1`,
+`15.2.0-test.1`) whose builds bake their own tier's host. Installing `latest`
+and pointing it at a non-production tier works only if you pass the origin
+explicitly.
 
 | API | Protocol | Use it for |
 |-----|----------|------------|
