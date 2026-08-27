@@ -1,6 +1,6 @@
 # AGENTS
 
-Public Docusaurus site at [docs.prod.crowdedkingdoms.com](https://docs.prod.crowdedkingdoms.com).
+Public Docusaurus site at [docs.crowdedkingdoms.com](https://docs.crowdedkingdoms.com).
 Read [README.md](README.md) for preview, SDL regen, and screenshot/e2e helpers.
 
 ## THREE SITES, one per branch — and a build with no tier is refused
@@ -13,7 +13,7 @@ process is what absorbs churn, so the public site never sees it.
 |---|---|---|---|
 | `dev` | `docs.dev.crowdedkingdoms.com` | red banner, `Docs · dev` | no — `X-Robots-Tag: noindex` |
 | `test` | `docs.test.crowdedkingdoms.com` | amber banner, `Docs · test` | no — `X-Robots-Tag: noindex` |
-| `prod` | `docs.prod.crowdedkingdoms.com` | **nothing** | yes |
+| `prod` | `docs.crowdedkingdoms.com` | **nothing** | yes |
 
 **`CKS_DOCS_TIER` is required and has no default.** A build without it fails with a
 message telling you what to set. That is not friction for its own sake: the tier
@@ -28,12 +28,14 @@ CKS_DOCS_TIER=dev npm run start    # local preview of the dev site
 ```
 
 The hostnames are owned by `CK_DOCS_HOST_BY_TIER` in infra-control-plane's
-`cp-lib/dns-tier.ts` and mirrored in `scripts/cp-tiers.json`; the table in
-`docusaurus.config.ts` mirrors them again for the build. **Prod was deliberately
-unlabelled where the other two carried `.<tier>` until the 2026-08-27 migration**, and
-now carries `prod.` like them; `docs.crowdedkingdoms.com` still answers as an alias but
-is no longer the declared host. All three stay a table rather than a rule anyway — prod
-is the entry that has been the exception, so it is the one a derivation gets wrong next.
+`cp-lib/dns-tier.ts`; the table in `docusaurus.config.ts` mirrors them for the build.
+**Prod is deliberately unlabelled where the other two carry `.<tier>`.** The 2026-08-27
+brand migration labelled `ck.`, `studio.` and `app.` per tier, and this page and the
+build config were both edited then to say prod's docs host had been labelled too. It had
+not: `docs.prod.crowdedkingdoms.com` is NXDOMAIN, and prod docs are served at
+`docs.crowdedkingdoms.com`. All three stay a table rather than a rule for exactly that
+reason — prod is the entry that is the exception, so it is the one a derivation, or a
+migration applied by analogy, gets wrong.
 
 `robots.txt` is deliberately NOT used for this. `Disallow` blocks *crawling*, not
 *indexing*: a URL a search engine learns from a link can still be indexed with no
@@ -65,7 +67,7 @@ So a docs fix is three acts, and only the third is visible to anybody:
 git tag -a prod/v0.1.2 <sha-on-prod> -m "docs: <what changed>"
 git push origin refs/tags/prod/v0.1.2
 # 3. verify by FETCHING THE LIVE URL, not by watching the deploy go green
-curl -s -o /dev/null -w '%{http_code}\n' https://docs.prod.crowdedkingdoms.com/<page>
+curl -s -o /dev/null -w '%{http_code}\n' https://docs.crowdedkingdoms.com/<page>
 ```
 
 If what you fixed is a *link*, fetch the link too. The 2026-08-21 incident this

@@ -83,6 +83,6 @@ Management UI, docs, and account surfaces should be quieter than marketing pages
 }
 ```
 
-These tokens are applied on [docs.prod.crowdedkingdoms.com](https://docs.prod.crowdedkingdoms.com) and the [Management UI](https://app.crowdedkingdoms.com) portal.
+These tokens are applied on [docs.crowdedkingdoms.com](https://docs.crowdedkingdoms.com) and the [Management UI](https://studio.crowdedkingdoms.com) portal.
 
 For the full brand system (voice, imagery, layout, do/don't checklist), see the interactive guide: [Full brand guidelines](pathname:///brand/guidelines.html).

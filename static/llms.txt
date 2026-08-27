@@ -4,73 +4,74 @@
 
 ## Start here (for AI agents and integrators)
 
-- [For AI agents — quickstart & end-to-end workflows](https://docs.prod.crowdedkingdoms.com/overview/for-ai-agents): get a dev-tier key, the SDL/introspection URLs, and the most common flows (register → token → host discovery → spatial send; and the studio-backend economy flow).
-- [Overview / client workflow](https://docs.prod.crowdedkingdoms.com/overview/client-workflow): one endpoint, two token types, and how an app's datacenter endpoint is discovered.
+- [For AI agents — quickstart & end-to-end workflows](https://docs.crowdedkingdoms.com/overview/for-ai-agents): get a dev-tier key, the SDL/introspection URLs, and the most common flows (register → token → host discovery → spatial send; and the studio-backend economy flow).
+- [Overview / client workflow](https://docs.crowdedkingdoms.com/overview/client-workflow): one endpoint, two token types, and how an app's datacenter endpoint is discovered.
+- [Before you ship](https://docs.crowdedkingdoms.com/overview/before-you-ship): tier-labelled hosts and the bare brand aliases, the per-tier npm dist-tag that decides an SDK build's default origin, and the game-model seed a shipped client needs.
 - [Discord community support](https://discord.gg/x7tMKGwHf): ask questions and get help from the Crowded Kingdoms community.
 
 ## Schema (downloadable SDL)
 
-- [Full SDL](https://docs.prod.crowdedkingdoms.com/schema/game-api.graphql) - the complete unified schema; start here.
-- [Management-surface SDL](https://docs.prod.crowdedkingdoms.com/schema/management-api.graphql) - the same schema filtered to identity/orgs/apps/billing, for reading that surface alone.
-- [CrowdyJS SDL](https://docs.prod.crowdedkingdoms.com/schema/crowdyjs.graphql)
+- [Full SDL](https://docs.crowdedkingdoms.com/schema/game-api.graphql) - the complete unified schema; start here.
+- [Management-surface SDL](https://docs.crowdedkingdoms.com/schema/management-api.graphql) - the same schema filtered to identity/orgs/apps/billing, for reading that surface alone.
+- [CrowdyJS SDL](https://docs.crowdedkingdoms.com/schema/crowdyjs.graphql)
 - Introspection is enabled on the dev tier; the GraphQL Playground is served at the API's `/graphql` endpoint.
 
 ## Conventions (read before calling)
 
-- [Error codes (GraphQL extensions.code + UDP UdpErrorCode) with remediation](https://docs.prod.crowdedkingdoms.com/overview/error-codes)
-- [Pagination conventions](https://docs.prod.crowdedkingdoms.com/overview/pagination)
-- [Rate limits and query cost](https://docs.prod.crowdedkingdoms.com/overview/rate-limits)
-- [Authentication (Game API: bearer token + ws connection_init)](https://docs.prod.crowdedkingdoms.com/game-api/authentication)
+- [Error codes (GraphQL extensions.code + UDP UdpErrorCode) with remediation](https://docs.crowdedkingdoms.com/overview/error-codes)
+- [Pagination conventions](https://docs.crowdedkingdoms.com/overview/pagination)
+- [Rate limits and query cost](https://docs.crowdedkingdoms.com/overview/rate-limits)
+- [Authentication (Game API: bearer token + ws connection_init)](https://docs.crowdedkingdoms.com/game-api/authentication)
 
 ## Management surface (identity, apps, billing) — same endpoint as the game surface
 
-- [Management surface intro](https://docs.prod.crowdedkingdoms.com/management-api/intro)
-- [Guide](https://docs.prod.crowdedkingdoms.com/management-api/readme)
-- [GraphQL reference (operations & types)](https://docs.prod.crowdedkingdoms.com/management-api/reference/graphql-overview)
-- [Dedicated environments (RETIRED)](https://docs.prod.crowdedkingdoms.com/management-api/dedicated-environments) · [Shared environment](https://docs.prod.crowdedkingdoms.com/management-api/shared-environment) · [Game setup](https://docs.prod.crowdedkingdoms.com/management-api/game-setup)
+- [Management surface intro](https://docs.crowdedkingdoms.com/management-api/intro)
+- [Guide](https://docs.crowdedkingdoms.com/management-api/readme)
+- [GraphQL reference (operations & types)](https://docs.crowdedkingdoms.com/management-api/reference/graphql-overview)
+- [Dedicated environments (RETIRED)](https://docs.crowdedkingdoms.com/management-api/dedicated-environments) · [Shared environment](https://docs.crowdedkingdoms.com/management-api/shared-environment) · [Game setup](https://docs.crowdedkingdoms.com/management-api/game-setup)
 
 ## Game surface (world data + realtime UDP proxy) — same endpoint
 
-- [Game API intro](https://docs.prod.crowdedkingdoms.com/game-api/intro)
-- [Authentication](https://docs.prod.crowdedkingdoms.com/game-api/authentication)
-- [GraphQL UDP-proxy API (subscriptions + spatial sends)](https://docs.prod.crowdedkingdoms.com/game-api/graphql-udp-proxy-api)
-- [Host discovery](https://docs.prod.crowdedkingdoms.com/game-api/host-discovery) · [Permissions](https://docs.prod.crowdedkingdoms.com/game-api/permissions) · [Grids & permissions](https://docs.prod.crowdedkingdoms.com/game-api/grids-and-permissions)
-- [Teams](https://docs.prod.crowdedkingdoms.com/game-api/teams) · [Channels](https://docs.prod.crowdedkingdoms.com/game-api/channels) · [Avatar state](https://docs.prod.crowdedkingdoms.com/game-api/avatar-state) · [Actor state](https://docs.prod.crowdedkingdoms.com/game-api/actor-state)
-- [Game models](https://docs.prod.crowdedkingdoms.com/game-api/game-models) · [Autonomous processes (NPCs)](https://docs.prod.crowdedkingdoms.com/game-api/autonomous-processes) · [Model-driven notifications](https://docs.prod.crowdedkingdoms.com/game-api/model-driven-notifications)
-- [Agentic Crowdy Studio game integration (finalized development rollout)](https://docs.prod.crowdedkingdoms.com/game-api/agentic-crowdy-studio): release `v0.1.94`, Game API `v0.19.16`, CrowdyJS `12.0.0`, durable sessions/events, bounded host tools, approvals, leases, takeover, and reconnect. Allowlisted development only; no production or real-money autonomy claim.
-- [Choosing Game APIs (five-tier decision flow + mechanic/genre mappings)](https://docs.prod.crowdedkingdoms.com/game-api/model-vs-compute) · [Compute Modules (server-side Rust/WebAssembly logic)](https://docs.prod.crowdedkingdoms.com/game-api/compute-modules) · [Compute host API reference](https://docs.prod.crowdedkingdoms.com/game-api/compute-host-api) · [Compute tutorial (zero to a live module)](https://docs.prod.crowdedkingdoms.com/game-api/compute-tutorial) · [Compute engines (the full template registry: NPC/mob/world/match/deck/instance/director/matchmaking/market/board/minigame/abilities/movement-warden/territory/racing/possession/liveops — deployable by name via computeDeployTemplate)](https://docs.prod.crowdedkingdoms.com/game-api/compute-engines)
-- [Modeling game concepts (inventory, object permissions, NPCs)](https://docs.prod.crowdedkingdoms.com/game-api/modeling-game-concepts)
-- [GraphQL reference (operations & types)](https://docs.prod.crowdedkingdoms.com/game-api/reference/graphql-overview)
+- [Game API intro](https://docs.crowdedkingdoms.com/game-api/intro)
+- [Authentication](https://docs.crowdedkingdoms.com/game-api/authentication)
+- [GraphQL UDP-proxy API (subscriptions + spatial sends)](https://docs.crowdedkingdoms.com/game-api/graphql-udp-proxy-api)
+- [Host discovery](https://docs.crowdedkingdoms.com/game-api/host-discovery) · [Permissions](https://docs.crowdedkingdoms.com/game-api/permissions) · [Grids & permissions](https://docs.crowdedkingdoms.com/game-api/grids-and-permissions)
+- [Teams](https://docs.crowdedkingdoms.com/game-api/teams) · [Channels](https://docs.crowdedkingdoms.com/game-api/channels) · [Avatar state](https://docs.crowdedkingdoms.com/game-api/avatar-state) · [Actor state](https://docs.crowdedkingdoms.com/game-api/actor-state)
+- [Game models](https://docs.crowdedkingdoms.com/game-api/game-models) · [Autonomous processes (NPCs)](https://docs.crowdedkingdoms.com/game-api/autonomous-processes) · [Model-driven notifications](https://docs.crowdedkingdoms.com/game-api/model-driven-notifications)
+- [Agentic Crowdy Studio game integration (finalized development rollout)](https://docs.crowdedkingdoms.com/game-api/agentic-crowdy-studio): release `v0.1.94`, Game API `v0.19.16`, CrowdyJS `12.0.0`, durable sessions/events, bounded host tools, approvals, leases, takeover, and reconnect. Allowlisted development only; no production or real-money autonomy claim.
+- [Choosing Game APIs (five-tier decision flow + mechanic/genre mappings)](https://docs.crowdedkingdoms.com/game-api/model-vs-compute) · [Compute Modules (server-side Rust/WebAssembly logic)](https://docs.crowdedkingdoms.com/game-api/compute-modules) · [Compute host API reference](https://docs.crowdedkingdoms.com/game-api/compute-host-api) · [Compute tutorial (zero to a live module)](https://docs.crowdedkingdoms.com/game-api/compute-tutorial) · [Compute engines (the full template registry: NPC/mob/world/match/deck/instance/director/matchmaking/market/board/minigame/abilities/movement-warden/territory/racing/possession/liveops — deployable by name via computeDeployTemplate)](https://docs.crowdedkingdoms.com/game-api/compute-engines)
+- [Modeling game concepts (inventory, object permissions, NPCs)](https://docs.crowdedkingdoms.com/game-api/modeling-game-concepts)
+- [GraphQL reference (operations & types)](https://docs.crowdedkingdoms.com/game-api/reference/graphql-overview)
 
 ## Replication API / Buddy (binary UDP wire protocol)
 
-- [Replication API intro](https://docs.prod.crowdedkingdoms.com/replication-api/intro)
-- [Getting started](https://docs.prod.crowdedkingdoms.com/replication-api/getting-started)
-- [Authenticate and assign a server](https://docs.prod.crowdedkingdoms.com/replication-api/authenticate-and-assign)
-- [Wire formats (opcodes, long-spatial layout, payloads)](https://docs.prod.crowdedkingdoms.com/replication-api/wire-formats)
-- [Send and receive](https://docs.prod.crowdedkingdoms.com/replication-api/send-and-receive)
-- [HMAC](https://docs.prod.crowdedkingdoms.com/replication-api/hmac)
-- [Operations & error codes](https://docs.prod.crowdedkingdoms.com/replication-api/operations)
-- [Troubleshooting](https://docs.prod.crowdedkingdoms.com/replication-api/troubleshooting)
-- [Load testing (open-source cks-loadtest tool + game setup)](https://docs.prod.crowdedkingdoms.com/replication-api/load-testing)
+- [Replication API intro](https://docs.crowdedkingdoms.com/replication-api/intro)
+- [Getting started](https://docs.crowdedkingdoms.com/replication-api/getting-started)
+- [Authenticate and assign a server](https://docs.crowdedkingdoms.com/replication-api/authenticate-and-assign)
+- [Wire formats (opcodes, long-spatial layout, payloads)](https://docs.crowdedkingdoms.com/replication-api/wire-formats)
+- [Send and receive](https://docs.crowdedkingdoms.com/replication-api/send-and-receive)
+- [HMAC](https://docs.crowdedkingdoms.com/replication-api/hmac)
+- [Operations & error codes](https://docs.crowdedkingdoms.com/replication-api/operations)
+- [Troubleshooting](https://docs.crowdedkingdoms.com/replication-api/troubleshooting)
+- [Load testing (open-source cks-loadtest tool + game setup)](https://docs.crowdedkingdoms.com/replication-api/load-testing)
 
 ## SDKs
 
-- [CrowdyJS (browser-first TypeScript SDK) overview](https://docs.prod.crowdedkingdoms.com/crowdyjs/readme)
-- [Build player mods in Blocks with Friends](https://docs.prod.crowdedkingdoms.com/build-a-game/bwf-mod-development): in-world Monaco/Rust workflow, server+client bundles, author trust, lifecycle, and troubleshooting.
-- [BWF mod authoring helper file](https://docs.prod.crowdedkingdoms.com/helpers/bwf-mod/authoring-checklist.txt) · [Cargo.toml](https://docs.prod.crowdedkingdoms.com/helpers/bwf-mod/Cargo.toml) · [server Rust starter](https://docs.prod.crowdedkingdoms.com/helpers/bwf-mod/server-lib.rs) · [client HUD Rust starter](https://docs.prod.crowdedkingdoms.com/helpers/bwf-mod/client-hud-lib.rs)
-- CrowdyJS guides: [Channels](https://docs.prod.crowdedkingdoms.com/crowdyjs/channels) · [Teams](https://docs.prod.crowdedkingdoms.com/crowdyjs/teams) · [Grids](https://docs.prod.crowdedkingdoms.com/crowdyjs/grids) · [Game model](https://docs.prod.crowdedkingdoms.com/crowdyjs/game-model) · [Automations (NPCs)](https://docs.prod.crowdedkingdoms.com/crowdyjs/automations) · [Model-driven notifications](https://docs.prod.crowdedkingdoms.com/crowdyjs/model-notifications) · [Game Kit (inventory, object permissions, NPCs, genre layers)](https://docs.prod.crowdedkingdoms.com/crowdyjs/game-kit) · [World Stores (SDK-managed actor/chunk/message state)](https://docs.prod.crowdedkingdoms.com/crowdyjs/stores)
-- [Agentic Crowdy Studio player + CrowdyJS quickstart](https://docs.prod.crowdedkingdoms.com/crowdyjs/agentic-crowdy-studio)
-- [CrowdyCPP (portable C++ SDK with native UDP replication) overview](https://docs.prod.crowdedkingdoms.com/crowdycpp/intro)
-- CrowdyCPP guides: [Installation](https://docs.prod.crowdedkingdoms.com/crowdycpp/installation) · [Quick start](https://docs.prod.crowdedkingdoms.com/crowdycpp/quick-start) · [Replication client (native UDP)](https://docs.prod.crowdedkingdoms.com/crowdycpp/replication-client) · [World session (SDK-managed game state)](https://docs.prod.crowdedkingdoms.com/crowdycpp/world-session) · [Game Kit](https://docs.prod.crowdedkingdoms.com/crowdycpp/game-kit) · [Engine integration (Unreal, Godot, Unity)](https://docs.prod.crowdedkingdoms.com/crowdycpp/engine-integration) · [Compatibility & parity](https://docs.prod.crowdedkingdoms.com/crowdycpp/compatibility)
-- [Build a game (tutorial)](https://docs.prod.crowdedkingdoms.com/build-a-game/intro)
-- [Unreal SDK](https://docs.prod.crowdedkingdoms.com/unreal-sdk/intro)
+- [CrowdyJS (browser-first TypeScript SDK) overview](https://docs.crowdedkingdoms.com/crowdyjs/readme)
+- [Build player mods in Blocks with Friends](https://docs.crowdedkingdoms.com/build-a-game/bwf-mod-development): in-world Monaco/Rust workflow, server+client bundles, author trust, lifecycle, and troubleshooting.
+- [BWF mod authoring helper file](https://docs.crowdedkingdoms.com/helpers/bwf-mod/authoring-checklist.txt) · [Cargo.toml](https://docs.crowdedkingdoms.com/helpers/bwf-mod/Cargo.toml) · [server Rust starter](https://docs.crowdedkingdoms.com/helpers/bwf-mod/server-lib.rs) · [client HUD Rust starter](https://docs.crowdedkingdoms.com/helpers/bwf-mod/client-hud-lib.rs)
+- CrowdyJS guides: [Channels](https://docs.crowdedkingdoms.com/crowdyjs/channels) · [Teams](https://docs.crowdedkingdoms.com/crowdyjs/teams) · [Grids](https://docs.crowdedkingdoms.com/crowdyjs/grids) · [Game model](https://docs.crowdedkingdoms.com/crowdyjs/game-model) · [Automations (NPCs)](https://docs.crowdedkingdoms.com/crowdyjs/automations) · [Model-driven notifications](https://docs.crowdedkingdoms.com/crowdyjs/model-notifications) · [Game Kit (inventory, object permissions, NPCs, genre layers)](https://docs.crowdedkingdoms.com/crowdyjs/game-kit) · [World Stores (SDK-managed actor/chunk/message state)](https://docs.crowdedkingdoms.com/crowdyjs/stores)
+- [Agentic Crowdy Studio player + CrowdyJS quickstart](https://docs.crowdedkingdoms.com/crowdyjs/agentic-crowdy-studio)
+- [CrowdyCPP (portable C++ SDK with native UDP replication) overview](https://docs.crowdedkingdoms.com/crowdycpp/intro)
+- CrowdyCPP guides: [Installation](https://docs.crowdedkingdoms.com/crowdycpp/installation) · [Quick start](https://docs.crowdedkingdoms.com/crowdycpp/quick-start) · [Replication client (native UDP)](https://docs.crowdedkingdoms.com/crowdycpp/replication-client) · [World session (SDK-managed game state)](https://docs.crowdedkingdoms.com/crowdycpp/world-session) · [Game Kit](https://docs.crowdedkingdoms.com/crowdycpp/game-kit) · [Engine integration (Unreal, Godot, Unity)](https://docs.crowdedkingdoms.com/crowdycpp/engine-integration) · [Compatibility & parity](https://docs.crowdedkingdoms.com/crowdycpp/compatibility)
+- [Build a game (tutorial)](https://docs.crowdedkingdoms.com/build-a-game/intro)
+- [Unreal SDK](https://docs.crowdedkingdoms.com/unreal-sdk/intro)
 
 ## Changelog
 
-- [Releases & changelog](https://docs.prod.crowdedkingdoms.com/releases/intro)
+- [Releases & changelog](https://docs.crowdedkingdoms.com/releases/intro)
 
 ## Agentic Crowdy Studio policy and operations (development only)
 
-- [Studio agent policy](https://docs.prod.crowdedkingdoms.com/management-api/agentic-crowdy-studio-policy): allowlisted `openai/gpt-oss-120b`, platform-funded caps, `use_studio_agent`, privacy, retention, usage, and replica freshness.
-- [Operator runbook](https://docs.prod.crowdedkingdoms.com/operators/agentic-crowdy-studio): platform/app kills, secret injection, freshness monitoring, incident procedure, and purge.
+- [Studio agent policy](https://docs.crowdedkingdoms.com/management-api/agentic-crowdy-studio-policy): allowlisted `openai/gpt-oss-120b`, platform-funded caps, `use_studio_agent`, privacy, retention, usage, and replica freshness.
+- [Operator runbook](https://docs.crowdedkingdoms.com/operators/agentic-crowdy-studio): platform/app kills, secret injection, freshness monitoring, incident procedure, and purge.
