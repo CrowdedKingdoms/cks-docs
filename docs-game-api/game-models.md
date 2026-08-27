@@ -53,6 +53,47 @@ Your client `JSON.parse`s / `JSON.stringify`s around them.
 As an app admin you declare container types, their property schemas, and your
 functions. You can do it field-by-field or in one `gameModelSeed` call.
 
+:::caution The schema does not travel with the app
+
+Creating a container against a type you never defined is **refused**, with
+`extensions.code` of `CONTAINER_TYPE_UNDEFINED`. The error names the type you asked
+for and lists what the app actually declares, so a typo is visible without a second
+call:
+
+```json
+{
+  "message": "Container type 'TitanAssaultTeamAssignmnt' is not defined for app 84123104861696. This app defines: TitanAssaultTeam, TitanAssaultAttributes, ...",
+  "extensions": {
+    "code": "CONTAINER_TYPE_UNDEFINED",
+    "typeName": "TitanAssaultTeamAssignmnt",
+    "definedTypes": ["TitanAssaultAttributes", "TitanAssaultTeam"]
+  }
+}
+```
+
+If `definedTypes` comes back **empty**, the app has no game model at all, and that is
+a different problem with a different fix. It is the shape an app takes when it is
+**recreated, or moved between organizations**: your client goes on making containers
+as players connect, but container types, property definitions, function definitions
+and automations are not carried over. Everything else looks perfectly healthy while
+this is true — tokens mint, access tiers resolve, players connect, the realtime path
+works. Only the model is missing. Re-run your `gameModelSeed`.
+
+This used to be silent, and it is worth knowing what it looked like, because older
+builds of your client are still capable of producing the state. The create call
+**succeeded**, the container was written, nothing could bind it, and the only sign
+anywhere was a line in the game's own log naming a symptom and nothing about the
+cause:
+
+```
+[GameModel] InvokeAndApply: no container bound for entity F3B8B18E478BB6E95D9B1980C602CA47
+```
+
+To find every such problem at once rather than one failed call at a time, use
+[`gameModelLint`](#linting-your-model).
+
+:::
+
 ```graphql
 mutation {
   gameModelSeed(input: {
@@ -168,6 +209,62 @@ oversized one. `array(...)` and `set_at` enforce it identically. At the sizes a
 game actually uses (a camp's members, a squad, inventory slots) you will not come
 near it: an append onto a 990-item list costs about 2 ms end to end, most of that
 the database read.
+
+## Linting your model
+
+`gameModelLint` answers one question — does this app's game model hang together — and it
+recomputes every check when you ask. It needs app-admin (`manage_apps`), so it is for you
+and your tools rather than for a shipped client.
+
+```graphql
+query {
+  gameModelLint(appId: "84123104861696") {
+    clean
+    errorCount
+    warningCount
+    findings { code severity subjectKind subject message remedy count }
+  }
+}
+```
+
+**Recomputed, never remembered**, and that is the point rather than an implementation
+note. These findings are about relationships *between* objects, so the answer changes
+without the object changing. A function calling `fn:apply_bonus` is a finding until you
+write `apply_bonus`, and stops being one the moment you do. Delete `apply_bonus` a month
+later and every caller is broken again — with no write on any of them to notice it. A
+stored report is wrong in both directions; only a live one is ever right.
+
+### Errors and warnings are different claims
+
+**`ERROR` means provably broken.** There is no reading of your app in which it is fine,
+and we can say so without knowing your intent: a container whose type does not exist, a
+timer targeting a function that is not `autonomousInvocable`, a stored definition that no
+longer compiles.
+
+**`WARNING` means suspicious, and frequently correct anyway.** Most of these are ordinary
+mid-edit states. Seeding a function that calls another one written later in the same batch
+produces `function_not_defined`, and it resolves itself. `clean` is therefore true when
+there are no errors — an app that could not be "clean" while being authored normally would
+be a signal you would learn to ignore, which is the failure this whole surface exists to
+correct.
+
+| Code | Severity | What it means |
+|---|---|---|
+| `container_type_undefined` | error | Containers name a type the app does not define. They cannot be bound. |
+| `app_has_no_container_types` | error | The app holds containers and declares no types at all. Re-run `gameModelSeed`. |
+| `timer_target_not_autonomous` | error | A timer will arm and then fail when it fires, far from the code that armed it. |
+| `function_uncompilable` | error | A stored definition no longer compiles and is inert. Re-upsert it. |
+| `function_not_defined` | warning | A `fn:` call names a function that does not exist yet. |
+| `timer_target_missing` | warning | A timer's target function does not exist yet. |
+| `property_not_declared` | warning | `self.<key>` is not in the property definitions for the type. |
+| `param_not_declared` | warning | An expression references a `$param` the function does not declare. |
+| `permission_key_unknown` | warning | A permission-key literal is not in the runtime catalog, so it grants nothing. |
+| `grid_literal_invalid` | warning | A grid builtin got a mode or axis outside its allowed set. |
+| `automation_trigger_unmatchable` | warning | A trigger's filter cannot match, so it will never dispatch. |
+
+`gameModelFunctions` and `gameModelFunction` also carry a `warnings` list, recomputed the
+same way for the one function you asked about. `gameModelLint` is the whole-app version and
+the only one that sees the container checks.
 
 ## Authority: deciding who may invoke a function
 

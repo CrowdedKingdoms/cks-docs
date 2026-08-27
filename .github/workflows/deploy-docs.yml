@@ -170,7 +170,10 @@ jobs:
           TIER: ${{ needs.guard.outputs.tier }}
         run: |
           case "$TIER" in
-            prod) host=docs.crowdedkingdoms.com ;;
+            # Still a case and not `docs.$TIER.` for one line: prod was the
+            # unlabelled exception until 2026-08-27, and the tier that has been
+            # the exception is the one a derivation gets wrong next time.
+            prod) host=docs.prod.crowdedkingdoms.com ;;
             *)    host=docs.$TIER.crowdedkingdoms.com ;;
           esac
           for path in / /overview/intro /schema/game-api.graphql; do

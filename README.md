@@ -1,6 +1,6 @@
 # Crowded Kingdoms documentation site
 
-Public [Docusaurus v3](https://docusaurus.io/) site at [docs.crowdedkingdoms.com](https://docs.crowdedkingdoms.com). Each product (Management API, Game API, Replication API, CrowdyJS, Management UI, Unreal SDK) has its own navbar tab and sidebar.
+Public [Docusaurus v3](https://docusaurus.io/) site at [docs.prod.crowdedkingdoms.com](https://docs.prod.crowdedkingdoms.com). Each product (Management API, Game API, Replication API, CrowdyJS, Management UI, Unreal SDK) has its own navbar tab and sidebar.
 
 ## Local preview
 
