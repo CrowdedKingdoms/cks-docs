@@ -50,6 +50,7 @@ GraphQL responses carry errors in the top-level `errors` array. Each entry has a
 | `PASSWORD_NOT_SET` | `changePassword` on an account with no password to change. | Use `setInitialPassword`, which needs only the session. The session is valid — do not sign the user out. |
 | `INVALID_CURRENT_PASSWORD` | `changePassword` was given the wrong current password. | Ask again, or offer `requestPasswordReset`. The session is valid — do not sign the user out. |
 | `RATE_LIMITED` | A rate/usage limit was exceeded. | Back off and retry with exponential backoff. |
+| `CONTAINER_TYPE_UNDEFINED` | A container was created against a game-model container type the app has not defined. | `extensions.definedTypes` lists what the app does declare, so a typo is visible without a second call. An **empty** list means the app has no game model at all — the shape an app takes when it is recreated or moved between orgs — so re-run your `gameModelSeed`. `gameModelLint` returns every such problem in one query. |
 | `INTERNAL_SERVER_ERROR` | Unexpected server error. | Safe to retry idempotent reads; do **not** blind-retry non-idempotent mutations (send an `idempotencyKey` instead). |
 
 :::caution Codes changed in ck-api v1.60.0 — check the tier before you branch

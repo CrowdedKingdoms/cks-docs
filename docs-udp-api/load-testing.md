@@ -100,7 +100,7 @@ file (precedence: CLI > env > file). A minimal run:
 ./build/cks-loadtest \
   --email you@studio.com \
   --password 'your-password' \
-  --management-api-url https://ck.prod.v7.cks-env.com \
+  --management-api-url https://ck.prod.crowdedkingdoms.com \
   --app-id 42 \
   --clients 100 --update-hz 10 --duration-sec 300
 ```

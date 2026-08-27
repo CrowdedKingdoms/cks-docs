@@ -103,7 +103,7 @@ Declarative one-shot timers armed atomically with the function's mutations.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GmFunction.<b>warnings</b></code>](#warnings)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#warnings\} 
-Non-fatal static-analysis warnings from the last upload.
+Non-fatal static-analysis warnings, recomputed for this read rather than remembered from the upload. That matters because they are cross-object: a call to a function written later stops being a warning once that function exists, and starts being one again if it is deleted. For the structured form, with a code and a severity per finding, use gameModelLint.
 
 
 

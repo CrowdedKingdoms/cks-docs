@@ -1,0 +1,88 @@
+---
+id: gm-lint-code
+title: GmLintCode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What is wrong, at the granularity a developer would fix. One code per distinguishable remedy: a missing `fn:` target and a missing timer target are both an unresolved name and are kept apart because the second one arms successfully and fails minutes later somewhere else.
+
+
+```graphql
+enum GmLintCode {
+  CONTAINER_TYPE_UNDEFINED
+  APP_HAS_NO_CONTAINER_TYPES
+  FUNCTION_NOT_DEFINED
+  PROPERTY_NOT_DECLARED
+  PARAM_NOT_DECLARED
+  TIMER_TARGET_MISSING
+  TIMER_TARGET_NOT_AUTONOMOUS
+  PERMISSION_KEY_UNKNOWN
+  GRID_LITERAL_INVALID
+  AUTOMATION_TRIGGER_UNMATCHABLE
+  FUNCTION_UNCOMPILABLE
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>CONTAINER&#x005F;TYPE&#x005F;UNDEFINED</b></code>](#container-type-undefined) \{#container-type-undefined\} 
+A container names a type this app has not defined. The client cannot bind it, and the only symptom is "no container bound for entity" in the game's own log.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>APP&#x005F;HAS&#x005F;NO&#x005F;CONTAINER&#x005F;TYPES</b></code>](#app-has-no-container-types) \{#app-has-no-container-types\} 
+The app holds containers and declares no types at all — the shape an app takes when it is recreated or moved between organizations, because containers are made on demand by the client and schema is not carried with them.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>FUNCTION&#x005F;NOT&#x005F;DEFINED</b></code>](#function-not-defined) \{#function-not-defined\} 
+A `fn:` call names a function this app does not define.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>PROPERTY&#x005F;NOT&#x005F;DECLARED</b></code>](#property-not-declared) \{#property-not-declared\} 
+`self.<key>` is not in the property definitions for the function's container type.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>PARAM&#x005F;NOT&#x005F;DECLARED</b></code>](#param-not-declared) \{#param-not-declared\} 
+An expression references a `$param` the function does not declare.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>TIMER&#x005F;TARGET&#x005F;MISSING</b></code>](#timer-target-missing) \{#timer-target-missing\} 
+A timer's target function does not exist.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>TIMER&#x005F;TARGET&#x005F;NOT&#x005F;AUTONOMOUS</b></code>](#timer-target-not-autonomous) \{#timer-target-not-autonomous\} 
+A timer's target exists but is not autonomousInvocable, so the timer arms and then fails when it fires.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>PERMISSION&#x005F;KEY&#x005F;UNKNOWN</b></code>](#permission-key-unknown) \{#permission-key-unknown\} 
+A permission-key literal is not in the runtime&#x005F;permissions catalog.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>GRID&#x005F;LITERAL&#x005F;INVALID</b></code>](#grid-literal-invalid) \{#grid-literal-invalid\} 
+A grid builtin was given a mode or axis literal outside its allowed set.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>AUTOMATION&#x005F;TRIGGER&#x005F;UNMATCHABLE</b></code>](#automation-trigger-unmatchable) \{#automation-trigger-unmatchable\} 
+An automation trigger's filter cannot match, so it will never dispatch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>FUNCTION&#x005F;UNCOMPILABLE</b></code>](#function-uncompilable) \{#function-uncompilable\} 
+A stored function definition no longer compiles, so it is inert. Only possible for a row written before a validation the compiler enforces now; re-upsert it.
+
+
+
+
+### Member Of
+
+[`GmLintFindingType`](/reference/graphql/types/objects/gm-lint-finding-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

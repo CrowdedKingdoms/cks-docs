@@ -66,9 +66,9 @@ the management surface. Webhook paths:
 | PayPal | `POST {API_BASE_URL}/webhooks/paypal` | POST | PayPal sends `application/json` plus `PayPal-Auth-Algo` / `PayPal-Cert-Url` / `PayPal-Transmission-Id` / `PayPal-Transmission-Sig` / `PayPal-Transmission-Time` headers. The provider validates by calling PayPal's `/v1/notifications/verify-webhook-signature`, so `PAYPAL_WEBHOOK_ID` must match the webhook subscription. |
 
 `{API_BASE_URL}` is the public URL of your Crowded Kingdoms API deployment. For local testing
-behind a public reverse proxy, use that public origin (for example
-`https://local.cks-env.com/webhooks/stripe` and
-`https://local.cks-env.com/webhooks/paypal`) and put the local endpoint values
+behind a public reverse proxy or tunnel, use that public origin (for example
+`https://<your-tunnel-host>/webhooks/stripe` and
+`https://<your-tunnel-host>/webhooks/paypal`) and put the local endpoint values
 in `LOCAL_STRIPE_WEBHOOK_SECRET` and `LOCAL_PAYPAL_WEBHOOK_ID`. If you're
 testing locally with the Stripe CLI, run `stripe listen --forward-to
 localhost:3001/webhooks/stripe` and use the printed `whsec_...` as

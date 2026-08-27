@@ -4501,7 +4501,7 @@ type GraphQLServer {
   """TCP port the GraphQL/HTTP API listens on (default 4000)."""
   apiPort: Int!
   """
-  Public hostname clients can reach this instance on directly over TLS, e.g. `ck-api-or-1.prod.v7.cks-env.com`. Null when the instance has no public DNS name or certificate yet, in which case it is reachable only through the shared load balancer and must not be connected to directly. Prefer the `gameApiUrl` returned by mintAppToken over building a URL from this field: that call already picks a low-load instance for you.
+  Public hostname clients can reach this instance on directly over TLS, e.g. `ck-api-or-1.prod.crowdedkingdoms.com`. Null when the instance has no public DNS name or certificate yet, in which case it is reachable only through the shared load balancer and must not be connected to directly. Prefer the `gameApiUrl` returned by mintAppToken over building a URL from this field: that call already picks a low-load instance for you.
   """
   publicHostname: String
   """
@@ -5443,6 +5443,115 @@ type ComputeTemplateInfo {
 }
 
 """
+One problem with one object in the game model, recomputed at read time rather than remembered from a write.
+"""
+type GmLintFindingType {
+  """What is wrong."""
+  code: GmLintCode!
+  """ERROR is provably broken and gate-eligible; WARNING is reported only."""
+  severity: GmLintSeverity!
+  """What kind of object this is about."""
+  subjectKind: GmLintSubjectKind!
+  """
+  The object's own name — a function name, a container type name — not a rendered label. Group and deduplicate on (code, subject).
+  """
+  subject: String!
+  """What is wrong, in a sentence."""
+  message: String!
+  """What to do about it."""
+  remedy: String
+  """
+  How many objects this row stands for, when one finding summarises many (for example a type missing under 40 containers).
+  """
+  count: Int
+}
+
+"""
+What is wrong, at the granularity a developer would fix. One code per distinguishable remedy: a missing `fn:` target and a missing timer target are both an unresolved name and are kept apart because the second one arms successfully and fails minutes later somewhere else.
+"""
+enum GmLintCode {
+  """
+  A container names a type this app has not defined. The client cannot bind it, and the only symptom is "no container bound for entity" in the game's own log.
+  """
+  CONTAINER_TYPE_UNDEFINED
+  """
+  The app holds containers and declares no types at all — the shape an app takes when it is recreated or moved between organizations, because containers are made on demand by the client and schema is not carried with them.
+  """
+  APP_HAS_NO_CONTAINER_TYPES
+  """A `fn:` call names a function this app does not define."""
+  FUNCTION_NOT_DEFINED
+  """
+  `self.<key>` is not in the property definitions for the function's container type.
+  """
+  PROPERTY_NOT_DECLARED
+  """An expression references a `$param` the function does not declare."""
+  PARAM_NOT_DECLARED
+  """A timer's target function does not exist."""
+  TIMER_TARGET_MISSING
+  """
+  A timer's target exists but is not autonomousInvocable, so the timer arms and then fails when it fires.
+  """
+  TIMER_TARGET_NOT_AUTONOMOUS
+  """A permission-key literal is not in the runtime_permissions catalog."""
+  PERMISSION_KEY_UNKNOWN
+  """
+  A grid builtin was given a mode or axis literal outside its allowed set.
+  """
+  GRID_LITERAL_INVALID
+  """
+  An automation trigger's filter cannot match, so it will never dispatch.
+  """
+  AUTOMATION_TRIGGER_UNMATCHABLE
+  """
+  A stored function definition no longer compiles, so it is inert. Only possible for a row written before a validation the compiler enforces now; re-upsert it.
+  """
+  FUNCTION_UNCOMPILABLE
+}
+
+"""
+How much a finding is worth doing something about. Only ERROR is ever eligible to gate anything; WARNING is reported and never enforced, because ordinary authoring is transiently inconsistent and a gate that fought it would be worse than the problem.
+"""
+enum GmLintSeverity {
+  """
+  Provably broken. No reading of the app makes this fine, and the platform can say so without knowing your intent.
+  """
+  ERROR
+  """
+  Suspicious and frequently correct anyway — most often because you are mid-edit and the other half is not written yet.
+  """
+  WARNING
+}
+
+"""
+What kind of object a finding is about, so results can be grouped without parsing `subject`.
+"""
+enum GmLintSubjectKind {
+  APP
+  CONTAINER_TYPE
+  CONTAINER
+  FUNCTION
+  AUTOMATION
+}
+
+"""
+Whether an app's game model hangs together. Every check is recomputed on demand: a stored warning goes stale the moment an unrelated object changes, which is the failure this replaces.
+"""
+type GmLintResult {
+  """The app that was linted."""
+  appId: BigInt!
+  """Findings, errors first, then by code and subject."""
+  findings: [GmLintFindingType!]!
+  """How many findings have severity ERROR."""
+  errorCount: Int!
+  """How many findings have severity WARNING."""
+  warningCount: Int!
+  """
+  True when there are no ERROR findings. WARNING findings do not make an app unclean, because most of them are a normal mid-edit state.
+  """
+  clean: Boolean!
+}
+
+"""
 An autonomous process (automation / NPC): a server-driven entry-point function bound to a trigger (schedule or model activity) plus a safety budget and circuit-breaker state.
 """
 type GmAutomation {
@@ -6046,7 +6155,9 @@ type GmFunction {
   Declarative one-shot timers armed atomically with the function's mutations.
   """
   timers: [GmFunctionTimer!]!
-  """Non-fatal static-analysis warnings from the last upload."""
+  """
+  Non-fatal static-analysis warnings, recomputed for this read rather than remembered from the upload. That matters because they are cross-object: a call to a function written later stops being a warning once that function exists, and starts being one again if it is deleted. For the structured form, with a code and a severity per finding, use gameModelLint.
+  """
   warnings: [String!]!
 }
 
@@ -8565,6 +8676,13 @@ type Query {
     """The app (tenant) to diagnose."""
     appId: BigInt!
   ): GmAppDiagnostics! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "appId")
+  """
+  Whether an app's game model hangs together: containers whose type does not exist, functions calling functions that are not defined, timers targeting something that cannot be invoked autonomously, unmatchable automation triggers, and stored definitions that no longer compile. Every check is recomputed on demand — a stored warning goes stale the moment an unrelated object changes, which is exactly how an app can look healthy while being unable to bind anything. ERROR findings are provably broken; WARNING findings are frequently just a mid-edit state. Requires app-admin ('manage_apps').
+  """
+  gameModelLint(
+    """The app (tenant) to lint."""
+    appId: BigInt!
+  ): GmLintResult! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "appId")
   """
   Diagnostics surface: stitch one flow correlation id into a single cross-engine timeline — the model events (gm event log), automation runs, and compute module runs that share the flowId minted at the entry edge (player gameModelInvoke / automation run / computeInvoke) and propagated across model_invoke, the event bus, and emit_compute_event. Each array is ordered by time ascending; an unknown flowId returns three empty arrays. Answers "what happened to this kill's reward" in one query instead of three hand-joined ones. Requires app-admin ('manage_apps').
   """
