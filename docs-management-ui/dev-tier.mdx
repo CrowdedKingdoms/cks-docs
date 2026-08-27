@@ -23,7 +23,7 @@ The dev tier is actively evolving. If something fails, report it early with the 
 
 :::note[There is one endpoint, not two]
 This table listed a separate "Management API" on `api.dev.crowdedkingdoms.com`
-and a "Shared Game API" on `game.shared.dev.cks-env.com` until 2026-08-21.
+and a "Shared Game API" on a `game.shared.dev.*` host until 2026-08-21.
 **Neither host serves any more** — the first answers 503 and the second refuses
 the connection — and the two surfaces have been one origin for some time. Do not
 set `managementUrl`; it was removed in CrowdyJS 14.
@@ -57,7 +57,7 @@ query {
 :::caution[Do not use legacy dev-box URLs]
 There is ONE origin per tier, and on this tier it is `ck.dev.crowdedkingdoms.com`. Per-developer dev boxes and the old `game.shared.*` split are retired — those hosts no longer serve.
 
-**Do not build the host from a template.** This paragraph used to give one, `ck.<tier>.v7.cks-env.com`, and the template is what went stale rather than the advice: the tiers no longer share a root. Dev moved to the brand domain on 2026-08-25 and test on 2026-08-26, while production is still on the older one, so any rule you derive from one tier is wrong for another.
+**Prefer what the API hands you over a template.** All three tiers are now `ck.<tier>.crowdedkingdoms.com` — dev moved on 2026-08-25, test on 2026-08-26 and production on 2026-08-27, and production carries a `prod.` label like the other two, so `ck.crowdedkingdoms.com` without one is an alias rather than the endpoint. That template has been rewritten twice in a month, and a host copied out of an older page is dead rather than slow.
 
 If an app is pinned to a datacenter, `mintAppToken` returns `gameApiUrl` and `gameApiWsUrl`. **Use what the token returns.** That is correct on every tier, survives the next move, and is the only form that names the datacenter holding your app.
 :::
