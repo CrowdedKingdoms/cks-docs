@@ -47,7 +47,7 @@ Project UUID to update.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>expectedRevision</b></code>](#expected-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expected-revision\} 
-Current project revision. A stale value returns CONFLICT with CROWDY&#x005F;STUDIO&#x005F;REVISION&#x005F;CONFLICT.
+Current project revision. A stale value is refused with extensions.code CROWDY&#x005F;STUDIO&#x005F;REVISION&#x005F;CONFLICT (HTTP 409); branch on that exact code, not on CONFLICT.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SaveCrowdyStudioProjectMetadataInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
