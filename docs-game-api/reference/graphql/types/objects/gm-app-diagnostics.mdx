@@ -31,6 +31,8 @@ type GmAppDiagnostics {
   events24h: Int!
   failedEvents24h: Int!
   automationEvents24h: Int!
+  notificationsEmitted24h: Int!
+  notificationsUndeliverable24h: Int!
   topFunctions: [GmTopFunction!]!
 }
 ```
@@ -80,6 +82,14 @@ Failed invocations in the last 24h.
 
 #### [<code style={{ fontWeight: 'normal' }}>GmAppDiagnostics.<b>automationEvents24h</b></code>](#automation-events-24-h)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-events-24-h\} 
 Automation-driven invocations in the last 24h.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAppDiagnostics.<b>notificationsEmitted24h</b></code>](#notifications-emitted-24-h)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#notifications-emitted-24-h\} 
+Model-driven notifications emitted in the last 24h, across every function and automation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAppDiagnostics.<b>notificationsUndeliverable24h</b></code>](#notifications-undeliverable-24-h)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#notifications-undeliverable-24-h\} 
+Of those, how many reached nobody: the target channel had no members in this app. Emission is best-effort and cannot fail your function, so this is the only place an undeliverable notification is visible — a non-zero count here beside a healthy run history is the signature of a notification aimed at a channel this app does not own. Check gameModelLint for NOTIFICATION&#x005F;CHANNEL&#x005F;FOREIGN, which names the function. Note this does NOT mean delivery is broken: it counts datagrams that were sent to every server successfully and had no recipient.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GmAppDiagnostics.<b>topFunctions</b></code>](#top-functions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmTopFunction!]!</b></code>](/reference/graphql/types/objects/gm-top-function.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#top-functions\} 
