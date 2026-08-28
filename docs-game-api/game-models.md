@@ -269,6 +269,13 @@ A quarantined function or automation refuses with `OBJECT_QUARANTINED`:
 }
 ```
 
+On **`gameModelInvoke`** — the path a player takes — the same refusal arrives through the
+[player boundary](/overview/error-codes#when-code-you-wrote-fails-blame-retryable-and-the-fault-codes)
+as `USER_CODE_ERROR` with `blame: AUTHOR` and `retryable: false`, because that boundary
+rebuilds every error from a `{ code, blame, retryable }` triple rather than passing it
+through. The `quarantinedKind` / `quarantinedName` / `quarantineReason` fields survive on
+both, so the same client code reads the reason either way.
+
 Four properties matter, and they are what make this safe to build against:
 
 - **It is scoped to the object, not the app.** One bad function is refused; every other
