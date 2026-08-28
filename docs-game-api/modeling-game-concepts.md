@@ -198,7 +198,7 @@ spoof, because both properties are read by the server inside the policy.
 
 `condition` expressions can read `self`, the call's params, and the injected
 values `$caller_user_id`, `$current_turn_user_id`, `$self_owner_id`,
-`$session_id`, and `$self_container_id`.
+`$session_id`, `$self_container_id`, `$app_id`, and `$session_channel_name`.
 
 ### "Player X has movement permission on chunk X → they can enter it and open the door"
 
