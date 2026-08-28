@@ -1,0 +1,58 @@
+---
+id: retire-organization-input
+title: RetireOrganizationInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Which organization to retire, proof that you mean that one, and why.
+
+
+```graphql
+input RetireOrganizationInput {
+  orgId: BigInt!
+  expectedSlug: String!
+  reason: String!
+  acknowledgeFrozenBalance: Boolean
+  acknowledgeProbeInfrastructure: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>RetireOrganizationInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization to retire (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RetireOrganizationInput.<b>expectedSlug</b></code>](#expected-slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expected-slug\} 
+The slug the organization must currently have. Refused if it does not match, which is what stops a mistyped or copy-pasted id from retiring a paying customer. There is no bulk form of this mutation for the same reason.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RetireOrganizationInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Why this organization is being retired. Required and stored on the tombstone.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RetireOrganizationInput.<b>acknowledgeFrozenBalance</b></code>](#acknowledge-frozen-balance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#acknowledge-frozen-balance\} 
+Required when the organization holds a non-zero wallet balance. Retirement FREEZES that balance indefinitely: the money is held, deliberately, and is neither refunded nor forfeited. That is settled policy (operator decision, 2026-08-21), not a placeholder for one. The amount is recorded on the tombstone so every organization it applies to stays enumerable if the policy is ever revisited. Refusing by default rather than omitting the case is deliberate — an unreachable dangerous path guarantees the danger and removes the fix.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RetireOrganizationInput.<b>acknowledgeProbeInfrastructure</b></code>](#acknowledge-probe-infrastructure)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#acknowledge-probe-infrastructure\} 
+Required when the organization is a tier's DURABLE PROBE ORGANIZATION — the `<family>-<tier>` org scripts/probe-org.sh reuses on every run. Retiring one frees nothing: the slug stays taken, organizationBySlug keeps returning it, and the next probe run fails on a bare permission denial days later, so the cost lands on somebody else. The refusal names the family and tells you that reinstateOrganization is the way back.
+
+
+
+
+### Member Of
+
+[`retireOrganization`](/reference/graphql/operations/mutations/retire-organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
