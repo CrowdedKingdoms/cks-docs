@@ -254,6 +254,7 @@ correct.
 | `app_has_no_container_types` | error | The app holds containers and declares no types at all. Re-run `gameModelSeed`. |
 | `timer_target_not_autonomous` | error | A timer will arm and then fail when it fires, far from the code that armed it. |
 | `function_uncompilable` | error | A stored definition no longer compiles and is inert. Re-upsert it. |
+| `notification_channel_foreign` | error | A [channel notification](model-driven-notifications#naming-a-channel-prefer-channel_name) names a channel belonging to a **different app**, so it reaches nobody. The shape a model takes when it is copied into another app. |
 | `function_not_defined` | warning | A `fn:` call names a function that does not exist yet. |
 | `timer_target_missing` | warning | A timer's target function does not exist yet. |
 | `property_not_declared` | warning | `self.<key>` is not in the property definitions for the type. |
@@ -261,6 +262,7 @@ correct.
 | `permission_key_unknown` | warning | A permission-key literal is not in the runtime catalog, so it grants nothing. |
 | `grid_literal_invalid` | warning | A grid builtin got a mode or axis outside its allowed set. |
 | `automation_trigger_unmatchable` | warning | A trigger's filter cannot match, so it will never dispatch. |
+| `notification_channel_unknown` | warning | A channel notification names a channel id, or a name, that this app does not have. A warning because the channel may simply not exist yet. |
 
 `gameModelFunctions` and `gameModelFunction` also carry a `warnings` list, recomputed the
 same way for the one function you asked about. `gameModelLint` is the whole-app version and
@@ -290,7 +292,7 @@ sources freely:
 - `condition` — an arbitrary expression that must evaluate to `true`. It can read
   `self`, the call's params, and the injected values `$caller_user_id`,
   `$current_turn_user_id`, `$self_owner_id`, `$session_id`,
-  `$self_container_id`.
+  `$self_container_id`, `$app_id`, `$session_channel_name`.
 
 ```json
 { "type": "and", "rules": [
@@ -919,11 +921,14 @@ Semantics and safety:
   recomputes the materialized ACL, so Buddy's movement/voxel enforcement and
   every `grid_permission` policy check see the change at commit.
 - **System params.** `$caller_user_id`, `$current_turn_user_id`,
-  `$self_owner_id`, `$session_id`, and `$self_container_id` (the acting
-  container's UUID) are injected into function-body, effect, and
-  [notification-arg](model-driven-notifications) expressions (they cannot be
-  spoofed by a same-named caller param), so "grant to whoever invoked" is just
-  `$caller_user_id`. This applies to your `mutations` expressions too.
+  `$self_owner_id`, `$session_id`, `$self_container_id` (the acting
+  container's UUID), `$app_id`, and `$session_channel_name` (this app's default
+  session channel, `__crowdy_session_<appId>`) are injected into function-body,
+  effect, and [notification-arg](model-driven-notifications) expressions (they
+  cannot be spoofed by a same-named caller param), so "grant to whoever invoked"
+  is just `$caller_user_id`. This applies to your `mutations` expressions too.
+  The last two are derived from the app the function is *running* in, so a model
+  copied into another app addresses its new home rather than its old one.
 - **Bounded.** At most 4 effects per function, each charged against the
   invocation's gas budget; the target user must hold active app access to
   receive a grant; per-grid `grid_permission_limits` still cap what is
