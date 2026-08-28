@@ -122,11 +122,3 @@ jobs:
         run: npx docusaurus build
         env:
           CKS_DOCS_TIER: ${{ steps.tier.outputs.tier }}
-
-      - name: Smoke-test example operations (skips without a sandbox)
-        run: npm run test:examples
-        env:
-          SANDBOX_GRAPHQL_URL: ${{ secrets.SANDBOX_GRAPHQL_URL }}
-          SANDBOX_TOKEN: ${{ secrets.SANDBOX_TOKEN }}
-          SANDBOX_APP_TOKEN: ${{ secrets.SANDBOX_APP_TOKEN }}
-          SANDBOX_APP_ID: ${{ secrets.SANDBOX_APP_ID }}

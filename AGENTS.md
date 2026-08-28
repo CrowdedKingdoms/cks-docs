@@ -165,3 +165,8 @@ viewer function is ever detached.
   done when the live URL returns what you put there.
 - Write `blob/main` or `tree/main` into a page. That branch does not exist in any
   repository in this project.
+- Put live GraphQL credentials (or any "sandbox" smoke secrets) into cks-docs
+  GitHub Actions. `docs-ci.yml` has no live-endpoint gate. Optional
+  `npm run test:examples` is builder/local only (`CKS_DOCS_GRAPHQL_URL` /
+  `CKS_DOCS_TOKEN`, etc.). `CKS_REPO_READ_TOKEN` is only for
+  `docs-siblings.yml` sibling checkouts — leave it alone.
