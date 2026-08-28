@@ -46,7 +46,7 @@ roots have been retired since August 2026 and production moved to a labelled hos
 |---|---|---|
 | `dev` | `X.Y.Z-dev.N` | `https://ck.dev.crowdedkingdoms.com` |
 | `test` | `X.Y.Z-test.N` | `https://ck.test.crowdedkingdoms.com` |
-| `latest` | `X.Y.Z` | `https://ck.crowdedkingdoms.com` (production) |
+| `latest` | `X.Y.Z` | `https://ck.prod.crowdedkingdoms.com` (production; bare `ck.crowdedkingdoms.com` is an alias to the same addresses) |
 
 `npm install @crowdedkingdoms/crowdyjs` installs `latest`, so a project meant for the dev
 tier that never passes `httpUrl` points at production. Install the tag that matches the

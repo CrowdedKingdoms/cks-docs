@@ -80,7 +80,7 @@ query AssignServer {
 }
 ```
 
-Request **only fields that exist** on `ServerStatus` (`id`, `ip4`, `ip6`,
+Request **only fields that exist** on `ServerStatus` (`serverId`, `ip4`, `ip6`,
 `clientPort`, `status`, `clients`, `peers`, and the per-second metric fields).
 Requesting a non-existent field — for example `peerPort` — makes the **whole query
 fail validation**, the resolver never runs, and **your Buddy session is never

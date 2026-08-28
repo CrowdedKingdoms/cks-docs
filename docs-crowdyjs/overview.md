@@ -18,12 +18,13 @@ a short-lived **app-scoped token** minted with `client.portal` — see
 tokens](#authentication-session-vs-app-scoped-tokens). Native UDP to Buddy servers
 uses the [Replication API](/replication-api/intro) directly, not CrowdyJS.
 
-CrowdyJS **12.0.0** includes the
-[Agentic Crowdy Studio](agentic-crowdy-studio) development contract, deployed
-in tracked dev release `v0.1.94`. The app-token
-`client.crowdyStudioAgent` transport and integrated Ask/Build/Play dock provide
-durable events, exact approvals, checkpoints, scoped Play leases, and reconnect
-fencing. Access remains allowlisted; this is not production availability.
+CrowdyJS **15.x** includes the
+[Agentic Crowdy Studio](agentic-crowdy-studio) allowlisted development
+contract. The app-token `client.crowdyStudioAgent` transport and integrated
+Ask/Build/Play dock provide durable events, exact approvals, checkpoints,
+scoped Play leases, and reconnect fencing. Access remains allowlisted; this is
+not production availability. Verify the published SDK with
+`npm view @crowdedkingdoms/crowdyjs dist-tags`.
 
 ## Install
 

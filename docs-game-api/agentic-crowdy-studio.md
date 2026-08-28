@@ -11,12 +11,14 @@ project checkpoints, provider usage, and budgets. CrowdyJS owns the browser
 controller and typed tool gate; a game implements only the
 `crowdy.player-host/1` observation and command boundary.
 
-:::warning Finalized development rollout
-The tracked development stack is deployed as environment release `v0.1.94`
-(Game API `v0.19.16`, Management API `v0.1.193-dev`, CrowdyJS `12.0.0`, and
-the BWF host). It remains policy/permission allowlisted and fail-closed. This is
-not production or general availability and does not permit autonomous
-real-money activity.
+:::warning Allowlisted development — not GA
+Agentic Crowdy Studio runs on the **current** unified CK API (one origin for
+management + game). Do not treat retired pins (`v0.1.94`, Game API
+`v0.19.16`, CrowdyJS `12.0.0`) as the live stack — verify with
+`infra-control-plane/scripts/ops/deployed-versions.sh` and
+`npm view @crowdedkingdoms/crowdyjs dist-tags`. Access remains
+policy/permission allowlisted and fail-closed. This is not production or
+general availability and does not permit autonomous real-money activity.
 :::
 
 ## Authority boundary
@@ -302,7 +304,8 @@ from the same exact schema.
 
 ## Blocks with Friends reference host
 
-The BWF adapter is deployed in development release `v0.1.94`. It provides the
+The BWF adapter ships with the allowlisted Agentic Crowdy Studio stack on the
+current CK API. It provides the
 bounded observation builder, exact command router, synchronous player-control
 gate, and accessible game-canvas lease banner. Its snapshots expire after 1.5
 seconds and cap nearby actors at 64 and voxels at 128. Commands route through

@@ -37,7 +37,7 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 - Our UDP replication servers are nicknamed "Buddy"
 - Buddy servers run alongside the Game API (shared fleet or dedicated stack)
 - Use the game API to get assigned one or more Buddies
-- You communicate directly to the IP address given by the game API via unecrypted UDP
+- You communicate directly to the IP address given by the game API via unencrypted UDP
 - You'll use Buddy to send spatially routed messages from one client to some or all nearby clients
 - The revolution that now makes true single shard games with unlimited player density possible is that Buddy servers work together to spatially route an unlimited number of messages per second. If you build your game on top of this kind of replication layer, you'll be able to deliver the necessary information to each client to render a virtually unlimited number of objects in your player's field of view.
 
