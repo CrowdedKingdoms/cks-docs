@@ -66,11 +66,55 @@ The arguments you must provide depend on `kind`:
 | `kind` | Required `args[].name` | Optional `args[].name` | Delivered to | Arrives as |
 | ------ | ---------------------- | ---------------------- | ------------ | ---------- |
 | `spatial` | `chunk_x`, `chunk_y`, `chunk_z` | `event_type`, `state`, `distance`, `decay`, `source_uuid` | players near that chunk (proximity fan-out) | `ServerEventNotification` (default), or `ClientEventNotification`-shaped / `ActorUpdateNotification` per `emitAs` |
-| `channel` | `channel_id`, `payload` | `sender_uuid` | members of that [channel](channels) | `ChannelMessageNotification` |
+| `channel` | `payload`, and **exactly one of** `channel_id` or `channel_name` | `sender_uuid` | members of that [channel](channels) | `ChannelMessageNotification` |
 | `actor` | `target_uuid`, `chunk_x`, `chunk_y`, `chunk_z`, `payload` | — | only the addressed actor | `SingleActorMessageNotification` |
 
 `state` and `payload` are **base64-encoded** binary, exactly like the equivalent
 fields on the client-initiated spatial sends.
+
+### Naming a channel: prefer `channel_name`
+
+A channel id is resolved once, when you author the function. A channel **name** is
+resolved on every invocation, against the app the function is running in. That
+difference is the whole reason `channel_name` exists.
+
+Membership is scoped to the app: the server looks for members of *this channel* **in
+this app**. So a function that names a channel belonging to a different app produces
+a notification that is built, signed, delivered to every server, and then dropped
+because nobody there is a member. Your invoke still succeeds and the run is still
+recorded successful, because emission is deliberately best-effort and never fails
+your function. The only symptom is silence.
+
+That is not a hypothetical. It is what happens when an app is **recreated or moved
+between organizations** and its model is copied across: the copy keeps the id, the id
+still resolves, and it now points at somebody else's channel. Your client is
+unaffected, because it joins `__crowdy_session_<appId>` by *name* and so follows the
+app it is connected to — which is exactly the behaviour `channel_name` gives the
+server side.
+
+```graphql
+args: [
+  { name: "channel_name", expression: "$session_channel_name" }
+  { name: "payload", expression: "concat(\"cmc:\", $self_container_id)" }
+]
+```
+
+`$session_channel_name` is the app's default session channel, the one every client
+joins on connect. For any other channel, name it directly — a literal name, or
+`concat("lobby-", $app_id)`. Nothing in that expression can go stale when the app
+moves.
+
+If you do use `channel_id`, [`gameModelLint`](game-models#linting-your-model) checks
+it: a literal naming another app's channel is
+`notification_channel_foreign` (**error**), and one naming a channel that does not
+exist is `notification_channel_unknown` (warning). A computed id — a property or a
+param — cannot be checked, which is the other reason to prefer a name.
+
+Whether anything is actually being dropped is visible on
+`gameModelAppDiagnostics`: `notificationsEmitted24h` against
+`notificationsUndeliverable24h`. A non-zero undeliverable count beside a healthy run
+history is this bug. The offending function is named by a
+`NOTIFICATION_UNDELIVERABLE` entry in `userCodeFaults`.
 
 ### Naming the container that changed
 
@@ -84,7 +128,7 @@ notifications: [
   {
     kind: "channel"
     args: [
-      { name: "channel_id", expression: "self.notify_channel_id" }
+      { name: "channel_name", expression: "$session_channel_name" }
       { name: "payload", expression: "concat(\"cmc:\", $self_container_id)" }
     ]
   }
