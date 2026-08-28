@@ -62,11 +62,11 @@ call:
 
 ```json
 {
-  "message": "Container type 'TitanAssaultTeamAssignmnt' is not defined for app 84123104861696. This app defines: TitanAssaultTeam, TitanAssaultAttributes, ...",
+  "message": "Container type 'PlayerLoadut' is not defined for app 1. This app defines: PlayerLoadout, BossAttributes, ...",
   "extensions": {
     "code": "CONTAINER_TYPE_UNDEFINED",
-    "typeName": "TitanAssaultTeamAssignmnt",
-    "definedTypes": ["TitanAssaultAttributes", "TitanAssaultTeam"]
+    "typeName": "PlayerLoadut",
+    "definedTypes": ["BossAttributes", "PlayerLoadout"]
   }
 }
 ```
@@ -218,7 +218,7 @@ and your tools rather than for a shipped client.
 
 ```graphql
 query {
-  gameModelLint(appId: "84123104861696") {
+  gameModelLint(appId: "1") {
     clean
     errorCount
     warningCount
@@ -247,6 +247,58 @@ produces `function_not_defined`, and it resolves itself. `clean` is therefore tr
 there are no errors — an app that could not be "clean" while being authored normally would
 be a signal you would learn to ignore, which is the failure this whole surface exists to
 correct.
+
+### An error can stop the object running
+
+This is the part worth reading before you ship. Some error codes are **enforced**, and an
+object with an enforced finding against it is **quarantined**: it refuses to run until you
+fix the definition. Warnings never do this, and never will — that is what the severity
+split is for.
+
+A quarantined function or automation refuses with `OBJECT_QUARANTINED`:
+
+```json
+{
+  "message": "The function 'notify_round_start' is quarantined and will not run: notification_channel_foreign: channel notification targets channel 123 ('__crowdy_session_456'), which belongs to app 456, not this app. Fix the definition and write it again — quarantine never blocks a write. gameModelLint lists everything currently wrong with this app.",
+  "extensions": {
+    "code": "OBJECT_QUARANTINED",
+    "quarantinedKind": "function",
+    "quarantinedName": "notify_round_start",
+    "quarantineReason": "notification_channel_foreign: channel notification targets channel 123 ..."
+  }
+}
+```
+
+On **`gameModelInvoke`** — the path a player takes — the same refusal arrives through the
+[player boundary](/overview/error-codes#when-code-you-wrote-fails-blame-retryable-and-the-fault-codes)
+as `USER_CODE_ERROR` with `blame: AUTHOR` and `retryable: false`, because that boundary
+rebuilds every error from a `{ code, blame, retryable }` triple rather than passing it
+through. The `quarantinedKind` / `quarantinedName` / `quarantineReason` fields survive on
+both, so the same client code reads the reason either way.
+
+Four properties matter, and they are what make this safe to build against:
+
+- **It is scoped to the object, not the app.** One bad function is refused; every other
+  function, automation, container and player request carries on. A typo in something
+  nobody calls does not take your game down.
+- **It never blocks a write.** Defining, re-upserting and seeding are always allowed. That
+  is deliberate: writing a new definition is your *only* way out, so a gate that blocked
+  its own repair would turn a diagnostic into a trap.
+- **It clears itself.** Fix the definition and the object runs again — there is nothing to
+  ask us to reset, and no ticket to file.
+- **`quarantineReason`** carries the finding that caused it, so you do not have to guess
+  which of your errors is the enforced one.
+
+Enforcement is a platform decision per code, not per app, and it is made conservatively —
+a code is only enforced once we can see how many apps it would affect. So treat **every**
+`ERROR` from `gameModelLint` as something to fix rather than something to rank: the set
+that is enforced can grow, and an error you were ignoring is the one that surprises you.
+`clean` being true means no errors at all, which is the state to ship in.
+
+The [CrowdyJS](/crowdyjs/game-model) and CrowdyCPP studio helpers already recognise
+`OBJECT_QUARANTINED` as a "your model is wrong" refusal rather than a transient failure,
+and log it once per object instead of once per occurrence, so a quarantined function does
+not fill your logs while you fix it.
 
 | Code | Severity | What it means |
 |---|---|---|
@@ -408,7 +460,7 @@ opaque, client-derived **`bindingKey`** (≤ 128 chars), unique per
 mutation {
   gameModelEnsureContainer(input: {
     appId: "1",
-    typeName: "TitanAssaultAttributes",
+    typeName: "BossAttributes",
     bindingKey: "boss:titan-1",
     # used ONLY when this call creates the row:
     displayName: "Boss",
@@ -461,7 +513,7 @@ Two ways to close it, and a shared object needs one of them:
 mutation {
   gameModelUpsertContainerType(input: {
     appId: "1",
-    typeName: "TitanAssaultAttributes",
+    typeName: "BossAttributes",
     displayName: "Boss attributes",
     instantiableBy: "member",
     bindPolicyJson: "{\"type\":\"is_host\"}"
