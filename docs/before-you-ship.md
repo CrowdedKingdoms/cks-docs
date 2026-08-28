@@ -86,3 +86,9 @@ Run the [`gameModelLint`](/game-api/game-models#linting-your-model) query agains
 before players do. It answers the whole-app version of the question — does this model
 hang together — instead of surfacing one broken call at a time. The full treatment,
 including seeding and authority, is in [Game Models](/game-api/game-models).
+
+Ship with `clean: true`. Warnings are frequently fine — most are ordinary mid-edit states —
+but some error codes are **enforced**, and an object with an enforced finding against it is
+[quarantined](/game-api/game-models#an-error-can-stop-the-object-running): it refuses with
+`OBJECT_QUARANTINED` until you write the definition again. The enforced set can grow, so an
+error you decided to live with is the one that surprises you later.
