@@ -5,7 +5,7 @@ title: Embed Crowdy Studio in your game
 
 # Embed Crowdy Studio in your game
 
-CrowdyJS `12.1` ships the **Crowdy Studio embed kit**: the window chrome that
+CrowdyJS ships the **Crowdy Studio embed kit**: the window chrome that
 proved out in Blocks with Friends, packaged as game-agnostic components. A game
 no longer hand-rolls a dock, fullscreen fallback, focus trap, context drawer,
 or HUD sink around [`mountCrowdyStudio`](player-client-mods#mounting-crowdy-studio) —

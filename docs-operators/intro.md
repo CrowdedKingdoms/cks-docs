@@ -21,10 +21,11 @@ Operators handle:
 | Compute platform ceilings | GraphQL (`cpComputePlatformCeilings`); admin screen planned |
 | Agentic Crowdy Studio rollout | Management policy/usage GraphQL and the [agent operations runbook](agentic-crowdy-studio) |
 
-Agentic Crowdy Studio is deployed in tracked development release `v0.1.94`.
-Its app/user/model/caps remain explicitly allowlisted and fail-closed. Apply the
-runbook gate before expanding to another app, model, environment, or manifest.
-It is not approved for production or autonomous real-money activity.
+Agentic Crowdy Studio is allowlisted development on the current CK API stack
+(not the retired `v0.1.94` / CrowdyJS `12.0.0` train). App/user/model/caps
+remain explicitly allowlisted and fail-closed. Apply the runbook gate before
+expanding to another app, model, environment, or manifest. It is not approved
+for production or autonomous real-money activity.
 
 ## Platform compute ceilings
 

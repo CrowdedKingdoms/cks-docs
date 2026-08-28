@@ -284,13 +284,18 @@ realtime wire or Replication API impact.
 
 ## 2026-07-24
 
-**Agentic Crowdy Studio — finalized development rollout**
+**Agentic Crowdy Studio — historical development rollout (superseded)**
 
-The coordinated development stack is deployed: environment release
+> **Historical.** The version numbers in this entry describe the July 2026
+> development train. They are **not** the live stack. Current ck-api / studio /
+> Buddy versions: `infra-control-plane/scripts/ops/deployed-versions.sh`.
+> Current CrowdyJS: `npm view @crowdedkingdoms/crowdyjs dist-tags`.
+
+The coordinated development stack at that time was: environment release
 **`v0.1.94`** with Game API **`v0.19.16`**, Management API
 **`v0.1.193-dev`**, CrowdyJS **`12.0.0`**, the matching Blocks with Friends
-bundle, and these public docs. This is a finalized **development** rollout—not
-production or general availability—and it does not authorize unattended
+bundle, and these public docs. It was a **development** rollout—not
+production or general availability—and did not authorize unattended
 real-money activity.
 
 - OpenRouter now uses the stable streaming
@@ -313,9 +318,11 @@ real-money activity.
   `AGENT_CONTEXT_STALE`.
 - The deployed BWF bundle, visible takeover banner, and offline/local Stop
   browser gates passed.
-- **Stabilization train:** `v0.1.94` is the final tracked environment manifest.
-  Intermediary direct-ingest manifests used during stabilization are backfilled
-  into release history and are not separate supported targets.
+- **Stabilization train (historical):** `v0.1.94` was the final tracked
+  environment manifest for that July 2026 train. Intermediary direct-ingest
+  manifests used during stabilization were backfilled into release history and
+  are not separate supported targets. **Do not redeploy from this entry** —
+  use `deployed-versions.sh` for what is live.
 
 The public record deliberately excludes account identifiers, session/tool IDs,
 credentials, content hashes, secret values, and provider bodies.
