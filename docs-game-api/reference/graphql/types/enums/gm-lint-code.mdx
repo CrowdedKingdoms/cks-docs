@@ -30,6 +30,8 @@ enum GmLintCode {
   PERMISSION_KEY_UNKNOWN
   GRID_LITERAL_INVALID
   AUTOMATION_TRIGGER_UNMATCHABLE
+  NOTIFICATION_CHANNEL_FOREIGN
+  NOTIFICATION_CHANNEL_UNKNOWN
   FUNCTION_UNCOMPILABLE
 }
 ```
@@ -75,6 +77,14 @@ A grid builtin was given a mode or axis literal outside its allowed set.
 
 #### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>AUTOMATION&#x005F;TRIGGER&#x005F;UNMATCHABLE</b></code>](#automation-trigger-unmatchable) \{#automation-trigger-unmatchable\} 
 An automation trigger's filter cannot match, so it will never dispatch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>NOTIFICATION&#x005F;CHANNEL&#x005F;FOREIGN</b></code>](#notification-channel-foreign) \{#notification-channel-foreign\} 
+A channel notification names a channel that belongs to a different app. Membership is scoped to the app, so the datagram reaches nobody no matter how healthy delivery is — the shape a model takes when it is copied out of the app it was authored against. Repoint it, or name the channel with `channel_name` so it cannot go stale again.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>NOTIFICATION&#x005F;CHANNEL&#x005F;UNKNOWN</b></code>](#notification-channel-unknown) \{#notification-channel-unknown\} 
+A channel notification names a channel id, or a channel name, that this app does not have. A warning rather than an error because the channel may simply not exist yet.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GmLintCode.<b>FUNCTION&#x005F;UNCOMPILABLE</b></code>](#function-uncompilable) \{#function-uncompilable\} 
