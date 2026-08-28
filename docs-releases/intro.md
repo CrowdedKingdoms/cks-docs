@@ -30,7 +30,40 @@ supported path.
 
 :::
 
-## 2026-08-22 (latest)
+## 2026-08-28 (latest)
+
+**ck-api v1.67.0 — a notification aimed at another app's channel is now caught**
+
+- **`channel_name`, and why you should switch to it.** A
+  [channel notification](/game-api/model-driven-notifications) now takes `payload`
+  plus **exactly one of** `channel_id` or `channel_name`. A name is resolved on every
+  invocation against the app the function is running in; an id is resolved once, when
+  you wrote it. That matters because channel membership is scoped to the app, so a
+  function naming a channel that belongs to a **different** app produces a
+  notification that is built, sent to every server, and dropped for want of a
+  recipient — while your invoke succeeds and the run records success, because
+  emission is best-effort and never fails your function. The only symptom is silence.
+  This is what an app **recreated or moved between organizations** leaves behind when
+  its model is copied with an id in it. Your client was never affected: it joins
+  `__crowdy_session_<appId>` by name and follows the app it is connected to. This
+  gives the server the same property. Existing `channel_id` notifications keep
+  working unchanged.
+- **Two new system params**, `$app_id` and `$session_channel_name`, so a model never
+  has to write down which app it belongs to.
+- **Two new lint codes** on
+  [`gameModelLint`](/game-api/game-models#linting-your-model):
+  `notification_channel_foreign` (error — the channel belongs to another app) and
+  `notification_channel_unknown` (warning — no such channel here). Only literal ids
+  and names can be checked; a computed one cannot, which is a further reason to
+  prefer a name.
+- **You can now see it happening.** `gameModelAppDiagnostics` gains
+  `notificationsEmitted24h` and `notificationsUndeliverable24h`; a non-zero
+  undeliverable count beside a healthy run history is this bug. The offending
+  function is named by a new `NOTIFICATION_UNDELIVERABLE` entry in `userCodeFaults`.
+  Note this is not "delivery is broken" — it counts datagrams that were delivered to
+  every server successfully and had no recipient.
+
+## 2026-08-22
 
 **ck-api v1.61.0 → v1.63.0 — a completed purchase is now fulfilled**
 

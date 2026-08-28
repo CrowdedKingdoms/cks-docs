@@ -5503,6 +5503,14 @@ enum GmLintCode {
   """
   AUTOMATION_TRIGGER_UNMATCHABLE
   """
+  A channel notification names a channel that belongs to a different app. Membership is scoped to the app, so the datagram reaches nobody no matter how healthy delivery is — the shape a model takes when it is copied out of the app it was authored against. Repoint it, or name the channel with `channel_name` so it cannot go stale again.
+  """
+  NOTIFICATION_CHANNEL_FOREIGN
+  """
+  A channel notification names a channel id, or a channel name, that this app does not have. A warning rather than an error because the channel may simply not exist yet.
+  """
+  NOTIFICATION_CHANNEL_UNKNOWN
+  """
   A stored function definition no longer compiles, so it is inert. Only possible for a row written before a validation the compiler enforces now; re-upsert it.
   """
   FUNCTION_UNCOMPILABLE
@@ -5813,6 +5821,14 @@ type GmAppDiagnostics {
   failedEvents24h: Int!
   """Automation-driven invocations in the last 24h."""
   automationEvents24h: Int!
+  """
+  Model-driven notifications emitted in the last 24h, across every function and automation.
+  """
+  notificationsEmitted24h: Int!
+  """
+  Of those, how many reached nobody: the target channel had no members in this app. Emission is best-effort and cannot fail your function, so this is the only place an undeliverable notification is visible — a non-zero count here beside a healthy run history is the signature of a notification aimed at a channel this app does not own. Check gameModelLint for NOTIFICATION_CHANNEL_FOREIGN, which names the function. Note this does NOT mean delivery is broken: it counts datagrams that were sent to every server successfully and had no recipient.
+  """
+  notificationsUndeliverable24h: Int!
   """Most-invoked functions in the last 24h."""
   topFunctions: [GmTopFunction!]!
 }
@@ -7350,6 +7366,7 @@ enum UserCodeFaultKind {
   PLATFORM_BUSY
   CIRCUIT_OPEN
   DISABLED_BY_POLICY
+  NOTIFICATION_UNDELIVERABLE
 }
 
 """
