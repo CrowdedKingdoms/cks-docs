@@ -5159,6 +5159,68 @@ type GroupMembership {
 }
 
 """
+A point-in-time app-scoped count of active gameplay sessions. This counts sessions, not actors or distinct users; one user with multiple active sessions contributes multiple players. Status states whether the fleet-wide count is complete.
+"""
+type GameModelActivePlayerCountSnapshot {
+  """The app whose active gameplay sessions were counted."""
+  appId: BigInt!
+  """
+  Active gameplay sessions currently reported for the app. For PARTIAL this is the best-known sum from supported fresh Buddies; for UNAVAILABLE it is zero because no live report can be observed. Check status before treating it as a complete fleet total.
+  """
+  activePlayerCount: Int!
+  """
+  Whether activePlayerCount is complete (FRESH), a supported-Buddy subset (PARTIAL), or unavailable because no Buddy heartbeat is fresh (UNAVAILABLE).
+  """
+  status: GameModelPlayerCountStatus!
+  """
+  Latest heartbeat time represented by this observation, or null when no fresh Buddy is available.
+  """
+  observedAt: DateTime
+  """
+  Durable monotonic revision of complete count changes. Zero means the app is untracked or has not changed after its silent baseline. Partial and unavailable observations never advance it.
+  """
+  revision: BigInt!
+}
+
+"""
+Completeness of an app-scoped active gameplay-session count across the fresh Buddy fleet.
+"""
+enum GameModelPlayerCountStatus {
+  """
+  At least one non-Offline Buddy heartbeat is fresh and every fresh Buddy supports version 1 app-scoped counts. The count is complete.
+  """
+  FRESH
+  """
+  At least one non-Offline Buddy heartbeat is fresh, but one or more fresh Buddies do not support app-scoped counts. The count is only the best-known supported-Buddy sum and does not advance change revisions.
+  """
+  PARTIAL
+  """
+  No non-Offline Buddy heartbeat is fresh enough to observe. The count is unavailable and does not advance change revisions.
+  """
+  UNAVAILABLE
+}
+
+"""
+One durable transition between complete app-scoped active gameplay-session counts. Delivery is cross-replica but best-effort; deduplicate by revision and requery gameModelActivePlayerCount after reconnect or a revision gap.
+"""
+type GameModelActivePlayerCountChange {
+  """The app whose complete active-session count changed."""
+  appId: BigInt!
+  """Last complete active gameplay-session count before this transition."""
+  previousCount: Int!
+  """New complete active gameplay-session count after this transition."""
+  currentCount: Int!
+  """Signed change: currentCount minus previousCount."""
+  delta: Int!
+  """
+  Durable monotonic app revision for this transition. Use it to deduplicate and detect gaps.
+  """
+  revision: BigInt!
+  """Latest fresh Buddy heartbeat represented by the new count."""
+  observedAt: DateTime!
+}
+
+"""
 A WASM compute module: developer-authored Rust compiled to sandboxed WASM on game-api instances. Holds metadata, the deployed version pointer, and circuit-breaker state; source lives in versions.
 """
 type WasmModule {
@@ -5175,9 +5237,9 @@ type WasmModule {
   """
   enabled: Boolean!
   """
-  Whether the module runs without active players (world simulation). Policy-gated.
+  RETIRED. Always false. Modules run only while their app has a player present.
   """
-  alwaysOn: Boolean!
+  alwaysOn: Boolean! @deprecated(reason: "Retired 2026-09-01: nothing runs for an app with no player in it, so this is always false. Stop selecting it.")
   """The deployed version id (UUID). Null until first deploy."""
   currentVersionId: String
   """Circuit-breaker state: closed | open | half_open."""
@@ -6557,68 +6619,6 @@ type GameModelEventsConnection {
   Total matching records across all pages, when known (null for sources that do not compute a total).
   """
   totalCount: Int
-}
-
-"""
-A point-in-time app-scoped count of active gameplay sessions. This counts sessions, not actors or distinct users; one user with multiple active sessions contributes multiple players. Status states whether the fleet-wide count is complete.
-"""
-type GameModelActivePlayerCountSnapshot {
-  """The app whose active gameplay sessions were counted."""
-  appId: BigInt!
-  """
-  Active gameplay sessions currently reported for the app. For PARTIAL this is the best-known sum from supported fresh Buddies; for UNAVAILABLE it is zero because no live report can be observed. Check status before treating it as a complete fleet total.
-  """
-  activePlayerCount: Int!
-  """
-  Whether activePlayerCount is complete (FRESH), a supported-Buddy subset (PARTIAL), or unavailable because no Buddy heartbeat is fresh (UNAVAILABLE).
-  """
-  status: GameModelPlayerCountStatus!
-  """
-  Latest heartbeat time represented by this observation, or null when no fresh Buddy is available.
-  """
-  observedAt: DateTime
-  """
-  Durable monotonic revision of complete count changes. Zero means the app is untracked or has not changed after its silent baseline. Partial and unavailable observations never advance it.
-  """
-  revision: BigInt!
-}
-
-"""
-Completeness of an app-scoped active gameplay-session count across the fresh Buddy fleet.
-"""
-enum GameModelPlayerCountStatus {
-  """
-  At least one non-Offline Buddy heartbeat is fresh and every fresh Buddy supports version 1 app-scoped counts. The count is complete.
-  """
-  FRESH
-  """
-  At least one non-Offline Buddy heartbeat is fresh, but one or more fresh Buddies do not support app-scoped counts. The count is only the best-known supported-Buddy sum and does not advance change revisions.
-  """
-  PARTIAL
-  """
-  No non-Offline Buddy heartbeat is fresh enough to observe. The count is unavailable and does not advance change revisions.
-  """
-  UNAVAILABLE
-}
-
-"""
-One durable transition between complete app-scoped active gameplay-session counts. Delivery is cross-replica but best-effort; deduplicate by revision and requery gameModelActivePlayerCount after reconnect or a revision gap.
-"""
-type GameModelActivePlayerCountChange {
-  """The app whose complete active-session count changed."""
-  appId: BigInt!
-  """Last complete active gameplay-session count before this transition."""
-  previousCount: Int!
-  """New complete active gameplay-session count after this transition."""
-  currentCount: Int!
-  """Signed change: currentCount minus previousCount."""
-  delta: Int!
-  """
-  Durable monotonic app revision for this transition. Use it to deduplicate and detect gaps.
-  """
-  revision: BigInt!
-  """Latest fresh Buddy heartbeat represented by the new count."""
-  observedAt: DateTime!
 }
 
 """Compute units attributed to one engine over the query window."""
@@ -13841,7 +13841,7 @@ input UpsertComputeModuleInput {
   """Optional description."""
   description: String
   """
-  Run without active players (world simulation). Policy-gated; defaults to false.
+  RETIRED. Modules run only while their app has a player present. Accepted as false or omitted; true is refused.
   """
   alwaysOn: Boolean
 }

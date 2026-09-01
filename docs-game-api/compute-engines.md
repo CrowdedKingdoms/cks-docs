@@ -97,7 +97,10 @@ index, container-id suffix).
 
 ## world-engine — weather, resource nodes, farming
 
-A kit-sim assembly that runs without players (`alwaysOn`):
+A kit-sim assembly for a living world. It ticks while players are present and
+advances the world from elapsed time when they return — it does **not** run
+while the app is empty, since nothing does (see
+[Activation](/game-api/compute-modules#activation-when-your-module-actually-runs)):
 
 - **Weather fronts** advance on a seeded state machine; every transition
   broadcasts a type-90 server event plus a `weather_changed` compute event
