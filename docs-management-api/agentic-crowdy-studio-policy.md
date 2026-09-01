@@ -10,12 +10,15 @@ allowlists, hard budget ceilings, privacy and retention policy, app/operator
 kills, and sanitized provider usage. The Game API owns execution and must
 enforce only a fresh Management policy replica.
 
-:::warning Finalized development rollout
-The allowlisted development rollout is deployed in environment release
-`v0.1.94` with Management API `v0.1.193-dev`, Game API `v0.19.16`,
-CrowdyJS `12.0.0`, and the BWF host. Apps/users outside the explicit rollout
-remain fail-closed. This is not production or general availability and does not
-authorize unattended real-money actions.
+:::warning Allowlisted development — not GA
+Policy and kills for Agentic Crowdy Studio are served by the **current**
+unified CK API management surface. Do not pin this page to retired
+environment-manifest / CrowdyJS 12.x numbers (`v0.1.94`, `12.0.0`, etc.).
+Verify live ck-api with
+`infra-control-plane/scripts/ops/deployed-versions.sh` and the SDK with
+`npm view @crowdedkingdoms/crowdyjs dist-tags`. Apps/users outside the
+explicit allowlist remain fail-closed. This is not production or general
+availability and does not authorize unattended real-money actions.
 :::
 
 ## Policy layers

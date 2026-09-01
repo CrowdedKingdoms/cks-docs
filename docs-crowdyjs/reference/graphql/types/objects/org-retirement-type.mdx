@@ -1,0 +1,103 @@
+---
+id: org-retirement-type
+title: OrgRetirementType
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A record of one organization retirement. Retirement is a STATE, not a deletion: every ledger row the organization ever wrote is still present and still references it, so what the org spent stays reconstructable with the same joins as before. This row says who retired it, why, and what it was holding at the time.
+
+
+```graphql
+type OrgRetirementType {
+  retirementId: BigInt!
+  orgId: BigInt!
+  orgSlug: String!
+  orgName: String!
+  reason: String!
+  retiredByUserId: BigInt!
+  retiredAt: DateTime!
+  balanceCentsAtRetirement: BigInt!
+  walletTxnCountAtRetirement: BigInt!
+  appsArchived: Int!
+  frozenBalanceAcknowledged: Boolean!
+  reinstatedAt: DateTime
+  reinstatedByUserId: BigInt
+  reinstatedReason: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>retirementId</b></code>](#retirement-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#retirement-id\} 
+Retirement record id (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+The retired organization (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>orgSlug</b></code>](#org-slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-slug\} 
+The organization slug as it stood when it was retired.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>orgName</b></code>](#org-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-name\} 
+The organization name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Why the organization was retired.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>retiredByUserId</b></code>](#retired-by-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#retired-by-user-id\} 
+Operator user&#x005F;id who retired it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>retiredAt</b></code>](#retired-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#retired-at\} 
+When it was retired.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>balanceCentsAtRetirement</b></code>](#balance-cents-at-retirement)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-cents-at-retirement\} 
+Wallet balance in cents at the moment of retirement. This money is FROZEN indefinitely, not refunded and not forfeited — the operator decided that on 2026-08-21. It is recorded here rather than only in the wallet so that every organization holding frozen money is enumerable from one table if the policy is ever revisited.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>walletTxnCountAtRetirement</b></code>](#wallet-txn-count-at-retirement)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wallet-txn-count-at-retirement\} 
+How many org wallet&#x005F;transactions rows existed at retirement. All of them are still there — this number is the claim that the ledger survived, stated at the moment it would have been easiest to lose.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>appsArchived</b></code>](#apps-archived)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#apps-archived\} 
+How many of the org apps were archived by the retirement. Apps already archived are not counted and are not touched.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>frozenBalanceAcknowledged</b></code>](#frozen-balance-acknowledged)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#frozen-balance-acknowledged\} 
+True when the caller had to pass acknowledgeFrozenBalance because the org held money, which is frozen indefinitely rather than refunded or forfeited.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>reinstatedAt</b></code>](#reinstated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reinstated-at\} 
+When the retirement was reversed, or null while it is in force.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>reinstatedByUserId</b></code>](#reinstated-by-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reinstated-by-user-id\} 
+Operator user&#x005F;id who reinstated the organization.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgRetirementType.<b>reinstatedReason</b></code>](#reinstated-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reinstated-reason\} 
+Why the organization was reinstated.
+
+
+
+
+### Returned By
+
+[`reinstateOrganization`](/reference/graphql/operations/mutations/reinstate-organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`retiredOrganizations`](/reference/graphql/operations/queries/retired-organizations.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`retireOrganization`](/reference/graphql/operations/mutations/retire-organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

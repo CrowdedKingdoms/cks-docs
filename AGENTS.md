@@ -87,7 +87,7 @@ viewer function is ever detached.
 
 - **One GraphQL origin.** Management and game are surfaces of `cks-game-api`,
   not two servers. Do not tell readers to set `managementUrl`. The
-  `cks-management-api` **GitHub repo still exists and is not archived**
+  `cks-management-api` **GitHub repo still exists and is archived**
   (default branch `dev`); it is **not a running service** and is not a schema
   source. Local checkout is gone. Surface lives in `cks-game-api`.
 - **Gameplay is PostgreSQL + Citus** (`crowded_kingdoms`, role `ck_app`),
@@ -109,6 +109,12 @@ viewer function is ever detached.
   workflows build with `npx docusaurus build`, which skips it — so a docs branch
   ahead of ck-api deploys green and publishes an SDL naming a field the tier does
   not serve. Nothing reports that. The rule is the only enforcement.
+- **TIER ALIGNMENT (hard rule).** When docs CI or a maintainer checks out
+  sibling repos (`cks-game-api`, CrowdyJS) for `check:generated:siblings` or
+  SDL regen, use the **same** tier branch as the docs branch under test
+  (`dev`↔`dev`, `test`↔`test`, `prod`↔`prod`). Do not validate docs-`dev`
+  against a `prod` sibling checkout, and do not cite CrowdyJS `latest` as the
+  pin for a non-prod docs tier.
 - **The committed generated files are checked now — but only two of the three
   hops, and the third is the one that matters.** `npm run check:generated`
   re-runs the generators and refuses on a difference; Docs CI runs it on every
@@ -159,3 +165,8 @@ viewer function is ever detached.
   done when the live URL returns what you put there.
 - Write `blob/main` or `tree/main` into a page. That branch does not exist in any
   repository in this project.
+- Put live GraphQL credentials (or any "sandbox" smoke secrets) into cks-docs
+  GitHub Actions. `docs-ci.yml` has no live-endpoint gate. Optional
+  `npm run test:examples` is builder/local only (`CKS_DOCS_GRAPHQL_URL` /
+  `CKS_DOCS_TOKEN`, etc.). `CKS_REPO_READ_TOKEN` is only for
+  `docs-siblings.yml` sibling checkouts — leave it alone.

@@ -1,43 +1,43 @@
-// Optional smoke test that the documented example operations still run against a live
-// sandbox. It SKIPS (exit 0) unless SANDBOX_GRAPHQL_URL and SANDBOX_TOKEN are set, so it
-// never blocks a build that has no sandbox. When those are set (e.g. a dev-tier endpoint
-// + scoped read-only token), it executes a few read operations and fails on GraphQL
-// errors — keeping the docs examples honest. Extend `operations` as the seed data grows.
+// Optional live GraphQL smoke for documented example operations. Builder/local
+// only — not a Docs CI gate. SKIPS (exit 0) unless CKS_DOCS_GRAPHQL_URL and
+// CKS_DOCS_TOKEN are set. When those are set (e.g. a tier endpoint + scoped
+// read-only token), it executes a few read operations and fails on GraphQL
+// errors — keeping the docs examples honest. Extend `operations` as the seed
+// data grows.
 import process from 'node:process';
 
-const url = process.env.SANDBOX_GRAPHQL_URL;
-const token = process.env.SANDBOX_TOKEN;
+const url = process.env.CKS_DOCS_GRAPHQL_URL;
+const token = process.env.CKS_DOCS_TOKEN;
 
 if (!url || !token) {
   console.log(
-    '[test:examples] SKIP: set SANDBOX_GRAPHQL_URL and SANDBOX_TOKEN to smoke-test the documented example operations.',
+    '[test:examples] SKIP: set CKS_DOCS_GRAPHQL_URL and CKS_DOCS_TOKEN to smoke-test the documented example operations.',
   );
   process.exit(0);
 }
 
-// Read-only operations safe to run against a seeded sandbox.
+// Read-only operations safe to run against a seeded GraphQL endpoint.
 //
 // TWO TOKENS, BECAUSE ONE CANNOT WORK, and this is the defect the first real run of this
 // script exposed. `usersPaginated` is a MANAGEMENT operation and refuses an app-scoped
 // token ("This is an app-scoped gameplay token; it cannot perform management operations");
 // `gameModelLint` and `gameModelAppDiagnostics` are APP-scoped and need a token minted for
-// the app. So a single `SANDBOX_TOKEN` can satisfy some of this corpus and never all of
+// the app. So a single `CKS_DOCS_TOKEN` can satisfy some of this corpus and never all of
 // it, and the script reported "all example operations passed" for as long as the corpus
 // happened to contain only the one kind.
 //
-// `SANDBOX_TOKEN` keeps its meaning (the identity session token) so existing callers are
-// unaffected. Anything it cannot reach is SKIPPED rather than failed, the same reasoning as
-// the whole-script skip above, one level down.
-const appToken = process.env.SANDBOX_APP_TOKEN;
-const appId = process.env.SANDBOX_APP_ID;
+// `CKS_DOCS_TOKEN` is the identity session token. Anything it cannot reach is SKIPPED
+// rather than failed, the same reasoning as the whole-script skip above, one level down.
+const appToken = process.env.CKS_DOCS_APP_TOKEN;
+const appId = process.env.CKS_DOCS_APP_ID;
 
 const operations = [
   // `usersPaginated` used to be the only entry here and REQUIRES SUPER ADMIN ("Super admin
-  // required", FORBIDDEN), so no sandbox token a normal operator can mint would ever pass
-  // it. A gate whose only case cannot succeed is a gate nobody can turn on, which is why
-  // it had never been run. These two are the same shape of check against surfaces an
-  // ordinary org-admin session actually holds, and they exercise the pagination envelope
-  // the docs document.
+  // required", FORBIDDEN), so no ordinary org-admin session would ever pass it. A gate
+  // whose only case cannot succeed is a gate nobody can turn on, which is why it had
+  // never been run. These two are the same shape of check against surfaces an ordinary
+  // org-admin session actually holds, and they exercise the pagination envelope the docs
+  // document.
   {
     name: 'me',
     query: 'query{ me{ userId email } }',
@@ -77,7 +77,7 @@ for (const op of operations) {
   const wantsApp = op.scope === 'app';
   if (wantsApp && (!appToken || !appId)) {
     console.log(
-      `[test:examples] SKIP ${op.name}: set SANDBOX_APP_TOKEN and SANDBOX_APP_ID to exercise it.`,
+      `[test:examples] SKIP ${op.name}: set CKS_DOCS_APP_TOKEN and CKS_DOCS_APP_ID to exercise it.`,
     );
     skipped += 1;
     continue;
@@ -110,5 +110,5 @@ if (failed > 0) {
 // the failure mode this whole script is prone to, so say how much was actually exercised.
 console.log(
   `[test:examples] ${operations.length - skipped}/${operations.length} example operation(s) passed` +
-    (skipped > 0 ? `, ${skipped} skipped for want of SANDBOX_APP_ID.` : '.'),
+    (skipped > 0 ? `, ${skipped} skipped for want of CKS_DOCS_APP_ID.` : '.'),
 );

@@ -11,7 +11,8 @@ global conventions, and walks the three most common end-to-end workflows.
 
 This page is for external API clients and coding agents. The in-product
 **Agentic Crowdy Studio** model runtime is a separate, allowlisted development
-contract deployed in tracked release `v0.1.94`: use its
+contract on the current CK API + CrowdyJS 15.x line (not the retired
+`v0.1.94` / CrowdyJS `12.0.0` train): use its
 [player/SDK guide](/crowdyjs/agentic-crowdy-studio),
 [game-host guide](/game-api/agentic-crowdy-studio), and
 [operator runbook](/operators/agentic-crowdy-studio). It never gives a model
@@ -21,18 +22,16 @@ the raw GraphQL access described below.
 
 There is **one GraphQL endpoint**. The two rows below are surfaces of that API,
 not two hosts. Do not set `managementUrl`. Gameplay is PostgreSQL + Citus, not
-galaxy. CrowdyJS **15.2.0** is current on npm: 15.0.0 removed `devLogin` and added
-`auth.login` / `auth.register`, 15.1.0 added the four password-management
-wrappers (`setInitialPassword`, `changePassword`, `requestPasswordReset`,
-`resetPassword`), and 15.2.0 rebuilt the baked default origin after every tier
-moved onto the brand root — an older build dials a host that no longer exists.
-Verify rather than quoting this line — `npm view @crowdedkingdoms/crowdyjs version`.
+galaxy. CrowdyJS is on the **15.x** line: 15.0.0 removed `devLogin` and added
+`auth.login` / `auth.register`; later 15.x releases added password-management
+wrappers and rebuilt baked default origins after every tier moved onto the
+brand root — an older build dials a host that no longer exists. **Do not
+hardcode the npm version here** — `npm view @crowdedkingdoms/crowdyjs dist-tags`.
 
-**The dist-tag decides the default origin.** `latest` is built for production,
-and `dev` and `test` are separate prereleases (`15.2.0-dev.1`,
-`15.2.0-test.1`) whose builds bake their own tier's host. Installing `latest`
-and pointing it at a non-production tier works only if you pass the origin
-explicitly.
+**The dist-tag decides the default origin.** `latest` is built for production;
+`@dev` / `@test` are separate prereleases whose builds bake their own tier's
+host. Installing `latest` and pointing it at a non-production tier works only
+if you pass the origin explicitly.
 
 | API | Protocol | Use it for |
 |-----|----------|------------|

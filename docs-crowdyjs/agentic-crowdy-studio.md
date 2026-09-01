@@ -11,13 +11,16 @@ authority: the model proposes typed tool calls, while CrowdyJS and the Game API
 check the current mode, project, permissions, policy, budget, lease, and any
 required approval before an effect can occur.
 
-:::warning Finalized development rollout
-Agentic Crowdy Studio is deployed in the tracked development release
-`v0.1.94` with CrowdyJS `12.0.0`, Game API `v0.19.16`, Management API
-`v0.1.193-dev`, and the Blocks with Friends host. Access remains
-policy/permission allowlisted and fail-closed. This is not a production or
-general-availability rollout and does not authorize unattended real-money
-activity or control outside an explicit Play lease.
+:::warning Allowlisted development — not GA
+Agentic Crowdy Studio ships on the **current** unified CK API (management +
+game on one origin) and CrowdyJS **15.x**. Do not pin docs to retired
+environment-manifest numbers (`v0.1.94`) or CrowdyJS `12.0.0` — those were a
+2026-07 development train and are not the live stack. Discover what is
+running with `infra-control-plane/scripts/ops/deployed-versions.sh` (ck-api /
+studio) and `npm view @crowdedkingdoms/crowdyjs dist-tags` (SDK). Access
+remains policy/permission allowlisted and fail-closed. This is not production
+or general availability and does not authorize unattended real-money activity
+or control outside an explicit Play lease.
 :::
 
 ## What each mode can do
@@ -59,7 +62,7 @@ Use the normal CrowdyJS surfaces. `game.crowdyStudioAgent` is the typed,
 app-token transport; the controller owns replay, acknowledgements, epochs, and
 reconnect. Do not build a raw GraphQL loop or give a model `client.graphql`.
 
-Games embedding the studio through CrowdyJS 12.1's
+Games embedding the studio through
 [`createCrowdyStudioEmbed`](crowdy-studio-embed) get this assembly for free:
 the embed passes the agent block automatically when the client exposes
 `crowdyStudioAgent` and the game supplies a `playerHost`, and its
@@ -216,7 +219,7 @@ tool results are treated as untrusted data and cannot grant authority.
 
 ## Validated development evidence
 
-The sanitized `v0.1.94` rollout evidence completed the full path:
+The sanitized July 2026 (`v0.1.94`) rollout evidence completed the full path:
 
 - Ask returned its expected exact response.
 - Build read a project file with `workspace.file.read`, then
