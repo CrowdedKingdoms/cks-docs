@@ -50,7 +50,7 @@ user&#x005F;id of the organization owner (BigInt as string).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
-Lifecycle status, e.g. 'active' or 'frozen'. Set platform-wide via setOrgStatus.
+Lifecycle status: 'active', 'frozen' (setOrgStatus) or 'retired' (retireOrganization). A retired organization still resolves by id and slug — it is a state, not a deletion, and its whole ledger is intact — but it grants its members no permissions, its API tokens no longer authenticate, and it is omitted from myOrganizations.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Organization.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 

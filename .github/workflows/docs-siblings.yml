@@ -1,0 +1,100 @@
+name: Docs siblings check
+
+# Hop 1 of check:generated — compare committed SDLs to private/public sibling
+# checkouts. Needs a read PAT that can clone cks-game-api. Not on every PR:
+# token blast radius. Manual + weekly schedule only.
+#
+# Tier alignment: sibling checkouts use the SAME tier branch as the docs ref
+# under test (dev↔dev, test↔test, prod↔prod). Feature branches default to dev.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: 'Sibling tier branch to check out (dev|test|prod)'
+        required: true
+        default: 'dev'
+        type: choice
+        options: [dev, test, prod]
+  schedule:
+    # Mondays 14:00 UTC — quiet window; fail loud if SDL drifted vs siblings
+    - cron: '0 14 * * 1'
+
+jobs:
+  siblings:
+    name: check:generated:siblings
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve sibling tier
+        id: tier
+        env:
+          INPUT_TIER: ${{ inputs.tier }}
+          REF: ${{ github.ref_name }}
+        run: |
+          if [ -n "$INPUT_TIER" ]; then
+            tier="$INPUT_TIER"
+          else
+            case "$REF" in
+              dev|test|prod) tier="$REF" ;;
+              *) tier=dev ;;
+            esac
+          fi
+          echo "tier=$tier" >> "$GITHUB_OUTPUT"
+          echo "sibling tier=$tier"
+
+      - name: Checkout cks-docs
+        uses: actions/checkout@v4
+        with:
+          path: cks-docs
+
+      # Secret name: CKS_REPO_READ_TOKEN — fine-scoped PAT (or app token) that
+      # can read CrowdedKingdoms/cks-game-api (private) and CrowdyJS (public).
+      # Operator must set this in repo secrets; workflow skips cleanly if unset.
+      - name: Require sibling read token
+        id: token
+        env:
+          TOKEN: ${{ secrets.CKS_REPO_READ_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::notice::CKS_REPO_READ_TOKEN unset — siblings check cannot run from this public repo"
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout cks-game-api (same tier)
+        if: steps.token.outputs.available == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: CrowdedKingdoms/cks-game-api
+          ref: ${{ steps.tier.outputs.tier }}
+          token: ${{ secrets.CKS_REPO_READ_TOKEN }}
+          path: cks-game-api
+
+      - name: Checkout CrowdyJS (same tier)
+        if: steps.token.outputs.available == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: CrowdedKingdoms/CrowdyJS
+          ref: ${{ steps.tier.outputs.tier }}
+          token: ${{ secrets.CKS_REPO_READ_TOKEN }}
+          path: CrowdyJS
+
+      - name: Setup Node.js
+        if: steps.token.outputs.available == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: cks-docs/package-lock.json
+
+      - name: Install + check siblings
+        if: steps.token.outputs.available == 'true'
+        working-directory: cks-docs
+        run: |
+          npm ci
+          npm run check:generated:siblings -- --sibling-root="$GITHUB_WORKSPACE"
+
+      - name: Skip notice
+        if: steps.token.outputs.available != 'true'
+        run: echo "Set repo secret CKS_REPO_READ_TOKEN to enable this job."

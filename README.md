@@ -81,7 +81,7 @@ The site is held to an agent-readiness standard so external AI agents / integrat
 - **Published SDL.** `npm run sdl:gen` (chained from `prebuild`) copies each sibling `schema.gql` to `static/schema/<product>.graphql`, served at `/schema/management-api.graphql`, `/schema/game-api.graphql`, `/schema/crowdyjs.graphql`. Committed so it ships even though CI builds with `docusaurus build` (which skips `prebuild`).
 - **`static/llms.txt`** is the agent index — keep its links current when SDL URLs or the cross-cutting guides change.
 - **Cross-cutting agent guides** live in the Overview tab: `docs/for-ai-agents.md`, `docs/error-codes.md`, `docs/pagination.md`, `docs/rate-limits.md`. The consumer changelog is `docs-releases/intro.md`.
-- **CI guard.** `npm run lint:schema` (in [`.github/workflows/docs-ci.yml`](.github/workflows/docs-ci.yml)) fails a PR if any public root field / non-`input` argument in the Management or Game SDL lacks a description (CrowdyJS is warn-only). The PR build also enforces `onBrokenLinks: 'throw'`. `npm run test:examples` smoke-tests the documented operations against a sandbox when `SANDBOX_GRAPHQL_URL` / `SANDBOX_TOKEN` are set.
+- **CI guard.** `npm run lint:schema` (in [`.github/workflows/docs-ci.yml`](.github/workflows/docs-ci.yml)) fails a PR if any public root field / non-`input` argument in the Management or Game SDL lacks a description (CrowdyJS is warn-only). The PR build also enforces `onBrokenLinks: 'throw'`. Live example smoke (`npm run test:examples`) is **not** a Docs CI gate — run it on the builder with `CKS_DOCS_GRAPHQL_URL` / `CKS_DOCS_TOKEN` (and optionally `CKS_DOCS_APP_TOKEN` / `CKS_DOCS_APP_ID`) if you want to hit a live GraphQL endpoint.
 
 ## Maintainers: Management UI screenshots
 

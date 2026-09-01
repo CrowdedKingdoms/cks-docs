@@ -16,20 +16,26 @@ wallet actions, payouts, ownership transfers, or another real-money effect.
 Schema availability and passing development tests are not rollout approval.
 :::
 
-## Tracked development release
+## Live stack (discover — do not hardcode)
 
-The deployed development baseline is:
+Agentic Crowdy Studio is **allowlisted development** on the current unified
+CK API + CrowdyJS 15.x line. The July 2026 `v0.1.94` / CrowdyJS `12.0.0` train
+is **historical** (see [Releases](/releases/intro)); it is not the operator
+redeploy target.
 
-- environment release **`v0.1.94`** (the final tracked manifest);
-- Game API **`v0.19.16`**;
-- Management API **`v0.1.193-dev`**;
-- CrowdyJS **`12.0.0`**; and
-- the matching BWF bundle and public docs.
+Before expanding allowlists or diagnosing drift, derive what is actually
+running:
 
-The stabilization train used intermediary direct-ingest manifests while the
-provider/runtime gates were repaired. Those manifests are now backfilled into
-release history; `v0.1.94` is the manifest operators should track and redeploy.
-Do not infer a separate supported release from an intermediary ingest record.
+```bash
+# ck-api / Buddy / studio / control-plane per tier
+infra-control-plane/scripts/ops/deployed-versions.sh
+
+# CrowdyJS npm dist-tags (latest / @dev / @test)
+npm view @crowdedkingdoms/crowdyjs dist-tags
+```
+
+Do not infer a supported release from an intermediary ingest record or from
+version numbers copied out of this page.
 
 ## Control hierarchy
 
@@ -207,7 +213,7 @@ kill is released.
 
 ## Final rollout evidence
 
-Sanitized live evidence for `v0.1.94` passed:
+Sanitized live evidence for the July 2026 (`v0.1.94`) train passed:
 
 - Ask returned the expected exact response.
 - Build executed `workspace.file.read`; a checkpointed
@@ -282,7 +288,7 @@ permitted to be stored.
 
 ## Expansion / redeployment checklist
 
-The tracked `v0.1.94` development rollout passed this gate. For a new app,
+The July 2026 (`v0.1.94`) development train passed this gate. For a new app,
 environment, model, or later manifest, keep the relevant kill enabled until all
 are true:
 

@@ -1,0 +1,43 @@
+---
+id: reinstate-organization-input
+title: ReinstateOrganizationInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Which retired organization to put back, and why.
+
+
+```graphql
+input ReinstateOrganizationInput {
+  orgId: BigInt!
+  reason: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ReinstateOrganizationInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+Organization to reinstate (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ReinstateOrganizationInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Why the retirement is being reversed. Required and stored.
+
+
+
+
+### Member Of
+
+[`reinstateOrganization`](/reference/graphql/operations/mutations/reinstate-organization.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
