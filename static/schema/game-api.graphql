@@ -1158,9 +1158,17 @@ type App {
   """
   deploymentTarget: String!
   """
-  Reserved sustained egress in bytes/s for shared apps. 0 = free tier; >0 bypasses the ~1 MB/s rate limit and incurs a monthly reservation fee.
+  Reserved realtime (UDP) capacity in bytes/s for shared apps. Superseded by reservedUdpBytesPerSec.
   """
-  reservedEgressBytesPerSec: BigInt!
+  reservedEgressBytesPerSec: BigInt! @deprecated(reason: "Renamed 2026-09-01 when reservations split by traffic type. Use reservedUdpBytesPerSec; this returns the same value for one release.")
+  """
+  Reserved realtime (UDP) capacity in bytes/s. Guarantees a minimum the platform provisions for you; it is not a limit on what you may send. Billed monthly whether or not used. 0 = none.
+  """
+  reservedUdpBytesPerSec: BigInt!
+  """
+  Reserved API request rate in GraphQL operations/sec. Guarantees a minimum the platform provisions for you; it is not a limit on how many requests you may make. Billed monthly whether or not used. 0 = none.
+  """
+  reservedGraphqlOpsPerSec: BigInt!
   """
   Shared-environment runtime gate, mirrored to the game DB and enforced by game-api + Buddy: "active", "grace", "denied", or "suspended".
   """
@@ -10169,7 +10177,7 @@ type Mutation {
     idempotencyKey: String
   ): AppSharedSubscription!
   """
-  Reserve sustained egress throughput for a shared app (bypasses the ~1 MB/s free-tier rate limit). Billed at $3/MB/s/month from the org wallet; upgrades are prorated for the current month. Requires 'manage_billing' on the app's org.
+  Reserve capacity for a shared app. A reservation is a FLOOR, not a ceiling: the platform provisions and holds a minimum for you and does not limit what you may use beyond it. Billed monthly from the org wallet whether or not it is used; upgrades are prorated for the current month. Note that the ~1 MB/s free-tier shaping is lifted by funding a wallet, not by reserving. Requires 'manage_billing' on the app's org.
   """
   setAppReservedThroughput(
     """Org, app, and desired reserved throughput in bytes/s."""
