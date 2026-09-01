@@ -1,0 +1,73 @@
+---
+id: public-rate-card-entry-type
+title: PublicRateCardEntryType
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One priced dimension of the public rate card: its rate and its free allowances. A dimension with a price of 0 is metered but not charged.
+
+
+```graphql
+type PublicRateCardEntryType {
+  scope: RateScope!
+  metric: String!
+  unitLabel: String!
+  unitQuantity: BigInt!
+  priceCents: Float!
+  currency: String!
+  freePerHour: BigInt
+  freePerMonth: BigInt
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RateScope!</b></code>](/reference/graphql/types/enums/rate-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
+Which card this row is on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>metric</b></code>](#metric)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#metric\} 
+The metered dimension, e.g. "graphql&#x005F;recv&#x005F;ops" or "player&#x005F;wasm&#x005F;compute&#x005F;units". This is the key your usage is aggregated under, so it is what to match a bill line against.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>unitLabel</b></code>](#unit-label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#unit-label\} 
+Human unit this price is quoted in, e.g. "GiB" or "M units". Display only; the arithmetic uses unitQuantity.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>unitQuantity</b></code>](#unit-quantity)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#unit-quantity\} 
+How many raw metric units one priceCents charge covers, as a BigInt decimal string. A price of 15 with unitQuantity 1073741824 is 15 cents per GiB. priceCents and unitQuantity are two halves of one price and mean nothing apart.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#price-cents\} 
+Cents charged per unitQuantity raw units, above the free allowance. Fractional values are permitted. 0 means metered but not charged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+ISO currency code. USD today.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>freePerHour</b></code>](#free-per-hour)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#free-per-hour\} 
+Raw metric units free per clock hour before anything is charged, as a BigInt decimal string. Null when this dimension has no allowance row, which for a priced dimension means it bills from the first unit.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>freePerMonth</b></code>](#free-per-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#free-per-month\} 
+Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the pooled monthly trial budget per (player, app). Null when this dimension has no monthly allowance.
+
+
+
+
+### Returned By
+
+[`meteredRateCard`](/reference/graphql/operations/queries/metered-rate-card.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

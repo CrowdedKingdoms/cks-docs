@@ -15,13 +15,14 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Updates a role's name, description, and/or permission set. Requires the 'manage&#x005F;members' permission on the role's org (super admins bypass). If input.permissions is provided it replaces the entire set (empty array clears all); omit to leave permissions unchanged.
+Updates a role's name, description, and/or permission set. Requires the 'manage&#x005F;members' permission on the role's org (super admins bypass). If input.permissions is provided it replaces the entire set (empty array clears all); omit to leave permissions unchanged. Throws FORBIDDEN when input.permissions is given for a SYSTEM role (such as the org's built-in 'admin'): system roles have a fixed permission set, so create a custom role and assign that instead. Name and description remain editable on a system role.
 
 
 ```graphql
 updateOrgRole(
   orgRoleId: BigInt!
   input: UpdateOrgRoleInput!
+  idempotencyKey: String
 ): OrgRole!
 ```
 
@@ -34,6 +35,10 @@ Role id (org&#x005F;role&#x005F;id as a BigInt string).
 
 #### [<code style={{ fontWeight: 'normal' }}>updateOrgRole.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UpdateOrgRoleInput!</b></code>](/reference/graphql/types/inputs/update-org-role-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
 
+
+
+#### [<code style={{ fontWeight: 'normal' }}>updateOrgRole.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key. Recommended for retries: replaying with the same key and identical arguments returns the first result instead of re-applying; the same key with different arguments returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
 
 
 
