@@ -1502,6 +1502,32 @@ enum RateScope {
 }
 
 """
+One Crowdy Studio agent model price, in micro-USD per million tokens. Only an ACTIVE row with a model_id ever prices a run.
+"""
+type AgentRateCardEntryType {
+  """Stable code for this card row, unique across the table."""
+  code: String!
+  """
+  Provider model this prices, matched against the resolved model at ingest. Null is only legal on a non-ACTIVE row.
+  """
+  modelId: String
+  """ISO currency code. USD today."""
+  currency: String!
+  """
+  DRAFT, ACTIVE or RETIRED. Only ACTIVE, inside its effective window, prices a run; an uncarded model is left unbilled rather than charged at cost.
+  """
+  status: String!
+  """Micro-USD per million uncached prompt tokens."""
+  inputMicroUsdPerMillion: BigInt!
+  """Micro-USD per million completion tokens."""
+  outputMicroUsdPerMillion: BigInt!
+  """Micro-USD per million reasoning tokens."""
+  reasoningMicroUsdPerMillion: BigInt!
+  """Micro-USD per million cached prompt tokens."""
+  cachedInputMicroUsdPerMillion: BigInt!
+}
+
+"""
 One priced dimension of the public rate card: its rate and its free allowances. A dimension with a price of 0 is metered but not charged.
 """
 type PublicRateCardEntryType {
@@ -7937,6 +7963,10 @@ type Query {
     """Which card to read."""
     scope: RateScope!
   ): [RateCardEntryType!]! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
+  OPERATOR ONLY. The Crowdy Studio agent price list: every model card with its four per-million token prices and its lifecycle status. Separate from billingRateCard because agent pricing is per model rather than per metered dimension. Read-only.
+  """
+  agentRateCards: [AgentRateCardEntryType!]! @requiresPermission(scope: "operator", permission: "is_operator")
   """
   OPERATOR ONLY. Every organization currently marked billing_exempt. An exemption nobody can enumerate is an exemption that outlives its reason.
   """
