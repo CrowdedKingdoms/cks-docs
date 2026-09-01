@@ -37,7 +37,9 @@ type App {
   splitMode: Boolean!
   gameApiUrl: String
   deploymentTarget: String!
-  reservedEgressBytesPerSec: BigInt!
+  reservedEgressBytesPerSec: BigInt! @deprecated
+  reservedUdpBytesPerSec: BigInt!
+  reservedGraphqlOpsPerSec: BigInt!
   runtimeStatus: String!
   runtimeDenialReason: String
   codeAdmissionMode: String!
@@ -120,8 +122,22 @@ Resolved game-api base URL for SDK/runtime calls: the per-tenant URL for dedicat
 Where the app runs: "none" (draft / not deployed), "shared" (the shared game-api), or "dedicated" (a provisioned per-tenant environment).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>App.<b>reservedEgressBytesPerSec</b></code>](#reserved-egress-bytes-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-egress-bytes-per-sec\} 
-Reserved sustained egress in bytes/s for shared apps. 0 = free tier; &#x003E;0 bypasses the ~1 MB/s rate limit and incurs a monthly reservation fee.
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>reservedEgressBytesPerSec</b></code>](#reserved-egress-bytes-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-egress-bytes-per-sec\} 
+:::warning[DEPRECATED]
+
+Renamed 2026-09-01 when reservations split by traffic type. Use reservedUdpBytesPerSec; this returns the same value for one release.
+
+:::
+
+Reserved realtime (UDP) capacity in bytes/s for shared apps. Superseded by reservedUdpBytesPerSec.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>reservedUdpBytesPerSec</b></code>](#reserved-udp-bytes-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-udp-bytes-per-sec\} 
+Reserved realtime (UDP) capacity in bytes/s. Guarantees a minimum the platform provisions for you; it is not a limit on what you may send. Billed monthly whether or not used. 0 = none.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>reservedGraphqlOpsPerSec</b></code>](#reserved-graphql-ops-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-graphql-ops-per-sec\} 
+Reserved API request rate in GraphQL operations/sec. Guarantees a minimum the platform provisions for you; it is not a limit on how many requests you may make. Billed monthly whether or not used. 0 = none.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>runtimeStatus</b></code>](#runtime-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#runtime-status\} 

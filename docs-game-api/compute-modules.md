@@ -382,11 +382,28 @@ normal engines far below them.
 
 ## Activation: when your module actually runs
 
-Modules load **lazily**: they run while your app has active realtime sessions
-and unload after an idle window (about 5 minutes) with no players. World
-simulation that must run around the clock can set `alwaysOn: true` on the
-module (`computeUpsertModule`) — it then runs regardless of player presence
-(and bills accordingly).
+Modules load **lazily**: they run while your app has a player present and
+unload after an idle window (about 5 minutes) once the last one leaves.
+Presence is measured across the whole fleet, so it does not matter which server
+your players connected to.
+
+**Nothing runs for an app with nobody in it.** That applies to compute modules,
+scheduled automations and timers alike. `alwaysOn` used to opt a module out of
+this and is **retired as of 2026-09-01**: `computeUpsertModule` refuses
+`alwaysOn: true`, and the field always reads `false`.
+
+If your world needs to advance while it is empty — crops growing, territory
+decaying, queues draining — compute the elapsed time on the first tick after a
+player returns rather than ticking through the night. You get the same result
+for a fraction of the cost, and it stays correct if your game is quiet for a
+week rather than an hour.
+
+Scheduled automations follow the same rule, and a schedule that comes due while
+your app is empty is **skipped, not queued**: its next run is set from the time
+it was skipped, so nobody logging in triggers a burst of catch-up runs. Timers
+are the exception — a one-shot timer waits in place and fires on the first tick
+after somebody returns, because unlike a recurring schedule it has no next
+occurrence to fall back on.
 
 ## Billing
 
@@ -470,11 +487,11 @@ query { computeAppDiagnostics(appId: "1") {
 Everything below uses plain GraphQL against the Game API endpoint with a
 bearer token whose user holds `manage_compute` on the app's org.
 
-1. **Create** — `computeUpsertModule(input: {appId: "1", name: "counter",
-   alwaysOn: true})`. `alwaysOn` matters for this walkthrough: without it the
-   module only loads while your app has connected players (see
+1. **Create** — `computeUpsertModule(input: {appId: "1", name: "counter"})`.
+   Note that a module only loads while your app has a player present (see
    [Activation](#activation-when-your-module-actually-runs)), and a fresh test
-   app has none.
+   app has none — so **connect a client before expecting ticks**. Any client
+   counts, including a headless one; the point is that somebody is in the world.
 2. **Deploy** — `computeDeployVersion` with the starter `Cargo.toml` +
    `src/lib.rs` shown [above](#writing-a-module), `sdkVersion: "0.1.0"`,
    `abiVersion: 0`.
