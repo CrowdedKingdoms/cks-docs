@@ -1502,6 +1502,66 @@ enum RateScope {
 }
 
 """
+One Crowdy Studio agent model price, in micro-USD per million tokens. Only an ACTIVE row with a model_id ever prices a run.
+"""
+type AgentRateCardEntryType {
+  """Stable code for this card row, unique across the table."""
+  code: String!
+  """
+  Provider model this prices, matched against the resolved model at ingest. Null is only legal on a non-ACTIVE row.
+  """
+  modelId: String
+  """ISO currency code. USD today."""
+  currency: String!
+  """
+  DRAFT, ACTIVE or RETIRED. Only ACTIVE, inside its effective window, prices a run; an uncarded model is left unbilled rather than charged at cost.
+  """
+  status: String!
+  """Micro-USD per million uncached prompt tokens."""
+  inputMicroUsdPerMillion: BigInt!
+  """Micro-USD per million completion tokens."""
+  outputMicroUsdPerMillion: BigInt!
+  """Micro-USD per million reasoning tokens."""
+  reasoningMicroUsdPerMillion: BigInt!
+  """Micro-USD per million cached prompt tokens."""
+  cachedInputMicroUsdPerMillion: BigInt!
+}
+
+"""
+One priced dimension of the public rate card: its rate and its free allowances. A dimension with a price of 0 is metered but not charged.
+"""
+type PublicRateCardEntryType {
+  """Which card this row is on."""
+  scope: RateScope!
+  """
+  The metered dimension, e.g. "graphql_recv_ops" or "player_wasm_compute_units". This is the key your usage is aggregated under, so it is what to match a bill line against.
+  """
+  metric: String!
+  """
+  Human unit this price is quoted in, e.g. "GiB" or "M units". Display only; the arithmetic uses unitQuantity.
+  """
+  unitLabel: String!
+  """
+  How many raw metric units one priceCents charge covers, as a BigInt decimal string. A price of 15 with unitQuantity 1073741824 is 15 cents per GiB. priceCents and unitQuantity are two halves of one price and mean nothing apart.
+  """
+  unitQuantity: BigInt!
+  """
+  Cents charged per unitQuantity raw units, above the free allowance. Fractional values are permitted. 0 means metered but not charged.
+  """
+  priceCents: Float!
+  """ISO currency code. USD today."""
+  currency: String!
+  """
+  Raw metric units free per clock hour before anything is charged, as a BigInt decimal string. Null when this dimension has no allowance row, which for a priced dimension means it bills from the first unit.
+  """
+  freePerHour: BigInt
+  """
+  Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the pooled monthly trial budget per (player, app). Null when this dimension has no monthly allowance.
+  """
+  freePerMonth: BigInt
+}
+
+"""
 One field that moved, with the value it held before. Reported so a price change is auditable from the response rather than reconstructed afterwards.
 """
 type RateChangeType {
@@ -7890,12 +7950,23 @@ type Query {
     orgId: BigInt!
   ): [AppBudget!]! @requiresPermission(scope: "org", permission: "view_billing", scopeArg: "orgId")
   """
-  OPERATOR ONLY. The metered rate card for a scope: every priced dimension with its unit, price and hourly free allowance. SHARED is organization usage billed to the org wallet as "shared_usage"; PLAYER is player compute billed to the player wallet as "usage_debit". A dimension priced at 0 is metered but not charged. Read-only.
+  PUBLIC: no authentication required. The metered rate card for a scope — every priced dimension with its unit, price, and free allowances. SHARED is organization usage billed to the org wallet; PLAYER is player compute billed to the player wallet. A dimension priced at 0 is metered but not charged. These are the rates in effect right now on this tier, which is what API ToS 4.1 undertakes to make available. Read-only.
+  """
+  meteredRateCard(
+    """Which card to read."""
+    scope: RateScope!
+  ): [PublicRateCardEntryType!]!
+  """
+  OPERATOR ONLY. The metered rate card for a scope: every priced dimension with its unit, price and hourly free allowance. SHARED is organization usage billed to the org wallet as "shared_usage"; PLAYER is player compute billed to the player wallet as "usage_debit". A dimension priced at 0 is metered but not charged. Read-only. Customers read the same rates through `meteredRateCard`, which is public and omits the operator note.
   """
   billingRateCard(
     """Which card to read."""
     scope: RateScope!
   ): [RateCardEntryType!]! @requiresPermission(scope: "operator", permission: "is_operator")
+  """
+  OPERATOR ONLY. The Crowdy Studio agent price list: every model card with its four per-million token prices and its lifecycle status. Separate from billingRateCard because agent pricing is per model rather than per metered dimension. Read-only.
+  """
+  agentRateCards: [AgentRateCardEntryType!]! @requiresPermission(scope: "operator", permission: "is_operator")
   """
   OPERATOR ONLY. Every organization currently marked billing_exempt. An exemption nobody can enumerate is an exemption that outlives its reason.
   """
@@ -9885,12 +9956,16 @@ type Mutation {
   """
   createOrgRole(input: CreateOrgRoleInput!): OrgRole! @requiresPermission(scope: "org", permission: "manage_members", scopeArg: "input.orgId")
   """
-  Updates a role's name, description, and/or permission set. Requires the 'manage_members' permission on the role's org (super admins bypass). If input.permissions is provided it replaces the entire set (empty array clears all); omit to leave permissions unchanged.
+  Updates a role's name, description, and/or permission set. Requires the 'manage_members' permission on the role's org (super admins bypass). If input.permissions is provided it replaces the entire set (empty array clears all); omit to leave permissions unchanged. Throws FORBIDDEN when input.permissions is given for a SYSTEM role (such as the org's built-in 'admin'): system roles have a fixed permission set, so create a custom role and assign that instead. Name and description remain editable on a system role.
   """
   updateOrgRole(
     """Role id (org_role_id as a BigInt string)."""
     orgRoleId: BigInt!
     input: UpdateOrgRoleInput!
+    """
+    Optional idempotency key. Recommended for retries: replaying with the same key and identical arguments returns the first result instead of re-applying; the same key with different arguments returns IDEMPOTENCY_CONFLICT. Keys expire after 24h.
+    """
+    idempotencyKey: String
   ): OrgRole!
   """
   Deletes an organization role. Requires the 'manage_members' permission on the role's org (super admins bypass). DESTRUCTIVE: removes the role and unassigns it from all members. Returns false if the role does not exist.
