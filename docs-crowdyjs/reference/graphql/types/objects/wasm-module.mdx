@@ -25,7 +25,7 @@ type WasmModule {
   name: String!
   description: String
   enabled: Boolean!
-  alwaysOn: Boolean!
+  alwaysOn: Boolean! @deprecated
   currentVersionId: String
   circuitState: String!
   consecutiveFailures: Int!
@@ -61,8 +61,14 @@ Optional description.
 Whether the module may run. New modules start disabled; enable after a successful compile.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>alwaysOn</b></code>](#always-on)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#always-on\} 
-Whether the module runs without active players (world simulation). Policy-gated.
+#### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>alwaysOn</b></code>](#always-on)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#always-on\} 
+:::warning[DEPRECATED]
+
+Retired 2026-09-01: nothing runs for an app with no player in it, so this is always false. Stop selecting it.
+
+:::
+
+RETIRED. Always false. Modules run only while their app has a player present.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>WasmModule.<b>currentVersionId</b></code>](#current-version-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#current-version-id\} 

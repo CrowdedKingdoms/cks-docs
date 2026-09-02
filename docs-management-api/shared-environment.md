@@ -31,9 +31,24 @@ So in practice there is one model, and this page describes it.
   server-side logic — automation compute units and
   [compute-module](/game-api/compute-modules) usage: `wasm_compute_units`,
   `wasm_egress_msgs`, `wasm_egress_bytes`).
-- Within the free allowance the app runs at no cost. When an app exceeds its
-  free hourly allowance, usage above the allowance is billed from your
-  organization wallet at the published rate card.
+- Each app also includes **5 GB of client egress per calendar month** (decimal
+  GB: 1 GB = 1,000,000,000 bytes). This is the headline free-tier number and the
+  one most games reach first. Unused volume does not roll over.
+- Within the free allowances the app runs at no cost. Above them, usage is billed
+  from your organization wallet at the published rate card.
+- A free app that has never been funded is also **shaped to roughly 1 MB/s** of
+  egress. That cap is lifted by funding the org wallet or enabling
+  [auto-billing](#auto-billing) — not by buying a reservation. Once an
+  organization can be charged, CK does not rate-limit its egress, and spend is
+  bounded by the [caps you set](#spend-caps) rather than by a throughput ceiling.
+
+**What counts as a billed byte.** Egress only: bytes the service delivers to your
+clients. Ingress — what your clients send — is metered and visible in usage, but
+does not count toward the monthly volume or its allowance. Volume is measured as
+wire bytes at the network interface, so it includes the transport and network
+headers each frame carries, and it is counted after any compression the service
+applies. A client-side byte counter will not match it. The full basis is in the
+[Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html).
 
 For compute modules, one `wasm_compute_unit` is approximately one millisecond
 of reference CPU. The platform takes the larger of measured CPU time and the
@@ -162,15 +177,46 @@ mutation {
 Set `limitCents: null` for no limit. Add a card first with
 `setupSharedPaymentMethod`.
 
+## Reserved capacity
+
+Reserving capacity is optional and separate from paying for usage. It asks the
+platform to **provision and hold** a minimum for your app, and it is sold in two
+independent dimensions because a game may need a great deal of one and little of
+the other:
+
+- **Realtime (UDP) throughput**, in bytes/sec. Set with
+  `setAppReservedThroughput`; read back as `app.reservedUdpBytesPerSec`.
+- **API request rate**, in GraphQL operations/sec, as
+  `app.reservedGraphqlOpsPerSec`.
+
+Reserving one does not reserve the other.
+
+Three things a reservation is **not**:
+
+1. **Not a ceiling.** It obliges CK to keep that much capacity in service for
+   you; it does not cap what you may send. Use above the reserved rate is metered
+   like any other usage rather than refused.
+2. **Not a data allowance.** The monthly fee buys **capacity, not volume**. It is
+   charged *in addition to* metered usage and includes no bytes of its own —
+   reserving 5 MB/s does not make the first 5 MB/s free.
+3. **Not how you lift the free-tier cap.** Funding a wallet does that (see
+   [Free tier](#free-tier)). Before 2026-09-01 a reservation doubled as a
+   rate-limit bypass; it no longer does.
+
+Billed monthly from the org wallet whether or not the capacity is used; upgrades
+are prorated for the current month, and lowering or clearing a reservation charges
+nothing. Requires `manage_billing` on the app's organization.
+
 ## What "access denied" means
 
 When an app can't serve traffic, `appRuntimeState` reports a `runtimeStatus`
 other than `active` and a `runtimeDenialReason`:
 
-- `free_allowance` — the free hourly allowance is exhausted. Fund the wallet (or
-  enable auto-billing), or wait for the hour to reset.
-- `insufficient_funds` — the wallet is empty and auto-billing can't cover it.
-  Top up the wallet.
+- `insufficient_funds` — the app needs to be paid for and cannot be: it is past a
+  free allowance and the wallet is empty with auto-billing unable to cover it.
+  Top up the wallet or enable auto-billing. (An app still inside its allowances
+  is not denied at all, so this reason covers both "out of allowance" and "out of
+  money" — they are the same situation.)
 - `spend_cap` — an hourly/daily spend cap was reached. Raise the cap or wait for
   the window to reset.
 - `subscription_lapsed` — a paid app slot's subscription isn't active. Renew it.

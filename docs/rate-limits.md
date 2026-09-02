@@ -43,5 +43,13 @@ rather than a request quota:
 
 Per-org/app **usage quotas** (e.g. metered service limits) are a billing/entitlement
 concept, not a transport rate limit. Query the effective quota for a metric with the
-Management API `effectiveQuota`, and see the metered-billing guides. Exceeding a quota
-surfaces as a quota error on the affected operation, not as a transport 429.
+Management API `effectiveQuota`, and see
+[Shared environment & billing](/management-api/shared-environment#free-tier).
+Exceeding a quota surfaces as a quota error on the affected operation, not as a
+transport 429.
+
+One shaping cap does behave like a rate limit and is worth knowing about: an
+unfunded free app's egress is soft-capped at roughly **1 MB/s**. Funding the org
+wallet or enabling auto-billing lifts it — buying a capacity reservation does
+not. Once an organization can be charged, CK does not rate-limit its egress, and
+spend is bounded by the caps you set rather than by a throughput ceiling.

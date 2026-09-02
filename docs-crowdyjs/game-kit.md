@@ -534,7 +534,11 @@ await kit.decks.play(hand[0].containerId, { sessionId: match.sessionId });
 
 `worldsimBlueprint()` + `kit.worldsim`: day/night + weather (`WorldState`
 singleton), regenerating `ResourceNode`s, growing `Crop`s, and `WaveSpawner`
-counters — all interval automations that run with **no client online**. The
+counters — all interval automations, which run while the app has a player in it
+and are [skipped while it is
+empty](/game-api/autonomous-processes#presence). Advance
+these by elapsed time rather than one step per tick, or the world stalls whenever
+nobody is playing. The
 world clock declares a **spatial notification** at the world anchor chunk, so
 nearby clients update the sky push-style instead of polling.
 
