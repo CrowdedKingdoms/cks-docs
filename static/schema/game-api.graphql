@@ -1162,11 +1162,11 @@ type App {
   """
   reservedEgressBytesPerSec: BigInt! @deprecated(reason: "Renamed 2026-09-01 when reservations split by traffic type. Use reservedUdpBytesPerSec; this returns the same value for one release.")
   """
-  Reserved realtime (UDP) capacity in bytes/s. Guarantees a minimum the platform provisions for you; it is not a limit on what you may send. Billed monthly whether or not used. 0 = none.
+  Reserved realtime (UDP) capacity in bytes/s. Guarantees a minimum the platform provisions for you; it is not a limit on what you may send. Billed monthly whether or not used, IN ADDITION TO metered usage -- a reservation buys capacity, not volume, so reserving 5 MB/s does not make the first 5 MB/s free. Independent of reservedGraphqlOpsPerSec. 0 = none.
   """
   reservedUdpBytesPerSec: BigInt!
   """
-  Reserved API request rate in GraphQL operations/sec. Guarantees a minimum the platform provisions for you; it is not a limit on how many requests you may make. Billed monthly whether or not used. 0 = none.
+  Reserved API request rate in GraphQL operations/sec. Guarantees a minimum the platform provisions for you; it is not a limit on how many requests you may make. Billed monthly whether or not used, IN ADDITION TO metered usage -- a reservation buys capacity, not volume. Independent of reservedUdpBytesPerSec: reserving one does not reserve the other. 0 = none.
   """
   reservedGraphqlOpsPerSec: BigInt!
   """
@@ -1174,7 +1174,7 @@ type App {
   """
   runtimeStatus: String!
   """
-  When runtimeStatus is not "active", why the runtime is gated: "free_allowance", "insufficient_funds", "spend_cap", or "subscription_lapsed". Null when active.
+  When runtimeStatus is not "active", why the runtime is gated: "insufficient_funds", "spend_cap", or "subscription_lapsed". Null when active. Historical rows may carry "free_allowance", which the gate no longer produces -- an app over its allowance with no way to pay is denied as "insufficient_funds".
   """
   runtimeDenialReason: String
   """
@@ -1421,7 +1421,7 @@ type WalletTransaction {
   """
   balanceAfter: BigInt!
   """
-  What produced this transaction. The complete set of values this API writes: "topup" (wallet credit from a completed checkout, positive), "admin_credit" (operator credit applied without a payment provider, positive), "auto_recharge" (off-session automatic wallet recharge, positive), "shared_usage" (hourly shared-environment metered charge for one closed clock hour, negative), "agent_usage" (Crowdy Studio agent run charged at provider cost, negative), "reserved_throughput" (monthly or prorated reserved egress capacity, negative), "markup_payout" (the app developer's markup on a player's compute bill, credited to the org in the same transaction as the player debit that produced it, positive). No other value is written; earlier versions of this description also listed "usage" and "environment_usage", neither of which was ever produced.
+  What produced this transaction. The complete set of values this API writes: "topup" (wallet credit from a completed checkout, positive), "admin_credit" (operator credit applied without a payment provider, positive), "auto_recharge" (off-session automatic wallet recharge, positive), "shared_usage" (hourly shared-environment metered charge for one closed clock hour, negative), "agent_usage" (Crowdy Studio agent run charged at provider cost, negative), "reserved_throughput" (monthly or prorated reserved capacity -- realtime bytes/s or GraphQL operations/s -- charged in addition to metered usage rather than including any of it, negative), "markup_payout" (the app developer's markup on a player's compute bill, credited to the org in the same transaction as the player debit that produced it, positive). No other value is written; earlier versions of this description also listed "usage" and "environment_usage", neither of which was ever produced.
   """
   transactionType: String!
   """
@@ -1802,7 +1802,7 @@ type AppRuntimeState {
   """Current runtime gate decision (active / grace / denied / suspended)."""
   runtimeStatus: AppRuntimeStatus!
   """
-  free_allowance | insufficient_funds | spend_cap | subscription_lapsed when not active.
+  insufficient_funds | spend_cap | subscription_lapsed when not active. Historical rows may carry free_allowance, which the gate no longer produces.
   """
   runtimeDenialReason: String
   """Owning org wallet balance, in cents."""
@@ -1862,10 +1862,12 @@ type FreeAppQuotaApp {
   """URL slug for the app."""
   slug: String!
   """
-  True when the app consumes a free org slot (shared, not archived, no active subscription, no reserved throughput).
+  True when the app consumes a free org slot (shared, not archived, no active subscription, no reserved realtime capacity). Only a REALTIME (UDP) reservation releases a slot; a GraphQL operations reservation does not.
   """
   consumesFreeSlot: Boolean!
-  """Reserved egress throughput in bytes/sec (0 when none)."""
+  """
+  Reserved REALTIME (UDP) capacity in bytes/sec (0 when none). This is the dimension that decides free-slot consumption; a GraphQL operations reservation is separate and is not reported here. Same value as App.reservedUdpBytesPerSec.
+  """
   reservedEgressBytesPerSec: BigInt!
   """True when the app has an active legacy shared subscription."""
   hasActiveSubscription: Boolean!
@@ -1906,7 +1908,7 @@ type SetAppReservedThroughputResult {
 }
 
 """
-Result of publishing an app to the shared environment. All paths publish immediately; usage above the free hourly allowance is wallet-billed.
+Result of publishing an app to the shared environment. All paths publish immediately. Usage above the free allowances is wallet-billed: each app has a per-dimension hourly allowance and, for client egress, 5 decimal GB per calendar month. An unfunded free app is also shaped to roughly 1 MB/s; funding the org wallet or enabling auto-billing lifts that.
 """
 type PublishAppResult {
   appId: BigInt!
@@ -4389,7 +4391,7 @@ type GraphqlOperationUsageRow {
 }
 
 """
-Org-level rollup of replication/GraphQL byte totals and GraphQL op counts across all apps in the organization for the time window.
+Org-level rollup of replication/GraphQL byte totals and GraphQL op counts across all apps in the organization for the time window. WHICH OF THESE YOU PAY FOR: the *SendBytes fields are the billable direction, and *RecvBytes are metered but do NOT count toward Aggregate Data Volume, the monthly free-tier and overage measure. All byte figures are wire bytes measured at the network interface, including transport and network headers, and after any compression the service applies -- they will not match a client-side byte counter.
 """
 type OrgUsageSummary {
   """Organization id (as a string)."""
@@ -4409,7 +4411,7 @@ type OrgUsageSummary {
 }
 
 """
-Aggregate byte totals plus the top GraphQL operations for one app over the window.
+Aggregate byte totals plus the top GraphQL operations for one app over the window. WHICH OF THESE YOU PAY FOR: the *SendBytes fields are the billable direction, and *RecvBytes are metered but do NOT count toward Aggregate Data Volume, the monthly free-tier and overage measure. All byte figures are wire bytes measured at the network interface, including transport and network headers, and after any compression the service applies -- they will not match a client-side byte counter.
 """
 type AppUsageSummary {
   """App id (as a string)."""
@@ -4443,7 +4445,7 @@ type AppUsageProjection {
   """App id (as a string)."""
   appId: String!
   """
-  Egress bytes recorded so far this calendar month (from app_monthly_egress).
+  Egress bytes recorded so far this calendar month (from app_monthly_egress). Egress only -- bytes the service delivered to clients, measured as wire bytes at the network interface. Ingress is metered separately and does not count toward this figure or the allowance it is compared against.
   """
   currentEgressBytes: String!
   """
@@ -4474,7 +4476,9 @@ type OrgAppUsageProjectionRow {
   appId: String!
   """App display name."""
   appName: String!
-  """Egress bytes so far this calendar month."""
+  """
+  Egress bytes so far this calendar month. Egress only; ingress does not count toward the aggregate volume.
+  """
   currentEgressBytes: String!
   """Projected end-of-month egress bytes, or null when insufficient data."""
   projectedBytes: String
@@ -4507,7 +4511,7 @@ type OrgUsageProjection {
   """True when any shared app is on track to exceed its free allowance."""
   onTrackToExceedAny: Boolean!
   """
-  True when org total projected egress exceeds the combined free tier — suggest reserved throughput.
+  True when org total projected egress exceeds the combined free tier, so the org should expect a metered bill. Note that a capacity reservation is NOT a remedy for this: reservations buy provisioned capacity and are charged in addition to metered usage, so they do not reduce an egress bill. What this signals is that the org needs a funded wallet or auto-billing.
   """
   suggestReservedThroughput: Boolean!
 }
@@ -5322,7 +5326,9 @@ type WasmModuleTrigger {
   moduleId: String!
   """Trigger type: tick | event | invoke."""
   triggerType: String!
-  """For tick triggers: the tick rate in Hz."""
+  """
+  For tick triggers: the tick rate in Hz. The module ticks at this rate only while its app has a player connected somewhere in the fleet, and stops when the last one leaves.
+  """
   tickHz: Float
   """
   For event triggers: function_invoked | property_changed | container_created | compute_event.
@@ -5765,7 +5771,9 @@ type GmAutomation {
   lastError: String
   """When the automation last ran."""
   lastRunAt: DateTime
-  """When the automation is next due (schedule)."""
+  """
+  When the automation is next due (schedule). Due is not a promise to run: a schedule that comes due while the app has no players is skipped, and this advances to the next slot without the skipped run being made up.
+  """
   nextRunAt: DateTime
 }
 
@@ -10900,7 +10908,7 @@ type Mutation {
     input: GrantTierFeatureInput!
   ): Boolean! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "input.appId")
   """
-  Create or update an autonomous process ("automation" / NPC): a server-driven entry-point function bound to a trigger (schedule | event | manual), an optional run-as identity, a target/candidate selector, and a per-automation safety budget. The entry-point function must be marked autonomousInvocable. Idempotent on (app, name). Requires app-admin ('manage_apps').
+  Create or update an autonomous process ("automation" / NPC): a server-driven entry-point function bound to a trigger (schedule | event | manual), an optional run-as identity, a target/candidate selector, and a per-automation safety budget. The entry-point function must be marked autonomousInvocable. Idempotent on (app, name). Requires app-admin ('manage_apps'). NOTHING RUNS FOR AN APP WITH NO PLAYER IN IT: a SCHEDULE trigger that comes due while the app is empty is skipped and rescheduled from the moment a player returns, and the missed runs are never made up -- so write the entry point to advance the world by elapsed time rather than by one step per run. Event and manual triggers are unaffected, because something already asked.
   """
   gameModelUpsertAutomation(
     """
@@ -10963,7 +10971,7 @@ type Mutation {
     name: String!
   ): GmAutomationRun! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "appId")
   """
-  Arm a one-shot timer: invoke a function once, after a delay. The timer is durable (it survives an API restart) and claimed by exactly one replica, so it fires once. The target function must be autonomousInvocable, because the fire is headless and runs with system authority rather than a player's — which is also why this needs app-admin ('manage_apps'). For player-driven delays, author a timers effect on a function instead so the delay is part of your game logic. Supply dedupeKey to make re-arming replace the pending timer rather than queue another fire.
+  Arm a one-shot timer: invoke a function once, after a delay. The timer is durable (it survives an API restart) and claimed by exactly one replica, so it fires once. A timer whose deadline passes while the app has no players WAITS rather than firing into an empty world, and fires when somebody returns: late, not lost. Read the clock in the handler rather than assuming the delay you asked for is the delay that elapsed. The target function must be autonomousInvocable, because the fire is headless and runs with system authority rather than a player's — which is also why this needs app-admin ('manage_apps'). For player-driven delays, author a timers effect on a function instead so the delay is part of your game logic. Supply dedupeKey to make re-arming replace the pending timer rather than queue another fire.
   """
   gameModelScheduleInvoke(
     """
@@ -12332,15 +12340,15 @@ input SetRateCardInput {
 }
 
 """
-Set or change an app's reserved sustained throughput on the shared environment.
+Set or change an app's reserved REALTIME (UDP) capacity on the shared environment. Reservations are sold in two independent dimensions and this mutation sets one of them; read both back from App.reservedUdpBytesPerSec and App.reservedGraphqlOpsPerSec.
 """
 input SetAppReservedThroughputInput {
   """Organization that owns the app."""
   orgId: BigInt!
-  """App to configure reserved throughput for."""
+  """App to configure reserved realtime (UDP) capacity for."""
   appId: BigInt!
   """
-  Reserved sustained egress in bytes/s (decimal MB/s: 1_000_000 = 1 MB/s). 0 clears the reservation (free tier).
+  Reserved sustained realtime capacity in bytes/s (decimal MB/s: 1_000_000 = 1 MB/s). 0 clears the reservation, which releases the provisioned floor and stops the monthly fee; it does not change how the app is shaped, because the ~1 MB/s free-tier cap is decided by whether the org can be charged rather than by whether it holds a reservation. A reservation buys capacity, not volume: the fee is charged in addition to metered usage and includes no data allowance.
   """
   reservedBytesPerSec: BigInt!
 }

@@ -1,0 +1,73 @@
+---
+id: agent-rate-card-entry-type
+title: AgentRateCardEntryType
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One Crowdy Studio agent model price, in micro-USD per million tokens. Only an ACTIVE row with a model&#x005F;id ever prices a run.
+
+
+```graphql
+type AgentRateCardEntryType {
+  code: String!
+  modelId: String
+  currency: String!
+  status: String!
+  inputMicroUsdPerMillion: BigInt!
+  outputMicroUsdPerMillion: BigInt!
+  reasoningMicroUsdPerMillion: BigInt!
+  cachedInputMicroUsdPerMillion: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRateCardEntryType.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code\} 
+Stable code for this card row, unique across the table.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRateCardEntryType.<b>modelId</b></code>](#model-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#model-id\} 
+Provider model this prices, matched against the resolved model at ingest. Null is only legal on a non-ACTIVE row.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRateCardEntryType.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+ISO currency code. USD today.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRateCardEntryType.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+DRAFT, ACTIVE or RETIRED. Only ACTIVE, inside its effective window, prices a run; an uncarded model is left unbilled rather than charged at cost.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRateCardEntryType.<b>inputMicroUsdPerMillion</b></code>](#input-micro-usd-per-million)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#input-micro-usd-per-million\} 
+Micro-USD per million uncached prompt tokens.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRateCardEntryType.<b>outputMicroUsdPerMillion</b></code>](#output-micro-usd-per-million)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#output-micro-usd-per-million\} 
+Micro-USD per million completion tokens.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRateCardEntryType.<b>reasoningMicroUsdPerMillion</b></code>](#reasoning-micro-usd-per-million)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reasoning-micro-usd-per-million\} 
+Micro-USD per million reasoning tokens.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AgentRateCardEntryType.<b>cachedInputMicroUsdPerMillion</b></code>](#cached-input-micro-usd-per-million)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#cached-input-micro-usd-per-million\} 
+Micro-USD per million cached prompt tokens.
+
+
+
+
+### Returned By
+
+[`agentRateCards`](/reference/graphql/operations/queries/agent-rate-cards.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -256,7 +256,9 @@ app-wide fan-out are rejected. Studio model invokes use the ordinary player
 path, so `is_automation` does not grant extra authority.
 
 P1 executes scheduled (interval/cron) actions for both studio-model functions
-and player-module exports. `player_compute_invoke` routes through
+and player-module exports, subject to the platform presence rule: a schedule due
+while the app has no players is skipped and rescheduled rather than queued (see
+[Presence](autonomous-processes#presence)). `player_compute_invoke` routes through
 `playerComputeInvoke` as the grid owner and compute fuel is metered by the
 module (the automation records dispatch overhead only).
 `owner_container_changed` events fan out post-commit to both matching player

@@ -133,11 +133,11 @@ Reserved realtime (UDP) capacity in bytes/s for shared apps. Superseded by reser
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>reservedUdpBytesPerSec</b></code>](#reserved-udp-bytes-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-udp-bytes-per-sec\} 
-Reserved realtime (UDP) capacity in bytes/s. Guarantees a minimum the platform provisions for you; it is not a limit on what you may send. Billed monthly whether or not used. 0 = none.
+Reserved realtime (UDP) capacity in bytes/s. Guarantees a minimum the platform provisions for you; it is not a limit on what you may send. Billed monthly whether or not used, IN ADDITION TO metered usage -- a reservation buys capacity, not volume, so reserving 5 MB/s does not make the first 5 MB/s free. Independent of reservedGraphqlOpsPerSec. 0 = none.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>reservedGraphqlOpsPerSec</b></code>](#reserved-graphql-ops-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-graphql-ops-per-sec\} 
-Reserved API request rate in GraphQL operations/sec. Guarantees a minimum the platform provisions for you; it is not a limit on how many requests you may make. Billed monthly whether or not used. 0 = none.
+Reserved API request rate in GraphQL operations/sec. Guarantees a minimum the platform provisions for you; it is not a limit on how many requests you may make. Billed monthly whether or not used, IN ADDITION TO metered usage -- a reservation buys capacity, not volume. Independent of reservedUdpBytesPerSec: reserving one does not reserve the other. 0 = none.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>runtimeStatus</b></code>](#runtime-status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#runtime-status\} 
@@ -145,7 +145,7 @@ Shared-environment runtime gate, mirrored to the game DB and enforced by game-ap
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>runtimeDenialReason</b></code>](#runtime-denial-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#runtime-denial-reason\} 
-When runtimeStatus is not "active", why the runtime is gated: "free&#x005F;allowance", "insufficient&#x005F;funds", "spend&#x005F;cap", or "subscription&#x005F;lapsed". Null when active.
+When runtimeStatus is not "active", why the runtime is gated: "insufficient&#x005F;funds", "spend&#x005F;cap", or "subscription&#x005F;lapsed". Null when active. Historical rows may carry "free&#x005F;allowance", which the gate no longer produces -- an app over its allowance with no way to pay is denied as "insufficient&#x005F;funds".
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>codeAdmissionMode</b></code>](#code-admission-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#code-admission-mode\} 

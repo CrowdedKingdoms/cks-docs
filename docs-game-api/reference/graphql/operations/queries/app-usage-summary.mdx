@@ -51,4 +51,4 @@ Max number of top GraphQL operations to include (default 20).
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>AppUsageSummary</b></code>](/reference/graphql/types/objects/app-usage-summary.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Aggregate byte totals plus the top GraphQL operations for one app over the window.
+Aggregate byte totals plus the top GraphQL operations for one app over the window. WHICH OF THESE YOU PAY FOR: the &#x002A;SendBytes fields are the billable direction, and &#x002A;RecvBytes are metered but do NOT count toward Aggregate Data Volume, the monthly free-tier and overage measure. All byte figures are wire bytes measured at the network interface, including transport and network headers, and after any compression the service applies -- they will not match a client-side byte counter.

@@ -58,7 +58,7 @@ Trigger type: tick | event | invoke.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>tickHz</b></code>](#tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tick-hz\} 
-For tick triggers: the tick rate in Hz.
+For tick triggers: the tick rate in Hz. The module ticks at this rate only while its app has a player connected somewhere in the fleet, and stops when the last one leaves.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>WasmModuleTrigger.<b>onEvent</b></code>](#on-event)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#on-event\} 

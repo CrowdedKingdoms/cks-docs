@@ -188,7 +188,7 @@ When the automation last ran.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GmAutomation.<b>nextRunAt</b></code>](#next-run-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#next-run-at\} 
-When the automation is next due (schedule).
+When the automation is next due (schedule). Due is not a promise to run: a schedule that comes due while the app has no players is skipped, and this advances to the next slot without the skipped run being made up.
 
 
 

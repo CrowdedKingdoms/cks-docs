@@ -30,7 +30,70 @@ supported path.
 
 :::
 
-## 2026-08-28 (latest)
+## 2026-09-01
+
+**ck-api v1.73.0 — nothing runs for an app with no player in it; reservations split**
+
+Three behaviour changes, one reprice, and the API Terms are published at last.
+
+- **`alwaysOn` is retired and `computeUpsertModule` REFUSES `alwaysOn: true`.**
+  `WasmModule.alwaysOn` is `@deprecated` and always `false`. A compute module now
+  ticks only while its app has at least one player connected somewhere in the
+  fleet, and stops when the last one leaves. This is a removal without a
+  deprecation window on the INPUT side, because the alternative was to keep
+  accepting a flag that no longer did anything: an app passing `true` would have
+  believed its world was advancing while it was not. The `always_on_module_minutes`
+  billing dimension is gone with it — it could only ever meter zero.
+
+- **Scheduled work is presence-gated.** A `schedule` automation that comes due
+  while its app is empty is **skipped** and rescheduled from the moment a player
+  returns; the missed runs are **never made up**. Timers **wait** and fire late
+  rather than firing into an empty world. `event` and `manual` triggers, and
+  synchronous `computeInvoke`, are unaffected.
+
+  **Write for it.** Advance the world by `now - lastRun` rather than one step per
+  run, and store expiries as timestamps rather than remaining-tick counters. An
+  automation that assumes a cadence will silently fall behind whenever nobody is
+  playing. See [Presence](/game-api/autonomous-processes#presence).
+
+- **Reservations split into two dimensions and mean something different.**
+  `App.reservedEgressBytesPerSec` is `@deprecated` in favour of
+  `App.reservedUdpBytesPerSec`, joined by a new `App.reservedGraphqlOpsPerSec`
+  (GraphQL operations/sec). Reserving one does not reserve the other.
+
+  A reservation is now a **capacity floor**: it obliges CK to provision and hold
+  that much for you. It is **not a ceiling** (use above it is metered, not
+  refused), **not a data allowance** (the fee buys capacity, not volume, and is
+  charged in addition to metered usage — reserving 5 MB/s does not make the first
+  5 MB/s free), and **not how the free-tier cap is lifted**. Funding the org
+  wallet or enabling auto-billing lifts the ~1 MB/s shaping; before today a
+  reservation doubled as that bypass. See
+  [Reserved capacity](/management-api/shared-environment#reserved-capacity).
+
+- **Egress repriced to 19c.** Byte dimensions moved from 15c to 19c per GiB, and
+  `aggregate_data_volume` is 19c per decimal GB. The free tier is unchanged at
+  5 decimal GB of client egress per app per calendar month.
+
+- **The measurement basis is stated.** Volume is **egress only**, measured as
+  wire bytes at the network interface — including the transport and network
+  headers each frame carries — and counted after any compression the service
+  applies. **Ingress is metered but does not count** toward Aggregate Data Volume.
+  A client-side byte counter will not match your bill.
+
+- **The API Terms of Service and Rate Card are now published.** Previously they
+  existed but were not reachable:
+  [API Terms of Service](https://crowdedkingdoms.com/api-terms.html),
+  [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html),
+  [SDK Developer Terms](https://crowdedkingdoms.com/sdk-terms.html).
+
+- **SDKs.** CrowdyJS **15.4.0** drops `alwaysOn` from the module fragment, adds
+  `sharedEnvironment.setReservedThroughput()`, and reads both reservation
+  dimensions. CrowdyCPP **0.29.0** does the same and documents that
+  `Connection::Stats` byte counters are a local diagnostic that will not
+  reconcile against a bill. Both previously told developers to set `alwaysOn` for
+  modules that must run without connected players.
+
+## 2026-08-28
 
 **ck-api v1.67.0 — a notification aimed at another app's channel is now caught**
 
@@ -1168,7 +1231,9 @@ supported side by side with the new methods.
 
 - **Server-driven automations** invoke your [game model functions](/game-api/game-models)
   on their own — on a schedule or in reaction to model activity — so you can build NPCs,
-  spawners, and ticking world systems that run with no client connected. New GraphQL:
+  spawners, and ticking world systems that run with no client connected. (**Superseded
+2026-09-01:** scheduled automations are now skipped while an app has no players —
+see [that entry](#2026-09-01) and [Presence](/game-api/autonomous-processes#presence).) New GraphQL:
   `gameModelUpsertAutomation`, `gameModelUpsertAutomationTrigger`, `gameModelRunAutomation`,
   `gameModelSetAutomationEnabled`/`Policy`, and the monitoring queries
   `gameModelAutomations`, `gameModelAutomationRuns`, `gameModelAutomationStats`, and
