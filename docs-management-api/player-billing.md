@@ -68,8 +68,10 @@ empty wallet fully active.
 There is **no hourly free allowance**. Any recurring hourly figure would make a
 small mod free forever, which is not what a trial is for; a monthly budget lets
 a player experiment freely and asks sustained play to pay. As a rough guide,
-250,000 units is about 14 hours of a light always-on mod at the default 5 Hz
-tick, or about an hour of a database-heavy one.
+250,000 units is about 14 hours of a light mod running at the default 5 Hz tick,
+or about an hour of a database-heavy one. Those are hours of **play**, not
+wall-clock hours: a mod only ticks while the player's app has somebody in it, so
+a trial is not consumed while nobody is playing.
 
 Charges below one cent are **carried forward** rather than rounded up, so a
 player running something tiny is billed what they actually used over the month

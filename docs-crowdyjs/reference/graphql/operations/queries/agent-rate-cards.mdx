@@ -1,0 +1,29 @@
+---
+id: agent-rate-cards
+title: agentRateCards
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR ONLY. The Crowdy Studio agent price list: every model card with its four per-million token prices and its lifecycle status. Separate from billingRateCard because agent pricing is per model rather than per metered dimension. Read-only.
+
+
+```graphql
+agentRateCards: [AgentRateCardEntryType!]!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AgentRateCardEntryType</b></code>](/reference/graphql/types/objects/agent-rate-card-entry-type.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One Crowdy Studio agent model price, in micro-USD per million tokens. Only an ACTIVE row with a model&#x005F;id ever prices a run.

@@ -183,9 +183,11 @@ the signal carries data (base64 bytes); omit it for a bare ping.
 
 Because `autonomousInvocable: true` is set, an
 [automation](autonomous-processes) or a
-[timer](autonomous-processes#timers) can fire this signal with no player
-involved — a scheduled automation on `BP_Boss` that announces each wave, for
-instance. On the client the signal arrives on the `ServerEventNotification`
+[timer](autonomous-processes#timers) can fire this signal without a player having
+invoked it — a scheduled automation on `BP_Boss` that announces each wave, for
+instance. Not the same as firing into an empty app: scheduled work still needs
+somebody present, see
+[Presence](autonomous-processes#presence). On the client the signal arrives on the `ServerEventNotification`
 handler you already have: `handlers.serverEvent` in CrowdyCPP, or
 `serverEvent` / the `EventRouter` in CrowdyJS.
 

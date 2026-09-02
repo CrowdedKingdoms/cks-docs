@@ -1,0 +1,39 @@
+---
+id: metered-rate-card
+title: meteredRateCard
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+PUBLIC: no authentication required. The metered rate card for a scope — every priced dimension with its unit, price, and free allowances. SHARED is organization usage billed to the org wallet; PLAYER is player compute billed to the player wallet. A dimension priced at 0 is metered but not charged. These are the rates in effect right now on this tier, which is what API ToS 4.1 undertakes to make available. Read-only.
+
+
+```graphql
+meteredRateCard(
+  scope: RateScope!
+): [PublicRateCardEntryType!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>meteredRateCard.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RateScope!</b></code>](/reference/graphql/types/enums/rate-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
+Which card to read.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PublicRateCardEntryType</b></code>](/reference/graphql/types/objects/public-rate-card-entry-type.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One priced dimension of the public rate card: its rate and its free allowances. A dimension with a price of 0 is metered but not charged.

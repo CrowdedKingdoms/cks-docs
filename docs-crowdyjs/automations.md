@@ -9,7 +9,22 @@ title: Automations (NPCs)
 model function only runs when a client invokes it. **Automations** are
 server-driven processes that invoke your model functions *on their own* — on a
 schedule or in reaction to model activity — so you can build NPCs, spawners,
-ticking world systems, and economy jobs that run with no client connected.
+ticking world systems, and economy jobs that advance **between** your players'
+requests rather than only in response to them.
+
+:::warning Scheduled work needs a player in the app
+Since 2026-09-01 **nothing runs for an app with no player in it.** A `schedule`
+trigger that comes due while the app is empty is **skipped** and rescheduled from
+the moment a player returns, and the missed runs are **never made up**. Timers
+[wait and fire late](/game-api/autonomous-processes#timers) rather than firing
+into an empty world. `event` and `manual` triggers are unaffected, because
+something already asked.
+
+Write the entry point to be **idempotent in elapsed time**: advance the world by
+`now - lastRun` rather than by one step per run, and store expiries as timestamps
+rather than remaining-tick counters. An automation that assumes a fixed cadence
+will silently fall behind whenever nobody is playing.
+:::
 
 `client.gameModel` wraps the full automation surface. It is a **studio-admin**
 surface that runs on the Game API: every call needs an **[app-scoped

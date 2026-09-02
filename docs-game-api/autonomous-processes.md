@@ -11,8 +11,10 @@ function runs because a player invoked it. **Automations** add the missing
 half: server-driven processes that invoke your model functions **on their own**,
 on a schedule or in reaction to model activity. They are the way to build NPCs,
 world simulation (resource regen, weather, day/night), spawners, decay/cleanup,
-turn timeouts, economy drift, and reaction logic — any behaviour that should run
-without a human driving it. For end-to-end NPC recipes (wanderers, guards,
+turn timeouts, economy drift, and reaction logic — any behaviour that should
+advance **between** your players' requests rather than only in response to them.
+Read [Presence](#presence) before relying on a schedule: automations run while
+somebody is in the app, not while it is empty. For end-to-end NPC recipes (wanderers, guards,
 traders, spawners), see
 [Modeling game concepts](modeling-game-concepts#npc-concepts).
 
@@ -112,7 +114,8 @@ Key fields:
     selectors/fan-out don't apply, and `paramsJson` is passed to the export
     verbatim. The module's execution bills as WASM compute; the automation
     run records dispatch overhead only. This is the first-class home for
-    cron-shaped compute work ("at 03:00 run the settlement export") —
+    cron-shaped compute work ("at 03:00 run the settlement export" — which fires at
+03:00 only if somebody is in the app then; see [Presence](#presence)) —
     no marker function needed.
 - **`functionName`** — the `autonomous_invocable` entry point
   (`model_function` actions).
@@ -131,6 +134,43 @@ Key fields:
   `maxRunsPerMinute`, `failureThreshold`, `cooldownMs` (all clamped to platform
   ceilings).
 
+## Presence
+
+**Nothing runs for an app with no player in it.** Since 2026-09-01 a compute
+module ticks, and a `schedule` automation fires, only while the app has at least
+one player connected somewhere in the fleet.
+
+What that means per trigger:
+
+| Trigger | While the app is empty |
+|---|---|
+| `schedule` (interval or cron) | **Skipped.** Rescheduled from the moment a player returns; the missed runs are **never made up**. |
+| [Timers](#timers) | **Wait.** The deadline passing does not fire them; they fire when somebody returns — late, not lost. |
+| `event` | Unaffected. An event means something happened, which means somebody was there. |
+| `manual` (`gameModelRunAutomation`) | Unaffected. Something already asked. |
+| Synchronous compute `invoke` | Unaffected. It is a request, not a tick. |
+
+**Write for it, do not work around it.** Make scheduled work **idempotent in
+elapsed time** rather than assuming a cadence:
+
+```
+// Fragile: stalls while nobody plays, and resumes as if no time passed.
+crop.growth = crop.growth + 1
+
+// Correct: right whenever anybody next looks at it.
+crop.growth = crop.growth + (now - crop.last_tick) / MS_PER_STEP
+crop.last_tick = now
+```
+
+Store expiries as **timestamps**, not remaining-tick counters, so a status effect
+that should have lapsed while the world was empty is treated as lapsed instead of
+resuming with time left on it. A world that must appear to have advanced while
+empty should compute the elapsed time on its first run after a player returns —
+cheaper than ticking an empty world, and the same answer.
+
+`nextRunAt` still advances while an app is empty. It is when the automation is
+next **due**, which is not a promise that it ran.
+
 ## Triggers
 
 ### Schedule
@@ -146,7 +186,8 @@ gameModelUpsertAutomation(input: {
 `scheduleKind` is `interval` (every `intervalMs`, floored by the app's
 `minIntervalMs`) or `cron` (a standard cron expression in `cronExpr`). The
 server dispatcher claims due automations and runs them; multiple API replicas
-share the load without double-firing.
+share the load without double-firing. A run that comes due while the app has no
+players is [skipped](#presence) rather than queued.
 
 ### Event (model or app activity)
 
@@ -305,6 +346,11 @@ one died.
 
 A timer is durable — it is stored in the database, not in a server's memory, so
 it survives an API restart — and exactly one replica claims it, so it fires once.
+
+It fires once, but not necessarily *on time*: a timer whose deadline passes while
+the app has no players [waits](#presence) and fires when somebody returns. Read
+the clock in the handler rather than assuming the delay you asked for is the delay
+that elapsed.
 
 ### Arming a timer from your game logic
 

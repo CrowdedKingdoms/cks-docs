@@ -24,12 +24,12 @@ and the recommended hybrid pattern, see
 - **Node 20+** and the SDK:
 
 ```bash
-npm install @crowdedkingdoms/crowdyjs@15.1.0
+npm install @crowdedkingdoms/crowdyjs@15.4.0
 ```
 
   **Version 15.0.0 or newer is required** — `auth.login` arrived in 15.0.0,
-  which was a breaking release. The compute methods below are in both 15.0.0
-  and 15.1.0. Pin exactly rather than with a caret: a caret never matches a
+  which was a breaking release. The compute methods below are in every release
+  since. Pin exactly rather than with a caret: a caret never matches a
   prerelease, so `^15.0.0` silently skips the `dev` and `test` builds.
 
 - **An app** you administer. Your user needs the org `manage_compute`
@@ -178,7 +178,7 @@ await client.compute.setModuleEnabled({ appId: APP_ID, name: "my-module", enable
 
 **Pass `sdkVersion` explicitly and keep it equal to your `Cargo.toml`.** The
 SDK will default it from a constant baked into whichever CrowdyJS version you
-installed, and that constant can lag the platform — 15.1.0 defaults to
+installed, and that constant can lag the platform — 15.4.0 defaults to
 `0.1.3` while `0.1.5` is current. Supported values are `0.0.1` and
 `0.1.0`–`0.1.5`, with ABI `0`; there is no query that lists them, so treat the
 [Compute Modules](/game-api/compute-modules) page as the reference.
