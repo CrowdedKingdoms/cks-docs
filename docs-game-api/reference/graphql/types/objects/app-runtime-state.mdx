@@ -48,7 +48,7 @@ Current runtime gate decision (active / grace / denied / suspended).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>runtimeDenialReason</b></code>](#runtime-denial-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#runtime-denial-reason\} 
-free&#x005F;allowance | insufficient&#x005F;funds | spend&#x005F;cap | subscription&#x005F;lapsed when not active.
+insufficient&#x005F;funds | spend&#x005F;cap | subscription&#x005F;lapsed when not active. Historical rows may carry free&#x005F;allowance, which the gate no longer produces.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppRuntimeState.<b>walletBalanceCents</b></code>](#wallet-balance-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wallet-balance-cents\} 

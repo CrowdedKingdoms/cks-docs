@@ -497,7 +497,9 @@ invokes reveal them.
 
 ### World simulation
 
-Simple interval automations can run the world with no client online: a `WorldState`
+Simple interval automations advance the world between requests, while the app has
+a player in it (they are [skipped while it is
+empty](/game-api/autonomous-processes#presence)): a `WorldState`
 singleton advances `time_of_day` (`% hours_per_day`) and re-rolls weather —
 emitting a **spatial notification** at its anchor chunk so nearby clients
 update the sky without polling; `ResourceNode`s regenerate toward

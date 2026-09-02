@@ -572,11 +572,11 @@ type App {
   """
   reservedEgressBytesPerSec: BigInt! @deprecated(reason: "Renamed 2026-09-01 when reservations split by traffic type. Use reservedUdpBytesPerSec; this returns the same value for one release.")
   """
-  Reserved realtime (UDP) capacity in bytes/s. Guarantees a minimum the platform provisions for you; it is not a limit on what you may send. Billed monthly whether or not used. 0 = none.
+  Reserved realtime (UDP) capacity in bytes/s. Guarantees a minimum the platform provisions for you; it is not a limit on what you may send. Billed monthly whether or not used, IN ADDITION TO metered usage -- a reservation buys capacity, not volume, so reserving 5 MB/s does not make the first 5 MB/s free. Independent of reservedGraphqlOpsPerSec. 0 = none.
   """
   reservedUdpBytesPerSec: BigInt!
   """
-  Reserved API request rate in GraphQL operations/sec. Guarantees a minimum the platform provisions for you; it is not a limit on how many requests you may make. Billed monthly whether or not used. 0 = none.
+  Reserved API request rate in GraphQL operations/sec. Guarantees a minimum the platform provisions for you; it is not a limit on how many requests you may make. Billed monthly whether or not used, IN ADDITION TO metered usage -- a reservation buys capacity, not volume. Independent of reservedUdpBytesPerSec: reserving one does not reserve the other. 0 = none.
   """
   reservedGraphqlOpsPerSec: BigInt!
   """
@@ -584,7 +584,7 @@ type App {
   """
   runtimeStatus: String!
   """
-  When runtimeStatus is not "active", why the runtime is gated: "free_allowance", "insufficient_funds", "spend_cap", or "subscription_lapsed". Null when active.
+  When runtimeStatus is not "active", why the runtime is gated: "insufficient_funds", "spend_cap", or "subscription_lapsed". Null when active. Historical rows may carry "free_allowance", which the gate no longer produces -- an app over its allowance with no way to pay is denied as "insufficient_funds".
   """
   runtimeDenialReason: String
   """
@@ -831,7 +831,7 @@ type WalletTransaction {
   """
   balanceAfter: BigInt!
   """
-  What produced this transaction. The complete set of values this API writes: "topup" (wallet credit from a completed checkout, positive), "admin_credit" (operator credit applied without a payment provider, positive), "auto_recharge" (off-session automatic wallet recharge, positive), "shared_usage" (hourly shared-environment metered charge for one closed clock hour, negative), "agent_usage" (Crowdy Studio agent run charged at provider cost, negative), "reserved_throughput" (monthly or prorated reserved egress capacity, negative), "markup_payout" (the app developer's markup on a player's compute bill, credited to the org in the same transaction as the player debit that produced it, positive). No other value is written; earlier versions of this description also listed "usage" and "environment_usage", neither of which was ever produced.
+  What produced this transaction. The complete set of values this API writes: "topup" (wallet credit from a completed checkout, positive), "admin_credit" (operator credit applied without a payment provider, positive), "auto_recharge" (off-session automatic wallet recharge, positive), "shared_usage" (hourly shared-environment metered charge for one closed clock hour, negative), "agent_usage" (Crowdy Studio agent run charged at provider cost, negative), "reserved_throughput" (monthly or prorated reserved capacity -- realtime bytes/s or GraphQL operations/s -- charged in addition to metered usage rather than including any of it, negative), "markup_payout" (the app developer's markup on a player's compute bill, credited to the org in the same transaction as the player debit that produced it, positive). No other value is written; earlier versions of this description also listed "usage" and "environment_usage", neither of which was ever produced.
   """
   transactionType: String!
   """
@@ -1104,7 +1104,7 @@ type AppRuntimeState {
   """Current runtime gate decision (active / grace / denied / suspended)."""
   runtimeStatus: AppRuntimeStatus!
   """
-  free_allowance | insufficient_funds | spend_cap | subscription_lapsed when not active.
+  insufficient_funds | spend_cap | subscription_lapsed when not active. Historical rows may carry free_allowance, which the gate no longer produces.
   """
   runtimeDenialReason: String
   """Owning org wallet balance, in cents."""
@@ -1164,10 +1164,12 @@ type FreeAppQuotaApp {
   """URL slug for the app."""
   slug: String!
   """
-  True when the app consumes a free org slot (shared, not archived, no active subscription, no reserved throughput).
+  True when the app consumes a free org slot (shared, not archived, no active subscription, no reserved realtime capacity). Only a REALTIME (UDP) reservation releases a slot; a GraphQL operations reservation does not.
   """
   consumesFreeSlot: Boolean!
-  """Reserved egress throughput in bytes/sec (0 when none)."""
+  """
+  Reserved REALTIME (UDP) capacity in bytes/sec (0 when none). This is the dimension that decides free-slot consumption; a GraphQL operations reservation is separate and is not reported here. Same value as App.reservedUdpBytesPerSec.
+  """
   reservedEgressBytesPerSec: BigInt!
   """True when the app has an active legacy shared subscription."""
   hasActiveSubscription: Boolean!
@@ -1208,7 +1210,7 @@ type SetAppReservedThroughputResult {
 }
 
 """
-Result of publishing an app to the shared environment. All paths publish immediately; usage above the free hourly allowance is wallet-billed.
+Result of publishing an app to the shared environment. All paths publish immediately. Usage above the free allowances is wallet-billed: each app has a per-dimension hourly allowance and, for client egress, 5 decimal GB per calendar month. An unfunded free app is also shaped to roughly 1 MB/s; funding the org wallet or enabling auto-billing lifts that.
 """
 type PublishAppResult {
   appId: BigInt!
@@ -2435,7 +2437,7 @@ type GraphqlOperationUsageRow {
 }
 
 """
-Org-level rollup of replication/GraphQL byte totals and GraphQL op counts across all apps in the organization for the time window.
+Org-level rollup of replication/GraphQL byte totals and GraphQL op counts across all apps in the organization for the time window. WHICH OF THESE YOU PAY FOR: the *SendBytes fields are the billable direction, and *RecvBytes are metered but do NOT count toward Aggregate Data Volume, the monthly free-tier and overage measure. All byte figures are wire bytes measured at the network interface, including transport and network headers, and after any compression the service applies -- they will not match a client-side byte counter.
 """
 type OrgUsageSummary {
   """Organization id (as a string)."""
@@ -2455,7 +2457,7 @@ type OrgUsageSummary {
 }
 
 """
-Aggregate byte totals plus the top GraphQL operations for one app over the window.
+Aggregate byte totals plus the top GraphQL operations for one app over the window. WHICH OF THESE YOU PAY FOR: the *SendBytes fields are the billable direction, and *RecvBytes are metered but do NOT count toward Aggregate Data Volume, the monthly free-tier and overage measure. All byte figures are wire bytes measured at the network interface, including transport and network headers, and after any compression the service applies -- they will not match a client-side byte counter.
 """
 type AppUsageSummary {
   """App id (as a string)."""
@@ -2489,7 +2491,7 @@ type AppUsageProjection {
   """App id (as a string)."""
   appId: String!
   """
-  Egress bytes recorded so far this calendar month (from app_monthly_egress).
+  Egress bytes recorded so far this calendar month (from app_monthly_egress). Egress only -- bytes the service delivered to clients, measured as wire bytes at the network interface. Ingress is metered separately and does not count toward this figure or the allowance it is compared against.
   """
   currentEgressBytes: String!
   """
@@ -2520,7 +2522,9 @@ type OrgAppUsageProjectionRow {
   appId: String!
   """App display name."""
   appName: String!
-  """Egress bytes so far this calendar month."""
+  """
+  Egress bytes so far this calendar month. Egress only; ingress does not count toward the aggregate volume.
+  """
   currentEgressBytes: String!
   """Projected end-of-month egress bytes, or null when insufficient data."""
   projectedBytes: String
@@ -2553,7 +2557,7 @@ type OrgUsageProjection {
   """True when any shared app is on track to exceed its free allowance."""
   onTrackToExceedAny: Boolean!
   """
-  True when org total projected egress exceeds the combined free tier — suggest reserved throughput.
+  True when org total projected egress exceeds the combined free tier, so the org should expect a metered bill. Note that a capacity reservation is NOT a remedy for this: reservations buy provisioned capacity and are charged in addition to metered usage, so they do not reduce an egress bill. What this signals is that the org needs a funded wallet or auto-billing.
   """
   suggestReservedThroughput: Boolean!
 }
@@ -4618,15 +4622,15 @@ input SetAppClientSettingsInput {
 }
 
 """
-Set or change an app's reserved sustained throughput on the shared environment.
+Set or change an app's reserved REALTIME (UDP) capacity on the shared environment. Reservations are sold in two independent dimensions and this mutation sets one of them; read both back from App.reservedUdpBytesPerSec and App.reservedGraphqlOpsPerSec.
 """
 input SetAppReservedThroughputInput {
   """Organization that owns the app."""
   orgId: BigInt!
-  """App to configure reserved throughput for."""
+  """App to configure reserved realtime (UDP) capacity for."""
   appId: BigInt!
   """
-  Reserved sustained egress in bytes/s (decimal MB/s: 1_000_000 = 1 MB/s). 0 clears the reservation (free tier).
+  Reserved sustained realtime capacity in bytes/s (decimal MB/s: 1_000_000 = 1 MB/s). 0 clears the reservation, which releases the provisioned floor and stops the monthly fee; it does not change how the app is shaped, because the ~1 MB/s free-tier cap is decided by whether the org can be charged rather than by whether it holds a reservation. A reservation buys capacity, not volume: the fee is charged in addition to metered usage and includes no data allowance.
   """
   reservedBytesPerSec: BigInt!
 }
