@@ -1,11 +1,23 @@
 name: Docs siblings check
 
 # Hop 1 of check:generated — compare committed SDLs to private/public sibling
-# checkouts. Needs a read PAT that can clone cks-game-api. Not on every PR:
-# token blast radius. Manual + weekly schedule only.
+# checkouts. Needs a read PAT that can clone cks-game-api. Still NOT on every PR:
+# token blast radius. Manual, weekly, and on promotion pull requests.
 #
 # Tier alignment: sibling checkouts use the SAME tier branch as the docs ref
 # under test (dev↔dev, test↔test, prod↔prod). Feature branches default to dev.
+#
+# WHY PROMOTION PULL REQUESTS WERE ADDED, AND WHY THAT KEEPS THE BLAST RADIUS SMALL.
+# On a weekly-only schedule, a tier's published SDL could disagree with that tier's API for up
+# to seven days, and the moment it matters most is the one this never covered: a promotion
+# into test or prod is exactly when the docs and the API arrive at a tier together, and it was
+# checked afterwards or not at all.
+#
+# The original reasoning stands and is not being overridden. This does not run on every PR: it
+# runs only on PRs whose BASE is test or prod, which are promotions by definition -- a handful
+# a week, all from branches inside this repository. A pull_request from a fork receives no
+# secrets in Actions, so the token cannot leave with an outside contributor; that case takes the
+# clean skip below rather than leaking.
 
 on:
   workflow_dispatch:
@@ -16,6 +28,8 @@ on:
         default: 'dev'
         type: choice
         options: [dev, test, prod]
+  pull_request:
+    branches: [test, prod]
   schedule:
     # Mondays 14:00 UTC — quiet window; fail loud if SDL drifted vs siblings
     - cron: '0 14 * * 1'
@@ -29,18 +43,29 @@ jobs:
         id: tier
         env:
           INPUT_TIER: ${{ inputs.tier }}
+          BASE_REF: ${{ github.base_ref }}
           REF: ${{ github.ref_name }}
         run: |
+          # BASE_REF before REF, and it is not a nicety. On a pull_request, github.ref_name is
+          # the merge ref -- "123/merge" -- which matches no tier and would have fallen through
+          # to the dev default, so a promotion into prod would have been checked against DEV's
+          # siblings and reported green. The base branch is the tier the merged result lands on,
+          # which is the only tier whose SDL this run can speak for.
           if [ -n "$INPUT_TIER" ]; then
-            tier="$INPUT_TIER"
+            tier="$INPUT_TIER"; from="workflow_dispatch input"
+          elif [ -n "$BASE_REF" ]; then
+            case "$BASE_REF" in
+              dev|test|prod) tier="$BASE_REF"; from="the pull request base" ;;
+              *) tier=dev; from="the dev default (base '$BASE_REF' names no tier)" ;;
+            esac
           else
             case "$REF" in
-              dev|test|prod) tier="$REF" ;;
-              *) tier=dev ;;
+              dev|test|prod) tier="$REF"; from="the pushed branch" ;;
+              *) tier=dev; from="the dev default (ref '$REF' names no tier)" ;;
             esac
           fi
           echo "tier=$tier" >> "$GITHUB_OUTPUT"
-          echo "sibling tier=$tier"
+          echo "sibling tier=$tier, from $from"
 
       - name: Checkout cks-docs
         uses: actions/checkout@v4
