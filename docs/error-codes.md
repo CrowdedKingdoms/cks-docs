@@ -128,6 +128,8 @@ allowance is not, even though neither is a bug.
 | `BUDGET_EXCEEDED` | `BUDGET` | A per-minute allowance is spent; it returns on the next window. |
 | `RATE_LIMITED` | `BUDGET` | This caller is asking too often. `extensions.retryAfterMs` when known. |
 | `QUOTA_EXHAUSTED` | `BUDGET` | A metered allowance is spent and does not return on its own. |
+| `WALLET_EMPTY` | `BUDGET` | The calling **player's own** wallet is at or below zero, so their grid code is paused. Top up (`createCheckout` with `PLAYER_WALLET_TOPUP`) or enable `setPlayerAutoBilling`; not retryable until funded. |
+| `SPEND_CAP_REACHED` | `BUDGET` | A spend cap the player set on themselves (`setPlayerSpendCap`) is reached for the current period. Raise or clear it, or wait for the period boundary. |
 | `WRONG_DATACENTER` | `PLATFORM` | This app is served elsewhere. `extensions.gameApiUrl` names where; move and retry. |
 | `APP_UNAVAILABLE` | `PLATFORM` | The app's datacenter has no instance able to serve. **No endpoint is named, on purpose** — do not fall back to a cached one, it is in the datacenter that is down. |
 | `NO_LOCAL_BUDDY` | `PLATFORM` | You are **on** the app's own datacenter and it has no healthy UDP server. **No endpoint is named, because there is nowhere else to go** — a Buddy elsewhere would make every gameplay write cross a WAN, invisibly, because each write still succeeds. Retry, and report it: this one needs an operator. If you called `serverWithLeastClients` on the *wrong* datacenter you get `WRONG_DATACENTER` instead, with an endpoint to move to. |

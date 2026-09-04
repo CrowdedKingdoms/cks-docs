@@ -875,48 +875,6 @@ type AppBudget {
   updatedAt: DateTime!
 }
 
-"""
-Which rate card. SHARED prices organization metered usage for shared-environment apps (billed hourly to the org wallet as "shared_usage"). PLAYER prices player compute (billed hourly to the player wallet as "usage_debit").
-"""
-enum RateScope {
-  SHARED
-  PLAYER
-}
-
-"""
-One priced dimension of the public rate card: its rate and its free allowances. A dimension with a price of 0 is metered but not charged.
-"""
-type PublicRateCardEntryType {
-  """Which card this row is on."""
-  scope: RateScope!
-  """
-  The metered dimension, e.g. "graphql_recv_ops" or "player_wasm_compute_units". This is the key your usage is aggregated under, so it is what to match a bill line against.
-  """
-  metric: String!
-  """
-  Human unit this price is quoted in, e.g. "GiB" or "M units". Display only; the arithmetic uses unitQuantity.
-  """
-  unitLabel: String!
-  """
-  How many raw metric units one priceCents charge covers, as a BigInt decimal string. A price of 19 with unitQuantity 1073741824 is 19 cents per GiB. priceCents and unitQuantity are two halves of one price and mean nothing apart.
-  """
-  unitQuantity: BigInt!
-  """
-  Cents charged per unitQuantity raw units, above the free allowance. Fractional values are permitted. 0 means metered but not charged.
-  """
-  priceCents: Float!
-  """ISO currency code. USD today."""
-  currency: String!
-  """
-  Raw metric units free per clock hour before anything is charged, as a BigInt decimal string. Null when this dimension has no allowance row, which for a priced dimension means it bills from the first unit.
-  """
-  freePerHour: BigInt
-  """
-  Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the pooled monthly trial budget per (player, app). Null when this dimension has no monthly allowance.
-  """
-  freePerMonth: BigInt
-}
-
 type Checkout {
   """Unique checkout id (BigInt as a decimal string)."""
   checkoutId: BigInt!
@@ -1270,6 +1228,48 @@ type PaymentMethodSetup {
   clientSecret: String
   """Provider publishable key for the browser SDK."""
   publishableKey: String
+}
+
+"""
+Which rate card. SHARED prices organization metered usage for shared-environment apps (billed hourly to the org wallet as "shared_usage"). PLAYER prices player compute (billed hourly to the player wallet as "usage_debit").
+"""
+enum RateScope {
+  SHARED
+  PLAYER
+}
+
+"""
+One priced dimension of the public rate card: its rate and its free allowances. A dimension with a price of 0 is metered but not charged.
+"""
+type PublicRateCardEntryType {
+  """Which card this row is on."""
+  scope: RateScope!
+  """
+  The metered dimension, e.g. "graphql_recv_ops" or "player_wasm_compute_units". This is the key your usage is aggregated under, so it is what to match a bill line against.
+  """
+  metric: String!
+  """
+  Human unit this price is quoted in, e.g. "GiB" or "M units". Display only; the arithmetic uses unitQuantity.
+  """
+  unitLabel: String!
+  """
+  How many raw metric units one priceCents charge covers, as a BigInt decimal string. A price of 19 with unitQuantity 1073741824 is 19 cents per GiB. priceCents and unitQuantity are two halves of one price and mean nothing apart.
+  """
+  unitQuantity: BigInt!
+  """
+  Cents charged per unitQuantity raw units, above the free allowance. Fractional values are permitted. 0 means metered but not charged.
+  """
+  priceCents: Float!
+  """ISO currency code. USD today."""
+  currency: String!
+  """
+  Raw metric units free per clock hour before anything is charged, as a BigInt decimal string. Null when this dimension has no allowance row, which for a priced dimension means it bills from the first unit.
+  """
+  freePerHour: BigInt
+  """
+  Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the pooled monthly trial budget per (player, app). Null when this dimension has no monthly allowance.
+  """
+  freePerMonth: BigInt
 }
 
 """An edge in a WalletTransaction connection."""
