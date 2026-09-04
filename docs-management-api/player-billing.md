@@ -101,7 +101,7 @@ refusal for a module that is disabled, not compiled, or not the caller's own
 grid is `NOT_ALLOWED`; a per-hour or per-day compute quota is `BUDGET_EXCEEDED`
 and returns on the next window. Only a failure that is ours — a module that
 would not load — is reported as `PLATFORM_ERROR`. See
-[Error codes](/docs/error-codes) for the full table.
+[Error codes](/overview/error-codes) for the full table.
 
 Auto-recharge honours the threshold you set: with billable usage in the last
 two hours and a balance at or below `lowWaterThresholdCents`, the saved card is
