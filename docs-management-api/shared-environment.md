@@ -108,31 +108,16 @@ mutation {
   publishAppToShared(appId: "456") {
     appId
     free
-    checkout {
-      externalUrl
-    }
   }
 }
 ```
 
-- If you're under your free quota, `free` is `true` and the app goes live
-  immediately — no payment.
-- Beyond the free quota, pass a `planId` (from `sharedEnvPlans`) and a
-  `provider` to start a recurring subscription for a **paid app slot**. The
-  mutation returns a `checkout.externalUrl`; redirect the studio there to
-  complete the subscription. The app goes live once the subscription is active.
-
-```graphql
-query {
-  sharedEnvPlans {
-    planId
-    name
-    priceCents
-    currency
-    billingInterval
-  }
-}
-```
+Publishing is free. There is no paid app slot and no per-app fee (API Terms of
+Service §3.7): every app runs on the shared environment, and what you pay for is
+the usage it meters, drawn from your organization wallet as described below. The
+`planId` and `provider` arguments still accepted by `publishAppToShared`, and the
+`sharedEnvPlans` catalog, are deprecated leftovers of the retired slot model and
+are ignored; do not pass them.
 
 ## Paying for usage
 
@@ -219,7 +204,8 @@ other than `active` and a `runtimeDenialReason`:
   money" — they are the same situation.)
 - `spend_cap` — an hourly/daily spend cap was reached. Raise the cap or wait for
   the window to reset.
-- `subscription_lapsed` — a paid app slot's subscription isn't active. Renew it.
+- `subscription_lapsed` — retired with the paid app slot; no current app can carry
+  this reason. Listed because the enum still names it.
 
 ```graphql
 query {
