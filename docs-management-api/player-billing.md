@@ -94,6 +94,22 @@ ordinary play are untouched, and no other player or the org is affected. The
 gate state replica-syncs to the game runtime, where the scheduler drains the
 player's modules within one pass and resumes them when the gate clears.
 
+While the gate is not active, `playerComputeInvoke` refuses with a typed fault
+the player can act on: `WALLET_EMPTY` (blame `BUDGET`, not retryable — top up
+or enable auto-recharge) or `SPEND_CAP_REACHED` (raise or clear the cap). A
+refusal for a module that is disabled, not compiled, or not the caller's own
+grid is `NOT_ALLOWED`; a per-hour or per-day compute quota is `BUDGET_EXCEEDED`
+and returns on the next window. Only a failure that is ours — a module that
+would not load — is reported as `PLATFORM_ERROR`. See
+[Error codes](/overview/error-codes) for the full table.
+
+Auto-recharge honours the threshold you set: with billable usage in the last
+two hours and a balance at or below `lowWaterThresholdCents`, the saved card is
+charged `rechargeAmountCents` before the balance can reach zero. Sub-cent usage
+is carried forward in micro-cents and charged once it reaches a whole cent, and
+a refund of a top-up (`refund`) or a card dispute (`adjustment`) leaves the
+wallet the same way it arrived.
+
 ## Studio configuration and visibility
 
 Studio-facing controls (org permissions in parentheses):
