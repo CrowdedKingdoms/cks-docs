@@ -28,6 +28,8 @@ enum PlayerFaultCode {
   BUDGET_EXCEEDED
   RATE_LIMITED
   QUOTA_EXHAUSTED
+  WALLET_EMPTY
+  SPEND_CAP_REACHED
   TEMPORARILY_DISABLED
   INVALID_REQUEST
   NOT_ALLOWED
@@ -71,6 +73,14 @@ This caller is asking too often. It arrives ONLY as a thrown error, never in ban
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>QUOTA&#x005F;EXHAUSTED</b></code>](#quota-exhausted) \{#quota-exhausted\} 
 A metered allowance is spent and does not return on its own.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>WALLET&#x005F;EMPTY</b></code>](#wallet-empty) \{#wallet-empty\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>SPEND&#x005F;CAP&#x005F;REACHED</b></code>](#spend-cap-reached) \{#spend-cap-reached\} 
+
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>TEMPORARILY&#x005F;DISABLED</b></code>](#temporarily-disabled) \{#temporarily-disabled\} 
