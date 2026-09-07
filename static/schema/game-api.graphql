@@ -175,6 +175,10 @@ type User {
   """
   isOperator: Boolean!
   """
+  Whether this account has a password set. Studio reads it to say "set a password" only to accounts that have none (magic-link and OAuth sign-ups); it used to say so to everyone. The hash itself never leaves the process.
+  """
+  hasPassword: Boolean!
+  """
   The user's effective permission keys on the given org (empty if not a member; full set if super admin). Requires a valid bearer game token.
   """
   permissionsForOrg(
@@ -1301,6 +1305,60 @@ enum CodeAdmissionSubjectKind {
 }
 
 """
+A registered GraphQL API server instance in the fleet, with reachability addresses and basic host telemetry. Returned by graphqlServers (all) and activeGraphQLServers (only ReadyForClients). Use this for service discovery; realtime/UDP play still goes through the game-api UDP proxy.
+"""
+type GraphQLServer {
+  """Unique id of this GraphQL server registration."""
+  graphqlServerId: ID!
+  """
+  Logical kind of GraphQL service. Every current server is 'game-api', which serves both the management and game surfaces; 'management-api' appears only on rows predating their unification.
+  """
+  kind: String
+  """
+  Internal/private IPv4 address of this server. Use publicIp4 for external reachability.
+  """
+  ip4: String
+  """
+  Internal/private IPv6 address of this server. Use publicIp6 for external reachability.
+  """
+  ip6: String
+  """
+  UUID of the Buddy realtime runtime instance this API server is paired with, if any.
+  """
+  runtimeServerId: String
+  """Cloud provider instance id of the underlying host, if known."""
+  providerInstanceId: String
+  """Public IPv4 address clients use to reach this server, if assigned."""
+  publicIp4: String
+  """Public IPv6 address clients use to reach this server, if assigned."""
+  publicIp6: String
+  """TCP port the GraphQL/HTTP API listens on (default 4000)."""
+  apiPort: Int!
+  """
+  Public hostname clients can reach this instance on directly over TLS, e.g. `ck-api-or-1.prod.crowdedkingdoms.com`. Null when the instance has no public DNS name or certificate yet, in which case it is reachable only through the shared load balancer and must not be connected to directly. Prefer the `gameApiUrl` returned by mintAppToken over building a URL from this field: that call already picks a low-load instance for you.
+  """
+  publicHostname: String
+  """
+  Current lifecycle state (see ServerState). activeGraphQLServers returns only ReadyForClients.
+  """
+  status: ServerState!
+  """Current CPU utilization percentage (0-100) of the host, if reported."""
+  cpuUsagePct: Float
+  """
+  Current memory utilization percentage (0-100) of the host, if reported.
+  """
+  memoryUsagePct: Float
+  """1-minute load average of the host, if reported."""
+  loadAverage1m: Float
+  """When this server was first registered in the fleet."""
+  createdAt: DateTime!
+  """
+  When this server row was last updated (heartbeat). Use to judge freshness.
+  """
+  updatedAt: DateTime!
+}
+
+"""
 A short-lived, app-scoped gameplay token (Overworld portal). Confined to a single app: usable only against that app's Game API + Buddy realtime surface (plus read-only `me` and same-app `refreshAppToken`). It CANNOT perform management operations and CANNOT mint tokens for other apps, so a game stack that receives it never gets the player's full identity session.
 """
 type AppTokenResponse {
@@ -1332,6 +1390,10 @@ type AppTokenResponse {
   Browser launch URL for this app (where the player's browser plays it), if configured.
   """
   launchUrl: String
+  """
+  Set only by `refreshAppToken` when the caller passed `currentServer`: the Buddy the NEW token was just authorized on, which is the node the client is already connected to. When present, keep the existing UDP session and start signing datagrams with the new token; there is no need to call serverWithLeastClients. Null when the caller passed nothing, or when that node can no longer serve this app (gone, draining, Full, or not local to the app) -- then call serverWithLeastClients for a fresh placement, exactly as before.
+  """
+  authorizedServer: ServerStatus
 }
 
 """
@@ -1380,6 +1442,30 @@ type PortalConsentState {
   True if the Overworld must show a consent screen (untrusted app, not yet granted) before creating a portal code.
   """
   consentRequired: Boolean!
+}
+
+"""
+A semantic-style version as four integer components (major.minor.patch.build). Compare components in order (major, then minor, then patch, then build).
+"""
+type VersionInfo {
+  """Major version number"""
+  major: Int!
+  """Minor version number"""
+  minor: Int!
+  """Patch version number"""
+  patch: Int!
+  """Build number"""
+  build: Int!
+}
+
+"""
+Server version plus the minimum client version the server will accept. A client whose build is older than minimumClientVersion should prompt the user to update before connecting.
+"""
+type ServerVersionInfo {
+  """Current server version"""
+  serverVersion: VersionInfo!
+  """Minimum accepted client version"""
+  minimumClientVersion: VersionInfo!
 }
 
 type OrgWallet {
@@ -1852,6 +1938,14 @@ type RateCardEntryType {
   Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the pooled monthly trial budget per (player, app), and player_wasm_compute_units is its canonical key. Null when this dimension has no monthly allowance.
   """
   freePerMonth: BigInt
+  """
+  The allowance as the biller reads it: raw metric units free per freePeriod, as a BigInt decimal string. freePerHour and freePerMonth are views of this same row for the periods they name; a DAY allowance shows only here. Null when the dimension has no allowance row.
+  """
+  freeUnits: BigInt
+  """
+  The period freeUnits resets on. Null when the dimension has no allowance row.
+  """
+  freePeriod: AllowancePeriod
   """Operator note on the seed row; null when unset."""
   description: String
 }
@@ -1862,6 +1956,15 @@ Which rate card. SHARED prices organization metered usage for shared-environment
 enum RateScope {
   SHARED
   PLAYER
+}
+
+"""
+The interval a free allowance resets on and a dimension is rounded over. Every dimension is billed as its period aggregate crosses each whole cent, within about a minute of the usage arriving; the development quota is MONTH.
+"""
+enum AllowancePeriod {
+  HOUR
+  DAY
+  MONTH
 }
 
 """
@@ -1922,6 +2025,14 @@ type PublicRateCardEntryType {
   Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the pooled monthly trial budget per (player, app). Null when this dimension has no monthly allowance.
   """
   freePerMonth: BigInt
+  """
+  The allowance as the biller reads it: raw metric units free per freePeriod, as a BigInt decimal string. Null when the dimension has no allowance row.
+  """
+  freeUnits: BigInt
+  """
+  The period freeUnits resets on. Every dimension is billed as its period aggregate crosses each whole cent, within about a minute of the usage arriving.
+  """
+  freePeriod: AllowancePeriod
 }
 
 """
@@ -1931,7 +2042,7 @@ type RateChangeType {
   scope: RateScope!
   metric: String!
   """
-  One of "priceCents", "unitLabel", "unitQuantity", "freePerHour" or "freePerMonth".
+  One of "priceCents", "unitLabel", "unitQuantity", "freeUnits", "freePeriod" or "freePerMonth".
   """
   field: String!
   """
@@ -4449,6 +4560,10 @@ type AppUsageProjection {
   """
   currentEgressBytes: String!
   """
+  Ingress bytes recorded so far this calendar month (from app_monthly_egress.ingress_bytes): bytes clients sent the service over UDP replication and GraphQL, measured on the same basis as egress. Billed once, as aggregate_data_ingress above its own monthly allowance; never counted toward the egress figure or allowance.
+  """
+  currentIngressBytes: String!
+  """
   True when at least 3 days have elapsed in the month (projection is meaningful).
   """
   sufficientData: Boolean!
@@ -4540,84 +4655,6 @@ type PlayerPulse {
   Number of studios in the percentile comparison pool (studios with all_time_peak > 0).
   """
   poolSize: Int!
-}
-
-"""
-A registered GraphQL API server instance in the fleet, with reachability addresses and basic host telemetry. Returned by graphqlServers (all) and activeGraphQLServers (only ReadyForClients). Use this for service discovery; realtime/UDP play still goes through the game-api UDP proxy.
-"""
-type GraphQLServer {
-  """Unique id of this GraphQL server registration."""
-  graphqlServerId: ID!
-  """
-  Logical kind of GraphQL service. Every current server is 'game-api', which serves both the management and game surfaces; 'management-api' appears only on rows predating their unification.
-  """
-  kind: String
-  """
-  Internal/private IPv4 address of this server. Use publicIp4 for external reachability.
-  """
-  ip4: String
-  """
-  Internal/private IPv6 address of this server. Use publicIp6 for external reachability.
-  """
-  ip6: String
-  """
-  UUID of the Buddy realtime runtime instance this API server is paired with, if any.
-  """
-  runtimeServerId: String
-  """Cloud provider instance id of the underlying host, if known."""
-  providerInstanceId: String
-  """Public IPv4 address clients use to reach this server, if assigned."""
-  publicIp4: String
-  """Public IPv6 address clients use to reach this server, if assigned."""
-  publicIp6: String
-  """TCP port the GraphQL/HTTP API listens on (default 4000)."""
-  apiPort: Int!
-  """
-  Public hostname clients can reach this instance on directly over TLS, e.g. `ck-api-or-1.prod.crowdedkingdoms.com`. Null when the instance has no public DNS name or certificate yet, in which case it is reachable only through the shared load balancer and must not be connected to directly. Prefer the `gameApiUrl` returned by mintAppToken over building a URL from this field: that call already picks a low-load instance for you.
-  """
-  publicHostname: String
-  """
-  Current lifecycle state (see ServerState). activeGraphQLServers returns only ReadyForClients.
-  """
-  status: ServerState!
-  """Current CPU utilization percentage (0-100) of the host, if reported."""
-  cpuUsagePct: Float
-  """
-  Current memory utilization percentage (0-100) of the host, if reported.
-  """
-  memoryUsagePct: Float
-  """1-minute load average of the host, if reported."""
-  loadAverage1m: Float
-  """When this server was first registered in the fleet."""
-  createdAt: DateTime!
-  """
-  When this server row was last updated (heartbeat). Use to judge freshness.
-  """
-  updatedAt: DateTime!
-}
-
-"""
-A semantic-style version as four integer components (major.minor.patch.build). Compare components in order (major, then minor, then patch, then build).
-"""
-type VersionInfo {
-  """Major version number"""
-  major: Int!
-  """Minor version number"""
-  minor: Int!
-  """Patch version number"""
-  patch: Int!
-  """Build number"""
-  build: Int!
-}
-
-"""
-Server version plus the minimum client version the server will accept. A client whose build is older than minimumClientVersion should prompt the user to update before connecting.
-"""
-type ServerVersionInfo {
-  """Current server version"""
-  serverVersion: VersionInfo!
-  """Minimum accepted client version"""
-  minimumClientVersion: VersionInfo!
 }
 
 """
@@ -7911,6 +7948,22 @@ type Query {
   """
   myAuthorizedApps: [AppAuthorizationGrant!]!
   """
+  Pick a low-load game server for a native (direct-UDP) client to connect to: returns a random server from the least-loaded ~20% (by client count) of ReadyForClients servers to spread load, always CO-LOCATED with the datacenter that holds the data for this app (all rows for one app live in a single datacenter). This REFUSES rather than returning a Buddy elsewhere, because every gameplay write for the session would otherwise cross datacenters — invisible, because each write still succeeds — and the refusal tells you which of three situations you are in. If you reached the wrong datacenter (the shared entry name resolves to all of them, so this is the common case for a client that has not re-discovered) it is WRONG_DATACENTER, carrying gameApiUrl and gameApiWsUrl in extensions: reconnect there and retry, which the CrowdyJS and CrowdyCPP clients do for you. If the app’s own datacenter is not serving at all it is APP_UNAVAILABLE, deliberately with no endpoint. Only when this IS the app’s datacenter and it has no healthy co-located Buddy is it NO_LOCAL_BUDDY — also with no endpoint, because there is nowhere else to go; that one needs an operator. Requires a bearer game token; as a side effect it authorizes that token’s P2P session with the chosen Buddy so the native client’s spatial datagrams are accepted. Connect the native client to the returned ip4 and clientPort. Browser clients should instead use the UDP proxy (connectUdpProxy / udpNotifications) and do not need this.
+  """
+  serverWithLeastClients: ServerStatus!
+  """
+  List every registered GraphQL API server regardless of health/state. No authentication required. For service discovery; to route clients, prefer activeGraphQLServers (filters to healthy servers).
+  """
+  graphqlServers: [GraphQLServer!]!
+  """
+  List only healthy GraphQL API servers (status = ReadyForClients) for client routing/discovery. No authentication required.
+  """
+  activeGraphQLServers: [GraphQLServer!]!
+  """
+  Current server version and the minimum client version the server accepts. No authentication required. Compare your client build against minimumClientVersion before connecting and prompt an update if it is too old.
+  """
+  versionInfo: ServerVersionInfo!
+  """
   Returns the organization's wallet, creating an empty zero-balance wallet on first access if one does not yet exist (so it never returns null). Use it to read the current balance and currency before charging usage or topping up. Requires the 'view_billing' org permission.
   """
   walletBalance(
@@ -8360,22 +8413,6 @@ type Query {
     """Organization id (BigInt) to report player pulse for."""
     orgId: BigInt!
   ): PlayerPulse! @requiresPermission(scope: "org", permission: "view_usage", scopeArg: "orgId")
-  """
-  Pick a low-load game server for a native (direct-UDP) client to connect to: returns a random server from the least-loaded ~20% (by client count) of ReadyForClients servers to spread load, always CO-LOCATED with the datacenter that holds the data for this app (all rows for one app live in a single datacenter). This REFUSES rather than returning a Buddy elsewhere, because every gameplay write for the session would otherwise cross datacenters — invisible, because each write still succeeds — and the refusal tells you which of three situations you are in. If you reached the wrong datacenter (the shared entry name resolves to all of them, so this is the common case for a client that has not re-discovered) it is WRONG_DATACENTER, carrying gameApiUrl and gameApiWsUrl in extensions: reconnect there and retry, which the CrowdyJS and CrowdyCPP clients do for you. If the app’s own datacenter is not serving at all it is APP_UNAVAILABLE, deliberately with no endpoint. Only when this IS the app’s datacenter and it has no healthy co-located Buddy is it NO_LOCAL_BUDDY — also with no endpoint, because there is nowhere else to go; that one needs an operator. Requires a bearer game token; as a side effect it authorizes that token’s P2P session with the chosen Buddy so the native client’s spatial datagrams are accepted. Connect the native client to the returned ip4 and clientPort. Browser clients should instead use the UDP proxy (connectUdpProxy / udpNotifications) and do not need this.
-  """
-  serverWithLeastClients: ServerStatus!
-  """
-  List every registered GraphQL API server regardless of health/state. No authentication required. For service discovery; to route clients, prefer activeGraphQLServers (filters to healthy servers).
-  """
-  graphqlServers: [GraphQLServer!]!
-  """
-  List only healthy GraphQL API servers (status = ReadyForClients) for client routing/discovery. No authentication required.
-  """
-  activeGraphQLServers: [GraphQLServer!]!
-  """
-  Current server version and the minimum client version the server accepts. No authentication required. Compare your client build against minimumClientVersion before connecting and prompt an update if it is too old.
-  """
-  versionInfo: ServerVersionInfo!
   """
   Returns the single elected host user for an app (game). Deterministic across all game-api replicas behind the LB: the user whose earliest still-connected actor row was created first wins, with a uuid tiebreaker. Returns null when no actors exist for the app. Stale actors (no recent actorHeartbeat) are excluded once HOST_ACTOR_FRESHNESS_SECONDS is enabled. Clients should poll; there is no host-change subscription in v1.
   """
@@ -9894,12 +9931,14 @@ type Mutation {
   """
   createOrganization(input: CreateOrganizationInput!): Organization!
   """
-  Super admin only. Used to freeze/unfreeze orgs platform-wide. SIDE EFFECT: sets organizations.status. What that gates today is narrower than it sounds: a non-'active' status stops the org's API TOKENS from authenticating, but it does not remove its members' permissions, so a frozen org's signed-in members can still act. Refuses 'retired' in either direction — retirement is retireOrganization, which writes a tombstone.
+  Super admin only. Freeze ('frozen') or unfreeze ('active') an organization platform-wide. A FROZEN organization grants its members NO org permission (super admins excepted, so it is reversible): they cannot spend its wallet, create or manage apps, or change members, and every such refusal names the freeze; its API tokens stop authenticating; the org itself still resolves by id and slug so Studio can show the state. Takes exactly 'active' or 'frozen'; 'retired' is refused in either direction — retirement is retireOrganization, which writes a tombstone.
   """
   setOrgStatus(
     """Organization id (BigInt as string)."""
     orgId: BigInt!
-    """New status, e.g. 'active' or 'frozen'. 'retired' is refused here."""
+    """
+    New status: 'active' or 'frozen'. Anything else, including 'retired', is refused.
+    """
     status: String!
   ): Organization! @requiresPermission(scope: "super_admin", permission: "is_super_admin")
   """
@@ -10070,9 +10109,14 @@ type Mutation {
   """
   exchangePortalCode(input: ExchangePortalCodeInput!): AppTokenResponse!
   """
-  Rotate the calling app token for a fresh one (same app, extended TTL) and revoke the old. Call before the current token expires to keep playing without bouncing back through the Overworld. Allowed for app-scoped tokens; re-checks entitlement.
+  Rotate the calling app token for a fresh one (same app, extended TTL) and revoke the old. Call before the current token expires to keep playing without bouncing back through the Overworld. Allowed for app-scoped tokens; re-checks entitlement. NATIVE CLIENTS: pass `currentServer` (the ip4 + clientPort serverWithLeastClients gave you) and the new token is authorized on that same Buddy -- read `authorizedServer` on the response: when it is set, keep your UDP session and just switch tokens; when it is null, call serverWithLeastClients for a fresh placement. Without `currentServer` the new token is not known to any Buddy until you call serverWithLeastClients.
   """
-  refreshAppToken: AppTokenResponse!
+  refreshAppToken(
+    """
+    The Buddy this client is connected to, so the refreshed token can be authorized there. Omit for browser (UDP-proxy) clients.
+    """
+    currentServer: CurrentServerInput
+  ): AppTokenResponse!
   """
   Record the user's consent for an (untrusted) app to receive app-scoped tokens via the portal. Called from the Overworld consent screen before createPortalAuthorizationCode. Idempotent. Requires a SESSION token.
   """
@@ -12280,6 +12324,18 @@ input ExchangePortalCodeInput {
 }
 
 """
+The Buddy a native client is CURRENTLY connected to, named by the `ip4` and `clientPort` that `serverWithLeastClients` handed it. Pass it to `refreshAppToken` so the refreshed token is authorized on that same node and the client keeps its session there instead of being re-placed.
+"""
+input CurrentServerInput {
+  """
+  The `ip4` of the ServerStatus the client is connected to (as returned by serverWithLeastClients).
+  """
+  ip4: String!
+  """The `clientPort` of the ServerStatus the client is connected to."""
+  clientPort: Int!
+}
+
+"""
 Approve (consent to) an app receiving app-scoped tokens via the Overworld portal.
 """
 input AuthorizeAppInput {
@@ -12331,6 +12387,14 @@ input SetRateCardInput {
   New hourly free allowance in raw metric units, as a BigInt decimal string. Must be >= 0. Omit to leave the allowance unchanged.
   """
   freePerHour: BigInt
+  """
+  New free allowance in raw metric units per freePeriod, as a BigInt decimal string. Must be >= 0. Leaves the period as it is unless freePeriod is also given. Not combinable with freePerHour, which is the older spelling of freeUnits with freePeriod HOUR.
+  """
+  freeUnits: BigInt
+  """
+  New period for the free allowance. Leaves the units as they are unless freeUnits is also given. Moving a dimension to MONTH is how the development quota is stated.
+  """
+  freePeriod: AllowancePeriod
   """
   New monthly free allowance in raw metric units, as a BigInt decimal string. Must be >= 0. On the PLAYER card with metric player_wasm_compute_units this is the pooled monthly TRIAL BUDGET per (player, app) — the only sanctioned way to change it on a live tier. Omit to leave it unchanged.
   """
