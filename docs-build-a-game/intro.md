@@ -6,7 +6,7 @@ slug: intro
 
 # Build a collaborative canvas game
 
-This tutorial walks you through building a **multiplayer pixel canvas** on Crowded Kingdoms — step by step, with a live demo for each chapter.
+This tutorial walks you through building a **multiplayer pixel canvas** on Crowded Kingdoms — step by step, at the wire level: sign in, mint an app token, subscribe to the realtime stream, send actor and voxel updates, and read them back.
 
 ## What you'll build
 
@@ -16,50 +16,31 @@ This tutorial walks you through building a **multiplayer pixel canvas** on Crowd
 - **Viewport edge scroll** when you reach the window boundary
 - **Collaborative viewport push** — multiple players coordinate to pan the shared window
 
-The companion demo app lives in the [`simple-web-demo`](https://github.com/CrowdedKingdoms/simple-web-demo) repository. Each chapter maps to an interactive route.
+Each chapter is self-contained code you can paste into any Vite + TypeScript project.
 
-## Run the interactive demo
+## The companion repository: The Construct
 
-From the monorepo (requires the `CrowdyJS` repo as a sibling of `simple-web-demo`):
+[`the-construct`](https://github.com/CrowdedKingdoms/the-construct) is the public starter
+repository and this tutorial's working companion. It contains everything the chapters teach,
+built the way a real game is built: an engine-agnostic platform layer over CrowdyJS (two tokens,
+datacenter routing, token rotation), World Stores for presence and chunks, a three.js hub and a
+pixi.js **paint program** — the same shared canvas this tutorial builds — driven by one session,
+a kit-seeded game model, Crowdy Studio embedded with server and client mods, and a Setup wizard
+that creates your org and app from inside the game.
 
 ```bash
-cd simple-web-demo
+git clone https://github.com/CrowdedKingdoms/the-construct.git
+cd the-construct
 npm install
 npm run dev
 ```
 
-Open http://127.0.0.1:5180 — enter your env handle in the config bar, or jump straight to the [full canvas](http://127.0.0.1:5180/canvas?env=YOUR_HANDLE&app=1&org=1).
-
-From the docs repo:
-
-```bash
-npm run demo:install   # first time
-npm run demo:dev
-```
-
-### Verify docs are sufficient
-
-The demo's Playwright suite exercises every chapter against the live dev tier. If it passes, the docs and APIs cover everything needed to build the game:
-
-```bash
-cd simple-web-demo && npm run verify
-# or from cks-docs:
-npm run demo:verify
-```
-
-| Chapter | Demo route |
-| --- | --- |
-| 1 — Project setup | http://127.0.0.1:5173/chapter/1 |
-| 2 — Auto guest auth | http://127.0.0.1:5173/chapter/2 |
-| 3 — Connect & bootstrap | http://127.0.0.1:5173/chapter/3 |
-| 4 — Canvas coordinates | http://127.0.0.1:5173/chapter/4 |
-| 5 — Actor presence | http://127.0.0.1:5173/chapter/5 |
-| 6 — Painting voxels | http://127.0.0.1:5173/chapter/6 |
-| 7 — Viewport edge scroll | http://127.0.0.1:5173/chapter/7 |
-| 8 — Collaborative viewport | http://127.0.0.1:5173/chapter/8 |
-| 9 — Full game | http://127.0.0.1:5173/chapter/9 |
-| Canvas (full game) | http://127.0.0.1:5180/canvas |
-| Tanks (multiplayer demo) | http://127.0.0.1:5180/tanks |
+Open [http://localhost:5175](http://localhost:5175), create an account, let Setup create your app, then step on the
+**Paint** pad. Where a chapter below shows the raw call, the repository shows the same thing
+through World Stores: `src/platform/realtime/WorldStores.ts` (presence, chunks),
+`src/scenes/program-pixi/PaintScene.ts` (painting, persistence), `src/platform/network/NetworkManager.ts`
+(sign-in, minting, rotation). Read the tutorial for the mechanism and the repository for the
+architecture.
 
 ## Prerequisites
 
@@ -78,7 +59,7 @@ GameApiWsUrl=wss://ck.dev.crowdedkingdoms.com/graphql
 AppId=<your-app-id>
 ```
 
-Create your own app on dev and use its `appId`, or follow the tutorial's seeded demo app if provided.
+Create your own app on dev and use its `appId` — The Construct's Setup wizard does exactly this, or use CK Studio's **Get started**.
 
 See also [Dev tier (client integration)](/management-ui/dev-tier).
 

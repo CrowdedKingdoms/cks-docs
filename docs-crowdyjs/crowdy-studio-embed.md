@@ -59,12 +59,16 @@ New package subpath:
   worker (for example Vite's `?worker&url`) instead of copying a worker
   wrapper into the game.
 
-:::info CLIENT mods stay gated (D13)
-Program decision D13 blocks CLIENT-target player mods outside Blocks with
-Friends until the client-code security gates clear. New embeds should start
-**SERVER-only**: force `CLIENT: { canWrite: false, canRun: false }` and omit
-`workerUrl`, `onHostCall`, `hud`, and `playerHost`. The embed then hides all
-client-run affordances and the agent Play surface fails closed.
+:::info Choosing SERVER-only or SERVER + CLIENT
+CLIENT-target mods run untrusted player code in the visitor's browser. The platform admits
+them for any app whose access tier grants `write_client_code` / `run_client_code`; whether
+your game offers them is your decision. A SERVER-only embed (below) omits `workerUrl`,
+`onHostCall`, `hud` and `playerHost` and forces `CLIENT: { canWrite: false, canRun: false }`,
+which hides every client-run affordance. The full SERVER + CLIENT integration — same-origin
+glue worker, an allowlisted host-call router, the text HUD, the visitor trust lifecycle, and
+the cross-origin-isolation headers it all depends on — is implemented and documented in the
+public starter [The Construct](https://github.com/CrowdedKingdoms/the-construct)
+(`docs/MODDING.md`), which ships it on by default with a build switch.
 :::
 
 ## Minimal SERVER-only embed (the reverse-tower-defense pattern)
