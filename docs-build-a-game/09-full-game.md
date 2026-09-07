@@ -8,7 +8,7 @@ slug: 09-full-game
 
 ## Goal
 
-Combine all chapters into one shippable demo at `/canvas`.
+Combine all chapters into one shippable game.
 
 ## Checklist
 
@@ -24,20 +24,18 @@ Combine all chapters into one shippable demo at `/canvas`.
 
 ## Stack summary
 
-| Layer | Technology |
-| --- | --- |
-| Tutorial shell | Vite + React + React Router |
-| Rendering | Raw canvas 2D |
-| Backend I/O | CrowdyJS → dev-tier APIs |
-| Persistence | Game API voxels via UDP proxy |
+| Layer | In this tutorial | In The Construct |
+| --- | --- | --- |
+| Shell | Vite + TypeScript | Vite + TypeScript, `GameScene` adapter |
+| Rendering | Raw canvas 2D | pixi.js (Paint) and three.js (hub) |
+| Backend I/O | CrowdyJS → dev-tier APIs | CrowdyJS + World Stores |
+| Persistence | Voxel updates via the UDP proxy | Chunk store write-back (`markDirty` → `chunks.update`) |
 
 ## Next steps
 
-- Deploy the demo as a static site (see [simple-web-demo README](https://github.com/CrowdedKingdoms/simple-web-demo#deploy-static-site))
-- Embed or link from this docs section
-- Extend with chat (`sendTextPacket`), larger palette, or zoom
-
-**Try it:** [Open full canvas demo](http://127.0.0.1:5180/canvas) · [Run `npm run demo:verify`](/build-a-game/intro#verify-docs-are-sufficient) to validate all chapters
+- Clone [The Construct](https://github.com/CrowdedKingdoms/the-construct) and compare its `PaintScene` with what you built — then replace it with your game (`docs/NEW-GAME-CHECKLIST.md`).
+- Host it as a static site with the headers client mods need (`docs/HOSTING.md` in The Construct).
+- Extend with chat (`sendTextPacket`), larger palette, or zoom.
 
 ## Related docs
 
