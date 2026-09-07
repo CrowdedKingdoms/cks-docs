@@ -27,10 +27,7 @@
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
     "screenshots": "tsx scripts/capture-management-ui-screenshots.mts",
-    "test:e2e": "playwright test app-first-onboarding.spec.ts",
-    "demo:install": "npm run build --prefix ../CrowdyJS && npm install --prefix ../simple-web-demo",
-    "demo:dev": "npm run dev --prefix ../simple-web-demo",
-    "demo:verify": "npm run verify --prefix ../simple-web-demo"
+    "test:e2e": "playwright test app-first-onboarding.spec.ts"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.1",

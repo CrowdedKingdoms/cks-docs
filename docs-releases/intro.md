@@ -30,6 +30,27 @@ supported path.
 
 :::
 
+## 2026-09-07
+
+**The Construct — the public starter repository; `simple-web-demo` retired**
+
+- [`CrowdedKingdoms/the-construct`](https://github.com/CrowdedKingdoms/the-construct) is
+  the public starter for browser games on Crowded Kingdoms and the
+  [build-a-game](/build-a-game/intro) tutorial's companion: an engine-agnostic platform
+  layer over CrowdyJS 15.4 (two tokens, datacenter routing, token rotation, World Stores),
+  a three.js hub and a pixi.js paint program driven by one session, a kit-seeded game
+  model, Crowdy Studio embedded with **SERVER and CLIENT** mods, and a Setup wizard that
+  creates your organization and app from inside the game with no card. MIT; a GitHub
+  template repository; clone `prod`.
+- The `simple-web-demo` repository (June 2026; a `file:` SDK dependency and the retired
+  per-developer environment handles) is removed. Nothing it demonstrated is lost: every
+  chapter of the tutorial still stands alone, and The Construct's `PaintScene` is the same
+  shared canvas built with World Stores.
+- [Embed Crowdy Studio](/crowdyjs/crowdy-studio-embed) no longer tells new games to start
+  SERVER-only; it describes both postures and points at The Construct for the full one.
+- [Create your first app](/management-ui/create-your-first-app) now matches the live
+  wizard: App (with datacenter) → Review, no billing step; the free allowance is monthly.
+
 ## 2026-09-06
 
 **ck-api v1.85.0 — the card is bytes, CPU-hours and storage; usage is charged as it arrives; the development quota is monthly**
