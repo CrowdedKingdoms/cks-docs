@@ -35,7 +35,7 @@ npm install
 npm run dev
 ```
 
-Open <http://localhost:5175>, create an account, let Setup create your app, then step on the
+Open [http://localhost:5175](http://localhost:5175), create an account, let Setup create your app, then step on the
 **Paint** pad. Where a chapter below shows the raw call, the repository shows the same thing
 through World Stores: `src/platform/realtime/WorldStores.ts` (presence, chunks),
 `src/scenes/program-pixi/PaintScene.ts` (painting, persistence), `src/platform/network/NetworkManager.ts`
