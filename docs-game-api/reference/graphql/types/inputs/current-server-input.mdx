@@ -1,0 +1,43 @@
+---
+id: current-server-input
+title: CurrentServerInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The Buddy a native client is CURRENTLY connected to, named by the `ip4` and `clientPort` that `serverWithLeastClients` handed it. Pass it to `refreshAppToken` so the refreshed token is authorized on that same node and the client keeps its session there instead of being re-placed.
+
+
+```graphql
+input CurrentServerInput {
+  ip4: String!
+  clientPort: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CurrentServerInput.<b>ip4</b></code>](#ip-4)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#ip-4\} 
+The `ip4` of the ServerStatus the client is connected to (as returned by serverWithLeastClients).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CurrentServerInput.<b>clientPort</b></code>](#client-port)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-port\} 
+The `clientPort` of the ServerStatus the client is connected to.
+
+
+
+
+### Member Of
+
+[`refreshAppToken`](/reference/graphql/operations/mutations/refresh-app-token.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

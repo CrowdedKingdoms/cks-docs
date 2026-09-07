@@ -28,6 +28,7 @@ type AppTokenResponse {
   gameApiWsUrl: String
   discoveryUrl: String
   launchUrl: String
+  authorizedServer: ServerStatus
 }
 ```
 
@@ -64,6 +65,10 @@ Stable entry origin, resolving to every datacenter, that always reaches SOME hea
 
 #### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>launchUrl</b></code>](#launch-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#launch-url\} 
 Browser launch URL for this app (where the player's browser plays it), if configured.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>authorizedServer</b></code>](#authorized-server)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ServerStatus</b></code>](/reference/graphql/types/objects/server-status.mdx) <Badge class="badge badge--secondary " text="object"/> \{#authorized-server\} 
+Set only by `refreshAppToken` when the caller passed `currentServer`: the Buddy the NEW token was just authorized on, which is the node the client is already connected to. When present, keep the existing UDP session and start signing datagrams with the new token; there is no need to call serverWithLeastClients. Null when the caller passed nothing, or when that node can no longer serve this app (gone, draining, Full, or not local to the app) -- then call serverWithLeastClients for a fresh placement, exactly as before.
 
 
 

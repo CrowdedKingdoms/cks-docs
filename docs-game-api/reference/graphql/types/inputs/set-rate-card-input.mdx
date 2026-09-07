@@ -27,6 +27,8 @@ input SetRateCardInput {
   unitQuantity: BigInt
   acknowledgeRepricing: Boolean
   freePerHour: BigInt
+  freeUnits: BigInt
+  freePeriod: AllowancePeriod
   freePerMonth: BigInt
   reason: String!
 }
@@ -61,6 +63,14 @@ Required when a unit change also changes the money. Restating 19c per GiB as 1.7
 
 #### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>freePerHour</b></code>](#free-per-hour)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#free-per-hour\} 
 New hourly free allowance in raw metric units, as a BigInt decimal string. Must be &#x003E;= 0. Omit to leave the allowance unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>freeUnits</b></code>](#free-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#free-units\} 
+New free allowance in raw metric units per freePeriod, as a BigInt decimal string. Must be &#x003E;= 0. Leaves the period as it is unless freePeriod is also given. Not combinable with freePerHour, which is the older spelling of freeUnits with freePeriod HOUR.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>freePeriod</b></code>](#free-period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AllowancePeriod</b></code>](/reference/graphql/types/enums/allowance-period.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#free-period\} 
+New period for the free allowance. Leaves the units as they are unless freeUnits is also given. Moving a dimension to MONTH is how the development quota is stated.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>freePerMonth</b></code>](#free-per-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#free-per-month\} 

@@ -1,0 +1,48 @@
+---
+id: allowance-period
+title: AllowancePeriod
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The interval a free allowance resets on and a dimension is rounded over. Every dimension is billed as its period aggregate crosses each whole cent, within about a minute of the usage arriving; the development quota is MONTH.
+
+
+```graphql
+enum AllowancePeriod {
+  HOUR
+  DAY
+  MONTH
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>AllowancePeriod.<b>HOUR</b></code>](#hour) \{#hour\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AllowancePeriod.<b>DAY</b></code>](#day) \{#day\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AllowancePeriod.<b>MONTH</b></code>](#month) \{#month\} 
+
+
+
+
+
+### Member Of
+
+[`PublicRateCardEntryType`](/reference/graphql/types/objects/public-rate-card-entry-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

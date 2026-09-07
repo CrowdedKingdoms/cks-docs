@@ -28,6 +28,8 @@ type RateCardEntryType {
   currency: String!
   freePerHour: BigInt
   freePerMonth: BigInt
+  freeUnits: BigInt
+  freePeriod: AllowancePeriod
   description: String
 }
 ```
@@ -65,6 +67,14 @@ Raw metric units free per clock hour before anything is charged, as a BigInt dec
 
 #### [<code style={{ fontWeight: 'normal' }}>RateCardEntryType.<b>freePerMonth</b></code>](#free-per-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#free-per-month\} 
 Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the pooled monthly trial budget per (player, app), and player&#x005F;wasm&#x005F;compute&#x005F;units is its canonical key. Null when this dimension has no monthly allowance.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RateCardEntryType.<b>freeUnits</b></code>](#free-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#free-units\} 
+The allowance as the biller reads it: raw metric units free per freePeriod, as a BigInt decimal string. freePerHour and freePerMonth are views of this same row for the periods they name; a DAY allowance shows only here. Null when the dimension has no allowance row.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RateCardEntryType.<b>freePeriod</b></code>](#free-period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AllowancePeriod</b></code>](/reference/graphql/types/enums/allowance-period.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#free-period\} 
+The period freeUnits resets on. Null when the dimension has no allowance row.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RateCardEntryType.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
