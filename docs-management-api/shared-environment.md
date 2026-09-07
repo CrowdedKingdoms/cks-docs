@@ -26,16 +26,23 @@ So in practice there is one model, and this page describes it.
 
 - Every organization can create up to **`platformConfig.freeAppsPerOrg`** apps on the shared
   environment (default **3**).
-- Each app includes a small **free hourly usage allowance** per metered
-  dimension (network bytes, message/operation counts, resolver time, and — for
-  server-side logic — automation compute units and
-  [compute-module](/game-api/compute-modules) usage: `wasm_compute_units`,
-  `wasm_egress_msgs`, `wasm_egress_bytes`).
-- Each app also includes **5 GB of client egress per calendar month** (decimal
-  GB: 1 GB = 1,000,000,000 bytes). This is the headline free-tier number and the
-  one most games reach first. Unused volume does not roll over.
-- Within the free allowances the app runs at no cost. Above them, usage is billed
-  from your organization wallet at the published rate card.
+- Each app includes a **monthly development quota**, per UTC calendar month:
+  **5 GB of client egress**, **5 GB of client ingress** (decimal GB: 1 GB =
+  1,000,000,000 bytes), **20 CPU-hours of compute** pooled across GraphQL
+  resolvers, automations and [compute modules](/game-api/compute-modules), and
+  **1 GB-month of stored data**. Egress is the headline number and the one most
+  games reach first. Unused quota does not roll over.
+- **You are billed for bytes, CPU and storage — never for counts.** A datagram,
+  an API operation or a notification is paid for by the bytes it moves and the
+  CPU it takes; there is no per-message, per-operation or per-notification rate
+  on the card (the count dimensions were retired on 2026-09-06). Rows and bytes
+  written by compute modules are priced from the first unit.
+- Within the quota the app runs at no cost. Above it, usage is billed from your
+  organization wallet at the published rate card **as it arrives**: each
+  dimension's month-to-date total is rounded up to the next whole cent once, and
+  the wallet is debited as the total crosses each cent, within about a minute of
+  the usage. The hourly rows on the Plan and Usage tab itemise what was used and
+  what was charged during each hour; they are a statement, not a separate charge.
 - A free app that has never been funded is also **shaped to roughly 1 MB/s** of
   egress. That cap is lifted by funding the org wallet or enabling
   [auto-billing](#auto-billing) — not by buying a reservation. Once an
@@ -55,8 +62,9 @@ of reference CPU. The platform takes the larger of measured CPU time and the
 deterministic fuel equivalent (`GREATEST(CEIL(cpu_us/1000),
 CEIL(fuel/22,000,000))`), so neither a host stall nor unusually dense guest
 instructions under-report work. The 22M conversion, free allowance, and rate
-were calibrated in the July 2026 hardening sweep; module-emitted messages and
-bytes remain separate line items.
+were calibrated in the July 2026 hardening sweep; module-emitted bytes are a
+separate line item and are billed through the same monthly egress aggregate as
+every other byte your app sends.
 
 Check your remaining free slots:
 
