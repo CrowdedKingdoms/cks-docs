@@ -18,6 +18,14 @@ This tutorial walks you through building a **multiplayer pixel canvas** on Crowd
 
 The companion demo app lives in the [`simple-web-demo`](https://github.com/CrowdedKingdoms/simple-web-demo) repository. Each chapter maps to an interactive route.
 
+:::tip[Starting a real game? Clone The Construct]
+[`the-construct`](https://github.com/CrowdedKingdoms/the-construct) is the public starter
+repository: an engine-agnostic platform layer over CrowdyJS, a three.js hub and a pixi.js
+program driven by one session, a kit-seeded game model, Crowdy Studio embedded with client
+mods, and a Setup wizard that creates your org and app from inside the game. This tutorial
+teaches the wire-level loop; The Construct is the architecture you build a game in.
+:::
+
 ## Run the interactive demo
 
 From the monorepo (requires the `CrowdyJS` repo as a sibling of `simple-web-demo`):
