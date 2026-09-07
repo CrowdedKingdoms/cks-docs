@@ -62,6 +62,6 @@ POST `{ query: "{ __typename }" }` to the GraphQL endpoint. It should return HTT
 - API reachable
 - AppId=1 configured
 
-**Try it:** [Open Chapter 1 demo](http://127.0.0.1:5173/chapter/1) (requires [local demo setup](/build-a-game/intro#run-the-interactive-demo))
+**In The Construct:** `src/platform/config.ts` resolves the API origin from the installed SDK build and `src/platform/network/NetworkManager.ts` creates the client.
 
 Next: [Auto guest auth](/build-a-game/02-auto-guest-auth)
