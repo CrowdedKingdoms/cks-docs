@@ -543,9 +543,12 @@ Automation runs and timer fires never go through a player request, so they are
 metered explicitly. Each run records `computeUnits` (wall-clock + per-invocation /
 per-mutation weighting); the game-api ships per-app/minute totals to the
 management plane, where they bill against your app under the
-`automation_compute_units` metric (with a free hourly allowance). On a shared
-environment, sustained automation load draws down the org wallet and, if a spend
-cap or balance is hit, the budget circuit breaker pauses your automations.
+`automation_compute_units` metric. Automation CPU draws on the same pooled
+monthly allowance as your GraphQL resolvers and compute modules (20 CPU-hours per
+app per calendar month, `compute_cpu_ms` on the rate card) and is charged as it
+arrives once the pool is spent. On a shared environment, sustained automation
+load draws down the org wallet and, if a spend cap or balance is hit, the budget
+circuit breaker pauses your automations.
 
 ## Monitoring
 
