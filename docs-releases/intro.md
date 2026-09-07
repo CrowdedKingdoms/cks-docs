@@ -30,6 +30,43 @@ supported path.
 
 :::
 
+## 2026-09-06
+
+**ck-api v1.85.0 — the card is bytes, CPU-hours and storage; usage is charged as it arrives; the development quota is monthly**
+
+One pricing change, one cadence change, and the counts are gone.
+
+- **Six count dimensions are retired**: `replication_recv_msgs`,
+  `replication_send_msgs`, `graphql_recv_ops`, `udp_notifications`,
+  `wasm_egress_msgs` (shared card) and `player_egress_msgs` (player card). A
+  datagram, an API operation or a notification is paid for by the bytes it moves
+  and the CPU it takes — both of which were already priced — so a count was the
+  same action billed twice. Their rate and allowance rows are deleted on every
+  tier; `setBillingRate` refuses the names; the counts are still recorded and
+  shown in `appUsageSummary`. Every operation a client can call is now audited
+  against the card in `docs/billing-coverage.md` (ck-api repo).
+- **Every dimension is charged as the usage arrives.** Until now bytes were billed
+  within a minute (monthly aggregate, rounded up once, debited as each cent was
+  crossed) while every other dimension waited 60–75 minutes for the hour to close
+  and settle. Now every dimension takes the byte path. The hourly rows in
+  `appSharedUsageCharges` continue, as a **statement**: `amountCents` is what was
+  debited during that hour and `walletTransactionId` is null (the debits have
+  their own `shared_usage` transactions); `usageSnapshot._pricing.mode` is
+  `"statement"` on rows written under the new rule.
+- **The free tier is a monthly development quota.** Per app per UTC calendar
+  month: 5 GB egress, 5 GB ingress, **20 CPU-hours pooled** across GraphQL
+  resolvers, automations and compute modules (`compute_cpu_ms` on the card), and
+  1 GB-month of stored data. Compute-module writes carry no allowance. The hourly
+  allowances are gone.
+- **Rate card fields.** `RateCardEntry` / `PublicRateCardEntry` gain `freeUnits`
+  and `freePeriod` (`HOUR | DAY | MONTH`); `freePerHour` is now null for any
+  allowance that is not hourly, and `freePerMonth` is the monthly-allowances table
+  (the byte aggregates and the player trial) as before. `SetBillingRateInput`
+  gains `freeUnits` and `freePeriod`; `freePerHour` still works and means
+  `freeUnits` with `freePeriod: HOUR`.
+- Player billing is unchanged in cadence (per closed hour against the monthly
+  trial pool); the retired `player_egress_msgs` is the only player-card change.
+
 ## 2026-09-01
 
 **ck-api v1.73.0 — nothing runs for an app with no player in it; reservations split**

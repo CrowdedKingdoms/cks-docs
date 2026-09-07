@@ -119,8 +119,9 @@ voxel coordinates are 0–255 within a chunk).
 ## Replication and events
 
 Send realtime traffic to connected players and signal other modules. Emits
-count against your per-minute egress budget and are billed as
-`wasm_egress_msgs` / `wasm_egress_bytes`.
+count against your per-minute egress budget and are billed by their bytes as
+`wasm_egress_bytes` (into the app's monthly egress); the message count is
+shown in usage but not priced.
 
 ```rust
 use crowdy_compute_sdk::api;

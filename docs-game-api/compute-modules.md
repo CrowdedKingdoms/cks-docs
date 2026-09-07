@@ -408,22 +408,21 @@ occurrence to fall back on.
 ## Billing
 
 Module execution never rides a player request, so it is metered explicitly,
-per minute, and billed hourly against your app on shared environments (see
-[Shared environment](/management-api/shared-environment)):
+per minute, and billed against your app on shared environments as the usage
+arrives (see [Shared environment](/management-api/shared-environment)):
 
 | Metric | Measures |
 |---|---|
-| `wasm_compute_units` | Compute consumed, derived from CPU time and fuel — 1 unit ≈ 1 ms of reference CPU |
-| `wasm_egress_msgs` | Replication messages emitted by modules |
-| `wasm_egress_bytes` | Replication bytes emitted by modules |
+| `wasm_compute_units` | Compute consumed, derived from CPU time and fuel — 1 unit ≈ 1 ms of reference CPU. Draws on the app's pooled monthly CPU quota (20 CPU-hours across resolvers, automations and modules) |
+| `wasm_egress_bytes` | Replication bytes emitted by modules, billed through the app's monthly egress aggregate |
+| `wasm_db_rows_written`, `wasm_write_bytes` | Rows and bytes your module writes; no allowance, priced from the first unit |
+| `durable_storage_byte_hours` | Data your app keeps, as GB held over time; 1 GB-month free |
 
-Each metric has a free hourly allowance; sustained usage beyond it draws down
-the org wallet at the published rates. The Phase 10 sweep calibrated the
-fuel equivalent to 22M fuel/unit and validated the free allowance + rate
-against the full kit-engine fleet and live BWF usage.
-Module-driven replication is kept separate from player-driven
-`udp_notifications` so your bill itemizes compute-driven traffic. If a spend
-cap or balance is hit, the budget gate pauses your modules until resolved.
+Messages are counted for your usage view but **not priced**: a message is paid
+for by its bytes (the `wasm_egress_msgs` line was retired on 2026-09-06). The
+Phase 10 sweep calibrated the fuel equivalent to 22M fuel/unit against the full
+kit-engine fleet and live BWF usage. If a spend cap or balance is hit, the
+budget gate pauses your modules until resolved.
 
 ## Permissions
 
