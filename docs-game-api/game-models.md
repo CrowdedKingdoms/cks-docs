@@ -323,9 +323,12 @@ the only one that sees the container checks.
 ## Authority: deciding who may invoke a function
 
 Every function carries an **invoke policy** — a small boolean tree of
-requirements you combine with `and` / `or` / `not`. App admins always bypass it;
-an absent policy means any entitled player may invoke. You can mix authority
-sources freely:
+requirements you combine with `and` / `or` / `not`. An absent policy means any
+entitled player may invoke. **The policy applies to everyone, app admins
+included**: your own account, testing your own game, is judged exactly like a
+player's. (Before 2026-09-08 a `manage_apps` holder skipped every policy
+implicitly, which made policies look unenforced to the very people who wrote
+them. That is gone.) You can mix authority sources freely:
 
 - `owner_of_self` — the caller owns the `self` container (e.g. "only act on your
   own characters").
@@ -365,6 +368,37 @@ holding the `manage_group` permission in team 42, acting inside grid 7":
   { "type": "grid_permission", "key": "update_voxel_data", "gridId": "7" }
 ] }
 ```
+
+### Skipping a policy on purpose (`bypassPolicy`)
+
+Administrative tooling sometimes needs to run a function regardless of its
+policy — a GM console resetting a stuck battle, a seed script driving a fixture
+into a state the policy would refuse. For that, set `bypassPolicy: true` on the
+`gameModelInvoke` input:
+
+- it is honoured only when the caller holds `manage_apps` on the app; anyone
+  else gets `NOT_ALLOWED` and nothing runs,
+- the result carries `policyBypassed: true` so a client can tell the two kinds
+  of success apart,
+- the server writes an audit line naming the app, function, user and container.
+
+An admin invoke **without** the flag is an ordinary player invoke. There is no
+app or tier setting that turns policy enforcement off.
+
+### Reading a policy back, and what `self.<attribute>` means
+
+`gameModelFunctions` returns `invokePolicyJson` as you authored it: the compiled
+`ast` the server stores beside each `condition` is stripped from the read-back,
+so its absence there says nothing about whether the policy was compiled (it
+always is, at upsert). A stored condition whose `ast` is genuinely missing
+refuses every call rather than allowing it.
+
+In a `condition`, `self.owner_user_id` (or `source.owner_user_id`) resolves to
+a **declared property** of that name on the container type, never to the row's
+owner. The row owner is the injected `$self_owner_id`, and the leaf
+`owner_of_self` is the direct way to require it. If you declared a property
+named `owner_user_id`, rename it or read `$self_owner_id` — the two are not
+linked.
 
 Functions also have an `invokeScope`: `player` (default, directly callable),
 `server` (admins only), or `internal` (only reachable via `fn:` from another
@@ -641,9 +675,13 @@ mutation {
 }
 ```
 
-If authority fails you get an authorization error. If the logic errors (e.g.
-arithmetic on a missing value) the transaction is rolled back, `success` is
-`false`, and the attempt is still recorded.
+If the invoke policy refuses the caller, `success` is `false`, `fault.code` is
+`NOT_ALLOWED`, no mutation is applied, and the refusal is recorded as a failed
+event. This is the verdict for app admins too unless the input carries
+`bypassPolicy: true` (see [Skipping a policy on purpose](#skipping-a-policy-on-purpose-bypasspolicy)),
+in which case the result also reports `policyBypassed: true`. If the logic
+errors (e.g. arithmetic on a missing value) the transaction is rolled back,
+`success` is `false`, and the attempt is still recorded.
 
 ## Concurrency: two players writing the same property
 

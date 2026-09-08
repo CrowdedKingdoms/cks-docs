@@ -30,6 +30,26 @@ supported path.
 
 :::
 
+## 2026-09-08 (Game API)
+
+**Invoke policies now apply to app admins. `bypassPolicy` is the explicit, audited
+override.** (ck-api v1.89.0)
+
+- Until now a caller holding `manage_apps` skipped every Game Model invoke policy
+  implicitly, with nothing on the result to say so. A developer testing their own
+  game with their own account therefore saw policies that appeared unenforced. From
+  v1.89.0 an admin's `gameModelInvoke` is judged exactly like a player's.
+- `InvokeFunctionInput.bypassPolicy: Boolean` (default `false`) skips the policy for
+  one call. Honoured only with `manage_apps` (`NOT_ALLOWED` otherwise); the result
+  carries `GmInvokeResult.policyBypassed: true` and the call is audit-logged.
+- A stored `condition` leaf with no compiled `ast` now refuses rather than throws.
+- Clarified in [Game models](/game-api/game-models#authority-deciding-who-may-invoke-a-function):
+  `gameModelFunctions` strips the compiled `ast` from `invokePolicyJson` on read-back,
+  and `self.owner_user_id` in a condition is a declared property, never the row owner
+  (`$self_owner_id` / `owner_of_self`).
+- **Action:** GM tooling that ran with an admin account and depended on the skip must
+  add `bypassPolicy: true`. Nothing else changes.
+
 ## 2026-09-08
 
 **Hosted sign-in: a browser game on its own domain signs players in through Studio.

@@ -121,7 +121,7 @@ allowance is not, even though neither is a bug.
 | `USER_CODE_TOO_SLOW` | `AUTHOR` | It ran past the time it is allowed. |
 | `USER_CODE_LIMIT_EXCEEDED` | `AUTHOR` | It exceeded a per-call ceiling (gas, fuel, memory, depth, database operations, response size). |
 | `INVALID_REQUEST` | `AUTHOR` | The arguments did not satisfy the function's declared contract. |
-| `NOT_ALLOWED` | `AUTHOR` | An invoke policy or permission refused this caller. |
+| `NOT_ALLOWED` | `AUTHOR` | An invoke policy or permission refused this caller. Applies to app admins too: since 2026-09-08 a `manage_apps` holder is judged like a player unless the input sets `bypassPolicy: true`, and that flag itself answers `NOT_ALLOWED` for anyone without `manage_apps`. On `gameModelInvoke` a policy refusal arrives in band (`success: false`, `fault.code: NOT_ALLOWED`); a refused `bypassPolicy` is a GraphQL error. |
 | `NOT_FOUND` | `AUTHOR` | The named function, module or export does not exist for this app. |
 | `PLATFORM_BUSY` | `PLATFORM` | We could not start the work in time. The app's code never ran. Retry. |
 | `PLATFORM_ERROR` | `PLATFORM` | A platform failure. Retrying is reasonable. |
