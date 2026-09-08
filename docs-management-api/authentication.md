@@ -16,6 +16,32 @@ These are peers on one email-keyed account rather than alternatives: an account
 created by magic link can later add a password, and signing in with Google and
 with a magic link for the same verified address resolves to the same account.
 
+:::danger[Building a browser game on your own domain? You do not call these.]
+Since **2026-09-08** (ck-api v1.88.0) every sign-in mutation on this page --
+`login`, `register`, `requestLoginLink`, `completeLoginLink`,
+`socialLoginStart`, `socialLoginComplete`, `checkAuthMethod`,
+`requestPasswordReset`, `resetPassword`, `confirmEmail`,
+`resendConfirmationEmail`, and the `/auth/*` REST twins -- is served only to
+**first-party browser origins** (Crowded Kingdoms Studio and crowdy.games) and to
+**non-browser callers** (anything that sends no `Origin` header: Node, a CLI,
+Unreal/Unity, CrowdyCPP). From a browser page on any other origin the API
+answers `extensions.code` **`HOSTED_SIGN_IN_REQUIRED`** (403).
+
+A game on its own domain signs players in through **hosted sign-in**: redirect
+the player to Studio's `/authorize` with a PKCE challenge, let them sign in (or
+sign up) there, and exchange the code they come back with for an **app-scoped
+token**. Your page never sees a password, and never holds a session. In
+CrowdyJS that is two calls, `client.portal.signIn({ appId, redirectUri })` and
+`client.portal.handleSignInCallback()`; the mutations underneath are
+`createPortalAuthorizationCode` (Studio's side) and `exchangePortalCode`
+(yours), described in [Portals & app-scoped tokens](/management-api/portals-and-app-tokens#hosted-sign-in-for-a-game-on-its-own-domain).
+Your origin must be one of the app's **redirect URIs** (Studio > Apps >
+Settings), which is also what admits it to CORS.
+
+Why: a form on a customer's domain that collects a Crowded Kingdoms password is
+indistinguishable, to the platform and to the player, from a phishing page.
+:::
+
 :::caution[The dev bypass is gone]
 `devLogin` and the `devToken` field on `requestLoginLink` were **removed on
 2026-08-20** — deleted, not disabled, so no environment variable brings them
@@ -30,10 +56,12 @@ gameplay**: to play, mint a short-lived **app-scoped token** from it — see
 [Portals & app-scoped tokens](/management-api/portals-and-app-tokens) and
 [Game API → Authentication](/game-api/authentication).
 
-:::note[Browser clients]
-CrowdyJS wraps every flow below behind `client.auth` — see
+:::note[SDK clients]
+CrowdyJS wraps every flow below behind `client.auth` for first-party pages and
+non-browser code, and hosted sign-in behind `client.portal.signIn` for a game on
+its own domain — see
 [CrowdyJS → Authentication](/crowdyjs/readme#authentication-session-vs-app-scoped-tokens).
-You rarely hand-write these mutations in a browser.
+You rarely hand-write these mutations.
 :::
 
 ## What you get back
@@ -190,8 +218,20 @@ a refusal: a stolen session can already attach durable attacker-controlled
 access with `linkIdentity`, so refusing here would close nothing while leaving
 the legitimate user of a passwordless account with no way in at all.
 
-Neither `resetPassword` nor `changePassword` revokes existing sessions. Follow
-either with `logoutAllDevices` if that is what you want.
+**Sessions are revoked on recovery** (ck-api v1.88.0). `resetPassword` deletes
+every session of the account and every app token minted from one -- a reset is
+what an owner does after losing control, and the sessions are what the other
+party holds. `changePassword` deletes every session **but the calling one**, so
+the client that changed the password does not have to sign in again.
+`setInitialPassword` leaves sessions alone (it adds a credential to an account
+the caller is already signed in to). Until v1.88.0 none of them revoked
+anything, and this page said so as if it were a feature.
+
+**Rate limits.** Every public sign-in mutation is limited per address and per
+client; `login` counts *failures* per address -- ten in fifteen minutes answers
+`RATE_LIMITED` (429), and the reset email is the way out. The masked mutations
+(`requestPasswordReset`, `resendConfirmationEmail`, `requestLoginLink`) stay
+masked when limited: their usual success shape, no side effect.
 
 ### Telling the refusals apart
 

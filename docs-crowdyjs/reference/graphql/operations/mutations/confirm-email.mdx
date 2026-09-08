@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Confirms a user email address using the token from the confirmation email (also enables password sign-in for the account). Returns true on success, false if the token is invalid or expired. Public (the token authorizes the call).
+Confirms a user email address using the token from the confirmation email (also enables password sign-in for the account). Returns true on success, false if the token is invalid or expired. Public (the token authorizes the call); first-party origins only (HOSTED&#x005F;SIGN&#x005F;IN&#x005F;REQUIRED otherwise).
 
 
 ```graphql
