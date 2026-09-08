@@ -139,9 +139,18 @@ The remote registry, decode-once:
   renderer needs without keeping its own buffers (the lerp math itself stays
   in your renderer).
 - **Self-echo filtered** automatically (wired from `self`).
-- **Staleness** both ways: reads filter by `receivedAt` age
-  (`staleAfterMs`, default 12 s) so results are always live, and a reap
-  timer physically deletes quiet records and fires `onLeave`.
+- **Leaves are server-announced** (CrowdyJS 15.5, Buddy v0.25): when the
+  server stops considering an actor present it sends an
+  `ActorLeftNotification` (opcode 145) to the neighbourhood, and the store
+  removes the actor and fires `onLeave` **at once** — about five seconds
+  after its last update, or immediately when its session ended. `remove(uuid)`
+  is public for a game that wants to force the same path.
+- **Staleness** stays as the fallback, both ways: reads filter by `receivedAt`
+  age (`staleAfterMs`, default 12 s) so results are always live, and a reap
+  timer physically deletes quiet records and fires `onLeave` for a leave whose
+  datagram was lost. Tolerate leave → join for the same uuid (a reconnect
+  after a stale looks exactly like that): `onLeave` then `onJoin` is the
+  correct sequence, not a bug.
 - **Lanes** route one decoded stream to several consumers — the
   players-vs-mobs split every MMO hits:
 

@@ -22,6 +22,7 @@ End-of-month egress projection for one shared app from linear extrapolation of c
 type AppUsageProjection {
   appId: String!
   currentEgressBytes: String!
+  currentIngressBytes: String!
   sufficientData: Boolean!
   daysElapsed: Float!
   projectedBytes: String
@@ -39,7 +40,11 @@ App id (as a string).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>currentEgressBytes</b></code>](#current-egress-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#current-egress-bytes\} 
-Egress bytes recorded so far this calendar month (from app&#x005F;monthly&#x005F;egress).
+Egress bytes recorded so far this calendar month (from app&#x005F;monthly&#x005F;egress). Egress only -- bytes the service delivered to clients, measured as wire bytes at the network interface. Ingress is metered separately and does not count toward this figure or the allowance it is compared against.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>currentIngressBytes</b></code>](#current-ingress-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#current-ingress-bytes\} 
+Ingress bytes recorded so far this calendar month (from app&#x005F;monthly&#x005F;egress.ingress&#x005F;bytes): bytes clients sent the service over UDP replication and GraphQL, measured on the same basis as egress. Billed once, as aggregate&#x005F;data&#x005F;ingress above its own monthly allowance; never counted toward the egress figure or allowance.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>sufficientData</b></code>](#sufficient-data)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sufficient-data\} 

@@ -1,0 +1,78 @@
+---
+id: actor-left-notification
+title: ActorLeftNotification
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The game server has stopped considering an actor present (Buddy v0.25.0). Emitted ONCE, over the actor's last chunk with the replication rings its own updates used, at the moment its presence record is removed -- roughly five seconds after its last update. Not emitted when the actor merely moved to another server. Treat a later ActorUpdateNotification for the same uuid as a rejoin. Received via the udpNotifications subscription.
+
+
+```graphql
+type ActorLeftNotification {
+  appId: BigInt!
+  chunkX: BigInt!
+  chunkY: BigInt!
+  chunkZ: BigInt!
+  distance: Int!
+  uuid: String!
+  leftReason: Int!
+  sequenceNumber: Int!
+  epochMillis: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorLeftNotification.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The ID of the app the actor was in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorLeftNotification.<b>chunkX</b></code>](#chunk-x)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#chunk-x\} 
+The X coordinate of the actor's last chunk.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorLeftNotification.<b>chunkY</b></code>](#chunk-y)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#chunk-y\} 
+The Y coordinate of the actor's last chunk.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorLeftNotification.<b>chunkZ</b></code>](#chunk-z)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#chunk-z\} 
+The Z coordinate of the actor's last chunk.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorLeftNotification.<b>distance</b></code>](#distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#distance\} 
+Chunk replication distance (0-8) the notification was fanned out over.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorLeftNotification.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\} 
+The unique identifier of the actor that left.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorLeftNotification.<b>leftReason</b></code>](#left-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#left-reason\} 
+Why the server stopped considering the actor present: 0 = STALE (it stopped updating). 1 is reserved for an immediate server-side release; treat any other value as STALE.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorLeftNotification.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number\} 
+Correlation byte from the datagram tail (always 0 today).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ActorLeftNotification.<b>epochMillis</b></code>](#epoch-millis)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#epoch-millis\} 
+Server-generated epoch milliseconds timestamp.
+
+
+
+
+### Implemented By
+
+[`UdpNotification`](/reference/graphql/types/unions/udp-notification.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/>
