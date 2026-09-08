@@ -56,7 +56,7 @@ For tick triggers: the tick rate in Hz (clamped by the app policy's maxTickHz).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>onEvent</b></code>](#on-event)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#on-event\} 
-For event triggers: function&#x005F;invoked | property&#x005F;changed | container&#x005F;created | compute&#x005F;event.
+For event triggers: function&#x005F;invoked | property&#x005F;changed | container&#x005F;created | compute&#x005F;event | player&#x005F;left. player&#x005F;left (v1.87.0) is delivered to on&#x005F;event as JSON with event, actor&#x005F;uuid, user&#x005F;id, chunk&#x005F;x/y/z, last&#x005F;seen&#x005F;at, left&#x005F;reason and remaining&#x005F;player&#x005F;count, once per actor that stops being present, the last one included.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpsertComputeTriggerInput.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 

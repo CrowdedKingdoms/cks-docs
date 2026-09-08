@@ -43,6 +43,7 @@ message's **sequence number**:
 - `sendActorUpdate` — spatial actor state
 - `sendVoxelUpdate` — voxel edits
 - `sendAudio` / `sendText` — spatial audio and text packets
+- `sendVideoFrame` — one encoded webcam frame, cut into up to 16 fragments and sent as `CLIENT_VIDEO_PACKET_2` (143) each; `sendVideo` sends a single pre-built fragment. Needs `use_video_chat`; see [Webcam video](#webcam-video)
 - `sendClientEvent` — typed client events (`eventType` + state bytes)
 - `sendGenericSpatial` — generic spatial payloads
 - `sendSingleActorMessage` — direct message to one actor (fire-and-forget,
@@ -67,8 +68,9 @@ game thread:
   `stats().hmacFailures`; `Config::verifyNotifications` disables this for
   benchmarking only).
 - **Typed dispatch** — a `Handlers` struct with one callback per notification
-  kind (actor update, voxel update, audio, text, client/server event, generic
-  spatial, single-actor message, channel message, generic error, status).
+  kind (actor update, voxel update, audio, **video**, text, client/server
+  event, generic spatial, single-actor message, channel message,
+  **actorLeft** with its `reason` byte, generic error, status).
 - **Error frames** — server-reported failures arrive as generic-error
   notifications **correlated by sequence number** to the send that caused
   them.
@@ -123,6 +125,10 @@ request/confirm flows CrowdyCPP offers the same convenience CrowdyJS's
   only errors correlate. A clean timeout therefore means *accepted*.
 - `waitForSequence` — the low-level primitive: wait on any sequence + uuid.
 
+`sendVideoFrame` returns the number of fragments sent; like audio it has no
+echo, so only a correlated `Unauthorized` error frame (no `use_video_chat`)
+tells you it was refused.
+
 The outcome reports `acknowledged`, the correlated error code if any, and the
 server epoch-millis from the echo.
 
@@ -140,3 +146,32 @@ parsing messages.
 Most games should not drive `Connection` by hand — the
 [World session](/crowdycpp/world-session) layer packages the send loop,
 registries, and caches on top of it.
+
+## Webcam video
+
+`crowdy/media/video_frames.hpp` is the header-only fragmenter and reassembler
+that the JS SDK mirrors byte for byte (the fragment header is specified in
+[Wire formats → Video payload](/replication-api/wire-formats#video-payload-client_video_packet_2-client_video_notification_2)):
+
+```cpp
+#include <crowdy/media/video_frames.hpp>
+
+// Sending: one call per encoded frame (JPEG or WebP bytes), ≤ 8 KB is the target.
+std::uint16_t frameId = 0;
+auto sent = connection.sendVideoFrame(chunk, myUuid, jpegBytes, frameId++,
+                                      crowdy::media::VideoCodec::Jpeg);
+// sent.value() is the fragment count; a frame over 16 fragments is refused, not partially sent.
+
+// Receiving: one assembler per connection, fed from Handlers::video (or WorldSessionConfig::onVideo).
+crowdy::media::VideoFrameAssembler assembler;
+handlers.video = [&](const crowdy::replication::SpatialNotification& n) {
+  if (auto frame = assembler.ingest(n.uuid, n.payload, nowMs())) {
+    decodeAndDraw(frame->uuid, frame->codec, frame->bytes);   // delivered once per frame
+  }
+};
+// On Handlers::actorLeft (or the store's onLeave): assembler.forget(uuid) and drop the texture.
+```
+
+Every receiver within `distance` pays the bytes: keep `distance` at 0–1, the
+rate ≤ 10 fps and frames small, and expose a toggle. `use_video_chat` is opt-in
+on a tier for the same reason.

@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Create or update an autonomous process ("automation" / NPC): a server-driven entry-point function bound to a trigger (schedule | event | manual), an optional run-as identity, a target/candidate selector, and a per-automation safety budget. The entry-point function must be marked autonomousInvocable. Idempotent on (app, name). Requires app-admin ('manage&#x005F;apps').
+Create or update an autonomous process ("automation" / NPC): a server-driven entry-point function bound to a trigger (schedule | event | manual), an optional run-as identity, a target/candidate selector, and a per-automation safety budget. The entry-point function must be marked autonomousInvocable. Idempotent on (app, name). Requires app-admin ('manage&#x005F;apps'). NOTHING RUNS FOR AN APP WITH NO PLAYER IN IT: a SCHEDULE trigger that comes due while the app is empty is skipped and rescheduled from the moment a player returns, and the missed runs are never made up -- so write the entry point to advance the world by elapsed time rather than by one step per run. Event and manual triggers are unaffected, because something already asked.
 
 
 ```graphql
