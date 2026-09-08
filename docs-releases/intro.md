@@ -30,6 +30,48 @@ supported path.
 
 :::
 
+## 2026-09-08
+
+**Hosted sign-in: a browser game on its own domain signs players in through Studio.
+Direct sign-in is first-party only. No deprecation window.**
+
+- **Breaking, and deliberately without a window** (the platform has no third-party
+  customers in production yet). Every direct sign-in mutation on the Management API --
+  `login`, `register`, `requestLoginLink`, `completeLoginLink`, `socialLoginStart`,
+  `socialLoginComplete`, `checkAuthMethod`, `requestPasswordReset`, `resetPassword`,
+  `confirmEmail`, `resendConfirmationEmail`, and the `/auth/*` REST twins -- is served
+  only to **first-party browser origins** (Crowded Kingdoms Studio, crowdy.games) and
+  to **non-browser callers** (no `Origin` header: Node, CLIs, Unreal/Unity, CrowdyCPP).
+  From any other browser origin the answer is `extensions.code`
+  **`HOSTED_SIGN_IN_REQUIRED`** (403). ck-api `v1.88.0`.
+- **What to do instead:** send the player to Studio's hosted sign-in page
+  (`https://studio.<tier>.crowdedkingdoms.com/authorize`) with a PKCE challenge and
+  exchange the code they return with for an **app-scoped token**
+  (`exchangePortalCode`, unchanged and public). In **CrowdyJS 15.6.0** that is
+  `client.portal.signIn({ appId, redirectUri })` and
+  `client.portal.handleSignInCallback()`; `isHostedSignInRequiredError` recognises
+  the refusal. Your origin must be one of the app's **redirect URIs** (Studio > Apps >
+  Settings > Sign-in & redirect URIs). Why: a page on a customer's domain that
+  collects a Crowded Kingdoms password is indistinguishable from a phishing page.
+  [Sign in](/management-api/authentication) ·
+  [Portals & app-scoped tokens](/management-api/portals-and-app-tokens#hosted-sign-in-for-a-game-on-its-own-domain).
+- **CORS follows the same registry.** The API accepts browser requests from
+  first-party origins and from every origin in some app's redirect URIs -- read live,
+  honoured within ten seconds of a save, no restart. Anything else gets no CORS
+  headers. Until now the API reflected any origin.
+- **Sessions are revoked on recovery.** `resetPassword` deletes every session of the
+  account (and every app token minted from one); `changePassword` deletes every
+  session but the calling one. Both used to leave them alone.
+- **Rate limits** on every public sign-in mutation, per address and per client;
+  `login` counts failures per address (ten in fifteen minutes answers
+  `RATE_LIMITED`). Masked mutations stay masked when limited.
+- **GraphQL introspection is off on every tier.** The SDL is published
+  [here](/management-api/reference/graphql-overview) and ships in CrowdyJS. Queries
+  deeper than 12 levels or wider than 2,000 fields are refused at validation.
+- **The Construct 0.3.0** follows: hosted sign-in, and Setup runs from `npm run setup`
+  (it needs a session the browser no longer holds). **Crowdy-Games**: every game's
+  authorize URL is Studio's; the Overworld's `authorize.html` forwards there.
+
 ## 2026-09-07
 
 **The Construct — the public starter repository; `simple-web-demo` retired**
@@ -39,8 +81,9 @@ supported path.
   [build-a-game](/build-a-game/intro) tutorial's companion: an engine-agnostic platform
   layer over CrowdyJS 15.4 (two tokens, datacenter routing, token rotation, World Stores),
   a three.js hub and a pixi.js paint program driven by one session, a kit-seeded game
-  model, Crowdy Studio embedded with **SERVER and CLIENT** mods, and a Setup wizard that
-  creates your organization and app from inside the game with no card. MIT; a GitHub
+  model, Crowdy Studio embedded with **SERVER and CLIENT** mods, and a Setup that
+  creates your organization and app with no card (from inside the game until
+  [2026-09-08](#2026-09-08); from `npm run setup` since). MIT; a GitHub
   template repository; clone `prod`.
 - The `simple-web-demo` repository (June 2026; a `file:` SDK dependency and the retired
   per-developer environment handles) is removed. Nothing it demonstrated is lost: every

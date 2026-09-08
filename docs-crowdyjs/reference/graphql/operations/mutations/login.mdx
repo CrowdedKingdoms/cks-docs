@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Authenticates with email + password and starts a new session. Returns an AuthResponse whose `token` must be sent on subsequent requests as `Authorization: Bearer <token>`. Public (no auth required); throws on invalid credentials. If the account also has another verified sign-in method, the password must first be email-confirmed.
+Authenticates with email + password and starts a new session. Returns an AuthResponse whose `token` must be sent on subsequent requests as `Authorization: Bearer <token>`. Public (no auth required); throws on invalid credentials. If the account also has another verified sign-in method, the password must first be email-confirmed. First-party origins only: a browser page on any other origin is refused with HOSTED&#x005F;SIGN&#x005F;IN&#x005F;REQUIRED (403) and must use the hosted sign-in redirect (CrowdyJS portal.signIn) instead; requests with no Origin header (native clients, scripts) are unaffected. Rate-limited per address and per client.
 
 
 ```graphql
