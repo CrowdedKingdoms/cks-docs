@@ -192,9 +192,9 @@ players is [skipped](#presence) rather than queued.
 ### Event (model or app activity)
 
 Fire an automation in reaction to a function invocation, a direct property
-write, a container creation, or an observed app player-count change. Model
-activity is matched after commit; player-count activity is matched after
-observation:
+write, a container creation, an observed app player-count change, or a player
+leaving. Model activity is matched after commit; presence activity is matched
+after observation:
 
 ```graphql
 mutation {
@@ -217,13 +217,15 @@ never match:
 | `property_changed` | `containerTypeName`, `propertyKey`, `writeSource` | a property write (see [write sources](#write-sources)) |
 | `container_created` | `containerTypeName` | `gameModelCreateContainer` / `gameModelEnsureContainer` |
 | `player_count_changed` | none | a complete app player-count transition (below) |
+| `player_left` | none | one actor stopped being present in the app (below) — **fires for the last player too** |
 
 For `function_invoked`, `containerTypeName` is the type of the invocation's
 **`self` container** — so `{ functionName: "OnBossWave", containerTypeName: "BP_Boss" }`
 reads as "when `OnBossWave` runs on a boss". Omit a filter to match every value.
 
 `debounceMs` coalesces bursts: the first fire in the window wins and the rest
-are dropped (`player_count_changed` coalesces on the trailing edge instead).
+are dropped (`player_count_changed` coalesces on the trailing edge instead;
+`player_left` never coalesces — each leave is its own run).
 
 ### Write sources
 
@@ -334,6 +336,77 @@ mutation ConfigurePlayerCountAutomation {
   }) {
     triggerId
   }
+}
+```
+
+#### Players leaving
+
+`onEvent: "player_left"` runs an ordinary event automation once for **each
+actor the platform stops considering present** — about five seconds after its
+last actor update, or at once when its session ends. It is the server-side
+twin of the realtime `ActorLeftNotification` that nearby clients receive (see
+[UDP proxy → Actor left](graphql-udp-proxy-api#actor-left)); the two come from
+the same presence record and describe the same moment. Each run receives:
+
+- `actor_uuid` — the actor that left (the 32-byte realtime uuid)
+- `user_id` — the account behind it, or `null` when the presence record did not carry one
+- `chunk_x`, `chunk_y`, `chunk_z` — the last known chunk, or `null`
+- `last_seen_at` — ISO timestamp of the last update the platform saw
+- `left_reason` — `presence_removed` (the actor went silent or its session ended) or `lease_expired` (the platform lost sight of the app's presence entirely and reaped the roster)
+- `remaining_player_count` — how many actors are still fresh after this one
+
+Takes no filters (`functionName`, `containerTypeName`, `propertyKey` are
+rejected). `debounceMs` applies leading-edge per automation like other events
+but **does not coalesce**: ten players leaving is ten runs, bounded by the
+automation's failure circuit and the app's run admission as usual.
+
+**Unlike `player_count_changed`, this event fires at zero.** The count event is
+not dispatched when the app empties (nothing runs for an app with no players —
+see [Presence](#presence)); `player_left` is the deliberate exception, so the
+departure of the last player can save state, end a match or stop a timer. It is
+observed roughly two seconds after the presence record goes, so the leaver's
+own session cannot answer it; write to the model, not to the player.
+
+A reconnect after a stale looks like `player_left` followed by a fresh actor
+update from the same `actor_uuid`. Do not latch "gone forever" on the uuid; a
+`user_id` that comes back is the same player.
+
+```graphql
+mutation ConfigurePlayerLeftAutomation {
+  upsertFunction: gameModelUpsertFunction(input: {
+    appId: "1"
+    name: "on_player_left"
+    containerTypeName: "World"
+    parameters: [
+      { name: "actor_uuid", valueType: "string", required: true }
+      { name: "user_id", valueType: "string", required: false }
+      { name: "left_reason", valueType: "string", required: true }
+      { name: "remaining_player_count", valueType: "int", required: true }
+    ]
+    mutations: [
+      { target: "self", property: "last_leaver", expression: "$actor_uuid" }
+      { target: "self", property: "players_online", expression: "$remaining_player_count" }
+    ]
+    invokeScope: "server"
+    invokePolicyJson: "{\"type\":\"is_automation\"}"
+    autonomousInvocable: true
+  }) { name }
+
+  upsertAutomation: gameModelUpsertAutomation(input: {
+    appId: "1"
+    name: "on_player_left"
+    functionName: "on_player_left"
+    targetMode: "global"
+    selfContainerId: "<world-container-id>"
+    triggerType: "event"
+    failureThreshold: 5
+  }) { name }
+
+  upsertTrigger: gameModelUpsertAutomationTrigger(input: {
+    appId: "1"
+    automationName: "on_player_left"
+    onEvent: "player_left"
+  }) { triggerId }
 }
 ```
 

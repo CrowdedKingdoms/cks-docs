@@ -34,13 +34,17 @@ match the current wire enum; the `MAP_*` forms are legacy aliases.
 
 Every spatial message is authorized on the server. The sender must have **active
 app access** whose tier includes the relevant permission key (`access` to
-move/send events, `update_voxel_data` to edit voxels, `use_voice_chat` for audio)
+move/send events, `update_voxel_data` to edit voxels, `use_voice_chat` for audio,
+`use_video_chat` for webcam video — opcode 143, see
+**[Wire formats → Video payload](/replication-api/wire-formats#video-payload-client_video_packet_2-client_video_notification_2)**)
 **and** the target chunk must be inside a **grid** where the sender holds that
 key. A message failing either check is dropped and answered with
 `GENERIC_ERROR_MESSAGE` / `UNAUTHORIZED` (code 7).
 
-New apps are **open by default** — they ship with a default tier granting all
-permissions and a world-spanning default grid, and granting a player app access
+New apps are **open by default** — they ship with a default tier granting the
+baseline permissions (`access`, `teleport`, `update_voxel_data`, `use_voice_chat`;
+**not** `use_video_chat`, which an owner grants on a tier deliberately because
+every receiver pays the egress) and a world-spanning default grid, and granting a player app access
 automatically grants them all grid permissions — so out of the box any entitled
 player can act anywhere. App owners opt into restrictions (safe zones, plot
 ownership) via the Game API. See

@@ -41,4 +41,4 @@ Start of the aggregation window (ISO-8601 DateTime or relative duration such as 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>OrgUsageSummary</b></code>](/reference/graphql/types/objects/org-usage-summary.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Org-level rollup of replication/GraphQL byte totals and GraphQL op counts across all apps in the organization for the time window.
+Org-level rollup of replication/GraphQL byte totals and GraphQL op counts across all apps in the organization for the time window. WHICH OF THESE YOU PAY FOR: the &#x002A;SendBytes fields are the billable direction, and &#x002A;RecvBytes are metered but do NOT count toward Aggregate Data Volume, the monthly free-tier and overage measure. All byte figures are wire bytes measured at the network interface, including transport and network headers, and after any compression the service applies -- they will not match a client-side byte counter.
