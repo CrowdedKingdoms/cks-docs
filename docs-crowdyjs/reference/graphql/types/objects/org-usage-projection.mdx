@@ -58,7 +58,7 @@ True when any shared app is on track to exceed its free allowance.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgUsageProjection.<b>suggestReservedThroughput</b></code>](#suggest-reserved-throughput)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#suggest-reserved-throughput\} 
-True when org total projected egress exceeds the combined free tier — suggest reserved throughput.
+True when org total projected egress exceeds the combined free tier, so the org should expect a metered bill. Note that a capacity reservation is NOT a remedy for this: reservations buy provisioned capacity and are charged in addition to metered usage, so they do not reduce an egress bill. What this signals is that the org needs a funded wallet or auto-billing.
 
 
 

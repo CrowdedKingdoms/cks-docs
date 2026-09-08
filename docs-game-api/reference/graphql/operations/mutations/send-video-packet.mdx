@@ -1,0 +1,39 @@
+---
+id: send-video-packet
+title: sendVideoPacket
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Send ONE webcam video fragment, fanned out to nearby actors as a ClientVideoNotification (Buddy v0.25.0). Requires a bearer game token and the use&#x005F;video&#x005F;chat runtime permission at app AND grid level -- without it the game server responds asynchronously with a GenericErrorResponse (errorCode UNAUTHORIZED). A datagram carries at most ~1117 bytes of videoData, so an encoded frame is split by the SDK into fragments (6-byte header: version, codec, frameId, fragIndex, fragCount; at most 16 per frame) and reassembled by receivers; this is a mutation PER FRAGMENT and sustained video belongs on the binary realtime relay. Every receiver in range pays the egress bytes: keep distance small and frames few. Opens a UDP proxy session automatically if none exists. Returns Boolean! that is true only when the datagram was ACCEPTED FOR SENDING -- NOT that it was delivered; the sender receives no echo, only errors (GenericErrorResponse, correlated by sequenceNumber) on udpNotifications.
+
+
+```graphql
+sendVideoPacket(
+  input: ClientVideoPacketInput!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>sendVideoPacket.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ClientVideoPacketInput!</b></code>](/reference/graphql/types/inputs/client-video-packet-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The video fragment to send: target appId, chunk coordinates, 32-byte source uuid, base64 videoData (fragment header + frame slice), and optional distance/decayRate/sequenceNumber. See ClientVideoPacketInput.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

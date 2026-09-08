@@ -37,6 +37,7 @@ Grid permissions reuse the runtime permission keys:
 | `access` | Entering / moving / sending events in the region |
 | `update_voxel_data` | Editing voxels (building) in the region |
 | `use_voice_chat` | Voice audio in the region |
+| `use_video_chat` | Webcam video in the region (opt-in; the sender's tier must also carry it) |
 | `write_server_code` | Authoring/deploying server Rust on a grid the player owns |
 | `run_server_code` | Activating admitted server code in an owned grid |
 | `write_client_code` | Authoring browser-target Rust |

@@ -495,7 +495,7 @@ type AppAccessTier {
   """Optional marketing description of what the tier includes."""
   description: String
   """
-  Runtime permission keys granted to users on this tier (a subset of runtimePermissions), e.g. "access", "teleport", "update_voxel_data", "use_voice_chat".
+  Runtime permission keys granted to users on this tier (a subset of runtimePermissions), e.g. "access", "teleport", "update_voxel_data", "use_voice_chat", "use_video_chat" (webcam; not granted by default).
   """
   permissionKeys: [String!]!
   """
@@ -5368,7 +5368,7 @@ type WasmModuleTrigger {
   """
   tickHz: Float
   """
-  For event triggers: function_invoked | property_changed | container_created | compute_event.
+  For event triggers: function_invoked | property_changed | container_created | compute_event | player_left. player_left (v1.87.0) is delivered to on_event as JSON with event, actor_uuid, user_id, chunk_x/y/z, last_seen_at, left_reason and remaining_player_count, once per actor that stops being present, the last one included.
   """
   onEvent: String
   """Event filter: only this model function name."""
@@ -5825,16 +5825,20 @@ type GmAutomationTrigger {
   """The automation this trigger fires."""
   automationId: String!
   """
-  Observed event: function_invoked | property_changed | container_created | player_count_changed.
+  Observed event: function_invoked | property_changed | container_created | player_count_changed | player_left.
   """
   onEvent: String!
-  """Filter: only this function name. Always null for player_count_changed."""
+  """
+  Filter: only this function name. Always null for player_count_changed and player_left.
+  """
   functionName: String
   """
-  Filter: only this container type. Always null for player_count_changed.
+  Filter: only this container type. Always null for player_count_changed and player_left.
   """
   containerTypeName: String
-  """Filter: only this property key. Always null for player_count_changed."""
+  """
+  Filter: only this property key. Always null for player_count_changed and player_left.
+  """
   propertyKey: String
   """
   property_changed only: which writes are observed — "direct" (gameModelSetProperty), "function" (a mutation applied inside an invoke, automation run, or timer fire), or "any". Always "any" for other events, which ignore it.
@@ -7710,7 +7714,7 @@ type Query {
     appId: BigInt!
   ): [AppAccessTier!]!
   """
-  Lists all valid runtime permission keys (e.g. "access", "teleport", "update_voxel_data", "use_voice_chat") that may be assigned to an access tier permissionKeys. PUBLIC: no authentication required. Ordered by the permission bit index.
+  Lists all valid runtime permission keys (e.g. "access", "teleport", "update_voxel_data", "use_voice_chat", "use_video_chat") that may be assigned to an access tier permissionKeys. PUBLIC: no authentication required. Ordered by the permission bit index.
   """
   runtimePermissions: [String!]!
   """
@@ -9839,7 +9843,7 @@ type Mutation {
     loginUserInput: LoginUserInput!
   ): AuthResponse!
   """
-  Registers a new email + password account: creates the (initially unconfirmed) account, emails a confirmation link, and returns an AuthResponse with a session `token` for immediate use (send as `Authorization: Bearer <token>`). If an account already exists for the email (e.g. created via magic link/social), the password is attached pending email confirmation and no session is returned, refused with extensions.code EMAIL_ALREADY_REGISTERED (409). It is a routine outcome rather than a fault, and it reached clients as INTERNAL_SERVER_ERROR before v1.60.0, which is why several of them match it by its message text. Public.
+  Registers a new email + password account: creates the (initially unconfirmed) account, emails a confirmation link, and returns an AuthResponse with a session `token` for immediate use (send as `Authorization: Bearer <token>`). If an account already exists for the email it is refused with extensions.code EMAIL_ALREADY_REGISTERED (409) and no session is returned: an account that already has a password is left exactly as it was (sign in, or use the emailed reset), and only a password-less account (created via magic link/social) gets the password attached pending email confirmation. It is a routine outcome rather than a fault, and it reached clients as INTERNAL_SERVER_ERROR before v1.60.0, which is why several of them match it by its message text. Public.
   """
   register(
     """
@@ -11258,6 +11262,15 @@ type Mutation {
     input: ClientAudioPacketInput!
   ): Boolean! @requiresPermission(scope: "runtime", permission: "use_voice_chat", scopeArg: "input.appId")
   """
+  Send ONE webcam video fragment, fanned out to nearby actors as a ClientVideoNotification (Buddy v0.25.0). Requires a bearer game token and the use_video_chat runtime permission at app AND grid level -- without it the game server responds asynchronously with a GenericErrorResponse (errorCode UNAUTHORIZED). A datagram carries at most ~1117 bytes of videoData, so an encoded frame is split by the SDK into fragments (6-byte header: version, codec, frameId, fragIndex, fragCount; at most 16 per frame) and reassembled by receivers; this is a mutation PER FRAGMENT and sustained video belongs on the binary realtime relay. Every receiver in range pays the egress bytes: keep distance small and frames few. Opens a UDP proxy session automatically if none exists. Returns Boolean! that is true only when the datagram was ACCEPTED FOR SENDING -- NOT that it was delivered; the sender receives no echo, only errors (GenericErrorResponse, correlated by sequenceNumber) on udpNotifications.
+  """
+  sendVideoPacket(
+    """
+    The video fragment to send: target appId, chunk coordinates, 32-byte source uuid, base64 videoData (fragment header + frame slice), and optional distance/decayRate/sequenceNumber. See ClientVideoPacketInput.
+    """
+    input: ClientVideoPacketInput!
+  ): Boolean! @requiresPermission(scope: "runtime", permission: "use_video_chat", scopeArg: "input.appId")
+  """
   Send a spatial text/chat packet, fanned out to nearby actors as a ClientTextNotification. Requires a bearer game token; opens a UDP proxy session automatically if none exists. Returns Boolean! that is true only when the datagram was ACCEPTED FOR SENDING to the game server — NOT confirmation of delivery. The sender receives no echo; failures arrive ASYNCHRONOUSLY as GenericErrorResponse on udpNotifications, correlated by the request sequenceNumber (correlation only — not an idempotency key; the server does not dedupe replays).
   """
   sendTextPacket(
@@ -11530,7 +11543,7 @@ type Mutation {
     gridId: BigInt!
   ): GridClaimResult!
   """
-  Claim one currently unclaimed chunk as a new player-owned grid. Requires an ordinary app-scoped player token and active app access, but never manage_apps. The app's policy must be SELF_CLAIM. The server validates the app's grid assignment and peer-overlap rules, then atomically creates a one-chunk grid, assigns current-user ownership, grants access/update_voxel_data/use_voice_chat/teleport plus player-code keys already carried by the caller's tier, and materializes the effective ACL. Conflicts and policy denials throw GraphQL errors; no partial grid, ownership, or grant rows remain.
+  Claim one currently unclaimed chunk as a new player-owned grid. Requires an ordinary app-scoped player token and active app access, but never manage_apps. The app's policy must be SELF_CLAIM. The server validates the app's grid assignment and peer-overlap rules, then atomically creates a one-chunk grid, assigns current-user ownership, grants access/update_voxel_data/use_voice_chat/teleport plus the player-code keys and use_video_chat where the caller's tier already carries them, and materializes the effective ACL. Conflicts and policy denials throw GraphQL errors; no partial grid, ownership, or grant rows remain.
   """
   claimGridChunk(
     """
@@ -13401,7 +13414,7 @@ input FunctionPermissionEffectInput {
   """
   action: String!
   """
-  Runtime permission keys to grant/revoke (validated against the runtime_permissions catalog, e.g. 'access', 'teleport', 'update_voxel_data', 'use_voice_chat').
+  Runtime permission keys to grant/revoke (validated against the runtime_permissions catalog, e.g. 'access', 'teleport', 'update_voxel_data', 'use_voice_chat', 'use_video_chat').
   """
   permissionKeys: [String!]!
   """
@@ -13701,19 +13714,19 @@ input UpsertAutomationTriggerInput {
   """The automation (by name) this trigger fires."""
   automationName: String!
   """
-  Event to observe: function_invoked | property_changed | container_created | player_count_changed. player_count_changed fires only after complete fleet counts change, and injects reserved previous/current/delta/revision params.
+  Event to observe: function_invoked | property_changed | container_created | player_count_changed | player_left. player_count_changed fires only after complete fleet counts change, and injects reserved previous/current/delta/revision params. player_left fires once per actor that stops being present (about five seconds after its last update), the LAST player included, and injects actor_uuid, user_id, chunk_x/y/z, last_seen_at, left_reason (presence_removed | lease_expired) and remaining_player_count.
   """
   onEvent: String!
   """
-  Filter: only this function name. Applies to function_invoked; rejected for property_changed, container_created, and player_count_changed.
+  Filter: only this function name. Applies to function_invoked; rejected for property_changed, container_created, player_count_changed and player_left.
   """
   functionName: String
   """
-  Filter: only this container type. For function_invoked this is the type of the invocation's "self" container, so you can watch "this function, on this type". Rejected for player_count_changed.
+  Filter: only this container type. For function_invoked this is the type of the invocation's "self" container, so you can watch "this function, on this type". Rejected for player_count_changed and player_left.
   """
   containerTypeName: String
   """
-  Filter: only this property key. Applies to property_changed; rejected for function_invoked, container_created, and player_count_changed.
+  Filter: only this property key. Applies to property_changed; rejected for function_invoked, container_created, player_count_changed and player_left.
   """
   propertyKey: String
   """
@@ -13965,7 +13978,7 @@ input UpsertComputeTriggerInput {
   """
   tickHz: Float
   """
-  For event triggers: function_invoked | property_changed | container_created | compute_event.
+  For event triggers: function_invoked | property_changed | container_created | compute_event | player_left. player_left (v1.87.0) is delivered to on_event as JSON with event, actor_uuid, user_id, chunk_x/y/z, last_seen_at, left_reason and remaining_player_count, once per actor that stops being present, the last one included.
   """
   onEvent: String
   """Event filter: only this model function name."""
@@ -14124,6 +14137,36 @@ input ClientAudioPacketInput {
   distance: Int
   """
   Decay algorithm for replication: 0 = none, 1 = exponential, 2 = linear 50%, 3 = linear 25%, 4 = linear 10%, 5 = linear 5%. Defaults to 0 (none) for audio packets.
+  """
+  decayRate: Int
+  """
+  Client-assigned correlation id for this datagram: a uint8 (0-255) that wraps at gameClientBootstrap.sequenceNumberModulo (256); defaults to 0 if omitted. For CORRELATION ONLY — it is NOT an idempotency key and the server does not dedupe replays. Echoed on any GenericErrorResponse for this send, delivered on the udpNotifications subscription.
+  """
+  sequenceNumber: Int
+}
+
+"""
+Input for sending one webcam video FRAGMENT to the UDP game server, fanned out to nearby players as a ClientVideoNotification. A datagram carries at most ~1117 bytes of videoData, so an encoded frame is split by the SDK into fragments that each start with the 6-byte video fragment header (version, codec, frameId, fragIndex, fragCount) and are reassembled by the receiver; this mutation sends ONE such fragment. Sustained video belongs on the binary realtime relay; this path works but is a mutation per fragment.
+"""
+input ClientVideoPacketInput {
+  """The ID of the app where the video is being sent from."""
+  appId: BigInt!
+  """The chunk coordinates where the video source is located."""
+  chunk: ChunkCoordinatesInput!
+  """
+  A unique identifier for the video source (typically the player UUID). Must be exactly 32 bytes when encoded as UTF-8.
+  """
+  uuid: String!
+  """
+  One video fragment, base64-encoded: the 6-byte fragment header followed by that slice of the encoded frame. Opaque to the server.
+  """
+  videoData: String!
+  """
+  Chunk replication distance (0-8). Defaults to 1 for video packets. Every receiver in range pays the egress bytes; keep this small.
+  """
+  distance: Int
+  """
+  Decay algorithm for replication: 0 = none, 1 = exponential, 2 = linear 50%, 3 = linear 25%, 4 = linear 10%, 5 = linear 5%. Defaults to 0 (none) for video packets.
   """
   decayRate: Int
   """
@@ -15040,7 +15083,7 @@ type Subscription {
 """
 All game-server messages delivered over the UDP proxy as GraphQL payloads. Subscribe to udpNotifications before or with sending mutations so responses and GenericErrorResponse (correlate via sequenceNumber) are not missed. NOTE: the ActorUpdateResponse and VoxelUpdateResponse members are LEGACY and never emitted (applied updates arrive as your own *Notification self-echo; failures as GenericErrorResponse) — they remain in the union for backward compatibility and will be removed in a future major version.
 """
-union UdpNotification = ActorUpdateResponse | ActorUpdateNotification | VoxelUpdateResponse | VoxelUpdateNotification | ClientAudioNotification | ClientTextNotification | ClientEventNotification | ServerEventNotification | SingleActorMessageNotification | ChannelMessageNotification | GenericErrorResponse | RealtimeConnectionEvent
+union UdpNotification = ActorUpdateResponse | ActorUpdateNotification | VoxelUpdateResponse | VoxelUpdateNotification | ClientAudioNotification | ClientVideoNotification | ActorLeftNotification | ClientTextNotification | ClientEventNotification | ServerEventNotification | SingleActorMessageNotification | ChannelMessageNotification | GenericErrorResponse | RealtimeConnectionEvent
 
 """
 LEGACY — never emitted. The game server retired the dedicated actor-update response opcode (129); an applied update now arrives as your own ActorUpdateNotification (the sender is included in the chunk fan-out) and failures arrive as GenericErrorResponse. This type remains in the UdpNotification union for backward compatibility only — do not select it in new code; it will be removed in a future major version.
@@ -15179,6 +15222,62 @@ type ClientAudioNotification {
   """The compressed audio data, base64-encoded."""
   audioData: String!
   """The sender's sequence number for this message (0-255)."""
+  sequenceNumber: Int!
+  """Server-generated epoch milliseconds timestamp."""
+  epochMillis: BigInt!
+}
+
+"""
+Notification received when another client sends a webcam video fragment. Received via the udpNotifications subscription. videoData is ONE fragment: a 6-byte header (version, codec, frameId uint16 BE, fragIndex, fragCount) followed by that slice of the encoded frame; reassemble fragments with the same uuid and frameId, and drop an incomplete frame when a newer frameId arrives or after ~500 ms.
+"""
+type ClientVideoNotification {
+  """The ID of the app where the video is coming from."""
+  appId: BigInt!
+  """The X coordinate of the chunk where the video source is located."""
+  chunkX: BigInt!
+  """The Y coordinate of the chunk where the video source is located."""
+  chunkY: BigInt!
+  """The Z coordinate of the chunk where the video source is located."""
+  chunkZ: BigInt!
+  """Chunk replication distance (0-8) from the original message."""
+  distance: Int!
+  """Decay algorithm (0-5) from the original message."""
+  decayRate: Int!
+  """
+  The unique identifier of the video source (typically the player UUID sending the video).
+  """
+  uuid: String!
+  """
+  One video fragment, base64-encoded: 6-byte fragment header then the frame slice.
+  """
+  videoData: String!
+  """The sender's sequence number for this message (0-255)."""
+  sequenceNumber: Int!
+  """Server-generated epoch milliseconds timestamp."""
+  epochMillis: BigInt!
+}
+
+"""
+The game server has stopped considering an actor present (Buddy v0.25.0). Emitted ONCE, over the actor's last chunk with the replication rings its own updates used, at the moment its presence record is removed -- roughly five seconds after its last update. Not emitted when the actor merely moved to another server. Treat a later ActorUpdateNotification for the same uuid as a rejoin. Received via the udpNotifications subscription.
+"""
+type ActorLeftNotification {
+  """The ID of the app the actor was in."""
+  appId: BigInt!
+  """The X coordinate of the actor's last chunk."""
+  chunkX: BigInt!
+  """The Y coordinate of the actor's last chunk."""
+  chunkY: BigInt!
+  """The Z coordinate of the actor's last chunk."""
+  chunkZ: BigInt!
+  """Chunk replication distance (0-8) the notification was fanned out over."""
+  distance: Int!
+  """The unique identifier of the actor that left."""
+  uuid: String!
+  """
+  Why the server stopped considering the actor present: 0 = STALE (it stopped updating). 1 is reserved for an immediate server-side release; treat any other value as STALE.
+  """
+  leftReason: Int!
+  """Correlation byte from the datagram tail (always 0 today)."""
   sequenceNumber: Int!
   """Server-generated epoch milliseconds timestamp."""
   epochMillis: BigInt!
