@@ -61,16 +61,22 @@ For native clients (Unreal/Unity, desktop, console, mobile, custom launchers), s
 sign-in → mint → play flow and the launcher / PKCE-loopback handoff
 patterns.
 
-### Browser handoff (OAuth2 Authorization Code + PKCE)
+### Hosted sign-in for a game on its own domain (OAuth2 Authorization Code + PKCE)
 
-When the game runs at a **different origin** from the Overworld, use the
-authorization-code flow so the verifier never leaves the game origin and the
-session token never leaves the Overworld:
+**This is the only sign-in a browser game on a non-first-party origin can use**
+(ck-api v1.88.0, 2026-09-08): the direct sign-in mutations answer
+`HOSTED_SIGN_IN_REQUIRED` from any browser origin other than Studio and
+crowdy.games, so a customer's game never collects a password. The hosted page is
+**Crowded Kingdoms Studio's `/authorize`** (`https://studio.<tier>.crowdedkingdoms.com/authorize`;
+the Overworld's old `authorize.html` forwards there). The verifier never leaves
+the game origin and the session never leaves Studio:
 
 1. **Game origin** generates a PKCE verifier + challenge and redirects the player
-   to the Overworld's authorize page with the challenge and its `redirect_uri`.
-2. **Overworld origin** (holds the session token) checks consent, then mints a
-   one-time code:
+   to Studio's `/authorize` with `app_id`, `code_challenge`,
+   `code_challenge_method=S256`, its `redirect_uri` and a `state`. In CrowdyJS:
+   `client.portal.signIn({ appId, redirectUri })`.
+2. **Studio** (holds the session; signs the player in or up first if needed)
+   checks consent, then mints a one-time code:
 
    ```graphql
    # For an untrusted app, gate on consent first (trusted apps return consentRequired=false).
@@ -87,7 +93,8 @@ session token never leaves the Overworld:
    `redirect_uri` must match the app's **registered allow-list** (see below) or
    the call is rejected.
 3. **Game origin** exchanges the code (with its verifier) — no auth header
-   required, the code + verifier authorize the call:
+   required, the code + verifier authorize the call. In CrowdyJS:
+   `client.portal.handleSignInCallback()`, which also stores the token:
 
    ```graphql
    mutation Exchange($input: ExchangePortalCodeInput!) {
@@ -101,9 +108,12 @@ The one-time code is single-use, short-lived (~60s), bound to the supplied
 `redirect_uri`, and only issued after the redirect allow-list and consent checks
 pass.
 
-The official SDK wraps all of this in `client.portal` — including the consent
-gate (`handleAuthorizeRequest` throws `PortalConsentRequiredError` for an untrusted
-app until you approve) — see [CrowdyJS](/crowdyjs/intro).
+The official SDK wraps all of this in `client.portal`: `signIn` /
+`handleSignInCallback` for the game, `handleAuthorizeRequest` for an identity
+page (it throws `PortalConsentRequiredError` for an untrusted app until you
+approve) — see [CrowdyJS](/crowdyjs/intro). A player who presses **Cancel** on
+Studio's consent card is returned to `redirect_uri` with `error=access_denied`
+and no code.
 
 ## Consent and the OAuth client registry
 
@@ -112,7 +122,7 @@ Each app is an OAuth-style client with platform-controlled settings:
 | Field | Meaning |
 |---|---|
 | `isTrusted` | First-party apps skip the consent screen. **The Overworld (app 1) is trusted.** Platform-controlled — studio admins cannot set it. |
-| `redirectUris` | Allow-list of redirect URIs for the browser portal handoff (origin-matched). An empty list disallows browser portal entry. |
+| `redirectUris` | Allow-list of redirect URIs for hosted sign-in (origin-matched). **Also the API's CORS allow-list for the app**: a browser on an origin listed here may call the API; one that is not gets no CORS headers. An empty list disallows browser entry. Edit under Studio > Apps > Settings > Sign-in & redirect URIs; honoured on every API instance within ten seconds, no restart. |
 | `clientType` | `"public"` (browser/PKCE, no secret) or `"confidential"` (server-side). |
 | `launchUrl` | Browser destination a player is sent to when they portal into the app. |
 

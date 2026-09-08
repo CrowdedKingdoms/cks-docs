@@ -18,9 +18,13 @@ with Buddy, HMAC authentication, and binary serialization on the client's behalf
 Every Game API request uses an **app-scoped token** — a token confined to the one
 app you are playing. The identity session token that `login` / `register` return
 is a management-plane credential and is **rejected** on the Game API and realtime
-surface. Mint an app token from the session token, then pass it as
-`Authorization: Bearer <token>` on both HTTP requests and WebSocket connections to
-the **Game API**:
+surface. Mint an app token from the session token (first-party or non-browser
+code), or obtain one through **hosted sign-in** (a browser game on its own
+domain: `client.portal.signIn` → Studio → `client.portal.handleSignInCallback`;
+direct `login` / `register` are refused from a non-first-party browser origin
+since ck-api v1.88.0 -- see [Sign in](/management-api/authentication)). Then pass
+it as `Authorization: Bearer <token>` on both HTTP requests and WebSocket
+connections to the **Game API**:
 
 ```graphql
 # On the Management API, with the identity session token as the Bearer:

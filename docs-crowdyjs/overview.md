@@ -127,20 +127,40 @@ token** (see [Portals & app-scoped tokens](/management-api/portals-and-app-token
   the Bearer for that app's Game API + realtime surface. Refresh or re-portal
   before it expires.
 
-Sign-in uses `client.auth.login` / `client.auth.register`, or a magic link, or
-social/OIDC. See [Sign-in with `client.auth`](#sign-in-with-clientauth) below.
+**Which sign-in you use depends on where your code runs** (ck-api v1.88.0,
+CrowdyJS 15.6.0, 2026-09-08):
 
-`client.portal` wraps minting, the browser handoff, **and consent**:
+| your code runs...                                                | sign in with                                                          | then                                   |
+|------------------------------------------------------------------|-----------------------------------------------------------------------|----------------------------------------|
+| in a browser, **on your own domain** (every third-party game)    | `portal.signIn({ appId, redirectUri })` → Studio → `portal.handleSignInCallback()` | the client already holds the app token |
+| in a browser, on a first-party host (Studio, crowdy.games)       | `auth.login` / magic link / social                                    | `portal.mintAppToken(appId)`           |
+| outside a browser (Node, CLI, Unreal/Unity, CrowdyCPP, tests)    | `auth.login` / `auth.register`                                        | `portal.mintAppToken(appId)`           |
 
-- `portal.mintAppToken(appId)` — native / same-origin: mint directly from the
+The first row is the only one a game on its own domain can take: from any
+non-first-party browser origin the direct sign-in mutations are refused with
+`HOSTED_SIGN_IN_REQUIRED` (`isHostedSignInRequiredError`), because a page on a
+customer's domain that collects a Crowded Kingdoms password is indistinguishable
+from a phishing page. The player signs in on Studio and your game receives a
+token confined to itself. See [Sign-in with `client.auth`](#sign-in-with-clientauth)
+for the other two rows.
+
+`client.portal` wraps hosted sign-in, minting, **and consent**:
+
+- `portal.signIn({ appId, redirectUri, authorizeUrl? })` → `portal.handleSignInCallback()`
+  — **hosted sign-in** for a game on its own domain. `signIn` derives Studio's
+  `/authorize` from the API host (`ck.<tier>.` → `studio.<tier>.`; pass
+  `authorizeUrl` to override) and navigates; `handleSignInCallback` exchanges the
+  returned code for an app token, stores it, and strips `code`/`state` from the
+  address bar (safe to call on every boot). Your `redirectUri`'s origin must be
+  one of the app's registered redirect URIs, which is also what admits it to CORS.
+- `portal.mintAppToken(appId)` — first-party / non-browser: mint directly from a
   session token. Returns an `AppTokenResponse` (`token`, `gameApiUrl`,
   `gameApiWsUrl`, `expiresAt`, …); it is **not** stored on the calling client.
 - `portal.beginEntry(...)` → `portal.handleAuthorizeRequest()` →
-  `portal.completeEntry()` — the OAuth2 Authorization-Code + PKCE flow for a game
-  on a **different** origin (the session token never leaves the Overworld). For an
-  **untrusted** app, `handleAuthorizeRequest` throws `PortalConsentRequiredError`
-  until the user approves (pass `{ grantConsent: true }` once they do); **trusted**
-  apps such as the Overworld (app 1) skip consent.
+  `portal.completeEntry()` — the same PKCE steps without the defaults;
+  `handleAuthorizeRequest` is what Studio's `/authorize` page runs. For an
+  **untrusted** app it throws `PortalConsentRequiredError` until the user approves
+  (pass `{ grantConsent: true }` once they do); **trusted** apps skip consent.
 - `portal.getConsent(appId)`, `portal.authorizeApp(appId)`,
   `portal.myAuthorizedApps()`, `portal.revokeAppAuthorization(appId)` — the consent
   screen + "connected apps" management. App owners register client settings
@@ -148,12 +168,25 @@ social/OIDC. See [Sign-in with `client.auth`](#sign-in-with-clientauth) below.
   `portal.setAppClientSettings({ appId, redirectUris, clientType, launchUrl })`.
 - `portal.refresh()` — silent same-app token rotation before expiry.
 
-Use the **two-client pattern**: an identity client on the Overworld/hub origin
-holding the session token, and a separate per-game client holding the app token.
-They never share a token store:
+**Hosted sign-in** (a game on its own domain) is two calls on one client:
 
 ```ts
-// Identity client (Overworld origin) — holds the session token.
+const game = createCrowdyClient({ httpUrl, wsUrl,
+  tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:app:' + appId) });
+
+// Boot: finish a sign-in we are returning from (no-op without ?code=).
+const entered = await game.portal.handleSignInCallback();
+
+// "Sign in with Crowded Kingdoms" button: go to Studio and come back.
+await game.portal.signIn({ appId, redirectUri: `${location.origin}/auth/callback` });
+```
+
+**First-party or non-browser** code uses the **two-client pattern**: an identity
+client holding the session token, and a separate per-game client holding the
+app token. They never share a token store:
+
+```ts
+// Identity client (first-party origin or Node) — holds the session token.
 const identity = createCrowdyClient({
   httpUrl: 'https://api.example.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),
@@ -180,8 +213,11 @@ Authentication](/game-api/authentication).
 ### Sign-in with `client.auth`
 
 **`client.auth.login(email, password)` and `client.auth.register(...)` are the
-primary path** as of 15.0.0. Magic link and social/OIDC remain. Each returns an
-`AuthResponse` and stores the session token on the identity client.
+primary path for first-party pages and non-browser code** (15.0.0). Magic link
+and social/OIDC remain. Each returns an `AuthResponse` and stores the session
+token on the identity client. **From a browser game on its own domain every
+method in this namespace is refused with `HOSTED_SIGN_IN_REQUIRED`** (ck-api
+v1.88.0); use `client.portal.signIn` there instead.
 
 > Until 15.0.0 this SDK was passwordless and these pages said `login` and
 > `register` did **not exist**. They do. The `devLogin` bypass they also
@@ -280,12 +316,18 @@ None of the three means the session is gone. Sign the user out only on
 `UNAUTHENTICATED`, which now says only that.
 :::
 
-Neither `resetPassword` nor `changePassword` revokes existing sessions; follow
-either with `identity.auth.logoutAllDevices()` if that is the intent. Full
+Since ck-api v1.88.0 `resetPassword` revokes **every** session of the account
+and `changePassword` every session **but the calling one** (with the app tokens
+minted from them), so a second tab or device is signed out by either. Full
 semantics, including the exact refusal wording, are in
 [Managing passwords](/management-api/authentication#managing-passwords).
 
 ## Quick start
+
+This is the **first-party / non-browser** shape (direct sign-in, then mint). A
+browser game on its own domain replaces the identity client with
+`game.portal.signIn` / `game.portal.handleSignInCallback` as shown above and
+never holds a session.
 
 ```ts
 import {
