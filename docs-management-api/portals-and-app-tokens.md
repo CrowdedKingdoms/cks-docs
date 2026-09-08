@@ -61,7 +61,9 @@ For native clients (Unreal/Unity, desktop, console, mobile, custom launchers), s
 sign-in → mint → play flow and the launcher / PKCE-loopback handoff
 patterns.
 
-### Hosted sign-in for a game on its own domain (OAuth2 Authorization Code + PKCE)
+### Hosted sign-in for a game on its own domain
+
+OAuth2 Authorization Code + PKCE.
 
 **This is the only sign-in a browser game on a non-first-party origin can use**
 (ck-api v1.88.0, 2026-09-08): the direct sign-in mutations answer
