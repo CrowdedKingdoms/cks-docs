@@ -25,6 +25,7 @@ input InvokeFunctionInput {
   selfContainerId: String!
   sessionId: String
   paramsJson: String
+  bypassPolicy: Boolean
 }
 ```
 
@@ -49,6 +50,10 @@ Optional session context for the invocation.
 
 #### [<code style={{ fontWeight: 'normal' }}>InvokeFunctionInput.<b>paramsJson</b></code>](#params-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#params-json\} 
 JSON object of params.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InvokeFunctionInput.<b>bypassPolicy</b></code>](#bypass-policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#bypass-policy\} 
+Administrative override: skip the function's invoke policy for this one call. Only a caller holding manage&#x005F;apps on the app may set it (NOT&#x005F;ALLOWED otherwise, nothing runs); the result then carries policyBypassed=true and the call is audit-logged. Default false. Until v1.89.0 every manage&#x005F;apps holder bypassed every invoke policy IMPLICITLY, so a developer testing their own game with their own account saw policies that appeared not to be enforced; now an admin's invoke is judged exactly like a player's unless they say otherwise.
 
 
 
