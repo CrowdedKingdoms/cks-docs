@@ -53,9 +53,17 @@ notifications with your own echoes filtered out:
 
 - **Sample history** per actor (newest-first, configurable depth) with server
   epoch and receive time — exactly what interpolation needs.
-- **Staleness reaping**: actors unseen for `staleAfterMs` (default 12 s) are
-  reaped on tick, firing `onLeave`. `onJoin` / `onUpdate` fire as actors
-  appear and move.
+- **Server-announced leaves** (CrowdyCPP 0.30, Buddy v0.25): an
+  `ACTOR_LEFT_NOTIFICATION_2` (145) removes the actor from every lane and fires
+  `onLeave` at once — about five seconds after its last update, or immediately
+  when its session ended. `WorldSessionConfig::onActorLeft(uuid, reason)` also
+  receives it (`reason` 0 = stale, 1 = session released; treat others as
+  stale) for anything you key by uuid outside the store: audio playback,
+  video textures.
+- **Staleness reaping** stays as the fallback: actors unseen for `staleAfterMs`
+  (default 12 s) are reaped on tick, firing `onLeave`, for a leave whose
+  datagram was lost. `onJoin` / `onUpdate` fire as actors appear and move;
+  `onLeave` then `onJoin` for the same uuid is a reconnect, not an error.
 - **Lanes**: named, filtered sub-registries so different actor kinds (players
   vs mobs, discriminated by a payload tag byte, for example) are decoded once
   and read separately.
@@ -77,6 +85,19 @@ the realtime stream:
   world stays identical for everyone — write-back is throttled (default one
   chunk per 700 ms) and `flush()` forces it.
 - `onChunkChanged` observes both realtime and local changes.
+
+## Voice and video
+
+`WorldSession` owns the one subscription, so media reaches you through its
+config rather than through `Connection` handlers: `WorldSessionConfig::onAudio`
+receives each `CLIENT_AUDIO_NOTIFICATION` and `onVideo` each
+`CLIENT_VIDEO_NOTIFICATION_2` (one fragment; feed `payload` to a
+`crowdy::media::VideoFrameAssembler` keyed by sender to get whole frames — see
+[Replication client → Webcam video](replication-client#webcam-video)). A
+session installed without them receives neither, so wire both if your game
+has either. Sending goes through the connection: `sendAudio`, and
+`sendVideoFrame(chunk, uuid, frame, frameId, codec)`, which needs
+`use_video_chat` on the sender's tier and the grid under the chunk.
 
 ## Events, messages, errors
 

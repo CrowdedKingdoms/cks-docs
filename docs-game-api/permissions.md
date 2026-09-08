@@ -91,6 +91,7 @@ Grid and tier permissions use these runtime keys:
 | `teleport` | Teleporting within the app (wire enforcement may depend on the client path) |
 | `update_voxel_data` | Editing voxels (building) |
 | `use_voice_chat` | Voice audio |
+| `use_video_chat` | Webcam video (`sendVideoPacket` / wire opcode 143). **Opt-in:** not in a new app's default tier, because every receiver in range pays the egress for every frame — grant it on a tier deliberately. Bit index **9**; `appliesToApp` and `appliesToGrid` both true. |
 | `write_server_code` | Authoring/deploying server code in owned grids |
 | `run_server_code` | Running admitted server code in owned grids |
 | `write_client_code` | Authoring browser-target code |
@@ -99,6 +100,8 @@ Grid and tier permissions use these runtime keys:
 
 Query the Management API **`runtimePermissions`** for the live catalog when
 building a permission picker in your studio tools.
+
+`use_video_chat` follows the tier onto the grids the platform creates for a player: the default world grid grant and a self-claimed chunk (`claimGridChunk`) carry it only when the player's tier does. Grids you create yourself list it explicitly in `permissionKeys` like any other key.
 
 `use_studio_agent` currently occupies replica permission bit index **8**, but
 clients and tier configuration should use the stable key instead of hard-coding

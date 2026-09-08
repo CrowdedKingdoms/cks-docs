@@ -95,6 +95,24 @@ await client.gameModel.upsertAutomationTrigger({
 });
 ```
 
+React to a player leaving with `onEvent: 'player_left'`. It takes no filters
+and — unlike `player_count_changed` — **fires for the last player too**, so it
+is the place to save state or end a match when the app empties. The bound
+function receives `actor_uuid`, `user_id`, `chunk_x` / `chunk_y` / `chunk_z`,
+`last_seen_at`, `left_reason` and `remaining_player_count` as event params:
+
+```ts
+await client.gameModel.upsertAutomationTrigger({
+  appId: '1',
+  automationName: 'on-player-left',
+  onEvent: 'player_left',
+});
+```
+
+The same moment reaches nearby clients as an `ActorLeftNotification`
+(`handlers.actorLeft`, and `session.actors` `onLeave`); see
+[Autonomous processes → Players leaving](/game-api/autonomous-processes#players-leaving).
+
 ## 3. Enable, run, and tune
 
 ```ts

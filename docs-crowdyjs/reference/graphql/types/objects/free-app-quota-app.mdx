@@ -46,11 +46,11 @@ URL slug for the app.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>FreeAppQuotaApp.<b>consumesFreeSlot</b></code>](#consumes-free-slot)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#consumes-free-slot\} 
-True when the app consumes a free org slot (shared, not archived, no active subscription, no reserved throughput).
+True when the app consumes a free org slot (shared, not archived, no active subscription, no reserved realtime capacity). Only a REALTIME (UDP) reservation releases a slot; a GraphQL operations reservation does not.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>FreeAppQuotaApp.<b>reservedEgressBytesPerSec</b></code>](#reserved-egress-bytes-per-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-egress-bytes-per-sec\} 
-Reserved egress throughput in bytes/sec (0 when none).
+Reserved REALTIME (UDP) capacity in bytes/sec (0 when none). This is the dimension that decides free-slot consumption; a GraphQL operations reservation is separate and is not reported here. Same value as App.reservedUdpBytesPerSec.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>FreeAppQuotaApp.<b>hasActiveSubscription</b></code>](#has-active-subscription)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#has-active-subscription\} 

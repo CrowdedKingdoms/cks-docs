@@ -34,6 +34,7 @@ type User {
   userType: String!
   isSuperAdmin: Boolean!
   isOperator: Boolean!
+  hasPassword: Boolean!
   permissionsForOrg(
     orgId: BigInt!
   ): [String!]!
@@ -97,6 +98,10 @@ Whether the user holds platform super-admin privileges (toggled via `setSuperAdm
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>isOperator</b></code>](#is-operator)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-operator\} 
 Company-employee flag that grants access to control-plane / operator features. Independent from is&#x005F;super&#x005F;admin.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>hasPassword</b></code>](#has-password)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#has-password\} 
+Whether this account has a password set. Studio reads it to say "set a password" only to accounts that have none (magic-link and OAuth sign-ups); it used to say so to everyone. The hash itself never leaves the process.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>permissionsForOrg</b></code>](#permissions-for-org)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permissions-for-org\} 

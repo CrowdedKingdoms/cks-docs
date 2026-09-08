@@ -263,7 +263,14 @@ replicas — your `tick` never overlaps or double-fires.
   re-reading the container it was just told about,
 - `container_created` — (filter with `containerTypeName`),
 - `compute_event` — another module (or this one) called `emit_event` (filter
-  with `eventName`).
+  with `eventName`),
+- `player_left` — an actor stopped being present in the app (no filters). The
+  delivered JSON carries `event: "player_left"` and an `eventParams` object with
+  `actor_uuid`, `user_id`, `chunk_x` / `chunk_y` / `chunk_z`, `last_seen_at`,
+  `left_reason` (`presence_removed` | `lease_expired`) and
+  `remaining_player_count`. It fires once per leaver **including the last one**
+  (the app is otherwise idle at zero players), so a module can persist or wind
+  down; see [Autonomous processes → Players leaving](autonomous-processes#players-leaving).
 
 `debounceMs` coalesces bursts. Event chains are bounded: a cascade of modules
 triggering each other via `emit_event` is cut off at a platform depth limit.
