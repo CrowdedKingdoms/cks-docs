@@ -27,6 +27,7 @@ type GmInvokeResult {
   mutationsApplied: [GmMutationApplied!]!
   fault: PlayerFaultInfo
   errorMessage: String @deprecated
+  policyBypassed: Boolean
 }
 ```
 
@@ -65,6 +66,10 @@ Read `fault` instead and choose your own wording. This field no longer carries t
 :::
 
 A platform-authored sentence matching `fault`, safe to show a player. It carries no engine detail on purpose (decision D4): the failing expression, the timeout and the gas figures are in gameModelEvents and the fault record, where a developer reads them and a player does not.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmInvokeResult.<b>policyBypassed</b></code>](#policy-bypassed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#policy-bypassed\} 
+True when the caller asked for bypassPolicy and held manage&#x005F;apps, so the function's invoke policy was NOT evaluated for this call. Null/false otherwise. An administrative invoke that did not set bypassPolicy was judged exactly like a player's.
 
 
 
