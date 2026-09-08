@@ -28,6 +28,8 @@ type PublicRateCardEntryType {
   currency: String!
   freePerHour: BigInt
   freePerMonth: BigInt
+  freeUnits: BigInt
+  freePeriod: AllowancePeriod
 }
 ```
 
@@ -64,6 +66,14 @@ Raw metric units free per clock hour before anything is charged, as a BigInt dec
 
 #### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>freePerMonth</b></code>](#free-per-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#free-per-month\} 
 Raw metric units free per UTC calendar month, as a BigInt decimal string. On the PLAYER card this is the pooled monthly trial budget per (player, app). Null when this dimension has no monthly allowance.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>freeUnits</b></code>](#free-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#free-units\} 
+The allowance as the biller reads it: raw metric units free per freePeriod, as a BigInt decimal string. Null when the dimension has no allowance row.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>freePeriod</b></code>](#free-period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AllowancePeriod</b></code>](/reference/graphql/types/enums/allowance-period.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#free-period\} 
+The period freeUnits resets on. Every dimension is billed as its period aggregate crosses each whole cent, within about a minute of the usage arriving.
 
 
 

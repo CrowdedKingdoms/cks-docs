@@ -58,10 +58,13 @@ SERVER_EVENT_NOTIFICATION = 139; // no "_REQUEST" version. Servers send notifica
 GENERIC_SPATIAL_1 = 140;
 // 141 — SHORT_SPATIAL_MESSAGE: reserved for a future compact layout; not yet implemented (no server handler)
 SINGLE_ACTOR_MESSAGE = 142; // see "Single Actor Message" below; reuses the long form, distance/decay ignored
-// 143–255 — reserved for future spatial types
+CLIENT_VIDEO_PACKET_2 = 143;       // client -> server: one webcam video FRAGMENT (see "Video payload"); needs use_video_chat
+CLIENT_VIDEO_NOTIFICATION_2 = 144; // server -> client: the same bytes with 143 rewritten to 144 and the tail re-signed (as 134 -> 135)
+ACTOR_LEFT_NOTIFICATION_2 = 145;   // server -> client only: an actor is no longer present (see "Actor left")
+// 146–255 — reserved for future spatial types
 ```
 
-Long HMAC spatial layout (below) applies to types **128–140** (`ACTOR_UPDATE_REQUEST` … `GENERIC_SPATIAL_1`) and to `SINGLE_ACTOR_MESSAGE` (142), which reuses the same layout (the server ignores its `distance`/`decay rate` fields). In code, `isClientLongSpatialMessageType(t)` is true for `128 <= t <= 140` and for `142`. `SHORT_SPATIAL_MESSAGE` (141) is reserved for a future compact layout and is **not yet implemented** (no server handler). The non-spatial `CLIENT_ACTOR_HEARTBEAT` (26) also **reuses this exact layout** so the same HMAC/parsing applies — but it is a local-only keep-alive (no fan-out); see "Actor presence and heartbeats" below.
+Long HMAC spatial layout (below) applies to types **128–140** (`ACTOR_UPDATE_REQUEST` … `GENERIC_SPATIAL_1`), to `SINGLE_ACTOR_MESSAGE` (142), which reuses the same layout (the server ignores its `distance`/`decay rate` fields), and to **143–145** (video and actor-left). In code, `isClientLongSpatialMessageType(t)` is true for `128 <= t <= 140`, for `142` and for `143`; `144` and `145` are server-only — a client that sends them is dropped like any other server-only opcode. `SHORT_SPATIAL_MESSAGE` (141) is reserved for a future compact layout and is **not yet implemented** (no server handler). The non-spatial `CLIENT_ACTOR_HEARTBEAT` (26) also **reuses this exact layout** so the same HMAC/parsing applies — but it is a local-only keep-alive (no fan-out); see "Actor presence and heartbeats" below.
 
 UUIDs are client generated 32 byte UTF8 strings. The null termination byte (33rd slot) is not sent.
 
@@ -323,6 +326,92 @@ Voxel messages use the same long form shell. The table below is only the **`payl
 | voxelState  | X    | X     | bytes  | an array of bytes.                                                                        |
 
 Minimum **total** application length for a voxel update with `stateLength = 0`: **87** bytes without HMAC (`68` header + `10` fixed voxel fields + `9` tail), or **119** bytes with HMAC (`68 + 10 + 41`).
+
+### Video payload (`CLIENT_VIDEO_PACKET_2`, `CLIENT_VIDEO_NOTIFICATION_2`)
+
+Webcam video rides the long form shell exactly as voice does (134/135): a client
+sends **143** with `use_video_chat` held for the app **and** for the target
+chunk's grid (the same two-level check as `use_voice_chat`; a refusal is
+`GENERIC_ERROR_MESSAGE` `UNAUTHORIZED` correlated by `sequenceNumber`), and the
+server fans it out as **144** with the same chunk / distance / decay rules as
+audio, never inspecting the payload. **A datagram is at most 1232 bytes**, so an
+encoded frame does not fit in one message: the client cuts it into fragments,
+and the receiver reassembles. The server and the GraphQL proxy never look inside
+a fragment; the header below is a **client-to-client convention** that the
+official SDKs implement (CrowdyJS `fragmentFrame` / `VideoFrameAssembler`,
+CrowdyCPP `crowdy/media/video_frames.hpp`). Implement exactly this if you write
+your own client, or your frames will not decode on anyone else's.
+
+The `payload` region (offset 68 onward) of every video message is one fragment:
+
+| Offset | Bytes | Field       | Meaning                                                                           |
+| ------ | ----- | ----------- | --------------------------------------------------------------------------------- |
+| 0      | 1     | `version`   | `0x01`. Anything else: drop the fragment.                                          |
+| 1      | 1     | `codec`     | `0` = JPEG, `1` = WebP. `2–255` reserved: drop.                                   |
+| 2      | 2     | `frameId`   | `uint16` **big-endian**, per sender, `+1` per frame, wraps at 65536.               |
+| 4      | 1     | `fragIndex` | 0-based index of this fragment within the frame.                                  |
+| 5      | 1     | `fragCount` | Total fragments in the frame, `1..16`. `0` or `> 16`: drop.                        |
+| 6      | X     | `body`      | This fragment's slice of the encoded frame (a JPEG or WebP file), in order.       |
+
+- Header is **6 bytes**. Max body is **1117 bytes** with HMAC (1149 without):
+  the 1232-byte datagram less the 68-byte prefix, the 6-byte header and the 41-
+  or 9-byte tail. Fragments are cut at the max body; only the last is shorter.
+- **Ceiling: 16 fragments per frame (~17.8 KB).** A sender refuses a frame above
+  the ceiling rather than sending a partial one. Aim far lower — see the cost note.
+- **Reassembly:** buffer per `(sender uuid, frameId)`; a frame is complete when
+  all `fragCount` indices are present, and is delivered **once**. Abandon an
+  incomplete frame when a fragment with a *newer* `frameId` (mod 65536) from the
+  same sender arrives, or after **500 ms** without progress. There is no
+  retransmit and no NACK; the next frame is the recovery. Fragments for a
+  `frameId` not newer than the last completed or abandoned one are stragglers:
+  drop them.
+- The 1-byte `sequenceNumber` in the tail is correlation-only, as for every
+  spatial message; `frameId` is the ordering key.
+- Recommended sending: `distance` **1** (your chunk and its neighbours),
+  `decayRate` `0`, **at most 10 fps**, frames **≤ 8 KB** (JPEG quality ≈ 0.5 at
+  128×96 lands at 2–5 KB).
+
+:::warning[Every receiver pays for your video]
+Bytes are billed on **egress**, and a video message is copied to every actor
+within `distance`. One sender at 10 fps × 4 KB is ~40 KB/s (≈ 350 kbit/s) **to
+each receiver**; ten cameras on in one chunk is ~400 KB/s into every player
+standing there, and the app's egress meter counts every copy. Keep `distance`
+at 0–1, frames small and the rate low, and give players a toggle — the
+permission is opt-in (`use_video_chat` is granted on a tier, never by default)
+for the same reason. See **[Operations → Permissions](/replication-api/operations)**.
+:::
+
+### Actor left (`ACTOR_LEFT_NOTIFICATION_2`)
+
+**145** is server → client only and tells the actor's neighbourhood that the
+server no longer considers it present. It uses the long form shell, signed like
+every other server → client spatial notification: `chunk` is the actor's **last
+known chunk**, `uuid` is the actor that left, `distance` is the radius the server
+used for the fan-out and `decay` is `0`. The `payload` region is:
+
+| Offset | Bytes | Field      | Meaning                                                                                                                                                                                 |
+| ------ | ----- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0      | 1     | `reason`   | **0 = STALE** — the actor stopped updating (about five seconds after its last update). **1 = SESSION_RELEASED** — the server ended the session (deauthorisation or token expiry). `2–255` reserved: treat as STALE. |
+| 1      | …     | reserved   | May be absent or longer in a later revision; ignore.                                                                                                                                    |
+
+Semantics, stated as contract:
+
+1. **Emitted once, at the moment the server stops considering the actor
+   present** — the same moment its presence record is removed. Not on every
+   silent tick, and not on session release alone if the actor was already gone.
+2. **Fanned out to the actor's neighbourhood** with the same chunk-ring rules as
+   its actor updates were, so exactly the clients that could have seen it are
+   told. It is delivered like any other notification, standalone or in a
+   `MESSAGE_BUNDLE`; the sender's own session, if it still exists, is not told.
+3. **Not emitted for an actor still present elsewhere.** A session that moves to
+   another server (a reconnect, or an overload shed — see `COMMAND_RECONNECT`)
+   is a migration, not a leave: nothing is emitted and the actor stays present.
+4. **Tolerate leave → join for the same `uuid`.** A true reconnect after a stale
+   looks exactly like that; remove the actor on 145 and re-create it on the next
+   `ACTOR_UPDATE_NOTIFICATION`. Never latch "gone forever".
+5. **No acknowledgement, no retransmit.** Keep your own staleness reaper (the
+   SDKs use 12 s without an update) as the fallback for a lost datagram; 145 is
+   the fast path, not the only path.
 
 ## Distance Field
 

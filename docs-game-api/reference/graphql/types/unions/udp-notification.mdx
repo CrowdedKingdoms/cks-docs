@@ -19,7 +19,7 @@ All game-server messages delivered over the UDP proxy as GraphQL payloads. Subsc
 
 
 ```graphql
-union UdpNotification = ActorUpdateResponse | ActorUpdateNotification | VoxelUpdateResponse | VoxelUpdateNotification | ClientAudioNotification | ClientTextNotification | ClientEventNotification | ServerEventNotification | SingleActorMessageNotification | ChannelMessageNotification | GenericErrorResponse | RealtimeConnectionEvent
+union UdpNotification = ActorUpdateResponse | ActorUpdateNotification | VoxelUpdateResponse | VoxelUpdateNotification | ClientAudioNotification | ClientVideoNotification | ActorLeftNotification | ClientTextNotification | ClientEventNotification | ServerEventNotification | SingleActorMessageNotification | ChannelMessageNotification | GenericErrorResponse | RealtimeConnectionEvent
 ```
 
 
@@ -43,6 +43,14 @@ Notification received when a voxel (block) is updated by another client or the s
 
 #### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ClientAudioNotification</b></code>](/reference/graphql/types/objects/client-audio-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
 Notification received when another client sends an audio packet (voice chat). Received via the udpNotifications subscription.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ClientVideoNotification</b></code>](/reference/graphql/types/objects/client-video-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Notification received when another client sends a webcam video fragment. Received via the udpNotifications subscription. videoData is ONE fragment: a 6-byte header (version, codec, frameId uint16 BE, fragIndex, fragCount) followed by that slice of the encoded frame; reassemble fragments with the same uuid and frameId, and drop an incomplete frame when a newer frameId arrives or after ~500 ms.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ActorLeftNotification</b></code>](/reference/graphql/types/objects/actor-left-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The game server has stopped considering an actor present (Buddy v0.25.0). Emitted ONCE, over the actor's last chunk with the replication rings its own updates used, at the moment its presence record is removed -- roughly five seconds after its last update. Not emitted when the actor merely moved to another server. Treat a later ActorUpdateNotification for the same uuid as a rejoin. Received via the udpNotifications subscription.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ClientTextNotification</b></code>](/reference/graphql/types/objects/client-text-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 

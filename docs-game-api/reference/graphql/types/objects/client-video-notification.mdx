@@ -1,0 +1,83 @@
+---
+id: client-video-notification
+title: ClientVideoNotification
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Notification received when another client sends a webcam video fragment. Received via the udpNotifications subscription. videoData is ONE fragment: a 6-byte header (version, codec, frameId uint16 BE, fragIndex, fragCount) followed by that slice of the encoded frame; reassemble fragments with the same uuid and frameId, and drop an incomplete frame when a newer frameId arrives or after ~500 ms.
+
+
+```graphql
+type ClientVideoNotification {
+  appId: BigInt!
+  chunkX: BigInt!
+  chunkY: BigInt!
+  chunkZ: BigInt!
+  distance: Int!
+  decayRate: Int!
+  uuid: String!
+  videoData: String!
+  sequenceNumber: Int!
+  epochMillis: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ClientVideoNotification.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The ID of the app where the video is coming from.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ClientVideoNotification.<b>chunkX</b></code>](#chunk-x)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#chunk-x\} 
+The X coordinate of the chunk where the video source is located.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ClientVideoNotification.<b>chunkY</b></code>](#chunk-y)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#chunk-y\} 
+The Y coordinate of the chunk where the video source is located.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ClientVideoNotification.<b>chunkZ</b></code>](#chunk-z)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#chunk-z\} 
+The Z coordinate of the chunk where the video source is located.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ClientVideoNotification.<b>distance</b></code>](#distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#distance\} 
+Chunk replication distance (0-8) from the original message.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ClientVideoNotification.<b>decayRate</b></code>](#decay-rate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#decay-rate\} 
+Decay algorithm (0-5) from the original message.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ClientVideoNotification.<b>uuid</b></code>](#uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#uuid\} 
+The unique identifier of the video source (typically the player UUID sending the video).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ClientVideoNotification.<b>videoData</b></code>](#video-data)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#video-data\} 
+One video fragment, base64-encoded: 6-byte fragment header then the frame slice.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ClientVideoNotification.<b>sequenceNumber</b></code>](#sequence-number)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sequence-number\} 
+The sender's sequence number for this message (0-255).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ClientVideoNotification.<b>epochMillis</b></code>](#epoch-millis)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#epoch-millis\} 
+Server-generated epoch milliseconds timestamp.
+
+
+
+
+### Implemented By
+
+[`UdpNotification`](/reference/graphql/types/unions/udp-notification.mdx)  <Badge class="badge badge--secondary badge--relation" text="union"/>

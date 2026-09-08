@@ -66,6 +66,8 @@ subscription {
     ... on VoxelUpdateNotification  { appId chunkX chunkY chunkZ distance decayRate uuid voxelX voxelY voxelZ voxelType voxelState sequenceNumber epochMillis }
     ... on GenericErrorResponse     { sequenceNumber errorCode }
     ... on ClientAudioNotification  { appId chunkX chunkY chunkZ distance decayRate uuid audioData sequenceNumber epochMillis }
+    ... on ClientVideoNotification  { appId chunkX chunkY chunkZ distance decayRate uuid videoData sequenceNumber epochMillis }
+    ... on ActorLeftNotification    { appId chunkX chunkY chunkZ distance uuid leftReason sequenceNumber epochMillis }
     ... on ClientTextNotification   { appId chunkX chunkY chunkZ distance decayRate uuid text sequenceNumber epochMillis }
     ... on ClientEventNotification  { appId chunkX chunkY chunkZ distance decayRate uuid eventType state sequenceNumber epochMillis }
     ... on ServerEventNotification  { appId chunkX chunkY chunkZ distance decayRate uuid eventType state sequenceNumber epochMillis }
@@ -280,12 +282,77 @@ mutation {
 The payload carries only the target's UUID, not the sender's; if the recipient
 needs to know who sent it, include that in `payload`.
 
+## Webcam video
+
+`sendVideoPacket` is the video sibling of `sendAudioPacket`: it carries **one
+fragment** of an encoded webcam frame (native opcode 143) to every actor within
+`distance`, who receive it as `ClientVideoNotification` (opcode 144). It needs
+the `use_video_chat` permission on the sender's tier **and** on the grid under
+the target chunk; a refusal is `UNAUTHORIZED`. The key is **opt-in** — a new
+app's default tier does not carry it — because every receiver pays the egress
+for every copy (see the cost note below).
+
+```graphql
+mutation {
+  sendVideoPacket(input: {
+    appId: 1
+    chunk: { x: 0, y: 0, z: 0 }
+    uuid: "<your-32-byte-actor-uuid>"
+    videoData: "AQAAAQAC…"      # base64: 6-byte fragment header + a slice of the JPEG/WebP
+    distance: 1                 # default 1 — keep it small
+    decayRate: 0
+    sequenceNumber: 7
+  })
+}
+```
+
+A datagram is at most 1232 bytes, so a frame never fits in one call: the client
+cuts it into up to 16 fragments, each `videoData` being a 6-byte header
+(`version` 1, `codec` 0 = JPEG / 1 = WebP, big-endian `frameId`, `fragIndex`,
+`fragCount`) followed by that fragment's slice, and the receiver reassembles per
+`(uuid, frameId)`, delivering each frame once and abandoning an incomplete one
+when a newer `frameId` arrives or after 500 ms. The header is a client-to-client
+convention the proxy never inspects; it is specified byte for byte in
+**[Replication API → Wire formats → Video payload](/replication-api/wire-formats#video-payload-client_video_packet_2-client_video_notification_2)**.
+The official SDKs do all of this for you: CrowdyJS `udp.sendVideoFrame(...)` +
+`VideoFrameAssembler`, CrowdyCPP `Connection::sendVideoFrame` +
+`crowdy::media::VideoFrameAssembler`.
+
+Recommended: `distance` 0–1, ≤ 10 fps, frames ≤ 8 KB (JPEG quality ≈ 0.5 at
+128×96 is 2–5 KB). One sender at 10 fps × 4 KB is ~40 KB/s **to each receiver**
+and every copy is metered on the app's egress; ten cameras in one chunk is
+~400 KB/s into every player standing there. Give players a toggle, and stop
+sending when nobody is in range.
+
+## Actor left
+
+`ActorLeftNotification` (native opcode 145) is server → client only: the server
+stopped considering an actor present — about five seconds after its last actor
+update (`leftReason: 0`, stale), or at once when its session ended by
+deauthorisation or token expiry (`leftReason: 1`). It is fanned out to the
+actor's last known chunk with the same ring rules its actor updates used, so
+exactly the clients that could have seen the actor are told, once. A session
+that merely moves to another game server (load shedding, reconnect) is **not**
+a leave and emits nothing.
+
+Use it to remove the remote avatar, and to release anything keyed by that
+`uuid` (audio playback chains, video textures), immediately instead of waiting
+for your own staleness timeout — but **keep the timeout**: there is no retransmit,
+so the reaper is the fallback for a lost datagram. Tolerate leave → join for the
+same `uuid` (a real reconnect after a stale looks exactly like that); never
+latch "gone forever". The SDK stores do this for you: CrowdyJS `RemoteActorStore`
+removes the actor and fires `onLeave` on 145, CrowdyCPP `RemoteActorLane` likewise;
+treat `leftReason` values other than 0 and 1 as stale. The server-side twin for
+game logic is the `player_left` automation / compute event — see
+[Autonomous processes → Players leaving](autonomous-processes#players-leaving).
+
 ## Other mutations
 
 | Mutation | Description |
 |---|---|
 | `sendVoxelUpdate` | Modify a voxel in a chunk |
 | `sendAudioPacket` | Send voice audio data |
+| `sendVideoPacket` | Send one webcam video fragment (needs `use_video_chat`; see [Webcam video](#webcam-video)) |
 | `sendTextPacket` | Send chat text |
 | `sendClientEvent` | Send a custom event |
 | `sendSingleActorMessage` | Send a direct message to one actor by UUID (not broadcast) |
