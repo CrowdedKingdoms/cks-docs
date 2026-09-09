@@ -21,11 +21,6 @@ directive @requiresPermission(
   scopeArg: String
 ) on FIELD_DEFINITION
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type User {
   """Unique user id and primary key. BigInt serialized as a decimal string."""
   userId: BigInt!
@@ -2873,6 +2868,11 @@ type CrowdyStudioAgentCatalog {
 Arbitrary-precision signed integer (used for 64-bit ids and chunk coordinates such as appId, userId and chunk x/y/z). ALWAYS transmitted as a base-10 decimal STRING in BOTH directions — send it quoted (e.g. "1024", "-5") and read it back as a string; never use a raw JSON number, because large values overflow IEEE-754 doubles. The server rejects any value that is not a valid integer string.
 """
 scalar BigInt
+
+"""
+ISO-8601 DateTime or relative duration (e.g. 1d, 7d, 1h) interpreted as a lookback window ending at now.
+"""
+scalar DateTime
 
 type Query {
   """
