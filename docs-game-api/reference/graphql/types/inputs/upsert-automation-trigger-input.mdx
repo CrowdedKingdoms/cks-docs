@@ -43,19 +43,19 @@ The automation (by name) this trigger fires.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationTriggerInput.<b>onEvent</b></code>](#on-event)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#on-event\} 
-Event to observe: function&#x005F;invoked | property&#x005F;changed | container&#x005F;created | player&#x005F;count&#x005F;changed | player&#x005F;left. player&#x005F;count&#x005F;changed fires only after complete fleet counts change, and injects reserved previous/current/delta/revision params. player&#x005F;left fires once per actor that stops being present (about five seconds after its last update), the LAST player included, and injects actor&#x005F;uuid, user&#x005F;id, chunk&#x005F;x/y/z, last&#x005F;seen&#x005F;at, left&#x005F;reason (presence&#x005F;removed | lease&#x005F;expired) and remaining&#x005F;player&#x005F;count.
+Event to observe: function&#x005F;invoked | property&#x005F;changed | container&#x005F;created | player&#x005F;count&#x005F;changed | player&#x005F;left | player&#x005F;joined. player&#x005F;count&#x005F;changed fires only after complete fleet counts change, and injects reserved previous/current/delta/revision params. player&#x005F;left fires once per actor that stops being present (about five seconds after its last update), the LAST player included, and injects actor&#x005F;uuid, user&#x005F;id, chunk&#x005F;x/y/z, last&#x005F;seen&#x005F;at, left&#x005F;reason (presence&#x005F;removed | lease&#x005F;expired) and remaining&#x005F;player&#x005F;count. player&#x005F;joined (v1.93.0) fires once per actor the roster newly inserted (ON CONFLICT no-op is not a join), and injects actor&#x005F;uuid, user&#x005F;id, chunk&#x005F;x/y/z, first&#x005F;seen&#x005F;at and current&#x005F;player&#x005F;count. A Redis flush can emit leave then join on later ticks.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationTriggerInput.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
-Filter: only this function name. Applies to function&#x005F;invoked; rejected for property&#x005F;changed, container&#x005F;created, player&#x005F;count&#x005F;changed and player&#x005F;left.
+Filter: only this function name. Applies to function&#x005F;invoked; rejected for property&#x005F;changed, container&#x005F;created, player&#x005F;count&#x005F;changed, player&#x005F;left and player&#x005F;joined.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationTriggerInput.<b>containerTypeName</b></code>](#container-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#container-type-name\} 
-Filter: only this container type. For function&#x005F;invoked this is the type of the invocation's "self" container, so you can watch "this function, on this type". Rejected for player&#x005F;count&#x005F;changed and player&#x005F;left.
+Filter: only this container type. For function&#x005F;invoked this is the type of the invocation's "self" container, so you can watch "this function, on this type". Rejected for player&#x005F;count&#x005F;changed, player&#x005F;left and player&#x005F;joined.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationTriggerInput.<b>propertyKey</b></code>](#property-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#property-key\} 
-Filter: only this property key. Applies to property&#x005F;changed; rejected for function&#x005F;invoked, container&#x005F;created, player&#x005F;count&#x005F;changed and player&#x005F;left.
+Filter: only this property key. Applies to property&#x005F;changed; rejected for function&#x005F;invoked, container&#x005F;created, player&#x005F;count&#x005F;changed, player&#x005F;left and player&#x005F;joined.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationTriggerInput.<b>writeSource</b></code>](#write-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#write-source\} 

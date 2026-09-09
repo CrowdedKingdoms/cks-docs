@@ -68,7 +68,7 @@ jobs:
           echo "sibling tier=$tier, from $from"
 
       - name: Checkout cks-docs
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: cks-docs
 
@@ -89,7 +89,7 @@ jobs:
 
       - name: Checkout cks-game-api (same tier)
         if: steps.token.outputs.available == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: CrowdedKingdoms/cks-game-api
           ref: ${{ steps.tier.outputs.tier }}
@@ -98,7 +98,7 @@ jobs:
 
       - name: Checkout CrowdyJS (same tier)
         if: steps.token.outputs.available == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: CrowdedKingdoms/CrowdyJS
           ref: ${{ steps.tier.outputs.tier }}

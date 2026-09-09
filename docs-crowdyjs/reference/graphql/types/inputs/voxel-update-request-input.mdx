@@ -25,7 +25,7 @@ input VoxelUpdateRequestInput {
   uuid: String!
   voxel: VoxelCoordinatesInput!
   voxelType: Int!
-  voxelState: String!
+  voxelState: String
   distance: Int
   decayRate: Int
   sequenceNumber: Int
@@ -55,8 +55,8 @@ The voxel coordinates within the chunk. Values must be between -32768 and 32767 
 The new voxel type ID. This determines the appearance and properties of the voxel.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>voxelState</b></code>](#voxel-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-state\} 
-The voxel state data, base64-encoded.
+#### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>voxelState</b></code>](#voxel-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-state\} 
+Optional voxel state data, base64-encoded. Omit (or send an empty string) when the voxel has no extra state — an empty payload is a type-only update.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>distance</b></code>](#distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#distance\} 
