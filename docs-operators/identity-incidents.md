@@ -23,7 +23,7 @@ database session.
 | Sign-in rate limits (per address, per client) | `RATE_LIMITED`; masked mutations stay masked | v1.88.0 |
 | Authentication is the default on every root field | `@Public()` allow-list + `AuthDefaultGuard` | v1.88.0 |
 | App tokens are confined to one app, 30 min | `refreshAppToken`; `revokeAppAuthorization` | unchanged |
-| Studio session is an HttpOnly cookie + CSRF | `ck_session` / `ck_csrf`; cookie auth from a non-first-party origin is `COOKIE_AUTH_ORIGIN_REFUSED` | ck-api v1.92.0 |
+| Studio session is an HttpOnly cookie + CSRF | `ck_session` / `ck_csrf`; cookie auth from a non-first-party origin is `COOKIE_AUTH_ORIGIN_REFUSED`. Prod cookie Domain is `.crowdedkingdoms.com` (v1.92.1) so public `studio.crowdedkingdoms.com` can send CSRF. | ck-api v1.92.1 |
 
 ## Playbooks
 
