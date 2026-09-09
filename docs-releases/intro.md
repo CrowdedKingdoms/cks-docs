@@ -32,7 +32,7 @@ supported path.
 
 ## 2026-09-09 (Game API)
 
-**Studio session moves to an HttpOnly cookie + CSRF.** (ck-api v1.92.0, Studio
+**Studio session moves to an HttpOnly cookie + CSRF.** (ck-api v1.92.1, Studio
 v1.21.0)
 
 - Sign-in still returns `AuthResponse.token` for native clients, CrowdyJS,
@@ -44,6 +44,10 @@ v1.21.0)
   `COOKIE_AUTH_ORIGIN_REFUSED`. Missing or mismatched CSRF is `CSRF_REQUIRED` /
   `CSRF_MISMATCH`. Customer origins still hold only app tokens from hosted
   `/authorize`.
+- Prod cookie Domain is `.crowdedkingdoms.com` so public
+  `studio.crowdedkingdoms.com` can send CSRF. `v1.92.0` derived
+  `.prod.crowdedkingdoms.com` from the labelled `FRONTEND_URL` and public
+  Studio never received `ck_csrf`.
 - **Action:** none for SDK / game clients. Studio users sign in again if an
   old `localStorage` bearer has expired; leftover bearers keep working until
   then.
