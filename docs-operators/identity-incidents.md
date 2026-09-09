@@ -23,6 +23,7 @@ database session.
 | Sign-in rate limits (per address, per client) | `RATE_LIMITED`; masked mutations stay masked | v1.88.0 |
 | Authentication is the default on every root field | `@Public()` allow-list + `AuthDefaultGuard` | v1.88.0 |
 | App tokens are confined to one app, 30 min | `refreshAppToken`; `revokeAppAuthorization` | unchanged |
+| Studio session is an HttpOnly cookie + CSRF | `ck_session` / `ck_csrf`; cookie auth from a non-first-party origin is `COOKIE_AUTH_ORIGIN_REFUSED` | ck-api v1.92.0 |
 
 ## Playbooks
 
@@ -81,7 +82,7 @@ not hold: passwords, sessions, tokens for other apps.
 
 | Leaked | Do |
 |---|---|
-| A player's **session token** | `forceLogoutUser(userId)` (super admin) or have them `logoutAllDevices`; then a password change. |
+| A player's **session token** (or a stolen `ck_session`) | `forceLogoutUser(userId)` (super admin) or have them `logoutAllDevices`; then a password change. Studio no longer keeps the session in `localStorage`; XSS there cannot read `ck_session`. |
 | An **app token** | Expires within 30 min; `revokeAppAuthorization` ends it now. |
 | The `P2P_SECRET` / a control-plane secret | Rotate in Secrets Manager and re-file the component (`infra-control-plane/docs/ops/SECRETS.md`). |
 | An **org API token** | Org > API credentials > revoke; it stops authenticating on its next request. |
