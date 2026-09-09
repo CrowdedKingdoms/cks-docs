@@ -30,6 +30,35 @@ supported path.
 
 :::
 
+## 2026-09-09 (Game API)
+
+**Studio session moves to an HttpOnly cookie + CSRF.** (ck-api v1.92.0, Studio
+v1.21.0)
+
+- Sign-in still returns `AuthResponse.token` for native clients, CrowdyJS,
+  Construct, and scripts. Those keep `Authorization: Bearer` and skip CSRF.
+- Studio no longer writes `localStorage.auth_token`. ck-api sets `ck_session`
+  (HttpOnly; Secure; SameSite=Lax) and readable `ck_csrf`. Subsequent Studio
+  GraphQL calls send credentials plus `X-CSRF-Token`.
+- Cookie auth from a non-first-party `Origin` is
+  `COOKIE_AUTH_ORIGIN_REFUSED`. Missing or mismatched CSRF is `CSRF_REQUIRED` /
+  `CSRF_MISMATCH`. Customer origins still hold only app tokens from hosted
+  `/authorize`.
+- **Action:** none for SDK / game clients. Studio users sign in again if an
+  old `localStorage` bearer has expired; leftover bearers keep working until
+  then.
+
+**Idempotent replay keeps ISO timestamps; `voxelState` is optional.** (ck-api
+v1.91.0, CrowdyJS 15.8.0)
+
+- Nest's default DateTime scalar serialized a replayed ISO string as `null`,
+  which 500'd `grantAppAccess` (and any other `@Idempotent()` Date field) on
+  retry. The registered `DateTime` scalar accepts the string.
+- `VoxelUpdateRequestInput.voxelState` is optional. CrowdyJS `setVoxel` omits
+  the field when there is no state.
+- CrowdyCPP **0.31.0** adds `refreshAsync(ip4, port)` so an async gameplay
+  token rotation can name the current Buddy (the sync overloads already could).
+
 ## 2026-09-08 (Game API)
 
 **Invoke policies now apply to app admins. `bypassPolicy` is the explicit, audited
