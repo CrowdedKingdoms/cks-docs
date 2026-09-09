@@ -48,7 +48,7 @@ The container type to resolve or instantiate.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>bindingKey</b></code>](#binding-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#binding-key\} 
-Opaque client-derived key (max 128 chars) identifying the shared container within (appId, typeName, sessionId). All concurrent ensures with the same key return the same containerId.
+Opaque client-derived key (max 128 chars) identifying the shared container within (appId, typeName, sessionId). All concurrent ensures with the same key return the same containerId. The prefix `seed:` is reserved for gameModelSeed; non-admin ensureContainer may not claim it.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>EnsureContainerInput.<b>displayName</b></code>](#display-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#display-name\} 
