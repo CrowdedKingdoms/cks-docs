@@ -53,6 +53,11 @@ Your client `JSON.parse`s / `JSON.stringify`s around them.
 As an app admin you declare container types, their property schemas, and your
 functions. You can do it field-by-field or in one `gameModelSeed` call.
 
+`gameModelSeed` **upserts** container *types*, property *definitions*, and
+functions. Seed **containers** (instances) are **create-only**: each run
+`INSERT`s a new row. Two seeds of the same `WorldState` therefore create two
+`WorldState` containers. Re-run seed to refresh schema, not to refresh instances.
+
 :::caution The schema does not travel with the app
 
 Creating a container against a type you never defined is **refused**, with
