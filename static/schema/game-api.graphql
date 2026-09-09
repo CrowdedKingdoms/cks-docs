@@ -58,11 +58,6 @@ type Avatar {
 }
 
 """
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-"""
 Integer (x, y, z) address of a 16x16x16-voxel chunk within an app's world grid. Each unit step moves one whole chunk (16 voxels) along that axis. Components are signed 64-bit integers serialized as decimal strings (see the BigInt scalar).
 """
 type ChunkCoordinates {
@@ -7573,6 +7568,11 @@ Arbitrary-precision signed integer (used for 64-bit ids and chunk coordinates su
 """
 scalar BigInt
 
+"""
+ISO-8601 DateTime or relative duration (e.g. 1d, 7d, 1h) interpreted as a lookback window ending at now.
+"""
+scalar DateTime
+
 type Query {
   """
   Returns the authenticated user resolved from the token (sent as `Authorization: Bearer <token>`), or null if missing/invalid. Readable with either an identity session token or an app-scoped gameplay token.
@@ -14109,8 +14109,10 @@ input VoxelUpdateRequestInput {
   The new voxel type ID. This determines the appearance and properties of the voxel.
   """
   voxelType: Int!
-  """The voxel state data, base64-encoded."""
-  voxelState: String!
+  """
+  Optional voxel state data, base64-encoded. Omit (or send an empty string) when the voxel has no extra state — an empty payload is a type-only update.
+  """
+  voxelState: String
   """
   Chunk replication distance (0-8). Defaults to 8 for voxel updates. Clamped to 0-8.
   """
