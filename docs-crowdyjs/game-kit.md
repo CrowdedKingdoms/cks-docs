@@ -652,11 +652,10 @@ two shipped examples. The client half is packaged as the
 [World Stores](/crowdyjs/stores) `ContainerMirror`: watch containers, bind
 the channel, and typed snapshots refresh themselves.
 
-### Cooldowns and timers without a clock
+### Cooldowns and timers
 
-Expressions still have no `now()` — by design (deterministic replay, no
-wall-clock races). What you get instead is scheduled execution. Model time
-with:
+Expressions have `now()` (int milliseconds, bound once per invoke). For
+deadlines and recurring work, prefer scheduled execution:
 
 - **One-shot timers** for a deadline on a particular thing: a function
   declares a [`timers` effect](/game-api/autonomous-processes#timers) and arms
