@@ -88,6 +88,28 @@ consume an item and place its block. Sequencing `voxel_set` next to a
 separate `model_invoke` leaves a partial-failure window that needs
 compensation code; the combined call removes it.
 
+### Voxel writes reach the live mesh
+
+Both `voxel_set` and the `world_writes` of a successful
+`model_invoke_with_world` are fanned to connected players as a `voxelUpdate`
+notification once Postgres has the row — the same downlink a player's own
+`sendVoxelUpdate` produces, carrying the chunk, voxel, type, and state. A
+client subscribed with `client.udp.subscribe({ voxelUpdate })` sees a
+server-placed block immediately; a client that loads the chunk later gets it
+from the packed chunk snapshot as before.
+
+- **Durability first.** The notification is best-effort. If the realtime
+  fleet is unreachable the write still lands and shows up in `voxels_list`
+  and the next chunk load; only the live frame is missed.
+- **Failed invokes place nothing.** `world_writes` fan out only after the
+  Model function succeeded and the transaction committed, so a denied or
+  failed `model_invoke_with_world` never shows a ghost block.
+- **Drafts stay private.** A player module running as a **draft** (Studio
+  "Test draft") still writes `voxel_updates` for its author's console, but
+  its blocks are not broadcast to other sessions until it is deployed live.
+- **Budget.** The fan-out is part of the host call; it does not draw on the
+  module's replication egress budget described below.
+
 ## App state blobs
 
 Per-user, per-avatar, and per-grid binary state your app attaches to platform
@@ -113,7 +135,7 @@ voxel coordinates are 0–255 within a chunk).
 | `voxels_list(x, y, z)` | The voxels recorded in that chunk (capped at 2048): `voxelX/Y/Z`, `voxelType`, `stateBase64`, `updatedAt`. Requires SDK 0.1.1+. |
 | `actors_list(x, y, z)` | Actors currently recorded in that chunk (≤ 200): `uuidHex`, `userId`, `stateBase64`. |
 | `actors_list_radius(x, y, z, radius_xz, radius_y)` | Actors in a chunk box around (x,y,z) — radii clamped to 3 (xz) / 1 (y), ≤ 500 rows, one data-op; rows add `chunkX/Y/Z`. Requires SDK 0.1.2+. |
-| `voxel_set(chunk, voxel, voxel_type, state_base64)` | Writes one voxel as the **server** (no player permission check — your module is trusted in your own app). Goes through the same validation as the voxel mutation and replicates to clients like any voxel update. |
+| `voxel_set(chunk, voxel, voxel_type, state_base64)` | Writes one voxel as the **server** (no player permission check — your module is trusted in your own app). Goes through the same validation as the voxel mutation. After the write commits, nearby clients receive it as a `voxelUpdate` notification (the same message a player's own edit produces), so a live mesh folds the block in without re-fetching the chunk. The write is durable whether or not that notification is delivered. |
 | `grid_permission_check(user_id, grid_id, permission_key)` | Checks whether a user holds a runtime permission key on one of your grids — e.g. a guard NPC testing `access` for an intruder. Returns `false` for grids outside your app. |
 
 ## Replication and events
