@@ -32,6 +32,7 @@ mutation {
     invokePolicyJson: "{\"type\":\"owner_of_self\"}"
     mutations: [
       { target: "self", property: "lastRung", expression: "now()" }
+      # now() is int milliseconds, bound once per invoke so every call agrees.
     ]
     notifications: [
       {

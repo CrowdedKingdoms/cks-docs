@@ -54,9 +54,13 @@ As an app admin you declare container types, their property schemas, and your
 functions. You can do it field-by-field or in one `gameModelSeed` call.
 
 `gameModelSeed` **upserts** container *types*, property *definitions*, and
-functions. Seed **containers** (instances) are **create-only**: each run
-`INSERT`s a new row. Two seeds of the same `WorldState` therefore create two
-`WorldState` containers. Re-run seed to refresh schema, not to refresh instances.
+functions. Seed **containers** (instances) upsert on binding key `seed:` +
+`tempId` (the same unique index as `gameModelEnsureContainer`). A second seed
+maps each `tempId` to the existing container id and increments
+`containersCreated` only on insert. Edges skip pairs that already exist.
+Do **not** key instances by `(typeName, displayName)` — same-name instances
+are intentional. The `seed:` prefix is reserved: a non-admin
+`gameModelEnsureContainer` cannot claim it.
 
 :::caution The schema does not travel with the app
 

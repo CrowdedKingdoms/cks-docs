@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A container (instance) to create as part of a seed.
+A container (instance) to upsert as part of a seed. Re-seed matches on binding&#x005F;key `seed:` + tempId; same-name instances are allowed.
 
 
 ```graphql
@@ -34,7 +34,7 @@ input SeedContainerInput {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>SeedContainerInput.<b>tempId</b></code>](#temp-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#temp-id\} 
-Developer-assigned id used only for edge references in this seed.
+Developer-assigned id used for edge references and as the seed binding key (`seed:` + tempId). Re-seed maps this tempId to the existing container id.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SeedContainerInput.<b>typeName</b></code>](#type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#type-name\} 
