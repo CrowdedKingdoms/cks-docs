@@ -1,0 +1,39 @@
+---
+id: nearby-grids
+title: nearbyGrids
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List every grid overlapping a chunk-coordinate bounding box, returning gridId and bounds only. Player-safe: no permission keys and no impersonation userId. Requires an app-scoped token for the same app.
+
+
+```graphql
+nearbyGrids(
+  input: NearbyGridsInput!
+): [NearbyGrid!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>nearbyGrids.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>NearbyGridsInput!</b></code>](/reference/graphql/types/inputs/nearby-grids-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app and the low/high chunk corners of the region to scan (corners are normalized).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>NearbyGrid</b></code>](/reference/graphql/types/objects/nearby-grid.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A grid overlapping a scanned region (returned by nearbyGrids). Bounds only — no permission keys.
