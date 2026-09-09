@@ -479,7 +479,8 @@ winner, notification channel) and per-player `Score` rows written by a
 host/server/automation-gated function. Lifecycle functions declare a
 **channel notification** so every participant gets a `"match_changed"` ping
 post-commit and re-pulls (notify-to-pull). Turn timeouts use tick counters
-bumped by an interval automation — expressions have no `now()`.
+bumped by an interval automation, or by `now()` (int milliseconds, bound
+once per invoke so every `now()` in that call agrees).
 
 ### Decks and hidden information
 
