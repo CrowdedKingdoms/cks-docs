@@ -79,12 +79,19 @@ type AuthResponse {
 Send `Authorization: Bearer <token>` on subsequent Management API requests. Resolve
 the caller with `me { userId email gamertag }`.
 
-Studio (ck-api **v1.92.0**) also receives `ck_session` (HttpOnly, SameSite=Lax) and
+Studio (ck-api **v1.92.1**) also receives `ck_session` (HttpOnly, SameSite=Lax) and
 a readable `ck_csrf` on every session mint. Studio authenticates with
 `credentials: 'include'` and `X-CSRF-Token`; it does **not** persist `token` in
 `localStorage`. Native clients, CrowdyJS, Construct, and scripts keep using
 Bearer and skip CSRF. Cookie auth from a non-first-party `Origin` is
 `COOKIE_AUTH_ORIGIN_REFUSED`. Customer origins hold app tokens only.
+
+Prod public Studio is `studio.crowdedkingdoms.com`. Cookie `Domain` is
+`.crowdedkingdoms.com` so that host can send CSRF. Dev/test stay
+`.dev.crowdedkingdoms.com` / `.test.crowdedkingdoms.com`. Do not derive
+prod's Domain by dropping the first label of the labelled
+`studio.prod.crowdedkingdoms.com` `FRONTEND_URL` — that yields
+`.prod.crowdedkingdoms.com`, which public Studio cannot use (`v1.92.0`).
 
 ## Magic link (email)
 
