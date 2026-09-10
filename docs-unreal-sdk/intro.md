@@ -14,8 +14,7 @@ The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the 
 - Avatars
 - Saved progress
 
-:::note
-This guide is written for Unreal Engine 5.8 and a C++/BP project.
+:::note[This guide is written for Unreal Engine 5.8 and a C++/BP project.]
 
 You can get the SDK Plugin from our GitHub repository [here](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/tree/v2_0).
 :::
@@ -87,8 +86,7 @@ One client is elected as the **host**. The host is the natural place to run shar
 
 You check whether you are the host with a single call before doing host work.
 
-:::caution
-The host is a convention the SDK helps you follow, not a server that enforces rules.
+:::caution[The host is a convention the SDK helps you follow, not a server that enforces rules.]
 :::
 
 ## What is next

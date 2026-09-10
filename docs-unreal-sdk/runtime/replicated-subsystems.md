@@ -16,8 +16,7 @@ Replicated subsystems ride the exact same **view plane** as [Crowdy State](/unre
 
 That means the same rule decides what belongs here.
 
-:::warning
-This is the client-authoritative view plane. Host precedence is a convention, not enforcement, and there is no server checking any of it. A modified client can lie. Authoritative or cheat-sensitive state, anything a cheater changing it would matter for, or anything that must survive a reconnect, belongs on the separate server-authoritative path (not yet documented), never on a replicated subsystem.
+:::warning[This is the client-authoritative view plane. Host precedence is a convention, not enforcement, and there is no server checking any of it. A modified client can lie. Authoritative or cheat-sensitive state, anything a cheater changing it would matter for, or anything that must survive a reconnect, belongs on the separate server-authoritative path (not yet documented), never on a replicated subsystem.]
 :::
 
 Use a replicated subsystem for shared, view-only session state: a phase label, a cosmetic world setting, a countdown a late joiner should see roughly right. Keep the score, the match result, and the economy on the server-authoritative path instead.
@@ -39,8 +38,7 @@ Host election is followed for you. If the host changes mid-session, the client t
 
 There are three ways in, from most to least ergonomic. They all reduce to the same two registry calls; pick the one that fits how much you control the subsystem's class.
 
-:::note
-There is no single templated base like `TCrowdyReplicated<T>`, because UHT cannot reflect a class template. Every UCLASS has to be one concrete type, so the surface is instead a function library plus two concrete abstract bases, one per subsystem scope. The base you inherit still funnels through the same library calls.
+:::note[There is no single templated base like `TCrowdyReplicated<T>`, because UHT cannot reflect a class template. Every UCLASS has to be one concrete type, so the surface is instead a function library plus two concrete abstract bases, one per subsystem scope. The base you inherit still funnels through the same library calls.]
 :::
 
 ### Inherit a replicated base (recommended)
@@ -69,8 +67,7 @@ public:
 
 That is the entire setup. The base enrolls the subsystem when it initializes and unenrolls when it deinitializes. `RoundPhase` diffs and replicates from the host to every peer, and `OnRep_Phase` fires on the receivers.
 
-:::warning
-If you override `Initialize` or `Deinitialize` on your subclass, you must call `Super::Initialize(Collection)` and `Super::Deinitialize()`. Enrollment happens inside the base's overrides; skip the `Super` call and the subsystem is never enrolled and never replicates.
+:::warning[If you override `Initialize` or `Deinitialize` on your subclass, you must call `Super::Initialize(Collection)` and `Super::Deinitialize()`. Enrollment happens inside the base's overrides; skip the `Super` call and the subsystem is never enrolled and never replicates.]
 :::
 
 The base exposes one hook, `GetReplicatedOwnership()`, which returns `ECrowdyOwnership::Host`. Host is the supported mode for a subsystem, so leave it as it is.
@@ -91,8 +88,7 @@ UCrowdyReplicatedSubsystemLibrary::UnregisterReplicatedSubsystem(this);
 
 Both nodes default the `Subsystem` argument to `self`, so from the subsystem's own graph you can leave that pin unconnected. When you take this route, you own the lifecycle: pair every register with an unregister.
 
-:::caution
-The library nodes resolve the world from the subsystem you pass in. That is unambiguous for a `UWorldSubsystem`, but a `UGameInstanceSubsystem` outlives worlds and has no single world of its own, so a node called once cannot do per-world re-enrollment for it. For a game-instance subsystem, prefer `UCrowdyReplicatedGameInstanceSubsystem`, which re-enrolls into each world for you (see below). Calling `RegisterReplicatedSubsystem` on a world with no CrowdySDK entity subsystem, such as an editor or preview world, is a harmless no-op with a warning, never a crash.
+:::caution[The library nodes resolve the world from the subsystem you pass in. That is unambiguous for a `UWorldSubsystem`, but a `UGameInstanceSubsystem` outlives worlds and has no single world of its own, so a node called once cannot do per-world re-enrollment for it. For a game-instance subsystem, prefer `UCrowdyReplicatedGameInstanceSubsystem`, which re-enrolls into each world for you (see below). Calling `RegisterReplicatedSubsystem` on a world with no CrowdySDK entity subsystem, such as an editor or preview world, is a harmless no-op with a warning, never a crash.]
 :::
 
 ### The two-line manual pattern (under the hood)
@@ -109,8 +105,7 @@ GetWorld()->GetSubsystem<UCrowdyEntitySubsystem>()->UnregisterParticipant(this);
 
 This is what the base classes and the library nodes reduce to. Reach for it only when you already hold a pointer to a specific entity subsystem you want to enroll into; otherwise the base class is less to get wrong.
 
-:::caution
-If you hand-roll enrollment from a world subsystem's own `Initialize`, force both dependencies to initialize before you enroll:
+:::caution[If you hand-roll enrollment from a world subsystem's own `Initialize`, force both dependencies to initialize before you enroll:]
 
 ```cpp
 Collection.InitializeDependency(UCrowdyEntitySubsystem::StaticClass());
@@ -129,8 +124,7 @@ The CrowdySDK entity subsystem is a **world** subsystem: it is created with a wo
 
 You do not wire any of that if you inherit the matching base. It matters only if you hand-roll enrollment for a game-instance subsystem, in which case you own the per-world bracket yourself.
 
-:::note
-Identity needs no handshake. A host-owned subsystem's NetID is derived deterministically from its class path, so every client computes the same id for the same subsystem with no negotiation. That is what lets the host's deltas address the right proxy on every peer the moment they enroll.
+:::note[Identity needs no handshake. A host-owned subsystem's NetID is derived deterministically from its class path, so every client computes the same id for the same subsystem with no negotiation. That is what lets the host's deltas address the right proxy on every peer the moment they enroll.]
 :::
 
 ## What replicates
@@ -159,8 +153,7 @@ A subsystem has no location in the world, so a spatial recipient has nothing to 
 - **`Multicast`** rides the reliable [channel](/unreal-sdk/runtime/channels) to every member (the default session channel, or a named one with `CrowdyChannel`).
 - **`Host`** is delivered so that only the elected host runs it.
 
-:::caution
-`SpatialMulticast`, which is also the default when you set no recipient, is **rejected** on a subsystem. A subsystem CrowdyEvent with no explicit recipient is dropped at send with an error that tells you to set `CrowdyRecipient=Multicast` or `Host`. Always name a non-spatial recipient on a subsystem event.
+:::caution[`SpatialMulticast`, which is also the default when you set no recipient, is **rejected** on a subsystem. A subsystem CrowdyEvent with no explicit recipient is dropped at send with an error that tells you to set `CrowdyRecipient=Multicast` or `Host`. Always name a non-spatial recipient on a subsystem event.]
 :::
 
 ## Keep subsystem state small: the channel cap
@@ -188,8 +181,7 @@ crowdy.state.trace 1
 crowdy.rpc.trace 1
 ```
 
-:::note
-Trace output is GUIDs and byte counts only. It never includes bearer tokens or other secret material, so a trace log is safe to share when reporting an issue.
+:::note[Trace output is GUIDs and byte counts only. It never includes bearer tokens or other secret material, so a trace log is safe to share when reporting an issue.]
 :::
 
 For the full CVar table, see the [console variables reference](/unreal-sdk/reference/console-cvars).

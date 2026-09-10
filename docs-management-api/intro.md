@@ -6,7 +6,7 @@ title: Introduction
 
 # Management API
 
-:::info There is one Crowded Kingdoms API, and this is part of it
+:::info[There is one Crowded Kingdoms API, and this is part of it]
 The separate management server has been retired. Identity, organizations, apps,
 billing, marketplace and studio policy are served by the **same GraphQL endpoint as
 the [Game API](/game-api/intro)** — one server, one schema, one bearer token. Every
@@ -41,5 +41,6 @@ every type, query and mutation on this surface. The published SDL at
 unified schema filtered to it; [`/schema/game-api.graphql`](pathname:///schema/game-api.graphql)
 is the whole thing.
 
-Dedicated customer environments were retired without replacement — see
-[Dedicated environments](/management-api/dedicated-environments).
+Customer-provisioned environments were retired; every app uses the shared
+platform (`publishAppToShared`). See
+[Shared environment & billing](/management-api/shared-environment).

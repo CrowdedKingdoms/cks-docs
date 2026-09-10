@@ -12,7 +12,7 @@ schedule or in reaction to model activity — so you can build NPCs, spawners,
 ticking world systems, and economy jobs that advance **between** your players'
 requests rather than only in response to them.
 
-:::warning Scheduled work needs a player in the app
+:::warning[Scheduled work needs a player in the app]
 Since 2026-09-01 **nothing runs for an app with no player in it.** A `schedule`
 trigger that comes due while the app is empty is **skipped** and rescheduled from
 the moment a player returns, and the missed runs are **never made up**. Timers

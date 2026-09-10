@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-git-hub-unbind
+title: crowdyStudioGitHubUnbind
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Remove the repository bind from a project you own. Files in Crowdy Studio are untouched.
+
+
+```graphql
+crowdyStudioGitHubUnbind(
+  input: CrowdyStudioGitHubProjectInput!
+): CrowdyStudioGitHubStatus!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioGitHubUnbind.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubProjectInput!</b></code>](/reference/graphql/types/inputs/crowdy-studio-git-hub-project-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubStatus</b></code>](/reference/graphql/types/objects/crowdy-studio-git-hub-status.mdx) <Badge class="badge badge--secondary " text="object"/> 
+GitHub connection for the caller and, when a project is named, the repository bound to it. GitHub is a Studio filesystem capability, not a login provider.

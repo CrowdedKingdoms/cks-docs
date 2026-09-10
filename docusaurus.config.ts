@@ -145,6 +145,12 @@ const config: Config = {
   onBrokenLinks: 'throw',
 
   markdown: {
+    // future.v4 disables MDX1 admonition compat by default, which left
+    // `:::warning Title` (title on the fence line) as literal text on live
+    // pages. Keep the converter, and narrative pages now use :::warning[Title].
+    mdx1Compat: {
+      admonitions: true,
+    },
     hooks: {
       onBrokenMarkdownLinks: 'warn',
     },

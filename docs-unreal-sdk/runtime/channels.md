@@ -20,8 +20,7 @@ There are two ways to use channels:
 
 For how channels compare to the other recipient modes, see [Recipients and routing](/unreal-sdk/runtime/recipients-and-routing).
 
-:::note
-The reliable channel is also what carries [replicated subsystems](/unreal-sdk/runtime/replicated-subsystems): a host-owned subsystem's Crowdy State deltas and its Multicast CrowdyEvents both ride it rather than the spatial path. Note that a single channel message does not fragment, so it has a hard payload cap; keep any per-message content small.
+:::note[The reliable channel is also what carries [replicated subsystems](/unreal-sdk/runtime/replicated-subsystems): a host-owned subsystem's Crowdy State deltas and its Multicast CrowdyEvents both ride it rather than the spatial path. Note that a single channel message does not fragment, so it has a hard payload cap; keep any per-message content small.]
 :::
 
 ## Multicast events over a channel
@@ -44,8 +43,7 @@ Announce(TEXT("hello"), { 1, 2, 3 });
 
 The event reaches every member of `SampleWorldChat`, regardless of where they are in the world.
 
-:::note
-`CrowdyDecay` and `CrowdyDistance` do not apply to a Multicast event. Those are spatial controls only.
+:::note[`CrowdyDecay` and `CrowdyDistance` do not apply to a Multicast event. Those are spatial controls only.]
 :::
 
 Parameters work the same as any CrowdyEvent. You can pass typed values directly, with no payload struct. See [Recipients and routing](/unreal-sdk/runtime/recipients-and-routing) for the full list of allowed parameter types.
@@ -62,8 +60,7 @@ Every connected client also joins a default channel named `__crowdy_session_<app
 
 A Multicast event with no `CrowdyChannel` set goes to this session channel, so a project-wide broadcast works without naming a channel.
 
-:::note
-The runtime channel set is the union of the default session channel and every `CrowdyChannel` name found across your receivers. Adding a new named channel is a matter of adding a receiver that references it; the join happens automatically on the next connect.
+:::note[The runtime channel set is the union of the default session channel and every `CrowdyChannel` name found across your receivers. Adding a new named channel is a matter of adding a receiver that references it; the join happens automatically on the next connect.]
 :::
 
 ## Raw channel messages
@@ -90,8 +87,7 @@ Raw channel messages are fire-and-forget. They have no ordering and no receipt g
 | Multicast CrowdyEvent | Yes | Yes | Reliable |
 | `PublishChannelMessage` | No (raw bytes) | No | None |
 
-:::tip
-Use a Multicast CrowdyEvent when correctness matters: lobby state, score updates, anything a player would notice if it were dropped. Reach for `PublishChannelMessage` only for high-volume, lossy traffic where an occasional miss is acceptable and you are encoding your own bytes.
+:::tip[Use a Multicast CrowdyEvent when correctness matters: lobby state, score updates, anything a player would notice if it were dropped. Reach for `PublishChannelMessage` only for high-volume, lossy traffic where an occasional miss is acceptable and you are encoding your own bytes.]
 :::
 
 ## Creating and managing channels at runtime
@@ -149,8 +145,7 @@ is a Blueprint reflection requirement; the inner array type is the same `FCrowdy
 </TabItem>
 </Tabs>
 
-:::note
-Whether a player may create or change a channel is decided by the server from your app's policy, so a rejected call returns through the error delegate.
+:::note[Whether a player may create or change a channel is decided by the server from your app's policy, so a rejected call returns through the error delegate.]
 :::
 
 Crowdy Studio offers the same operations as a native editor surface, which is convenient for setting channels up ahead of time. See the [Studio Teams and Channels](/unreal-sdk/studio/teams-and-channels) page.

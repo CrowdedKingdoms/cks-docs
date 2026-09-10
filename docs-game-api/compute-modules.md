@@ -124,7 +124,7 @@ replication emits, durable state, logging — documented in
 Treat in-memory state as a cache. The starter module above is correct because
 it persists its counter to the state blob every tick.
 
-:::warning State blob writes on multi-server fleets
+:::warning[State blob writes on multi-server fleets]
 `computeInvoke` calls and event deliveries may run on a server that does
 **not** hold your module's tick lease, on a separate short-lived instance
 whose memory starts from the last persisted snapshot. State-blob writes are

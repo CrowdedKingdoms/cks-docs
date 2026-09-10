@@ -62,7 +62,7 @@ Do **not** key instances by `(typeName, displayName)` — same-name instances
 are intentional. The `seed:` prefix is reserved: a non-admin
 `gameModelEnsureContainer` cannot claim it.
 
-:::caution The schema does not travel with the app
+:::caution[The schema does not travel with the app]
 
 Creating a container against a type you never defined is **refused**, with
 `extensions.code` of `CONTAINER_TYPE_UNDEFINED`. The error names the type you asked

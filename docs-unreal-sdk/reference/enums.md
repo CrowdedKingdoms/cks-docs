@@ -21,16 +21,14 @@ Header: `Core/UDP/Enums/ECrowdyMessageType.h`.
 | `OwningClient` | Only the client that owns the target entity runs it. |
 | `Host` | Only the elected host runs it. The host may act on any entity it has locally. |
 
-:::note
-`SpatialMulticast` is the default recipient. For a full walkthrough of how each value selects its transport, see [Recipients and Routing](/unreal-sdk/runtime/recipients-and-routing).
+:::note[`SpatialMulticast` is the default recipient. For a full walkthrough of how each value selects its transport, see [Recipients and Routing](/unreal-sdk/runtime/recipients-and-routing).]
 :::
 
 ## ECrowdyDecayRate
 
 How delivery probability falls off with distance.
 
-:::tip
-Decay applies only to `SpatialMulticast`. It has no effect on the other recipients.
+:::tip[Decay applies only to `SpatialMulticast`. It has no effect on the other recipients.]
 :::
 
 | Value |
@@ -106,8 +104,7 @@ Header: `Replication/Components/CrowdyEntityComponent.h`.
 | `Allow` | The host may override this entity's Crowdy State as a super-user, and the owner adopts the correction. The default. |
 | `OwnerOnly` | Only the owning client may change this entity. Even a host-sourced correction is dropped. |
 
-:::note
-Host authority on the Crowdy State plane is a precedence-by-convention, not a server-enforced boundary. Keep authoritative or cheat-sensitive state off this plane. See [host authority](/unreal-sdk/runtime/host-authority).
+:::note[Host authority on the Crowdy State plane is a precedence-by-convention, not a server-enforced boundary. Keep authoritative or cheat-sensitive state off this plane. See [host authority](/unreal-sdk/runtime/host-authority).]
 :::
 
 ## ECrowdyStateHeartbeat
@@ -133,6 +130,5 @@ Header: `Customizations/CrowdyReplicatedVariableCustomization.h`.
 | `Replicated` | Crowdy State: the fast, client-authoritative view plane. Stamps the Crowdy State metadata so the variable flows through the same discovery and bake as a C++ `meta=(CrowdyState)` property. |
 | `ServerOwned` | Reserved for a future server-authoritative mode. Not selectable yet. |
 
-:::note
-The dropdown offers only `None` and `Replicated` today. For how to author a replicated variable, see [Crowdy State](/unreal-sdk/runtime/crowdy-state).
+:::note[The dropdown offers only `None` and `Replicated` today. For how to author a replicated variable, see [Crowdy State](/unreal-sdk/runtime/crowdy-state).]
 :::

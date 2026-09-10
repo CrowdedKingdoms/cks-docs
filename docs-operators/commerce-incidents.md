@@ -5,6 +5,10 @@ title: Commerce incidents (money, payouts, fraud)
 
 # Commerce incidents: money, payouts, and fraud (T11)
 
+Paid marketplace and grid sales are **off the public GraphQL API**. The
+tables, Stripe Connect accounts, and this runbook stay; the mutations
+below are not served until that surface is re-enabled.
+
 Real-money marketplace commerce (P4b) adds a financial-incident surface on
 top of the [player-code kill ladder](/operators/player-code-incidents). The
 named T11 (financial-crime) owner is **Michael**. Everything below runs in

@@ -1,0 +1,58 @@
+---
+id: bind-crowdy-studio-git-hub-input
+title: BindCrowdyStudioGitHubInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input BindCrowdyStudioGitHubInput {
+  appId: BigInt!
+  projectId: String!
+  owner: String!
+  repo: String!
+  branch: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>BindCrowdyStudioGitHubInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BindCrowdyStudioGitHubInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BindCrowdyStudioGitHubInput.<b>owner</b></code>](#owner)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#owner\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BindCrowdyStudioGitHubInput.<b>repo</b></code>](#repo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#repo\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BindCrowdyStudioGitHubInput.<b>branch</b></code>](#branch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#branch\} 
+
+
+
+
+
+### Member Of
+
+[`crowdyStudioGitHubBind`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-bind.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
