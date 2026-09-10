@@ -1,0 +1,63 @@
+---
+id: crowdy-studio-git-hub-put-file-input
+title: CrowdyStudioGitHubPutFileInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input CrowdyStudioGitHubPutFileInput {
+  appId: BigInt!
+  projectId: String!
+  path: String!
+  content: String!
+  message: String!
+  sha: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubPutFileInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubPutFileInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubPutFileInput.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubPutFileInput.<b>content</b></code>](#content)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubPutFileInput.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubPutFileInput.<b>sha</b></code>](#sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sha\} 
+Required when the file already exists.
+
+
+
+
+### Member Of
+
+[`crowdyStudioGitHubPutFile`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-put-file.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

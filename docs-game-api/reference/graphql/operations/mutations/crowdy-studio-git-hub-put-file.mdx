@@ -1,0 +1,38 @@
+---
+id: crowdy-studio-git-hub-put-file
+title: crowdyStudioGitHubPutFile
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create or update one UTF-8 file in the bound repository. Send the current sha on update; a stale sha is refused with GITHUB&#x005F;STALE&#x005F;SHA.
+
+
+```graphql
+crowdyStudioGitHubPutFile(
+  input: CrowdyStudioGitHubPutFileInput!
+): CrowdyStudioGitHubFile!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioGitHubPutFile.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubPutFileInput!</b></code>](/reference/graphql/types/inputs/crowdy-studio-git-hub-put-file-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubFile</b></code>](/reference/graphql/types/objects/crowdy-studio-git-hub-file.mdx) <Badge class="badge badge--secondary " text="object"/>
