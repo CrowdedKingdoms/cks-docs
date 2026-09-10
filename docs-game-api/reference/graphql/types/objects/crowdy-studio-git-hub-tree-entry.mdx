@@ -1,0 +1,53 @@
+---
+id: crowdy-studio-git-hub-tree-entry
+title: CrowdyStudioGitHubTreeEntry
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type CrowdyStudioGitHubTreeEntry {
+  path: String!
+  type: String!
+  sha: String
+  size: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubTreeEntry.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\} 
+Repo-relative path.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubTreeEntry.<b>type</b></code>](#type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#type\} 
+`blob` or `tree`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubTreeEntry.<b>sha</b></code>](#sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sha\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubTreeEntry.<b>size</b></code>](#size)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#size\} 
+
+
+
+
+
+### Returned By
+
+[`crowdyStudioGitHubTree`](/reference/graphql/operations/queries/crowdy-studio-git-hub-tree.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,78 @@
+---
+id: crowdy-studio-git-hub-status
+title: CrowdyStudioGitHubStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+GitHub connection for the caller and, when a project is named, the repository bound to it. GitHub is a Studio filesystem capability, not a login provider.
+
+
+```graphql
+type CrowdyStudioGitHubStatus {
+  configured: Boolean!
+  connected: Boolean!
+  accountLogin: String
+  accountType: String
+  owner: String
+  repo: String
+  branch: String
+  autosave: Boolean!
+  installUrl: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>configured</b></code>](#configured)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#configured\} 
+This tier has a GitHub App registered.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>connected</b></code>](#connected)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#connected\} 
+The caller has installed the App on a GitHub account.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>accountLogin</b></code>](#account-login)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#account-login\} 
+GitHub login the App is installed on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>accountType</b></code>](#account-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#account-type\} 
+`User` or `Organization`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>owner</b></code>](#owner)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#owner\} 
+Bound repository owner, when a project was named.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>repo</b></code>](#repo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#repo\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>branch</b></code>](#branch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#branch\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>autosave</b></code>](#autosave)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#autosave\} 
+Studio autosave also pushes to the bound repository. Off by default; the project owner opts in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>installUrl</b></code>](#install-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#install-url\} 
+Where to send the modder to install or manage the App.
+
+
+
+
+### Returned By
+
+[`crowdyStudioGitHubBind`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-bind.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`crowdyStudioGitHubSetAutosave`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-set-autosave.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`crowdyStudioGitHubStatus`](/reference/graphql/operations/queries/crowdy-studio-git-hub-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`crowdyStudioGitHubUnbind`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-unbind.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
