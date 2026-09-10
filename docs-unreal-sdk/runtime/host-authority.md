@@ -13,8 +13,7 @@ One client in a session is elected as the host. The host is a convention the SDK
 
 The host is not an enforced server role. Nothing on the wire is rejected because it did not come from the host.
 
-:::warning
-The host is a convention, not enforcement. A host check decides which client runs shared work; it does not stop other clients from doing anything. If you put cheat-sensitive truth behind a host check, a modified client can ignore it. Never gate cheat-sensitive state on it -- that belongs in a separate server-authoritative path.
+:::warning[The host is a convention, not enforcement. A host check decides which client runs shared work; it does not stop other clients from doing anything. If you put cheat-sensitive truth behind a host check, a modified client can ignore it. Never gate cheat-sensitive state on it -- that belongs in a separate server-authoritative path.]
 :::
 
 Realtime state stays client-authoritative. Each entity is simulated and sent by its owner, and every other client holds a remote proxy fed from the network. The host election does not change that. Use the host only to decide which single client performs a one-time, shared action.
@@ -28,8 +27,7 @@ Reach for a host check when an action must happen exactly once for the whole ses
 - Receiving a `Host` recipient RPC event so a single client handles it.
 - Owning a world entity placed with `Ownership = Host` (see [World entities and the host override](#world-entities-and-the-host-override)).
 
-:::caution
-Do not use a host check to protect gameplay values like HP, currency, or inventory. Those need a real authority boundary, which the host does not provide.
+:::caution[Do not use a host check to protect gameplay values like HP, currency, or inventory. Those need a real authority boundary, which the host does not provide.]
 :::
 
 ## Checking authority
@@ -83,8 +81,7 @@ if (HostSubsystem && HostSubsystem->IsHost())
 }
 ```
 
-:::note
-The host can change during a session, so do not assume the client that started as host stays host. Bind to `OnHostElected` when host-only work needs to move to a new client after the previous host leaves.
+:::note[The host can change during a session, so do not assume the client that started as host stays host. Bind to `OnHostElected` when host-only work needs to move to a new client after the previous host leaves.]
 :::
 
 Host tracking survives a level change. The host poll runs on the GameInstance timer, which outlives any single world, so travelling to a new level does not strand it and does not re-elect a host on arrival. A client that was host before `OpenLevel` is still host after it, and any world entity it owns is picked back up automatically once the new world's entities register.
@@ -113,8 +110,7 @@ void ASampleHostSwitch::SpawnSharedWorldObject()
 
 Every client runs this code, but only the host passes the check and spawns. The spawn event then reaches every client, so each one renders the same entity. For more on how spawns propagate, see [Entities and Spawning](/unreal-sdk/runtime/entities-and-spawning).
 
-:::note
-If you call a spawn on every client without a host check, you get one entity per client instead of one shared entity. The host gate is what makes the spawn happen once.
+:::note[If you call a spawn on every client without a host check, you get one entity per client instead of one shared entity. The host gate is what makes the spawn happen once.]
 :::
 
 ## Host recipient events
@@ -151,8 +147,7 @@ Contrast the two:
 | `IsCrowdyEntityHost` (client) | Free, local | Frequent gameplay decisions where an honest-client answer is enough |
 | `Is Crowdy Entity Host (Server)` | One Game API call, latent | You need the server's authoritative answer, or the client-side value is not trustworthy |
 
-:::note
-The server check needs the target actor to have a server-side record, which means it must have sent at least one actor update. A brand-new entity that has not replicated yet resolves to Failed until it has.
+:::note[The server check needs the target actor to have a server-side record, which means it must have sent at least one actor update. A brand-new entity that has not replicated yet resolves to Failed until it has.]
 :::
 
 ## World entities and the host override
@@ -184,6 +179,5 @@ The grant nodes on `UCrowdyOwnershipTransfer`:
 - **Grant Ownership Transfer To Player** (`TargetEntity`, `NewOwnerPlayerID`): grant by player id. The approval flow hands you the requester's id directly, so this avoids resolving it back to an actor that might not exist on this client.
 - **Grant Ownership To Host** (`TargetEntity`): make the entity host-owned -- claim a client-owned entity for the session, or release an entity to the host. This is the one path an actor reference cannot express, since the host is not an actor.
 
-:::note
-Because the authority for a host-owned entity is the host, use the host check on this page to decide whether the local client should respond to a request for a world entity. For the field-level and API detail of ownership on an entity, see [Crowdy State: Authority and world entities](/unreal-sdk/runtime/crowdy-state#authority-and-world-entities).
+:::note[Because the authority for a host-owned entity is the host, use the host check on this page to decide whether the local client should respond to a request for a world entity. For the field-level and API detail of ownership on an entity, see [Crowdy State: Authority and world entities](/unreal-sdk/runtime/crowdy-state#authority-and-world-entities).]
 :::

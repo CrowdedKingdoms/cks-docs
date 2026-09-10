@@ -18,8 +18,7 @@ You toggle two separate things:
 
 Each side has its own start and stop call, so you can be sending without listening, listening without sending, or both at once.
 
-:::tip
-Capture and playback are independent. For push-to-talk, drive capture from a key while leaving playback running.
+:::tip[Capture and playback are independent. For push-to-talk, drive capture from a key while leaving playback running.]
 :::
 
 ## The functions
@@ -103,8 +102,7 @@ Voice->ToggleOwnerEcho(true);
 
 You should hear your own microphone.
 
-:::note
-Call `ToggleOwnerEcho(false)` to stop the echo once you have confirmed it.
+:::note[Call `ToggleOwnerEcho(false)` to stop the echo once you have confirmed it.]
 :::
 
 ## Sample reference

@@ -55,8 +55,7 @@ The Actor Pool backend uses `UCrowdyActorPoolBackendConfig` for its `BackendConf
 - `DefaultPoolSizePerClass` (default 8)
 - `PerClassPoolOverrides`
 
-:::note
-To select a different backend, see [Rendering Backends](/unreal-sdk/runtime/rendering-backends).
+:::note[To select a different backend, see [Rendering Backends](/unreal-sdk/runtime/rendering-backends).]
 :::
 
 ## Crowdy State replication
@@ -96,8 +95,7 @@ Create a data asset, pick the profile class, then set its fields.
 
 ## Assign the profile
 
-:::caution
-Profiles are assigned in project settings, not on the map asset itself.
+:::caution[Profiles are assigned in project settings, not on the map asset itself.]
 :::
 
 1. Open Edit, Project Settings.
@@ -131,6 +129,5 @@ For most maps, this is enough:
 - `bUseAutoReplicator`: true
 - `ReplicationIntervalHz`: 10
 
-:::tip
-Assign that asset as `DefaultProfile` and the SDK is active on every map that does not have its own entry.
+:::tip[Assign that asset as `DefaultProfile` and the SDK is active on every map that does not have its own entry.]
 :::

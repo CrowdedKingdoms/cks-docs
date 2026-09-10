@@ -10,7 +10,7 @@ allowlists, hard budget ceilings, privacy and retention policy, app/operator
 kills, and sanitized provider usage. The Game API owns execution and must
 enforce only a fresh Management policy replica.
 
-:::warning Allowlisted development — not GA
+:::warning[Allowlisted development — not GA]
 Policy and kills for Agentic Crowdy Studio are served by the **current**
 unified CK API management surface. Do not pin this page to retired
 environment-manifest / CrowdyJS 12.x numbers (`v0.1.94`, `12.0.0`, etc.).

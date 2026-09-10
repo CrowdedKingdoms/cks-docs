@@ -19,8 +19,7 @@ The recipient enum is `ECrowdyEventRecipient`. It has four values:
 
 This page covers what each one does, how the spatial path thins delivery with decay and distance, and when to choose each.
 
-:::note
-An event is always aimed at the entity its sender object belongs to, by NetID, and the receiving actor must carry a `UCrowdyEntityComponent`. That is true for every recipient. The recipient only changes which clients run the body once the event reaches them.
+:::note[An event is always aimed at the entity its sender object belongs to, by NetID, and the receiving actor must carry a `UCrowdyEntityComponent`. That is true for every recipient. The recipient only changes which clients run the body once the event reaches them.]
 :::
 
 ## The four recipients
@@ -88,8 +87,7 @@ Use it when a client needs to hand a decision to the host, such as requesting a 
 
 The host is a convention, not an enforced server role. See [Host Authority](/unreal-sdk/runtime/host-authority) for how the host is elected and how to check whether this client is the host.
 
-:::note
-`OwningClient` and `Host` are targeted delivery. They do not fan out to nearby clients and they do not use a channel. Distance and decay have no effect on them.
+:::note[`OwningClient` and `Host` are targeted delivery. They do not fan out to nearby clients and they do not use a channel. Distance and decay have no effect on them.]
 :::
 
 ## How decay and distance thin spatial delivery
@@ -124,8 +122,7 @@ void Footstep_Implementation(FVector Location);
 CROWDY_EVENT(Footstep)
 ```
 
-:::tip
-Use a tighter distance and some decay for high-frequency cosmetic events like footsteps. Use `Eight_Chunks` and `No_Decay` for events a nearby player must not miss, like a death effect.
+:::tip[Use a tighter distance and some decay for high-frequency cosmetic events like footsteps. Use `Eight_Chunks` and `No_Decay` for events a nearby player must not miss, like a death effect.]
 :::
 
 ## Choosing a recipient
@@ -135,8 +132,7 @@ Use a tighter distance and some decay for high-frequency cosmetic events like fo
 - Only the owner should react: use `OwningClient`.
 - The host should handle it: use `Host`.
 
-:::tip
-If you are unsure, start with `SpatialMulticast`. It is the default and it fits most in-world events.
+:::tip[If you are unsure, start with `SpatialMulticast`. It is the default and it fits most in-world events.]
 :::
 
 ## Reference

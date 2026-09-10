@@ -18,7 +18,7 @@ There are two deployment models in the platform:
   allowance.
 - **Dedicated environment** — **retired without replacement.** There is no customer-provisioned
   stack and no API for one; contact Crowded Kingdoms if you need enterprise isolation.
-  **[Dedicated environments](/management-api/dedicated-environments)** is kept as history.
+  Every app uses the shared platform (`publishAppToShared`).
 
 So in practice there is one model, and this page describes it.
 

@@ -39,8 +39,7 @@ Common trace flags:
 
 For the complete table of trace variables and every other console variable the SDK ships, see the [console variables reference](/unreal-sdk/reference/console-cvars).
 
-:::note
-Trace output never includes bearer tokens or other secret material. It is safe to share a trace log when reporting an issue.
+:::note[Trace output never includes bearer tokens or other secret material. It is safe to share a trace log when reporting an issue.]
 :::
 
 ## Single-client RPC testing with loopback
@@ -63,12 +62,10 @@ Turn it off again before you test real two-client routing.
 crowdy.rpc.loopback 0
 ```
 
-:::warning
-Loopback is for single-client testing only. Turn it off before testing real two-client routing, or the extra self-delivery will mask routing problems.
+:::warning[Loopback is for single-client testing only. Turn it off before testing real two-client routing, or the extra self-delivery will mask routing problems.]
 :::
 
-:::note
-Crowdy State has its own single-client switch, `crowdy.state.loopback`. It mirrors each owned entity locally so property deltas and their `CrowdyOnRep` notifies fire with a single client. See the [console variables reference](/unreal-sdk/reference/console-cvars) and [Crowdy State](/unreal-sdk/runtime/crowdy-state).
+:::note[Crowdy State has its own single-client switch, `crowdy.state.loopback`. It mirrors each owned entity locally so property deltas and their `CrowdyOnRep` notifies fire with a single client. See the [console variables reference](/unreal-sdk/reference/console-cvars) and [Crowdy State](/unreal-sdk/runtime/crowdy-state).]
 :::
 
 ## Allowing object loads during RPC receive
@@ -81,8 +78,7 @@ To allow a synchronous load on receive, set:
 crowdy.rpc.allowObjectLoad 1
 ```
 
-:::caution
-Leave this off unless you have a specific reason to enable it. A synchronous load on the receive path can stall the game thread, so prefer references to assets that are already loaded.
+:::caution[Leave this off unless you have a specific reason to enable it. A synchronous load on the receive path can stall the game thread, so prefer references to assets that are already loaded.]
 :::
 
 ## Per-module log categories
@@ -117,8 +113,7 @@ You can also pin a category's verbosity at startup by adding it to `DefaultEngin
 LogCrowdyReplication=Verbose
 ```
 
-:::tip
-Verbose logging and the `crowdy.<area>.trace` flags are complementary. The trace flags add SDK-specific informational lines, while raising the log category verbosity surfaces the lower-level engine-style logging the SDK emits. Turn on both when you need the full picture for one area.
+:::tip[Verbose logging and the `crowdy.<area>.trace` flags are complementary. The trace flags add SDK-specific informational lines, while raising the log category verbosity surfaces the lower-level engine-style logging the SDK emits. Turn on both when you need the full picture for one area.]
 :::
 
 ## A short debugging workflow
@@ -133,8 +128,7 @@ Match the symptom to a trace, then follow the loop:
 3. Reproduce the problem with the trace running.
 4. Read the log from the moment of the action. The trace lines show what the SDK decided and where it stopped.
 
-:::caution
-If replication appears completely inactive on a map and no traces fire, the most common cause is a missing map profile, not a logging problem. A map with no profile leaves the entity subsystem, the auto replicator, and the actor manager silent, with only a warning. Confirm the map has a profile before you dig deeper into traces. See [the map profile setup](/unreal-sdk/runtime/map-profile).
+:::caution[If replication appears completely inactive on a map and no traces fire, the most common cause is a missing map profile, not a logging problem. A map with no profile leaves the entity subsystem, the auto replicator, and the actor manager silent, with only a warning. Confirm the map has a profile before you dig deeper into traces. See [the map profile setup](/unreal-sdk/runtime/map-profile).]
 :::
 
 Turn the trace and verbosity back down once you have your answer. Leaving traces on adds log volume and a small per-frame cost.

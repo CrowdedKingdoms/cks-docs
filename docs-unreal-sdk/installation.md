@@ -13,8 +13,7 @@ This guide walks you through adding the CrowdySDK plugin to your project, enabli
 - Unreal Engine 5.8
 - A C++ project.
 
-:::caution
-The plugin compiles C++ modules, so a Blueprint only project cannot use it.
+:::caution[The plugin compiles C++ modules, so a Blueprint only project cannot use it.]
 :::
 
 ## Step 1: Copy the plugin
@@ -25,8 +24,7 @@ Copy the `CrowdySDK` folder into your project's `Plugins` directory:
 YourProject/Plugins/CrowdySDK
 ```
 
-:::note
-Create the `Plugins` folder if it does not exist.
+:::note[Create the `Plugins` folder if it does not exist.]
 :::
 
 ## Step 2: Enable the plugin
@@ -66,8 +64,7 @@ PrivateDependencyModuleNames.AddRange(new string[]
 });
 ```
 
-:::note
-Add `CrowdyVoice` only if you call the voice capture module directly. The voice toggle on the SDK subsystem does not need it.
+:::note[Add `CrowdyVoice` only if you call the voice capture module directly. The voice toggle on the SDK subsystem does not need it.]
 :::
 
 ## Step 4: Recompile
@@ -83,12 +80,10 @@ Once it compiles, the SDK subsystems are available in both C++ and Blueprint.
 
 Open the Crowdy Studio console inside the editor, sign in, pick your app, and run Config Sync. It writes the correct values into the project for you.
 
-:::warning
-Do not type your app id and API URLs into the settings by hand. Let Config Sync write them.
+:::warning[Do not type your app id and API URLs into the settings by hand. Let Config Sync write them.]
 :::
 
 See [Crowdy Studio: Setup and Config Sync](/unreal-sdk/studio/setup-and-config-sync).
 
-:::tip
-The `crowdy-sdk-sample` project is referred to throughout this guide as the sample project. It contains a working example of every feature. See the [sample project tour](/unreal-sdk/guides/sample-project).
+:::tip[The `crowdy-sdk-sample` project is referred to throughout this guide as the sample project. It contains a working example of every feature. See the [sample project tour](/unreal-sdk/guides/sample-project).]
 :::

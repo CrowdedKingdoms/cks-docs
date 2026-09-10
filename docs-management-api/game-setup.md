@@ -137,10 +137,9 @@ mutation {
 
 `SELF_CLAIM` (default) lets `claimGridOwnership` assign ownership directly;
 `APPROVAL` turns claims into requests your designated approvers accept;
-`INVITE` requires a standing invite; `MARKETPLACE_ONLY` refuses direct
-claims so ownership arrives only through grid purchase (the purchase edge is
-part of the real-money phase). Changing policy never revokes existing
-ownership rows.
+`INVITE` requires a standing invite. `setAppGridClaimPolicy` refuses
+`MARKETPLACE_ONLY` while paid grid sales are off the public API. Changing
+policy never revokes existing ownership rows.
 
 ### c.2 (Optional) Bound player compute cost and take a markup
 

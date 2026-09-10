@@ -76,8 +76,7 @@ Channel is the named channel used when Recipient is Multicast. The SDK joins eve
 
 ![Channel field on a replicated Custom Event](/img/unreal-sdk/bp-channel-field.png)
 
-:::note
-Decay Rate and Replication Distance apply only to Spatial Multicast. For Multicast, Owning Client, and Host, the two dropdowns are ignored.
+:::note[Decay Rate and Replication Distance apply only to Spatial Multicast. For Multicast, Owning Client, and Host, the two dropdowns are ignored.]
 
 Multicast uses the Channel field instead. Owning Client and Host are targeted and do not use distance.
 :::
@@ -117,8 +116,7 @@ Build `Announce` as a Custom Event with four inputs, passed directly:
 
 Enable Crowdy Replicates. Set Recipient to Multicast. Set Channel to `SampleWorldChat`.
 
-:::note
-Because the recipient is Multicast, the Decay Rate and Replication Distance dropdowns do not apply.
+:::note[Because the recipient is Multicast, the Decay Rate and Replication Distance dropdowns do not apply.]
 :::
 
 {/* TODO: replace with real screenshot */}
@@ -144,8 +142,7 @@ A Blueprint CrowdyEvent accepts the same parameter types as the C++ version, use
 
 You cannot use a return value, a non-const output, a set or map of object references, delegates, or interfaces.
 
-:::tip
-Keep parameters small. CrowdyEvents are for view-state intent and gameplay signals, not for large blobs. Authoritative or cheat-sensitive data belongs on a separate server-authoritative path that is not yet documented, not in events.
+:::tip[Keep parameters small. CrowdyEvents are for view-state intent and gameplay signals, not for large blobs. Authoritative or cheat-sensitive data belongs on a separate server-authoritative path that is not yet documented, not in events.]
 :::
 
 ## Related pages
