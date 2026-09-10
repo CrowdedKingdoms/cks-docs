@@ -21,8 +21,7 @@ Crowdy Studio is one way to do this. The same create, update, delete, role, and 
 
 The Studio pages themselves are editor-only native UI, not Blueprint nodes. What you author here is the same data the runtime reads and writes.
 
-:::note
-Authoring teams and channels is game-plane work, so it needs a full sign-in. Sign in with your account (email + password, magic link, or social). Token sign-in gives management-only access and cannot author teams or channels.
+:::note[Authoring teams and channels is game-plane work, so it needs a full sign-in. Sign in with your account (email + password, magic link, or social). Token sign-in gives management-only access and cannot author teams or channels.]
 :::
 
 ## Open Crowdy Studio
@@ -62,8 +61,7 @@ In a team's detail view you can:
 - Remove a member from the team.
 - Set a member's role. Roles carry the permissions that the runtime checks. At game time your code reads those permissions through `HasPermissionInTeam`.
 
-:::note
-Roles and permissions you set here are the same ones the runtime cache reports. When gameplay code calls `IsPlayerInTeam` or `HasPermissionInTeam`, it is reading the membership and roles you authored on this page.
+:::note[Roles and permissions you set here are the same ones the runtime cache reports. When gameplay code calls `IsPlayerInTeam` or `HasPermissionInTeam`, it is reading the membership and roles you authored on this page.]
 :::
 
 ### Set the team policy
@@ -86,8 +84,7 @@ Open the Channels page. It lists the channels in the selected app and lets you c
 3. Set its policy.
 4. Save. The channel appears in the list.
 
-:::caution
-A channel name authored here is the same name you put in the `CrowdyChannel` meta on a Multicast `CrowdyEvent`, and the same name a raw channel publish targets. Keep the names stable once gameplay code references them.
+:::caution[A channel name authored here is the same name you put in the `CrowdyChannel` meta on a Multicast `CrowdyEvent`, and the same name a raw channel publish targets. Keep the names stable once gameplay code references them.]
 :::
 
 ### Open a channel detail view
@@ -108,8 +105,7 @@ The SDK joins a default session channel at runtime, named `__crowdy_session_<app
 
 The Channels page offers a one-click action to create the session channel for the selected app, so you can author its membership and policy like any other channel.
 
-:::tip
-Create the session channel once per app from the Channels page. After that it behaves like any other channel you author here, and the runtime joins it automatically on UDP connect.
+:::tip[Create the session channel once per app from the Channels page. After that it behaves like any other channel you author here, and the runtime joins it automatically on UDP connect.]
 :::
 
 ## Studio versus runtime

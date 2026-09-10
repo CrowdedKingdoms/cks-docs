@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Acquire a free listing: writes the entitlement row (no payment edge exists in P4a — paid modes are P4b). Idempotent per (listing, caller). Allowed in any admission mode; in allow&#x005F;list apps an unadmitted acquisition holds until the listing/author/org is admitted, at which point installPlayerCode proceeds.
+Acquire a free listing: writes the entitlement row. Paid listings (price&#x005F;cents &#x003E; 0 or a non-free acquisition mode) are refused with FEATURE&#x005F;DISABLED. Idempotent per (listing, caller). Allowed in any admission mode; in allow&#x005F;list apps an unadmitted acquisition holds until the listing/author/org is admitted, at which point installPlayerCode proceeds.
 
 
 ```graphql

@@ -1,4 +1,5 @@
 ---
+draft: true
 sidebar_position: 27
 title: Grid commerce
 ---

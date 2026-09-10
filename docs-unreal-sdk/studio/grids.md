@@ -25,8 +25,7 @@ Grids are part of the management plane, not the game plane.
 - Runtime permission is server-enforced. When a client tries to act inside a region, the server checks the grid's whitelist and group grants, then either allows or rejects the action.
 - The client never receives the grid definition itself.
 
-:::warning
-Do not try to drive grid operations from gameplay code.
+:::warning[Do not try to drive grid operations from gameplay code.]
 
 If you sign in to Crowdy Studio with an organization token, you can manage grids, but token sign-in cannot do game-plane authoring such as teams and channels. Use account sign-in (email + password, magic link, or social) for full authoring.
 :::
@@ -68,8 +67,7 @@ A grid can also grant permission to a group rather than to individuals. Group gr
 
 Edit group grants on the same grid panel as the whitelist, then save.
 
-:::note
-Teams themselves are authored on the Teams page. See [Teams](/unreal-sdk/studio/teams-and-channels).
+:::note[Teams themselves are authored on the Teams page. See [Teams](/unreal-sdk/studio/teams-and-channels).]
 :::
 
 ## Related pages

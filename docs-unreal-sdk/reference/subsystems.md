@@ -8,8 +8,7 @@ title: Classes and Subsystems
 
 The consumer facing classes you use most, with the module they live in and where to read more.
 
-:::note
-All of the subsystems initialize automatically. You fetch them, you do not create them.
+:::note[All of the subsystems initialize automatically. You fetch them, you do not create them.]
 :::
 
 | Class | Module | What it is for |

@@ -21,8 +21,7 @@ The Inspector shows live state from the current Play in Editor session. It is re
 
 You watch teams, channels, and containers as they change while you play, without adding logging to your own code.
 
-:::note
-Start a Play in Editor session first, then open the Inspector page. With no PIE session running, the page has nothing to show.
+:::note[Start a Play in Editor session first, then open the Inspector page. With no PIE session running, the page has nothing to show.]
 :::
 
 What you can read here:
@@ -36,8 +35,7 @@ What you can read here:
 
 The Inspector is a viewer. To change teams, channels, or entity state, use the runtime APIs in your game code. See [Teams](/unreal-sdk/services/teams), [Channels](/unreal-sdk/runtime/channels), and [Entities and Spawning](/unreal-sdk/runtime/entities-and-spawning).
 
-:::tip
-If the Inspector is empty while you are playing, check that the current map has a map profile and that networking is enabled on it. With no profile, the entity subsystem and replicator do nothing and the session looks dead. See [Map Profiles](/unreal-sdk/runtime/map-profile).
+:::tip[If the Inspector is empty while you are playing, check that the current map has a map profile and that networking is enabled on it. With no profile, the entity subsystem and replicator do nothing and the session looks dead. See [Map Profiles](/unreal-sdk/runtime/map-profile).]
 :::
 
 ## Registry
@@ -49,8 +47,7 @@ The snapshot exists because UObject metadata is stripped from cooked builds:
 - At edit time the SDK can read metadata directly.
 - In a cooked build that metadata is gone, so the runtime reads the baked snapshot instead.
 
-:::warning
-Shipped code never calls `HasMetaData`. It reads the baked registry.
+:::warning[Shipped code never calls `HasMetaData`. It reads the baked registry.]
 :::
 
 The Registry page has a Rebuild button. Pressing it rebakes the snapshot from the current state of your project.
@@ -68,8 +65,7 @@ Press Rebuild after authoring changes that affect Crowdy metadata, and before yo
 
 The cook also re-bakes automatically as part of its hooks, so a packaged build is correct even if you forget. Pressing Rebuild yourself keeps the in-editor snapshot current and lets you verify the bake before a long cook.
 
-:::note
-This project uses Diversion for version control. The baked asset is machine-generated and belongs in `.dvignore`, not `.gitignore`. Do not commit it. It is regenerated on rebuild and on cook.
+:::note[This project uses Diversion for version control. The baked asset is machine-generated and belongs in `.dvignore`, not `.gitignore`. Do not commit it. It is regenerated on rebuild and on cook.]
 :::
 
 For the full packaging flow, including the registry step, see the [Packaging guide](/unreal-sdk/guides/packaging).
@@ -88,6 +84,5 @@ Which surface goes where:
 - Native pages: game-plane authoring (teams, channels, grids, game models, the Inspector, and the Registry).
 - Web Console: account and security administration.
 
-:::note
-Token sign-in gives management-only access. It cannot do game-plane authoring such as teams and channels. Sign in with your account (email + password, magic link, or social) when you need full authoring.
+:::note[Token sign-in gives management-only access. It cannot do game-plane authoring such as teams and channels. Sign in with your account (email + password, magic link, or social) when you need full authoring.]
 :::

@@ -284,7 +284,7 @@ and that check is what stops a stolen session from replacing a credential the
 owner still knows. **It also emails a security notification** to the account
 address on success — tell your user that, because they are about to receive it.
 
-:::caution Do not branch on `UNAUTHENTICATED` here
+:::caution[Do not branch on `UNAUTHENTICATED` here]
 Each refusal has its own `extensions.code` from ck-api **v1.60.0**:
 `PASSWORD_ALREADY_SET`, `PASSWORD_NOT_SET`, `INVALID_CURRENT_PASSWORD`. Before
 that release the first two shared `UNAUTHENTICATED` with a genuinely expired

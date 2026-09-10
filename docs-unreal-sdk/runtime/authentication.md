@@ -31,8 +31,7 @@ details of sign-in and the app-token patterns, see
 [Native & non-browser clients](/management-api/native-clients) and
 [Sign in](/management-api/authentication).
 
-:::tip
-The recommended place to wire up authentication is a Widget Blueprint, such as a sign-in screen. Use the
+:::tip[The recommended place to wire up authentication is a Widget Blueprint, such as a sign-in screen. Use the]
 latent `UCrowdyAuth_*` nodes (see [Blueprint nodes](#blueprint-nodes) below) -- they give you Success/Error
 exec pins with no manual delegate binding. The C++ examples below show the same flow for projects that
 drive auth from code.
@@ -342,6 +341,5 @@ Sign in (password / magic link / social)
 
 ## Logs
 
-:::tip
-Watch the Output Log in the editor as you use these functions. The SDK logs request and response activity, including errors that are not surfaced through the delegates.
+:::tip[Watch the Output Log in the editor as you use these functions. The SDK logs request and response activity, including errors that are not surfaced through the delegates.]
 :::

@@ -11,7 +11,7 @@ project checkpoints, provider usage, and budgets. CrowdyJS owns the browser
 controller and typed tool gate; a game implements only the
 `crowdy.player-host/1` observation and command boundary.
 
-:::warning Allowlisted development — not GA
+:::warning[Allowlisted development — not GA]
 Agentic Crowdy Studio runs on the **current** unified CK API (one origin for
 management + game). Do not treat retired pins (`v0.1.94`, Game API
 `v0.19.16`, CrowdyJS `12.0.0`) as the live stack — verify with

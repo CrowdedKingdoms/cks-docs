@@ -15,8 +15,7 @@ This page walks through that first step:
 3. Choose a backend.
 4. Run Config Sync to write the connection settings into your project.
 
-:::caution
-If you skip this step, the SDK has no AppID or game API URLs to connect with, and nothing replicates.
+:::caution[If you skip this step, the SDK has no AppID or game API URLs to connect with, and nothing replicates.]
 :::
 
 ## Open Crowdy Studio
@@ -42,8 +41,7 @@ For first-time setup, sign in with your account.
 
 ![Crowdy Studio sign-in page](/img/unreal-sdk/studio-sign-in.png)
 
-:::tip
-If you only need to sync config on a machine that should not hold authoring credentials, an organization token is enough to select an app and run Config Sync.
+:::tip[If you only need to sync config on a machine that should not hold authoring credentials, an organization token is enough to select an app and run Config Sync.]
 :::
 
 ## Pick an organization and app
@@ -53,8 +51,7 @@ Go to the Project page. This is where you select the app your project will conne
 1. Choose your organization.
 2. Choose an app within that organization.
 
-:::note
-The app you select determines the AppID, OrgId, and game API URLs that Config Sync will write.
+:::note[The app you select determines the AppID, OrgId, and game API URLs that Config Sync will write.]
 :::
 
 ![Project page with organization and app selectors](/img/unreal-sdk/studio-project-page.png)
@@ -79,8 +76,7 @@ Read the diff so you know exactly what changes. When the diff looks right, press
 {/* TODO: replace with real screenshot */}
 ![Config Sync diff with current settings on the left and new settings on the right](/img/unreal-sdk/studio-config-sync-diff.png)
 
-:::note
-Config Sync applies to a running Play in Editor session without a restart. You do not need to stop PIE, sync, and relaunch. The new app settings take effect in the active session.
+:::note[Config Sync applies to a running Play in Editor session without a restart. You do not need to stop PIE, sync, and relaunch. The new app settings take effect in the active session.]
 :::
 
 The values land in the developer settings section:
@@ -97,8 +93,7 @@ If you prefer a guided path, use the Setup Wizard page in Crowdy Studio.
 
 It walks you through the same steps in order: sign in, pick an organization and app, choose a backend, and run Config Sync.
 
-:::tip
-The wizard is a good first run. Once you know the flow, you can do each step directly on the Project page.
+:::tip[The wizard is a good first run. Once you know the flow, you can do each step directly on the Project page.]
 :::
 
 {/* TODO: replace with real screenshot */}
@@ -110,8 +105,7 @@ After Config Sync, the project knows which app to talk to.
 
 You can check the live state during play on the Inspector page in Crowdy Studio, which is read-only and shows entity state during Play in Editor.
 
-:::warning
-Config Sync connects your project to a backend, but it does not make replication work on its own. Every playable map still needs a map profile. Without one, the entity subsystem, auto replicator, and actor manager do nothing on that map, and replication looks dead even though the connection is fine.
+:::warning[Config Sync connects your project to a backend, but it does not make replication work on its own. Every playable map still needs a map profile. Without one, the entity subsystem, auto replicator, and actor manager do nothing on that map, and replication looks dead even though the connection is fine.]
 :::
 
 ## Next step

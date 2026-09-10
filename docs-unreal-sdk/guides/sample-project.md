@@ -10,8 +10,7 @@ The `crowdy-sdk-sample` project is a tour of the Crowdy SDK. Each feature is a s
 
 The code lives in the `CrowdySDKTest` module under `Source/CrowdySDKTest/.../Sample`.
 
-:::tip
-Every example ships as C++ and Blueprint side by side. Read the C++ when you want the exact call site and types. Open the matching Blueprint when you want to see the same wiring as nodes. They do the same thing.
+:::tip[Every example ships as C++ and Blueprint side by side. Read the C++ when you want the exact call site and types. Open the matching Blueprint when you want to see the same wiring as nodes. They do the same thing.]
 :::
 
 ## The interact-switch pattern
@@ -103,12 +102,10 @@ Calling `SetObjectLocation(NewLocation)` runs the body on the owner and announce
 
 `ASampleGhostSwitch` toggles `UCrowdyActorTracker::ToggleOwnerTracking`. With owner tracking on, the server echoes your own state back to you, and the backend draws it as a proxy. You see a true network round trip of yourself, not a local copy.
 
-:::caution
-Your player pawn must be a Dynamic entity for there to be any state to echo.
+:::caution[Your player pawn must be a Dynamic entity for there to be any state to echo.]
 :::
 
-:::note
-Owner tracking is on by default through the map profile's `bEnableOwnerTracking`. The ghost switch flips it at runtime so you can see the proxy appear and disappear.
+:::note[Owner tracking is on by default through the map profile's `bEnableOwnerTracking`. The ghost switch flips it at runtime so you can see the proxy appear and disappear.]
 :::
 
 ### Voice
@@ -154,8 +151,7 @@ if (UCrowdyUtilities::GetCrowdyHasAuthority(this))
 }
 ```
 
-:::note
-The host is a convention, not an enforced server role, so this shows how to gate work to the one elected client.
+:::note[The host is a convention, not an enforced server role, so this shows how to gate work to the one elected client.]
 :::
 
 See [Host Authority](/unreal-sdk/runtime/host-authority).
@@ -178,8 +174,7 @@ Persistence->PullState<FSampleProgress>(PlayerActor,
 
 `FSampleProgress` is tagged `USTRUCT(meta=(CrowdyPersistent))`.
 
-:::note
-Push goes over UDP and is fast. Pull goes over GraphQL and is async.
+:::note[Push goes over UDP and is fast. Pull goes over GraphQL and is async.]
 :::
 
 See [Persistence](/unreal-sdk/services/persistence).

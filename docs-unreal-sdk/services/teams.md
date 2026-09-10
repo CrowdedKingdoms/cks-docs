@@ -18,8 +18,7 @@ You can set teams up ahead of time in Crowdy Studio, or create and manage them a
 - Keeps a local cache of the teams the current player belongs to.
 - Exposes per-call delegates for creating, joining, leaving, and querying teams and their roles.
 
-:::note
-Creating and managing teams is not limited to Crowdy Studio. The same create, update, delete, role, and policy operations are available at runtime through `UCrowdyTeams`, subject to your app's team creation policy.
+:::note[Creating and managing teams is not limited to Crowdy Studio. The same create, update, delete, role, and policy operations are available at runtime through `UCrowdyTeams`, subject to your app's team creation policy.]
 
 Studio is convenient for setting teams up ahead of time and for admin work, but game code can do it live. See the Studio [Teams and Channels](/unreal-sdk/studio/teams-and-channels) page for the edit-time workflow.
 :::
@@ -49,8 +48,7 @@ if (Teams->HasCachedTeams())
 }
 ```
 
-:::tip
-Do not block on a query before drawing UI. Read the cache, draw, and let `OnMyTeamsCacheChanged` push the next update when the truth arrives.
+:::tip[Do not block on a query before drawing UI. Read the cache, draw, and let `OnMyTeamsCacheChanged` push the next update when the truth arrives.]
 :::
 
 ## Join a team
@@ -104,8 +102,7 @@ The rest of the management surface follows the same per-call delegate shape:
 - Roles and permissions: `CreateTeamRole`, `UpdateTeamRole`, `DeleteTeamRole`, `SetTeamMemberRoles`.
 - App-wide policy: `SetTeamPolicy`.
 
-:::note
-Whether a given player is allowed to create or change a team is decided by the server from your app's policy and the player's role, so a failed call comes back through the error delegate rather than being blocked on the client.
+:::note[Whether a given player is allowed to create or change a team is decided by the server from your app's policy and the player's role, so a failed call comes back through the error delegate rather than being blocked on the client.]
 :::
 
 ## Complete example
@@ -214,8 +211,7 @@ void ASampleTeamsActor::RefreshFromCache()
 
 The exact delegate signatures (`FOnTeamMemberSuccess`, `FOnTeamError`) are declared in the `UCrowdyTeams` header. Match your `UFUNCTION` parameters to those declarations when you bind.
 
-:::warning
-Bind to `UFUNCTION`s on a `UObject` that outlives the call. If the object is destroyed before the server responds, the callback has nowhere to land.
+:::warning[Bind to `UFUNCTION`s on a `UObject` that outlives the call. If the object is destroyed before the server responds, the callback has nowhere to land.]
 
 The actor above unbinds implicitly when it is destroyed, but if you bind from a shorter-lived object, unbind in its teardown.
 :::

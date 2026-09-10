@@ -67,8 +67,7 @@ Select the component and open the Details panel. Set Mode (Dynamic or Static) an
 - `Dynamic`: the entity sends continuous state through a `UActorUpdateExecutor` and is polled by the auto replicator. Use this for anything that moves or animates.
 - `Static`: the entity exists and can send and receive RPC events, but it does not stream a state snapshot. Use this for fixed objects such as a world switch or a chat relay.
 
-:::note
-`StateExecutor` and `bAutoRegister` apply to `Dynamic` mode only. Actor Update Executor is covered on the [Actor State](/unreal-sdk/runtime/continuous-state) page.
+:::note[`StateExecutor` and `bAutoRegister` apply to `Dynamic` mode only. Actor Update Executor is covered on the [Actor State](/unreal-sdk/runtime/continuous-state) page.]
 :::
 
 ### Identity policy
@@ -105,8 +104,7 @@ Every other client holds a `RemoteProxy`: a copy that is fed from the network an
 
 Use `IsLocallyOwned()` to branch between the side that drives the entity and the side that only displays it.
 
-:::tip
-Run input, simulation, and gameplay logic only when `IsLocallyOwned()` is true.
+:::tip[Run input, simulation, and gameplay logic only when `IsLocallyOwned()` is true.]
 :::
 
 ```cpp
@@ -134,8 +132,7 @@ The component also exposes `MarkStateDirty(FName)` and `MarkAllStateDirty()` for
 
 Spawn entities through the SDK so every client creates the same actor with the same identity.
 
-:::caution
-Do not spawn entities with the plain engine spawn path. Use the SDK spawn calls below so identity and the spawn event stay in sync across clients.
+:::caution[Do not spawn entities with the plain engine spawn path. Use the SDK spawn calls below so identity and the spawn event stay in sync across clients.]
 :::
 
 The spawn is deferred so the entity has its identity before `BeginPlay`. The SDK then broadcasts a spawn event so every other client spawns the same class. The `InitialState` you pass arrives in `OnCrowdySpawned` on every client, including the spawner.
@@ -173,8 +170,7 @@ To spawn from Blueprint, call Spawn Crowdy Entity with a class, a transform, and
 </TabItem>
 </Tabs>
 
-:::tip
-Put any per-spawn data that remote clients need, such as a color or a display name, into the `InitialState` struct. That is the only payload that travels with the spawn event.
+:::tip[Put any per-spawn data that remote clients need, such as a color or a display name, into the `InitialState` struct. That is the only payload that travels with the spawn event.]
 :::
 
 ## Receiving the spawn on a remote client
@@ -229,8 +225,7 @@ In the Event Graph, find the component under Variables and add the On Crowdy Spa
 </TabItem>
 </Tabs>
 
-:::note
-`bIsLocallyOwned` tells you which side you are on without a second call. The owner side gets `true`; every proxy gets `false`.
+:::note[`bIsLocallyOwned` tells you which side you are on without a second call. The owner side gets `true`; every proxy gets `false`.]
 :::
 
 ## Destroying an entity
@@ -343,8 +338,7 @@ void ACrowdyExampleActor::HandleCrowdyDestroyed(bool bIsLocallyOwned)
 
 For a `Dynamic` entity to actually stream state you assign a `UActorUpdateExecutor` to `CrowdyEntity->StateExecutor` in the constructor. That step and the executor overrides are on the [Continuous State](/unreal-sdk/runtime/continuous-state) page.
 
-:::warning
-If replication looks dead, check that the current map has a map profile assigned. Without one, the entity subsystem and auto replicator do nothing and only log a warning. This is the most common setup mistake.
+:::warning[If replication looks dead, check that the current map has a map profile assigned. Without one, the entity subsystem and auto replicator do nothing and only log a warning. This is the most common setup mistake.]
 :::
 
 ## Next steps

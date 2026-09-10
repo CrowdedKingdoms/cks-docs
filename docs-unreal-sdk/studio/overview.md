@@ -15,8 +15,7 @@ Use it to:
 - Author the game-plane data your runtime reads (teams, channels, grids, game models).
 - Inspect live state during Play in Editor.
 
-:::tip
-Start here before you write any runtime code. Most setup mistakes come from a project pointed at the wrong app, or one that never ran Config Sync. Both are fixed in this tab.
+:::tip[Start here before you write any runtime code. Most setup mistakes come from a project pointed at the wrong app, or one that never ran Config Sync. Both are fixed in this tab.]
 :::
 
 ## Open Crowdy Studio
@@ -53,8 +52,7 @@ You sign in with one of two credential types, and they grant different access.
   2026-08-20.
 - **An organization token** gives you management-only access. Token sign-in cannot author game-plane data such as teams and channels. Use it when you only need to browse apps, sync config, or reach admin surfaces.
 
-:::caution
-If a game-plane authoring page looks read-only, check which credential you signed in with. Token sign-in is the usual cause.
+:::caution[If a game-plane authoring page looks read-only, check which credential you signed in with. Token sign-in is the usual cause.]
 :::
 
 ### The sign-in page
@@ -78,8 +76,7 @@ Two things that trip people up the first time:
   so a backend with email delivery switched off cannot complete that flow at all -- use email +
   password there.
 
-:::note
-Grids are admin-plane only. Every grid operation requires the `manage_apps` permission, and there is no player-scoped grid query. Grid authoring lives in Crowdy Studio, not in game code.
+:::note[Grids are admin-plane only. Every grid operation requires the `manage_apps` permission, and there is no player-scoped grid query. Grid authoring lives in Crowdy Studio, not in game code.]
 :::
 
 ## The pages
@@ -102,15 +99,13 @@ Config Sync is the page you return to most. It writes the selected app's AppID, 
 
 Before it writes, it shows a before-and-after diff so you can see exactly what changes. Press Sync to Project to apply.
 
-:::tip
-The change applies to a running Play in Editor session without a restart, so you can switch apps and test against the new backend immediately.
+:::tip[The change applies to a running Play in Editor session without a restart, so you can switch apps and test against the new backend immediately.]
 :::
 
 {/* TODO: replace with real screenshot */}
 ![Config Sync diff with the Sync to Project button](/img/unreal-sdk/studio-config-sync-diff.png)
 
-:::warning
-Every playable map still needs a `UCrowdyMapProfile`. Config Sync points the project at an app, but with no map profile the entity subsystem, auto replicator, and actor manager do nothing on that map, and replication looks dead. See [Map Profiles](/unreal-sdk/runtime/map-profile).
+:::warning[Every playable map still needs a `UCrowdyMapProfile`. Config Sync points the project at an app, but with no map profile the entity subsystem, auto replicator, and actor manager do nothing on that map, and replication looks dead. See [Map Profiles](/unreal-sdk/runtime/map-profile).]
 :::
 
 ## Where to go next

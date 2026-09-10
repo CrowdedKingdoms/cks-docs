@@ -37,7 +37,7 @@ Every app runs on the **shared platform**. Publish it with `publishAppToShared` 
 
 See **[Shared environment & billing](/management-api/shared-environment)** for the model and the free allowances, or the **[portal guide](/management-ui/environments)** for the same thing in the Management UI.
 
-The customer-provisioned environment surface — `environmentDatacenters`, `environmentFlavors`, `environmentQuote`, `createEnvironment`, `orgEnvironment`, `linkAppToEnvironment`, `redeployEnvironment` — was **retired without replacement** and is not in the published SDL. **[Dedicated environments](/management-api/dedicated-environments)** is kept for historical reference only.
+The customer-provisioned environment surface — `environmentDatacenters`, `environmentFlavors`, `environmentQuote`, `createEnvironment`, `orgEnvironment`, `linkAppToEnvironment`, `redeployEnvironment` — was **retired without replacement** and is not in the published SDL. Every app uses the shared platform (`publishAppToShared`).
 
 ## Schema reference
 

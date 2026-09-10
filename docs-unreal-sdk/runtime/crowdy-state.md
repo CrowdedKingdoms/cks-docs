@@ -71,12 +71,10 @@ Compiling the Blueprint is what makes the change take effect. A Blueprint variab
 
 After you Compile, a Crowdy State-replicated variable's **Get** and **Set** graph nodes show the same top-right replication corner badge Unreal draws on natively-replicated variables. That badge is your quick visual confirmation the variable is on the plane; it appears on the next Compile after you switch the dropdown to Replicated, and disappears again if you switch it back to None and Compile.
 
-:::note
-Crowdy State and Unreal's own native variable replication are mutually exclusive. Switching a variable to Replicated clears any native replication on it, and the compiler will flag it if you try to enable both.
+:::note[Crowdy State and Unreal's own native variable replication are mutually exclusive. Switching a variable to Replicated clears any native replication on it, and the compiler will flag it if you try to enable both.]
 :::
 
-:::tip
-If the variable's type cannot replicate on this plane (an object reference, a container, a static array), the Details panel tells you inline instead of silently doing nothing. See [Unsupported types](#unsupported-types-for-now) below for the full list.
+:::tip[If the variable's type cannot replicate on this plane (an object reference, a container, a static array), the Details panel tells you inline instead of silently doing nothing. See [Unsupported types](#unsupported-types-for-now) below for the full list.]
 :::
 
 ## The five metadata keys
@@ -142,8 +140,7 @@ UPROPERTY(meta = (CrowdyState))
 FVector_NetQuantize CompactLocation;
 ```
 
-:::caution
-This is not limited to the `_NetQuantize` family by name. Any struct that declares a native net serializer quantizes the same way. `FRotator` is the example worth knowing: it has one, so a plain `FRotator` marked `CrowdyState` rounds to roughly 0.0055 degrees per axis on the wire. It is not exact, and it does not need to be marked as quantized; the engine's own serializer for that type is what is doing it. A plain `FVector` has no native net serializer, so it stays exact.
+:::caution[This is not limited to the `_NetQuantize` family by name. Any struct that declares a native net serializer quantizes the same way. `FRotator` is the example worth knowing: it has one, so a plain `FRotator` marked `CrowdyState` rounds to roughly 0.0055 degrees per axis on the wire. It is not exact, and it does not need to be marked as quantized; the engine's own serializer for that type is what is doing it. A plain `FVector` has no native net serializer, so it stays exact.]
 :::
 
 ## Host precedence: a convention, not enforcement
@@ -174,8 +171,7 @@ On the entity component's Details panel:
 
 Ownership is a separate axis from `Mode` (Dynamic/Static) and from `IdentityPolicy`. `Mode` governs the continuous [Actor State](/unreal-sdk/runtime/continuous-state) channel and has nothing to do with who owns the entity. A world entity almost always wants `IdentityPolicy = Stable`, so every client computes the same NetID for it; the component warns if you set Ownership to Host with any other identity policy.
 
-:::note
-These fields only take effect on an entity that resolves its own identity (a level-placed actor, or one placed with `IdentityPolicy = Stable`). An entity spawned at runtime through `SpawnCrowdyEntity` already gets its role from the spawn event, so it ignores Ownership: a host-spawned runtime entity is already host-owned in practice.
+:::note[These fields only take effect on an entity that resolves its own identity (a level-placed actor, or one placed with `IdentityPolicy = Stable`). An entity spawned at runtime through `SpawnCrowdyEntity` already gets its role from the spawn event, so it ignores Ownership: a host-spawned runtime entity is already host-owned in practice.]
 :::
 
 ### The host as a super-user
@@ -196,8 +192,7 @@ What the receiver does with the push depends on who owns the target and on its H
 - On the entity's **owner**, an **Allow** correction from the host is applied and adopted; an **Owner Only** correction is dropped; and a push from anyone who is not the host is dropped (host precedence, exactly as in the section above).
 - On a **third client** that holds the entity as a proxy, the correction is applied like any other delta. Enforcement is owner-side; proxies reflect what they receive. That is the unenforced view plane working as intended, not a hole.
 
-:::warning
-Anyone can call `Mark Crowdy State Dirty` on any entity, not just the host. A non-host push is not stamped host-sourced, so the real owner drops it, but this is a convention, not a security boundary: a modified client can forge the host-sourced flag. Cheat-sensitive state belongs on the server-authoritative path, never here.
+:::warning[Anyone can call `Mark Crowdy State Dirty` on any entity, not just the host. A non-host push is not stamped host-sourced, so the real owner drops it, but this is a convention, not a security boundary: a modified client can forge the host-sourced flag. Cheat-sensitive state belongs on the server-authoritative path, never here.]
 :::
 
 ### World entities: only the host writes them
@@ -241,8 +236,7 @@ A grant is announced reliably to every client and surfaces as `UCrowdyEntitySubs
 
 Under the hood a transfer re-points `OwnerID` on the entity record and re-derives the entity's role from it. An actor's NetID is owner-independent, so it keeps the same NetID and stays addressable: existing references and in-flight sends still resolve. The old owner stops diffing the entity, the new owner builds a fresh shadow and starts diffing, and every bystander keeps its proxy.
 
-:::caution
-Two by-design edges are worth knowing. A new owner that never observed the entity has no history for it, so it re-baselines from the proxy defaults it holds; if the exact current values matter, put them in the spawn `InitialState` or push them explicitly after the grant. And granting to a player id that has no local presence on the granting client orphans the entity until it is re-granted. Neither is a bug; both fall out of this being a transient view plane rather than a persistent record.
+:::caution[Two by-design edges are worth knowing. A new owner that never observed the entity has no history for it, so it re-baselines from the proxy defaults it holds; if the exact current values matter, put them in the spawn `InitialState` or push them explicitly after the grant. And granting to a player id that has no local presence on the granting client orphans the entity until it is re-granted. Neither is a bug; both fall out of this being a transient view plane rather than a persistent record.]
 :::
 
 ## No relevance-gain hook: keyframes and spawn state
@@ -266,8 +260,7 @@ There are three levels of control, from broad to narrow:
 
 When the heartbeat does fire for an entity, it is staggered per entity so heartbeats do not all land on the same tick, and it carries every marked spatial (non-`CrowdyOwnerOnly`) property's current value at once.
 
-:::caution
-Be plain with yourself about the gap this leaves. If a peer becomes relevant right after a keyframe went out, and nothing on that entity changes in the meantime, that peer can hold stale or default values for up to one full keyframe interval before it sees a correct baseline. And a property with no `CrowdyHeartbeat` mark gets no periodic baseline at all: a peer that became relevant after the last change holds the default until the next change. This is a known, accepted design, not a bug to work around client-side. If a value absolutely cannot be wrong for even a few seconds after becoming relevant, put it in the spawn `InitialState`, or mark it `CrowdyHeartbeat` and accept the periodic cost, or reconsider whether it belongs on this transient view plane at all.
+:::caution[Be plain with yourself about the gap this leaves. If a peer becomes relevant right after a keyframe went out, and nothing on that entity changes in the meantime, that peer can hold stale or default values for up to one full keyframe interval before it sees a correct baseline. And a property with no `CrowdyHeartbeat` mark gets no periodic baseline at all: a peer that became relevant after the last change holds the default until the next change. This is a known, accepted design, not a bug to work around client-side. If a value absolutely cannot be wrong for even a few seconds after becoming relevant, put it in the spawn `InitialState`, or mark it `CrowdyHeartbeat` and accept the periodic cost, or reconsider whether it belongs on this transient view plane at all.]
 :::
 
 ## Manual dirty: pushing a value yourself
@@ -302,8 +295,7 @@ Crowdy State covers plain values and plain structs: numbers, bools, enums, names
 
 A property of one of these kinds is rejected at discovery with a clear error and simply does not appear in the layout; it never corrupts the properties around it. If you need to replicate a reference or a collection, reach for a [CrowdyEvent RPC](/unreal-sdk/runtime/rpc-events-cpp), which supports arrays, sets, maps, and object references directly as call parameters. If the data is authoritative, it belongs on the server-authoritative path, not here.
 
-:::note
-Container support on this plane may become its own future phase. It is not planned as part of the current design; this page describes what exists today.
+:::note[Container support on this plane may become its own future phase. It is not planned as part of the current design; this page describes what exists today.]
 :::
 
 ## The LayoutHash guard
@@ -332,8 +324,7 @@ crowdy.state.trace 1
 
 With it on, you get one line per delta: which entity, how many properties changed, how many bytes the encoded blob was, and whether it went out as spatial, owner-only, or a keyframe. Warnings (a dropped foreign delta for an entity you own, a `LayoutHash` mismatch, a rejected property type) and errors (an executor-state exclusivity conflict) print regardless of the trace setting.
 
-:::note
-Trace output never includes bearer tokens or other secret material. It is safe to share a trace log when reporting an issue.
+:::note[Trace output never includes bearer tokens or other secret material. It is safe to share a trace log when reporting an issue.]
 :::
 
 ### Single-client loopback
@@ -346,8 +337,7 @@ crowdy.state.loopback 1
 
 With it on, each owned, tracked entity gets a lazily-spawned local "mirror" -- a distinct `RemoteProxy` entity. Every outgoing delta is replayed onto that mirror through the real receive path, so decode, apply, and `CrowdyOnRep` all run with just one client. It is off by default, so a normal session is byte-for-byte unaffected.
 
-:::caution
-Loopback replays what actually gets sent; it does not change what triggers a send. A `CrowdyManualDirty` property still needs an explicit `Mark Crowdy State Dirty` to go out. Setting the value alone does not replicate it, with or without loopback on. If your loopback test shows nothing, check that you marked the property dirty, not just that you changed it.
+:::caution[Loopback replays what actually gets sent; it does not change what triggers a send. A `CrowdyManualDirty` property still needs an explicit `Mark Crowdy State Dirty` to go out. Setting the value alone does not replicate it, with or without loopback on. If your loopback test shows nothing, check that you marked the property dirty, not just that you changed it.]
 :::
 
 Two read-only handles help you check state in the editor without printing anything:

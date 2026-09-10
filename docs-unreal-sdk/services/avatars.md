@@ -16,8 +16,7 @@ Each avatar carries three kinds of state:
 
 Avatars live on `UCrowdyAvatars`, a game instance subsystem in the CrowdyServices module.
 
-:::note
-Avatars are not the same as entities. An entity is a live, replicated actor in the world. An avatar is a stored profile. You read an avatar to populate UI or to seed an entity's initial state, and you write to it when the player changes something that should persist.
+:::note[Avatars are not the same as entities. An entity is a live, replicated actor in the world. An avatar is a stored profile. You read an avatar to populate UI or to seed an entity's initial state, and you write to it when the player changes something that should persist.]
 :::
 
 ## Get the subsystem
@@ -61,8 +60,7 @@ void UMyProfileWidget::HandleAvatarsChanged()
 }
 ```
 
-:::tip
-Read the cache for anything that drives UI this frame. Use the change delegate to know when to redraw. Reserve `GetMyAvatars` for explicit resync points so you are not round-tripping the server on every interaction.
+:::tip[Read the cache for anything that drives UI this frame. Use the change delegate to know when to redraw. Reserve `GetMyAvatars` for explicit resync points so you are not round-tripping the server on every interaction.]
 Same blueprint async nodes are a available for the whole operations that are supposed to be performed using Crowdy Avatars.
 :::
 
@@ -85,8 +83,7 @@ These are network operations. Like the other CrowdyServices subsystems, they tak
 After a successful write the cache updates and `OnMyAvatarsCacheChanged` fires, so your UI can react without you threading the result through by hand.
 
 
-:::note
-Write only the part you changed. If the player edited their public display name, call `UpdatePublicAvatarState` and leave the private and app-state parts alone. Splitting the writes keeps payloads small and avoids overwriting data another part of your game owns.
+:::note[Write only the part you changed. If the player edited their public display name, call `UpdatePublicAvatarState` and leave the private and app-state parts alone. Splitting the writes keeps payloads small and avoids overwriting data another part of your game owns.]
 :::
 
 ## Store your own struct in app state
@@ -148,8 +145,7 @@ void USaveExample::RestoreProfile()
 
 The exact helper names and the shape of `FCrowdyAvatar` come from the shipped headers. The pattern is the same in every case: keep a regular `USTRUCT` in your game code, serialize it into app state when you write, and deserialize it back when you read.
 
-:::caution
-App state is part of the player's profile, not server-authoritative gameplay truth. Keep cheat-sensitive numbers (currency balances, match results) in Game Models or your persistence layer, not in avatar app state. Use app state for profile data: cosmetics, titles, preferences, and similar.
+:::caution[App state is part of the player's profile, not server-authoritative gameplay truth. Keep cheat-sensitive numbers (currency balances, match results) in Game Models or your persistence layer, not in avatar app state. Use app state for profile data: cosmetics, titles, preferences, and similar.]
 :::
 
 ## How this fits the rest of the SDK

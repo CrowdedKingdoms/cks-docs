@@ -59,7 +59,7 @@ GraphQL responses carry errors in the top-level `errors` array. Each entry has a
 | `OBJECT_QUARANTINED` | One game-model function or automation is refusing to run because an **enforced** [`gameModelLint`](/game-api/game-models#an-error-can-stop-the-object-running) error stands against it. Scoped to that object — the rest of the app is unaffected. **On `gameModelInvoke` you get `USER_CODE_ERROR` instead** (see the player boundary below), with `blame: AUTHOR` and the quarantine fields intact. | `extensions.quarantineReason` names the finding, and `quarantinedKind` / `quarantinedName` name the object — on both codes. Fix the definition and write it again: quarantine **never blocks a write** and clears itself once the finding is gone, so there is nothing to ask us to reset. `gameModelLint` lists everything currently wrong with the app. |
 | `INTERNAL_SERVER_ERROR` | Unexpected server error. | Safe to retry idempotent reads; do **not** blind-retry non-idempotent mutations (send an `idempotencyKey` instead). |
 
-:::caution Codes changed in ck-api v1.60.0 — check the tier before you branch
+:::caution[Codes changed in ck-api v1.60.0 — check the tier before you branch]
 
 Until v1.60.0, **only four HTTP statuses reached you as a distinct code** (400, 401,
 403, 422). Everything else — every `NOT_FOUND`, every `CONFLICT` — arrived as

@@ -28,12 +28,10 @@ A `UCrowdyEntityComponent` runs in one of two modes, set by its `Mode` property.
 
 In short: Dynamic mode replicates a snapshot on a timer, then Static mode replicates only when you fire an event.
 
-:::tip
-If you only need to replicate one or two individual properties, and would rather not author a snapshot struct and executor at all, [Crowdy State](/unreal-sdk/runtime/crowdy-state) is the lighter-weight sibling channel. You mark a `UPROPERTY`, and the owning client diffs and ships just that value. Actor State is the better fit when many fields move together as one coherent snapshot.
+:::tip[If you only need to replicate one or two individual properties, and would rather not author a snapshot struct and executor at all, [Crowdy State](/unreal-sdk/runtime/crowdy-state) is the lighter-weight sibling channel. You mark a `UPROPERTY`, and the owning client diffs and ships just that value. Actor State is the better fit when many fields move together as one coherent snapshot.]
 :::
 
-:::note
-Both modes use the same `CrowdyEvent` RPC path for discrete events. The difference is only the continuous snapshot. See [RPC events](/unreal-sdk/runtime/rpc-events-cpp) for events.
+:::note[Both modes use the same `CrowdyEvent` RPC path for discrete events. The difference is only the continuous snapshot. See [RPC events](/unreal-sdk/runtime/rpc-events-cpp) for events.]
 :::
 
 ## The executor
@@ -45,8 +43,7 @@ Both modes use the same `CrowdyEvent` RPC path for discrete events. The differen
 
 You then assign an instance of your executor to the component's `StateExecutor` in the actor constructor.
 
-:::warning
-Only the owner runs `GetActorState`. Remote clients hold a `RemoteProxy` of the entity that is fed from the network, and the owner gets no proxy of itself. Do not put owner-only logic in `GetActorState`; treat it as a read-only snapshot.
+:::warning[Only the owner runs `GetActorState`. Remote clients hold a `RemoteProxy` of the entity that is fed from the network, and the owner gets no proxy of itself. Do not put owner-only logic in `GetActorState`; treat it as a read-only snapshot.]
 :::
 
 ### Snapshot struct
@@ -211,12 +208,10 @@ The auto replicator polls `GetActorState` about ten times a second, owner-only.
 
 The exact rate is set per map by `ReplicationIntervalHz` on the map profile (1 to 10, default 10). See [Map profiles](/unreal-sdk/runtime/map-profile) for the profile setup.
 
-:::caution
-If `bUseAutoReplicator` is off on the profile, or the map has no profile at all, no polling happens and replication looks dead.
+:::caution[If `bUseAutoReplicator` is off on the profile, or the map has no profile at all, no polling happens and replication looks dead.]
 :::
 
-:::caution
-Continuous state is for the realtime view plane: position, rotation, animation. It is client-authoritative and not enforced. Do not put cheat-sensitive or authoritative values, such as health or inventory, in the snapshot struct.
+:::caution[Continuous state is for the realtime view plane: position, rotation, animation. It is client-authoritative and not enforced. Do not put cheat-sensitive or authoritative values, such as health or inventory, in the snapshot struct.]
 :::
 
 ## Related
