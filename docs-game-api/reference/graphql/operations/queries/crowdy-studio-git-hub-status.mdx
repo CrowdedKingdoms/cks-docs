@@ -1,0 +1,44 @@
+---
+id: crowdy-studio-git-hub-status
+title: crowdyStudioGitHubStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+GitHub connection for the caller and the repository bound to a Crowdy Studio project. GitHub is a Studio filesystem capability, not a login provider.
+
+
+```graphql
+crowdyStudioGitHubStatus(
+  appId: BigInt
+  projectId: String
+): CrowdyStudioGitHubStatus!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioGitHubStatus.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App that owns the project; with projectId, the bound repository is included.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioGitHubStatus.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+Crowdy Studio project to report the repository bind and autosave setting for.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubStatus</b></code>](/reference/graphql/types/objects/crowdy-studio-git-hub-status.mdx) <Badge class="badge badge--secondary " text="object"/> 
+GitHub connection for the caller and, when a project is named, the repository bound to it. GitHub is a Studio filesystem capability, not a login provider.
