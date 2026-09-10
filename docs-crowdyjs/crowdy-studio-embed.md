@@ -223,6 +223,18 @@ agent modes, leases, and approvals are unchanged from
 no authority. Deploys, drafts, invokes, and agent effects are authorized
 server-side exactly as before.
 
+## GitHub repository card (15.11+)
+
+When the client is a full `CrowdyClient`, the embed passes
+`client.crowdyStudioGitHub` to the Studio controller and the settings pane
+grows a **GitHub repository** card: Connect, Bind `owner/repo@branch`, Unbind,
+Push, Pull, Refresh, and an **Also push autosaves to GitHub** toggle that is
+off by default. The card hides itself when the environment has no GitHub App.
+Connect and Bind need the modder's identity session (hosted Studio); the
+in-game panel can push and pull a repository that is already bound. Nothing
+GitHub-related is stored in the browser. See
+[Connect your GitHub repo to a Studio project](/game-api/crowdy-studio-github).
+
 ## Styling and layout contract
 
 - All kit chrome uses `ck-crowdy-studio-embed-*` classes (agent chrome uses
