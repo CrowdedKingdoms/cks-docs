@@ -378,7 +378,7 @@ Note that the per-game client uses the URLs the mint returned, not `apiUrl`: tho
 2. Mint an app-scoped token for the target app — `identity.portal.mintAppToken(appId)` (same-origin/native) or the PKCE portal flow for a different origin — and build a per-game client that holds it (`game.setToken(appToken.token)`). See [Authentication: session vs app-scoped tokens](#authentication-session-vs-app-scoped-tokens).
 3. Subscribe to UDP proxy notifications with `game.udp.subscribe(handlers, appId)` (or `game.world(appId).subscribe(handlers)`). The `appId` is **required** — the Game API scopes each realtime session to one app.
 4. Join a chunk by sending an initial actor update.
-5. Send actor, voxel, text, audio, video (`game.udp.sendVideoFrame`, needs `use_video_chat`; see [Webcam video](webcam-video)), and client-event updates through `game.udp` or `game.world(appId)` helpers.
+5. Send actor, voxel, text, audio (`game.udp.sendAudioPacket`, [Voice chat](voice-chat)), video (`game.udp.sendVideoFrame`, needs `use_video_chat`; see [Webcam video](webcam-video)), and client-event updates through `game.udp` or `game.world(appId)` helpers.
 6. Call `game.udp.disconnect()` when leaving the world, then `game.close()` when disposing the client. Rotate the app token with `game.portal.refresh()` before it expires.
 
 ## Realtime notifications
