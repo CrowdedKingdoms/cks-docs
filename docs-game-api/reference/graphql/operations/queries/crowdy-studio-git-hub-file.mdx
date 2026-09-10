@@ -1,0 +1,38 @@
+---
+id: crowdy-studio-git-hub-file
+title: crowdyStudioGitHubFile
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One UTF-8 file from the bound repository, with its blob SHA.
+
+
+```graphql
+crowdyStudioGitHubFile(
+  input: CrowdyStudioGitHubFileInput!
+): CrowdyStudioGitHubFile!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioGitHubFile.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubFileInput!</b></code>](/reference/graphql/types/inputs/crowdy-studio-git-hub-file-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubFile</b></code>](/reference/graphql/types/objects/crowdy-studio-git-hub-file.mdx) <Badge class="badge badge--secondary " text="object"/>
