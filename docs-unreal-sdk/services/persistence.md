@@ -88,8 +88,7 @@ The same two operations are exposed as Blueprint nodes.
 </TabItem>
 </Tabs>
 
-:::note
-`Subject` identifies the instance key. For per-subject records the subject is usually the player pawn or controller. For a singleton there is no instance, so the subject is `nullptr`.
+:::note[`Subject` identifies the instance key. For per-subject records the subject is usually the player pawn or controller. For a singleton there is no instance, so the subject is `nullptr`.]
 :::
 
 ## Save and load example
@@ -150,8 +149,7 @@ void ASamplePersistenceSwitch::Load(APawn* Player)
 }
 ```
 
-:::tip
-The push and the pull use the same struct type and the same subject. That pairing is what lets the pull find the record the push wrote.
+:::tip[The push and the pull use the same struct type and the same subject. That pairing is what lets the pull find the record the push wrote.]
 :::
 
 ## Clear before logout
@@ -162,8 +160,7 @@ The push and the pull use the same struct type and the same subject. That pairin
 Persistence->ClearAllState();
 ```
 
-:::warning
-Call `ClearAllState()` as part of your logout flow. Skipping it can leave one player's saved state visible to the next player who signs in on the same client.
+:::warning[Call `ClearAllState()` as part of your logout flow. Skipping it can leave one player's saved state visible to the next player who signs in on the same client.]
 :::
 
 ## What this is for
@@ -172,6 +169,5 @@ Persistence holds authoritative, save-worthy data such as progress, inventory co
 
 It is not the path for high-frequency view state like movement or animation. Continuous view state belongs in a Dynamic entity's state executor. See [Entities and Spawning](/unreal-sdk/runtime/entities-and-spawning).
 
-:::caution
-Persistence is one of the solutions to store the game state. The actual game state is supposed to be done through game models. It's currently being worked on to make it easier to use.
+:::caution[Persistence is one of the solutions to store the game state. The actual game state is supposed to be done through game models. It's currently being worked on to make it easier to use.]
 :::

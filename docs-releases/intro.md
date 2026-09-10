@@ -18,7 +18,7 @@ environment surface on [2026-07-27](#2026-07-27) and the dev sign-in bypass on
 [2026-08-20](#2026-08-20). Treat **the published SDL as the authority** on what exists
 today; this page is the record of how it got there.
 
-:::note `crowdy-compute` is not publicly distributed
+:::note[`crowdy-compute` is not publicly distributed]
 
 Several entries below announce a `crowdy-compute` CLI. It is an internal
 convenience and **has never been published**, so do not go looking for it. The
@@ -435,8 +435,8 @@ See **[Sign in](/management-api/authentication)** and
   you built against them, `publishAppToShared` plus the app's routing fields is the
   whole migration — there is no per-component flavor, scaling bound or datacenter
   choice to carry across, because there is no stack to size.
-- **[Dedicated environments](/management-api/dedicated-environments)** is kept as
-  history and carries a retired banner. Contact Crowded Kingdoms if you need
+- Customer-provisioned environments stay retired; every app uses the shared
+  platform (`publishAppToShared`). Contact Crowded Kingdoms if you need
   enterprise isolation.
 
 ## 2026-07-24
@@ -1361,7 +1361,8 @@ supported side by side with the new methods.
   error. `createEnvironment` / `environmentQuote` take the four per-component flavors
   (`databaseFlavor`, `gameApiFlavor`, `udpBuddyFlavor`, `caddyFlavor`) plus scaling bounds;
   creation still gates on the org wallet (`environmentQuote.canCreate`) and requires
-  `manage_environments`. See [Dedicated environments](/management-api/dedicated-environments).
+  `manage_environments`. The dedicated-environments page was removed; see
+  [Shared environment & billing](/management-api/shared-environment).
 - `CksEnvironment` gains an additive **`isShared`** boolean (true only for the platform's
   shared environment; always false for your environments). No breaking changes. Clients
   still discover an app's runtime via `app.gameApiUrl` / `platformConfig.sharedGameApiUrl` —

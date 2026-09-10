@@ -10,7 +10,7 @@ Management owns platform/app policy, allowlists, caps, usage, and kills; Game
 API owns durable runs and enforcement; CrowdyJS/game hosts own immediate local
 takeover.
 
-:::danger No production or real-money autonomy
+:::danger[No production or real-money autonomy]
 Do not enable this pilot in production. Do not use it for unattended purchases,
 wallet actions, payouts, ownership transfers, or another real-money effect.
 Schema availability and passing development tests are not rollout approval.

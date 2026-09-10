@@ -157,6 +157,10 @@ viewer function is ever detached.
 
 ## Do not
 
+- Treat paid player-code commerce or grid sales as a public surface. Those
+  GraphQL fields are off the schema; `docs-game-api/grid-commerce.md` is
+  `draft: true`. The dedicated-environments page was deleted — do not add
+  links to `/management-api/dedicated-environments`.
 - Hand-edit generated Markdown under `reference/graphql/` or committed SDL
   under `static/schema/` except via `sdl:gen` / `graphql:gen`. `check:generated`
   refuses this now, and it refuses in Docs CI rather than only on your box.

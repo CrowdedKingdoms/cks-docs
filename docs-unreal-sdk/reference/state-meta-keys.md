@@ -32,12 +32,10 @@ void OnRep_Stance();
 | `CrowdyManualDirty` | Update manually | (marker, no value) | off | Skip the automatic per-tick diff. The value ships only when you call `MarkStateDirty`. One mark sends exactly the next update, then clears. |
 | `CrowdyHeartbeat` | Heartbeat | (marker, no value) | off in C++; on when you first pick Replicated in Blueprint | Include this property in the periodic keyframe baseline so a late-relevant peer gets its current value. On-change replication is unaffected either way: a changed property always ships, marked or not. |
 
-:::note
-`CrowdyOwnerOnly`, `CrowdyManualDirty`, and `CrowdyHeartbeat` are presence markers. You add the bare key to turn each on; they take no value. The code tests only whether the key is present, so do not write `= true` -- and `= false` would still count as on. `CrowdyOnRep` is the one key that takes a value, the notify function's name.
+:::note[`CrowdyOwnerOnly`, `CrowdyManualDirty`, and `CrowdyHeartbeat` are presence markers. You add the bare key to turn each on; they take no value. The code tests only whether the key is present, so do not write `= true` -- and `= false` would still count as on. `CrowdyOnRep` is the one key that takes a value, the notify function's name.]
 :::
 
-:::note
-In C++ a property never heartbeats unless you add `CrowdyHeartbeat` explicitly. The Blueprint dropdown pre-checks Heartbeat the first time a variable enters Replicated mode as a convenience, but the mechanism is the same opt-in metadata.
+:::note[In C++ a property never heartbeats unless you add `CrowdyHeartbeat` explicitly. The Blueprint dropdown pre-checks Heartbeat the first time a variable enters Replicated mode as a convenience, but the mechanism is the same opt-in metadata.]
 :::
 
 ## What can be marked

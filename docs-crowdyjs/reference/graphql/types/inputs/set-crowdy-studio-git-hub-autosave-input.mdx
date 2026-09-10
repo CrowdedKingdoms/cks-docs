@@ -1,0 +1,48 @@
+---
+id: set-crowdy-studio-git-hub-autosave-input
+title: SetCrowdyStudioGitHubAutosaveInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input SetCrowdyStudioGitHubAutosaveInput {
+  appId: BigInt!
+  projectId: String!
+  autosave: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioGitHubAutosaveInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioGitHubAutosaveInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioGitHubAutosaveInput.<b>autosave</b></code>](#autosave)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#autosave\} 
+
+
+
+
+
+### Member Of
+
+[`crowdyStudioGitHubSetAutosave`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-set-autosave.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

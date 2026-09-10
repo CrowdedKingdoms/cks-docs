@@ -24,6 +24,11 @@
   --ifm-color-primary-light: #111315;
   --ifm-color-primary-lighter: #70757d;
   --ifm-color-primary-lightest: #70757d;
+  /* Keep Infima alert bars independent of the near-black primary. */
+  --ifm-color-info: #3578e5;
+  --ifm-color-warning: #e6a700;
+  --ifm-color-success: #00a400;
+  --ifm-color-danger: #e13238;
   --ifm-font-family-base: 'Inter', system-ui, sans-serif;
   --ifm-heading-font-family: 'Montserrat', 'Avenir Next', system-ui, sans-serif;
   --ifm-font-weight-bold: 800;
@@ -42,6 +47,10 @@
   --ifm-color-primary-light: #f0a020;
   --ifm-color-primary-lighter: #f5b84a;
   --ifm-color-primary-lightest: #f8c97a;
+  --ifm-color-info: #4d8ff3;
+  --ifm-color-warning: #f0b429;
+  --ifm-color-success: #26b226;
+  --ifm-color-danger: #f0444a;
   --ifm-background-color: #111315;
   --ifm-navbar-background-color: #111315;
   --ifm-footer-background-color: #030405;

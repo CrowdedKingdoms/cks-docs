@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Set how a player claim confers grid ownership in this app (D4): SELF&#x005F;CLAIM, APPROVAL (optionally with a designated approver list), INVITE, or MARKETPLACE&#x005F;ONLY. Requires 'manage&#x005F;apps'. SIDE EFFECTS: replica-syncs to game-api, where claimGridOwnership enforces the policy. Changing policy never revokes existing grid&#x005F;ownership rows.
+Set how a player claim confers grid ownership in this app (D4): SELF&#x005F;CLAIM, APPROVAL (optionally with a designated approver list), or INVITE. MARKETPLACE&#x005F;ONLY is refused with FEATURE&#x005F;DISABLED while paid grid commerce is off the public API. Requires 'manage&#x005F;apps'. Changing policy never revokes existing grid&#x005F;ownership rows.
 
 
 ```graphql
@@ -46,4 +46,4 @@ Player user ids allowed to approve claim requests in APPROVAL mode. Empty falls 
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>GridClaimPolicy</b></code>](/reference/graphql/types/enums/grid-claim-policy.mdx) <Badge class="badge badge--secondary " text="enum"/> 
-How a player claim confers grid ownership in this app (D4): SELF&#x005F;CLAIM (the claim alone assigns ownership), APPROVAL (claims create requests designated approvers accept), INVITE (only against a standing invite), or MARKETPLACE&#x005F;ONLY (only a marketplace grid purchase; direct claims refused — the purchase edge ships in P4b).
+How a player claim confers grid ownership in this app (D4): SELF&#x005F;CLAIM (the claim alone assigns ownership), APPROVAL (claims create requests designated approvers accept), INVITE (only against a standing invite), or MARKETPLACE&#x005F;ONLY (direct claims refused). setAppGridClaimPolicy refuses MARKETPLACE&#x005F;ONLY while paid grid commerce is off the public API.

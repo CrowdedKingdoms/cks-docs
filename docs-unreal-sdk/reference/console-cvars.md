@@ -34,8 +34,7 @@ Each trace variable gates the informational logging for one area of the SDK.
 | `crowdy.voice.trace` | Voice chat: subsystem, capture and playback, device monitoring. |
 | `crowdy.studio.trace` | The Crowdy Studio console GraphQL operations. Editor only. The bearer token is never logged. |
 
-:::caution
-`crowdy.serialize.trace` is high frequency. It logs every message encode and decode, so leave it off unless you are actively debugging serialization.
+:::caution[`crowdy.serialize.trace` is high frequency. It logs every message encode and decode, so leave it off unless you are actively debugging serialization.]
 :::
 
 ## Behavior variables
@@ -48,8 +47,7 @@ These change behavior rather than logging.
 | `crowdy.state.loopback` | When non-zero, the single-client sibling of `crowdy.rpc.loopback` for Crowdy State. Each owned, tracked entity gets a lazily spawned local mirror (a distinct RemoteProxy entity with its own NetID), and every outgoing delta is replayed onto the mirror through the real receive path, so decode and OnRep fire with just one PIE client. Off by default. |
 | `crowdy.rpc.allowObjectLoad` | When non-zero, a received object or class reference whose asset is not already loaded is loaded from disk by path. Off by default so an untrusted peer cannot trigger arbitrary asset loads; an unresolved reference is delivered as null. |
 
-:::warning
-Leave `crowdy.rpc.allowObjectLoad` off in production. While it is off, an untrusted peer cannot trigger arbitrary asset loads, and an unresolved reference is delivered as null.
+:::warning[Leave `crowdy.rpc.allowObjectLoad` off in production. While it is off, an untrusted peer cannot trigger arbitrary asset loads, and an unresolved reference is delivered as null.]
 :::
 
 ## Log categories
@@ -69,6 +67,5 @@ Enable verbose output for one with, for example, `Log LogCrowdyRPC Verbose`.
 | `LogCrowdyStudio` | CrowdyStudio (editor) |
 | `LogCrowdyEditor` | CrowdySDKEditor (editor) |
 
-:::note
-Info level lines are gated behind the matching trace variable; warnings and errors always print. Turn on the trace variable for the area you are debugging, then read the matching log category.
+:::note[Info level lines are gated behind the matching trace variable; warnings and errors always print. Turn on the trace variable for the area you are debugging, then read the matching log category.]
 :::

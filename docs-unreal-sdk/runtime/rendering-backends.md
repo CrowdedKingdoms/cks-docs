@@ -24,8 +24,7 @@ Most projects never change it. If you do nothing, the map profile resolves to th
 
 You only need a custom backend when actor pooling is the wrong model for your project. A Mass Entity based backend is also under works, and will be available in a future release.
 
-:::note
-The backend is selected per map through the map profile. See [Map Profiles](/unreal-sdk/runtime/map-profile) for how a profile is resolved for a world.
+:::note[The backend is selected per map through the map profile. See [Map Profiles](/unreal-sdk/runtime/map-profile) for how a profile is resolved for a world.]
 :::
 
 ## Writing a custom backend
@@ -81,8 +80,7 @@ public:
 };
 ```
 
-:::tip
-The Actor Pool backend follows the same pattern. Its config is `UCrowdyActorPoolBackendConfig`, with fields such as `DefaultPoolSizePerClass` (default 8) and `PerClassPoolOverrides`.
+:::tip[The Actor Pool backend follows the same pattern. Its config is `UCrowdyActorPoolBackendConfig`, with fields such as `DefaultPoolSizePerClass` (default 8) and `PerClassPoolOverrides`.]
 :::
 
 ## Selecting the backend in the map profile
@@ -101,8 +99,7 @@ Assign the profile to your map in Project Settings, Plugins, Crowdy SDK, Map Pro
 
 The actor manager already drives your backend. It calls `ActivateInstance` and `DeactivateInstance` for you as entities come and go.
 
-:::warning
-A custom backend must never subscribe to the ActorTracker itself. The actor manager is already the single caller of `ActivateInstance` and `DeactivateInstance`. If your backend also subscribes, every entity is activated twice and you get a double spawn.
+:::warning[A custom backend must never subscribe to the ActorTracker itself. The actor manager is already the single caller of `ActivateInstance` and `DeactivateInstance`. If your backend also subscribes, every entity is activated twice and you get a double spawn.]
 :::
 
 Treat the four required overrides as your only entry points for activation and update. Do not reach into the tracker to find entities on your own.

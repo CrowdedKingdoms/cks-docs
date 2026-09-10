@@ -11,7 +11,7 @@ authority: the model proposes typed tool calls, while CrowdyJS and the Game API
 check the current mode, project, permissions, policy, budget, lease, and any
 required approval before an effect can occur.
 
-:::warning Allowlisted development — not GA
+:::warning[Allowlisted development — not GA]
 Agentic Crowdy Studio ships on the **current** unified CK API (management +
 game on one origin) and CrowdyJS **15.x**. Do not pin docs to retired
 environment-manifest numbers (`v0.1.94`) or CrowdyJS `12.0.0` — those were a

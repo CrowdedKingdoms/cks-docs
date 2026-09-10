@@ -30,8 +30,7 @@ The profile is resolved by `UCrowdySDKDeveloperSettings::ResolveProfileForWorld`
 
 Turn on `crowdy.entity.trace` to see the subsystem report which profile it resolved, or that it found none.
 
-:::tip
-Every playable map needs a profile. If a new map replicates nothing, check the profile before anything else.
+:::tip[Every playable map needs a profile. If a new map replicates nothing, check the profile before anything else.]
 :::
 
 ## Events are not received
@@ -70,8 +69,7 @@ If you used the default `SpatialMulticast` and the other client is out of range,
 
 If you need delivery at any distance, switch to `Multicast` with a `CrowdyChannel`, or use `OwningClient` or `Host` for targeted delivery.
 
-:::note
-The owner of a `SpatialMulticast` event runs the body locally and announces to the others. The owner never runs its own `Name_Implementation` from the network, because the owner has no proxy of itself.
+:::note[The owner of a `SpatialMulticast` event runs the body locally and announces to the others. The owner never runs its own `Name_Implementation` from the network, because the owner has no proxy of itself.]
 :::
 
 Turn on `crowdy.rpc.trace` to follow send, route, and recipient decisions for each event.
@@ -121,8 +119,7 @@ PublicDependencyModuleNames.AddRange(new string[]
 
 3. Plugin modules build with `-WarningsAsErrors`. A warning in plugin code fails the build, so fix warnings rather than suppressing them.
 
-:::caution
-Keep the module dependency graph acyclic. `CrowdyReplication` depends on `CrowdyNet` and `CrowdyServices`. Do not add a dependency that points back the other way.
+:::caution[Keep the module dependency graph acyclic. `CrowdyReplication` depends on `CrowdyNet` and `CrowdyServices`. Do not add a dependency that points back the other way.]
 :::
 
 ## Still stuck

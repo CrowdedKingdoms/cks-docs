@@ -1,0 +1,48 @@
+---
+id: crowdy-studio-git-hub-file
+title: CrowdyStudioGitHubFile
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+type CrowdyStudioGitHubFile {
+  path: String!
+  content: String!
+  sha: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFile.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFile.<b>content</b></code>](#content)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content\} 
+UTF-8 content.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFile.<b>sha</b></code>](#sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sha\} 
+Blob SHA; send it back on update.
+
+
+
+
+### Returned By
+
+[`crowdyStudioGitHubFile`](/reference/graphql/operations/queries/crowdy-studio-git-hub-file.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`crowdyStudioGitHubPutFile`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-put-file.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

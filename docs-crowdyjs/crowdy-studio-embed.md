@@ -59,7 +59,7 @@ New package subpath:
   worker (for example Vite's `?worker&url`) instead of copying a worker
   wrapper into the game.
 
-:::info Choosing SERVER-only or SERVER + CLIENT
+:::info[Choosing SERVER-only or SERVER + CLIENT]
 CLIENT-target mods run untrusted player code in the visitor's browser. The platform admits
 them for any app whose access tier grants `write_client_code` / `run_client_code`; whether
 your game offers them is your decision. A SERVER-only embed (below) omits `workerUrl`,
