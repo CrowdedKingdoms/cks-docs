@@ -31,14 +31,36 @@ OAuth on install. The API mints a short-lived installation token per request
 and stores no GitHub token of any kind. You can revoke the installation at any
 time from **GitHub → Settings → Applications → Installed GitHub Apps**.
 
+Install it on **your own** account or organization. The app cannot be connected
+to the Crowded Kingdoms organization itself: an installation there is refused
+when you return to the connect page, and no repository access is ever granted
+through it.
+
+### If you uninstall
+
+Uninstalling on GitHub takes effect at your next Studio GitHub operation: the
+API sees the installation is gone, forgets it, and answers
+`GITHUB_NOT_CONNECTED`. Your bound projects keep their Studio files; connect
+again and rebind to resume. Deleting your Crowded Kingdoms account removes the
+installation record with it (the GitHub side still shows the app until you
+uninstall it there).
+
 ## Connect
 
-1. Open your project in Crowdy Studio and find **GitHub repository** in the
-   project settings pane.
-2. Click **Connect GitHub**. A new tab opens on GitHub; pick the account and
+Two places offer the same connect flow; use whichever is open:
+
+- **CK Studio (web):** **Account → Connected apps → GitHub repositories**.
+- **Crowdy Studio (editor):** the **GitHub repository** card in the project
+  settings pane.
+
+1. Click **Connect GitHub**. A new tab opens on GitHub; pick the account and
    the repositories to grant (start with one). GitHub returns you to a page on
    the Crowded Kingdoms API that says *GitHub connected*.
-3. Back in Studio, click **Refresh**. The card shows your GitHub login.
+2. Back in the page you started from, click **Refresh**. It now shows your
+   GitHub login (Crowdy Studio) or the repositories you granted (CK Studio).
+
+A connect link is single-use and expires after 15 minutes; if you reuse one you
+are asked to click **Connect GitHub** again.
 
 Connecting requires your signed-in identity session (hosted Studio). The
 in-game Studio panel can read and write a repository you already bound but
@@ -46,16 +68,23 @@ cannot connect or bind on its own.
 
 ## Bind a repository
 
-Create the repository on GitHub first (any visibility, with a default branch),
-grant it to the installation, then enter `owner/repo` or `owner/repo@branch`
-in the card and click **Bind**. Binding checks that:
+Create the repository on GitHub first (any visibility, with a default branch)
+and grant it to the installation. Then either:
+
+- in **CK Studio**, open the app → **GitHub** tab, pick the repository from the
+  list next to your project, optionally type a branch, and click **Bind**; or
+- in **Crowdy Studio**, enter `owner/repo` or `owner/repo@branch` in the card
+  and click **Bind**.
+
+Binding checks that:
 
 - the project is yours;
 - the repository is granted to *your* installation;
 - the branch exists.
 
 The card then reads `owner/repo@branch`. One project binds to one repository;
-**Unbind** removes the link and leaves your Studio files untouched.
+**Unbind** (either place) removes the link and leaves your Studio files
+untouched.
 
 ## Layout
 
@@ -95,7 +124,8 @@ refused with `GITHUB_STALE_SHA`; pull, then push again.
 ## Autosave push (opt-in)
 
 By default Studio autosave writes only to Crowded Kingdoms. Turn on **Also
-push autosaves to GitHub** in the card to have every successful autosave push
+push autosaves to GitHub** in the Crowdy Studio card (or **Push on autosave**
+on the CK Studio GitHub tab) to have every successful autosave push
 the changed files as well. This is a per-project setting and it is **off**
 until you turn it on. Turn it off any time; unbinding turns it off too.
 
@@ -105,8 +135,8 @@ until you turn it on. Turn it off any time; unbinding turns it off too.
 |---|---|
 | 512 KiB per file | Larger files are refused in either direction |
 | 2,000 files | Repositories above this are refused at bind |
-| 120 GitHub operations / minute per account | `RATE_LIMITED`; wait a minute |
-| `GITHUB_NOT_CONNECTED` | Connect GitHub first |
+| 120 GitHub operations / minute per account | `RATE_LIMITED`; counted across all datacenters; wait a minute |
+| `GITHUB_NOT_CONNECTED` | Connect GitHub first, or connect again if you uninstalled the app |
 | `GITHUB_NOT_BOUND` | Bind a repository to this project first |
 | `GITHUB_REPO_NOT_GRANTED` | Add the repository to your installation on GitHub, then bind |
 | `GITHUB_PATH_INVALID` | Paths are repo-relative; no `..`, no `.git/` |
