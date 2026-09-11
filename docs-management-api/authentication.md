@@ -85,6 +85,11 @@ a readable `ck_csrf` on every session mint. Studio authenticates with
 `localStorage`. Native clients, CrowdyJS, Construct, and scripts keep using
 Bearer and skip CSRF. Cookie auth from a non-first-party `Origin` is
 `COOKIE_AUTH_ORIGIN_REFUSED`. Customer origins hold app tokens only.
+From v1.98.0 the guard accepts a header that matches **any** presented
+`ck_csrf` (`csrfMatchesAny`), so a leftover parent-zone cookie plus the
+tier cookie does not fail hosted `/authorize`. Studio `readCsrfToken`
+last-wins and prefers the Domain for this tier's API host. Do not narrow
+prod's `.crowdedkingdoms.com` Domain — public Studio needs it.
 
 Prod public Studio is `studio.crowdedkingdoms.com`. Cookie `Domain` is
 `.crowdedkingdoms.com` so that host can send CSRF. Dev/test stay

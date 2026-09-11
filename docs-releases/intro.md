@@ -30,6 +30,19 @@ supported path.
 
 :::
 
+## 2026-09-10 (Game API)
+
+**Cookie CSRF matches any presented `ck_csrf`.** (ck-api v1.98.0, Studio
+v1.23.0)
+
+- Prod's `.crowdedkingdoms.com` Domain leftover plus the tier cookie no longer
+  fails hosted `/authorize` with `CSRF_MISMATCH`. The guard accepts a header
+  that matches any `ck_csrf` on the Cookie header. Studio last-wins and
+  prefers this tier's API-host Domain.
+- **Action:** none for SDK / game clients (Bearer skips CSRF). Do not ask us
+  to narrow the prod cookie Domain — public `studio.crowdedkingdoms.com`
+  needs it.
+
 ## 2026-09-09 (Game API)
 
 **Studio session moves to an HttpOnly cookie + CSRF.** (ck-api v1.92.1, Studio
