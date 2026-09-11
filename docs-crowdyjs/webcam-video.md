@@ -5,7 +5,7 @@ title: Webcam video
 
 # Webcam video
 
-CrowdyJS 15.5 adds proximity webcam video beside voice: a sender's encoded
+CrowdyJS 15.5 adds proximity webcam video beside [voice](voice-chat): a sender's encoded
 frames reach every actor within `distance` chunks as `ClientVideoNotification`s
 (native opcode 143 → 144). The platform never looks inside a frame; the SDK cuts
 each frame into UDP-sized fragments on the way out and puts them back together
