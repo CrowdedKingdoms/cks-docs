@@ -1,0 +1,48 @@
+---
+id: crowdy-studio-provider-consent
+title: CrowdyStudioProviderConsent
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Whether this player has accepted that their Crowdy Studio project source may be sent to a model provider (under the platform ZDR / no-collection routing) for this app.
+
+
+```graphql
+type CrowdyStudioProviderConsent {
+  appId: BigInt!
+  consented: Boolean!
+  consentedAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProviderConsent.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProviderConsent.<b>consented</b></code>](#consented)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#consented\} 
+True once recorded and not revoked.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProviderConsent.<b>consentedAt</b></code>](#consented-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#consented-at\} 
+
+
+
+
+
+### Returned By
+
+[`crowdyStudioProviderConsent`](/reference/graphql/operations/queries/crowdy-studio-provider-consent.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`crowdyStudioSetProviderConsent`](/reference/graphql/operations/mutations/crowdy-studio-set-provider-consent.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

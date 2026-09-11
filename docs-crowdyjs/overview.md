@@ -18,12 +18,11 @@ a short-lived **app-scoped token** minted with `client.portal` — see
 tokens](#authentication-session-vs-app-scoped-tokens). Native UDP to Buddy servers
 uses the [Replication API](/replication-api/intro) directly, not CrowdyJS.
 
-CrowdyJS **15.x** includes the
-[Agentic Crowdy Studio](agentic-crowdy-studio) allowlisted development
-contract. The app-token `client.crowdyStudioAgent` transport and integrated
-Ask/Build/Play dock provide durable events, exact approvals, checkpoints,
-scoped Play leases, and reconnect fencing. Access remains allowlisted; this is
-not production availability. Verify the published SDK with
+CrowdyJS **16** docks the [Agentic Crowdy Studio](agentic-crowdy-studio)
+agent beside the Studio editor: the DeepSeek Harness runs in the player's
+browser, edits the project, runs draft tests and takes screenshots through the
+page, and spends model tokens through the Game API's metered endpoint with
+the player's own app token. Access remains allowlisted per app. Verify the published SDK with
 `npm view @crowdedkingdoms/crowdyjs dist-tags`.
 
 ## Install
@@ -72,7 +71,7 @@ are namespaced by audience:
 
 | Audience | Sub-clients | Notes |
 |---|---|---|
-| **Game-client** (browser-safe) | `auth`, `users`, `udp`, `world(...)`, `chunks`, `voxels`, `actors`, `avatars`, `state`, `teleport`, `host`, `channels`, `teams`, `gameModel`, `serverStatus`, `playerCompute`, `crowdyStudio`, `crowdyStudioAgent` | Safe to drive from an untrusted browser with the documented token and server policy. `auth`/`users` use the identity **session token**; world, Studio, agent, and realtime surfaces require an **app-scoped token**. Agent model access remains server-side and separately requires `use_studio_agent`. |
+| **Game-client** (browser-safe) | `auth`, `users`, `udp`, `world(...)`, `chunks`, `voxels`, `actors`, `avatars`, `state`, `teleport`, `host`, `channels`, `teams`, `gameModel`, `serverStatus`, `playerCompute`, `crowdyStudio`, `crowdyStudioGitHub` | Safe to drive from an untrusted browser with the documented token and server policy. `auth`/`users` use the identity **session token**; world, Studio, and realtime surfaces require an **app-scoped token**. The Studio agent pane (`dsh` option) reaches the model through the metered REST endpoint with that token and separately requires `use_studio_agent`. |
 | **Studio-admin** (token whose user holds `manage_apps`) | `organizations`, `apps`, `appAccess`, `billing`, `payments`, `quotas`, `usage`, `sharedEnvironment`, `gameApps` ([grids](grids)) — also grouped under `client.admin.*` | Privileged org/app administration. Requires a user with the `manage_apps` permission (or an org token). Not end-user-safe — see the note below. Dedicated `environments` were removed in v13. |
 | **Operator** (`is_operator`) | `client.operator` | Platform compute ceilings only. Infrastructure (change orders, secrets, releases) lives in the separate infra-control-plane service, not this SDK. |
 

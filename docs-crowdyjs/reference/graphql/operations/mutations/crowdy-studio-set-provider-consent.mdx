@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-set-provider-consent
+title: crowdyStudioSetProviderConsent
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Record (or revoke) the caller's consent for their project source in this app to be sent to a model provider through the platform's metered endpoint under ZDR / no-collection routing. Idempotent. Requires 'use&#x005F;studio&#x005F;agent'. SIDE EFFECT: enables (or disables) POST /v1/model/chat/completions for this player and app.
+
+
+```graphql
+crowdyStudioSetProviderConsent(
+  input: SetCrowdyStudioProviderConsentInput!
+): CrowdyStudioProviderConsent!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioSetProviderConsent.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetCrowdyStudioProviderConsentInput!</b></code>](/reference/graphql/types/inputs/set-crowdy-studio-provider-consent-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioProviderConsent</b></code>](/reference/graphql/types/objects/crowdy-studio-provider-consent.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Whether this player has accepted that their Crowdy Studio project source may be sent to a model provider (under the platform ZDR / no-collection routing) for this app.

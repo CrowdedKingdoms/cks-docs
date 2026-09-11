@@ -5,23 +5,30 @@ title: Agentic Crowdy Studio operations
 
 # Agentic Crowdy Studio operations
 
-This runbook covers the finalized Agentic Crowdy Studio development rollout.
-Management owns platform/app policy, allowlists, caps, usage, and kills; Game
-API owns durable runs and enforcement; CrowdyJS/game hosts own immediate local
-takeover.
+This runbook covers Agentic Crowdy Studio as shipped on 2026-09-11: the agent
+is the DeepSeek Harness running in the player's browser (CrowdyJS 16), and the
+Game API meters its model traffic through `POST /v1/model/chat/completions`.
+Management owns platform/app policy, allowlists, caps, who pays, usage and
+kills; the Game API enforces them per request and settles the charge; the
+player's browser owns the agent itself, and a live deploy waits for the player
+to confirm on the page.
 
-:::danger[No production or real-money autonomy]
-Do not enable this pilot in production. Do not use it for unattended purchases,
-wallet actions, payouts, ownership transfers, or another real-money effect.
-Schema availability and passing development tests are not rollout approval.
+:::danger[Metered spend, no real-money autonomy]
+Under `billingMode: METERED` every model request debits a wallet: the player's
+by default, the app's org wallet when its billing admin elected that. The agent
+cannot make purchases, wallet actions, payouts or ownership transfers; it edits
+project files and runs draft tests, and only the player can confirm a live
+deploy. Schema availability and passing tests are not rollout approval.
 :::
 
 ## Live stack (discover — do not hardcode)
 
-Agentic Crowdy Studio is **allowlisted development** on the current unified
-CK API + CrowdyJS 15.x line. The July 2026 `v0.1.94` / CrowdyJS `12.0.0` train
-is **historical** (see [Releases](/releases/intro)); it is not the operator
-redeploy target.
+Agentic Crowdy Studio is **allowlisted** on the current unified CK API +
+CrowdyJS 16 line. The server orchestrator (CrowdyJS 12-15, the
+`crowdyStudioAgent*` session/run/lease roots) is **historical** (see
+[Releases](/releases/intro)); deploying the current ck-api removes it, and a
+game still pinned to CrowdyJS 15.x loses its agent dock on that tier until it
+re-pins.
 
 Before expanding allowlists or diagnosing drift, derive what is actually
 running:
@@ -46,13 +53,15 @@ Effective authority is the strict intersection of:
 2. the operator per-app kill;
 3. app enablement/kill, narrower allowlists, caps, privacy, and retention;
 4. player `use_studio_agent`;
-5. current project/grid/target write/run permission, ownership, admission, and
-   quota;
-6. current mode and implemented descriptor set; and
-7. for Play, the host capabilities and a visible human-granted lease.
+5. the player's provider-data consent for the app (when the app policy
+   requires it);
+6. the per-request reservation against the per-request ceiling, the
+   player-day budget and the payer's wallet; and
+7. current project/grid/target write/run permission, ownership, admission, and
+   quota for anything the agent does through the Studio page.
 
 Any missing, empty, stale, malformed, killed, or denied layer fails closed.
-Approvals never create missing authority.
+The page-side confirmation of a live deploy never creates missing authority.
 
 ## Management policy operations
 
@@ -81,30 +90,29 @@ The exact shapes and machine-readable permissions are in the
 
 Keep platform lists exact and minimal:
 
-- model IDs known to support the complete tool/structured-output parameters;
-- implemented logical tool names (never wildcards or prefixes);
-- modes needed by the current rollout stage; and
-- risk classes already covered by approval/lease tests.
+- model IDs known to support tool calling and the required ZDR posture at
+  the provider, each with an ACTIVE rate card; and
+- the `funding` block: `billingMode` (`PLATFORM_FUNDED` or `METERED`) and
+  `walletDebitEnabled`.
 
-The deployed allowlist uses `openai/gpt-oss-120b` because its OpenRouter tool
-endpoint supports the required ZDR posture. Its model and request/token/cost
-caps remain exact, finite, and platform-funded. For a new app or future model,
-begin with Ask, `READ_ONLY`, and read tools; add Build/Play only after the
-workspace, approval, host, and takeover gates below pass.
+The tool and mode allowlists and risk classes remain on the policy contract
+for the catalog and the Management UI, but the in-browser harness's tools are
+fixed by its preset (file read/edit, draft test, screenshot, observe, project
+switch, and a live deploy the player confirms); the Game API does not execute
+tools any more.
 
 Set finite hard limits for:
 
-- per-turn requests, input/output/reasoning/total tokens, provider
-  micro-USD reservation, tool calls/rounds, draft compiles, wall time, and
-  request concurrency;
-- per-session cumulative requests/tokens/cost/tools/compiles and run
-  concurrency; and
-- per-player UTC-day totals, concurrent sessions, and app-wide concurrent runs.
+- per-request output tokens and provider micro-USD reservation (the
+  per-turn `turnLimits`), which bound one `POST /v1/model/chat/completions`;
+- per-player-day requests and micro-USD (`playerDayLimits`).
 
-The development pilot is platform-funded. Funding must remain
-`PLATFORM_FUNDED`, payer `PLATFORM`, no rate card, and
-`walletDebitEnabled=false`. Existing compile/runtime/rate/usage ceilings remain
-additional clamps.
+`PLATFORM_FUNDED` (the pilot default) debits nobody and needs no rate card on
+the wallet side, though a model still needs one to be offered. `METERED` with
+`walletDebitEnabled: true` bills the payer named by each app's
+`funding.payerKind` (`PLAYER` by default, `ORG` when the app's billing admin
+elected it). Existing compile/runtime/rate/usage ceilings remain additional
+clamps.
 
 ## Permission catalog
 
@@ -114,7 +122,7 @@ replica permission bit index **8**. Use the key in GraphQL/configuration; reserv
 the numeric bit for the synchronized runtime catalog.
 
 Do not add it to open-by-default tiers. Grant it only to explicit development
-pilot users. It does not include `write_*`, `run_*`, grid, trust, commerce, or
+users of apps that enable the agent. It does not include `write_*`, `run_*`, grid, trust, commerce, or
 operator permission.
 
 ## Secret injection
@@ -132,21 +140,21 @@ process. Never place or copy the value into:
 Disabled Game API environments must not require the provider key. The browser
 contains no provider client and receives no credential.
 
-The Game API also needs an explicit enabled flag, provider selection, exact
-model allowlist/default, pinned positive model pricing, and durable worker
-configuration. Keep environment allowlists at least as strict as Management
-policy. CI uses the deterministic fake provider and must never receive the
-development credential.
+The Game API also needs an explicit enabled flag, provider selection, the
+exact model allowlist, and an **ACTIVE rate card** for every model offered:
+a model without a card is not listed by `GET /v1/model/models` because it
+could not be billed. Keep environment allowlists at least as strict as
+Management policy. CI never receives the credential.
 
-The deployed provider adapter uses OpenRouter's stable streaming
-`/api/v1/chat/completions` endpoint, not the Responses beta. It enforces
-`require_parameters`, `zdr`, `data_collection: "deny"`, no plugins, and no
-unsafe fallback. Multi-tool provider rounds are rejected or serialized
-locally, and all tool names, inputs, and outputs remain locally schema
-validated. The encrypted provider key remains server-only.
+The model endpoint forwards to OpenRouter's stable streaming
+`/api/v1/chat/completions` with `zdr: true`, `data_collection: "deny"`,
+`allow_fallbacks: false`, no plugins and `usage.include`. The request is
+narrowed to the accepted OpenAI fields; harness-specific `dsh_*`/`x_*` fields
+are dropped. The encrypted provider key remains server-only; the browser
+holds only the player's app token.
 
-S2S notify/pull and usage-ingest credentials are separate environment-scoped
-service credentials. Apply the same write-only injection and redaction rules.
+S2S notify/pull credentials are separate environment-scoped service
+credentials. Apply the same write-only injection and redaction rules.
 
 ## Policy publication and freshness
 
@@ -170,29 +178,44 @@ Monitor:
 
 - replica-outbox delivery failures/backlog;
 - Game API policy pull age and revision against Management;
-- `AGENT_DISABLED`, `AGENT_CONTEXT_STALE`, and policy-validation errors;
-- runs that remain non-terminal after a kill; and
-- active leases/approvals surviving a policy revision (they must not).
+- `AGENT_DISABLED`, `AGENT_PROVIDER_POLICY_UNSATISFIED` (stale replica) and
+  policy-validation errors on `/v1/model/*`; and
+- a `payerKind` change reaching the runtime within the 60 s stale boundary
+  (the next request after the boundary must settle against the new payer).
 
-## Usage and cost monitoring
+## Usage, cost and who pays
 
-Game API reserves worst-case turn cost before provider contact and sends
-terminal sanitized usage to Management through
-`crowdy.studio-agent-usage/1`. Read it with `crowdyStudioAgentUsage`.
+The Game API reserves the worst case at the rate card before contacting the
+provider and settles when the stream ends, one `model_endpoint_usage` row per
+request: payer, status, requested/resolved model, token counts, provider cost,
+the rate-carded `charge_microusd`, and `usage_source`:
 
-Track request count, prompt/completion/reasoning/cache and native token counts,
-tool calls/rounds, draft compiles, wall time, reserved micro-USD, exact
-provider/upstream decimal USD, resolved model, accounting status, privacy flags,
-and pinned policy revisions.
+- `PROVIDER`: priced from the provider's usage frame (normal);
+- `ESTIMATED`: the client closed before the frame arrived (or the provider
+  sent none), so the row was charged from the request's prompt estimate plus
+  the completion text that streamed, capped at the reservation. A rising
+  share of `ESTIMATED` rows is a client or provider problem to look at, not
+  free tokens;
+- `NONE`: the request failed before any charge.
 
-`RESERVATION_CONSUMED` means terminal provider accounting was unavailable and
-the reservation remains charged against the platform cap. Do not treat missing
-provider cost as zero. Compare usage to turn/session/player-day caps and app
-concurrency; no app or player may consume another player's isolated budget.
+Who is debited follows `funding`: platform `billingMode` (`PLATFORM_FUNDED`
+debits nobody; `METERED` debits the payer) and the app's `payerKind`:
 
-Usage must never contain prompts, source, private reasoning, headers, request
-or response bodies, credentials, payment data, payer references, or wallet
-debits.
+- `PLAYER` (default): the charge accrues as `player_model_microusd` and the
+  hourly player usage billing tick debits the player's wallet; requests are
+  refused with `AGENT_FUNDS_NEEDED` when the balance cannot cover the
+  reservation plus unbilled usage.
+- `ORG`: the org wallet is debited per request (`wallet_transactions` type
+  `agent_usage`). A failed debit is retried by the reconciler every 30 s with
+  exponential backoff, ten attempts; a row whose attempts are exhausted keeps
+  `last_debit_error` and `billed_cents IS NULL`. **Alert on rows past the
+  tenth attempt**; they are owed money the ledger has not recorded. Only
+  `manage_billing` may set `ORG`.
+
+Read the player-facing view with `crowdyStudioModelUsage` (today's count and
+charge against the ceiling, payer, recent rows) and the Management view with
+`crowdyStudioAgentUsage`. Usage never contains prompts, source, provider
+bodies, credentials or payment data.
 
 ## Kill precedence
 
@@ -206,101 +229,90 @@ Kills are policy, not UI state:
 4. **App kill/disable** lets an app manager keep their app closed but cannot
    override an operator or global kill.
 
-A kill must preempt active runs, cancel provider streaming, revoke workspace
-and Play leases, revoke unconsumed approvals, fence pending browser dispatches,
-and append durable safe reason events. It must not silently resume after the
-kill is released.
+A kill takes effect on the **next** model request (`AGENT_OPERATOR_KILLED` /
+`AGENT_APP_KILLED` from `/v1/model/*` once the runtime's policy replica
+refreshes, within 60 s). An in-flight provider stream completes and is
+settled; nothing else the harness does spends money. The harness keeps running
+in the player's browser with no model behind it until the pane is closed; it
+does not silently resume model traffic after the kill is released without the
+player sending another message.
 
-## Final rollout evidence
+## Rollout evidence (2026-09-11 local loop)
 
-Sanitized live evidence for the July 2026 (`v0.1.94`) train passed:
+The in-browser train was proven end to end on a local tier before the PRs
+went up: hosted sign-in, the-construct's Studio opens on a claimed chunk, the
+agent pane boots from `/dsh/`, a screenshot reaches the harness, a prompt
+completes a turn through `POST /v1/model/chat/completions`, the usage row
+records `payerKind: PLAYER` and `status: COMPLETED`, the hourly tick debits the
+player wallet, and after `setCrowdyStudioAgentPolicy(funding.payerKind: ORG)`
+the next turn debits the org wallet. The July 2026 orchestrator evidence is
+historical.
 
-- Ask returned the expected exact response.
-- Build executed `workspace.file.read`; a checkpointed
-  `workspace.file.patch` advanced the source revision.
-- The agent-edited source compiled as a draft after the ordinary platform ABI
-  boilerplate was added.
-- Play completed a bounded `game.observe` dispatch/result and dispatched
-  `game.control.move`.
-- Human input revoked the lease and preempted the run. A late success was
-  rejected with `AGENT_CONTEXT_STALE`.
-- The deployed BWF bundle, visible takeover UI, and offline/local Stop browser
-  gates passed.
-
-Evidence and public incident notes must omit account identifiers, run/session/
-tool IDs, tokens, content hashes, secret values, and provider request/response
-bodies.
+Evidence and public incident notes must omit account identifiers, usage ids,
+tokens, content hashes, secret values, and provider request/response bodies.
 
 ## Incident / kill procedure
 
 For an app-scoped incident:
 
-1. Tell affected users to press Stop; local control clears before the network
-   round trip.
-2. Publish `cpSetCrowdyStudioAgentAppKill(killed: true)` with a stable safe
+1. Publish `cpSetCrowdyStudioAgentAppKill(killed: true)` with a stable safe
    reason code, idempotency key, and current expected app-policy revision.
-3. If scope is uncertain, publish the platform global kill instead. Prefer
-   over-stopping to leaving unknown control active.
-4. Verify Management effective policy reports killed and a newer revision.
-5. Verify every serving Game API has pulled that revision within the freshness
-   window and reports no surviving active provider stream, dispatch, lease, or
-   unconsumed approval for the scope.
-6. Verify BWF/other hosts show human control and their external Stop remains
-   enabled. A disconnected host must already have cleared intent locally.
-7. Preserve sanitized policy audit, run/event/tool hashes, lease/approval/epoch
-   metadata, provider generation/usage dimensions, and relevant canonical
-   domain records. Do not copy prompts/source/provider bodies into incident
-   notes.
-8. If provider credential exposure is suspected, keep the global kill active,
+2. If scope is uncertain, publish the platform global kill instead. Prefer
+   over-stopping to leaving unknown spend active.
+3. Verify Management effective policy reports killed and a newer revision.
+4. Verify every serving Game API has pulled that revision within the 60 s
+   freshness window: `/v1/model/*` for the scope answers
+   `AGENT_APP_KILLED` / `AGENT_OPERATOR_KILLED`, and no new
+   `model_endpoint_usage` rows appear for it after the boundary.
+5. Preserve sanitized policy audit, usage rows (counts and charges), wallet
+   transactions of type `agent_usage`, and relevant canonical domain records.
+   Do not copy prompts, source or provider bodies into incident notes (none
+   are stored; do not create them).
+6. If provider credential exposure is suspected, keep the global kill active,
    rotate the provider credential in the approved secret manager, roll the Game
    API tasks, and verify old credentials no longer work without recording either
    value.
-9. Fix and test the narrow cause with the fake provider and adversarial
-   reconnect/takeover suite.
-10. Release the narrowest kill only after policy freshness and preemption
-    evidence pass. Releasing a kill does not enable an app or resume a session;
-    humans must explicitly resume and grant a new Play lease.
-
-If a browser tool reports `AGENT_TOOL_OUTCOME_UNKNOWN`, inspect authoritative
-project/game/domain state before any compensating action. Never retry the
-original effect automatically.
+7. If a wallet was charged wrongly, the ledger is the source of truth: reverse
+   through the ordinary wallet credit path, and reconcile against
+   `model_endpoint_usage.billed_cents` / `wallet_debit_transaction_id`.
+8. Release the narrowest kill only after policy freshness evidence passes.
+   Releasing a kill does not resume anything: the player's next message is the
+   first request that spends.
 
 ## Retention and purge
 
-Hard development-pilot maxima:
-
 | Data | Maximum retention |
 |---|---|
-| Provider HTTP bodies/headers, private reasoning, individual token deltas | 0; never persisted |
-| Coalesced assistant chunks | 24 hours |
-| Detailed observations/browser tool-result bodies | 24 hours |
-| Final messages, redacted events/tool records, private checkpoints | Session life plus 30 days after close |
-| Generation/model/token/cost and approval/lease/epoch/kill metadata | 90 days |
+| Provider HTTP bodies/headers, prompts, tool results, screenshots, private reasoning | 0; never persisted by the platform |
+| `model_endpoint_usage` (payer, model, token counts, charge, generation id) | 90 days, then the player-billing retention window |
+| `model_endpoint_consents` | Kept; revocation sets `revoked_at` |
+| Project checkpoints (`crowdy_agent_checkpoints`) | Per app policy; swept by the agent retention service |
 
-App policy may shorten these periods. Closing a session revokes it immediately
-and starts cleanup without deleting canonical project/runtime/commerce records.
-Game API retention sweeps continue while agent execution is disabled.
+The harness's own conversation state lives in the player's browser (OPFS,
+scoped per player) and never reaches the platform. App policy may shorten the
+platform periods. Retention sweeps continue while the agent is disabled.
 
 For a valid security hold, export only the necessary sanitized records to the
-existing operator audit/hold system with explicit owner and scope. Do not
-silently extend agent-table retention or retain provider bodies that were never
-permitted to be stored.
+existing operator audit/hold system with explicit owner and scope.
 
 ## Expansion / redeployment checklist
 
-The July 2026 (`v0.1.94`) development train passed this gate. For a new app,
-environment, model, or later manifest, keep the relevant kill enabled until all
-are true:
+For a new app, environment, model, or later release, keep the relevant kill
+enabled until all are true:
 
-- compatible Management, Game API, CrowdyJS 12, and game-host builds are in the
-  selected development environment;
-- the nested policy contract and usage ingest pass fixture checks;
-- policy pull freshness and kill preemption are observed across replicas;
-- no secret reaches browser/build/log/evidence artifacts;
-- `use_studio_agent` is limited to explicit pilot tiers;
+- the Game API carrying the model endpoint, CrowdyJS 16, the matching
+  `@crowdedkingdoms/crowdy-dsh` artifact and the game's pins are deployed
+  together on the selected tier, in that order (ck-api first; the six
+  orchestrator tables are dropped by a separate `--allow-contract` schema
+  order afterwards);
+- every offered model has an ACTIVE rate card and the platform `funding`
+  is the intended `billingMode`;
+- policy pull freshness and kill effect are observed across replicas;
+- no secret reaches browser/build/log/evidence artifacts, and the harness
+  artifact carries no tier host, builder path or telemetry endpoint
+  (`BUILD.json` names its inputs);
+- `use_studio_agent` is limited to explicit tiers;
 - finite platform/app caps and exact allowlists are in place;
-- Ask/Build draft, checkpoint, conflict, approval, reconnect, and retention
-  tests pass;
-- Play host bounds, shared intents, stale-target rejection, input/death/offline
-  takeover, and offline Stop tests pass; and
+- the local e2e loop (pane boots, screenshot, metered turn, player debit,
+  org-pays toggle) passes; and
 - production and real-money autonomous actions remain out of scope.
