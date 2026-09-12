@@ -31,6 +31,7 @@ input SetCrowdyStudioAgentPlatformPolicyInput {
   playerDayLimits: CrowdyStudioAgentPlayerDayLimitsInput
   retention: CrowdyStudioAgentRetentionPolicyInput
   privacy: CrowdyStudioAgentPrivacyPolicyInput
+  funding: CrowdyStudioAgentFundingPolicyInput
   expectedRevision: BigInt
   killReasonCode: String
   killReason: String
@@ -83,6 +84,10 @@ Optional retention patch.
 
 #### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentPlatformPolicyInput.<b>privacy</b></code>](#privacy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentPrivacyPolicyInput</b></code>](/reference/graphql/types/inputs/crowdy-studio-agent-privacy-policy-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#privacy\} 
 Optional private-source sharing patch; first-use consent remains locked on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentPlatformPolicyInput.<b>funding</b></code>](#funding)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioAgentFundingPolicyInput</b></code>](/reference/graphql/types/inputs/crowdy-studio-agent-funding-policy-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#funding\} 
+Optional funding patch: metering on the platform layer, payer on the app layer.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetCrowdyStudioAgentPlatformPolicyInput.<b>expectedRevision</b></code>](#expected-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expected-revision\} 

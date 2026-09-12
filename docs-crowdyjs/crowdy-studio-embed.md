@@ -31,8 +31,8 @@ From `@crowdedkingdoms/crowdyjs/crowdy-studio`:
   fullscreen modal on narrow viewports. It owns Escape/close-key semantics,
   the compact header (title, grid pill, Context drawer, Close), loading and
   retry chrome, and assembles the full `mountCrowdyStudio` call — including
-  the agent block when the client exposes `crowdyStudioAgent` and the game
-  passes a `playerHost`.
+  the in-browser agent pane when the game passes the `dsh` option (CrowdyJS
+  16; see [Agentic Crowdy Studio](agentic-crowdy-studio)).
 - **`CrowdyStudioEmbedDock`** — the accessible game/studio splitter with
   persisted width (`ck:crowdy-studio:embed:dock-width:v1`), arrow-key/Home/End
   resize, and ARIA value text.
@@ -44,13 +44,10 @@ From `@crowdedkingdoms/crowdyjs/crowdy-studio`:
   `--ck-game-right-inset` on `document.body` so game HUDs can keep clear of
   the dock.
 
-From `@crowdedkingdoms/crowdyjs/player-host` (agent safety chrome):
-
-- **`PlayerControlGate`** — the synchronous human-takeover seam
-  (capture-phase keyboard/pointer preemption, offline Stop, page-hide
-  handling).
-- **`AgentControlBanner`** — the always-visible-on-control Pause/Stop region
-  with self-injected `ck-agent-control-*` styles.
+From `@crowdedkingdoms/crowdyjs/player-host`: `PlayerHostAdapterV1`, the
+observation contract the agent's `game_observe` reads. (The `PlayerControlGate`
+and `AgentControlBanner` chrome left with the agent orchestrator in 16.0.0; the
+in-browser agent only observes and never takes control.)
 
 New package subpath:
 
@@ -78,8 +75,7 @@ standing on, then toggle the embed with SERVER-only permissions. This is the
 pattern piloted in reverse-tower-defense ("Tower Assault").
 
 Create the embed once at startup. Only the studio/compute/wallet services are
-exposed — no `crowdyStudioAgent` and no `playerHost`, which keeps agent Play
-hidden in this game:
+exposed and there is no `dsh` option, so this game has no agent pane:
 
 ```ts
 import {
@@ -181,28 +177,24 @@ import {
   CrowdyStudioEmbed,
   CrowdyStudioTextHud,
 } from '@crowdedkingdoms/crowdyjs/crowdy-studio';
-import {
-  PlayerControlGate,
-  AgentControlBanner,
-} from '@crowdedkingdoms/crowdyjs/player-host';
 import glueWorkerAssetUrl from '@crowdedkingdoms/crowdyjs/player-glue-worker?worker&url';
 
 const hud = new CrowdyStudioTextHud();
-const gate = new PlayerControlGate({ clearAgentIntent });
-const banner = new AgentControlBanner();
 
 const studio = new CrowdyStudioEmbed({
-  client: game, // exposes crowdyStudioAgent → the agent dock mounts
+  client: game, // crowdyStudio, crowdyStudioGitHub, playerWallet
   appId,
   gameName: 'Blocks with Friends',
-  agentSession: { idempotencyKeyPrefix: 'bwf-agent-session:' },
-  controlGate: { maxLeaseSeconds: 120 },
+  dsh: {
+    graphql: game.graphql,
+    webBase: `${import.meta.env.BASE_URL}dsh/`, // @crowdedkingdoms/crowdy-dsh dist/dsh-web, copied at build
+    graphqlUrl: game.graphqlEndpoint,
+    apiOrigin: new URL(game.graphqlEndpoint).origin,
+    getToken: () => game.getToken(),
+    persistScope: `bwf/${appId}/${playerUuid}`,
+  },
   suppressGameplayInput: () => lockPlayerInput(),
   onLayoutChange: () => relayoutHud(),
-  onAgentMounted: ({ agent, controlLeaseManager }) => {
-    gate.bind(controlLeaseManager, agent);
-    banner.bind(agent);
-  },
 });
 
 studio.open({
@@ -212,16 +204,22 @@ studio.open({
   workerUrl: glueWorkerAssetUrl, // CLIENT mods: BWF only, per D13
   onHostCall: (call) => routeClientHostCall(call), // owner-lawful world reads
   hud,
-  playerHost: bwfPlayerHostAdapter, // enables generic agent Play tools
+  playerHost: bwfPlayerHostAdapter, // observe only -> game_observe
+  dshHost: {
+    captureFrame: async () => {
+      renderer.render(scene, camera); // or preserveDrawingBuffer: true
+      return renderer.domElement;
+    },
+  },
 });
 ```
 
 The two-layer CLIENT sandbox, presentation hooks, and deploy loop are
 unchanged from [Crowdy Studio & player client mods](player-client-mods); the
-agent modes, leases, and approvals are unchanged from
-[Agentic Crowdy Studio](agentic-crowdy-studio). The kit is chrome — it grants
-no authority. Deploys, drafts, invokes, and agent effects are authorized
-server-side exactly as before.
+agent pane is described in [Agentic Crowdy Studio](agentic-crowdy-studio). The
+kit is chrome — it grants no authority. Deploys, drafts and invokes are
+authorized server-side exactly as before, and a live deploy the agent asks for
+waits for the player to confirm in the pane.
 
 ## GitHub repository card (15.11+)
 
@@ -237,8 +235,8 @@ GitHub-related is stored in the browser. See
 
 ## Styling and layout contract
 
-- All kit chrome uses `ck-crowdy-studio-embed-*` classes (agent chrome uses
-  `ck-agent-control-*`); override them in game CSS to restyle.
+- All kit chrome uses `ck-crowdy-studio-embed-*` classes (the agent pane uses
+  `ck-crowdy-studio-dsh-*`); override them in game CSS to restyle.
 - While docked, the panel maintains `--ck-game-right-inset` on
   `document.body`. Use `var(--ck-game-right-inset, 0px)` in HUD/viewport
   rules so layouts are correct whether or not the studio is open.

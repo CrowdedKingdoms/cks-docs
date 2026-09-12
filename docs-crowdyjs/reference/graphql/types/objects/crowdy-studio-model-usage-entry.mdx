@@ -1,0 +1,88 @@
+---
+id: crowdy-studio-model-usage-entry
+title: CrowdyStudioModelUsageEntry
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One request through the metered model endpoint, counts and charge only.
+
+
+```graphql
+type CrowdyStudioModelUsageEntry {
+  usageId: String!
+  payerKind: String!
+  status: String!
+  requestedModel: String!
+  resolvedModel: String
+  promptTokens: BigInt!
+  completionTokens: BigInt!
+  reasoningTokens: BigInt!
+  chargeMicrousd: BigInt!
+  occurredAt: DateTime!
+  client: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsageEntry.<b>usageId</b></code>](#usage-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#usage-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsageEntry.<b>payerKind</b></code>](#payer-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payer-kind\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsageEntry.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsageEntry.<b>requestedModel</b></code>](#requested-model)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#requested-model\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsageEntry.<b>resolvedModel</b></code>](#resolved-model)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#resolved-model\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsageEntry.<b>promptTokens</b></code>](#prompt-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#prompt-tokens\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsageEntry.<b>completionTokens</b></code>](#completion-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#completion-tokens\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsageEntry.<b>reasoningTokens</b></code>](#reasoning-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reasoning-tokens\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsageEntry.<b>chargeMicrousd</b></code>](#charge-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#charge-microusd\} 
+Rate-carded charge in micro-USD (1,000,000 = $1).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsageEntry.<b>occurredAt</b></code>](#occurred-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#occurred-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsageEntry.<b>client</b></code>](#client)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client\} 
+
+
+
+
+
+### Member Of
+
+[`CrowdyStudioModelUsage`](/reference/graphql/types/objects/crowdy-studio-model-usage.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

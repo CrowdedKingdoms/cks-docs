@@ -1,320 +1,199 @@
 ---
 sidebar_position: 26
-title: Agentic Crowdy Studio
+title: Agentic Crowdy Studio and the model endpoint
 ---
 
-# Agentic Crowdy Studio game integration
+# Agentic Crowdy Studio: the in-browser agent and the metered model endpoint
 
-The Game API is the durable orchestrator for Agentic Crowdy Studio. It owns
-owner/app-scoped sessions, runs, ordered events, tool calls, approvals, leases,
-project checkpoints, provider usage, and budgets. CrowdyJS owns the browser
-controller and typed tool gate; a game implements only the
-`crowdy.player-host/1` observation and command boundary.
+The Studio agent runs **in the player's browser**. CrowdyJS 16 docks the
+[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) beside the
+Crowdy Studio editor: the harness web UI in a same-origin iframe, its plugin
+tree in a Web Worker, and a filesystem whose files are the open Studio project
+(the bound GitHub repository when the project has one). The agent edits files,
+runs draft tests, takes screenshots and observes the game through the page; it
+reaches a model through the Game API's **metered model endpoint**, an
+OpenAI-compatible REST proxy in front of the platform's provider key.
 
-:::warning[Allowlisted development — not GA]
-Agentic Crowdy Studio runs on the **current** unified CK API (one origin for
-management + game). Do not treat retired pins (`v0.1.94`, Game API
-`v0.19.16`, CrowdyJS `12.0.0`) as the live stack — verify with
-`infra-control-plane/scripts/ops/deployed-versions.sh` and
-`npm view @crowdedkingdoms/crowdyjs dist-tags`. Access remains
-policy/permission allowlisted and fail-closed. This is not production or
-general availability and does not permit autonomous real-money activity.
+The Game API's part is therefore small and entirely server-side: policy, the
+model allowlist and rate card, the player's provider-data consent, per-request
+reservation and settlement, and who pays. The GraphQL orchestrator that used to
+own sessions, runs, events, tool calls, approvals and leases is gone; the 21
+`crowdyStudioAgent*` root fields it published were removed with it.
+
+:::warning[Allowlisted, fail-closed]
+The agent is enabled per platform and per app through Management policy and
+requires the separately granted `use_studio_agent` runtime permission. It is
+off by default and does not permit autonomous real-money activity.
 :::
 
 ## Authority boundary
 
-The model receives bounded context and immutable tool descriptors. It does not
-receive an app token, GraphQL client, CrowdyJS client, DOM driver, raw UDP
-sender, renderer object, shell, network client, browser storage, or client-mod
-host-call bridge.
+The model never receives the player's app token, a GraphQL client, DOM access,
+a shell or a network of its own. Inside the worker the harness holds the token
+in memory to call the model endpoint and the Studio GraphQL as the player; the
+token arrives over the page/worker channel, is never written to a seed file,
+the worker's filesystem or persistent storage, and no tool exposes it. Every
+effect the model asks for runs on the page with the player's own authority
+through the same Studio controller methods the human buttons use, and a
+**live deploy waits for the player to confirm on the page**.
 
-An accepted effect follows this path:
+The Game API remains the final authority on everything: project ownership and
+`write_*`/`run_*` permissions, compile and runtime quotas, code admission, and
+the spend gates below.
 
-1. the Game API validates the exact tool/version, arguments, mode, effective
-   Management policy, budget, permissions, context, and approval/lease;
-2. a server tool calls an owner-scoped domain service, or a browser tool is
-   dispatched to the attached CrowdyJS epoch;
-3. the browser validates the descriptor, epoch, context, lease, host revision,
-   observation freshness, scope, rate, and execute-once `toolCallId`;
-4. the game adapter calls the same typed intent service used by human input;
-5. the existing Game API, Game Model, compute, grid, admission, and Replication
-   API checks remain final authority.
+## The metered model endpoint
 
-Client checks are defense in depth. A modified game client cannot grant itself
-more platform authority.
+Two REST routes, authenticated exactly like any SDK call. The bearer is an
+**app-scoped token**; the app is the token's app.
 
-## Provider transport
-
-The deployed development adapter streams OpenRouter's stable
-`/api/v1/chat/completions` protocol. It does not use the Responses beta. The
-allowlisted model is `openai/gpt-oss-120b`, whose tool endpoint supports the
-required Zero Data Retention policy.
-
-Every provider request enforces `require_parameters`, `zdr`,
-`data_collection: "deny"`, no plugins, and no unsafe fallback. Model/cost/token
-caps are the platform/app intersection and remain platform-funded. Provider
-multi-tool rounds are rejected or serialized by the Game API; no parallel
-provider proposal can race an approval or browser dispatch. Every proposed tool
-name, input, and output is validated locally against the pinned descriptor
-before it can advance the durable run.
-
-The OpenRouter key is encrypted and injected only into the Game API process. It
-is absent from GraphQL, CrowdyJS, BWF, prompts, events, logs, evidence, and
-provider bodies retained by the platform.
-
-## Prerequisites
-
-Before exposing the agent in a game:
-
-- use an unexpired app-scoped token for the target app;
-- grant the player `use_studio_agent` through an app tier;
-- enable a non-killed Management platform/app policy with a non-empty model and
-  mode intersection;
-- keep the Game API's policy replica fresh;
-- require the ordinary selected-project ownership plus `write_server_code`,
-  `write_client_code`, `run_server_code`, or `run_client_code` permissions for
-  the requested target;
-- preserve compile/runtime quotas and code admission;
-- implement a host adapter before enabling Play; and
-- keep a human-visible Pause/Stop and lease indicator outside model-controlled
-  content.
-
-`use_studio_agent` is app-scoped and separately grantable. It never implies
-source read/write, runtime, grid, trust, commerce, or game-control authority.
-See [Permissions overview](permissions).
-
-## Use the SDK transport
-
-For a browser game, use `game.crowdyStudioAgent` and
-`mountCrowdyStudio(..., {agent: ...})`. The SDK performs durable replay,
-contiguous acknowledgements, epoch fencing, heartbeat, browser result
-continuation, and reconnect. Do not reconstruct that protocol with ad hoc raw
-GraphQL.
-
-```ts
-import {mountCrowdyStudio} from '@crowdedkingdoms/crowdyjs/crowdy-studio';
-
-const studio = await mountCrowdyStudio(host, {
-  projectProvider: game.crowdyStudio,
-  playerCompute: game.playerCompute,
-  playerWallet: identity.playerWallet,
-  appId,
-  gridId,
-  grid,
-  workerUrl,
-  onHostCall,
-  agent: {
-    transport: game.crowdyStudioAgent,
-    createSession: {
-      appId,
-      gridId,
-      mode: 'ASK',
-      providerDataConsent: playerAcceptedProviderDisclosure,
-      idempotencyKey: crypto.randomUUID(),
-    },
-    playerHost,
-    onLocalPreempt: clearVisibleAgentControl,
-  },
-});
+```
+GET  {apiOrigin}/v1/model/models
+POST {apiOrigin}/v1/model/chat/completions
+Authorization: Bearer <app token>
 ```
 
-Omit `agent` to retain the manual Crowdy Studio experience. Omit `playerHost`
-only when Play must remain unavailable.
+### `GET /v1/model/models`
 
-## Implement `PlayerHostAdapterV1`
+The models this caller may use in this app: the app's policy allowlist
+intersected with models that carry an **ACTIVE rate card**. A model without a
+card is not offered, because it could not be billed. The body is OpenAI's list
+shape with the rate card attached:
 
-Import the public host types from
-`@crowdedkingdoms/crowdyjs/player-host`:
-
-```ts
-import type {
-  CrowdyAgentPreemptionReason,
-} from '@crowdedkingdoms/crowdyjs/agent';
-import type {
-  GameCommandResultV1,
-  GameCommandV1,
-  GameObservationV1,
-  ObserveRequestV1,
-  PlayerHostAdapterV1,
-  PlayerHostCapabilitiesV1,
-  ValidatedGateV1,
-} from '@crowdedkingdoms/crowdyjs/player-host';
-
-class MyPlayerHost implements PlayerHostAdapterV1 {
-  readonly contractVersion = 'crowdy.player-host/1' as const;
-
-  capabilities(): Promise<PlayerHostCapabilitiesV1> {
-    return currentBoundedCapabilities();
-  }
-
-  observe(request: ObserveRequestV1): Promise<GameObservationV1> {
-    return buildBoundedSnapshot(request);
-  }
-
-  dispatch(
-    command: GameCommandV1,
-    gate: ValidatedGateV1,
-  ): Promise<GameCommandResultV1> {
-    return routeThroughSharedHumanIntentServices(command, gate);
-  }
-
-  clearAgentIntent(reason: CrowdyAgentPreemptionReason): void {
-    movement.zero();
-    look.zero();
-    actions.cancelPending(reason);
-  }
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "openai/gpt-oss-120b",
+      "object": "model",
+      "owned_by": "crowded-kingdoms",
+      "name": "openai/gpt-oss-120b",
+      "context_window": null,
+      "input_modalities": ["text"],
+      "pricing_microusd_per_million": {
+        "input": 195000,
+        "output": 780000,
+        "reasoning": 780000,
+        "cached_input": 97500
+      }
+    }
+  ]
 }
 ```
 
-The adapter must not add a generic method name/payload escape hatch. Extensions
-use reviewed `game.extension.<game>.*` descriptors with the same bounded schema,
-risk, approval, scope, and idempotency rules, and remain disabled until app
-policy explicitly allows them.
+### `POST /v1/model/chat/completions`
 
-## Bounded observations
+OpenAI chat completions, streaming or not. Forwarded request fields:
+`model`, `messages` (roles `system`/`developer`/`user`/`assistant`/`tool`,
+text and image parts; `developer` is normalised to `system`), `tools`,
+`tool_choice`, `parallel_tool_calls`, `temperature`, `top_p`, `stop`, `seed`,
+`response_format`, `frequency_penalty`, `presence_penalty`, `logit_bias`,
+`reasoning`, `reasoning_effort`, `stream`, `max_tokens`/`max_completion_tokens`
+(capped at the policy's per-turn output ceiling). Provider-routing, identity
+and unsupported-modality fields (`provider`, `plugins`, `transforms`, `route`,
+`user`, `metadata`, `store`, `stream_options`, `n`, `logprobs`, `modalities`,
+`audio`, ...) and anything prefixed `dsh_` or `x_` are dropped silently; any
+other unknown field is refused as `AGENT_TOOL_INPUT_INVALID`.
 
-`capabilities()` advertises an opaque revision, current controlled entity,
-supported exact command kinds, per-command scope/risk/approval/rate, and
-observation bounds.
+Every request is forwarded with the privacy parameters the platform requires:
+`provider.zdr: true`, `data_collection: "deny"`, `allow_fallbacks: false`,
+`plugins: []`, and `usage.include: true` so the provider prices the request.
+Streams pass through as `text/event-stream`.
 
-`observe()` returns a snapshot with:
+### Gates, in order
 
-- `observationId`, capability revision, controlled entity, `observedAt`, and
-  `expiresAt`;
-- bounded player/entity pose, velocity, look, vitals, and death state;
-- optional bounded target, inventory/craftability, grid, nearby actor, and voxel
-  summaries; and
-- modal, text-focus, and human-input state.
+1. **Policy.** `AgentPolicyService.effective(user, app)` on every request:
+   platform and app enabled, no kill switch, and the caller holds
+   `use_studio_agent`. Revoking the permission stops the next request even if
+   a consent row exists.
+2. **Model.** In the allowlist and carrying a rate card; image parts only on
+   models the tier marks image-capable.
+3. **Consent.** When the app policy requires private-source consent, the
+   caller must have recorded `crowdyStudioSetProviderConsent` for this app;
+   otherwise `AGENT_SCOPE_DENIED`.
+4. **Reservation.** The worst case at the rate card (estimated prompt tokens
+   in, the full output cap out) is checked against the per-request ceiling
+   and the player-day budget (`AGENT_BUDGET_EXHAUSTED`), then against the
+   payer's wallet (`AGENT_FUNDS_NEEDED`, HTTP 402).
+5. **Settlement.** When the stream ends the request is charged from the
+   provider's usage frame at the rate card and recorded in
+   `model_endpoint_usage`. A client that closes its socket does not stop the
+   meter: the provider stream is drained to its usage frame for up to 15 s
+   with the client gone; if no frame arrives the request is charged from its
+   own prompt estimate plus the completion text that did stream, capped at
+   the reservation, and the row says `usage_source = ESTIMATED`.
 
-An observation is evidence, not authority. Before dispatch, re-read the current
-entity, target, item/container, recipe, grid/permissions, modal/death state, and
-host revision. Reject stale evidence with `AGENT_OBSERVATION_STALE` and changed
-targets with `AGENT_CONTROL_TARGET_CHANGED`.
+### Who pays
 
-Do not send continuous pose streams, full chunk dumps, unbounded logs, hidden
-inventories, renderer internals, credentials, or unrelated player data.
+`funding.billingMode` on the platform policy is `PLATFORM_FUNDED` (the pilot
+default; nothing is debited) or `METERED`. Under `METERED`, the app policy's
+`funding.payerKind` decides:
 
-## Generic command surface
+- **`PLAYER`** (the default): the charge accrues as the `player_model_microusd`
+  metric and the hourly player usage billing tick debits the player's wallet.
+- **`ORG`**: the app's organization wallet is debited per request, with a
+  `wallet_transactions` row of type `agent_usage`. A failed debit is recorded
+  on the usage row and retried with exponential backoff up to ten times; an
+  exhausted row stays visible with its last error. Only an org **billing
+  admin** (`manage_billing`) may switch an app to `ORG`.
 
-The v1 minimum is exact and closed:
+### Errors
 
-| Tool | Command | Routine Play scope |
+Errors are OpenAI-style bodies carrying the platform code:
+
+```json
+{ "error": { "message": "...", "type": "crowded_kingdoms_error", "code": "AGENT_FUNDS_NEEDED", "retryable": false } }
+```
+
+| Code | HTTP | Meaning |
 |---|---|---|
-| `game.control.move`, `game.control.look` | `MOVE`, `LOOK` | `locomotion` |
-| `game.control.stop` | `STOP` | none; always safety-allowed |
-| `game.inventory.select`, `.consume`, `.transfer` | inventory commands | `interact` |
-| `game.interact` | `MINE`, `PLACE`, `USE`, `FISH`, `NPC_TALK` | `interact` |
-| `game.craft` | bounded recipe/quantity | `craft` |
-| `game.mount` | mount/dismount | `locomotion` |
-| `game.combat.attack` | primary/secondary attack | `combat` |
-| `game.chat.send` | bounded local/group text | `communicate` |
-| `game.travel.teleport` | an advertised destination reference | `travel` |
+| `AGENT_DISABLED`, `AGENT_APP_KILLED`, `AGENT_OPERATOR_KILLED` | 403 | Policy off or killed |
+| `AGENT_PERMISSION_DENIED` | 403 | No `use_studio_agent`, or app runtime inactive |
+| `AGENT_SCOPE_DENIED` | 403 | Provider-data consent not recorded |
+| `AGENT_MODEL_NOT_ALLOWED` | 400 | Model outside the allowlist or without a rate card |
+| `AGENT_TOOL_INPUT_INVALID` | 400 | Unsupported field or malformed request |
+| `AGENT_BUDGET_EXHAUSTED` | 429 | Per-request ceiling or player-day budget |
+| `AGENT_FUNDS_NEEDED` | 402 | Wallet cannot cover the reservation |
+| `AGENT_PROVIDER_UNAVAILABLE` | 503 | Provider unreachable, stalled or 5xx (retryable) |
+| `AGENT_PROVIDER_POLICY_UNSATISFIED` | 503 | Provider rejected the request or the policy replica is stale |
+| `AGENT_PROVIDER_OUTPUT_INVALID` | 502 | Malformed provider body |
 
-`game.capabilities.get` and `game.observe` complete the 14-tool generic host
-surface. The effective Game API registry also includes supported
-Studio/project/diagnostic/runtime tools. A name can appear only when the Game
-API implementation, current mode, model/tool/risk policy, host capabilities,
-and permissions all allow it.
+## GraphQL companions
 
-Return `SUCCEEDED`, `FAILED`, `DENIED`, or `OUTCOME_UNKNOWN`. If an effect may
-have happened but its result cannot be recovered, return `OUTCOME_UNKNOWN`;
-neither CrowdyJS nor the Game API will repeat it.
+Three root fields, all app-token scoped and requiring `use_studio_agent`:
 
-## Draft/live project boundary
+- [`crowdyStudioProviderConsent(appId)`](reference/graphql/operations/queries/crowdy-studio-provider-consent.mdx)
+- [`crowdyStudioSetProviderConsent(input)`](reference/graphql/operations/mutations/crowdy-studio-set-provider-consent.mdx)
+- [`crowdyStudioModelUsage(appId, limit)`](reference/graphql/operations/queries/crowdy-studio-model-usage.mdx):
+  today's request count and charge against the ceiling, the payer, and recent
+  requests. Counts and charges only; no prompts or provider bodies exist to
+  return.
 
-Build project writes use a 30-second workspace lease, expected project revision,
-bounded atomic file changes, and a private pre-image checkpoint. CrowdyJS
-renews the lease every 10 seconds only while the project/epoch/context remains
-unchanged and connected. Human editor input revokes it.
+Policy administration is unchanged:
+[`crowdyStudioAgentPolicy`](reference/graphql/operations/queries/crowdy-studio-agent-policy.mdx),
+[`setCrowdyStudioAgentPolicy`](reference/graphql/operations/mutations/set-crowdy-studio-agent-policy.mdx)
+(now with `funding.payerKind`),
+[`crowdyStudioAgentEffectivePolicy`](reference/graphql/operations/queries/crowdy-studio-agent-effective-policy.mdx),
+[`crowdyStudioAgentUsage`](reference/graphql/operations/queries/crowdy-studio-agent-usage.mdx),
+and the operator roots `cpCrowdyStudioAgentPlatformPolicy`,
+`cpSetCrowdyStudioAgentPlatformPolicy`, `cpSetCrowdyStudioAgentAppKill`,
+`cpCrowdyStudioAgentCatalog`.
 
-`runtime.test_draft` is routine Build work only when all target write/run
-permissions and compile quota allow it. It never enables live runtime.
-Agent-authored source uses the same platform SDK ABI exports/boilerplate and
-the same authoritative compiler as human-authored source; there is no
-agent-specific compile path or bypass.
-`runtime.deploy_live` and a LIVE `runtime.invoke` always require a single-use
-approval bound to the saved revision, complete project content/module hash,
-exact target plan, pairing, grid, and live flag. `runtime.stop` is an
-idempotent all-project safety action.
+## What a game implements
 
-## Immediate human takeover
+Nothing server-side. On the page, CrowdyJS's `dsh` mount option and a
+`dshHost` with `captureFrame` (a screenshot of the game canvas) and an
+observation-only `PlayerHostAdapterV1` for `game_observe`; see
+[Crowdy Studio agent in CrowdyJS](/crowdyjs/agentic-crowdy-studio). The
+harness artifact is the published `@crowdedkingdoms/crowdy-dsh` npm package,
+copied under `/dsh/` of the game origin at build time.
 
-Install capture-phase keyboard, mouse, pointer, touch, pagehide/offline, and
-visibility handling around the game input layer. On human input:
+## Data retention
 
-1. synchronously clear movement, look, and pending action intent;
-2. revoke the local lease gate before allowing normal human handling;
-3. notify the durable controller best-effort; and
-4. never cancel or synthesize the human event.
-
-Also preempt on Escape, Stop, death, permission/grid/project/context changes,
-controlled-entity changes, disconnect, stale heartbeat, quota/budget failure,
-or operator kill. Local Stop must work when the Game API or provider is down.
-
-## Disabled and unavailable behavior
-
-Fail closed and keep human controls/manual Studio usable:
-
-- global/app/operator kill, disabled policy, missing or stale policy replica:
-  `AGENT_DISABLED` or `AGENT_OPERATOR_KILLED`;
-- missing `use_studio_agent` or ordinary target authority:
-  `AGENT_PERMISSION_DENIED` / `AGENT_SCOPE_DENIED`;
-- disallowed model/mode/tool/risk: the session or descriptor request is denied;
-- no compatible host: Ask/Build may remain available, but Play tools are
-  omitted and `AGENT_HOST_UNAVAILABLE` is safe to show;
-- provider or budget failure: stop the run and preserve project/game state; and
-- ambiguous browser effect: show `AGENT_TOOL_OUTCOME_UNKNOWN` and require
-  inspection rather than retry.
-
-Do not hide an active lease merely because the dock failed. Keep the external
-control banner and offline Stop available until local authority is cleared.
-
-## Reconnect and event handling
-
-The event subscription is ordered and at-least-once. Apply only the next
-contiguous decimal-string sequence, deduplicate sequence/event IDs, fill gaps
-with history, and acknowledge only the highest contiguous sequence.
-
-A fresh attach allocates a newer `clientEpoch`, fences the old browser, revokes
-its Play/workspace leases, and marks pending browser calls stale. Reconnect may
-replay facts, never effects. Require explicit resume after context validation;
-Play always requires a newly granted lease.
-
-All mutations require idempotency keys. Server writes deduplicate by key and
-arguments; browser dispatch deduplicates by `toolCallId`. Provider retries do
-not imply tool retries.
-
-## Underlying GraphQL contract
-
-CrowdyJS wraps these Game API roots:
-
-- queries: `crowdyStudioAgentSession`, `crowdyStudioAgentSessions`,
-  `crowdyStudioAgentHistory`, `crowdyStudioAgentToolDescriptors`, and
-  `crowdyStudioAgentBudget`;
-- mutations: `crowdyStudioAgentCreateSession`, `AttachClient`, `SetMode`,
-  `AcknowledgeEvents`, `Heartbeat`, `SendMessage`, `ApproveTool`, `RejectTool`,
-  `ToolResult`, `GrantLease`, `RevokeLease`, `Pause`, `Resume`, `CancelRun`,
-  and `CloseSession`, all with the `crowdyStudioAgent` prefix; and
-- subscription: `crowdyStudioAgentEvents`.
-
-Use the [generated GraphQL reference](reference/graphql-overview) for exact
-inputs, outputs, descriptions, permission metadata, and stable errors. The
-downloadable [Game API SDL](pathname:///schema/game-api.graphql) is generated
-from the same exact schema.
-
-## Blocks with Friends reference host
-
-The BWF adapter ships with the allowlisted Agentic Crowdy Studio stack on the
-current CK API. It provides the
-bounded observation builder, exact command router, synchronous player-control
-gate, and accessible game-canvas lease banner. Its snapshots expire after 1.5
-seconds and cap nearby actors at 64 and voxels at 128. Commands route through
-shared human intent services; routine server-refereed mob combat is supported,
-while PvP and high-risk grid/trust/commerce actions remain unadvertised.
-
-Sanitized live evidence exercised `game.observe`, `game.control.move`, and
-human-input takeover. Human input revoked the lease and preempted the run; a
-late browser success from the old context was rejected with
-`AGENT_CONTEXT_STALE`. The deployed bundle plus visible and offline/local Stop
-browser gates passed. Evidence contains no account/session identifiers,
-credentials, hashes, or provider bodies.
+No prompt, tool result, image or provider body is persisted by the platform.
+`model_endpoint_usage` keeps counts, the model, the provider generation id and
+the charge. `crowdy_agent_sessions`, `crowdy_agent_checkpoints` and
+`crowdy_agent_usage` remain for project checkpoints and the Management usage
+view and are swept by the agent retention service; the six orchestrator tables
+(`runs`, `events`, `tool_calls`, `client_cursors`, `approvals`, `leases`) were
+dropped.
