@@ -1,0 +1,44 @@
+---
+id: crowdy-studio-model-usage
+title: crowdyStudioModelUsage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The caller's own model usage in this app: today's request count and rate-carded charge against the policy ceiling, the payer (PLAYER wallet by default, ORG when the app elected it, PLATFORM while platform-funded), and the most recent requests. Counts and charges only; no prompts or provider bodies exist to return. Requires 'use&#x005F;studio&#x005F;agent'.
+
+
+```graphql
+crowdyStudioModelUsage(
+  appId: BigInt!
+  limit: Int = 20
+): CrowdyStudioModelUsage!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioModelUsage.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App whose usage to read; must match the app token scope.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioModelUsage.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+How many recent requests to return (1-200; default 20).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioModelUsage</b></code>](/reference/graphql/types/objects/crowdy-studio-model-usage.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The player's model spend in this app today plus their most recent requests.
