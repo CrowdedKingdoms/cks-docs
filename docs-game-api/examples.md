@@ -12,11 +12,11 @@ representative response. Field shapes are authoritative in the
 [GraphQL UDP-proxy API](/game-api/graphql-udp-proxy-api); for the agent overview see
 [For AI agents](/overview/for-ai-agents).
 
-Agentic Crowdy Studio has a durable event/epoch/lease protocol rather than a
-single copy-paste operation. Browser games should use the normal CrowdyJS
-`game.crowdyStudioAgent` transport and controller quickstart, not expose raw
-GraphQL to a model. See
-[Agentic Crowdy Studio game integration](agentic-crowdy-studio).
+The Studio agent is not a GraphQL operation at all: it runs in the player's
+browser and spends tokens through the REST `POST /v1/model/chat/completions`
+endpoint with the player's app token. Browser games mount it with CrowdyJS's
+`dsh` option rather than exposing GraphQL to a model. See
+[Agentic Crowdy Studio and the model endpoint](agentic-crowdy-studio).
 
 > Responses below are representative. The Game API accepts an **app-scoped token**
 > (mint one for the app with `mintAppToken` from your identity session token — see
