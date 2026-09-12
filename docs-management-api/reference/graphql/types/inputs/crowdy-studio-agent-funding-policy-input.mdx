@@ -1,0 +1,48 @@
+---
+id: crowdy-studio-agent-funding-policy-input
+title: CrowdyStudioAgentFundingPolicyInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Funding patch. On the platform layer: billingMode ('PLATFORM&#x005F;FUNDED' | 'METERED') and walletDebitEnabled. On an app layer: payerKind ('PLAYER' | 'ORG'); choosing ORG spends the org wallet and requires manage&#x005F;billing on the org. Omitted fields stay unchanged.
+
+
+```graphql
+input CrowdyStudioAgentFundingPolicyInput {
+  billingMode: String
+  payerKind: String
+  walletDebitEnabled: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentFundingPolicyInput.<b>billingMode</b></code>](#billing-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#billing-mode\} 
+Platform layer only: 'PLATFORM&#x005F;FUNDED' or 'METERED'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentFundingPolicyInput.<b>payerKind</b></code>](#payer-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#payer-kind\} 
+App layer: 'PLAYER' (default) or 'ORG'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioAgentFundingPolicyInput.<b>walletDebitEnabled</b></code>](#wallet-debit-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#wallet-debit-enabled\} 
+Platform layer only: whether metered usage debits wallets.
+
+
+
+
+### Member Of
+
+[`SetCrowdyStudioAgentAppPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-app-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SetCrowdyStudioAgentPlatformPolicyInput`](/reference/graphql/types/inputs/set-crowdy-studio-agent-platform-policy-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
