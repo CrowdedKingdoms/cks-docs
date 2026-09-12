@@ -2185,17 +2185,21 @@ type CrowdyStudioAgentPrivacyPolicy {
 }
 
 """
-Funding seam for Agentic Studio. The development pilot is platform-funded and never debits a player wallet; payer/rate-card fields are reserved for a later contract.
+Funding for Agentic Studio model usage. PLATFORM_FUNDED (the pilot default) means the platform absorbs provider cost; METERED means each model request is priced at the agent rate card and charged to the payer: the PLAYER's own wallet by default, or the app's ORG wallet when an org billing admin elected that. Set at the platform layer (billingMode, walletDebitEnabled) and the app layer (payerKind).
 """
 type CrowdyStudioAgentFundingPolicy {
-  """Funding mode. The pilot always returns 'PLATFORM_FUNDED'."""
+  """'PLATFORM_FUNDED' or 'METERED'."""
   billingMode: String!
-  """Future payer kind. The pilot always returns 'PLATFORM'."""
+  """
+  Who pays under METERED: 'PLAYER' (default) or 'ORG'. 'PLATFORM' while platform-funded.
+  """
   payerKind: String!
-  """Future rate-card UUID; null throughout the platform-funded pilot."""
+  """
+  Rate-card UUID pinned by policy; null means the ACTIVE per-model card at request time.
+  """
   rateCardId: String
   """
-  Whether this policy can debit a player wallet. Always false in the pilot.
+  Whether metered usage debits the payer wallet. False while platform-funded.
   """
   walletDebitEnabled: Boolean!
 }
@@ -4717,6 +4721,10 @@ input SetCrowdyStudioAgentAppPolicyInput {
   Optional private-source sharing patch; first-use consent remains locked on.
   """
   privacy: CrowdyStudioAgentPrivacyPolicyInput
+  """
+  Optional funding patch: metering on the platform layer, payer on the app layer.
+  """
+  funding: CrowdyStudioAgentFundingPolicyInput
   """App whose policy is changed."""
   appId: BigInt!
   """
@@ -4832,6 +4840,18 @@ input CrowdyStudioAgentPrivacyPolicyInput {
 }
 
 """
+Funding patch. On the platform layer: billingMode ('PLATFORM_FUNDED' | 'METERED') and walletDebitEnabled. On an app layer: payerKind ('PLAYER' | 'ORG'); choosing ORG spends the org wallet and requires manage_billing on the org. Omitted fields stay unchanged.
+"""
+input CrowdyStudioAgentFundingPolicyInput {
+  """Platform layer only: 'PLATFORM_FUNDED' or 'METERED'."""
+  billingMode: String
+  """App layer: 'PLAYER' (default) or 'ORG'."""
+  payerKind: String
+  """Platform layer only: whether metered usage debits wallets."""
+  walletDebitEnabled: Boolean
+}
+
+"""
 Operator-only platform policy patch. Omitted values stay unchanged; hard v1 privacy and retention maxima still apply.
 """
 input SetCrowdyStudioAgentPlatformPolicyInput {
@@ -4867,6 +4887,10 @@ input SetCrowdyStudioAgentPlatformPolicyInput {
   Optional private-source sharing patch; first-use consent remains locked on.
   """
   privacy: CrowdyStudioAgentPrivacyPolicyInput
+  """
+  Optional funding patch: metering on the platform layer, payer on the app layer.
+  """
+  funding: CrowdyStudioAgentFundingPolicyInput
   """Optional optimistic platform revision."""
   expectedRevision: BigInt
   """Stable kill reason code (max 64); used only while killSwitch is true."""

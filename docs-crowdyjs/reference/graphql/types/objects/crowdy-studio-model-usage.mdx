@@ -1,0 +1,63 @@
+---
+id: crowdy-studio-model-usage
+title: CrowdyStudioModelUsage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The player's model spend in this app today plus their most recent requests.
+
+
+```graphql
+type CrowdyStudioModelUsage {
+  appId: BigInt!
+  payerKind: String!
+  todayRequests: BigInt!
+  todayChargeMicrousd: BigInt!
+  dayLimitMicrousd: BigInt!
+  recent: [CrowdyStudioModelUsageEntry!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsage.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsage.<b>payerKind</b></code>](#payer-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payer-kind\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsage.<b>todayRequests</b></code>](#today-requests)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#today-requests\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsage.<b>todayChargeMicrousd</b></code>](#today-charge-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#today-charge-microusd\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsage.<b>dayLimitMicrousd</b></code>](#day-limit-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#day-limit-microusd\} 
+Today's spend ceiling in micro-USD from the effective policy.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioModelUsage.<b>recent</b></code>](#recent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioModelUsageEntry!]!</b></code>](/reference/graphql/types/objects/crowdy-studio-model-usage-entry.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#recent\} 
+
+
+
+
+
+### Returned By
+
+[`crowdyStudioModelUsage`](/reference/graphql/operations/queries/crowdy-studio-model-usage.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

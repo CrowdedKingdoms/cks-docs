@@ -30,6 +30,48 @@ supported path.
 
 :::
 
+## 2026-09-11 (Game API, CrowdyJS 16, CrowdyCPP 0.34)
+
+**The Crowdy Agent orchestrator is replaced by the in-browser DeepSeek Harness
+and a metered model endpoint.** Breaking, without a deprecation window: the
+orchestrator was allowlisted development that no released game depended on
+except through CrowdyJS 15's agent dock, which is retired with it.
+
+- **Removed from the Game API (21 root fields):** queries
+  `crowdyStudioAgentSession`, `crowdyStudioAgentSessions`,
+  `crowdyStudioAgentHistory`, `crowdyStudioAgentToolDescriptors`,
+  `crowdyStudioAgentBudget`; mutations `crowdyStudioAgentCreateSession`,
+  `...AttachClient`, `...SetMode`, `...AcknowledgeEvents`, `...Heartbeat`,
+  `...SendMessage`, `...ApproveTool`, `...RejectTool`, `...ToolResult`,
+  `...GrantLease`, `...RevokeLease`, `...Pause`, `...Resume`, `...CancelRun`,
+  `...CloseSession`; subscription `crowdyStudioAgentEvents`. The six tables
+  behind them are dropped. A CrowdyJS 15.x client loses its agent dock when
+  this deploys.
+- **Added:** REST `GET /v1/model/models` and `POST /v1/model/chat/completions`
+  (OpenAI-compatible, app-token bearer, ZDR routing, per-request reservation
+  and settlement at the app's rate card); GraphQL
+  `crowdyStudioProviderConsent`, `crowdyStudioSetProviderConsent`,
+  `crowdyStudioModelUsage`; `SetCrowdyStudioAgentAppPolicyInput.funding`
+  with `payerKind: PLAYER | ORG` (default `PLAYER`; `ORG` needs
+  `manage_billing`); the `player_model_microusd` metric in hourly player
+  billing and `AGENT_FUNDS_NEEDED` (HTTP 402). See
+  [Agentic Crowdy Studio and the model endpoint](/game-api/agentic-crowdy-studio).
+- **CrowdyJS 16.0.0:** `dsh` mount option and `@crowdedkingdoms/crowdyjs/crowdy-dsh`
+  replace the `agent` option, `client.crowdyStudioAgent`, `/crowdy-agent`,
+  `PlayerControlGate`, `AgentControlBanner` and the lease manager. Games ship
+  the harness from the published `@crowdedkingdoms/crowdy-dsh` package under
+  `/dsh/` of their origin. See [Agentic Crowdy Studio](/crowdyjs/agentic-crowdy-studio).
+- **CrowdyCPP 0.34.0:** `crowdy/agent/*`, the Studio host adapter, agent
+  projection, lease manager and control gate are removed;
+  `CrowdyStudioAgentAPI` keeps policy/usage and gains consent and model usage.
+- **Management UI:** the app's Agent policy panel gains "Who pays for model
+  usage" (player wallet by default; org wallet for billing admins) and a
+  usage table with the payer.
+- **Rollout order:** ck-api first (this removes the 15.x dock on that tier),
+  then CrowdyJS `16.0.0-<tier>.N`, then `@crowdedkingdoms/crowdy-dsh`, then the
+  games' pins. Schema contraction (the six tables) is a separate
+  `--allow-contract` order after the ck-api deploy.
+
 ## 2026-09-10 (Game API)
 
 **Cookie CSRF matches any presented `ck_csrf`.** (ck-api v1.98.0, Studio

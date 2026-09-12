@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-provider-consent
+title: crowdyStudioProviderConsent
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Read whether the caller has consented to their project source reaching a model provider for this app. The metered model endpoint (POST /v1/model/chat/completions) refuses with AGENT&#x005F;SCOPE&#x005F;DENIED until it is recorded. Requires 'use&#x005F;studio&#x005F;agent'.
+
+
+```graphql
+crowdyStudioProviderConsent(
+  appId: BigInt!
+): CrowdyStudioProviderConsent!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioProviderConsent.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App the consent applies to; must match the app token scope.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioProviderConsent</b></code>](/reference/graphql/types/objects/crowdy-studio-provider-consent.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Whether this player has accepted that their Crowdy Studio project source may be sent to a model provider (under the platform ZDR / no-collection routing) for this app.
