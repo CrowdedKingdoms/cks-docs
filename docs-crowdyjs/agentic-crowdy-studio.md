@@ -133,6 +133,15 @@ and `frame-ancestors 'self'`. The game page's own policy stays strict. One
 serving detail: `preview/vfs-image.tar.gz` must reach the browser with **no**
 `Content-Encoding` header; the worker inflates it itself.
 
+**The harness path needs its own policy at whatever serves it.** A CDN or edge
+function that stamps one CSP on every path of the game will stamp the game's
+strict policy (`frame-ancestors 'none'`, no `'unsafe-eval'`) on `/dsh/*` too,
+and the pane then fails at boot with a blank frame and CSP violations in the
+console while every game route verifies green. Give `/dsh/` (or wherever
+`webBase` points) a per-path rule, and make your deploy's smoke test fetch
+`<webBase>index.html` and assert the harness policy on it; the game page's
+policy must stay strict.
+
 The iframe is same-origin by design (`BroadcastChannel` and OPFS are
 origin-scoped), so its `sandbox="allow-scripts allow-same-origin"` does not
 isolate it from the page; the CSP on the harness path is the control. Serving
@@ -162,7 +171,15 @@ schemas and the error / preemption vocabulary.
 
 Spend is metered per request at the app's rate card against a per-request
 ceiling and a player-day budget; the wallet (player or org) must cover each
-request's worst-case reservation. When the feature, app, model, permission,
+request's worst-case reservation. Who pays is decided in two layers: the
+platform sets the billing mode (platform-funded absorbs the cost; metered
+charges), and the app's billing admin chooses the payer in Studio — the
+**player** by default, or the **org** wallet. The two payers settle
+differently: player usage accumulates in micro-USD and is billed by the
+hourly player tick, so sub-cent requests add up before rounding; org usage is
+debited from the org wallet per request, rounded **up** to the cent, so each
+request is its own auditable ledger line. The spend line in the pane names
+which wallet is paying. When the feature, app, model, permission,
 policy replica or provider is unavailable the agent fails closed and the pane
 shows the platform error code (`AGENT_DISABLED`, `AGENT_PERMISSION_DENIED`,
 `AGENT_SCOPE_DENIED`, `AGENT_MODEL_NOT_ALLOWED`, `AGENT_BUDGET_EXHAUSTED`,
