@@ -37,7 +37,7 @@ removed in 16.0.0 together with the server orchestrator they drove. See the
 
 | Tool | What happens | Where |
 |---|---|---|
-| `read_file`, `write_file`, `edit_file`, `read_image`, search | On the project mount `/dsh/workspace/{server,client}`; writes commit to GitHub when bound and mirror to Studio, otherwise save through Studio | Worker |
+| `read_file`, `write_file`, `edit_file`, `read_image`, search | On the project mount `/dsh/workspace/{server,client}`; writes commit to the bound branch with `expectedCommitSha` when the project is bound to GitHub, otherwise save through Studio | Worker |
 | `draft_test` | Compiles and runs the exact saved revision as a draft; returns diagnostics, the build log and a screenshot after the client module loads | Page, via the Studio controller |
 | `deploy_live` | Asks the player on the page (**Deploy live** / **Not now**); only an approval runs the deploy | Page |
 | `screenshot` | Captures the game canvas the host provides, downscaled and PNG-encoded, into `captures/` | Page |
@@ -46,6 +46,16 @@ removed in 16.0.0 together with the server orchestrator they drove. See the
 
 Everything the model asks for runs on the page with the player's browser
 authority, through the same controller methods the human buttons use.
+
+GitHub is optional and changes nothing the agent can see. When the project is
+[bound to a repository](/game-api/crowdy-studio-github) (CrowdyJS 17), the
+agent's writes are commits on the bound branch, each carrying the project's
+current commit SHA as `expectedCommitSha`, exactly as the editor's saves are;
+a stale commit is refused and the worker re-reads before writing again. Monaco
+and the agent read one tree — the server's mirror of the repository — so a
+file the agent commits is what the editor shows, and a push made from an IDE
+reaches both after one **Refresh**. An unbound project is saved through Studio
+as before.
 
 ## Player workflow
 

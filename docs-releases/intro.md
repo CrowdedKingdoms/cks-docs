@@ -30,6 +30,50 @@ supported path.
 
 :::
 
+## 2026-09-13 (Game API v2.0.0, CrowdyJS 17, crowdy-dsh 0.3)
+
+**A bound GitHub repository is the project's working tree; GitHub stays
+optional.** Breaking, without a deprecation window: the GitHub surface was
+nine days old and the deploy-input change is what makes "what compiles is
+what was saved" true.
+
+- **Optional, reversible.** `CrowdyStudioProject.source` is `STUDIO` until the
+  owner binds a repository and `GITHUB` while one is bound;
+  `crowdyStudioProjectCreate` is unchanged. `crowdyStudioGitHubBind` gains a
+  required `initial` — `PUSH_PROJECT` commits the project into the branch
+  (`GITHUB_REPO_HAS_FILES` if it already has rust under the layout roots),
+  `TAKE_REPOSITORY` adopts the branch (`GITHUB_REPO_EMPTY` if it has none).
+  Unbind keeps the files.
+- **While bound, `files` is the server's mirror** of the rust under the layout
+  roots at `githubSha`, read as before. `crowdyStudioProjectSaveFiles`,
+  `crowdyStudioProjectSave` with file bodies and
+  `crowdyStudioProjectImportFile` refuse with `GITHUB_BOUND_USE_CONTENTS`;
+  writes are `crowdyStudioGitHubPutFile` / new `crowdyStudioGitHubDeleteFile`
+  commits carrying `expectedCommitSha` (stale → `GITHUB_STALE_SHA`; the blob
+  `sha` is now optional). New `crowdyStudioGitHubRefresh` brings the mirror to
+  the branch head; new `crowdyStudioGitHubLayout` resolves `crowdy.json`
+  server-side (clients must not parse it). `crowdyStudioGitHubTree` returns
+  `{ commitSha, entries }`; `Tree` / `File` / `Layout` take an optional full
+  40-hex `commitSha`.
+- **Removed:** `crowdyStudioGitHubSetAutosave` and
+  `CrowdyStudioGitHubStatus.autosave`; `DeployPlayerComputeInput.sourceFilesJson`,
+  `sdkVersion`, `abiVersion`. **`playerComputeDeploy` now takes `projectId`**
+  (+ `commitSha` for a `GITHUB` project) and the server resolves the source;
+  `PlayerWasmModuleVersion` gains `projectId`, `sourceRevision`,
+  `githubCommitSha`. The org compute API (`computeDeployVersion`) is unchanged.
+- **Tokens:** the app token may call Status / Layout / Tree / File / PutFile /
+  DeleteFile / Refresh (owner-scoped); ConnectUrl / Repos / Bind / Unbind need
+  the identity session. A game never needs an identity session for GitHub.
+  Every GitHub field is datacenter-only.
+- **CrowdyJS 17.0.0:** `saveProject` commits a bound project automatically
+  (one commit per changed file); `bind(…, initial)`, `refresh()`, `layout()`,
+  `deleteFile()`, the `github` embed option; `pushToGitHub`, `pullFromGitHub`,
+  `setAutosave`, the Push / Pull buttons and the SDK-side `crowdy.json`
+  helpers are gone. Bridge protocol v3; `@crowdedkingdoms/crowdy-dsh` 0.3.x
+  writes a bound project the same way.
+- See [Connect your GitHub repo to a Studio project](/game-api/crowdy-studio-github)
+  and [Player code](/game-api/player-code#deploy-player-code).
+
 ## 2026-09-11 (Game API, CrowdyJS 16, CrowdyCPP 0.34)
 
 **The Crowdy Agent orchestrator is replaced by the in-browser DeepSeek Harness
