@@ -8346,23 +8346,44 @@ type Query {
   """
   The lossless ledger's charge rows for one app: every (payer, meter, period) or request that has been priced, with what was billed, held and written off, in micro-USD. Requires 'view_billing' on the org.
   """
-  billingCharges(orgId: BigInt!, appId: BigInt!, limit: Int): [BillingCharge!]! @requiresPermission(scope: "org", permission: "view_billing", scopeArg: "orgId")
+  billingCharges(
+    """Organisation whose ledger is read; the caller must administer it."""
+    orgId: BigInt!
+    """App the charges belong to (its org is the payer of record)."""
+    appId: BigInt!
+    """Newest-first page size; defaults to 50, capped server-side."""
+    limit: Int
+  ): [BillingCharge!]! @requiresPermission(scope: "org", permission: "view_billing", scopeArg: "orgId")
   """
   Amounts the platform could not bill this org for, with the reason (an exempt org, a provider with no generation record, a process that died with metered usage in memory). Requires 'view_billing' on the org.
   """
-  billingWriteOffs(orgId: BigInt!, limit: Int): [BillingWriteOff!]! @requiresPermission(scope: "org", permission: "view_billing", scopeArg: "orgId")
+  billingWriteOffs(
+    """Organisation whose ledger is read; the caller must administer it."""
+    orgId: BigInt!
+    """Newest-first page size; defaults to 50, capped server-side."""
+    limit: Int
+  ): [BillingWriteOff!]! @requiresPermission(scope: "org", permission: "view_billing", scopeArg: "orgId")
   """
   Operator only (is_operator or is_super_admin). Every write-off, newest first.
   """
-  cpBillingWriteOffs(limit: Int): [BillingWriteOff!]! @requiresPermission(scope: "operator", permission: "is_operator")
+  cpBillingWriteOffs(
+    """Newest-first page size; defaults to 50, capped server-side."""
+    limit: Int
+  ): [BillingWriteOff!]! @requiresPermission(scope: "operator", permission: "is_operator")
   """
   Operator only. The ledger invariant runs, newest first: whether the sums closed and, when they did not, which check failed and by how much.
   """
-  cpBillingInvariantRuns(limit: Int): [BillingInvariantRun!]! @requiresPermission(scope: "operator", permission: "is_operator")
+  cpBillingInvariantRuns(
+    """Newest-first page size; defaults to 50, capped server-side."""
+    limit: Int
+  ): [BillingInvariantRun!]! @requiresPermission(scope: "operator", permission: "is_operator")
   """
   Operator only. Ledger-versus-provider reconciliation, one row per provider per UTC day.
   """
-  cpBillingReconciliations(limit: Int): [BillingReconciliation!]! @requiresPermission(scope: "operator", permission: "is_operator")
+  cpBillingReconciliations(
+    """Newest-first page size; defaults to 50, capped server-side."""
+    limit: Int
+  ): [BillingReconciliation!]! @requiresPermission(scope: "operator", permission: "is_operator")
   """
   List an app's marketplace code listings (studio administration view), newest first. Requires 'view_compute_diagnostics'. includeDelisted adds delisted/killed rows for moderation history.
   """
@@ -10522,7 +10543,16 @@ type Mutation {
   """
   Operator only. Credit the payer of an over-billed charge (an I3 finding: an allowance or rate was raised after the charge landed) the difference, and close the charge row. Idempotent per charge state. SIDE EFFECT: a wallet credit and a CREDIT event.
   """
-  cpBillingCreditOverbill(appId: BigInt!, chargeId: String!, reason: String!): BillingCreditResult! @requiresPermission(scope: "operator", permission: "is_operator")
+  cpBillingCreditOverbill(
+    """App the charge was billed under."""
+    appId: BigInt!
+    """
+    The HELD or SETTLED charge to credit, from billingCharges / the invariant detail.
+    """
+    chargeId: String!
+    """Operator note recorded on the credit; visible in billingWriteOffs."""
+    reason: String!
+  ): BillingCreditResult! @requiresPermission(scope: "operator", permission: "is_operator")
   """
   Transfer a listing between personal and org ownership (DN-9). The caller must be the current owner (user-owned) or hold manage_compute in the owning org; transfers to an org require manage_compute in the receiving org. SIDE EFFECTS: append-only ownership audit row + replica sync to game-api. Ownership moves listing control and source-access rights; from P4b it also moves proceeds.
   """
