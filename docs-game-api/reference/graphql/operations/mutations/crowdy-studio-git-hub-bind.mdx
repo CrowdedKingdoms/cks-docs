@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Bind a Crowdy Studio project you own to a repository granted to your installation. Verifies the branch exists. Identity session only. Autosave stays off until you turn it on.
+Bind a Crowdy Studio project you own to a repository granted to your installation, and make the two agree in one commit: PUSH&#x005F;PROJECT commits the project files to the branch (refused with GITHUB&#x005F;REPO&#x005F;HAS&#x005F;FILES when the branch already has rust under the layout roots); TAKE&#x005F;REPOSITORY replaces the project files with the rust on the branch (refused with GITHUB&#x005F;REPO&#x005F;EMPTY when there is none). From then on the repository is the working tree and the project files are a mirror of it at githubSha. Identity session only.
 
 
 ```graphql

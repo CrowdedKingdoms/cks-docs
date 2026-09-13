@@ -1,0 +1,43 @@
+---
+id: crowdy-studio-project-source
+title: CrowdyStudioProjectSource
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Where a project’s files are authored. Every project starts as STUDIO; its owner may bind a GitHub repository later (crowdyStudioGitHubBind) and unbind it again. GitHub is never required.
+
+
+```graphql
+enum CrowdyStudioProjectSource {
+  STUDIO
+  GITHUB
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProjectSource.<b>STUDIO</b></code>](#studio) \{#studio\} 
+Files live in Crowdy Studio and are written with the crowdyStudioProject&#x002A; file mutations under the project revision.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProjectSource.<b>GITHUB</b></code>](#github) \{#github\} 
+The bound repository is the working tree. `files` is a server-maintained mirror of the rust under the layout roots at githubSha; writes go through crowdyStudioGitHubPutFile / DeleteFile with expectedCommitSha, and the Studio file mutations refuse with GITHUB&#x005F;BOUND&#x005F;USE&#x005F;CONTENTS.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioProject`](/reference/graphql/types/objects/crowdy-studio-project.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
