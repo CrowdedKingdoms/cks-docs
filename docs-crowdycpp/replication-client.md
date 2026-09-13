@@ -56,6 +56,32 @@ message's **sequence number**:
 Payload bytes are copied into a pooled send buffer during the call, so they
 need not outlive it.
 
+### Bundled sends (0.37.0+)
+
+By default the connection packs the messages you send within a short window into
+one `MESSAGE_BUNDLE` datagram — the framing the server has always used for its
+notifications, accepted on the uplink by replication server v0.27.0+
+([wire formats](/replication-api/wire-formats#message-bundle-per-datagram)). Every
+member is still a complete, individually signed message; only the datagram boundary
+moves.
+
+- `Config::bundleSends` (default `true`). `false` sends every message as its own
+  datagram, synchronously from the calling thread — the pre-0.37 behaviour, and
+  what to use against a server older than v0.27.0.
+- `Config::bundleWindowMs` (default `1`). How long a pending bundle waits for more
+  messages. The net thread (or `pump()`) flushes on expiry; the sending thread also
+  flushes an expired bundle before appending to it. `0` flushes on the very next
+  pass with no deliberate wait.
+- The bundle also leaves when the next message would not fit (1232 bytes / 32
+  members), on `Connection::flushSends()`, at the end of `WorldSession::tick()`,
+  before any `*AndWait` starts waiting, and on `disconnect()` or reassignment. A
+  lone message is sent unwrapped; a message too large for any bundle goes alone.
+- With `Config::manualPump` nothing else flushes between your `pump()` calls, so
+  call `flushSends()` at the end of your frame if you pump less often than you want
+  datagrams out.
+- `stats().bundlesSent` counts the datagrams that were wrappers (two or more
+  members); `datagramsSent` can now be less than `messagesSent`.
+
 ## Receive path
 
 Inbound datagrams are processed on the network side and dispatched on your
@@ -108,8 +134,9 @@ The connection manages its own health so gameplay code doesn't have to:
   legitimately receives nothing. See
   [Troubleshooting](/replication-api/troubleshooting).
 
-Reconnects and drop counters are visible in `stats()` (datagrams sent and
-received, HMAC failures, malformed frames, ring drops, reconnects).
+Reconnects and drop counters are visible in `stats()` (datagrams and messages
+sent and received, bundles sent, HMAC failures, malformed frames, ring drops,
+reconnects).
 
 ## AndWait correlation
 

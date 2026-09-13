@@ -139,15 +139,16 @@ viewer function is ever detached.
   design. If you find the CrowdyJS reference naming an older error code than the
   game-api reference beside it, the chain is working; do not "fix" it by editing
   either generated tree, and do not add a check that demands they agree.
-- **CrowdyJS** npm `latest` is **15.4.0** (this line said 15.1.0 until
-  2026-09-01). 15.0.0 was the breaking major that **removed `devLogin`** and
-  added **`auth.login` / `auth.register`**; 15.1.0 added the four
-  password-management wrappers and three error-code predicates; 15.4.0 retired
-  `alwaysOn`, documented the presence rule for scheduled work, and added
-  `sharedEnvironment.setReservedThroughput`. CrowdyCPP is **0.29.0**. The SDK is NOT
-  passwordless; any page here still saying so is stale. **Verify rather than
-  quoting this line — a version in prose is a version that will be wrong:**
-  `npm view @crowdedkingdoms/crowdyjs version`.
+- **CrowdyJS** is **17.1.0** on `dev` as of 2026-09-13 (this line said 15.4.0
+  until then, and 15.1.0 before 2026-09-01 — twice stale, which is the point of
+  the next sentence). 15.0.0 was the breaking major that **removed `devLogin`**
+  and added **`auth.login` / `auth.register`**; 16 retired the server-side
+  Studio agent; 17.0 made a bound GitHub repository the working tree; 17.1
+  bundles binary-relay sends. CrowdyCPP is **0.37.0** (it said 0.29.0 here
+  through 0.36.0). The SDK is NOT passwordless; any page here still saying so
+  is stale. **Verify rather than quoting this line — a version in prose is a
+  version that will be wrong:** `npm view @crowdedkingdoms/crowdyjs version`
+  and `git -C ../CrowdyCPP describe --tags`.
 - GitHub default is **`prod`**. Trunks: `dev` / `test` / `prod` — and only those
   three. **`main` was deleted across the project on 2026-08-21**, so a
   `github.com/CrowdedKingdoms/<repo>/blob/main/...` link in any page here is a
