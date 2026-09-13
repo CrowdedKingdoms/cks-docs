@@ -56,7 +56,7 @@ message's **sequence number**:
 Payload bytes are copied into a pooled send buffer during the call, so they
 need not outlive it.
 
-### Bundled sends (0.36.0+)
+### Bundled sends (0.37.0+)
 
 By default the connection packs the messages you send within a short window into
 one `MESSAGE_BUNDLE` datagram — the framing the server has always used for its
@@ -66,7 +66,7 @@ member is still a complete, individually signed message; only the datagram bound
 moves.
 
 - `Config::bundleSends` (default `true`). `false` sends every message as its own
-  datagram, synchronously from the calling thread — the pre-0.36 behaviour, and
+  datagram, synchronously from the calling thread — the pre-0.37 behaviour, and
   what to use against a server older than v0.27.0.
 - `Config::bundleWindowMs` (default `1`). How long a pending bundle waits for more
   messages. The net thread (or `pump()`) flushes on expiry; the sending thread also

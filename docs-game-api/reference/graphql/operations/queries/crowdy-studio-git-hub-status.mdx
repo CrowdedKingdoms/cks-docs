@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-GitHub connection for the caller and the repository bound to a Crowdy Studio project. GitHub is a Studio filesystem capability, not a login provider.
+GitHub connection for the caller and the repository bound to a Crowdy Studio project, with the commit the project mirror is at (githubSha). GitHub is a Studio filesystem capability, not a login provider, and it is never required: a project starts in Crowdy Studio and may be bound later.
 
 
 ```graphql
@@ -33,7 +33,7 @@ App that owns the project; with projectId, the bound repository is included.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>crowdyStudioGitHubStatus.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
-Crowdy Studio project to report the repository bind and autosave setting for.
+Crowdy Studio project to report the repository bind and mirror commit for.
 
 
 

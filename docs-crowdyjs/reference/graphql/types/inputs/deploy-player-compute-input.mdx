@@ -15,19 +15,18 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-No description
+Deploy one target of a Crowdy Studio project the caller owns. The server resolves the source itself — the project files at their saved revision for a STUDIO project, the rust under the layout roots at commitSha (default githubSha) for a GITHUB project — so a client never uploads file bodies and what compiles is exactly what was saved or committed.
 
 
 ```graphql
 input DeployPlayerComputeInput {
   appId: BigInt!
   gridId: BigInt!
-  name: String!
-  description: String
+  projectId: String!
   target: PlayerComputeTarget!
-  sourceFilesJson: String!
-  sdkVersion: String
-  abiVersion: Int
+  name: String
+  description: String
+  commitSha: String
   tickHz: Float
   draft: Boolean
 }
@@ -44,28 +43,24 @@ App containing the owned grid.
 Owned grid that confines server execution.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
-Lowercase crate-style module name, unique within the grid.
+#### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+Crowdy Studio project (owned by the caller, in this app) whose target is deployed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerComputeTarget!</b></code>](/reference/graphql/types/enums/player-compute-target.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#target\} 
+SERVER or CLIENT compile target; the project must have files for it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Lowercase crate-style module name, unique within the grid. Defaults to the project’s module name for the target and must equal it when both are set.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
 Optional player-facing module description.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>PlayerComputeTarget!</b></code>](/reference/graphql/types/enums/player-compute-target.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#target\} 
-SERVER or CLIENT compile target.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>sourceFilesJson</b></code>](#source-files-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-files-json\} 
-JSON object mapping Cargo.toml and src/&#x002A;.rs relative paths to source. P1 player caps: at most 8 files, 64 KiB/file, 256 KiB total.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>sdkVersion</b></code>](#sdk-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sdk-version\} 
-Pinned crowdy-compute-sdk version. Defaults to 0.1.5.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\} 
-Guest ABI version. P1 supports ABI 0.
+#### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>commitSha</b></code>](#commit-sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#commit-sha\} 
+GITHUB projects only: the full 40-hex commit to compile. Defaults to the project githubSha (the mirror commit). Refused for a STUDIO project.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>tickHz</b></code>](#tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tick-hz\} 

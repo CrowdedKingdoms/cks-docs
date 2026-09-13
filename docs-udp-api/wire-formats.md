@@ -178,11 +178,11 @@ Rules:
 - A **framing fault** — a truncated length or body, a zero-length member, more than
   32 members — stops the walk. Members already processed stay processed; the rest
   of the datagram is dropped.
-- **Accounting.** The datagram's wire bytes are charged once, to the first member
-  that reaches per-client accounting; every accepted member counts as one message.
+- **Accounting.** A bundle is one datagram: its wire bytes are metered once, and
+  every accepted member counts as one message.
 - A single-member bundle is legal but buys nothing: send one message unwrapped.
 
-The SDKs do this for you. CrowdyCPP 0.36.0 (`Config::bundleSends`, on by default,
+The SDKs do this for you. CrowdyCPP 0.37.0 (`Config::bundleSends`, on by default,
 `Config::bundleWindowMs` = 1 ms, `Connection::flushSends()`) and CrowdyJS 17.1 on the
 binary relay (`realtime.bundleSends`, `realtime.bundleWindowMs`,
 `client.udp.flushSends()`) pack the messages sent within the window into one

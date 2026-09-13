@@ -29,6 +29,9 @@ type PlayerWasmModuleVersion {
   compileStatus: String!
   compileLog: String
   compiledSizeBytes: BigInt
+  projectId: String
+  sourceRevision: BigInt
+  githubCommitSha: String
   createdAt: DateTime!
 }
 ```
@@ -70,6 +73,18 @@ Compiler log; visible to the author.
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>compiledSizeBytes</b></code>](#compiled-size-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#compiled-size-bytes\} 
 Final instrumented/optimized artifact size.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+Crowdy Studio project this version was deployed from, when known.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>sourceRevision</b></code>](#source-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#source-revision\} 
+Project revision the source was read at (STUDIO projects).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>githubCommitSha</b></code>](#github-commit-sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#github-commit-sha\} 
+Commit the rust was fetched at (GITHUB projects). A force-push of the bound branch never changes what this version runs.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWasmModuleVersion.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
