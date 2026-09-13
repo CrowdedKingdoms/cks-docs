@@ -35,7 +35,10 @@ rather than a request quota:
   amplification. See [Wire formats](/replication-api/wire-formats) for the decay
   algorithms.
 - The server coalesces outbound messages into bundles (~1 ms window), so a client should
-  expect batched delivery and parse `MESSAGE_BUNDLE`s.
+  expect batched delivery and parse `MESSAGE_BUNDLE`s. Clients may coalesce the same way
+  (replication server v0.27.0+; the SDKs do it by default): several requests in one
+  datagram are charged once for the datagram's wire bytes and counted once per accepted
+  message.
 - `sequenceNumber` is a `uint8` that wraps at 255 and is **correlation only** — it is not
   a flow-control or idempotency mechanism.
 
