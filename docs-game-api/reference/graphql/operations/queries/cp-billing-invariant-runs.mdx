@@ -1,0 +1,39 @@
+---
+id: cp-billing-invariant-runs
+title: cpBillingInvariantRuns
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator only. The ledger invariant runs, newest first: whether the sums closed and, when they did not, which check failed and by how much.
+
+
+```graphql
+cpBillingInvariantRuns(
+  limit: Int
+): [BillingInvariantRun!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>cpBillingInvariantRuns.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Newest-first page size; defaults to 50, capped server-side.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>BillingInvariantRun</b></code>](/reference/graphql/types/objects/billing-invariant-run.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One run of the ledger invariant checks.

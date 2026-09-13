@@ -23,8 +23,10 @@ type PlayerWalletTransaction {
   transactionId: BigInt!
   walletId: BigInt!
   userId: BigInt!
-  amountCents: BigInt!
-  balanceAfter: BigInt!
+  amountMicrousd: BigInt!
+  balanceAfterMicrousd: BigInt!
+  amountCents: BigInt! @deprecated
+  balanceAfter: BigInt! @deprecated
   transactionType: String!
   description: String
   referenceId: String
@@ -48,12 +50,32 @@ The wallet.
 The owning player user id.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#amount-cents\} 
-Signed amount in cents (debits negative).
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>amountMicrousd</b></code>](#amount-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#amount-microusd\} 
+Signed amount in micro-USD (debits negative). Exact.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>balanceAfter</b></code>](#balance-after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-after\} 
-Balance after this entry.
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>balanceAfterMicrousd</b></code>](#balance-after-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-after-microusd\} 
+Balance in micro-USD after this entry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>amountCents</b></code>](#amount-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#amount-cents\} 
+:::warning[DEPRECATED]
+
+Derived from amountMicrousd (truncated toward zero). Read amountMicrousd.
+
+:::
+
+DEPRECATED. amountMicrousd / 10,000 truncated toward zero.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>balanceAfter</b></code>](#balance-after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-after\} 
+:::warning[DEPRECATED]
+
+Derived from balanceAfterMicrousd. Read balanceAfterMicrousd.
+
+:::
+
+DEPRECATED. balanceAfterMicrousd / 10,000 truncated toward zero.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>transactionType</b></code>](#transaction-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#transaction-type\} 

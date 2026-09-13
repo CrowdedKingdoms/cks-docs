@@ -124,29 +124,43 @@ never grants source access or deployment rights.
 
 ## Deploy player code
 
-`playerComputeDeploy` is a one-step create/update + immutable-version upload.
-The caller must own the grid and hold the target's write key:
+`playerComputeDeploy` is a one-step create/update + immutable-version publish
+**from a Crowdy Studio project**. The caller names the project; the server
+reads the source itself — the project's files at their saved revision, or, for
+a project [bound to a GitHub repository](crowdy-studio-github), the rust under
+the layout roots at a commit — so a client never uploads file bodies and what
+compiles is exactly what was saved or committed. The caller must own the grid
+and the project and hold the target's write key:
 
 ```graphql
-mutation Deploy($source: String!) {
+mutation Deploy {
   playerComputeDeploy(input: {
     appId: "1"
     gridId: "42"
-    name: "auto-farm"
+    projectId: "7b1f7e2c-…"
     target: SERVER
-    sourceFilesJson: $source
+    name: "auto-farm"   # optional; defaults to the project's module name for the target
     tickHz: 1
-    sdkVersion: "0.1.5"
-    abiVersion: 0
+    # commitSha: "…"    # GITHUB projects only; defaults to the project githubSha
   }) {
     versionId
     versionNo
     target
     compileStatus
     compileLog
+    projectId
+    sourceRevision   # STUDIO project: the revision the source was read at
+    githubCommitSha  # GITHUB project: the commit the rust was fetched at
   }
 }
 ```
+
+The SDK version and ABI pins are the project's own (`sdkVersion` /
+`abiVersion` on the Crowdy Studio project), not deploy input. A `commitSha`
+on a project that is not bound is refused with `GITHUB_NOT_BOUND`.
+`PlayerWasmModuleVersion` records where its source came from
+(`projectId`, `sourceRevision`, `githubCommitSha`); a force-push of a bound
+branch never changes what a deployed version runs.
 
 Player source limits are intentionally tighter than studio modules: 8 files,
 64 KiB per file, 256 KiB total. Server code builds for `wasm32-wasip1`;
@@ -333,7 +347,9 @@ the existing immutable player-module version registry.
 
 The loop is:
 
-- **Server projects:** edit and autosave -> `playerComputeDeploy` -> poll
+- **Server projects:** edit and autosave (a commit, when the project is
+  [bound to GitHub](crowdy-studio-github)) -> `playerComputeDeploy` by
+  `projectId` -> poll
   compile status -> enable on success -> stream runs/logs into the console. Hot
   reload swaps the module on the next scheduler pass and drops in-memory guest
   state (persist across reloads with `state_set`).
