@@ -71,7 +71,7 @@ Some list fields return a plain array and take `limit`/`offset` without a `total
 (page until you receive fewer than `limit` rows):
 
 ```graphql
-query Txns { walletTransactions(orgId: "10", limit: 50, offset: 0) { transactionId amountCents } }
+query Txns { walletTransactions(orgId: "10", limit: 50, offset: 0) { transactionId amountMicrousd } }
 ```
 
 ## Game API `limit`/`skip`
