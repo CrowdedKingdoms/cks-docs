@@ -24,7 +24,8 @@ type AppPlayerUsageRow {
   computeUnits: BigInt!
   automationUnits: BigInt!
   compileCount: Int!
-  chargedCents: BigInt!
+  chargedMicrousd: BigInt!
+  chargedCents: BigInt! @deprecated
 }
 ```
 
@@ -47,8 +48,18 @@ Player automation units used.
 Compile submissions.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppPlayerUsageRow.<b>chargedCents</b></code>](#charged-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#charged-cents\} 
-Cents charged in the window.
+#### [<code style={{ fontWeight: 'normal' }}>AppPlayerUsageRow.<b>chargedMicrousd</b></code>](#charged-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#charged-microusd\} 
+Micro-USD charged to the player for this app in the window (exact).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppPlayerUsageRow.<b>chargedCents</b></code>](#charged-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#charged-cents\} 
+:::warning[DEPRECATED]
+
+Derived from chargedMicrousd (truncated). Read chargedMicrousd.
+
+:::
+
+DEPRECATED. chargedMicrousd / 10,000 truncated toward zero.
 
 
 

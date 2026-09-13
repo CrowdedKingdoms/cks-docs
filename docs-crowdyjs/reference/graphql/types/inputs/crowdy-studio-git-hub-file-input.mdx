@@ -22,6 +22,7 @@ No description
 input CrowdyStudioGitHubFileInput {
   appId: BigInt!
   projectId: String!
+  commitSha: String
   path: String!
 }
 ```
@@ -35,6 +36,10 @@ input CrowdyStudioGitHubFileInput {
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFileInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
 
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFileInput.<b>commitSha</b></code>](#commit-sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#commit-sha\} 
+Full 40-hex commit to read at. Omitted reads the project githubSha (the mirror commit), never the branch head.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFileInput.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\} 

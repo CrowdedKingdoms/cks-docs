@@ -37,6 +37,11 @@ type CrowdyStudioProject {
   fileCount: Int!
   totalBytes: BigInt!
   files: [CrowdyStudioProjectFile!]!
+  source: CrowdyStudioProjectSource!
+  githubOwner: String
+  githubRepo: String
+  githubBranch: String
+  githubSha: String
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -110,7 +115,27 @@ Total UTF-8 source bytes across both targets, bounded by target and aggregate ow
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>files</b></code>](#files)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioProjectFile!]!</b></code>](/reference/graphql/types/objects/crowdy-studio-project-file.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#files\} 
-Private project files ordered by target and path. Bounded to eight files per target.
+Private project files ordered by target and path. Bounded to eight files per target. For a GITHUB project this is the mirror of the repository at githubSha, read the same way.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>source</b></code>](#source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioProjectSource!</b></code>](/reference/graphql/types/enums/crowdy-studio-project-source.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#source\} 
+STUDIO until the owner binds a repository; GITHUB while one is bound. Decides which mutations may write files.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>githubOwner</b></code>](#github-owner)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#github-owner\} 
+Bound repository owner, or null for a STUDIO project.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>githubRepo</b></code>](#github-repo)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#github-repo\} 
+Bound repository name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>githubBranch</b></code>](#github-branch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#github-branch\} 
+Bound branch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>githubSha</b></code>](#github-sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#github-sha\} 
+Commit the mirror is at. Present it as expectedCommitSha on every bound write; a stale value is refused with GITHUB&#x005F;STALE&#x005F;SHA.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProject.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 

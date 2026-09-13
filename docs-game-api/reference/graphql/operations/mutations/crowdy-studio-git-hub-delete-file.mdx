@@ -1,6 +1,6 @@
 ---
-id: crowdy-studio-git-hub-set-autosave
-title: crowdyStudioGitHubSetAutosave
+id: crowdy-studio-git-hub-delete-file
+title: crowdyStudioGitHubDeleteFile
 ---
 
 
@@ -15,19 +15,19 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Opt a bound project into (or out of) pushing Studio autosaves to GitHub. Default is off.
+Delete one file from the bound repository as a commit on the bound branch, under the same blob-sha and expectedCommitSha guards as crowdyStudioGitHubPutFile. A project file leaves the mirror with it. crowdy.json cannot be deleted this way.
 
 
 ```graphql
-crowdyStudioGitHubSetAutosave(
-  input: SetCrowdyStudioGitHubAutosaveInput!
+crowdyStudioGitHubDeleteFile(
+  input: CrowdyStudioGitHubDeleteFileInput!
 ): CrowdyStudioGitHubStatus!
 ```
 
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioGitHubSetAutosave.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetCrowdyStudioGitHubAutosaveInput!</b></code>](/reference/graphql/types/inputs/set-crowdy-studio-git-hub-autosave-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioGitHubDeleteFile.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubDeleteFileInput!</b></code>](/reference/graphql/types/inputs/crowdy-studio-git-hub-delete-file-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
 
 
 

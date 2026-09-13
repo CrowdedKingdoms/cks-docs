@@ -22,7 +22,9 @@ No description
 type OrgWallet {
   walletId: BigInt!
   orgId: BigInt!
-  balanceCents: BigInt!
+  balanceMicrousd: BigInt!
+  holdsMicrousd: BigInt!
+  balanceCents: BigInt! @deprecated
   currency: String!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -40,8 +42,22 @@ Unique wallet id (BigInt as a decimal string).
 Organization that owns this wallet (BigInt as a decimal string). There is exactly one wallet per organization.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>OrgWallet.<b>balanceCents</b></code>](#balance-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-cents\} 
-Current wallet balance in minor currency units (cents) of `currency`, as a BigInt decimal string. May be negative if usage was charged against an empty wallet.
+#### [<code style={{ fontWeight: 'normal' }}>OrgWallet.<b>balanceMicrousd</b></code>](#balance-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-microusd\} 
+Current wallet balance in MICRO-USD (1 USD = 1,000,000), as a BigInt decimal string. The unit of account since 2026-09-11: every charge is recorded to the micro-USD and nothing is rounded. May be negative when accrued usage settled against an empty wallet.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgWallet.<b>holdsMicrousd</b></code>](#holds-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#holds-microusd\} 
+Micro-USD currently held against in-flight request-priced usage (a model turn reserves its worst case here before it runs and releases the difference when it settles). Spendable balance is balanceMicrousd - holdsMicrousd.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgWallet.<b>balanceCents</b></code>](#balance-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-cents\} 
+:::warning[DEPRECATED]
+
+Cents are a display convenience derived from balanceMicrousd (truncated toward zero). Read balanceMicrousd.
+
+:::
+
+DEPRECATED. balanceMicrousd / 10,000 truncated toward zero, as a BigInt decimal string.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>OrgWallet.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 

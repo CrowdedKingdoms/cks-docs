@@ -221,16 +221,38 @@ kit is chrome — it grants no authority. Deploys, drafts and invokes are
 authorized server-side exactly as before, and a live deploy the agent asks for
 waits for the player to confirm in the pane.
 
-## GitHub repository card (15.11+)
+## GitHub repository card (17+)
 
-When the client is a full `CrowdyClient`, the embed passes
-`client.crowdyStudioGitHub` to the Studio controller and the settings pane
-grows a **GitHub repository** card: Connect, Bind `owner/repo@branch`, Unbind,
-Push, Pull, Refresh, and an **Also push autosaves to GitHub** toggle that is
-off by default. The card hides itself when the environment has no GitHub App.
-Connect and Bind need the modder's identity session (hosted Studio); the
-in-game panel can push and pull a repository that is already bound. Nothing
-GitHub-related is stored in the browser. See
+GitHub is optional: a project is `source: 'STUDIO'` until its owner binds a
+repository and `'GITHUB'` while one is bound, and nothing in the embed changes
+for a game that never binds. When the client is a full `CrowdyClient`, the
+embed passes `client.crowdyStudioGitHub` to the Studio controller and the
+settings pane grows a **GitHub repository** card: Connect, Bind
+`owner/repo@branch` (choosing **push the project into the repository** or
+**take the repository as the project** for the first commit), Refresh, and
+Unbind. The card hides itself when the environment has no GitHub App.
+
+While bound, **the repository is the working tree**: `saveProject` sends each
+changed file as its own commit carrying the project's current commit SHA
+(`expectedCommitSha`), so a stale commit surfaces as the same
+`CrowdyStudioRevisionConflictError` the editor already recovers from. The
+project's `files` are the server's mirror of the repository, read exactly as
+before, and `client.playerCompute.deploy` takes `projectId` (+ `commitSha` for
+a bound project) — the server resolves the source. There are no Push / Pull
+buttons and no autosave toggle any more (removed in 17.0.0 with
+`pushToGitHub`, `pullFromGitHub`, `setAutosave` and the SDK-side `crowdy.json`
+helpers; `client.crowdyStudioGitHub.layout()` is the only layout grammar).
+**Refresh** brings the mirror to the branch head after a push made elsewhere.
+
+Connect and Bind need the modder's identity session, so the card offers them
+only where one exists (hosted Studio). A game keeps the default `github`
+transport, `client.crowdyStudioGitHub` — the app-token client that plays —
+and the API scopes every GitHub field to projects that token's user owns, so
+a game never needs an identity session to author against GitHub; a
+third-party game must never read one. A host that *does* hold an identity
+session passes its own transport through the `github` option of
+`createCrowdyStudioEmbed` / `mountCrowdyStudio`. Nothing GitHub-related is
+stored in the browser. See
 [Connect your GitHub repo to a Studio project](/game-api/crowdy-studio-github).
 
 ## Styling and layout contract
