@@ -48,7 +48,10 @@ Buddy fans out on the **same UDP socket** you send from.
 4. Sequence byte is preserved from the sender.
 
 Parse **`MESSAGE_BUNDLE`** (type `2`) when the first byte is `2` — see
-**[Wire formats](/replication-api/wire-formats)**.
+**[Wire formats](/replication-api/wire-formats#message-bundle-per-datagram)**. You may
+send the same framing: pack several signed requests into one datagram (≤ 1232
+bytes, ≤ 32 members, no nesting) and the server processes each member as if it had
+arrived alone (replication server v0.27.0+).
 
 ## Errors on the same socket
 
