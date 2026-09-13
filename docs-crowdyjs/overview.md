@@ -360,6 +360,11 @@ const game = createCrowdyClient({
   realtime: {
     retryAttempts: 8,
     waitTimeoutMs: 5000,
+    // Optional: the binary relay signs datagrams in the browser and, since 17.1,
+    // packs the sends made within `bundleWindowMs` (default 1 ms) into one
+    // MESSAGE_BUNDLE. `client.udp.flushSends()` sends a frame's worth at once;
+    // `bundleSends: false` restores one datagram per message.
+    // binaryTransport: true,
   },
 });
 game.setToken(appToken.token);

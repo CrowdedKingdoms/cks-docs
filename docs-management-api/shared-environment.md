@@ -54,7 +54,8 @@ clients. Ingress — what your clients send — is metered and visible in usage,
 does not count toward the monthly volume or its allowance. Volume is measured as
 wire bytes at the network interface, so it includes the transport and network
 headers each frame carries, and it is counted after any compression the service
-applies. A client-side byte counter will not match it. The full basis is in the
+applies. A `MESSAGE_BUNDLE` datagram carrying several messages is one frame and is
+metered once, in either direction. A client-side byte counter will not match it. The full basis is in the
 [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html).
 
 For compute modules, one `wasm_compute_unit` is approximately one millisecond
