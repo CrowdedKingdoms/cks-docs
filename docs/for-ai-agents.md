@@ -72,8 +72,13 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
   never a JSON number — this avoids precision loss. IDs (`appId`, `orgId`, `userId`) are
   `BigInt`.
 - **`DateTime`** is an ISO-8601 UTC string, e.g. `2026-06-12T18:00:00Z`.
-- **Money** fields named `*Cents` are in minor currency units (cents); pair them with the
-  adjacent `currency` field.
+- **Money.** Wallet balances, holds and ledger amounts are **micro-USD** — fields named
+  `*Microusd`, where 1 USD = `1000000` — as `BigInt` decimal strings. Nothing is rounded:
+  a model turn that cost $0.000117 is a `-117` on the ledger, and `holdsMicrousd` is what
+  in-flight requests have reserved (spendable = `balanceMicrousd - holdsMicrousd`). The
+  older `*Cents` wallet fields are deprecated and derived (micro-USD ÷ 10,000, truncated).
+  Processor-facing amounts (`amountCents` on checkouts, `priceCents` on access tiers) stay
+  in cents because Stripe and PayPal settle in cents.
 - **Errors** are structured — `extensions.code` (+ `remediation`, and `requiredPermission`
   for auth failures). See [Error codes](/overview/error-codes).
 - **Pagination:** prefer the Relay `*Connection` queries (`first`/`after`); offset args are
@@ -189,8 +194,8 @@ mutation NewTier {
   createAccessTier(input: { appId: "42", name: "Premium", priceCents: "999", permissionKeys: ["access"] }) { id }
 }
 
-# Check an org wallet (minor units), then open a top-up checkout.
-query Wallet { walletBalance(orgId: "10") { balanceCents currency } }
+# Check an org wallet (micro-USD), then open a top-up checkout (cents: the processor's unit).
+query Wallet { walletBalance(orgId: "10") { balanceMicrousd holdsMicrousd currency } }
 
 mutation TopUp {
   createCheckout(input: { purpose: ORG_WALLET_TOPUP, orgId: "10", amountCents: "5000", provider: STRIPE }) {
