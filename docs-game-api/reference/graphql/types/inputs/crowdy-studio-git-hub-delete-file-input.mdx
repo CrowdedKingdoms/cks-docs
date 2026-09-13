@@ -1,0 +1,63 @@
+---
+id: crowdy-studio-git-hub-delete-file-input
+title: CrowdyStudioGitHubDeleteFileInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input CrowdyStudioGitHubDeleteFileInput {
+  appId: BigInt!
+  projectId: String!
+  path: String!
+  message: String!
+  sha: String
+  expectedCommitSha: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubDeleteFileInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubDeleteFileInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#project-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubDeleteFileInput.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubDeleteFileInput.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubDeleteFileInput.<b>sha</b></code>](#sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sha\} 
+Blob SHA of the file being deleted. Optional; resolved from the tree at expectedCommitSha.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubDeleteFileInput.<b>expectedCommitSha</b></code>](#expected-commit-sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expected-commit-sha\} 
+The project githubSha the writer read; stale is refused with GITHUB&#x005F;STALE&#x005F;SHA.
+
+
+
+
+### Member Of
+
+[`crowdyStudioGitHubDeleteFile`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-delete-file.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

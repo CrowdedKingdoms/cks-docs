@@ -41,6 +41,15 @@ The Game API remains the final authority on everything: project ownership and
 `write_*`/`run_*` permissions, compile and runtime quotas, code admission, and
 the spend gates below.
 
+The agent writes files the way any Studio client does. GitHub is optional;
+when the project is [bound to a repository](crowdy-studio-github), the agent's
+writes are `crowdyStudioGitHubPutFile` / `DeleteFile` commits carrying the
+project's current `githubSha` as `expectedCommitSha`, with the player's app
+token — the same fields and the same token the in-game editor uses, so no
+identity session is involved. Monaco and the agent read one tree (the
+server's mirror of the repository at `githubSha`); a stale commit is refused
+with `GITHUB_STALE_SHA` and the worker re-reads before writing again.
+
 ## The metered model endpoint
 
 Two REST routes, authenticated exactly like any SDK call. The bearer is an

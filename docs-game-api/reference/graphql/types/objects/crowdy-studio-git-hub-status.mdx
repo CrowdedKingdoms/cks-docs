@@ -27,7 +27,7 @@ type CrowdyStudioGitHubStatus {
   owner: String
   repo: String
   branch: String
-  autosave: Boolean!
+  githubSha: String
   installUrl: String
 }
 ```
@@ -63,8 +63,8 @@ Bound repository owner, when a project was named.
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>autosave</b></code>](#autosave)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#autosave\} 
-Studio autosave also pushes to the bound repository. Off by default; the project owner opts in.
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>githubSha</b></code>](#github-sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#github-sha\} 
+Commit the project mirror is at. Every bound write presents it as expectedCommitSha; a stale value is refused with GITHUB&#x005F;STALE&#x005F;SHA. Null when the project is not bound.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>installUrl</b></code>](#install-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#install-url\} 
@@ -75,4 +75,4 @@ Where to send the modder to install or manage the App.
 
 ### Returned By
 
-[`crowdyStudioGitHubBind`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-bind.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`crowdyStudioGitHubSetAutosave`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-set-autosave.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`crowdyStudioGitHubStatus`](/reference/graphql/operations/queries/crowdy-studio-git-hub-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`crowdyStudioGitHubUnbind`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-unbind.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+[`crowdyStudioGitHubBind`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-bind.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`crowdyStudioGitHubDeleteFile`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-delete-file.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`crowdyStudioGitHubRefresh`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-refresh.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`crowdyStudioGitHubStatus`](/reference/graphql/operations/queries/crowdy-studio-git-hub-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`crowdyStudioGitHubUnbind`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-unbind.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

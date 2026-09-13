@@ -15,13 +15,19 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Total player rate-card markup accrued to this app's org income line, in cents (payouts arrive with the P4b ledger). Requires 'view&#x005F;billing'.
+:::warning[DEPRECATED]
+
+Cents truncate; appPlayerMarkupAccruedMicrousd carries the exact amount.
+
+:::
+
+DEPRECATED (cents, truncated): read appPlayerMarkupAccruedMicrousd. Total player rate-card markup credited to this app's org wallet, in cents. Requires 'view&#x005F;billing'.
 
 
 ```graphql
 appPlayerMarkupAccrued(
   appId: BigInt!
-): BigInt!
+): BigInt! @deprecated
 ```
 
 

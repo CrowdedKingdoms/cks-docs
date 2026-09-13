@@ -1,0 +1,63 @@
+---
+id: billing-invariant-run
+title: BillingInvariantRun
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One run of the ledger invariant checks.
+
+
+```graphql
+type BillingInvariantRun {
+  runId: String!
+  ranAt: DateTime!
+  ok: Boolean!
+  residueMicrousd: BigInt!
+  sums: String!
+  detail: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingInvariantRun.<b>runId</b></code>](#run-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#run-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingInvariantRun.<b>ranAt</b></code>](#ran-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#ran-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingInvariantRun.<b>ok</b></code>](#ok)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#ok\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingInvariantRun.<b>residueMicrousd</b></code>](#residue-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#residue-microusd\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingInvariantRun.<b>sums</b></code>](#sums)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sums\} 
+JSON text.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingInvariantRun.<b>detail</b></code>](#detail)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#detail\} 
+JSON text.
+
+
+
+
+### Returned By
+
+[`cpBillingInvariantRuns`](/reference/graphql/operations/queries/cp-billing-invariant-runs.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

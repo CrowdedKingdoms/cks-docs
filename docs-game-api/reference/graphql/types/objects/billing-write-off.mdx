@@ -1,0 +1,83 @@
+---
+id: billing-write-off
+title: BillingWriteOff
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A billable amount that could not be billed, with the reason.
+
+
+```graphql
+type BillingWriteOff {
+  writeOffId: String!
+  appId: BigInt
+  payerKind: String!
+  payerId: BigInt!
+  meter: String!
+  quantity: BigInt!
+  amountMicrousd: BigInt!
+  reason: String!
+  evidence: String
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingWriteOff.<b>writeOffId</b></code>](#write-off-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#write-off-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingWriteOff.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingWriteOff.<b>payerKind</b></code>](#payer-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payer-kind\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingWriteOff.<b>payerId</b></code>](#payer-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payer-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingWriteOff.<b>meter</b></code>](#meter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#meter\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingWriteOff.<b>quantity</b></code>](#quantity)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#quantity\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingWriteOff.<b>amountMicrousd</b></code>](#amount-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#amount-microusd\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingWriteOff.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingWriteOff.<b>evidence</b></code>](#evidence)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#evidence\} 
+JSON text.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingWriteOff.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+
+
+
+
+
+### Returned By
+
+[`billingWriteOffs`](/reference/graphql/operations/queries/billing-write-offs.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`cpBillingWriteOffs`](/reference/graphql/operations/queries/cp-billing-write-offs.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
