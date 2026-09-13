@@ -139,8 +139,8 @@ the GraphQL UDP proxy are migrated automatically and never see this message.
 The message bundle type simply puts multiple messages in a datagram as size allows.
 Each message is another message type.
 Messages are packed one after another and message lengths are used to determine the size of the actual message.
-There will be at least one message in a bundle, but usually more. The parser must use the datagram length and parse through each message to determine if there is another message to parse.
-Message bundles are only sent from the server to a client. Clients do not send message bundles.
+There will be at least one message in a bundle, but usually more. The parser must use the datagram length and parse through each message to determine if there is another message to parse — there is no count field.
+Bundles travel in **both directions**: the server has always packed its notifications this way, and since replication server v0.27.0 a client may pack its requests the same way.
 
 | Identifier                            | Bits | Bytes | Type   | Description                                              |
 | ------------------------------------- | ---- | ----- | ------ | -------------------------------------------------------- |
@@ -150,6 +150,45 @@ Message bundles are only sent from the server to a client. Clients do not send m
 | messageLength                         | 0/16 | 0/2   | uint16 | The length of the next message if present.               |
 | message                               | 0/X  | 0/X   | bytes  | The full message, corresponding to another message type. |
 | more messages as datagram size allows |
+
+### Server → client
+
+The server accumulates notifications for about 1 ms and sends them as one bundle
+(at most 1232 bytes, at most 32 members). A lone notification is sent unwrapped.
+`COMMAND_RECONNECT` (22) and `COMMAND_SESSION_RELEASED` (28) are never bundled, so
+their first byte is always the opcode. Clients must parse bundles.
+
+### Client → server
+
+A client may pack several requests — long-spatial messages, heartbeats, channel
+messages — into one bundle. Every member is a complete message with its own
+opcode, game token ID, HMAC tail and sequence number; the wrapper itself carries
+no authentication and nothing to trust. The server unpacks the bundle and treats
+each member exactly as if it had arrived alone: a member that fails (bad HMAC, no
+session, permission denied) is dropped or answered on its own and does not affect
+its siblings.
+
+Rules:
+
+- The datagram must fit **1232 bytes**; at most **32 members**. The largest single
+  message that can travel inside a bundle is 1229 bytes — anything larger is sent
+  on its own.
+- **No nesting.** A member whose first byte is `2` is dropped; its siblings are
+  still processed.
+- A **framing fault** — a truncated length or body, a zero-length member, more than
+  32 members — stops the walk. Members already processed stay processed; the rest
+  of the datagram is dropped.
+- **Accounting.** The datagram's wire bytes are charged once, to the first member
+  that reaches per-client accounting; every accepted member counts as one message.
+- A single-member bundle is legal but buys nothing: send one message unwrapped.
+
+The SDKs do this for you. CrowdyCPP 0.36.0 (`Config::bundleSends`, on by default,
+`Config::bundleWindowMs` = 1 ms, `Connection::flushSends()`) and CrowdyJS 17.1 on the
+binary relay (`realtime.bundleSends`, `realtime.bundleWindowMs`,
+`client.udp.flushSends()`) pack the messages sent within the window into one
+datagram and send a lone message unwrapped. Against a server older than v0.27.0
+turn bundling off; otherwise any two messages sent within a window are dropped
+together.
 
 ## Error Codes
 
@@ -453,7 +492,7 @@ View the client HMAC document for details on creating and parsing the HMAC. The 
 - If the HMAC is included, calculate it according to the client HMAC document.
 - Set the game token ID field to the client's game token ID. In server responses, this same field will contain epoch milliseconds instead.
 - Set the sequence number of this message. Sequence numbers are for the convenience of the client and should be incremented for each message sent, regardless of any error messages.
-- Server sent messages may be single messages or packed into bundles. Test the message type and handle appropriately.
+- Server sent messages may be single messages or packed into bundles. Test the message type and handle appropriately. Your own requests may be packed the same way (see [Message Bundle per Datagram](#message-bundle-per-datagram)); each member still carries its own HMAC tail and sequence number.
 - **Verify inbound notifications:** server→client long-spatial notifications arrive with `containsAuth = 1` and a 32-byte HMAC. Recompute `HMAC-SHA256(token, prefix || token)` with your game token and **constant-time compare** to the tail HMAC; drop the message on mismatch. The 8-byte slot after the HMAC is server epoch millis (not part of the signed data). See **[HMAC](/replication-api/hmac)**.
 
 ## Instructions to Servers

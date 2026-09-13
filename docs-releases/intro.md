@@ -30,6 +30,35 @@ supported path.
 
 :::
 
+## 2026-09-13 (Replication API v0.27.0, CrowdyCPP 0.36, CrowdyJS 17.1)
+
+**Clients may bundle their requests.** `MESSAGE_BUNDLE` (opcode 2) — the framing the
+replication server has always used to pack several notifications into one datagram —
+is now accepted on the uplink too. Nothing removed; a client that keeps sending one
+message per datagram is unaffected.
+
+- **Replication server v0.27.0:** a client datagram whose first byte is `2` is
+  unpacked and every member is gated, authenticated and rate-accounted exactly as if
+  it had arrived alone. Rules: ≤ 1232 bytes, ≤ 32 members, no nesting (a nested
+  member is dropped, its siblings proceed), a framing fault drops the remainder of
+  the datagram but keeps the members already processed, and the datagram's wire bytes
+  are metered once. See
+  [Message Bundle per Datagram](/replication-api/wire-formats#message-bundle-per-datagram).
+- **CrowdyCPP 0.36.0:** `replication::Connection` bundles outbound sends by default
+  (`Config::bundleSends`, `Config::bundleWindowMs` = 1 ms), flushing on the window,
+  on capacity, on `Connection::flushSends()`, at the end of `WorldSession::tick()`,
+  before `*AndWait`, and on disconnect. A lone message is sent unwrapped.
+  `Stats::bundlesSent` is new; `datagramsSent` may now be less than `messagesSent`.
+  `bundleSends = false` is the 0.35 behaviour. See
+  [Replication client](/crowdycpp/replication-client#bundled-sends-0360).
+- **CrowdyJS 17.1.0:** the same on the binary relay (`realtime.binaryTransport`):
+  `realtime.bundleSends`, `realtime.bundleWindowMs`, `client.udp.flushSends()`,
+  `client.realtime.binaryRelayStats()`. The GraphQL transport is unchanged — the
+  proxy signs one message per mutation.
+- **Rollout order:** deploy the replication server before shipping an SDK build
+  that bundles. Against an older server, two messages sent within a window are
+  dropped together; `bundleSends: false` is the escape hatch.
+
 ## 2026-09-11 (Game API, CrowdyJS 16, CrowdyCPP 0.34)
 
 **The Crowdy Agent orchestrator is replaced by the in-browser DeepSeek Harness
