@@ -1,0 +1,68 @@
+---
+id: billing-reconciliation
+title: BillingReconciliation
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Ledger versus provider for one UTC day.
+
+
+```graphql
+type BillingReconciliation {
+  provider: String!
+  day: String!
+  expectedMicrousd: BigInt!
+  providerReportedMicrousd: BigInt
+  deltaMicrousd: BigInt
+  status: String!
+  detail: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingReconciliation.<b>provider</b></code>](#provider)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#provider\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingReconciliation.<b>day</b></code>](#day)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#day\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingReconciliation.<b>expectedMicrousd</b></code>](#expected-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expected-microusd\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingReconciliation.<b>providerReportedMicrousd</b></code>](#provider-reported-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#provider-reported-microusd\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingReconciliation.<b>deltaMicrousd</b></code>](#delta-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#delta-microusd\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingReconciliation.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BillingReconciliation.<b>detail</b></code>](#detail)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#detail\} 
+JSON text.
+
+
+
+
+### Returned By
+
+[`cpBillingReconciliations`](/reference/graphql/operations/queries/cp-billing-reconciliations.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -15,19 +15,19 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Recursive file list of the repository bound to the project (Git Trees API).
+Recursive file list of the repository bound to the project at one commit (default: githubSha, the mirror commit).
 
 
 ```graphql
 crowdyStudioGitHubTree(
-  input: CrowdyStudioGitHubProjectInput!
-): [CrowdyStudioGitHubTreeEntry!]!
+  input: CrowdyStudioGitHubAtCommitInput!
+): CrowdyStudioGitHubTree!
 ```
 
 
 ### Arguments
 
-#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioGitHubTree.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubProjectInput!</b></code>](/reference/graphql/types/inputs/crowdy-studio-git-hub-project-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioGitHubTree.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubAtCommitInput!</b></code>](/reference/graphql/types/inputs/crowdy-studio-git-hub-at-commit-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
 
 
 
@@ -35,4 +35,5 @@ crowdyStudioGitHubTree(
 
 ### Type
 
-#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubTreeEntry</b></code>](/reference/graphql/types/objects/crowdy-studio-git-hub-tree-entry.mdx) <Badge class="badge badge--secondary " text="object"/>
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubTree</b></code>](/reference/graphql/types/objects/crowdy-studio-git-hub-tree.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Recursive listing of the bound repository at one commit. The commit is the one the paths were read at, so a follow-up file read can pin it.

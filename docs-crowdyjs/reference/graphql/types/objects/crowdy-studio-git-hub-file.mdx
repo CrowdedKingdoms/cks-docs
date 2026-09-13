@@ -23,6 +23,7 @@ type CrowdyStudioGitHubFile {
   path: String!
   content: String!
   sha: String!
+  commitSha: String
 }
 ```
 
@@ -39,6 +40,10 @@ UTF-8 content.
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFile.<b>sha</b></code>](#sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sha\} 
 Blob SHA; send it back on update.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFile.<b>commitSha</b></code>](#commit-sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#commit-sha\} 
+Commit the file was read at, or the commit a write created. After a write this is the new project githubSha.
 
 
 

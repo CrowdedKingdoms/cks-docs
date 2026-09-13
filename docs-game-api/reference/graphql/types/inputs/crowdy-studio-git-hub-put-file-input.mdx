@@ -26,6 +26,7 @@ input CrowdyStudioGitHubPutFileInput {
   content: String!
   message: String!
   sha: String
+  expectedCommitSha: String!
 }
 ```
 
@@ -53,7 +54,11 @@ input CrowdyStudioGitHubPutFileInput {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubPutFileInput.<b>sha</b></code>](#sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sha\} 
-Required when the file already exists.
+Blob SHA of the file being replaced. Optional: the server resolves it from the tree at expectedCommitSha, which is the lock that matters. When sent it must agree with that tree.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubPutFileInput.<b>expectedCommitSha</b></code>](#expected-commit-sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expected-commit-sha\} 
+The project githubSha the writer read. The write is refused with GITHUB&#x005F;STALE&#x005F;SHA when the project has moved on, so two editors cannot silently interleave.
 
 
 

@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Create or update one UTF-8 file in the bound repository. Send the current sha on update; a stale sha is refused with GITHUB&#x005F;STALE&#x005F;SHA.
+Create or update one UTF-8 file in the bound repository as a commit on the bound branch. Send the blob sha on update and the project githubSha as expectedCommitSha; either being stale is refused with GITHUB&#x005F;STALE&#x005F;SHA and nothing moves. When the path is a project file under the layout roots the project mirror advances with it; the returned commitSha is the new githubSha.
 
 
 ```graphql

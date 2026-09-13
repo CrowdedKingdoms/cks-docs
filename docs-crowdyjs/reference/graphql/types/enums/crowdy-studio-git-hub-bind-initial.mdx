@@ -1,0 +1,43 @@
+---
+id: crowdy-studio-git-hub-bind-initial
+title: CrowdyStudioGitHubBindInitial
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What the first commit of a bind does. The repository and the Studio project cannot both be the truth on day one, so the owner says which one is.
+
+
+```graphql
+enum CrowdyStudioGitHubBindInitial {
+  PUSH_PROJECT
+  TAKE_REPOSITORY
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubBindInitial.<b>PUSH&#x005F;PROJECT</b></code>](#push-project) \{#push-project\} 
+The Studio project files are committed to the branch (with a crowdy.json when the repository has none). Refused with GITHUB&#x005F;REPO&#x005F;HAS&#x005F;FILES when the repository already carries rust under the layout roots.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubBindInitial.<b>TAKE&#x005F;REPOSITORY</b></code>](#take-repository) \{#take-repository\} 
+The repository is adopted as it is; the Studio project files are replaced by the rust under the layout roots at branch HEAD. Refused with GITHUB&#x005F;REPO&#x005F;EMPTY when there is nothing to take.
+
+
+
+
+### Member Of
+
+[`BindCrowdyStudioGitHubInput`](/reference/graphql/types/inputs/bind-crowdy-studio-git-hub-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

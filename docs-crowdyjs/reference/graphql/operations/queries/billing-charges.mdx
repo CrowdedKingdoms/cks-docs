@@ -1,0 +1,49 @@
+---
+id: billing-charges
+title: billingCharges
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The lossless ledger's charge rows for one app: every (payer, meter, period) or request that has been priced, with what was billed, held and written off, in micro-USD. Requires 'view&#x005F;billing' on the org.
+
+
+```graphql
+billingCharges(
+  orgId: BigInt!
+  appId: BigInt!
+  limit: Int
+): [BillingCharge!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>billingCharges.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>billingCharges.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>billingCharges.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>BillingCharge</b></code>](/reference/graphql/types/objects/billing-charge.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One settlement unit of the lossless ledger: a (payer, meter, period) for a continuous meter, or one request for a request-priced meter. Amounts in micro-USD; nothing is rounded.
