@@ -153,6 +153,54 @@ server-ranked pages (`engineTop` / `engineRankOf` / `engineSubmitSelf` /
 `tutorial` / `acceptNextTutorialStep`), and the type-91/92/93 event parsers
 in `crowdy/kit/wire.hpp`.
 
+## The session system (v0.39.0+)
+
+`GameModelAPI` wraps the Game API's session system (roster, admission, seat
+cap, host and revision log — see the
+[Game API page](/game-api/game-models#the-session-system-roster-admission-host-presence))
+as thin `graphql::Json` wrappers with `Async` twins:
+
+```cpp
+auto& gm = client.gameModel();
+graphql::JVal create;
+create["appId"] = appId;
+create["maxParticipants"] = 3;
+graphql::Json lobby = gm.createSession(create);           // creator is host, hostTerm 1
+const std::string sid = lobby["sessionId"].asString();
+
+graphql::JVal join;
+join["appId"] = appId;
+join["sessionId"] = sid;
+join["actorUuid"] = core::toString(world.actorUuid());   // bind presence to THIS actor
+graphql::Json me = gm.joinSession(join);                  // keep me["incarnation"]
+
+graphql::Json snapshot = gm.sessionSnapshot(appId, sid);
+domains::GameModelSessionChangedCallbacks cb;
+cb.next = [](domains::GameModelSessionEvent e) { /* e.revision, e.kind, e.payloadJson */ };
+auto handle = gm.sessionChanged(appId, sid, snapshot["revision"].asString(), std::move(cb));
+
+graphql::JVal lock;                                       // host actions carry the term you read
+lock["appId"] = appId; lock["sessionId"] = sid;
+lock["admission"] = "locked"; lock["expectedHostTerm"] = lobby["hostTerm"].asInt64();
+gm.setSessionAdmission(lock);
+
+graphql::JVal leave;                                      // incarnation is REQUIRED
+leave["appId"] = appId; leave["sessionId"] = sid;
+leave["incarnation"] = me["incarnation"].asInt64();
+gm.leaveSession(leave);
+```
+
+Also `transferSessionHost`, `endSession`, `sessionEvents(appId, sid, afterRevision)`,
+`sessionInspect` (app admins) and `sessions(appId, status, admission, hostUserId, limit)`.
+Refusals are `CrowdyGraphQLError` with `code()` one of `SESSION_FULL`,
+`SESSION_LOCKED`, `SESSION_CLOSED`, `SESSION_ENDED`, `SESSION_NOT_PARTICIPANT`,
+`SESSION_INCARNATION_STALE`, `SESSION_HOST_TERM_STALE`. Presence is the
+player's Buddy actor: a participant with no fresh actor in the app after the
+join grace window is expired by the server and an empty session is abandoned
+after its `emptyTimeoutSec`, so a client that never replicates must rejoin to
+come back. `kit.matches()` is unchanged: it keeps its own `max_players` and does
+not bind an actor on join.
+
 ## Realtime + live-ops surfaces (v0.6.0+)
 
 Mirroring CrowdyJS 8.9 (parity-tracked): `abilities()`, `movement()`,
