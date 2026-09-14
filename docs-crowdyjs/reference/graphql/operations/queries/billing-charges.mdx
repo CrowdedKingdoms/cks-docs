@@ -30,15 +30,15 @@ billingCharges(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>billingCharges.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
-
+Organisation whose ledger is read; the caller must administer it.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>billingCharges.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
-
+App the charges belong to (its org is the payer of record).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>billingCharges.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
-
+Newest-first page size; defaults to 50, capped server-side.
 
 
 

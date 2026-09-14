@@ -1,0 +1,43 @@
+---
+id: begin-game-publish-input
+title: BeginGamePublishInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Declare a publish: every file of the built bundle.
+
+
+```graphql
+input BeginGamePublishInput {
+  slug: String!
+  files: [PublishFileInput!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>BeginGamePublishInput.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
+The hosting slug (claimGameHosting first).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>BeginGamePublishInput.<b>files</b></code>](#files)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[PublishFileInput!]!</b></code>](/reference/graphql/types/inputs/publish-file-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#files\} 
+
+
+
+
+
+### Member Of
+
+[`beginGamePublish`](/reference/graphql/operations/mutations/begin-game-publish.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -1,0 +1,43 @@
+---
+id: claim-game-hosting-input
+title: ClaimGameHostingInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Claim (or re-assert) the hosting slug for an app.
+
+
+```graphql
+input ClaimGameHostingInput {
+  appId: BigInt!
+  slug: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ClaimGameHostingInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app to host. Requires manage&#x005F;apps on it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ClaimGameHostingInput.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
+The slug to claim. Defaults to the app slug when that is a valid DNS label. Once claimed, an app keeps its slug; pass a different one to MOVE (the old path stops serving).
+
+
+
+
+### Member Of
+
+[`claimGameHosting`](/reference/graphql/operations/mutations/claim-game-hosting.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

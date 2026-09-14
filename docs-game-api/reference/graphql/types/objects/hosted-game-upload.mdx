@@ -1,0 +1,53 @@
+---
+id: hosted-game-upload
+title: HostedGameUpload
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+How to upload one file of a publish: PUT the file bytes to url with exactly these headers.
+
+
+```graphql
+type HostedGameUpload {
+  path: String!
+  url: String!
+  method: String!
+  headers: [HostedGameUploadHeader!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>HostedGameUpload.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\} 
+The manifest path this URL is for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>HostedGameUpload.<b>url</b></code>](#url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#url\} 
+Presigned S3 URL; valid until BeginGamePublishResult.expiresAt.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>HostedGameUpload.<b>method</b></code>](#method)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#method\} 
+Always PUT.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>HostedGameUpload.<b>headers</b></code>](#headers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[HostedGameUploadHeader!]!</b></code>](/reference/graphql/types/objects/hosted-game-upload-header.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#headers\} 
+Headers the PUT must carry exactly (content type, SHA-256 checksum, staging tag, cache-control). S3 refuses a body whose digest differs.
+
+
+
+
+### Member Of
+
+[`BeginGamePublishResult`](/reference/graphql/types/objects/begin-game-publish-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

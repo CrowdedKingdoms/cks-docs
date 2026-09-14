@@ -1,0 +1,39 @@
+---
+id: set-hosted-game-enabled
+title: setHostedGameEnabled
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Developer switch: DISABLED (the shell says "disabled by its developer") or back to LIVE. A TAKEN&#x005F;DOWN game is refused (HOSTED&#x005F;GAME&#x005F;TAKEN&#x005F;DOWN). Requires manage&#x005F;apps and a SESSION token.
+
+
+```graphql
+setHostedGameEnabled(
+  input: SetHostedGameEnabledInput!
+): HostedGame!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setHostedGameEnabled.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetHostedGameEnabledInput!</b></code>](/reference/graphql/types/inputs/set-hosted-game-enabled-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>HostedGame</b></code>](/reference/graphql/types/objects/hosted-game.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A third-party game hosted on Crowdy Games (2026-09-13). Reached at launchUrl -- https://&#x003C;games host&#x003E;/&#x003C;slug&#x003E;/, a first-party shell page -- while its bundle executes on contentOrigin, https://&#x003C;slug&#x003E;.&#x003C;content host&#x003E;, an origin of its own. One row per app; the slug is global on the tier.

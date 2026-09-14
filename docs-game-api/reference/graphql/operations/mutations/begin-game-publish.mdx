@@ -1,0 +1,39 @@
+---
+id: begin-game-publish
+title: beginGamePublish
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Declare a publish: the full manifest of the built bundle (path, size, SHA-256 per file; index.html at the root). Validates it as a whole (HOSTED&#x005F;MANIFEST&#x005F;INVALID names every problem), records a STAGING publish, and returns one presigned PUT per file. Upload every file with exactly the returned headers, then call completeGamePublish. Rate-limited per app. Requires manage&#x005F;apps and a SESSION token.
+
+
+```graphql
+beginGamePublish(
+  input: BeginGamePublishInput!
+): BeginGamePublishResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>beginGamePublish.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BeginGamePublishInput!</b></code>](/reference/graphql/types/inputs/begin-game-publish-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>BeginGamePublishResult</b></code>](/reference/graphql/types/objects/begin-game-publish-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The result of beginGamePublish: a publish id and one upload per manifest file. Upload them all, then call completeGamePublish(publishId).
