@@ -132,7 +132,7 @@ CrowdyJS 15.6.0, 2026-09-08):
 | your code runs...                                                | sign in with                                                          | then                                   |
 |------------------------------------------------------------------|-----------------------------------------------------------------------|----------------------------------------|
 | in a browser, **on your own domain** (every third-party game)    | `portal.signIn({ appId, redirectUri })` → Studio → `portal.handleSignInCallback()` | the client already holds the app token |
-| in a browser, on a first-party host (Studio, crowdy.games)       | `auth.login` / magic link / social                                    | `portal.mintAppToken(appId)`           |
+| in a browser, on the first-party host (Studio)       | `auth.login` / magic link / social                                    | `portal.mintAppToken(appId)`           |
 | outside a browser (Node, CLI, Unreal/Unity, CrowdyCPP, tests)    | `auth.login` / `auth.register`                                        | `portal.mintAppToken(appId)`           |
 
 The first row is the only one a game on its own domain can take: from any
