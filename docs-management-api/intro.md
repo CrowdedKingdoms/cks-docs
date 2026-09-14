@@ -34,6 +34,7 @@ grants) is documented with the [Game API](/game-api/intro).
 
 Use [Crowdy Studio](/management-ui/intro) for the same operations in a browser, or call
 the API directly with a user session token or **org API token**.
+**[Best practices](/management-api/best-practices)** covers tokens, hosts, entitlements, and retries.
 
 The **[GraphQL schema reference](/management-api/reference/graphql-overview)** lists
 every type, query and mutation on this surface. The published SDL at

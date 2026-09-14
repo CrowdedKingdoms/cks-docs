@@ -195,7 +195,6 @@ const config: Config = {
           '/crowdycpp',
           '/unreal-sdk',
           '/management-ui',
-          '/operators',
           '/build-a-game',
           '/releases',
         ],
@@ -208,7 +207,6 @@ const config: Config = {
           'docs-crowdycpp',
           'docs-unreal-sdk',
           'docs-management-ui',
-          'docs-operators',
           'docs-build-a-game',
           'docs-releases',
         ],
@@ -243,15 +241,6 @@ const config: Config = {
         path: 'docs-udp-api',
         routeBasePath: '/replication-api',
         sidebarPath: './sidebars/udpApi.ts',
-      },
-    ],
-    [
-      '@docusaurus/plugin-content-docs',
-      {
-        id: 'operators',
-        path: 'docs-operators',
-        routeBasePath: '/operators',
-        sidebarPath: './sidebars/operators.ts',
       },
     ],
     [
@@ -424,13 +413,6 @@ const config: Config = {
           sidebarId: 'sidebar',
           position: 'left',
           label: 'Portal',
-        },
-        {
-          type: 'docSidebar',
-          docsPluginId: 'operators',
-          sidebarId: 'sidebar',
-          position: 'left',
-          label: 'Operators',
         },
         {
           type: 'dropdown',

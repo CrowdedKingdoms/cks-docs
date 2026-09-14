@@ -19,6 +19,12 @@ platform primitive when the problem is transport, spatial storage or
 identity rather than a game rule. Never make a client authoritative for a
 competitive result.
 
+**Short form** (see [Best practices](/game-api/best-practices)): the client
+requests a direct change when it knows the target; Game Model functions
+(effects) validate and commit that change, including immediate dependent
+state in the same transaction; Compute handles the wider workflow and
+should invoke those effects rather than duplicate them.
+
 ## Decision flow
 
 ```mermaid
@@ -245,10 +251,10 @@ CPU millisecond:
 
 `GREATEST(CEIL(cpu_us/1000), CEIL(fuel/22,000,000))`.
 
-Reference measurements: ~1.4 ms/db-op, 0.4 ms/radius scan and 0.5 ms/spatial
-emit. Batch reads, amortize scans and emit only changed state. Compute is
-bounded by fuel, watchdog, memory, host-call, egress, circuit and spend-cap
-gates; disable module → app → environment in that order.
+A host data operation is typically about a millisecond; a radius scan and a
+spatial emit are cheaper. Batch reads, amortize scans and emit only changed
+state. Compute is bounded by fuel, watchdog, memory, host-call, egress,
+circuit and spend-cap gates.
 
 ## Deployment choices
 
@@ -257,7 +263,8 @@ gates; disable module → app → environment in that order.
 2. Fork a template when the rule genuinely differs.
 3. Write a custom module only when no catalog engine fits.
 
-Next: [Model API](/game-api/game-models) ·
+Next: [Best practices](/game-api/best-practices) ·
+[Model API](/game-api/game-models) ·
 [Automations](/game-api/autonomous-processes) ·
 [Compute Modules](/game-api/compute-modules) ·
 [Compute Engines](/game-api/compute-engines) ·

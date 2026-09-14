@@ -12,7 +12,6 @@ confined to that one app.
 
 - **Identity session token** — returned by a **sign-in**: email + password, a
   magic link, or social/OIDC — see [Sign in](/management-api/authentication).
-  The dev bypass was removed from every tier on 2026-08-20.
   It is a *management-plane* credential (account, studio admin) and the **only**
   thing that can mint app tokens. It is **not valid for gameplay**: the Game API
   and the realtime/UDP surface reject it. Keep it on your trusted identity origin;

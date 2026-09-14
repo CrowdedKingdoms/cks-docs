@@ -631,9 +631,8 @@ realtime wire or Replication API impact.
 **Agentic Crowdy Studio — historical development rollout (superseded)**
 
 > **Historical.** The version numbers in this entry describe the July 2026
-> development train. They are **not** the live stack. Current ck-api / studio /
-> Buddy versions: `infra-control-plane/scripts/ops/deployed-versions.sh`.
-> Current CrowdyJS: `npm view @crowdedkingdoms/crowdyjs dist-tags`.
+> development train. They are **not** the live stack. Current CrowdyJS:
+> `npm view @crowdedkingdoms/crowdyjs dist-tags`.
 
 The coordinated development stack at that time was: environment release
 **`v0.1.94`** with Game API **`v0.19.16`**, Management API
@@ -720,9 +719,8 @@ real-money activity, wallet actions, or broad autonomous gameplay.
   grid/trust/commerce and PvP actions remain unadvertised.
 - Public guides now cover the
   [player/SDK flow](/crowdyjs/agentic-crowdy-studio),
-  [game-host boundary](/game-api/agentic-crowdy-studio),
-  [Management app policy](/management-api/agentic-crowdy-studio-policy), and
-  [operator kill/retention procedure](/operators/agentic-crowdy-studio).
+  [game-host boundary](/game-api/agentic-crowdy-studio), and
+  [Management app policy](/management-api/agentic-crowdy-studio-policy).
 
 **CrowdyJS 11.1 + Blocks with Friends: resizable Crowdy Studio**
 
@@ -999,20 +997,13 @@ real-money activity, wallet actions, or broad autonomous gameplay.
 
 **Compute hardening complete -- measured limits, calibrated billing, failure containment, and the Model-vs-Compute guide**
 
-The deferred Phase 10 production-confidence pass is complete:
+Compute hardening for this release:
 
-- Load harness + matrix: up to 50 modules, 5 Hz, six host-call mixes and
-  invoke storms. A 50-module db-heavy fleet sustained 2,500 db-ops/s at
-  full cadence (~80% of one reference game-api process); invokes held
-  99 rps at p99 4 ms with zero errors.
 - Compute billing's deterministic equivalent is now **22M fuel per unit**
-  (measured ~21.8M fuel/ms) instead of the Phase 4 placeholder 28M. The
-  free allowance and rate were validated against the 27-engine kit fleet
-  and live Blocks with Friends usage.
-- Failure drills proved compile rollback, fuel/watchdog/OOM/panic
-  containment, circuit reset, 256 KB state rejection, lease-holder death,
-  deploy mid-tick, event cascade depth, spend-cap pausing, and
-  environment-wide rollback/resume.
+  instead of the earlier 28M placeholder.
+- Failure handling covers compile rollback, fuel/watchdog/OOM/panic
+  containment, circuit reset, 256 KB state rejection, deploy mid-tick,
+  event cascade depth, and spend-cap pausing.
 - Runtime fixes: trigger upserts no longer stack duplicate rows; tick-rate
   edits reload a live module; failed compiles restore the prior succeeded
   version.

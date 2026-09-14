@@ -42,14 +42,8 @@ Why: a form on a customer's domain that collects a Crowded Kingdoms password is
 indistinguishable, to the platform and to the player, from a phishing page.
 :::
 
-:::caution[The dev bypass is gone]
-`devLogin` and the `devToken` field on `requestLoginLink` were **removed on
-2026-08-20** — deleted, not disabled, so no environment variable brings them
-back. `devLogin` returned a session for any address with no proof of ownership,
-and `devToken` put the emailed one-time token in the response body where any
-unauthenticated caller could read it. Automated clients should `register` an
+There is no unauthenticated shortcut. Automated clients should `register` an
 account they hold the password to.
-:::
 
 The session token is a **management-plane** credential. It is **not valid for
 gameplay**: to play, mint a short-lived **app-scoped token** from it — see
@@ -312,7 +306,5 @@ query Mine { myIdentities { identityId provider subject email emailVerified last
   always `true`); one-time link tokens are single-use and short-lived.
 - Restrict your own frontends' CORS and redirect origins to trusted hosts; the
   server validates `redirectUri` origins for both magic-link and social flows.
-- There is no environment in which authentication is weaker. The dev bypass
-  (`devLogin`, the `mock` provider, and `devToken`) used to make non-production
-  tiers different, which meant a deploy could get security wrong; it is deleted
-  rather than switched off, so there is nothing left to configure incorrectly.
+- Authentication is the same on every public environment. There is no
+  weaker "dev" sign-in path.
