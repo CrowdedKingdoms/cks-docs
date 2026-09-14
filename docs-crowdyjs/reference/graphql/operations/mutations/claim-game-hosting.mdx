@@ -1,0 +1,39 @@
+---
+id: claim-game-hosting
+title: claimGameHosting
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Claim the hosting slug for an app (idempotent; the same app re-claiming its slug is a no-op, a different slug MOVES the game). Registers https://&#x003C;games host&#x003E;/&#x003C;slug&#x003E;/ and https://&#x003C;slug&#x003E;.&#x003C;content host&#x003E; as the app's redirect URIs and sets launch&#x005F;url to the former. Requires manage&#x005F;apps on the app and a SESSION token. Refuses a slug that is not a DNS label, is reserved, or belongs to another app (HOSTED&#x005F;SLUG&#x005F;UNAVAILABLE), and answers CONTENT&#x005F;HOSTING&#x005F;DISABLED on a tier without a content CDN.
+
+
+```graphql
+claimGameHosting(
+  input: ClaimGameHostingInput!
+): HostedGame!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>claimGameHosting.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ClaimGameHostingInput!</b></code>](/reference/graphql/types/inputs/claim-game-hosting-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>HostedGame</b></code>](/reference/graphql/types/objects/hosted-game.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A third-party game hosted on Crowdy Games (2026-09-13). Reached at launchUrl -- https://&#x003C;games host&#x003E;/&#x003C;slug&#x003E;/, a first-party shell page -- while its bundle executes on contentOrigin, https://&#x003C;slug&#x003E;.&#x003C;content host&#x003E;, an origin of its own. One row per app; the slug is global on the tier.

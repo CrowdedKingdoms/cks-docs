@@ -1,0 +1,48 @@
+---
+id: hosted-game-status
+title: HostedGameStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Whether a hosted game is served. LIVE: served at its launchUrl. DISABLED: switched off by its developer (setHostedGameEnabled). TAKEN&#x005F;DOWN: removed by an operator; the developer cannot publish or re-enable until an operator restores it.
+
+
+```graphql
+enum HostedGameStatus {
+  LIVE
+  DISABLED
+  TAKEN_DOWN
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>HostedGameStatus.<b>LIVE</b></code>](#live) \{#live\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>HostedGameStatus.<b>DISABLED</b></code>](#disabled) \{#disabled\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>HostedGameStatus.<b>TAKEN&#x005F;DOWN</b></code>](#taken-down) \{#taken-down\} 
+
+
+
+
+
+### Member Of
+
+[`HostedGame`](/reference/graphql/types/objects/hosted-game.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
