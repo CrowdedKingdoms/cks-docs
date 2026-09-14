@@ -227,10 +227,20 @@ GitHub is optional: a project is `source: 'STUDIO'` until its owner binds a
 repository and `'GITHUB'` while one is bound, and nothing in the embed changes
 for a game that never binds. When the client is a full `CrowdyClient`, the
 embed passes `client.crowdyStudioGitHub` to the Studio controller and the
-settings pane grows a **GitHub repository** card: Connect, Bind
-`owner/repo@branch` (choosing **push the project into the repository** or
-**take the repository as the project** for the first commit), Refresh, and
-Unbind. The card hides itself when the environment has no GitHub App.
+settings pane grows a **GitHub repository** card: Connect, **Create
+repository on GitHub** (17.1.0), Bind `owner/repo@branch` (choosing **push the
+project into the repository** or **take the repository as the project** for
+the first commit), Refresh, and Unbind. The card hides itself when the
+environment has no GitHub App.
+
+**Create repository on GitHub** exists because the app cannot create one for
+you — it holds installation tokens only. `controller.createGitHubRepository()`
+opens GitHub's new-repository page prefilled (`githubNewRepositoryUrl`: your
+connected login as owner, the project name slugged, private), then prefills
+the card's bind input with `owner/name` and selects *push this project*. When
+`status.repositorySelection` is `'selected'`, the message reminds you to add
+the new repository to the installation first. The first bind commit carries
+`crowdy.json`, a `README.md` (when the branch has none) and the files.
 
 While bound, **the repository is the working tree**: `saveProject` sends each
 changed file as its own commit carrying the project's current commit SHA

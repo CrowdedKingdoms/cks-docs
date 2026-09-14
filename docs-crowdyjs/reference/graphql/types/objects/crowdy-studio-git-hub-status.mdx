@@ -28,6 +28,7 @@ type CrowdyStudioGitHubStatus {
   repo: String
   branch: String
   githubSha: String
+  repositorySelection: String
   installUrl: String
 }
 ```
@@ -65,6 +66,10 @@ Bound repository owner, when a project was named.
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>githubSha</b></code>](#github-sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#github-sha\} 
 Commit the project mirror is at. Every bound write presents it as expectedCommitSha; a stale value is refused with GITHUB&#x005F;STALE&#x005F;SHA. Null when the project is not bound.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>repositorySelection</b></code>](#repository-selection)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#repository-selection\} 
+Which repositories the installation covers: "all", or "selected" (a repository created on GitHub afterwards must be added to the installation at installUrl before it can be bound). Null when not connected.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubStatus.<b>installUrl</b></code>](#install-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#install-url\} 
