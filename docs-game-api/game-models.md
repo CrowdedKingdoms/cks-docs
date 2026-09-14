@@ -473,8 +473,73 @@ Who may create sessions is set per app with `gameModelSetPolicy`
 (`sessionCreationPolicy`: `admin` | `member` | `anyone`). `member` requires app
 access; `anyone` lets any logged-in user create one (handy for open lobbies).
 Players join with `gameModelJoinSession`; list sessions with
-`gameModelSessions(appId, status)` and read one with
+`gameModelSessions(appId, status, admission, hostUserId)` and read one with
 `gameModelSession(appId, sessionId)`.
+
+### The session system: roster, admission, host, presence
+
+A session is more than a scope for containers. It carries an **authoritative
+roster**, an **admission** state, a **seat cap**, a **host**, and a **revision
+log**, so a lobby or a match needs no roster of its own in a container.
+
+**Lifecycle and admission are two axes.** `status` is `active` until the session
+ends as `completed` or `abandoned`. `admission` says who may still get in while
+it is active: `open` (anyone the app admits), `locked` (only a participant who
+already joined may reconnect — set it when the match starts), `closed` (nobody;
+the server sets it when the session ends). The host or an app admin changes it
+with `gameModelSetSessionAdmission`. `maxParticipants` (optional at create) caps
+how many are **joined** at once; a join past the cap is refused with
+`SESSION_FULL`, a join into a locked session with `SESSION_LOCKED`, into a
+closed one with `SESSION_CLOSED`, into an ended one with `SESSION_ENDED`.
+
+**Reconnection is a rejoin.** `gameModelJoinSession` on a session you are already
+in returns your row with `incarnation + 1` and supersedes any older client of
+yours. Send that incarnation on `gameModelLeaveSession`: a stale client's leave
+is refused with `SESSION_INCARNATION_STALE` instead of removing the client that
+took over. A participant who reconnects never counts against the cap twice.
+
+**Presence is your actor.** There is no heartbeat mutation. A participant is
+present while a fresh Buddy actor of theirs is in the app (or, when the join
+named an `actorUuid`, while *that* actor is fresh). The server judges presence
+only after a grace window following the join (60 s by default), then marks an
+absent participant `left` with reason `presence_expired` and emits
+`participant_expired`. A client that only speaks GraphQL and never spawns an
+actor is expired after the grace — the same rule under which automations and
+compute do not run for an app with nobody in it. Rejoin to come back.
+
+**The host.** The creator is the first host (`hostUserId`, `hostTerm` 1). When
+the host leaves or expires, the longest-joined present participant succeeds;
+`gameModelTransferSessionHost` hands it over deliberately. Every host change
+increments `hostTerm`. Host actions (`gameModelSetSessionAdmission`,
+`gameModelTransferSessionHost`, `gameModelEndSession`, `gameModelSetSessionTurn`)
+accept `expectedHostTerm`; when it is stale the call is refused with
+`SESSION_HOST_TERM_STALE` rather than acting on a host change you have not seen.
+App admins (`manage_apps`) may do everything the host may.
+
+**Ending.** `gameModelEndSession` (host or admin) marks every joined participant
+`left` (`session_ended`), closes admission and records `endedAt` / `endReason`.
+The server also ends a session nobody has been joined to for longer than its
+`emptyTimeoutSec` (5 minutes by default; `0` disables it) as `abandoned` /
+`empty_timeout`. Ended sessions and their rosters stay readable; their events
+are purged after a retention period.
+
+**Revisions, snapshots and events.** Every change appends one row to the
+session's event log and advances `revision` by one, in the same transaction.
+`gameModelSessionChanged(appId, sessionId, afterRevision)` streams those events
+(`created`, `participant_joined`, `participant_rejoined`, `participant_left`,
+`participant_expired`, `host_changed`, `admission_changed`, `turn_changed`,
+`ended`); `gameModelSessionSnapshot(appId, sessionId)` returns the session and
+its joined roster at one revision; `gameModelSessionEvents(appId, sessionId,
+afterRevision)` fills a gap. The contract is the one the player-count feed uses:
+there is no bootstrap event — pull the snapshot, then apply events whose
+revision is above it; on a gap or a reconnect, pull the snapshot again. Clients
+on a Buddy connection also receive a compact `gms|<sessionId>|<revision>|<kind>`
+message on the app's session channel after each change, as a cue to pull.
+
+All session mutations accept an `idempotencyKey` (24 h): replaying a join
+returns the same incarnation rather than joining again. Operators read the full
+roster, including departed participants and each one's live presence verdict,
+with `gameModelSessionInspect` (`manage_apps`).
 
 Containers can have an **owner** (`ownerUserId`) which powers `owner_of_self` and
 owner-only visibility. Create instances with `gameModelCreateContainer`
@@ -597,8 +662,8 @@ players. The default is `enforce`, and an unrecognised value falls back to
 `shadow`.
 
 Turns are explicit and developer-driven: `gameModelSetSessionTurn` records whose
-turn it is (the current turn holder, the elected host, or an app admin may set
-it), and the `is_current_turn` requirement reads it. You implement your own turn
+turn it is (the current turn holder, the session host, the app's elected host,
+or an app admin may set it), and the `is_current_turn` requirement reads it. You implement your own turn
 order; the server just enforces it.
 
 ## Active player count (app-scoped sessions)
