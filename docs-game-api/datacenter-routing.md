@@ -22,8 +22,7 @@ The published origin (`ck.prod.crowdedkingdoms.com` in production,
 `ck.dev.crowdedkingdoms.com` on the sandbox) resolves to **every** datacenter.
 Whichever one answers your first request is correct for identity and token
 minting. Gameplay for *your* app must go to the datacenter that holds that
-app. Calling gameplay on the wrong datacenter is refused (`WRONG_DATACENTER`)
-or, if you somehow skip the check, is slow.
+app. Calling gameplay on the wrong datacenter is refused (`WRONG_DATACENTER`).
 
 `ck.crowdedkingdoms.com` is an alias for production, not a second endpoint.
 Prefer the URL the API returns over any hostname you compose.

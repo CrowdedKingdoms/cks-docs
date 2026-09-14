@@ -532,10 +532,10 @@ const data = await client.graphql.request(VersionInfoDocument);
 ```
 
 Prefer the typed sub-clients for everyday use — including the studio-admin
-surfaces (`client.organizations`, `client.billing`, `client.quotas`,
-`client.environments`, …, grouped under `client.admin.*`) and `client.operator`.
-The escape hatch above is only for brand-new server fields not yet wrapped. See
-the [Management API schema reference](/management-api/reference/graphql-overview)
+surfaces (`client.organizations`, `client.billing`, `client.quotas`, …,
+grouped under `client.admin.*`). The escape hatch above is only for
+brand-new server fields not yet wrapped. See the
+[Management API schema reference](/management-api/reference/graphql-overview)
 for the underlying operations.
 
 ## Schema reference

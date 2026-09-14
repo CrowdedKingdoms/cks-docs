@@ -6,8 +6,8 @@ title: Agentic Crowdy Studio policy
 # Agentic Crowdy Studio app policy
 
 The Management API owns Agentic Crowdy Studio enablement, model/tool/mode/risk
-allowlists, hard budget ceilings, privacy and retention policy, app/operator
-kills, and sanitized provider usage. The Game API owns execution and must
+allowlists, hard budget ceilings, privacy and retention policy, app and
+Crowded Kingdoms kills, and sanitized provider usage. The Game API owns execution and must
 enforce only a fresh Management policy replica.
 
 :::warning[Allowlisted development — not GA]
@@ -26,7 +26,7 @@ There are three read models:
 |---|---|---|
 | `PLATFORM` | Crowded Kingdoms | Global enable/kill, exact model/tool/mode/risk allowlists, and maximum budgets/retention. |
 | `APP` | app manager | A narrower app policy. A missing row is disabled, killed, and deny-all. |
-| `EFFECTIVE` | derived | Fail-closed platform/app intersection with global and per-app operator kill precedence. |
+| `EFFECTIVE` | derived | Fail-closed platform/app intersection with Crowded Kingdoms kill precedence. |
 
 An app can remove authority or lower limits; it cannot add a platform-disallowed
 model/tool/mode/risk, raise a ceiling, lengthen retention, weaken required
@@ -36,7 +36,7 @@ player-wallet debit.
 Effective disable/kill precedence is:
 
 1. platform global kill;
-2. operator per-app kill;
+2. Crowded Kingdoms per-app kill;
 3. app kill;
 4. platform/app enablement; and
 5. non-empty platform/app model and mode intersections.
@@ -51,7 +51,7 @@ Effective disable/kill precedence is:
 | `setCrowdyStudioAgentPolicy(input)` | app `manage_compute` | Create/patch the app layer and publish a replica notification. |
 | `cpCrowdyStudioAgentPlatformPolicy` | operator | Read the platform layer. |
 | `cpSetCrowdyStudioAgentPlatformPolicy(input)` | operator | Patch platform policy/global kill. |
-| `cpSetCrowdyStudioAgentAppKill(input)` | operator | Publish or release the separate operator kill for one app. |
+| `cpSetCrowdyStudioAgentAppKill(input)` | operator | Publish or release the separate Crowded Kingdoms kill for one app. |
 
 Every mutation requires `input.idempotencyKey`. Byte-equivalent retries replay
 the first result; changed arguments under the same key fail
@@ -93,7 +93,7 @@ New apps do not receive `use_studio_agent` in their default tier.
 7. Verify the Game API has pulled the new platform/app revisions before testing.
 8. Expand to Build or Play only after their project/host security gates pass.
 
-Releasing an operator kill does not clear the app kill, enable either layer,
+Releasing a Crowded Kingdoms kill does not clear the app kill, enable either layer,
 grant `use_studio_agent`, or resume a prior run.
 
 ## Model and tool allowlists
