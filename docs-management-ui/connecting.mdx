@@ -23,7 +23,7 @@ For early client integration on the **dev tier**, use the public shared hosts do
 
 Management hosts are shared across the dev tier; **all shared-platform apps on dev** use the same Game API host, scoped by `appId`. Each API also exposes a **GraphQL playground** at `/graphql` for manual testing.
 
-On test and production tiers, read `platformConfig.sharedGameApiUrl` or your app's `gameApiUrl` for the correct host — do not assume the dev URL.
+On production (and any other environment you were given), read `platformConfig.sharedGameApiUrl` or your app's `gameApiUrl` for the correct host — do not assume the sandbox URL.
 
 ## Find your endpoints
 
@@ -113,6 +113,6 @@ If `runtimeStatus` is not `active`, check wallet balance, spend caps, or subscri
 - **[Create your first app](/management-ui/create-your-first-app)** — register on the shared platform.
 - **[Apps on the shared platform](/management-ui/environments)** — routing, free tier, and app dashboard.
 - **[Shared environment & billing](/management-api/shared-environment)** — wallet, caps, and denial reasons.
-- **[Management API](/management-api/intro)** — programmatic control plane.
+- **[Management API](/management-api/intro)** — programmatic identity, apps, and billing.
 - **[Game API](/game-api/intro)** — world and gameplay GraphQL.
 - **[Replication API](/replication-api/getting-started)** — Buddy / UDP replication.

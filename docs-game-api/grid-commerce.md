@@ -64,5 +64,4 @@ ownership — direct claims are refused.
   buyer who made them (`licenseTransferable` on a code listing defaults to
   false). The new grid owner acquires their own licenses.
 - A grid **chargeback** transfers title back through the same transfer
-  machinery — never a dangling owner (see the
-  [commerce incidents runbook](/operators/commerce-incidents)).
+  machinery — never a dangling owner.

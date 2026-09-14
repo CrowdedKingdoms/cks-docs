@@ -98,6 +98,5 @@ the wallet, raise the cap, or renew. See
 [Shared environment & billing](/management-api/shared-environment) for the full
 list of states and how to recover.
 
-## Operator-provisioned dedicated stacks
-
-Some internal or enterprise apps route to **dedicated** Game API hosts provisioned by platform operators. Those apps may report `splitMode: true` with a per-org `gameApiUrl`. Customer self-service apps on the shared platform do not use this path — rely on `platformConfig.sharedGameApiUrl` and `deploymentTarget: "shared"`.
+If `mintAppToken` or `app.gameApiUrl` names a host, **use that host**. Do
+not assume a shared default when the API returned a more specific URL.

@@ -375,10 +375,9 @@ refused with a retry-after; running modules are unaffected.
 ### Draft mode
 
 Deploy with `draft: true` while iterating. A draft module runs for you, but
-its **spatial egress is suppressed server-side** — no other session in the
-grid observes its world effects. The filter lives in game-api, not the
-client, so it holds even against a modified page. Clear the flag (a normal
-deploy) to go live.
+its **spatial egress is suppressed on the server** — no other session in the
+grid observes its world effects, even from a modified client. Clear the flag
+(a normal deploy) to go live.
 
 ## Acquired code (P4a)
 

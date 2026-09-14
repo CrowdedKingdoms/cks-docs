@@ -10,7 +10,7 @@ GraphQL/HTTP API for Crowded Kingdoms **management** concerns:
 
 | Area | Examples |
 | ---- | -------- |
-| Identity | Sign-in by **email + password**, magic link, or social/OIDC; federated identities (`myIdentities`/`linkIdentity`), `me`. The dev bypass was removed on 2026-08-20. |
+| Identity | Sign-in by **email + password**, magic link, or social/OIDC; federated identities (`myIdentities`/`linkIdentity`), `me`. |
 | Organizations | Members, roles, permissions, org tokens. |
 | Apps marketplace | Apps metadata, access tiers, `app_user_access` grants, purchases. |
 | Runtime catalog | `runtimePermissions` query — keys that can be assigned on tiers (not grid grants). |

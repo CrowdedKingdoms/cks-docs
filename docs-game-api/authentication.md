@@ -10,8 +10,7 @@ in with **email + password** (`login` / `register`), a magic link, or a social
 provider; that returns an identity **session token**. **No password is ever
 handed to a game**: the Game API never sees that flow and only accepts the
 **app-scoped token** minted downstream — which is the property that actually
-matters, and the one the old wording tried to express by calling the platform
-passwordless. There is **no dev bypass**; `devLogin` was removed from every tier. See **[Sign in](/management-api/authentication)** for
+matters. See **[Sign in](/management-api/authentication)** for
 `register`/`login`, `requestLoginLink`/`completeLoginLink`,
 `socialLoginStart`/`socialLoginComplete`, and `me`.
 

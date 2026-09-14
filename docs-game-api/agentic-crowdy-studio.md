@@ -111,8 +111,8 @@ Streams pass through as `text/event-stream`.
 
 ### Gates, in order
 
-1. **Policy.** `AgentPolicyService.effective(user, app)` on every request:
-   platform and app enabled, no kill switch, and the caller holds
+1. **Policy.** Every request uses the effective platform and app policy:
+   both enabled, no kill switch, and the caller holds
    `use_studio_agent`. Revoking the permission stops the next request even if
    a consent row exists.
 2. **Model.** In the allowlist and carrying a rate card; image parts only on

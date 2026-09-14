@@ -11,12 +11,9 @@ kills, and sanitized provider usage. The Game API owns execution and must
 enforce only a fresh Management policy replica.
 
 :::warning[Allowlisted development — not GA]
-Policy and kills for Agentic Crowdy Studio are served by the **current**
-unified CK API management surface. Do not pin this page to retired
-environment-manifest / CrowdyJS 12.x numbers (`v0.1.94`, `12.0.0`, etc.).
-Verify live ck-api with
-`infra-control-plane/scripts/ops/deployed-versions.sh` and the SDK with
-`npm view @crowdedkingdoms/crowdyjs dist-tags`. Apps/users outside the
+Policy and kills for Agentic Crowdy Studio are served by the current
+management surface. Verify the published SDK with
+`npm view @crowdedkingdoms/crowdyjs dist-tags`. Apps and users outside the
 explicit allowlist remain fail-closed. This is not production or general
 availability and does not authorize unattended real-money actions.
 :::
@@ -27,7 +24,7 @@ There are three read models:
 
 | Kind | Owner | Meaning |
 |---|---|---|
-| `PLATFORM` | platform operator | Global enable/kill, exact model/tool/mode/risk allowlists, and maximum budgets/retention. |
+| `PLATFORM` | Crowded Kingdoms | Global enable/kill, exact model/tool/mode/risk allowlists, and maximum budgets/retention. |
 | `APP` | app manager | A narrower app policy. A missing row is disabled, killed, and deny-all. |
 | `EFFECTIVE` | derived | Fail-closed platform/app intersection with global and per-app operator kill precedence. |
 
@@ -83,9 +80,9 @@ New apps do not receive `use_studio_agent` in their default tier.
 
 ## Configure an app safely
 
-1. Confirm that operators have configured finite platform ceilings and exact
-   model/tool/mode/risk allowlists.
-2. Confirm the target development Game API supports
+1. Confirm platform ceilings and exact model/tool/mode/risk allowlists are
+   in place for your app.
+2. Confirm the Game API you call supports
    `crowdy.studio-agent-policy/1` and fails closed on stale data.
 3. Read `crowdyStudioAgentEffectivePolicy`; do not infer effective state from
    the app row alone.
@@ -203,6 +200,6 @@ Usage does not include prompts, source, tool bodies, headers, keys, private
 reasoning, wallet data, or payment instruments. `RESERVATION_CONSUMED` means
 terminal provider accounting was unavailable; it is not a zero-cost result.
 
-For platform activation, kills, secret injection, incident handling, and purge
-procedures, see the
-[operator runbook](/operators/agentic-crowdy-studio).
+Platform-wide activation and emergency kills are managed by Crowded Kingdoms.
+Studio managers use `setCrowdyStudioAgentPolicy` and the usage queries on this
+surface.

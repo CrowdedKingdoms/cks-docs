@@ -11,33 +11,24 @@ global conventions, and walks the three most common end-to-end workflows.
 
 This page is for external API clients and coding agents. The in-product
 **Agentic Crowdy Studio** model runtime is a separate, allowlisted development
-contract on the current CK API + CrowdyJS 15.x line (not the retired
-`v0.1.94` / CrowdyJS `12.0.0` train): use its
-[player/SDK guide](/crowdyjs/agentic-crowdy-studio),
-[game-host guide](/game-api/agentic-crowdy-studio), and
-[operator runbook](/operators/agentic-crowdy-studio). It never gives a model
+contract: use its [player/SDK guide](/crowdyjs/agentic-crowdy-studio) and
+[game-host guide](/game-api/agentic-crowdy-studio). It never gives a model
 the raw GraphQL access described below.
+
+Gameplay authority: [Best practices](/overview/best-practices).
 
 ## The surface at a glance
 
 There is **one GraphQL endpoint**. The two rows below are surfaces of that API,
-not two hosts. Do not set `managementUrl`. Gameplay is PostgreSQL + Citus, not
-galaxy. CrowdyJS is on the **15.x** line: 15.0.0 removed `devLogin` and added
-`auth.login` / `auth.register`; later 15.x releases added password-management
-wrappers and rebuilt baked default origins after every tier moved onto the
-brand root — an older build dials a host that no longer exists. **Do not
-hardcode the npm version here** — `npm view @crowdedkingdoms/crowdyjs dist-tags`.
-
-**The dist-tag decides the default origin.** `latest` is built for production;
-`@dev` / `@test` are separate prereleases whose builds bake their own tier's
-host. Installing `latest` and pointing it at a non-production tier works only
-if you pass the origin explicitly.
+not two hosts. Do not set `managementUrl`. **Do not hardcode an SDK version** —
+`npm view @crowdedkingdoms/crowdyjs dist-tags`. `latest` targets production;
+pass `httpUrl` / `wsUrl` explicitly if you are not on production.
 
 | API | Protocol | Use it for |
 |-----|----------|------------|
 | **Management surface** | GraphQL (HTTP) | Identity, organizations, the apps marketplace, access tiers, billing, payments, quotas. Studio-backend operations. Dedicated customer environments were retired. |
 | **Game surface** | GraphQL (HTTP + WebSocket) | Runtime world data (chunks, voxels, actors, avatars) and the realtime **UDP-proxy** subscription/spatial-send surface. Authenticated with an **app-scoped token** (not the identity session token). |
-| **Replication API (Buddy)** | Binary UDP | Lowest-latency native spatial replication. Most clients use the Game API UDP-proxy instead and never touch raw UDP. Buddy authenticates only app-scoped tokens. |
+| **Replication API** | Binary UDP | Lowest-latency native spatial replication. Most clients use the Game API UDP-proxy instead and never touch raw UDP. Buddy (the replication server) authenticates only app-scoped tokens. |
 | **CrowdyJS** | TypeScript SDK | Browser clients — wraps sign-in (`auth.login` / `auth.register`, magic link, social), `client.portal` (app-scoped tokens / PKCE / consent), and the unified GraphQL API including the UDP proxy. Use one identity client plus a per-game client. Prefer it for web. |
 
 ## Get the schema
@@ -45,7 +36,7 @@ if you pass the origin explicitly.
 - Management API SDL: [`/schema/management-api.graphql`](pathname:///schema/management-api.graphql)
 - Game API SDL: [`/schema/game-api.graphql`](pathname:///schema/game-api.graphql)
 - CrowdyJS SDL: [`/schema/crowdyjs.graphql`](pathname:///schema/crowdyjs.graphql)
-- Introspection is enabled on the dev tier; each GraphQL API serves a Playground at its `/graphql` endpoint.
+- Each GraphQL API serves a Playground at its `/graphql` endpoint. Introspection is available on the sandbox (dev) environment.
 
 Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
 
@@ -94,15 +85,14 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
 
 ## Get a sandbox key
 
-Use the **dev tier** to sign in, create an org and an app, and obtain your identity
-session token without touching production data (then `mintAppToken` per app for
-gameplay). `register(registerUserInput:{ email, password })` gives an agent a session
-in one call on any environment, and needs no inbox — see
+Use the **sandbox (dev) environment** to sign in, create an org and an app, and
+obtain your identity session token without touching production data (then
+`mintAppToken` per app for gameplay). `register(registerUserInput:{ email, password })`
+gives an agent a session in one call and needs no inbox — see
 [Sign in](/management-api/authentication).
 
-There is no dev bypass to shortcut this. `devLogin` and the `devToken` field were
-deleted on 2026-08-20; every environment authenticates the same way.
-Start at [Dev tier](/management-ui/dev-tier) and
+There is no unauthenticated shortcut. Start at
+[Dev tier](/management-ui/dev-tier) and
 [Create your first app](/management-ui/create-your-first-app).
 
 ## Workflow 1 — realtime gameplay (recommended path)
@@ -127,7 +117,7 @@ mutation Enter {
   }
 }
 
-# 3) Per-app bootstrap (Game API, app-token Bearer): version requirements, UDP state, spatial limits.
+# 3) Per-app client bootstrap (Game API, app-token Bearer): version requirements, UDP state, spatial limits.
 query Bootstrap {
   gameClientBootstrap(appId: "1") {
     sequenceNumberModulo

@@ -17,9 +17,9 @@ Buddy authenticates **only** app-scoped tokens; the identity session token that
 `login` returns is rejected for gameplay.
 
 **Buddy** is the name of the replication server program—not a separate product.
-When platform docs mention Buddy, they mean an instance of that program
-running in your environment. The wire protocol, handshake, and operational guides
-in this section describe how to speak to Buddy over UDP.
+When these docs mention Buddy, they mean a replication server that speaks
+this UDP protocol. The wire format, authentication sequence, and operational
+guides in this section describe how to speak to Buddy.
 
 This section documents native UDP integrations—handshake timing, wire payloads,
 sequencing, HMAC, and failure modes. If you'd rather not implement the wire
@@ -46,4 +46,5 @@ flow); only the transport differs (UDP to Buddy vs. GraphQL through the proxy).
 4. **[Wire formats](/replication-api/wire-formats)** and **[HMAC](/replication-api/hmac)** — binary layout reference
 5. **[Operations](/replication-api/operations)** — heartbeats, errors, reassignment
 6. **[Troubleshooting](/replication-api/troubleshooting)** — "sends succeed but nothing comes back" and other connectivity issues
-7. **[Load testing](/replication-api/load-testing)** — simulate real player traffic against your app with the open-source cks-loadtest tool
+7. **[Best practices](/replication-api/best-practices)** — tokens, waits, reconnects, and gameplay authority
+8. **[Load testing](/replication-api/load-testing)** — simulate real player traffic against your app with the open-source cks-loadtest tool
