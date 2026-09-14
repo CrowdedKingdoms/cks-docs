@@ -5,17 +5,18 @@ title: Load testing
 
 # Load testing your game
 
-**[cks-loadtest](https://github.com/CrowdedKingdoms/cks-loadtest)** is an
-open-source load tester for games built on the Replication API. It simulates
-any number of native game clients that sign in, enter your app, and walk
-around the world exchanging actor updates — using exactly the flow documented
-in this tab: sign-in, **[mint an app token](/replication-api/authenticate-and-assign)**,
-`serverWithLeastClients`, then HMAC-signed `ACTOR_UPDATE_REQUEST_2` traffic
-over UDP. Because it drives the same public APIs and wire protocol as your
-real clients, its numbers reflect what real players will experience.
+Load-test **your** integration the same way real players connect: sign in,
+[mint an app token](/replication-api/authenticate-and-assign), call
+`serverWithLeastClients`, then send HMAC-signed spatial traffic over UDP.
+Numbers from any other path (mocked UDP, skipped assignment, a private
+harness that does not use the public wire) will not match what players
+see.
 
-It is a lightweight C++ program: a single host drives thousands of simulated
-clients. Run it natively on Ubuntu or anywhere Docker runs.
+**[cks-loadtest](https://github.com/CrowdedKingdoms/cks-loadtest)** is an
+open-source tool that does that. It simulates native clients that sign in,
+enter your app, and walk the world exchanging actor updates. A single host
+can drive thousands of simulated clients. Run it on Ubuntu or anywhere
+Docker runs.
 
 ## How it works
 
@@ -35,18 +36,15 @@ ACTOR_UPDATE_REQUEST_2 ───────────────────
 You supply **one email and password**. The tool derives a deterministic
 account per simulated client with plus-addressing — `alice@studio.com`
 becomes `alice+lt-0000@studio.com`, `alice+lt-0001@studio.com`, … (pattern
-configurable). Accounts are registered on the first run and simply logged in
-on later runs, so repeated tests are idempotent. Each simulated client mints
-its own app-scoped token, is assigned a server, and sends updates at the
-rate you configure while walking a random path near the world origin.
+configurable). Accounts are registered on the first run and logged in on
+later runs. Each simulated client mints its own app-scoped token, is
+assigned a server, and sends updates at the rate you configure.
 
 ## Set up your game for load testing
 
-The load tester is **tier-agnostic**: it never inspects or manages access
-tiers, entitlements, or limits. It mints tokens and sends traffic; making the
-simulated accounts *entitled* to your app is the studio's job, the same as
-for real players (see
-**[Set up a game & entitle players](/management-api/game-setup)**).
+The load tester mints tokens and sends traffic. Making the simulated
+accounts *entitled* to your app is your job, the same as for real players
+(see **[Set up a game & entitle players](/management-api/game-setup)**).
 
 1. **Open-by-default apps need no setup.** If your app kept its free default
    tier, every derived account is auto-entitled on its first `mintAppToken`.
@@ -65,11 +63,12 @@ for real players (see
 :::caution[Load test traffic is real usage]
 
 Simulated clients generate real replication traffic, metered like any other
-client traffic. On the **shared environment** this draws down your wallet and
-counts toward spend caps — an aggressive test can runtime-deny your own app
+client. On the **shared environment** this draws down your wallet and counts
+toward spend caps — an aggressive test can runtime-deny your own app
 (see **[Operations → App suspended or over budget](/replication-api/operations#app-suspended-or-over-budget)**).
-Prefer a dev or dedicated environment for sustained load tests, and set spend
-caps deliberately before testing on shared infrastructure.
+
+Run sustained tests against an isolated copy of your app, and set spend
+caps deliberately before testing on shared production capacity.
 
 :::
 
@@ -94,7 +93,12 @@ docker build -t cks-loadtest .
 ```
 
 Configure with CLI flags, `LT_*` environment variables, or a `KEY=VALUE`
-file (precedence: CLI > env > file). A minimal run:
+file (precedence: CLI > env > file). Point `--management-api-url` at the
+origin you use for your game — prefer
+`platformConfig.sharedGameApiUrl` or the URL `mintAppToken` returned, not
+a host copied from an old page.
+
+A minimal run:
 
 ```bash
 ./build/cks-loadtest \
@@ -141,9 +145,8 @@ histogram, error-code breakdown) prints on exit:
 - **reconnects** count server-initiated moves (`COMMAND_RECONNECT`). The
   tool re-assigns those clients automatically. Rising reconnects with dips
   in `clients` under increasing load is your **capacity signal**: the
-  environment is asking clients to spread out. That is the point to note as
-  your app's comfortable concurrent-client level for the environment you
-  tested.
+  environment is asking clients to spread out. Note that as your app's
+  comfortable concurrent-client level for the environment you tested.
 - **Exit code 3** means traffic was sent but nothing was ever received —
   work through the
   **[troubleshooting checklist](/replication-api/troubleshooting)** (address
@@ -151,3 +154,5 @@ histogram, error-code breakdown) prints on exit:
 
 Add `--csv-out stats.csv` for a machine-readable per-interval log to graph
 alongside your own dashboards.
+
+See also **[Replication API best practices](/replication-api/best-practices)**.

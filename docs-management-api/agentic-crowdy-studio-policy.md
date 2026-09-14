@@ -6,17 +6,14 @@ title: Agentic Crowdy Studio policy
 # Agentic Crowdy Studio app policy
 
 The Management API owns Agentic Crowdy Studio enablement, model/tool/mode/risk
-allowlists, hard budget ceilings, privacy and retention policy, app/operator
-kills, and sanitized provider usage. The Game API owns execution and must
+allowlists, hard budget ceilings, privacy and retention policy, app and
+Crowded Kingdoms kills, and sanitized provider usage. The Game API owns execution and must
 enforce only a fresh Management policy replica.
 
 :::warning[Allowlisted development — not GA]
-Policy and kills for Agentic Crowdy Studio are served by the **current**
-unified CK API management surface. Do not pin this page to retired
-environment-manifest / CrowdyJS 12.x numbers (`v0.1.94`, `12.0.0`, etc.).
-Verify live ck-api with
-`infra-control-plane/scripts/ops/deployed-versions.sh` and the SDK with
-`npm view @crowdedkingdoms/crowdyjs dist-tags`. Apps/users outside the
+Policy and kills for Agentic Crowdy Studio are served by the current
+management surface. Verify the published SDK with
+`npm view @crowdedkingdoms/crowdyjs dist-tags`. Apps and users outside the
 explicit allowlist remain fail-closed. This is not production or general
 availability and does not authorize unattended real-money actions.
 :::
@@ -27,9 +24,9 @@ There are three read models:
 
 | Kind | Owner | Meaning |
 |---|---|---|
-| `PLATFORM` | platform operator | Global enable/kill, exact model/tool/mode/risk allowlists, and maximum budgets/retention. |
+| `PLATFORM` | Crowded Kingdoms | Global enable/kill, exact model/tool/mode/risk allowlists, and maximum budgets/retention. |
 | `APP` | app manager | A narrower app policy. A missing row is disabled, killed, and deny-all. |
-| `EFFECTIVE` | derived | Fail-closed platform/app intersection with global and per-app operator kill precedence. |
+| `EFFECTIVE` | derived | Fail-closed platform/app intersection with Crowded Kingdoms kill precedence. |
 
 An app can remove authority or lower limits; it cannot add a platform-disallowed
 model/tool/mode/risk, raise a ceiling, lengthen retention, weaken required
@@ -39,7 +36,7 @@ player-wallet debit.
 Effective disable/kill precedence is:
 
 1. platform global kill;
-2. operator per-app kill;
+2. Crowded Kingdoms per-app kill;
 3. app kill;
 4. platform/app enablement; and
 5. non-empty platform/app model and mode intersections.
@@ -52,9 +49,6 @@ Effective disable/kill precedence is:
 | `crowdyStudioAgentEffectivePolicy(appId)` | app `view_compute_diagnostics` | Effective clamp and kill state. This does not attest Game API freshness. |
 | `crowdyStudioAgentUsage(appId, since, until, limit)` | app `view_compute_diagnostics` | Sanitized exact records plus a full-window aggregate. |
 | `setCrowdyStudioAgentPolicy(input)` | app `manage_compute` | Create/patch the app layer and publish a replica notification. |
-| `cpCrowdyStudioAgentPlatformPolicy` | operator | Read the platform layer. |
-| `cpSetCrowdyStudioAgentPlatformPolicy(input)` | operator | Patch platform policy/global kill. |
-| `cpSetCrowdyStudioAgentAppKill(input)` | operator | Publish or release the separate operator kill for one app. |
 
 Every mutation requires `input.idempotencyKey`. Byte-equivalent retries replay
 the first result; changed arguments under the same key fail
@@ -83,9 +77,9 @@ New apps do not receive `use_studio_agent` in their default tier.
 
 ## Configure an app safely
 
-1. Confirm that operators have configured finite platform ceilings and exact
-   model/tool/mode/risk allowlists.
-2. Confirm the target development Game API supports
+1. Confirm platform ceilings and exact model/tool/mode/risk allowlists are
+   in place for your app.
+2. Confirm the Game API you call supports
    `crowdy.studio-agent-policy/1` and fails closed on stale data.
 3. Read `crowdyStudioAgentEffectivePolicy`; do not infer effective state from
    the app row alone.
@@ -96,7 +90,7 @@ New apps do not receive `use_studio_agent` in their default tier.
 7. Verify the Game API has pulled the new platform/app revisions before testing.
 8. Expand to Build or Play only after their project/host security gates pass.
 
-Releasing an operator kill does not clear the app kill, enable either layer,
+Releasing a Crowded Kingdoms kill does not clear the app kill, enable either layer,
 grant `use_studio_agent`, or resume a prior run.
 
 ## Model and tool allowlists
@@ -203,6 +197,6 @@ Usage does not include prompts, source, tool bodies, headers, keys, private
 reasoning, wallet data, or payment instruments. `RESERVATION_CONSUMED` means
 terminal provider accounting was unavailable; it is not a zero-cost result.
 
-For platform activation, kills, secret injection, incident handling, and purge
-procedures, see the
-[operator runbook](/operators/agentic-crowdy-studio).
+Platform-wide activation and emergency kills are managed by Crowded Kingdoms.
+Studio managers use `setCrowdyStudioAgentPolicy` and the usage queries on this
+surface.

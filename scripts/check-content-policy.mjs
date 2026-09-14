@@ -67,7 +67,7 @@ const PRIVATE_REPO_NAMES = [
 // The account-id pattern refuses a 12-digit run whose NEIGHBOURS are not hex or
 // a hyphen. That is not defensive dressing -- the naive `\b[0-9]{12}\b` matches
 // the tail of the canonical example UUID `550e8400-e29b-41d4-a716-446655440000`,
-// which is in `docs-game-api/query-notes.md` and is entirely correct there. The
+// which appears in Game API examples and is entirely correct there. The
 // naive rule would therefore have needed an allowlist on its first run, which by
 // the test written above is a statement about the rule. Refining the pattern
 // costs one lookaround and leaves the gate with no exceptions at all.

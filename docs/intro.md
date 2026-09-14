@@ -35,7 +35,7 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 
 ### Replication  
 - Our UDP replication servers are nicknamed "Buddy"
-- Buddy servers run alongside the Game API (shared fleet or dedicated stack)
+- Buddy servers run alongside the Game API on the shared platform
 - Use the game API to get assigned one or more Buddies
 - You communicate directly to the IP address given by the game API via unencrypted UDP
 - You'll use Buddy to send spatially routed messages from one client to some or all nearby clients
@@ -59,8 +59,9 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 
 - **[Brand guidelines](/overview/brand)** — colors, typography, wordmark, and UI tokens for Crowded Kingdoms surfaces.
 - **[Client Workflow](/overview/client-workflow)** — how the APIs and SDK fit together.
-- **[Before you ship](/overview/before-you-ship)** — tier hosts and their aliases, the per-tier SDK build, and the game-model seed a shipped client needs.
-- **[Dev tier (client integration)](/management-ui/dev-tier)** — public dev URLs and shared-platform config for early client testing.
+- **[Best practices](/overview/best-practices)** — Game Models, effects, Compute, and tokens.
+- **[Before you ship](/overview/before-you-ship)** — hosts, SDK defaults, and the game-model seed a shipped client needs.
+- **[Dev tier (client integration)](/management-ui/dev-tier)** — public sandbox URLs and shared-platform config for early client testing.
 - **[Create your first app](/management-ui/create-your-first-app)** — register on the shared platform.
 - **Management API** — authenticate, manage orgs, apps, billing, and shared environment.
 - **Game API** — chunks, voxels, actors, avatars, studio grids, and the GraphQL UDP proxy.

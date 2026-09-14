@@ -14,31 +14,18 @@ everything afterwards; keep `discoveryUrl` as the way back.**
 
 ## Why there is anything to do here
 
-The platform database is PostgreSQL with Citus, distributed on `app_id`. Every row of your
-app — chunks, actors, grids, compute state — lives on shards in a single datacenter, and
-an app is deliberately placed in one rather than spread across several.
+Every row of your app — chunks, actors, grids, compute state — lives in a
+**single datacenter**. The app is placed in one datacenter rather than spread
+across several.
 
-The published origin for a tier — `ck.dev.crowdedkingdoms.com` on the dev tier — is a
-multi-value DNS record over every datacenter's load balancer. There is no single front
-door: whichever datacenter DNS hands you answers your first request. That is intentional,
-because a single front door is a single thing to lose.
+The published origin (`ck.prod.crowdedkingdoms.com` in production,
+`ck.dev.crowdedkingdoms.com` on the sandbox) resolves to **every** datacenter.
+Whichever one answers your first request is correct for identity and token
+minting. Gameplay for *your* app must go to the datacenter that holds that
+app. Calling gameplay on the wrong datacenter is refused (`WRONG_DATACENTER`).
 
-The shape is `ck.<tier>.crowdedkingdoms.com` on all three tiers, production included —
-`ck.prod.crowdedkingdoms.com`, not the unlabelled `ck.crowdedkingdoms.com`, which is an
-alias kept alive for older clients rather than the endpoint to build against. Two earlier
-roots have been retired since August 2026 and a template on either of them is dead, so
-take the origin from your tier's own documentation rather than from memory, and take the
-per-datacenter one from the API, as below.
-
-So your first request is answered correctly by a datacenter that may not hold your data.
-Identity, organizations, tokens and app access are **reference tables**, replicated to
-every node, so signing in and minting a token work from anywhere. Reading your world does
-not — or rather, it works and is slow. Citus will fetch every row across the network and
-return the right answer. Nothing errors. Nothing logs. A measured cross-datacenter
-statement on this cluster costs **631 ms against 0.008 ms** for a local one.
-
-That is the failure this design removes, and it is worth naming precisely because it does
-not look like a failure. It looks like the game being sluggish for some players.
+`ck.crowdedkingdoms.com` is an alias for production, not a second endpoint.
+Prefer the URL the API returns over any hostname you compose.
 
 ## The three URLs
 
@@ -93,13 +80,8 @@ itself. On an older build, setting it changes nothing.
 
 ## What happens if you skip step 3
 
-**You are refused, and told where to go.** This is not configurable and is not tier
-specific: a gameplay call for an app held elsewhere is always refused.
-
-It used to be one of two outcomes, and the other was worse — your queries answered
-correctly and slowly by a datacenter that does not hold your shards, indefinitely, with
-nothing logged. If you are reading an older copy of this page that describes that as a
-possibility, it is out of date.
+**You are refused, and told where to go.** A gameplay call for an app held
+elsewhere is always refused.
 
 ```json
 {
@@ -130,23 +112,17 @@ connection, and it is why `discoveryUrl` remains the way back.
 never gives you one somewhere else, because every gameplay write for that session would
 then cross a WAN and you would not notice: each write still succeeds.
 
-**Its refusal tells you which of three situations you are in, and only one of them needs
-an operator.**
+**Its refusal tells you which of three situations you are in.**
 
 | Code | What happened | What to do |
 |---|---|---|
 | `WRONG_DATACENTER` | You called it on a datacenter that does not hold this app. **This is the common one** — the shared origin resolves to every datacenter, so a client that skipped step 3 lands here about half the time. | Read `extensions.gameApiUrl` and reconnect, exactly as above. CrowdyJS and CrowdyCPP do this for you. |
 | `APP_UNAVAILABLE` | The app's own datacenter is not serving at all. No endpoint is named, on purpose. | Retry. Do not fall back to a cached server. |
-| `NO_LOCAL_BUDDY` | You are already **on** the app's datacenter and it has no healthy Buddy. No endpoint is named, because there is nowhere else to go. | Retry, and tell us — this one needs an operator. |
-
-The distinction is new as of ck-api v1.55.0. Before that, all three answered
-`NO_LOCAL_BUDDY` with no endpoint, so a client in the wrong datacenter was told a true
-thing it could do nothing with. If your client treats `NO_LOCAL_BUDDY` as fatal and you
-are seeing it on a shared origin, that is what you were hitting.
+| `NO_LOCAL_BUDDY` | You are already **on** the app's datacenter and it has no healthy Buddy. No endpoint is named, because there is nowhere else to go. | Retry, and contact support if it persists. |
 
 ## If your app moves
 
-An operator can move an app to another datacenter. When that happens the endpoint your
+An app can be moved to another datacenter. When that happens the endpoint your
 client is holding stops being the right one, and there is no push notification.
 
 `gameClientBootstrap` is the answer, and it must be re-read rather than cached for the

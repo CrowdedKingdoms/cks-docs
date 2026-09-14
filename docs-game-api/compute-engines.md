@@ -270,10 +270,9 @@ over sampled counter containers. Clients: `kit.moderation`,
 
 ## Policy-footprint quick reference
 
-Measured Phase 10 host costs on the single-box builder: ~1.4 ms per db-op,
-~0.4 ms per radius scan, ~0.5 ms per spatial emit. The table is the
-design-time footprint; actual counts scale with agents/players. The
-template's `deploy.json` is authoritative for policy overrides.
+The table is the design-time footprint; actual counts scale with
+agents/players. The template's `deploy.json` is authoritative for policy
+overrides.
 
 | Template | Tick | Dominant per-tick work | Egress |
 |---|---:|---|---|
@@ -295,9 +294,8 @@ template's `deploy.json` is authoritative for policy overrides.
 | possession | 2 Hz | 1 presence scan while held + ball integration | 1 ball pose/tick |
 | liveops-scheduler | 1 Hz | EventWindow batch; writes only at timestamp transitions | open/close events |
 
-Keep loops bounded and batch model reads. A 50-module × 5 Hz × 10-db-op
-stress fleet held 100% cadence but consumed ~80% of one builder game-api
-process — use that as a conservative sizing boundary, not a target.
+Keep loops bounded and batch model reads. Size well below policy ceilings;
+those are guardrails, not a target.
 
 ## Deploying engines by name (the template registry)
 

@@ -17,9 +17,7 @@ a generated password, both stored locally. There is no login form, and the accou
 is a normal one — the player can add a magic link or a social identity to it later
 and keep their progress.
 
-This used to be one call to a dev bypass. That bypass is gone (see the note
-below), and the replacement is barely longer, because a brand-new address is
-exactly the case where `register` returns a session immediately.
+A brand-new address is the case where `register` returns a session immediately.
 
 ```ts
 const stored = JSON.parse(localStorage.getItem('guest') ?? 'null');
@@ -56,10 +54,7 @@ guest flow exists to avoid. Password is the automatic path. If you would rather
 not hold a password in `localStorage`, `requestLoginLink` is the alternative and
 costs you the inbox round trip.
 
-The **dev bypass this chapter used to recommend is gone** — `devLogin` was deleted
-on 2026-08-20, along with the `devToken` shortcut, because both handed out a
-session with no proof that the caller owned the address. Nothing replaces them on
-any tier. See [Sign in](/management-api/authentication).
+There is no unauthenticated shortcut. See [Sign in](/management-api/authentication).
 :::
 
 ## Mint an app-scoped token for gameplay

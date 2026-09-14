@@ -111,8 +111,8 @@ Streams pass through as `text/event-stream`.
 
 ### Gates, in order
 
-1. **Policy.** `AgentPolicyService.effective(user, app)` on every request:
-   platform and app enabled, no kill switch, and the caller holds
+1. **Policy.** Every request uses the effective platform and app policy:
+   both enabled, no kill switch, and the caller holds
    `use_studio_agent`. Revoking the permission stops the next request even if
    a consent row exists.
 2. **Model.** In the allowlist and carrying a rate card; image parts only on
@@ -183,10 +183,7 @@ Policy administration is unchanged:
 [`setCrowdyStudioAgentPolicy`](reference/graphql/operations/mutations/set-crowdy-studio-agent-policy.mdx)
 (now with `funding.payerKind`),
 [`crowdyStudioAgentEffectivePolicy`](reference/graphql/operations/queries/crowdy-studio-agent-effective-policy.mdx),
-[`crowdyStudioAgentUsage`](reference/graphql/operations/queries/crowdy-studio-agent-usage.mdx),
-and the operator roots `cpCrowdyStudioAgentPlatformPolicy`,
-`cpSetCrowdyStudioAgentPlatformPolicy`, `cpSetCrowdyStudioAgentAppKill`,
-`cpCrowdyStudioAgentCatalog`.
+[`crowdyStudioAgentUsage`](reference/graphql/operations/queries/crowdy-studio-agent-usage.mdx).
 
 ## What a game implements
 
