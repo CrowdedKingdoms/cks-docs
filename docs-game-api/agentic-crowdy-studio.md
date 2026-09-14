@@ -183,10 +183,7 @@ Policy administration is unchanged:
 [`setCrowdyStudioAgentPolicy`](reference/graphql/operations/mutations/set-crowdy-studio-agent-policy.mdx)
 (now with `funding.payerKind`),
 [`crowdyStudioAgentEffectivePolicy`](reference/graphql/operations/queries/crowdy-studio-agent-effective-policy.mdx),
-[`crowdyStudioAgentUsage`](reference/graphql/operations/queries/crowdy-studio-agent-usage.mdx),
-and the operator roots `cpCrowdyStudioAgentPlatformPolicy`,
-`cpSetCrowdyStudioAgentPlatformPolicy`, `cpSetCrowdyStudioAgentAppKill`,
-`cpCrowdyStudioAgentCatalog`.
+[`crowdyStudioAgentUsage`](reference/graphql/operations/queries/crowdy-studio-agent-usage.mdx).
 
 ## What a game implements
 

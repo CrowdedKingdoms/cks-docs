@@ -7,8 +7,8 @@ title: Shared environment & billing
 
 The **shared environment** is the primary way to ship a game on Crowded Kingdoms: create your app on the **shared platform** and your players connect to a single, managed Game API scoped by your `appId`. You do not provision or run any infrastructure.
 
-:::tip[Live on dev tier]
-The shared platform is **generally available** on the dev tier. Create an app through **[Get started](/management-ui/create-your-first-app)** or `createApp` with shared deployment — it is **immediately active** after create. Test and production tiers follow the same model as they are promoted.
+:::tip[Sandbox and production]
+The shared platform is **generally available**. Create an app through **[Get started](/management-ui/create-your-first-app)** or `createApp` with shared deployment — it is **immediately active** after create. Sandbox and production follow the same model.
 :::
 
 There are two deployment models in the platform:

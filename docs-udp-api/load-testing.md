@@ -67,9 +67,8 @@ client. On the **shared environment** this draws down your wallet and counts
 toward spend caps — an aggressive test can runtime-deny your own app
 (see **[Operations → App suspended or over budget](/replication-api/operations#app-suspended-or-over-budget)**).
 
-Run sustained tests against an isolated copy of your app (or a dedicated
-environment if you have one), and set spend caps deliberately before
-testing on shared production capacity.
+Run sustained tests against an isolated copy of your app, and set spend
+caps deliberately before testing on shared production capacity.
 
 :::
 
