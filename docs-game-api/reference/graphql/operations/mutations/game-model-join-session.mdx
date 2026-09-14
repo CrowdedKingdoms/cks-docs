@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Join an existing session as a participant, optionally with a role. Requires a valid token and app access.
+Join a session, or reconnect to one you are already in. Refused with SESSION&#x005F;ENDED, SESSION&#x005F;CLOSED, SESSION&#x005F;LOCKED (unless you already joined) or SESSION&#x005F;FULL. A rejoin returns the same row with incarnation + 1 and supersedes any older client of yours. Pass actorUuid to bind the participant's presence to that Buddy actor. Requires a valid token.
 
 
 ```graphql
@@ -28,7 +28,7 @@ gameModelJoinSession(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>gameModelJoinSession.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JoinSessionInput!</b></code>](/reference/graphql/types/inputs/join-session-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
-The app, the session id to join, and an optional participant role.
+The app, the session id to join, an optional participant role, and an optional actor uuid.
 
 
 

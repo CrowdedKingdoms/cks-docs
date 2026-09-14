@@ -24,6 +24,10 @@ input CreateSessionInput {
   name: String
   metadataJson: String
   participantUserIds: [BigInt!]
+  maxParticipants: Int
+  admission: String
+  emptyTimeoutSec: Int
+  idempotencyKey: String
 }
 ```
 
@@ -44,6 +48,22 @@ JSON object of session metadata.
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>participantUserIds</b></code>](#participant-user-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#participant-user-ids\} 
 Initial participants besides the creator.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>maxParticipants</b></code>](#max-participants)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-participants\} 
+Seat cap: the most participants that may be joined at once. Omit for unbounded. Initial participants count against it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>admission</b></code>](#admission)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#admission\} 
+Initial admission: 'open' (default) or 'locked' (only the initial participants may join/reconnect until the host unlocks).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>emptyTimeoutSec</b></code>](#empty-timeout-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#empty-timeout-sec\} 
+Seconds a session may sit with nobody joined before the server ends it as abandoned. Omit for the platform default; 0 disables the timeout for this session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key. Replaying with the same key and identical input returns the first session instead of creating a second; the same key with different input returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
 
 
 

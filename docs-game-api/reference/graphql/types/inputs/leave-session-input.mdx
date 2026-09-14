@@ -1,0 +1,53 @@
+---
+id: leave-session-input
+title: LeaveSessionInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Leave a session you are joined to.
+
+
+```graphql
+input LeaveSessionInput {
+  appId: BigInt!
+  sessionId: String!
+  incarnation: Int!
+  idempotencyKey: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>LeaveSessionInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LeaveSessionInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+The session id to leave.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LeaveSessionInput.<b>incarnation</b></code>](#incarnation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#incarnation\} 
+The incarnation gameModelJoinSession returned to THIS client (a creator starts at 1; gameModelSessionSnapshot shows every participant's). Required: if a newer client has since rejoined as the same user, the call is refused with SESSION&#x005F;INCARNATION&#x005F;STALE and the newer client stays joined, so a superseded client can never remove the one that took over.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LeaveSessionInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key (24h).
+
+
+
+
+### Member Of
+
+[`gameModelLeaveSession`](/reference/graphql/operations/mutations/game-model-leave-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
