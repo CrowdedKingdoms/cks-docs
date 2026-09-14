@@ -1,0 +1,29 @@
+---
+id: all-hosted-games
+title: allHostedGames
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: every hosted game on the tier, whatever its status or listing.
+
+
+```graphql
+allHostedGames: [HostedGame!]!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>HostedGame</b></code>](/reference/graphql/types/objects/hosted-game.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A third-party game hosted on Crowdy Games (2026-09-13). Reached at launchUrl -- https://&#x003C;games host&#x003E;/&#x003C;slug&#x003E;/, a first-party shell page -- while its bundle executes on contentOrigin, https://&#x003C;slug&#x003E;.&#x003C;content host&#x003E;, an origin of its own. One row per app; the slug is global on the tier.

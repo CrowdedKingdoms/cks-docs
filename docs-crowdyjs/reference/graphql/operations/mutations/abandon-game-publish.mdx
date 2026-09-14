@@ -1,0 +1,44 @@
+---
+id: abandon-game-publish
+title: abandonGamePublish
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Give up a STAGING publish and clear its staged objects. Requires manage&#x005F;apps and a SESSION token.
+
+
+```graphql
+abandonGamePublish(
+  slug: String!
+  publishId: BigInt!
+): HostedGamePublish!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>abandonGamePublish.<b>slug</b></code>](#slug)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#slug\} 
+The hosting slug the publish was begun for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>abandonGamePublish.<b>publishId</b></code>](#publish-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#publish-id\} 
+The STAGING publish to give up.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>HostedGamePublish</b></code>](/reference/graphql/types/objects/hosted-game-publish.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One publish of a hosted game: the manifest the developer declared and what became of it.
