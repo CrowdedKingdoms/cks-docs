@@ -134,8 +134,10 @@ in the stream from wherever you reconnect.
 joinable lobbies; `sessionInspect` (app admins) shows the whole roster with
 presence verdicts. The `kit.matches` helpers create their session with
 `presence: 'none'` — a kit match is GraphQL plus channel pings and never spawns
-an actor — and otherwise still keep their own `max_players` and do not bind an
-actor on join.
+an actor — and own its exits: `kit.matches.leave(match)` departs with the
+incarnation the kit remembered from `create` / `join` (or one you pass), and
+`finish()` ends the backing session after a successful `end_match`. They still
+keep their own `max_players` in `MatchMeta` and do not bind an actor on join.
 
 ## Invoking a function
 

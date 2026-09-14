@@ -205,8 +205,10 @@ and the empty timeout are then the roster's only exits). The `sessionChanged`
 push is per datacenter and the event log is the record; `sessionEvents` catches
 up from wherever you reconnect. `kit.matches()` creates its session with
 `presence = "none"` — a kit match is GraphQL plus channel pings and never spawns
-an actor — and otherwise is unchanged: it keeps its own `max_players` and does
-not bind an actor on join.
+an actor — and owns its exits: `leave(match)` departs with the incarnation the
+kit remembered from `create()` / `join()` (or one you pass), and `finish()`
+ends the backing session after a successful `end_match`. It still keeps its
+own `max_players` in `MatchMeta` and does not bind an actor on join.
 
 ## Realtime + live-ops surfaces (v0.6.0+)
 

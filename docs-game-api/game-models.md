@@ -514,9 +514,11 @@ Create such a session with `presence: 'none'` (`GmSession.presence` reports the
 mode; the default is `'actor'`). Nobody in it is ever expired: the roster's only
 exits are `gameModelLeaveSession`, `gameModelEndSession`, and the empty timeout
 once everyone has left. The mode is fixed at creation. `kit.matches` in CrowdyJS
-and `kit::MatchesKit` in CrowdyCPP create their sessions this way. A
-GraphQL-only session that does **not** opt out empties after the grace window
-and is abandoned after the timeout.
+and `kit::MatchesKit` in CrowdyCPP create their sessions this way, and so own
+those exits themselves: `leave()` departs the session (with the incarnation the
+kit remembered from create / join) and `finish()` ends it once the match is
+decided. A GraphQL-only session that does **not** opt out empties after the
+grace window and is abandoned after the timeout.
 
 **The host.** The creator is the first host (`hostUserId`, `hostTerm` 1). When
 the host leaves or expires, the longest-joined present participant succeeds;
