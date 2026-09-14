@@ -49,9 +49,6 @@ Effective disable/kill precedence is:
 | `crowdyStudioAgentEffectivePolicy(appId)` | app `view_compute_diagnostics` | Effective clamp and kill state. This does not attest Game API freshness. |
 | `crowdyStudioAgentUsage(appId, since, until, limit)` | app `view_compute_diagnostics` | Sanitized exact records plus a full-window aggregate. |
 | `setCrowdyStudioAgentPolicy(input)` | app `manage_compute` | Create/patch the app layer and publish a replica notification. |
-| `cpCrowdyStudioAgentPlatformPolicy` | operator | Read the platform layer. |
-| `cpSetCrowdyStudioAgentPlatformPolicy(input)` | operator | Patch platform policy/global kill. |
-| `cpSetCrowdyStudioAgentAppKill(input)` | operator | Publish or release the separate Crowded Kingdoms kill for one app. |
 
 Every mutation requires `input.idempotencyKey`. Byte-equivalent retries replay
 the first result; changed arguments under the same key fail
