@@ -79,7 +79,7 @@ const hero = await client.gameModel.createContainer({
 await client.gameModel.setSessionTurn({ appId: "1", sessionId, userId: "90001" });
 ```
 
-### Roster, admission, host and presence (17.3.0+)
+### Roster, admission, host and presence (17.4.0+)
 
 A session carries an authoritative roster, an admission state, a seat cap, a
 host and a revision log; the SDK exposes them as thin wrappers over the
@@ -136,8 +136,11 @@ presence verdicts. The `kit.matches` helpers create their session with
 `presence: 'none'` — a kit match is GraphQL plus channel pings and never spawns
 an actor — and own its exits: `kit.matches.leave(match)` departs with the
 incarnation the kit remembered from `create` / `join` (or one you pass), and
-`finish()` ends the backing session after a successful `end_match`. They still
-keep their own `max_players` in `MatchMeta` and do not bind an actor on join.
+`finish()` ends the backing session after a successful `end_match` and reports
+the outcome as `sessionEnd: 'ended' | 'already_ended' | 'forbidden'` rather than
+throwing when the caller could finish the match but not end the session. They
+still keep their own `max_players` in `MatchMeta` and do not bind an actor on
+join.
 
 ## Invoking a function
 

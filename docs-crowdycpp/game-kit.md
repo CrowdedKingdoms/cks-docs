@@ -153,7 +153,7 @@ server-ranked pages (`engineTop` / `engineRankOf` / `engineSubmitSelf` /
 `tutorial` / `acceptNextTutorialStep`), and the type-91/92/93 event parsers
 in `crowdy/kit/wire.hpp`.
 
-## The session system (v0.39.0+)
+## The session system (v0.40.0+)
 
 `GameModelAPI` wraps the Game API's session system (roster, admission, seat
 cap, host and revision log — see the
@@ -207,8 +207,11 @@ up from wherever you reconnect. `kit.matches()` creates its session with
 `presence = "none"` — a kit match is GraphQL plus channel pings and never spawns
 an actor — and owns its exits: `leave(match)` departs with the incarnation the
 kit remembered from `create()` / `join()` (or one you pass), and `finish()`
-ends the backing session after a successful `end_match`. It still keeps its
-own `max_players` in `MatchMeta` and does not bind an actor on join.
+ends the backing session after a successful `end_match`, returning a
+`KitMatchFinishResult` whose `sessionEnd` is `"ended"`, `"already_ended"` or
+`"forbidden"` (the caller could finish the match but not end the session) rather
+than throwing. It still keeps its own `max_players` in `MatchMeta` and does not
+bind an actor on join.
 
 ## Realtime + live-ops surfaces (v0.6.0+)
 

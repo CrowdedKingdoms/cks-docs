@@ -517,7 +517,9 @@ once everyone has left. The mode is fixed at creation. `kit.matches` in CrowdyJS
 and `kit::MatchesKit` in CrowdyCPP create their sessions this way, and so own
 those exits themselves: `leave()` departs the session (with the incarnation the
 kit remembered from create / join) and `finish()` ends it once the match is
-decided. A GraphQL-only session that does **not** opt out empties after the
+decided, reporting `sessionEnd` (`ended`, `already_ended`, or `forbidden` when
+the caller could finish the match but is not admitted to end the session — the
+creator who already left). A GraphQL-only session that does **not** opt out empties after the
 grace window and is abandoned after the timeout.
 
 **The host.** The creator is the first host (`hostUserId`, `hostTerm` 1). When
@@ -528,7 +530,8 @@ increments `hostTerm`. Host actions (`gameModelSetSessionAdmission`,
 `gameModelTransferSessionHost`, `gameModelEndSession`, `gameModelSetSessionTurn`)
 accept `expectedHostTerm`; when it is stale the call is refused with
 `SESSION_HOST_TERM_STALE` rather than acting on a host change you have not seen.
-App admins (`manage_apps`) may do everything the host may.
+App admins (`manage_apps`) and the app's elected host (the platform's `is_host`
+role) may do everything the session host may.
 
 **Ending.** `gameModelEndSession` (host or admin) marks every joined participant
 `left` (`session_ended`), closes admission and records `endedAt` / `endReason`.
