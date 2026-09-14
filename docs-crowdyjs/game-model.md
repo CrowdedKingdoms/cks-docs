@@ -118,16 +118,23 @@ stop();
 ```
 
 Refusals arrive as `CrowdyGraphQLError` with `code` one of `SESSION_FULL`,
-`SESSION_LOCKED`, `SESSION_CLOSED`, `SESSION_ENDED`, `SESSION_NOT_PARTICIPANT`,
-`SESSION_INCARNATION_STALE`, `SESSION_HOST_TERM_STALE`. Two rules to plan
-around: **presence is the player's Buddy actor** — a participant with no fresh
-actor in the app after the join grace window is expired by the server, and an
-empty session is abandoned after its `emptyTimeoutSec` — so a GraphQL-only
-client must rejoin to come back; and every session mutation accepts an
-`idempotencyKey`. `gameModelSessions({ appId, status: "active", admission: "open" })`
-lists joinable lobbies; `sessionEvents` fills a gap in the stream;
-`sessionInspect` (app admins) shows the whole roster with presence verdicts.
-The `kit.matches` helpers still keep their own `max_players` and do not bind an
+`SESSION_LOCKED`, `SESSION_CLOSED`, `SESSION_ENDED`, `SESSION_NOT_PARTICIPANT`
+(you are not joined), `SESSION_TARGET_NOT_PARTICIPANT` (the user you named to
+`transferSessionHost` is not joined), `SESSION_INCARNATION_STALE`,
+`SESSION_HOST_TERM_STALE`. Two rules to plan around: **presence is the player's
+Buddy actor** — a participant with no fresh actor in the app after the join
+grace window is expired by the server, and an empty session is abandoned after
+its `emptyTimeoutSec` — so a GraphQL-only client must rejoin to come back,
+unless the session was created with `presence: 'none'`, which turns the rule
+off (leave, end and the empty timeout are then the roster's only exits); and
+every session mutation accepts an `idempotencyKey`. The `sessionChanged` push
+is per datacenter and the event log is the record: `sessionEvents` fills a gap
+in the stream from wherever you reconnect.
+`gameModelSessions({ appId, status: "active", admission: "open" })` lists
+joinable lobbies; `sessionInspect` (app admins) shows the whole roster with
+presence verdicts. The `kit.matches` helpers create their session with
+`presence: 'none'` — a kit match is GraphQL plus channel pings and never spawns
+an actor — and otherwise still keep their own `max_players` and do not bind an
 actor on join.
 
 ## Invoking a function

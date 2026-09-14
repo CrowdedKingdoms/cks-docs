@@ -507,9 +507,21 @@ absent participant `left` with reason `presence_expired` and emits
 actor is expired after the grace — the same rule under which automations and
 compute do not run for an app with nobody in it. Rejoin to come back.
 
+**Or opt out: `presence: 'none'`.** That rule fits a session whose players
+replicate actors. It does not fit turn-based play that talks GraphQL and channel
+pings and never spawns one — chess, a card table, a lobby that is only a list.
+Create such a session with `presence: 'none'` (`GmSession.presence` reports the
+mode; the default is `'actor'`). Nobody in it is ever expired: the roster's only
+exits are `gameModelLeaveSession`, `gameModelEndSession`, and the empty timeout
+once everyone has left. The mode is fixed at creation. `kit.matches` in CrowdyJS
+and `kit::MatchesKit` in CrowdyCPP create their sessions this way. A
+GraphQL-only session that does **not** opt out empties after the grace window
+and is abandoned after the timeout.
+
 **The host.** The creator is the first host (`hostUserId`, `hostTerm` 1). When
 the host leaves or expires, the longest-joined present participant succeeds;
-`gameModelTransferSessionHost` hands it over deliberately. Every host change
+`gameModelTransferSessionHost` hands it over deliberately (naming someone who is
+not joined is refused with `SESSION_TARGET_NOT_PARTICIPANT`). Every host change
 increments `hostTerm`. Host actions (`gameModelSetSessionAdmission`,
 `gameModelTransferSessionHost`, `gameModelEndSession`, `gameModelSetSessionTurn`)
 accept `expectedHostTerm`; when it is stale the call is refused with
@@ -532,14 +544,18 @@ session's event log and advances `revision` by one, in the same transaction.
 its joined roster at one revision; `gameModelSessionEvents(appId, sessionId,
 afterRevision)` fills a gap. The contract is the one the player-count feed uses:
 there is no bootstrap event — pull the snapshot, then apply events whose
-revision is above it; on a gap or a reconnect, pull the snapshot again. Clients
-on a Buddy connection also receive a compact `gms|<sessionId>|<revision>|<kind>`
-message on the app's session channel after each change, as a cue to pull.
+revision is above it; on a gap or a reconnect, pull the snapshot again. The
+push is per datacenter — a revision committed in one region wakes subscribers on
+that region's API — and the event log is the record, so a subscriber that
+reconnects anywhere catches up from the revision it last saw. Clients on a Buddy
+connection also receive a compact `gms|<sessionId>|<revision>|<kind>` message on
+the app's session channel after each change, as a cue to pull.
 
 All session mutations accept an `idempotencyKey` (24 h): replaying a join
 returns the same incarnation rather than joining again. Operators read the full
-roster, including departed participants and each one's live presence verdict,
-with `gameModelSessionInspect` (`manage_apps`).
+roster, including departed participants and each one's live presence verdict
+(`fresh`, `grace`, `stale`, `none` for a `presence: 'none'` session, `legacy`,
+`left`), with `gameModelSessionInspect` (`manage_apps`).
 
 Containers can have an **owner** (`ownerUserId`) which powers `owner_of_self` and
 owner-only visibility. Create instances with `gameModelCreateContainer`

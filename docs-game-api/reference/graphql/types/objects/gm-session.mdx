@@ -36,6 +36,7 @@ type GmSession {
   endedAt: DateTime
   endReason: String
   createdAt: DateTime!
+  presence: String!
 }
 ```
 
@@ -104,6 +105,10 @@ Why it ended: 'completed' or 'abandoned' by the host/admin, 'empty&#x005F;timeou
 
 #### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 When the session was created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>presence</b></code>](#presence)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#presence\} 
+How the roster is judged: 'actor' (default) expires a joined participant with no fresh Buddy actor in the app after the join grace window; 'none' never expires anybody -- for turn-based play that never replicates an actor -- so the roster's only exits are leave, end, and the empty timeout once everyone has left.
 
 
 

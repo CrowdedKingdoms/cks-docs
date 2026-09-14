@@ -27,6 +27,7 @@ input CreateSessionInput {
   maxParticipants: Int
   admission: String
   emptyTimeoutSec: Int
+  presence: String
   idempotencyKey: String
 }
 ```
@@ -60,6 +61,10 @@ Initial admission: 'open' (default) or 'locked' (only the initial participants m
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>emptyTimeoutSec</b></code>](#empty-timeout-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#empty-timeout-sec\} 
 Seconds a session may sit with nobody joined before the server ends it as abandoned. Omit for the platform default; 0 disables the timeout for this session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>presence</b></code>](#presence)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#presence\} 
+How the roster is judged: 'actor' (default) expires a joined participant with no fresh Buddy actor in the app after the join grace window; 'none' never expires anybody. Use 'none' for turn-based play that talks GraphQL and channel pings and never replicates an actor (kit.matches does), where the roster's only exits are leave and end.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 

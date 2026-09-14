@@ -193,12 +193,19 @@ gm.leaveSession(leave);
 Also `transferSessionHost`, `endSession`, `sessionEvents(appId, sid, afterRevision)`,
 `sessionInspect` (app admins) and `sessions(appId, status, admission, hostUserId, limit)`.
 Refusals are `CrowdyGraphQLError` with `code()` one of `SESSION_FULL`,
-`SESSION_LOCKED`, `SESSION_CLOSED`, `SESSION_ENDED`, `SESSION_NOT_PARTICIPANT`,
-`SESSION_INCARNATION_STALE`, `SESSION_HOST_TERM_STALE`. Presence is the
-player's Buddy actor: a participant with no fresh actor in the app after the
-join grace window is expired by the server and an empty session is abandoned
-after its `emptyTimeoutSec`, so a client that never replicates must rejoin to
-come back. `kit.matches()` is unchanged: it keeps its own `max_players` and does
+`SESSION_LOCKED`, `SESSION_CLOSED`, `SESSION_ENDED`, `SESSION_NOT_PARTICIPANT`
+(the caller is not joined), `SESSION_TARGET_NOT_PARTICIPANT` (the user named to
+`transferSessionHost` is not joined), `SESSION_INCARNATION_STALE`,
+`SESSION_HOST_TERM_STALE`. Presence is the player's Buddy actor: a participant
+with no fresh actor in the app after the join grace window is expired by the
+server and an empty session is abandoned after its `emptyTimeoutSec`, so a
+client that never replicates must rejoin to come back — unless the session was
+created with `input["presence"] = "none"`, which turns the rule off (leave, end
+and the empty timeout are then the roster's only exits). The `sessionChanged`
+push is per datacenter and the event log is the record; `sessionEvents` catches
+up from wherever you reconnect. `kit.matches()` creates its session with
+`presence = "none"` — a kit match is GraphQL plus channel pings and never spawns
+an actor — and otherwise is unchanged: it keeps its own `max_players` and does
 not bind an actor on join.
 
 ## Realtime + live-ops surfaces (v0.6.0+)
