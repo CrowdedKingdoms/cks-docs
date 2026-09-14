@@ -1,0 +1,48 @@
+---
+id: complete-game-publish-result
+title: CompleteGamePublishResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The result of completeGamePublish.
+
+
+```graphql
+type CompleteGamePublishResult {
+  game: HostedGame!
+  publish: HostedGamePublish!
+  invalidationId: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CompleteGamePublishResult.<b>game</b></code>](#game)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>HostedGame!</b></code>](/reference/graphql/types/objects/hosted-game.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#game\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CompleteGamePublishResult.<b>publish</b></code>](#publish)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>HostedGamePublish!</b></code>](/reference/graphql/types/objects/hosted-game-publish.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#publish\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CompleteGamePublishResult.<b>invalidationId</b></code>](#invalidation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#invalidation-id\} 
+The CloudFront invalidation id, when one was created.
+
+
+
+
+### Returned By
+
+[`completeGamePublish`](/reference/graphql/operations/mutations/complete-game-publish.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

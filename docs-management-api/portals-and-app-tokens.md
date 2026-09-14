@@ -21,6 +21,10 @@ confined to that one app.
   app. Used as the Bearer against that app's Game API + realtime surface. A
   compromised or third-party game only ever sees a token for its own app.
 
+> **A game hosted on Crowdy Games** takes the same browser flow; the SDK routes it
+> through the first-party shell that frames the game. See
+> [Hosting on Crowdy Games](/management-api/hosting-on-crowdy-games).
+
 ## Sign in first
 
 Everything below starts from an identity **session token**, which you get from a

@@ -1,0 +1,58 @@
+---
+id: hosted-game-publish-state
+title: HostedGamePublishState
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Lifecycle of one publish. STAGING: upload URLs issued, objects arriving. LIVE: promoted and serving. SUPERSEDED: a later publish went live. FAILED: completion refused. ABANDONED: the developer gave up (abandonGamePublish).
+
+
+```graphql
+enum HostedGamePublishState {
+  STAGING
+  LIVE
+  SUPERSEDED
+  FAILED
+  ABANDONED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>HostedGamePublishState.<b>STAGING</b></code>](#staging) \{#staging\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>HostedGamePublishState.<b>LIVE</b></code>](#live) \{#live\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>HostedGamePublishState.<b>SUPERSEDED</b></code>](#superseded) \{#superseded\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>HostedGamePublishState.<b>FAILED</b></code>](#failed) \{#failed\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>HostedGamePublishState.<b>ABANDONED</b></code>](#abandoned) \{#abandoned\} 
+
+
+
+
+
+### Member Of
+
+[`HostedGamePublish`](/reference/graphql/types/objects/hosted-game-publish.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
