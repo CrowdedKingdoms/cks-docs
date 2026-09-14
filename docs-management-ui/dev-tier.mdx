@@ -6,13 +6,11 @@ title: Dev tier (client integration)
 
 # Dev tier — connecting game clients
 
-The **dev tier** is Crowded Kingdoms' shared integration environment for early client work. Sign up, create an app on the **shared platform**, and connect to the live shared Game API — no VM provisioning or environment slug assignment.
+The **dev tier** is Crowded Kingdoms' shared sandbox for early client work.
+Sign up, create an app on the **shared platform**, and connect to the live
+shared Game API.
 
-:::info[First external handoff]
-The dev tier is actively evolving. If something fails, report it early with the step, error message, and URL you were using — do not spend long periods debugging alone.
-:::
-
-## Public dev hosts
+## Public sandbox hosts
 
 | Surface | URL |
 | ------- | --- |
@@ -22,11 +20,8 @@ The dev tier is actively evolving. If something fails, report it early with the 
 | **GraphQL playground** | [https://ck.dev.crowdedkingdoms.com/graphql](https://ck.dev.crowdedkingdoms.com/graphql) |
 
 :::note[There is one endpoint, not two]
-This table listed a separate "Management API" on `api.dev.crowdedkingdoms.com`
-and a "Shared Game API" on a `game.shared.dev.*` host until 2026-08-21.
-**Neither host serves any more** — the first answers 503 and the second refuses
-the connection — and the two surfaces have been one origin for some time. Do not
-set `managementUrl`; it was removed in CrowdyJS 14.
+Management and game are two surfaces of the same origin. Do not set
+`managementUrl`; it was removed in CrowdyJS 14.
 :::
 
 Programmatic discovery (no auth required):
@@ -54,44 +49,58 @@ query {
 }
 ```
 
-:::caution[Do not use legacy dev-box URLs]
-There is ONE origin per tier, and on this tier it is `ck.dev.crowdedkingdoms.com`. Per-developer dev boxes and the old `game.shared.*` split are retired — those hosts no longer serve.
-
-**Prefer what the API hands you over a template.** All three tiers are now `ck.<tier>.crowdedkingdoms.com` — dev moved on 2026-08-25, test on 2026-08-26 and production on 2026-08-27, and production carries a `prod.` label like the other two, so `ck.crowdedkingdoms.com` without one is an alias rather than the endpoint. That template has been rewritten twice in a month, and a host copied out of an older page is dead rather than slow.
-
-If an app is pinned to a datacenter, `mintAppToken` returns `gameApiUrl` and `gameApiWsUrl`. **Use what the token returns.** That is correct on every tier, survives the next move, and is the only form that names the datacenter holding your app.
-:::
+**Prefer what the API hands you over a template.** If an app is pinned to a
+datacenter, `mintAppToken` returns `gameApiUrl` and `gameApiWsUrl`. Use those
+values — they are correct here and in production, and they name the
+datacenter holding your app.
 
 ## Two tokens (required)
 
-One endpoint serves everything, but Crowded Kingdoms separates **identity** from
-**gameplay** by credential:
+One endpoint serves everything, but Crowded Kingdoms separates **identity**
+from **gameplay** by credential:
 
-1. **Identity** — sign-in (email + password, magic link, or social/OIDC; there is no dev bypass), org and app operations. Sign-in returns an **identity session token**, and that token **cannot drive gameplay**.
-2. **Gameplay** — chunks, voxels, actors, UDP proxy subscriptions, and world mutations. Needs an **app-scoped token** minted from the session token (`mintAppToken`, or the portal PKCE flow), **not** the login token.
+1. **Identity** — sign-in (email + password, magic link, or social/OIDC), org
+   and app operations. Sign-in returns an **identity session token**, and that
+   token **cannot drive gameplay**.
+2. **Gameplay** — chunks, voxels, actors, UDP proxy subscriptions, and world
+   mutations. Needs an **app-scoped token** minted from the session token
+   (`mintAppToken`, or the portal PKCE flow), **not** the login token.
 
-See [Client Workflow](/overview/client-workflow) and [Portals & app-scoped tokens](/management-api/portals-and-app-tokens).
+See [Client Workflow](/overview/client-workflow) and
+[Portals & app-scoped tokens](/management-api/portals-and-app-tokens).
 
-**Flow:** sign in → create app (or use existing) → **mint an app-scoped token** → make gameplay calls with that token, against the URLs the mint returned.
+**Flow:** sign in → create app (or use existing) → **mint an app-scoped
+token** → make gameplay calls with that token, against the URLs the mint
+returned.
 
 ## Create your account and app
 
-You do **not** need a shared admin account. Sign in with email and a password, a magic link, or a social provider.
+You do **not** need a shared admin account. Sign in with email and a
+password, a magic link, or a social provider.
 
 1. Open [https://app.dev.crowdedkingdoms.com](https://app.dev.crowdedkingdoms.com)
-2. Sign in with a **magic link** (enter your work email; the account is created on first sign-in) or a **social provider**, then set your gamertag
-3. Create an org if prompted, then run **Get started** to register your app — see **[Create your first app](/management-ui/create-your-first-app)**
-4. When create completes, `runtimeStatus` is **`active`** and `gameApiUrl` points at the shared endpoint
+2. Sign in with a **magic link** (enter your work email; the account is
+   created on first sign-in) or a **social provider**, then set your gamertag.
+   Email + password also works and needs no inbox.
+3. Create an org if prompted, then run **Get started** to register your app —
+   see **[Create your first app](/management-ui/create-your-first-app)**
+4. When create completes, `runtimeStatus` is **`active`** and `gameApiUrl`
+   points at the shared endpoint
 
 Account basics: [Account and org basics](/management-ui/readme).
 
 ### Find your User ID
 
-To join an existing studio org, share your **User ID** with an org owner. Find it under **Account → Profile** ([https://app.dev.crowdedkingdoms.com/account](https://app.dev.crowdedkingdoms.com/account)) or query `me { userId email }` in the [management GraphQL playground](https://ck.dev.crowdedkingdoms.com/graphql).
+To join an existing studio org, share your **User ID** with an org owner.
+Find it under **Account → Profile**
+([https://app.dev.crowdedkingdoms.com/account](https://app.dev.crowdedkingdoms.com/account))
+or query `me { userId email }` in the
+[management GraphQL playground](https://ck.dev.crowdedkingdoms.com/graphql).
 
 ## Configure your client
 
-Example after you create **your own app** (replace `appId` and email with your values):
+Example after you create **your own app** (replace `appId` and email with
+your values):
 
 ```text
 ApiHttpUrl=https://ck.dev.crowdedkingdoms.com/graphql
@@ -102,7 +111,9 @@ AppId=<your-app-id>
 **URL rules:**
 
 - Include `/graphql` for HTTP; the WebSocket uses the same host with `wss://`.
-- Prefer **`mintAppToken`** return values for `gameApiUrl` / `gameApiWsUrl` over hard-coding: an app lives in one datacenter, and those values point at it.
+- Prefer **`mintAppToken`** return values for `gameApiUrl` / `gameApiWsUrl`
+  over hard-coding: an app lives in one datacenter, and those values point
+  at it.
 
 ### CrowdyJS
 
@@ -115,8 +126,8 @@ const identity = createCrowdyClient({
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),
 });
 
-// Sign in. Email + password works on every tier; magic link needs email delivery,
-// which the dev tier does not have, and social needs configured provider credentials.
+// Sign in. Email + password works everywhere; magic link needs email
+// delivery, and social needs configured provider credentials.
 await identity.auth.login({ email: 'you@example.com', password });
 
 // Mint an app-scoped token for your app, then drive gameplay from a per-game client.
@@ -131,43 +142,64 @@ const game = createCrowdyClient({
 game.setToken(appToken.token);
 ```
 
-Full SDK guide: [CrowdyJS](/crowdyjs/readme). Routing details: [Shared environment routing](/crowdyjs/shared-environment-routing).
+Full SDK guide: [CrowdyJS](/crowdyjs/readme). Routing details:
+[Shared environment routing](/crowdyjs/shared-environment-routing).
 
 ### Unreal and other native clients
 
-Use the same endpoint and the same token model: sign in for the identity session token, mint an **app-scoped token** for your app, then use that token for gameplay. Browsers typically use the [GraphQL UDP proxy](/game-api/graphql-udp-proxy-api); native clients can use the [Replication API](/replication-api/intro), signing UDP packets with the **app-scoped token** after server assignment. Unreal SDK docs: [Unreal SDK intro](/unreal-sdk/intro).
+Use the same endpoint and the same token model: sign in for the identity
+session token, mint an **app-scoped token** for your app, then use that
+token for gameplay. Browsers typically use the
+[GraphQL UDP proxy](/game-api/graphql-udp-proxy-api); native clients can
+use the [Replication API](/replication-api/intro), signing UDP packets
+with the **app-scoped token** after server assignment. Unreal SDK docs:
+[Unreal SDK intro](/unreal-sdk/intro).
 
 ## Org membership
 
 Create your own org through **Get started**, or join an existing studio:
 
-- Org owners invite members by **User ID** — see [Account and org basics](/management-ui/readme).
-- Dev accounts are **separate per tier** — a test or prod account does not carry over.
+- Org owners invite members by **User ID** — see
+  [Account and org basics](/management-ui/readme).
+- Sandbox accounts are separate from production accounts.
 
 ## Verify connectivity (smoke checklist)
 
-Goal for dev integration: **platformConfig → sign in → create app → mint app token → gameplay**.
+Goal: **platformConfig → sign in → create app → mint app token → gameplay**.
 
-1. **`platformConfig.sharedGameApiUrl`** returns a URL on [the GraphQL playground](https://ck.dev.crowdedkingdoms.com/graphql).
-2. **Sign in** → create shared app → confirm `app.runtimeStatus === "active"` and `gameApiUrl` set.
-3. **`mintAppToken`** → receive the **app-scoped token** and the app's datacenter URLs.
-4. **`gameClientBootstrap(appId)`** against those URLs (Bearer = app token) → 200.
+1. **`platformConfig.sharedGameApiUrl`** returns a URL on
+   [the GraphQL playground](https://ck.dev.crowdedkingdoms.com/graphql).
+2. **Sign in** → create shared app → confirm `app.runtimeStatus === "active"`
+   and `gameApiUrl` set.
+3. **`mintAppToken`** → receive the **app-scoped token** and the app's
+   datacenter URLs.
+4. **`gameClientBootstrap(appId)`** against those URLs (Bearer = app token)
+   → 200.
 5. **`connectUdpProxy`** → `connected: true`.
-6. **`sendActorUpdate`** / **`sendClientEvent`** → notifications (not `UNAUTHORIZED`).
+6. **`sendActorUpdate`** / **`sendClientEvent`** → notifications (not
+   `UNAUTHORIZED`).
 
-Browser path: [GraphQL UDP proxy](/game-api/graphql-udp-proxy-api). Connection overview: [Connecting to your app](/management-ui/connecting).
+Browser path: [GraphQL UDP proxy](/game-api/graphql-udp-proxy-api).
+Connection overview: [Connecting to your app](/management-ui/connecting).
 
-If gameplay fails, confirm you are sending an **app-scoped token** for this app (the identity session token is rejected) and that it has not expired — rotate it with `refreshAppToken` (or re-mint) on a `TOKEN_EXPIRED` error.
+If gameplay fails, confirm you are sending an **app-scoped token** for this
+app (the identity session token is rejected) and that it has not expired —
+rotate it with `refreshAppToken` (or re-mint) on a `TOKEN_EXPIRED` error.
 
 ## GraphQL playground
 
 The API exposes an interactive GraphQL playground at its `/graphql` path:
 [https://ck.dev.crowdedkingdoms.com/graphql](https://ck.dev.crowdedkingdoms.com/graphql).
 
-Use it for sign-in (`login`/`register`, or `requestLoginLink`/`completeLoginLink`), `me`, `createApp` and `mintAppToken`, and for gameplay queries — for those, pass `Authorization: Bearer <app-scoped token>` from `mintAppToken` (the identity session token is rejected for gameplay). Gameplay for an app placed in another datacenter must be run against that app's own `gameApiUrl`.
+Use it for sign-in (`login`/`register`, or `requestLoginLink`/`completeLoginLink`),
+`me`, `createApp` and `mintAppToken`, and for gameplay queries — for those,
+pass `Authorization: Bearer <app-scoped token>` from `mintAppToken` (the
+identity session token is rejected for gameplay). Gameplay for an app placed
+in another datacenter must be run against that app's own `gameApiUrl`.
 
 ## Related guides
 
+- **[Best practices](/overview/best-practices)** — Models, effects, Compute, tokens
 - **[Create your first app](/management-ui/create-your-first-app)** — register an app on the shared platform
 - **[Connecting to your app](/management-ui/connecting)** — endpoints and client configuration
 - **[Shared environment & billing](/management-api/shared-environment)** — free tier, wallet, runtime status

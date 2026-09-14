@@ -48,8 +48,7 @@ You sign in with one of two credential types, and they grant different access.
 - **A session sign-in** -- email + password, a social provider, or a magic link -- gives you full
   authoring: teams, channels, grids, game models, Config Sync, and the Web Console. All three
   converge on the same result: an identity session token capable of minting the app-scoped tokens
-  authoring needs. The dev bypass that used to be a fourth option was removed from every tier on
-  2026-08-20.
+  authoring needs.
 - **An organization token** gives you management-only access. Token sign-in cannot author game-plane data such as teams and channels. Use it when you only need to browse apps, sync config, or reach admin surfaces.
 
 :::caution[If a game-plane authoring page looks read-only, check which credential you signed in with. Token sign-in is the usual cause.]

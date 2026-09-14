@@ -69,3 +69,7 @@ Work through it in order the first time:
    in Unreal and other engines.
 7. [Compatibility and parity](/crowdycpp/compatibility) — server
    compatibility notes, CrowdyJS parity, and versioning.
+
+**[Best practices](/crowdycpp/best-practices)** covers tokens, UDP, and
+gameplay authority. Read it alongside those guides; it is not a build
+step.

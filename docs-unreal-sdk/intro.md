@@ -26,7 +26,7 @@ Work through it in order the first time:
 1. [Crowdy Studio](/unreal-sdk/studio/overview): sign in and sync your app to your project.
 2. [Runtime SDK](/unreal-sdk/runtime/map-profile): set up a map, spawn entities, send RPC events, and check host authority.
 3. [Player Services](/unreal-sdk/services/voice-chat): voice chat, teams, avatars, and persistence.
-4. [Guides](/unreal-sdk/guides/sample-project) and [Reference](/unreal-sdk/reference/subsystems): a tour of the sample project, a packaging checklist, and lookup tables.
+4. [Guides](/unreal-sdk/guides/best-practices) and [Reference](/unreal-sdk/reference/subsystems): gameplay authority, a tour of the sample project, a packaging checklist, and lookup tables.
 
 :::tip[Do Crowdy Studio first]
 Nothing on the network works until your project knows which app it belongs to. Sign in and sync your app before anything else.

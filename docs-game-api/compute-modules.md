@@ -361,10 +361,9 @@ Modules are bounded by layered budgets so a bug degrades gracefully:
    pause automatically, exactly like automations.
 
 Per-app ceilings live in the compute **policy** (`computeModulePolicy` /
-`computeSetPolicy`) and are clamped to platform maxima. The platform maxima
-are operator-managed and can change without notice (a `computeSetPolicy`
-value above one fails with `... exceeds the platform ceiling (N)` naming the
-current ceiling):
+`computeSetPolicy`) and are clamped to platform maxima. A
+`computeSetPolicy` value above a platform ceiling fails with
+`... exceeds the platform ceiling (N)` naming the current ceiling:
 
 | Policy field | Default | Meaning |
 |---|---|---|
@@ -381,11 +380,9 @@ current ceiling):
 | `failureThreshold` | 5 | Consecutive failures that open the circuit |
 | `cooldownMs` | 60,000 | Open-circuit cooldown |
 
-Phase 10 validated these defaults. On the reference builder, a host db-op
-cost ~1.4 ms, a radius scan ~0.4 ms, and a spatial emit ~0.5 ms; 50
-db-heavy modules at 5 Hz (2,500 db-ops/s) held full cadence but used ~80% of
-one game-api process. Treat ceilings as emergency guardrails — design
-normal engines far below them.
+A host data operation typically costs on the order of a millisecond; a
+radius scan and a spatial emit are cheaper. Treat ceilings as emergency
+guardrails — design normal engines far below them.
 
 ## Activation: when your module actually runs
 
@@ -426,10 +423,10 @@ arrives (see [Shared environment](/management-api/shared-environment)):
 | `durable_storage_byte_hours` | Data your app keeps, as GB held over time; 1 GB-month free |
 
 Messages are counted for your usage view but **not priced**: a message is paid
-for by its bytes (the `wasm_egress_msgs` line was retired on 2026-09-06). The
-Phase 10 sweep calibrated the fuel equivalent to 22M fuel/unit against the full
-kit-engine fleet and live BWF usage. If a spend cap or balance is hit, the
-budget gate pauses your modules until resolved.
+for by its bytes. One compute unit is approximately one millisecond of
+reference CPU (`GREATEST(CEIL(cpu_us/1000), CEIL(fuel/22,000,000))`). If a
+spend cap or balance is hit, the budget gate pauses your modules until
+resolved.
 
 ## Permissions
 

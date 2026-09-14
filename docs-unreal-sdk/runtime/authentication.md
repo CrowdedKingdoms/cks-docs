@@ -22,9 +22,7 @@ password sign-in is a first-class, permanent method, not a legacy path being pha
 - **Social / OIDC** -- a federated provider (e.g. Google), run in the **system browser** (never an
   embedded webview) via `BeginSocialSignIn`.
 
-There is **no dev bypass**. `DevLogin` called a server-side shortcut that was deleted from every
-tier on 2026-08-20, so the entry point can only fail wherever it still appears in an older SDK
-build. Use `Login` / `Register` against a dev tier instead.
+There is no unauthenticated shortcut. Use `Login` / `Register` (or magic link / social).
 
 Gameplay then needs an **app-scoped token** minted from the session token. For the transport-level
 details of sign-in and the app-token patterns, see
@@ -90,11 +88,8 @@ UFUNCTION(BlueprintCallable, Category="Crowdy SDK|Authentication")
 void CompleteLoginLink(const FString& Token, FOnAuthSuccess OnSuccess, FOnAuthError OnError);
 ```
 
-`FOnLoginLinkSent(bool bSent, FString DevToken)` reports whether the email was sent. **`DevToken` is
-always empty now**: the `devToken` field on `requestLoginLink` was removed on 2026-08-20 along with
-the dev bypass, because it put the emailed one-time token in the response body where anyone who
-could ask for a link could sign in as that address. The player must follow the emailed link on every
-tier.
+`FOnLoginLinkSent(bool bSent, FString DevToken)` reports whether the email was sent.
+`DevToken` is always empty — the player must follow the emailed link.
 
 Or the one-call convenience, which opens a loopback listener on `127.0.0.1`, requests the link with that
 loopback as the redirect, and completes automatically when the player clicks it:
