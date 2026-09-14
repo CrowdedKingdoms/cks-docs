@@ -73,7 +73,7 @@ Listed in the Overworld lobby and the management UI Games page. Operator-control
 
 
 #### [<code style={{ fontWeight: 'normal' }}>HostedGame.<b>contentOrigin</b></code>](#content-origin)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content-origin\} 
-https://&#x003C;slug&#x003E;.&#x003C;content host&#x003E; -- the origin the game bundle runs on. The shell frames this; it is also registered as the app redirect URI so the API answers its CORS.
+https://&#x003C;slug&#x003E;.&#x003C;content host&#x003E; -- the origin the game bundle runs on. The shell frames this; it is also registered as the app redirect URI so the API answers its CORS. Empty for a TAKEN&#x005F;DOWN game: its objects were removed from the edge and the origin is not advertised.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>HostedGame.<b>launchUrl</b></code>](#launch-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#launch-url\} 

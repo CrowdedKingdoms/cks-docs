@@ -5,7 +5,7 @@ title: Hosting on Crowdy Games
 
 # Hosting on Crowdy Games
 
-CrowdyJS 17.1 wraps the platform's third-party hosting surface (ck-api v2.1) and
+CrowdyJS 17.2 wraps the platform's third-party hosting surface (ck-api v2.1) and
 carries the one runtime piece a hosted game needs: the shell bridge. The concept
 and the rules are in [Management API → Hosting on Crowdy Games](/management-api/hosting-on-crowdy-games);
 this page is the SDK surface.

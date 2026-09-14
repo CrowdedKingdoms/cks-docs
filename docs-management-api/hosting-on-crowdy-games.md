@@ -6,7 +6,7 @@ title: Hosting on Crowdy Games
 # Hosting your game on Crowdy Games
 
 You can host your browser game on **Crowdy Games**, the platform's public games
-host, instead of running a static host yourself (ck-api v2.1, CrowdyJS 17.1).
+host, instead of running a static host yourself (ck-api v2.1, CrowdyJS 17.2).
 Players reach it at
 
 ```
