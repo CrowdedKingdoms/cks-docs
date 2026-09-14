@@ -55,17 +55,19 @@ coverage guarantees.
 
 Work through it in order the first time:
 
-1. [Installation](/crowdycpp/installation) — clone, build, and consume the
+1. [Best practices](/crowdycpp/best-practices) — tokens, UDP, and gameplay
+   authority.
+2. [Installation](/crowdycpp/installation) — clone, build, and consume the
    library from CMake.
-2. [Quick start](/crowdycpp/quick-start) — sign in, mint an app token,
+3. [Quick start](/crowdycpp/quick-start) — sign in, mint an app token,
    connect, and walk an actor around.
-3. [Replication client](/crowdycpp/replication-client) — the native UDP
+4. [Replication client](/crowdycpp/replication-client) — the native UDP
    connection: assignment, signed sends, verified receives, lifecycle.
-4. [World session](/crowdycpp/world-session) — SDK-managed game state: your
+5. [World session](/crowdycpp/world-session) — SDK-managed game state: your
    actor's send loop, the remote-actor registry, the chunk cache, inboxes.
-5. [Game Kit](/crowdycpp/game-kit) — blueprint builders and runtime kits for
+6. [Game Kit](/crowdycpp/game-kit) — blueprint builders and runtime kits for
    inventory, economy, combat, and the other genre layers.
-6. [Engine integration](/crowdycpp/engine-integration) — wrapping CrowdyCPP
+7. [Engine integration](/crowdycpp/engine-integration) — wrapping CrowdyCPP
    in Unreal and other engines.
-7. [Compatibility and parity](/crowdycpp/compatibility) — server
+8. [Compatibility and parity](/crowdycpp/compatibility) — server
    compatibility notes, CrowdyJS parity, and versioning.

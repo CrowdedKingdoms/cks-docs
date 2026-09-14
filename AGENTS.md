@@ -156,6 +156,32 @@ viewer function is ever detached.
   tag; see the section at the top of this page, because knowing that fact and
   acting on it turned out to be different things.
 
+## Customer-facing content (hard rule)
+
+This repository is the **public** docs site. Narrative pages (everything
+except generated GraphQL reference and committed SDL) must stay useful to
+external studios and must not teach Crowded Kingdoms operations.
+
+Do **not** publish:
+
+- Control-plane / super-admin bootstrap, operator runbooks, incident kill
+  ladders written for platform staff
+- Server-status table jobs, heartbeat/cleanup internals, infra dashboards
+- Builder, CI, ECR, Secrets Manager, Tailscale, Fargate, Citus cluster
+  internals, or local replica topology
+- References to our `dev` / `test` / `prod` cloud ladder except **public
+  hostnames** customers actually use (`ck.prod…`, `ck.dev…` sandbox, Studio /
+  docs hosts)
+- Load-test instructions aimed at *our* environments; customer load-test
+  pages describe how *they* test *their* integration
+- Author asides, screenshot TODOs that read as staff notes, links to
+  internal-server-docs or `infra-control-plane`
+
+Keep: public API contracts, auth sequences, wire formats, limits, errors,
+SDK guides, and `gameClientBootstrap` / `serverWithLeastClients` as
+**client** APIs. Do not hand-edit generated `reference/graphql/` — SDL
+descriptions may still mention operator fields.
+
 ## Do not
 
 - Treat paid player-code commerce or grid sales as a public surface. Those
