@@ -15,13 +15,16 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-List sessions in an app, optionally filtered by status. Requires a valid token.
+List sessions in an app, newest first, optionally filtered by status, admission and/or host. Requires a valid token.
 
 
 ```graphql
 gameModelSessions(
   appId: BigInt!
   status: String
+  admission: String
+  hostUserId: BigInt
+  limit: Int
 ): [GmSession!]!
 ```
 
@@ -33,7 +36,19 @@ The app (tenant) whose sessions to list.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>gameModelSessions.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
-Optional status filter (e.g. active). Omit for all statuses.
+Optional status filter (active | completed | abandoned). Omit for all statuses.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessions.<b>admission</b></code>](#admission)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#admission\} 
+Optional admission filter (open | locked | closed), e.g. open to list joinable lobbies.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessions.<b>hostUserId</b></code>](#host-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#host-user-id\} 
+Optional: only sessions hosted by this user.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessions.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Most rows to return (default 200, max 1000).
 
 
 

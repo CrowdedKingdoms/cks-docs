@@ -1,0 +1,67 @@
+---
+id: gm-session-event
+title: GmSessionEvent
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One session revision: what changed, in order. The payload names the subject (user id, host, admission, ...) as a JSON object.
+
+
+```graphql
+type GmSessionEvent {
+  appId: BigInt!
+  sessionId: String!
+  revision: String!
+  kind: String!
+  payloadJson: String!
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionEvent.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionEvent.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+The session this revision belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionEvent.<b>revision</b></code>](#revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#revision\} 
+The revision this event produced. Strictly increasing per session; a gap means a missed event -- pull gameModelSessionSnapshot or gameModelSessionEvents(afterRevision).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionEvent.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#kind\} 
+created | participant&#x005F;joined | participant&#x005F;rejoined | participant&#x005F;left | participant&#x005F;expired | host&#x005F;changed | admission&#x005F;changed | turn&#x005F;changed | ended
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionEvent.<b>payloadJson</b></code>](#payload-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#payload-json\} 
+JSON object describing the change (e.g. &#x007B;"userId":"…","incarnation":2&#x007D; for a join, &#x007B;"hostUserId":"…","hostTerm":3,"previousHostUserId":"…","reason":"host&#x005F;left"&#x007D; for a host change).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionEvent.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the revision was committed.
+
+
+
+
+### Returned By
+
+[`gameModelSessionChanged`](/reference/graphql/operations/subscriptions/game-model-session-changed.mdx)  <Badge class="badge badge--secondary badge--relation" text="subscription"/><Bullet />[`gameModelSessionEvents`](/reference/graphql/operations/queries/game-model-session-events.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`GmSessionInspection`](/reference/graphql/types/objects/gm-session-inspection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
