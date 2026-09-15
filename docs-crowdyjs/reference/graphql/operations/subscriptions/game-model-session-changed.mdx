@@ -1,0 +1,49 @@
+---
+id: game-model-session-changed
+title: gameModelSessionChanged
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Stream the revisions of one session as they commit: joins, rejoins, leaves, presence expiries, host changes, admission changes, turn changes, and the end. There is no bootstrap event: pull gameModelSessionSnapshot first (or pass afterRevision to replay retained events from there). Revisions are strictly increasing; on a gap or after a reconnect, pull the snapshot again. Cross-replica, best-effort wakeup over a bounded oldest-drop buffer; the events table is the record. Requires a valid token.
+
+
+```graphql
+gameModelSessionChanged(
+  appId: BigInt!
+  sessionId: String!
+  afterRevision: String
+): GmSessionEvent!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessionChanged.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessionChanged.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+The session to stream.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessionChanged.<b>afterRevision</b></code>](#after-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after-revision\} 
+Optional: replay retained events with a revision above this before streaming live ones. Omit to stream only what commits after you subscribe.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmSessionEvent</b></code>](/reference/graphql/types/objects/gm-session-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One session revision: what changed, in order. The payload names the subject (user id, host, admission, ...) as a JSON object.
