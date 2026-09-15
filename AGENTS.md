@@ -104,7 +104,9 @@ viewer function is ever detached.
   field is not in it (`N allowlisted management root field(s) are no longer in
   the unified schema`). So **`cks-docs` must never reach a branch ahead of
   `cks-game-api` on that same branch.** Promote `cks-game-api` first, every
-  time. The failure reads like a broken allowlist and is really a promotion
+  time. `infra-control-plane/scripts/ops/promote.mjs --repo cks-docs --from <tier> --to <tier>` regenerates the SDL and
+  reference from `cks-game-api` and `CrowdyJS` at `origin/<to>` in temporary
+  worktrees and runs `lint:schema` / `check:generated` before opening the PR. The failure reads like a broken allowlist and is really a promotion
   order. **CI cannot catch this**: `sdl:gen` runs from `prebuild` and both
   workflows build with `npx docusaurus build`, which skips it — so a docs branch
   ahead of ck-api deploys green and publishes an SDL naming a field the tier does
