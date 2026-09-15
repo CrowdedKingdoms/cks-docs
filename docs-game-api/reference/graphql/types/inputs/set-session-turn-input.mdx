@@ -23,6 +23,8 @@ input SetSessionTurnInput {
   appId: BigInt!
   sessionId: String!
   userId: BigInt
+  expectedHostTerm: Int
+  idempotencyKey: String
 }
 ```
 
@@ -39,6 +41,14 @@ The session id to update.
 
 #### [<code style={{ fontWeight: 'normal' }}>SetSessionTurnInput.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
 The user whose turn it now is (NULL clears the turn).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetSessionTurnInput.<b>expectedHostTerm</b></code>](#expected-host-term)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expected-host-term\} 
+Optional: the hostTerm you last read. Refused with SESSION&#x005F;HOST&#x005F;TERM&#x005F;STALE if the host has changed since, so a stale host never sets the turn.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetSessionTurnInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key (24h).
 
 
 

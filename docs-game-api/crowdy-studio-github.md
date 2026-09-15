@@ -102,15 +102,40 @@ are asked to click **Connect GitHub** again.
 Connecting requires your signed-in identity session (hosted Studio); see
 [Which token may call what](#which-token-may-call-what).
 
+## Starting from nothing: create the repository
+
+The Crowdy Studio app holds **installation tokens only**. It can act on
+repositories you have granted it and can never create one — that would need
+a user token, which Crowded Kingdoms does not mint or store. So the
+repository is your own click on GitHub, and both Studio and the in-game card
+make it a short one:
+
+1. **Create repository on GitHub.** Studio opens GitHub's new-repository page
+   prefilled: your connected login as owner, the project name as the
+   repository name (slugged), private. Any prefill GitHub declines simply
+   falls back to its default. Create it empty — no README, no `.gitignore` —
+   or with either; the first bind commit adds what is missing.
+2. **Grant it, if your installation covers selected repositories.**
+   `crowdyStudioGitHubStatus.repositorySelection` says `all` or `selected`.
+   Under `all` the new repository is granted the moment it exists. Under
+   `selected` add it at `installUrl` (GitHub → Settings → Applications →
+   Crowdy Studio → Repository access); Studio waits and reminds you.
+3. **Bind with `PUSH_PROJECT`.** Studio prefills `owner/repo` the moment the
+   repository appears in your granted list and defaults the first commit to
+   *Push this project*. That single commit carries `crowdy.json`, a
+   `README.md` naming the mod and its layout (only when the branch has none),
+   and the project's files.
+
 ## Bind a repository
 
-Create the repository on GitHub first (any visibility, with a default branch)
-and grant it to the installation. A bind is **one commit**, and you say which
-side is the truth for it with `initial`:
+Create the repository on GitHub first (any visibility; empty or with a
+default branch) and grant it to the installation — see "Starting from
+nothing" above. A bind is **one commit**, and you say which side is the truth
+for it with `initial`:
 
 | `initial` | What the commit does | Refused with |
 |---|---|---|
-| `PUSH_PROJECT` | Commits the project's files into the branch under the layout roots, plus a `crowdy.json` when the branch has none | `GITHUB_REPO_HAS_FILES` — the branch already carries rust under the layout roots |
+| `PUSH_PROJECT` | Commits the project's files into the branch under the layout roots, plus a `crowdy.json` when the branch has none and a `README.md` when the branch has no readme | `GITHUB_REPO_HAS_FILES` — the branch already carries rust under the layout roots |
 | `TAKE_REPOSITORY` | Adopts the branch as it is: the project's files are replaced by the rust under the layout roots at branch HEAD | `GITHUB_REPO_EMPTY` — there is nothing under the roots to take |
 
 Start a project in Studio and want it in a fresh repository: `PUSH_PROJECT`.

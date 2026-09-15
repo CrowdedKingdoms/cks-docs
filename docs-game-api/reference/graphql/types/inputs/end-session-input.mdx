@@ -1,0 +1,58 @@
+---
+id: end-session-input
+title: EndSessionInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+End a session. Host or app admin ('manage&#x005F;apps').
+
+
+```graphql
+input EndSessionInput {
+  appId: BigInt!
+  sessionId: String!
+  reason: String
+  expectedHostTerm: Int
+  idempotencyKey: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EndSessionInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EndSessionInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+The session id to end.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EndSessionInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Terminal status: 'completed' (default; the match ran its course) or 'abandoned'. Either way every joined participant is marked left (session&#x005F;ended) and admission becomes closed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EndSessionInput.<b>expectedHostTerm</b></code>](#expected-host-term)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expected-host-term\} 
+Optional: the hostTerm you last read. Refused with SESSION&#x005F;HOST&#x005F;TERM&#x005F;STALE if the host has changed since.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EndSessionInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key (24h).
+
+
+
+
+### Member Of
+
+[`gameModelEndSession`](/reference/graphql/operations/mutations/game-model-end-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

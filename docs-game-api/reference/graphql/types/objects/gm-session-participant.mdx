@@ -23,6 +23,12 @@ type GmSessionParticipant {
   sessionId: String!
   userId: BigInt!
   role: String!
+  state: String!
+  incarnation: Int!
+  actorUuid: String
+  joinedAt: DateTime!
+  leftAt: DateTime
+  leftReason: String
 }
 ```
 
@@ -41,8 +47,36 @@ The participant user id.
 The participant role within the session.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionParticipant.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 
+'joined' while the user is in the session, 'left' after a leave, a presence expiry, or the session ending. Rows are kept so the roster history is answerable.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionParticipant.<b>incarnation</b></code>](#incarnation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#incarnation\} 
+Counts this user's joins to this session. A reconnect is the same row with incarnation + 1; a leave that names an older incarnation is a superseded client and is refused (SESSION&#x005F;INCARNATION&#x005F;STALE).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionParticipant.<b>actorUuid</b></code>](#actor-uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#actor-uuid\} 
+The Buddy actor uuid the client bound at join, if any. When set, this participant's presence is that actor's; when null, any fresh actor of the user in the app counts.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionParticipant.<b>joinedAt</b></code>](#joined-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#joined-at\} 
+When the user first joined (kept across reconnects).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionParticipant.<b>leftAt</b></code>](#left-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#left-at\} 
+When the participant last left, or null while joined.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionParticipant.<b>leftReason</b></code>](#left-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#left-reason\} 
+Why the participant left: 'left' (their own call), 'presence&#x005F;expired' (no fresh actor past the grace window), 'session&#x005F;ended', 'kicked'.
+
+
 
 
 ### Returned By
 
-[`gameModelJoinSession`](/reference/graphql/operations/mutations/game-model-join-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+[`gameModelJoinSession`](/reference/graphql/operations/mutations/game-model-join-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gameModelLeaveSession`](/reference/graphql/operations/mutations/game-model-leave-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`GmSessionParticipantInspection`](/reference/graphql/types/objects/gm-session-participant-inspection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GmSessionSnapshot`](/reference/graphql/types/objects/gm-session-snapshot.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

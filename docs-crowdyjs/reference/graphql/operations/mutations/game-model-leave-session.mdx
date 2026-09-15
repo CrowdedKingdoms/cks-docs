@@ -1,0 +1,39 @@
+---
+id: game-model-leave-session
+title: gameModelLeaveSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Leave a session you are joined to. Send the incarnation gameModelJoinSession gave you so a superseded client cannot remove the one that took over (SESSION&#x005F;INCARNATION&#x005F;STALE). Leaving an already-left row is a no-op. If you were host, the longest-joined present participant succeeds you (host&#x005F;changed). Requires a valid token.
+
+
+```graphql
+gameModelLeaveSession(
+  input: LeaveSessionInput!
+): GmSessionParticipant!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelLeaveSession.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>LeaveSessionInput!</b></code>](/reference/graphql/types/inputs/leave-session-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, the session id, and your incarnation.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmSessionParticipant</b></code>](/reference/graphql/types/objects/gm-session-participant.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's participation in a session.
