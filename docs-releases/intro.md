@@ -30,6 +30,37 @@ supported path.
 
 :::
 
+## 2026-09-15 (Replication API v0.28.0, Game API / Management API)
+
+Security hardening from an internal review of authentication and authorization.
+Nothing here changes a conforming client; each item says what would.
+
+- **Client→server spatial messages must be signed** (Replication API v0.28.0). A
+  long-spatial datagram from a client with `containsAuth = 0` is now dropped without a
+  reply. The unsigned tail bound a packet to its session only by the `gameTokenId` in
+  it, which is not a secret. CrowdyJS, CrowdyCPP and the Unreal SDK have always signed;
+  only a hand-rolled client that omitted the HMAC is affected. See
+  [HMAC](/replication-api/hmac) and the [worked example](/replication-api/example-packet).
+- **Per-session send-rate limit** (Replication API v0.28.0): 500 messages/second
+  sustained, bursts to 1,000, silent drop beyond. Real gameplay rates are an order of
+  magnitude below it. See [Rate limits](/overview/rate-limits).
+- **Revocation reaches the realtime plane.** `logout`, `logoutAllDevices`,
+  `changePassword`, `resetPassword` and `revokeAppAuthorization` now tell the
+  replication servers, so a native client's session ends within seconds instead of at
+  its app token's expiry.
+- **Tokens are stored hashed.** Session, e-mail confirmation, password-reset and
+  organization tokens are stored as a hash and cannot be shown again after the response
+  or e-mail that carries them. App-scoped tokens are the exception (they are the
+  per-message HMAC key). **When each tier took this change every signed-in session was
+  signed out once**, and confirmation / reset links minted before it stopped working —
+  request a new one.
+- **A group fetched by id is scoped to the app token.** `channel(groupId)`,
+  `channelMembers`, `team`, `teamMembers`, the role reads and every by-id channel/team
+  mutation answer `NOT_FOUND` when the app-scoped token belongs to a different app.
+  Session tokens and same-app tokens are unchanged.
+- `OrgTokenWithSecret.token`'s description now says what is true: returned once, stored
+  hashed.
+
 ## 2026-09-13 (Replication API v0.27.0, CrowdyCPP 0.37, CrowdyJS 17.1)
 
 **Clients may bundle their requests.** `MESSAGE_BUNDLE` (opcode 2) — the framing the

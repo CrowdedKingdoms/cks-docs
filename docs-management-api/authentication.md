@@ -295,13 +295,21 @@ query Mine { myIdentities { identityId provider subject email emailVerified last
 
 - `logout` ends the current session (deletes the `game_token` that authenticated
   the request); other devices stay signed in. Signing out an identity session also
-  **revokes every app token it minted**.
+  **revokes every app token it minted** — and, since 2026-09-15, tells the
+  replication servers, so a native client's realtime session ends within seconds
+  rather than when its app token would have expired. The same is true of
+  `logoutAllDevices`, `changePassword`, `resetPassword` and `revokeAppAuthorization`.
 - `logoutAllDevices` ends every active session for the user.
 
 ## Security notes
 
 - Treat the session token (and any app token) as a secret; use HTTPS only in
-  production.
+  production. **A token is shown once.** The platform stores only a hash of your
+  session, e-mail confirmation, password-reset and organization tokens, so it
+  cannot show one again and a leaked database row is not a credential; app-scoped
+  tokens are the exception (the replication server uses that string as the
+  per-message HMAC key). When this shipped, every existing session was signed out
+  once and any confirmation / reset link minted before it stopped working.
 - `requestLoginLink` never reveals whether an address has an account (`sent` is
   always `true`); one-time link tokens are single-use and short-lived.
 - Restrict your own frontends' CORS and redirect origins to trusted hosts; the

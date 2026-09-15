@@ -287,8 +287,10 @@ per-message error):
 ### Native UDP: silent drops
 
 On the **native** Replication API, some failures produce **no reply at all** — a missing
-or invalid HMAC, an unknown token, or an unparseable packet is dropped without a NAK.
-**Do not treat silence as a network black hole.** If you sent an authenticated message
-and receive neither a notification nor a `GENERIC_ERROR_MESSAGE`, re-check the HMAC and
-token before assuming packet loss. (This does not apply to the GraphQL UDP-proxy path,
+or invalid HMAC, an **unsigned** client message (`containsAuth = 0`, refused since
+replication server v0.28.0), an unknown token, an unparseable packet, or a message past
+the per-session **send-rate limit** (see [Rate limits](/overview/rate-limits)) is dropped
+without a NAK. **Do not treat silence as a network black hole.** If you sent an
+authenticated message and receive neither a notification nor a `GENERIC_ERROR_MESSAGE`,
+re-check the HMAC and token, then your send rate, before assuming packet loss. (This does not apply to the GraphQL UDP-proxy path,
 which authenticates at connect time.) See [Troubleshooting](/replication-api/troubleshooting).
