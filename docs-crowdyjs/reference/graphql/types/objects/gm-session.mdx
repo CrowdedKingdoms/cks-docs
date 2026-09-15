@@ -27,6 +27,16 @@ type GmSession {
   createdByUserId: BigInt
   currentTurnUserId: BigInt
   metadataJson: String!
+  admission: String!
+  maxParticipants: Int
+  participantCount: Int!
+  hostUserId: BigInt
+  hostTerm: Int!
+  revision: String!
+  endedAt: DateTime
+  endReason: String
+  createdAt: DateTime!
+  presence: String!
 }
 ```
 
@@ -61,8 +71,52 @@ The user whose turn it currently is (turn-based play), or null.
 JSON object of developer metadata.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>admission</b></code>](#admission)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#admission\} 
+Who may still get in: 'open' (anyone the app admits), 'locked' (only a participant who already joined may reconnect), 'closed' (nobody; set automatically when the session ends).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>maxParticipants</b></code>](#max-participants)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-participants\} 
+Seat cap: the most participants that may be joined at once. Null means unbounded. A participant reconnecting never counts against it twice.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>participantCount</b></code>](#participant-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#participant-count\} 
+How many participants are joined right now.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>hostUserId</b></code>](#host-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#host-user-id\} 
+The current session host, or null while nobody is joined. The creator starts as host; when the host leaves or expires, the longest-joined present participant succeeds.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>hostTerm</b></code>](#host-term)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#host-term\} 
+Increments on every host change. Send it as expectedHostTerm on host actions to be refused (SESSION&#x005F;HOST&#x005F;TERM&#x005F;STALE) instead of acting on a host change you have not seen.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>revision</b></code>](#revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#revision\} 
+Monotonic change counter. Every event in gameModelSessionChanged carries the revision that produced it; gameModelSessionSnapshot returns the revision it describes. Compare as integers.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>endedAt</b></code>](#ended-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ended-at\} 
+When the session ended, or null while active.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>endReason</b></code>](#end-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#end-reason\} 
+Why it ended: 'completed' or 'abandoned' by the host/admin, 'empty&#x005F;timeout' when the server ended a session nobody was in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the session was created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>presence</b></code>](#presence)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#presence\} 
+How the roster is judged: 'actor' (default) expires a joined participant with no fresh Buddy actor in the app after the join grace window; 'none' never expires anybody -- for turn-based play that never replicates an actor -- so the roster's only exits are leave, end, and the empty timeout once everyone has left.
+
+
 
 
 ### Returned By
 
-[`gameModelCreateSession`](/reference/graphql/operations/mutations/game-model-create-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gameModelSession`](/reference/graphql/operations/queries/game-model-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`gameModelSessions`](/reference/graphql/operations/queries/game-model-sessions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`gameModelSetSessionTurn`](/reference/graphql/operations/mutations/game-model-set-session-turn.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+[`gameModelCreateSession`](/reference/graphql/operations/mutations/game-model-create-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gameModelEndSession`](/reference/graphql/operations/mutations/game-model-end-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gameModelSession`](/reference/graphql/operations/queries/game-model-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`gameModelSessions`](/reference/graphql/operations/queries/game-model-sessions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`gameModelSetSessionAdmission`](/reference/graphql/operations/mutations/game-model-set-session-admission.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gameModelSetSessionTurn`](/reference/graphql/operations/mutations/game-model-set-session-turn.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gameModelTransferSessionHost`](/reference/graphql/operations/mutations/game-model-transfer-session-host.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`GmSessionInspection`](/reference/graphql/types/objects/gm-session-inspection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`GmSessionSnapshot`](/reference/graphql/types/objects/gm-session-snapshot.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

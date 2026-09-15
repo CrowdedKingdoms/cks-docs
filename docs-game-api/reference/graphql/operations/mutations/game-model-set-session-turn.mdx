@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Set or clear the session's current-turn user, for turn-based play (authority enforced by the service). Pass userId null to clear the turn. Requires a valid token.
+Set or clear the session's current-turn user, for turn-based play. Allowed for an app admin, the app's elected host, the session host, or the current turn holder. Pass userId null to clear the turn; expectedHostTerm refuses a stale host. Requires a valid token.
 
 
 ```graphql
@@ -28,7 +28,7 @@ gameModelSetSessionTurn(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>gameModelSetSessionTurn.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetSessionTurnInput!</b></code>](/reference/graphql/types/inputs/set-session-turn-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
-The app, the session id, and the user whose turn it now is (null clears it).
+The app, the session id, the user whose turn it now is (null clears it), and optionally the host term you last read.
 
 
 

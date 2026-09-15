@@ -79,6 +79,69 @@ const hero = await client.gameModel.createContainer({
 await client.gameModel.setSessionTurn({ appId: "1", sessionId, userId: "90001" });
 ```
 
+### Roster, admission, host and presence (17.4.0+)
+
+A session carries an authoritative roster, an admission state, a seat cap, a
+host and a revision log; the SDK exposes them as thin wrappers over the
+[Game API session system](/game-api/game-models#the-session-system-roster-admission-host-presence).
+
+```ts
+// A lobby with three seats. The creator is host (hostTerm 1).
+const lobby = await client.gameModel.createSession({
+  appId, name: "Lobby", maxParticipants: 3, admission: "open",
+});
+
+// Join, binding presence to the actor this client replicates with. Keep the
+// incarnation: leaveSession requires it.
+const me = await client.gameModel.joinSession({
+  appId, sessionId: lobby.sessionId, actorUuid: session.self.uuid,
+});
+
+// Pull the snapshot, then stream revisions above it.
+const snapshot = await client.gameModel.sessionSnapshot({ appId, sessionId: lobby.sessionId });
+const stop = client.gameModel.sessionChanged(
+  { appId, sessionId: lobby.sessionId, afterRevision: snapshot.revision },
+  { next: (event) => console.log(event.revision, event.kind, JSON.parse(event.payloadJson)) },
+);
+
+// Host actions carry the term you last read, so a stale host is refused
+// (SESSION_HOST_TERM_STALE) rather than acting on a change it has not seen.
+await client.gameModel.setSessionAdmission({
+  appId, sessionId: lobby.sessionId, admission: "locked", expectedHostTerm: lobby.hostTerm,
+});
+await client.gameModel.transferSessionHost({ appId, sessionId: lobby.sessionId, toUserId: "90002" });
+await client.gameModel.endSession({ appId, sessionId: lobby.sessionId, reason: "completed" });
+
+// Leaving names your incarnation; a superseded client cannot remove the one that took over.
+await client.gameModel.leaveSession({ appId, sessionId: lobby.sessionId, incarnation: me.incarnation });
+stop();
+```
+
+Refusals arrive as `CrowdyGraphQLError` with `code` one of `SESSION_FULL`,
+`SESSION_LOCKED`, `SESSION_CLOSED`, `SESSION_ENDED`, `SESSION_NOT_PARTICIPANT`
+(you are not joined), `SESSION_TARGET_NOT_PARTICIPANT` (the user you named to
+`transferSessionHost` is not joined), `SESSION_INCARNATION_STALE`,
+`SESSION_HOST_TERM_STALE`. Two rules to plan around: **presence is the player's
+Buddy actor** — a participant with no fresh actor in the app after the join
+grace window is expired by the server, and an empty session is abandoned after
+its `emptyTimeoutSec` — so a GraphQL-only client must rejoin to come back,
+unless the session was created with `presence: 'none'`, which turns the rule
+off (leave, end and the empty timeout are then the roster's only exits); and
+every session mutation accepts an `idempotencyKey`. The `sessionChanged` push
+is per datacenter and the event log is the record: `sessionEvents` fills a gap
+in the stream from wherever you reconnect.
+`gameModelSessions({ appId, status: "active", admission: "open" })` lists
+joinable lobbies; `sessionInspect` (app admins) shows the whole roster with
+presence verdicts. The `kit.matches` helpers create their session with
+`presence: 'none'` — a kit match is GraphQL plus channel pings and never spawns
+an actor — and own its exits: `kit.matches.leave(match)` departs with the
+incarnation the kit remembered from `create` / `join` (or one you pass), and
+`finish()` ends the backing session after a successful `end_match` and reports
+the outcome as `sessionEnd: 'ended' | 'already_ended' | 'forbidden'` rather than
+throwing when the caller could finish the match but not end the session. They
+still keep their own `max_players` in `MatchMeta` and do not bind an actor on
+join.
+
 ## Invoking a function
 
 ```ts
