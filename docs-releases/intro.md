@@ -42,8 +42,9 @@ Nothing here changes a conforming client; each item says what would.
   only a hand-rolled client that omitted the HMAC is affected. See
   [HMAC](/replication-api/hmac) and the [worked example](/replication-api/example-packet).
 - **Per-session send-rate limit** (Replication API v0.28.0): 500 messages/second
-  sustained, bursts to 1,000, silent drop beyond. Real gameplay rates are an order of
-  magnitude below it. See [Rate limits](/overview/rate-limits).
+  sustained, bursts to 1,000, silent drop beyond. The busiest legitimate mix the docs
+  describe (voice + video + actor updates, every bundle member counted) is roughly a
+  quarter of that. See [Rate limits](/overview/rate-limits).
 - **Revocation reaches the realtime plane.** `logout`, `logoutAllDevices`,
   `changePassword`, `resetPassword` and `revokeAppAuthorization` now tell the
   replication servers, so a native client's session ends within seconds instead of at
@@ -51,13 +52,16 @@ Nothing here changes a conforming client; each item says what would.
 - **Tokens are stored hashed.** Session, e-mail confirmation, password-reset and
   organization tokens are stored as a hash and cannot be shown again after the response
   or e-mail that carries them. App-scoped tokens are the exception (they are the
-  per-message HMAC key). **When each tier took this change every signed-in session was
-  signed out once**, and confirmation / reset links minted before it stopped working —
-  request a new one.
-- **A group fetched by id is scoped to the app token.** `channel(groupId)`,
-  `channelMembers`, `team`, `teamMembers`, the role reads and every by-id channel/team
-  mutation answer `NOT_FOUND` when the app-scoped token belongs to a different app.
-  Session tokens and same-app tokens are unchanged.
+  per-message HMAC key). **When each tier took this change every credential was reset
+  once**: signed-in sessions, app-scoped tokens held by game clients, organization
+  tokens, and confirmation / reset links minted before it. Sign in again, re-mint app
+  tokens, and request a new link where needed.
+- **A group fetched by id is served only to an app token for its own app.**
+  `channel(groupId)`, `channelMembers`, `team`, `teamMembers`, the role reads and every
+  by-id channel/team mutation answer `NOT_FOUND` when the app-scoped token belongs to a
+  different app — and when the caller presents an identity session token, which is
+  never a gameplay credential. Mint an app token (`mintAppToken`) to work on groups, as
+  every first-party client already does. Same-app app tokens are unchanged.
 - `OrgTokenWithSecret.token`'s description now says what is true: returned once, stored
   hashed.
 

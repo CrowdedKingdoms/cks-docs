@@ -308,8 +308,9 @@ query Mine { myIdentities { identityId provider subject email emailVerified last
   session, e-mail confirmation, password-reset and organization tokens, so it
   cannot show one again and a leaked database row is not a credential; app-scoped
   tokens are the exception (the replication server uses that string as the
-  per-message HMAC key). When this shipped, every existing session was signed out
-  once and any confirmation / reset link minted before it stopped working.
+  per-message HMAC key). When this shipped, every credential on the tier was reset
+  once — sessions, app-scoped tokens, organization tokens, and any confirmation /
+  reset link minted before it — so everyone signed in and re-minted again.
 - `requestLoginLink` never reveals whether an address has an account (`sent` is
   always `true`); one-time link tokens are single-use and short-lived.
 - Restrict your own frontends' CORS and redirect origins to trusted hosts; the
