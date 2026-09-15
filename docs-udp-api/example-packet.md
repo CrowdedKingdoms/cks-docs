@@ -10,6 +10,16 @@ equivalent over the GraphQL UDP-proxy. This uses the
 [long-spatial layout](/replication-api/wire-formats#long-form-spatial-message); all
 integers are little-endian.
 
+:::warning[The unsigned shape below is a layout illustration, not a sendable packet]
+
+Since replication server **v0.28.0** a client→server long-spatial datagram **must** carry
+the HMAC (`containsAuth = 1`, 109-octet minimum). The 77-octet `containsAuth = 0` form
+walked through first is kept because it is the easiest way to read the header offsets;
+sent as-is it is **dropped without a reply**. Build the signed form in
+[Adding the HMAC](#adding-the-hmac-required) for anything that leaves your machine.
+
+:::
+
 ## Field values
 
 | Field | Value | Notes |
@@ -19,7 +29,7 @@ integers are little-endian.
 | chunkX / chunkY / chunkZ | `0` / `0` / `0` | int64 each. |
 | distance | `8` | Chebyshev fan-out radius (0–8). |
 | decayRate | `1` | `EXPONENTIAL`. |
-| containsAuth | `0` | No HMAC in this example (see below to add one). |
+| containsAuth | `0` | No HMAC in this illustration; a real send sets `1` (see below). |
 | uuid | `0123456789abcdef0123456789abcdef` | 32 ASCII octets, no null terminator. |
 | payload | *(empty)* | Actor registration with no state bytes. |
 | gameTokenId | `42` | int64; the server overwrites this slot with `epochMillis` on outbound copies. |
@@ -49,11 +59,11 @@ Reading it back against the layout:
 - `0x44..0x4b` = `2a 00 00 00 00 00 00 00` → gameTokenId 42.
 - `0x4c` = `01` → sequenceNumber 1.
 
-## Adding the HMAC (production)
+## Adding the HMAC (required)
 
-Auth-gated messages set `containsAuth = 1` and insert a 32-byte HMAC-SHA256 immediately
-**after the payload** (before the gameTokenId/seq tail), making the minimum length
-**109 octets**. The HMAC key is your 64-octet **app-scoped token** (from `mintAppToken` / `exchangePortalCode`, not the session token); the signed input is every byte
+Every client→server message sets `containsAuth = 1` and inserts a 32-byte HMAC-SHA256
+immediately **after the payload** (before the gameTokenId/seq tail), making the minimum
+length **109 octets**. The HMAC key is your 64-octet **app-scoped token** (from `mintAppToken` / `exchangePortalCode`, not the session token); the signed input is every byte
 from offset 0 through the end of the payload, concatenated with the 64 token octets. See
 [HMAC](/replication-api/hmac). A message with a missing or wrong HMAC may be **dropped
 with no reply** — see [Error codes](/overview/error-codes#native-udp-silent-drops).

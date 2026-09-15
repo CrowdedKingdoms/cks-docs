@@ -41,6 +41,15 @@ rather than a request quota:
   message.
 - `sequenceNumber` is a `uint8` that wraps at 255 and is **correlation only** — it is not
   a flow-control or idempotency mechanism.
+- **Per-session send-rate limit (replication server v0.28.0+).** Each authenticated
+  session may send a sustained **500 messages/second** with bursts up to **1,000**
+  (a token bucket per session; every member of a `MESSAGE_BUNDLE` counts as one).
+  Messages beyond that are **dropped silently** — no `GENERIC_ERROR_MESSAGE`, because a
+  reply would let a flooder amplify — so if your client sends bursts well above real
+  gameplay rates (voice ~50/s, video ≤60/s, actor updates ~20/s) and sees gaps, check
+  your send rate before suspecting the network. The limit is spent only by messages
+  that already passed session and HMAC checks; unauthenticated traffic cannot consume
+  a real session's budget.
 
 ## Quotas (a different concept)
 

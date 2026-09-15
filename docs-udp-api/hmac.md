@@ -10,6 +10,11 @@ Long Form Spatial messages carry a **32-byte HMAC-SHA256** tail whenever
 directions**:
 
 - **Client → server:** you sign your messages so the server can authenticate them.
+  **This is required** (replication server v0.28.0+): a client→server long-spatial
+  datagram with `containsAuth = 0` is dropped without a reply. The unsigned tail used
+  to be accepted and bound the packet to your session only by the `gameTokenId` in
+  it, which is not a secret. Every first-party SDK (CrowdyJS, CrowdyCPP, Unreal) has
+  always signed; if you build bytes yourself, sign every one.
 - **Server → client:** the server signs its notifications (actor / voxel / audio /
   text / generic-spatial / single-actor) with **your** game token, so you can
   verify the message genuinely came from the server. **Verify the HMAC and drop any
