@@ -530,8 +530,7 @@ increments `hostTerm`. Host actions (`gameModelSetSessionAdmission`,
 `gameModelTransferSessionHost`, `gameModelEndSession`, `gameModelSetSessionTurn`)
 accept `expectedHostTerm`; when it is stale the call is refused with
 `SESSION_HOST_TERM_STALE` rather than acting on a host change you have not seen.
-App admins (`manage_apps`) and the app's elected host (the platform's `is_host`
-role) may do everything the session host may.
+App admins (`manage_apps`) may do everything the session host may.
 
 **Ending.** `gameModelEndSession` (host or admin) marks every joined participant
 `left` (`session_ended`), closes admission and records `endedAt` / `endReason`.
