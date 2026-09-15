@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Join an existing session.
+Join an existing session, or reconnect to one you are already in.
 
 
 ```graphql
@@ -23,6 +23,8 @@ input JoinSessionInput {
   appId: BigInt!
   sessionId: String!
   role: String
+  actorUuid: String
+  idempotencyKey: String
 }
 ```
 
@@ -39,6 +41,14 @@ The session id to join.
 
 #### [<code style={{ fontWeight: 'normal' }}>JoinSessionInput.<b>role</b></code>](#role)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#role\} 
 Optional participant role to join as.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>JoinSessionInput.<b>actorUuid</b></code>](#actor-uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#actor-uuid\} 
+Optional: the Buddy actor uuid this client is playing as (32 hex characters, dashes accepted). It must be the caller's own actor. When given, the participant's presence is that actor's presence in the app; a new actor after a reconnect should rejoin with its uuid. When omitted, any fresh actor of this user in the app keeps the participant present.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>JoinSessionInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key. Replaying with the same key and identical input returns the first result (same incarnation) instead of joining again. Keys expire after 24h.
 
 
 
