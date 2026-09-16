@@ -659,7 +659,13 @@ mutation {
 - **It governs creation only.** Resolving a key that already exists is a read
   and is never refused by a bind policy — otherwise no client could see a
   shared object it did not create.
-- **App admins bypass it**, exactly as they bypass invoke policies.
+- **App admins do not bypass it.** Since v1.89.0 an admin's invoke is judged
+  like a player's, and a bind is judged the same way: an admin ensuring a key on a
+  type whose policy is `{"type":"is_host"}` is refused unless that admin is the
+  elected host. The path that never evaluates a bind policy is `gameModelSeed`,
+  which is admin-only by construction, so an admin who needs to pre-create keyed
+  rows seeds them (see [Defining your model](#defining-your-model-studio)) rather
+  than ensuring them.
 - **Three requirements are refused**, because a bind is what *creates* the
   container and there is no acting container to resolve them against:
   `owner_of_self`, `is_current_turn` and `condition`. You get a `BAD_REQUEST`
@@ -879,8 +885,15 @@ a busy refusal becomes likely.
   `!=`, `<`, `>`, `<=`, `>=`; missing properties fall back to the type
   default (the same predicate shape [automation
   selectors](autonomous-processes#selectors-choosing-targets-from-model-data)
-  use). `limit`/`offset` page after filtering over the stable created-at
-  ordering:
+  use). `limit`/`offset` page over a stable `(createdAt, containerId)`
+  ordering. **An omitted `limit` returns 200 rows, and the maximum is 1,000**
+  (`BAD_REQUEST` above it); a level with thousands of placed objects is read
+  in a few pages, each one a single shard read. Without `where` the page is
+  applied in SQL. With `where` the predicates are evaluated after the read,
+  because missing properties compare against the type's defaults; that read
+  is bounded at 10,000 rows of the type, and a larger type is refused rather
+  than silently trimmed — narrow it with `sessionId` or `bindingKey`, or page
+  without `where`:
 
 ```graphql
 query {
