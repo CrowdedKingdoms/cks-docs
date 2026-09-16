@@ -107,7 +107,7 @@ createCrowdyClient({
 
 This single client covers identity and routing reads. For gameplay you still mint an app-scoped token and drive the world surfaces from a per-game client — see [Authentication: session vs app-scoped tokens](#authentication-session-vs-app-scoped-tokens) and [Dev tier (client integration)](/management-ui/dev-tier).
 
-Register at [https://app.dev.crowdedkingdoms.com/register](https://app.dev.crowdedkingdoms.com/register) — no shared admin account required.
+Register at [https://studio.dev.crowdedkingdoms.com/register](https://studio.dev.crowdedkingdoms.com/register) — no shared admin account required.
 
 **Tutorial:** [Build a collaborative canvas game](/build-a-game/intro) — step-by-step guide with live demo chapters using the config above.
 

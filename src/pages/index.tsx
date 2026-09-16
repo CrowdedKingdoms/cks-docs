@@ -140,7 +140,7 @@ function HomepageHeader() {
           </Link>
           <Link
             className={clsx('button button--lg', styles.heroCta)}
-            href="https://app.crowdedkingdoms.com">
+            href="https://studio.crowdedkingdoms.com">
             Get API Access
           </Link>
         </div>
