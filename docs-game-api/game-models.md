@@ -85,14 +85,22 @@ mutation {
 }
 ```
 
-Three rules, all refused with `BAD_REQUEST` before anything is written:
+Four rules, all refused with `BAD_REQUEST` before anything is written:
 
 - A caller-supplied `bindingKey` is allowed only on a type that is
-  **`instantiableBy: "admin"`** or carries a **`bindPolicy`** — a type where no
-  player could have claimed the key first. On a plain `member` type a player who
-  squatted the key would otherwise have admin-authored properties upserted onto
-  their row. Declare the type in the same seed; the rule is checked against the
-  types as they stand after that seed's own type upserts.
+  **`instantiableBy: "admin"`** or carries a **`bindPolicy`**. On a plain
+  `member` type any player could claim the key first, and the seed would then
+  write admin-authored properties onto their row. Declare the type in the same
+  seed; the rule is checked against the types as they stand after that seed's
+  own type upserts.
+- **A seed does not adopt a row it did not author.** When a caller-keyed row
+  resolves to a container that already exists, it is adopted (properties
+  upserted, `tempId` mapped to it) only if that container's `ownerUserId`
+  equals the seed row's — which is what a re-seed looks like. A different owner
+  means a player claimed the key first (a permissive `bindPolicy` such as
+  `is_participant`, or a tier in `GM_BIND_POLICY_MODE=shadow`, lets them), and
+  the whole seed is refused naming the row and the owner it found. Nothing is
+  written. `seed:`-keyed rows are exempt: no player can create one.
 - **At most 1,000 containers per call.** The call is all-or-nothing, so above
   the cap nothing is written; split a level into batches — re-seed is idempotent
   on the key.
@@ -641,11 +649,21 @@ mutation {
   `containersSeeded` (and `seedTypeNames`, `seedInitialState`); an automation
   that wants "the world is ready" triggers on that. `seededContainerCount` is on
   the create response only and null on every later read.
-- **Retention.** The containers of an **ended** session are dropped by the
-  server after `GM_SESSION_CONTAINER_RETENTION_DAYS` (default 7; their
-  properties and edges go with them). The session row, its participants and
-  events stay until their own retention. Copy what you need out of a finished
-  match before then.
+- **`'app'`-scoped types are refused.** An [app-scoped
+  type](#per-type-scope-session-or-app) has one row per key for the whole app;
+  stamping session copies of it would create rows nothing can bind. Name only
+  `session`-scoped types.
+- **Retention is opt-in, and it touches only the copies.** Each stamped row
+  records the template it came from, and the server's retention sweep drops
+  **only those rows** from sessions that have been ended for
+  `GM_SESSION_CONTAINER_RETENTION_DAYS` days — on a tier whose operator has set
+  it. **The default is 0: nothing is ever deleted.** Rows a player ensured or an
+  admin created inside the session, the session row, its participants and
+  events are never touched by this sweep, so a session used as a **save** keeps
+  its hand-made state whatever the tier's setting. The other side of the
+  bargain: a tier that runs `seedFromApp` with retention off keeps every copy of
+  every match forever — a level per match. Ask your operator which the tier has
+  chosen before relying on either.
 
 Containers can have an **owner** (`ownerUserId`) which powers `owner_of_self` and
 owner-only visibility. Create instances with `gameModelCreateContainer`
@@ -807,8 +825,10 @@ carry no session — subscribe per type without the session filter for them.
 
 Changing a type from `session` to `app` is refused while it holds any
 session-scoped row (`BAD_REQUEST` with the count): those rows would keep
-existing under a scope the type no longer admits. Delete them, or wait for the
-ended-session retention sweep. `app` to `session` is always allowed.
+existing under a scope the type no longer admits. Delete them (or, if they are
+`seedFromApp` copies on a tier with retention enabled, wait for the sweep).
+`app` to `session` is always allowed. `seedFromApp`, and a `gameModelSeed`
+with a `sessionId`, refuse an `app`-scoped type for the same reason.
 
 Turns are explicit and developer-driven: `gameModelSetSessionTurn` records whose
 turn it is (the current turn holder, the session host, the app's elected host,
