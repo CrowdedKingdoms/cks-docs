@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Create a runtime session: an isolated instance scope for containers (e.g. a match, room, or save) with its own roster, host, admission and capacity. Subject to the app's session creation policy. The caller becomes creator, host (term 1) and a joined participant. Presence is actor presence: a participant with no fresh Buddy actor in the app after the join grace window is expired by the server. Requires a valid token.
+Create a runtime session: an isolated instance scope for containers (e.g. a match, room, or save) with its own roster, host, admission and capacity. Subject to the app's session creation policy. The caller becomes creator, host (term 1) and a joined participant. Presence is actor presence: a participant with no fresh Buddy actor in the app after the join grace window is expired by the server. With seedFromApp, the app's keyed template rows of the listed types are copied into the new session in the same transaction (max 2000 rows, refused above; no per-row events; count on the created event and on seededContainerCount). The copies seedFromApp stamps are dropped by the retention sweep once the session has been ended for GM&#x005F;SESSION&#x005F;CONTAINER&#x005F;RETENTION&#x005F;DAYS, when the tier's operator has set it (default 0, disabled); hand-made rows are never purged. Requires a valid token.
 
 
 ```graphql
