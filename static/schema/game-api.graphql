@@ -22,6 +22,182 @@ directive @requiresPermission(
   scopeArg: String
 ) on FIELD_DEFINITION
 
+"""
+Live status and load/telemetry for one UDP game server (Buddy) in the fleet. Returned by serverWithLeastClients (which picks a low-load ReadyForClients server). Throughput metrics are per-second samples from the last reporting window and are null until first reported.
+"""
+type ServerStatus {
+  """
+  Unique id of this game-server row in the fleet registry (the Buddy instance uuid).
+  """
+  serverId: ID!
+  """
+  IPv4 address native clients send spatial UDP datagrams to (paired with clientPort). Preferred over ip6 for inter-host UDP in current deployments.
+  """
+  ip4: String!
+  """
+  IPv6 address of the UDP game server. Global IPv6 between hosts can be unroutable in some deployments, so native clients generally use ip4 + clientPort.
+  """
+  ip6: String!
+  """
+  UDP port that native clients send spatial datagrams to (typically 9091). Browser clients do not use this directly — they reach the server through the UDP proxy / udpNotifications.
+  """
+  clientPort: Int!
+  """
+  Current lifecycle state of this server (see ServerState). Only ReadyForClients servers accept new clients.
+  """
+  status: ServerState!
+  """
+  Number of peer (server-to-server P2P) connections this server currently holds.
+  """
+  peers: Int!
+  """
+  Number of game clients currently connected to this server. serverWithLeastClients balances on this DIVIDED BY routerThreads, not on the raw count, so that a server with four fan-out workers takes roughly four times the clients of a server with one.
+  """
+  clients: Int!
+  """
+  True while the infra control plane is taking this server out of service (autoscale scale-in, or an in-place update). Excluded from serverWithLeastClients immediately; the server then reports Stopping and sends every client a reconnect command so they migrate elsewhere. Never set by the server itself.
+  """
+  drainRequested: Boolean!
+  """
+  Peak CPU utilization percentage (0-100) observed in the last reporting window. Null until reported.
+  """
+  cpuPeakPct: Float
+  """
+  CPU cores available to this server. Reported by the server itself; null on a build that predates capacity reporting. Informational — client balancing divides by routerThreads, not by cores.
+  """
+  cpuCount: Int
+  """
+  Independent fan-out workers (RouterWorkers) on this server, which is how much of it there is for the purpose of placing a client. serverWithLeastClients divides the client count by this value. Null on a build that predates capacity reporting, and treated as 1, which balances every server equally as before.
+  """
+  routerThreads: Int
+  """
+  Messages per second received from clients in the last reporting window. Null until reported.
+  """
+  clientRecvMsgsPerSec: Float
+  """
+  Bytes per second received from clients in the last reporting window. Null until reported.
+  """
+  clientRecvBytesPerSec: Float
+  """
+  Messages per second sent to clients in the last reporting window. Null until reported.
+  """
+  clientSendMsgsPerSec: Float
+  """
+  Bytes per second sent to clients in the last reporting window. Null until reported.
+  """
+  clientSendBytesPerSec: Float
+  """
+  Messages per second received from peer servers (server-to-server P2P) in the last reporting window. Null until reported.
+  """
+  peerRecvMsgsPerSec: Float
+  """
+  Bytes per second received from peer servers (server-to-server P2P) in the last reporting window. Null until reported.
+  """
+  peerRecvBytesPerSec: Float
+  """
+  Messages per second sent to peer servers (server-to-server P2P) in the last reporting window. Null until reported.
+  """
+  peerSendMsgsPerSec: Float
+  """
+  Bytes per second sent to peer servers (server-to-server P2P) in the last reporting window. Null until reported.
+  """
+  peerSendBytesPerSec: Float
+  """
+  Per-second rate of individually-addressed (single-actor) messages sent to clients in the last window, as opposed to spatial fan-out. Null until reported.
+  """
+  clientSendIndividualMsgsPerSec: Float
+  """
+  When this status row was last updated (server heartbeat). Use to judge how fresh the metrics/state are.
+  """
+  updatedAt: DateTime!
+  """When this server was first registered in the fleet."""
+  createdAt: DateTime!
+}
+
+"""
+Lifecycle/capacity state of a game/GraphQL server in the fleet. Only ReadyForClients servers should receive new client connections; serverWithLeastClients and activeGraphQLServers already filter to healthy, non-overloaded servers.
+"""
+enum ServerState {
+  """
+  The server is booting and not yet accepting clients. Do not route new connections here; wait for ReadyForClients.
+  """
+  Starting
+  """
+  The server is healthy and accepting clients. This is the only state safe to route new connections to.
+  """
+  ReadyForClients
+  """
+  The server is draining and shutting down: existing sessions may continue briefly but no new clients should be routed here.
+  """
+  Stopping
+  """
+  The server is down or unreachable (failed health checks). Do not route any traffic here.
+  """
+  Offline
+  """
+  Soft resource overload (a CPU core or system memory has been high for several seconds). Existing sessions continue, but the server is excluded from serverWithLeastClients so no new clients are routed here until it recovers.
+  """
+  NearCapacity
+  """
+  Hard resource overload. Like NearCapacity (excluded from new-client selection), and the server is also actively shedding clients: it sends each affected client a reconnect command and drops their session after a short grace period so they migrate to another server.
+  """
+  Full
+}
+
+"""
+A registered GraphQL API server instance in the fleet, with reachability addresses and basic host telemetry. Returned by graphqlServers (all) and activeGraphQLServers (only ReadyForClients). Use this for service discovery; realtime/UDP play still goes through the game-api UDP proxy.
+"""
+type GraphQLServer {
+  """Unique id of this GraphQL server registration."""
+  graphqlServerId: ID!
+  """
+  Logical kind of GraphQL service. Every current server is 'game-api', which serves both the management and game surfaces; 'management-api' appears only on rows predating their unification.
+  """
+  kind: String
+  """
+  Internal/private IPv4 address of this server. Use publicIp4 for external reachability.
+  """
+  ip4: String
+  """
+  Internal/private IPv6 address of this server. Use publicIp6 for external reachability.
+  """
+  ip6: String
+  """
+  UUID of the Buddy realtime runtime instance this API server is paired with, if any.
+  """
+  runtimeServerId: String
+  """Cloud provider instance id of the underlying host, if known."""
+  providerInstanceId: String
+  """Public IPv4 address clients use to reach this server, if assigned."""
+  publicIp4: String
+  """Public IPv6 address clients use to reach this server, if assigned."""
+  publicIp6: String
+  """TCP port the GraphQL/HTTP API listens on (default 4000)."""
+  apiPort: Int!
+  """
+  Public hostname clients can reach this instance on directly over TLS, e.g. `ck-api-or-1.prod.crowdedkingdoms.com`. Null when the instance has no public DNS name or certificate yet, in which case it is reachable only through the shared load balancer and must not be connected to directly. Prefer the `gameApiUrl` returned by mintAppToken over building a URL from this field: that call already picks a low-load instance for you.
+  """
+  publicHostname: String
+  """
+  Current lifecycle state (see ServerState). activeGraphQLServers returns only ReadyForClients.
+  """
+  status: ServerState!
+  """Current CPU utilization percentage (0-100) of the host, if reported."""
+  cpuUsagePct: Float
+  """
+  Current memory utilization percentage (0-100) of the host, if reported.
+  """
+  memoryUsagePct: Float
+  """1-minute load average of the host, if reported."""
+  loadAverage1m: Float
+  """When this server was first registered in the fleet."""
+  createdAt: DateTime!
+  """
+  When this server row was last updated (heartbeat). Use to judge freshness.
+  """
+  updatedAt: DateTime!
+}
+
 """The signed-in identity behind a bearer token."""
 type ActorType {
   """
@@ -732,128 +908,6 @@ type AppDiscovery {
 }
 
 """
-Live status and load/telemetry for one UDP game server (Buddy) in the fleet. Returned by serverWithLeastClients (which picks a low-load ReadyForClients server). Throughput metrics are per-second samples from the last reporting window and are null until first reported.
-"""
-type ServerStatus {
-  """
-  Unique id of this game-server row in the fleet registry (the Buddy instance uuid).
-  """
-  serverId: ID!
-  """
-  IPv4 address native clients send spatial UDP datagrams to (paired with clientPort). Preferred over ip6 for inter-host UDP in current deployments.
-  """
-  ip4: String!
-  """
-  IPv6 address of the UDP game server. Global IPv6 between hosts can be unroutable in some deployments, so native clients generally use ip4 + clientPort.
-  """
-  ip6: String!
-  """
-  UDP port that native clients send spatial datagrams to (typically 9091). Browser clients do not use this directly — they reach the server through the UDP proxy / udpNotifications.
-  """
-  clientPort: Int!
-  """
-  Current lifecycle state of this server (see ServerState). Only ReadyForClients servers accept new clients.
-  """
-  status: ServerState!
-  """
-  Number of peer (server-to-server P2P) connections this server currently holds.
-  """
-  peers: Int!
-  """
-  Number of game clients currently connected to this server. serverWithLeastClients balances on this DIVIDED BY routerThreads, not on the raw count, so that a server with four fan-out workers takes roughly four times the clients of a server with one.
-  """
-  clients: Int!
-  """
-  True while the infra control plane is taking this server out of service (autoscale scale-in, or an in-place update). Excluded from serverWithLeastClients immediately; the server then reports Stopping and sends every client a reconnect command so they migrate elsewhere. Never set by the server itself.
-  """
-  drainRequested: Boolean!
-  """
-  Peak CPU utilization percentage (0-100) observed in the last reporting window. Null until reported.
-  """
-  cpuPeakPct: Float
-  """
-  CPU cores available to this server. Reported by the server itself; null on a build that predates capacity reporting. Informational — client balancing divides by routerThreads, not by cores.
-  """
-  cpuCount: Int
-  """
-  Independent fan-out workers (RouterWorkers) on this server, which is how much of it there is for the purpose of placing a client. serverWithLeastClients divides the client count by this value. Null on a build that predates capacity reporting, and treated as 1, which balances every server equally as before.
-  """
-  routerThreads: Int
-  """
-  Messages per second received from clients in the last reporting window. Null until reported.
-  """
-  clientRecvMsgsPerSec: Float
-  """
-  Bytes per second received from clients in the last reporting window. Null until reported.
-  """
-  clientRecvBytesPerSec: Float
-  """
-  Messages per second sent to clients in the last reporting window. Null until reported.
-  """
-  clientSendMsgsPerSec: Float
-  """
-  Bytes per second sent to clients in the last reporting window. Null until reported.
-  """
-  clientSendBytesPerSec: Float
-  """
-  Messages per second received from peer servers (server-to-server P2P) in the last reporting window. Null until reported.
-  """
-  peerRecvMsgsPerSec: Float
-  """
-  Bytes per second received from peer servers (server-to-server P2P) in the last reporting window. Null until reported.
-  """
-  peerRecvBytesPerSec: Float
-  """
-  Messages per second sent to peer servers (server-to-server P2P) in the last reporting window. Null until reported.
-  """
-  peerSendMsgsPerSec: Float
-  """
-  Bytes per second sent to peer servers (server-to-server P2P) in the last reporting window. Null until reported.
-  """
-  peerSendBytesPerSec: Float
-  """
-  Per-second rate of individually-addressed (single-actor) messages sent to clients in the last window, as opposed to spatial fan-out. Null until reported.
-  """
-  clientSendIndividualMsgsPerSec: Float
-  """
-  When this status row was last updated (server heartbeat). Use to judge how fresh the metrics/state are.
-  """
-  updatedAt: DateTime!
-  """When this server was first registered in the fleet."""
-  createdAt: DateTime!
-}
-
-"""
-Lifecycle/capacity state of a game/GraphQL server in the fleet. Only ReadyForClients servers should receive new client connections; serverWithLeastClients and activeGraphQLServers already filter to healthy, non-overloaded servers.
-"""
-enum ServerState {
-  """
-  The server is booting and not yet accepting clients. Do not route new connections here; wait for ReadyForClients.
-  """
-  Starting
-  """
-  The server is healthy and accepting clients. This is the only state safe to route new connections to.
-  """
-  ReadyForClients
-  """
-  The server is draining and shutting down: existing sessions may continue briefly but no new clients should be routed here.
-  """
-  Stopping
-  """
-  The server is down or unreachable (failed health checks). Do not route any traffic here.
-  """
-  Offline
-  """
-  Soft resource overload (a CPU core or system memory has been high for several seconds). Existing sessions continue, but the server is excluded from serverWithLeastClients so no new clients are routed here until it recovers.
-  """
-  NearCapacity
-  """
-  Hard resource overload. Like NearCapacity (excluded from new-client selection), and the server is also actively shedding clients: it sends each affected client a reconnect command and drops their session after a short grace period so they migrate to another server.
-  """
-  Full
-}
-
-"""
 One datacenter an app can be created in. The `code` is exactly what createApp takes as input.datacenter.
 """
 type PlaceableDatacenter {
@@ -1040,7 +1094,9 @@ type OrgTokenWithSecret {
   orgTokenId: BigInt!
   """Organization that owns this token (BigInt as string)."""
   orgId: BigInt!
-  """The plaintext token. Save it now; it is not stored."""
+  """
+  The plaintext token, returned exactly once. Save it now: only its hash is stored and it cannot be shown again.
+  """
   token: String!
   """Optional human-readable label."""
   label: String
@@ -1297,60 +1353,6 @@ enum CodeAdmissionSubjectKind {
   CODE
   AUTHOR
   ORG
-}
-
-"""
-A registered GraphQL API server instance in the fleet, with reachability addresses and basic host telemetry. Returned by graphqlServers (all) and activeGraphQLServers (only ReadyForClients). Use this for service discovery; realtime/UDP play still goes through the game-api UDP proxy.
-"""
-type GraphQLServer {
-  """Unique id of this GraphQL server registration."""
-  graphqlServerId: ID!
-  """
-  Logical kind of GraphQL service. Every current server is 'game-api', which serves both the management and game surfaces; 'management-api' appears only on rows predating their unification.
-  """
-  kind: String
-  """
-  Internal/private IPv4 address of this server. Use publicIp4 for external reachability.
-  """
-  ip4: String
-  """
-  Internal/private IPv6 address of this server. Use publicIp6 for external reachability.
-  """
-  ip6: String
-  """
-  UUID of the Buddy realtime runtime instance this API server is paired with, if any.
-  """
-  runtimeServerId: String
-  """Cloud provider instance id of the underlying host, if known."""
-  providerInstanceId: String
-  """Public IPv4 address clients use to reach this server, if assigned."""
-  publicIp4: String
-  """Public IPv6 address clients use to reach this server, if assigned."""
-  publicIp6: String
-  """TCP port the GraphQL/HTTP API listens on (default 4000)."""
-  apiPort: Int!
-  """
-  Public hostname clients can reach this instance on directly over TLS, e.g. `ck-api-or-1.prod.crowdedkingdoms.com`. Null when the instance has no public DNS name or certificate yet, in which case it is reachable only through the shared load balancer and must not be connected to directly. Prefer the `gameApiUrl` returned by mintAppToken over building a URL from this field: that call already picks a low-load instance for you.
-  """
-  publicHostname: String
-  """
-  Current lifecycle state (see ServerState). activeGraphQLServers returns only ReadyForClients.
-  """
-  status: ServerState!
-  """Current CPU utilization percentage (0-100) of the host, if reported."""
-  cpuUsagePct: Float
-  """
-  Current memory utilization percentage (0-100) of the host, if reported.
-  """
-  memoryUsagePct: Float
-  """1-minute load average of the host, if reported."""
-  loadAverage1m: Float
-  """When this server was first registered in the fleet."""
-  createdAt: DateTime!
-  """
-  When this server row was last updated (heartbeat). Use to judge freshness.
-  """
-  updatedAt: DateTime!
 }
 
 """
