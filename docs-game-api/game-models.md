@@ -658,17 +658,17 @@ mutation {
   type](#per-type-scope-session-or-app) has one row per key for the whole app;
   stamping session copies of it would create rows nothing can bind. Name only
   `session`-scoped types.
-- **Retention is opt-in, and it touches only the copies.** Each stamped row
-  records the template it came from, and the server's retention sweep drops
-  **only those rows** from sessions that have been ended for
-  `GM_SESSION_CONTAINER_RETENTION_DAYS` days — on a tier whose operator has set
-  it. **The default is 0: nothing is ever deleted.** Rows a player ensured or an
-  admin created inside the session, the session row, its participants and
-  events are never touched by this sweep, so a session used as a **save** keeps
-  its hand-made state whatever the tier's setting. The other side of the
-  bargain: a tier that runs `seedFromApp` with retention off keeps every copy of
-  every match forever — a level per match. Ask your operator which the tier has
-  chosen before relying on either.
+- **Retention touches only the copies, and on Crowded Kingdoms it is 7 days.**
+  Each stamped row records the template it came from, and the server's
+  retention sweep drops **only those rows** from sessions that have been ended
+  for the tier's retention window. **Every Crowded Kingdoms tier (dev, test,
+  prod) sets that window to 7 days** (since 2026-09-16); the application default
+  is 0 (off), so a self-hosted deployment keeps every copy unless its operator
+  sets `GM_SESSION_CONTAINER_RETENTION_DAYS`. Rows a player ensured or an admin
+  created inside the session, the session row, its participants and events are
+  never touched by this sweep, so a session used as a **save** keeps its
+  hand-made state whatever the window. Copy what a finished match needs out of
+  its stamped rows within the window.
 
 Containers can have an **owner** (`ownerUserId`) which powers `owner_of_self` and
 owner-only visibility. Create instances with `gameModelCreateContainer`
