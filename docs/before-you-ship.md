@@ -19,10 +19,10 @@ Public hosts:
 |---|---|---|---|
 | CK API (GraphQL, HTTP and WebSocket) | `ck.prod.crowdedkingdoms.com` | `ck.crowdedkingdoms.com` — same addresses as `ck.prod` | `ck.dev.crowdedkingdoms.com` |
 | Portal ([Management UI](/management-ui/intro)) | `studio.prod.crowdedkingdoms.com` | `studio.crowdedkingdoms.com` — same addresses as `studio.prod` | `studio.dev.crowdedkingdoms.com` |
-| Sign-in / register | — | `app.crowdedkingdoms.com` — production portal | `app.dev.crowdedkingdoms.com` |
+| Sign-in / register | `studio.prod.crowdedkingdoms.com/login` | `studio.crowdedkingdoms.com/login` — same portal | `studio.dev.crowdedkingdoms.com/login` |
 | Documentation | — | `docs.crowdedkingdoms.com` — this site | `docs.dev.crowdedkingdoms.com` |
 
-`app.prod.crowdedkingdoms.com` and `docs.prod.crowdedkingdoms.com` do not resolve.
+`docs.prod.crowdedkingdoms.com` does not resolve. The former `app.*.crowdedkingdoms.com` sign-in hosts were retired on 2026-09-16; use the Studio hosts above.
 If you were given a different host for a preview environment, use that host —
 do not invent one by pattern.
 
