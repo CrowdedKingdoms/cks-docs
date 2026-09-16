@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-List containers in an app, optionally filtered by container type and/or session, by bindingKey (get-by-key read of an ensured container), by property predicates (`where`, requires typeName; the same predicate shape automation selectors use — missing properties fall back to the type default), and paged with offset/limit over the stable (createdAt, containerId) ordering. Pages: an omitted limit returns 200 rows; the maximum is 1000 (BAD&#x005F;REQUEST above it). Without `where` the page is read in SQL; with `where` the predicates are evaluated after reading up to 10000 rows of the type, and a larger type is refused (narrow with sessionId / bindingKey, or page without where). Requires a valid token.
+List containers in an app, optionally filtered by container type and/or session, by bindingKey (get-by-key read of an ensured container), by property predicates (`where`, requires typeName; the same predicate shape automation selectors use — missing properties fall back to the type default), and paged with offset/limit over the stable created-at ordering. Requires a valid token.
 
 
 ```graphql
@@ -54,11 +54,11 @@ Optional property predicates (max 8, AND-combined). Requires typeName. Ops: '=='
 
 
 #### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
-Page size. Default 200, maximum 1000 (BAD&#x005F;REQUEST above). Applied in SQL without `where`; after `where` filtering otherwise.
+Optional page size (applied after `where` filtering).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
-Page offset (default 0) over the stable (createdAt, containerId) ordering. Applied in SQL without `where`; after `where` filtering otherwise.
+Optional page offset (applied after `where` filtering).
 
 
 

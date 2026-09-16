@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Bulk-create game-model definitions (container types, property defs, functions) and upsert instances (containers + edges) in one transaction — used to initialize or import a model. Seed containers bind as `seed:` + tempId, or as the row's own bindingKey when given (admin-instantiable or bind-policied types only, so a runtime gameModelEnsureContainer later resolves the same row; an existing row is adopted only if its owner matches, so a player who claimed the key first is never written onto); re-seed maps tempId to the existing id and containersCreated increments only on insert. At most 1000 containers per call (BAD&#x005F;REQUEST above, nothing written); the call is all-or-nothing. Seeded rows fire no container&#x005F;created automation or change-feed events. Requires app-admin ('manage&#x005F;apps').
+Bulk-create game-model definitions (container types, property defs, functions) and upsert instances (containers + edges) in one transaction — used to initialize or import a model. Seed containers bind as `seed:` + tempId and re-seed maps tempId to the existing id (containersCreated increments only on insert). Requires app-admin ('manage&#x005F;apps').
 
 
 ```graphql

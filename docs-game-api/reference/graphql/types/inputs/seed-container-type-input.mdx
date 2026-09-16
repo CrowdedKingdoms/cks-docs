@@ -27,7 +27,6 @@ input SeedContainerTypeInput {
   defaultPropertyVisibility: String
   metadataJson: String
   bindPolicyJson: String
-  scope: String
 }
 ```
 
@@ -60,10 +59,6 @@ JSON object of metadata.
 
 #### [<code style={{ fontWeight: 'normal' }}>SeedContainerTypeInput.<b>bindPolicyJson</b></code>](#bind-policy-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#bind-policy-json\} 
 Who may CREATE a container of this type under a client-supplied bindingKey (gameModelEnsureContainer). Same JSON shape as a function invokePolicyJson — an AuthorityRule tree — except that owner&#x005F;of&#x005F;self, is&#x005F;current&#x005F;turn and condition are refused, because a bind creates the container and there is no acting container to resolve them against. Omit it (the default) and binding is governed by the type's instantiableBy alone, which is the behaviour before this field existed. Resolving an EXISTING key is unaffected: it is a read. For a shared world object, &#x007B;"type":"is&#x005F;host"&#x007D; or instantiableBy: admin stops one player from squatting the key and becoming its owner.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>SeedContainerTypeInput.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#scope\} 
-Where this type's rows live. 'session' (default): one row per bindingKey per session, and a client inside a session binds the session's row. 'app': one row per bindingKey for the whole app, shared by every session (state that outlives matches: territory, landmarks, a persistent world). On an app-scoped type, gameModelEnsureContainer / gameModelCreateContainer with a sessionId are refused (CONTAINER&#x005F;TYPE&#x005F;APP&#x005F;SCOPED); bind at app scope and pass the session on gameModelInvoke, where is&#x005F;participant / is&#x005F;current&#x005F;turn are judged against the call's session. Changing 'session' to 'app' is refused while the type holds session-scoped rows.
 
 
 

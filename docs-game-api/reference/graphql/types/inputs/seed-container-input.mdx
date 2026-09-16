@@ -22,7 +22,6 @@ A container (instance) to upsert as part of a seed. Re-seed matches on binding&#
 input SeedContainerInput {
   tempId: String!
   typeName: String!
-  bindingKey: String
   displayName: String!
   description: String
   ownerUserId: BigInt
@@ -35,15 +34,11 @@ input SeedContainerInput {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>SeedContainerInput.<b>tempId</b></code>](#temp-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#temp-id\} 
-Developer-assigned id used for edge references and, when bindingKey is omitted, as the seed binding key (`seed:` + tempId). Re-seed maps this tempId to the existing container id.
+Developer-assigned id used for edge references and as the seed binding key (`seed:` + tempId). Re-seed maps this tempId to the existing container id.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SeedContainerInput.<b>typeName</b></code>](#type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#type-name\} 
 The container type to instantiate.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>SeedContainerInput.<b>bindingKey</b></code>](#binding-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#binding-key\} 
-Optional caller-supplied binding key (max 128 chars, opaque) the row upserts on INSTEAD of `seed:` + tempId, on the same unique index gameModelEnsureContainer uses (unique per app + type + the batch sessionId). Lets a deploy tool pre-create the exact rows a runtime gameModelEnsureContainer will later ask for, e.g. a placement-id digest per level object. Allowed only on a type that is admin-instantiable or carries a bindPolicy, so a player cannot have squatted the key first (BAD&#x005F;REQUEST naming the tempId otherwise). May not begin with `seed:`. A row that already exists under this key is adopted only when its ownerUserId equals this row's (a re-seed); a row with a different owner -- one a player claimed first under a permissive or shadow-mode bind policy -- is a per-row BAD&#x005F;REQUEST and nothing is written. On adoption properties are upserted onto it and idMapJson maps the tempId to it; containersCreated does not count it.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SeedContainerInput.<b>displayName</b></code>](#display-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#display-name\} 
