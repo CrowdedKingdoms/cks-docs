@@ -58,13 +58,49 @@ As an app admin you declare container types, their property schemas, and your
 functions. You can do it field-by-field or in one `gameModelSeed` call.
 
 `gameModelSeed` **upserts** container *types*, property *definitions*, and
-functions. Seed **containers** (instances) upsert on binding key `seed:` +
-`tempId` (the same unique index as `gameModelEnsureContainer`). A second seed
-maps each `tempId` to the existing container id and increments
-`containersCreated` only on insert. Edges skip pairs that already exist.
-Do **not** key instances by `(typeName, displayName)` — same-name instances
-are intentional. The `seed:` prefix is reserved: a non-admin
-`gameModelEnsureContainer` cannot claim it.
+functions. Seed **containers** (instances) upsert on a binding key — `seed:` +
+`tempId` by default, or the row's own **`bindingKey`** when you give one — on
+the same unique index as `gameModelEnsureContainer`. A second seed maps each
+`tempId` to the existing container id and increments `containersCreated` only
+on insert. Edges skip pairs that already exist. Do **not** key instances by
+`(typeName, displayName)` — same-name instances are intentional. The `seed:`
+prefix is reserved: a non-admin `gameModelEnsureContainer` cannot claim it, and
+a seed's `bindingKey` may not begin with it.
+
+**Pre-creating the rows a runtime ensure will ask for.** A level editor that
+derives a key per placed object (say a 32-hex digest of the placement id) can
+seed every object under that exact key, so the first `gameModelEnsureContainer`
+from a client finds the row already there with `created: false`:
+
+```graphql
+mutation {
+  gameModelSeed(input: {
+    appId: "1",
+    containerTypes: [{ typeName: "WorldObject", displayName: "World object", instantiableBy: "admin" }],
+    containers: [
+      { tempId: "camp-1", typeName: "WorldObject", displayName: "North camp",
+        bindingKey: "0f3a…", properties: [{ key: "hp", valueType: "int", valueJson: "500" }] }
+    ]
+  }) { containersCreated idMapJson }
+}
+```
+
+Three rules, all refused with `BAD_REQUEST` before anything is written:
+
+- A caller-supplied `bindingKey` is allowed only on a type that is
+  **`instantiableBy: "admin"`** or carries a **`bindPolicy`** — a type where no
+  player could have claimed the key first. On a plain `member` type a player who
+  squatted the key would otherwise have admin-authored properties upserted onto
+  their row. Declare the type in the same seed; the rule is checked against the
+  types as they stand after that seed's own type upserts.
+- **At most 1,000 containers per call.** The call is all-or-nothing, so above
+  the cap nothing is written; split a level into batches — re-seed is idempotent
+  on the key.
+- The same key on **two different types is two rows**, by design (a chest and a
+  spawner at the same placement id). The same key twice on one type is refused.
+
+Seeded rows fire **no** `container_created` automation triggers and no
+change-feed events (an ensure that creates fires both).
 
 :::caution[The schema does not travel with the app]
 
@@ -561,6 +597,56 @@ roster, including departed participants and each one's live presence verdict
 (`fresh`, `grace`, `stale`, `none` for a `presence: 'none'` session, `legacy`,
 `left`), with `gameModelSessionInspect` (`manage_apps`).
 
+### Seeding a session from the app
+
+A session's world rows used to come only from a client calling
+`gameModelEnsureContainer` once per object after the session existed: one call
+per object per match, a player who is allowed to create, and a world that
+appears only after a client acts. `seedFromApp` on `gameModelCreateSession`
+stamps them at creation instead:
+
+```graphql
+mutation {
+  gameModelCreateSession(input: {
+    appId: "1", name: "Match 7",
+    seedFromApp: { typeNames: ["WorldObject", "Spawner"], initialState: "defaults" }
+  }) { sessionId seededContainerCount }
+}
+```
+
+- **What is copied.** Every app-scoped row (`sessionId` null) of each listed
+  type that carries a `bindingKey` — the rows a `gameModelSeed` wrote — becomes
+  one row in the new session with the same `bindingKey`, `displayName`,
+  `description`, `metadataJson` and `ownerUserId`, copied verbatim. Unkeyed app
+  rows are not templates. A runtime `gameModelEnsureContainer(sessionId,
+  typeName, bindingKey)` then finds every key already present.
+- **Atomic.** The copy is part of the creation transaction: the session exists
+  with its rows or does not exist. Idempotent under `idempotencyKey` like the
+  rest of creation.
+- **Not subject to the creator's `instantiableBy` or `bindPolicy`.** The
+  template rows were written by an admin; a creator who could not create these
+  rows one by one still gets them. The creator must pass the app's
+  `sessionCreationPolicy` as always.
+- **`initialState`**: `"defaults"` (default) writes no property rows, so each
+  copy starts at the type's property defaults; `"app"` copies each template
+  row's current property rows onto its copy, raw (not visibility-filtered — the
+  copy is server-side and the source is admin-authored).
+- **A template, not a parent.** Later changes to an app row do not propagate;
+  a session row never writes back.
+- **At most 2,000 rows per session**, across the listed types. Above it the
+  creation is refused with the count and no session exists. An undefined type
+  name is refused; a defined type with no keyed app rows contributes zero.
+- **No per-row events.** The copies fire no `container_created` automation
+  triggers and no change-feed events. The session's `created` event carries
+  `containersSeeded` (and `seedTypeNames`, `seedInitialState`); an automation
+  that wants "the world is ready" triggers on that. `seededContainerCount` is on
+  the create response only and null on every later read.
+- **Retention.** The containers of an **ended** session are dropped by the
+  server after `GM_SESSION_CONTAINER_RETENTION_DAYS` (default 7; their
+  properties and edges go with them). The session row, its participants and
+  events stay until their own retention. Copy what you need out of a finished
+  match before then.
+
 Containers can have an **owner** (`ownerUserId`) which powers `owner_of_self` and
 owner-only visibility. Create instances with `gameModelCreateContainer`
 (allowed per the type's `instantiableBy`: `admin` | `member` | `owner`).
@@ -686,6 +772,43 @@ protect. Set `GM_BIND_POLICY_MODE=shadow` on the tier first: a bind the policy
 refusals is safe to enforce; one that is accumulating them is refusing real
 players. The default is `enforce`, and an unrecognised value falls back to
 `shadow`.
+
+### Per-type scope: `session` or `app`
+
+A container type declares where its rows live with **`scope`** (on
+`gameModelUpsertContainerType` and the seed's container types; read back on
+`GmContainerType.scope`):
+
+- **`session`** (default, today's behaviour): one row per `bindingKey` per
+  session, and a client inside a session binds the session's row. For state
+  that resets per match — chests, turrets, spawners — pair it with
+  [`seedFromApp`](#seeding-a-session-from-the-app).
+- **`app`**: one row per `bindingKey` for the whole app, shared by every
+  session. For state that outlives matches — territory, landmarks, a persistent
+  world — seeded once and served to every session.
+
+The flag is **declarative**. The server does not rewrite a caller's `sessionId`
+for an app-scoped type — that would make the meaning of `sessionId` depend on a
+type attribute the caller may not have loaded, the same aliasing a read-through
+fallback would create. Instead, a `gameModelEnsureContainer` or
+`gameModelCreateContainer` that names a `sessionId` on an `app`-scoped type is
+**refused** with `CONTAINER_TYPE_APP_SCOPED`; bind such types with no
+`sessionId`, and an SDK registry reads `scope` to do that automatically.
+
+**Session predicates on an app row already work.** `gameModelInvoke` resolves
+its session as `input.sessionId ?? self.sessionId`, so an invoke that passes the
+active session against an app-scoped row judges `is_participant` and
+`is_current_turn` against **that** session — a host-gated function on a
+persistent world object keeps working inside a match with no change. Two
+things to know: `is_host` is the app's **elected** host (the platform role, not
+the session's host) on every path; and `gameModelContainerChanged` filtered by
+`sessionId` does **not** deliver changes to app-scoped rows, because those rows
+carry no session — subscribe per type without the session filter for them.
+
+Changing a type from `session` to `app` is refused while it holds any
+session-scoped row (`BAD_REQUEST` with the count): those rows would keep
+existing under a scope the type no longer admits. Delete them, or wait for the
+ended-session retention sweep. `app` to `session` is always allowed.
 
 Turns are explicit and developer-driven: `gameModelSetSessionTurn` records whose
 turn it is (the current turn holder, the session host, the app's elected host,
@@ -876,6 +999,13 @@ a busy refusal becomes likely.
 
 - `gameModelContainer(appId, containerId)` — container metadata.
 - `gameModelContainerState(appId, containerId)` — visible properties as a JSON
+  object.
+- `gameModelContainerStates(appId, containerIds)` — the same, for up to **500**
+  containers in one call (`BAD_REQUEST` above), with the same per-row
+  visibility rules for the caller. Ids the app does not hold are omitted rather
+  than errors, duplicates are returned once, and order follows the input. After
+  paging `gameModelContainers` at 1,000, two of these pull a page's state; a
+  level of thousands of objects loads in a handful of calls instead of one per
   object.
 - `gameModelContainers(appId, typeName, sessionId, bindingKey, where, limit, offset)` —
   list instances. `bindingKey` narrows to a container
