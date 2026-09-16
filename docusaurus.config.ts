@@ -496,7 +496,7 @@ const config: Config = {
             },
             {
               label: 'Portal app',
-              href: 'https://app.crowdedkingdoms.com',
+              href: 'https://studio.crowdedkingdoms.com',
             },
           ],
         },
