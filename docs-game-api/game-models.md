@@ -649,6 +649,11 @@ mutation {
   `containersSeeded` (and `seedTypeNames`, `seedInitialState`); an automation
   that wants "the world is ready" triggers on that. `seededContainerCount` is on
   the create response only and null on every later read.
+- **Template types must be `instantiableBy: "admin"` or carry a `bindPolicy`** —
+  the same rule the seed applies to a caller-supplied `bindingKey`. On a plain
+  `member` type any player may ensure an app-scoped key, and that row, owned by
+  the player, would otherwise be stamped into every future session as a
+  "template". A plain member type in `typeNames` is `BAD_REQUEST`.
 - **`'app'`-scoped types are refused.** An [app-scoped
   type](#per-type-scope-session-or-app) has one row per key for the whole app;
   stamping session copies of it would create rows nothing can bind. Name only
