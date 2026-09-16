@@ -6552,6 +6552,10 @@ type GmContainerType {
   Who may CREATE a container of this type under a client-supplied bindingKey (gameModelEnsureContainer). Same JSON shape as a function invokePolicyJson — an AuthorityRule tree — except that owner_of_self, is_current_turn and condition are refused, because a bind creates the container and there is no acting container to resolve them against. Omit it (the default) and binding is governed by the type's instantiableBy alone, which is the behaviour before this field existed. Resolving an EXISTING key is unaffected: it is a read. For a shared world object, {"type":"is_host"} or instantiableBy: admin stops one player from squatting the key and becoming its owner.
   """
   bindPolicyJson: String
+  """
+  Where this type's rows live. 'session' (default): one row per bindingKey per session, and a client inside a session binds the session's row. 'app': one row per bindingKey for the whole app, shared by every session (state that outlives matches: territory, landmarks, a persistent world). On an app-scoped type, gameModelEnsureContainer / gameModelCreateContainer with a sessionId are refused (CONTAINER_TYPE_APP_SCOPED); bind at app scope and pass the session on gameModelInvoke, where is_participant / is_current_turn are judged against the call's session. Changing 'session' to 'app' is refused while the type holds session-scoped rows.
+  """
+  scope: String!
 }
 
 """A typed property (field) defined on a container type."""
@@ -6860,6 +6864,10 @@ type GmSession {
   How the roster is judged: 'actor' (default) expires a joined participant with no fresh Buddy actor in the app after the join grace window; 'none' never expires anybody -- for turn-based play that never replicates an actor -- so the roster's only exits are leave, end, and the empty timeout once everyone has left.
   """
   presence: String!
+  """
+  On the gameModelCreateSession response only: how many container rows seedFromApp stamped into the session (0 when seedFromApp was given and matched nothing). Null on every other read; the durable record is the containersSeeded field of the created event.
+  """
+  seededContainerCount: Int
 }
 
 """A user's participation in a session."""
@@ -9226,7 +9234,7 @@ type Query {
     containerId: String!
   ): GmContainer!
   """
-  List containers in an app, optionally filtered by container type and/or session, by bindingKey (get-by-key read of an ensured container), by property predicates (`where`, requires typeName; the same predicate shape automation selectors use — missing properties fall back to the type default), and paged with offset/limit over the stable created-at ordering. Requires a valid token.
+  List containers in an app, optionally filtered by container type and/or session, by bindingKey (get-by-key read of an ensured container), by property predicates (`where`, requires typeName; the same predicate shape automation selectors use — missing properties fall back to the type default), and paged with offset/limit over the stable (createdAt, containerId) ordering. Pages: an omitted limit returns 200 rows; the maximum is 1000 (BAD_REQUEST above it). Without `where` the page is read in SQL; with `where` the predicates are evaluated after reading up to 10000 rows of the type, and a larger type is refused (narrow with sessionId / bindingKey, or page without where). Requires a valid token.
   """
   gameModelContainers(
     """The app (tenant) whose containers to list."""
@@ -9245,9 +9253,13 @@ type Query {
     Optional property predicates (max 8, AND-combined). Requires typeName. Ops: '==', '!=', '<', '>', '<=', '>='. Values are JSON-encoded.
     """
     where: [GmPropertyPredicateInput!]
-    """Optional page size (applied after `where` filtering)."""
+    """
+    Page size. Default 200, maximum 1000 (BAD_REQUEST above). Applied in SQL without `where`; after `where` filtering otherwise.
+    """
     limit: Int
-    """Optional page offset (applied after `where` filtering)."""
+    """
+    Page offset (default 0) over the stable (createdAt, containerId) ordering. Applied in SQL without `where`; after `where` filtering otherwise.
+    """
     offset: Int
   ): [GmContainer!]!
   """
@@ -9259,6 +9271,15 @@ type Query {
     """The container UUID whose visible state to fetch."""
     containerId: String!
   ): GmContainerState!
+  """
+  Bulk twin of gameModelContainerState: identity plus visible property state for up to 500 containers in one call (BAD_REQUEST above). The same visibility rules apply per row (public always; owner/hidden depend on the CALLER's relationship to each container). Ids the app does not hold are omitted rather than errors; duplicates are returned once; order follows the input. Use it after paging gameModelContainers to pull a level's state in a few calls instead of one per object. Requires a valid token.
+  """
+  gameModelContainerStates(
+    """The app (tenant) that owns the containers."""
+    appId: BigInt!
+    """Container UUIDs to resolve (max 500)."""
+    containerIds: [String!]!
+  ): [GmContainerState!]!
   """
   Traverse the container graph from a root container along a relationship type up to a depth, returning the reachable nodes and edges. Requires a valid token.
   """
@@ -11353,7 +11374,7 @@ type Mutation {
     name: String!
   ): Boolean! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "appId")
   """
-  Bulk-create game-model definitions (container types, property defs, functions) and upsert instances (containers + edges) in one transaction — used to initialize or import a model. Seed containers bind as `seed:` + tempId and re-seed maps tempId to the existing id (containersCreated increments only on insert). Requires app-admin ('manage_apps').
+  Bulk-create game-model definitions (container types, property defs, functions) and upsert instances (containers + edges) in one transaction — used to initialize or import a model. Seed containers bind as `seed:` + tempId, or as the row's own bindingKey when given (admin-instantiable or bind-policied types only, so a runtime gameModelEnsureContainer later resolves the same row; an existing row is adopted only if its owner matches, so a player who claimed the key first is never written onto); re-seed maps tempId to the existing id and containersCreated increments only on insert. At most 1000 containers per call (BAD_REQUEST above, nothing written); the call is all-or-nothing. Seeded rows fire no container_created automation or change-feed events. Requires app-admin ('manage_apps').
   """
   gameModelSeed(
     """
@@ -11475,7 +11496,7 @@ type Mutation {
     dedupeKey: String
   ): Int! @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "appId")
   """
-  Create a runtime session: an isolated instance scope for containers (e.g. a match, room, or save) with its own roster, host, admission and capacity. Subject to the app's session creation policy. The caller becomes creator, host (term 1) and a joined participant. Presence is actor presence: a participant with no fresh Buddy actor in the app after the join grace window is expired by the server. Requires a valid token.
+  Create a runtime session: an isolated instance scope for containers (e.g. a match, room, or save) with its own roster, host, admission and capacity. Subject to the app's session creation policy. The caller becomes creator, host (term 1) and a joined participant. Presence is actor presence: a participant with no fresh Buddy actor in the app after the join grace window is expired by the server. With seedFromApp, the app's keyed template rows of the listed types are copied into the new session in the same transaction (max 2000 rows, refused above; no per-row events; count on the created event and on seededContainerCount). The copies seedFromApp stamps are dropped by the retention sweep once the session has been ended for GM_SESSION_CONTAINER_RETENTION_DAYS, when the tier's operator has set it (default 0, disabled); hand-made rows are never purged. Requires a valid token.
   """
   gameModelCreateSession(
     """
@@ -13635,6 +13656,10 @@ input UpsertContainerTypeInput {
   Who may CREATE a container of this type under a client-supplied bindingKey (gameModelEnsureContainer). Same JSON shape as a function invokePolicyJson — an AuthorityRule tree — except that owner_of_self, is_current_turn and condition are refused, because a bind creates the container and there is no acting container to resolve them against. Omit it (the default) and binding is governed by the type's instantiableBy alone, which is the behaviour before this field existed. Resolving an EXISTING key is unaffected: it is a read. For a shared world object, {"type":"is_host"} or instantiableBy: admin stops one player from squatting the key and becoming its owner.
   """
   bindPolicyJson: String
+  """
+  Where this type's rows live. 'session' (default): one row per bindingKey per session, and a client inside a session binds the session's row. 'app': one row per bindingKey for the whole app, shared by every session (state that outlives matches: territory, landmarks, a persistent world). On an app-scoped type, gameModelEnsureContainer / gameModelCreateContainer with a sessionId are refused (CONTAINER_TYPE_APP_SCOPED); bind at app scope and pass the session on gameModelInvoke, where is_participant / is_current_turn are judged against the call's session. Changing 'session' to 'app' is refused while the type holds session-scoped rows.
+  """
+  scope: String
 }
 
 """Create or update a typed property on a container type."""
@@ -13857,6 +13882,10 @@ input SeedContainerTypeInput {
   Who may CREATE a container of this type under a client-supplied bindingKey (gameModelEnsureContainer). Same JSON shape as a function invokePolicyJson — an AuthorityRule tree — except that owner_of_self, is_current_turn and condition are refused, because a bind creates the container and there is no acting container to resolve them against. Omit it (the default) and binding is governed by the type's instantiableBy alone, which is the behaviour before this field existed. Resolving an EXISTING key is unaffected: it is a read. For a shared world object, {"type":"is_host"} or instantiableBy: admin stops one player from squatting the key and becoming its owner.
   """
   bindPolicyJson: String
+  """
+  Where this type's rows live. 'session' (default): one row per bindingKey per session, and a client inside a session binds the session's row. 'app': one row per bindingKey for the whole app, shared by every session (state that outlives matches: territory, landmarks, a persistent world). On an app-scoped type, gameModelEnsureContainer / gameModelCreateContainer with a sessionId are refused (CONTAINER_TYPE_APP_SCOPED); bind at app scope and pass the session on gameModelInvoke, where is_participant / is_current_turn are judged against the call's session. Changing 'session' to 'app' is refused while the type holds session-scoped rows.
+  """
+  scope: String
 }
 
 """A property definition to create as part of a seed."""
@@ -13920,11 +13949,15 @@ A container (instance) to upsert as part of a seed. Re-seed matches on binding_k
 """
 input SeedContainerInput {
   """
-  Developer-assigned id used for edge references and as the seed binding key (`seed:` + tempId). Re-seed maps this tempId to the existing container id.
+  Developer-assigned id used for edge references and, when bindingKey is omitted, as the seed binding key (`seed:` + tempId). Re-seed maps this tempId to the existing container id.
   """
   tempId: String!
   """The container type to instantiate."""
   typeName: String!
+  """
+  Optional caller-supplied binding key (max 128 chars, opaque) the row upserts on INSTEAD of `seed:` + tempId, on the same unique index gameModelEnsureContainer uses (unique per app + type + the batch sessionId). Lets a deploy tool pre-create the exact rows a runtime gameModelEnsureContainer will later ask for, e.g. a placement-id digest per level object. Allowed only on a type that is admin-instantiable or carries a bindPolicy, so a player cannot have squatted the key first (BAD_REQUEST naming the tempId otherwise). May not begin with `seed:`. A row that already exists under this key is adopted only when its ownerUserId equals this row's (a re-seed); a row with a different owner -- one a player claimed first under a permissive or shadow-mode bind policy -- is a per-row BAD_REQUEST and nothing is written. On adoption properties are upserted onto it and idMapJson maps the tempId to it; containersCreated does not count it.
+  """
+  bindingKey: String
   """Human-friendly display name."""
   displayName: String!
   """Optional description."""
@@ -14178,9 +14211,27 @@ input CreateSessionInput {
   """
   presence: String
   """
+  Optional: copy the app's template rows of the listed container types into the new session at creation (see SessionSeedInput). At most 2,000 rows per session; above that the creation is refused with the count and no session exists. The count of rows stamped is on the session's `created` event (containersSeeded) and on GmSession.seededContainerCount of the create response.
+  """
+  seedFromApp: SessionSeedInput
+  """
   Optional idempotency key. Replaying with the same key and identical input returns the first session instead of creating a second; the same key with different input returns IDEMPOTENCY_CONFLICT. Keys expire after 24h.
   """
   idempotencyKey: String
+}
+
+"""
+Stamp a new session's world rows from the app's template rows at creation. For every app-scoped (sessionId null) container of each listed type that carries a bindingKey, one row is created in the new session with the same bindingKey, displayName, description, metadata and ownerUserId, inside the session creation transaction: the session exists with its rows or does not exist. The template rows were written by an admin (gameModelSeed), so the copy is not subject to the creator's instantiableBy or bindPolicy. Later changes to an app row do not propagate and a session row never writes back. Copies are marked (seeded_from_container_id) and are the only rows the ended-session retention sweep may drop, on a tier that has enabled it.
+"""
+input SessionSeedInput {
+  """
+  Container types whose app-scoped keyed rows are copied into the new session. Each must be instantiableBy 'admin' or carry a bindPolicy (the same rule gameModelSeed applies to a caller bindingKey: no player may have claimed one of its keys); a plain member type is BAD_REQUEST, as is an undefined type. Types with no app-scoped keyed rows contribute nothing.
+  """
+  typeNames: [String!]!
+  """
+  'defaults' (default): the copies start at the type's property defaults, no property rows written. 'app': each app row's current property rows are copied onto its copy, raw (not visibility-filtered; the copy is server-side and the source is admin-authored).
+  """
+  initialState: String
 }
 
 """Join an existing session, or reconnect to one you are already in."""

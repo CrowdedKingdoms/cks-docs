@@ -24,6 +24,20 @@ back-pressure:
 - **Batch reads** with pagination (see [Pagination](/overview/pagination)) instead of
   many tiny requests.
 
+### The one GraphQL limit that is enforced: `gameModelInvoke`
+
+`gameModelInvoke` is bounded at **120 invocations per 10 seconds per (player, app)**,
+a fixed window shared across every API replica. It is sized so that a client that
+waits for each response can never reach it (a serial caller is held to about 4 per
+second by the per-call ceiling); hitting it means at least three invocations in
+flight at once, sustained — a loop, a retry storm, or a duplicate-delivery bug.
+The refusal is `RATE_LIMIT_EXCEEDED` and counts admitted and policy-denied
+invocations alike. Nothing else on the game-model surface is rate limited today:
+`gameModelEnsureContainer`, `gameModelSeed`, `gameModelContainers` and
+`gameModelContainerState` carry no per-call quota, so a bulk level load is bounded
+by page size (see [Game models](/game-api/game-models#reading-state-and-the-graph))
+rather than by a rate.
+
 ## Realtime (UDP) cost model
 
 The realtime path is **best-effort UDP** and is governed by a spatial fan-out model
