@@ -1,0 +1,5 @@
+[
+  {
+    "_comment": "Symbols from static/helpers/unreal-sdk/sdk-surface.json that check-unreal-surface.mjs must not report as undocumented. Each real entry is {\"id\": \"<surface id, e.g. UCrowdyTeams::GetMyTeamById or UCrowdySDKDeveloperSettings::AppId>\", \"reason\": \"internal|deprecated|mass|editor\", \"note\": \"<why a reader does not need it>\"}. A settings class id covers every property of that class. Entries without an id, like this one, are ignored."
+  }
+]

@@ -13,10 +13,12 @@
     "check:content-policy:self-test": "node scripts/check-content-policy.mjs --self-test",
     "check:generated": "node scripts/check-generated.mjs",
     "check:generated:siblings": "node scripts/check-generated.mjs --sources=siblings",
+    "check:unreal-surface": "node scripts/check-unreal-surface.mjs",
+    "build:unreal-llms": "node scripts/build-unreal-llms.mjs",
     "lint:schema": "node scripts/lint-schema-descriptions.mjs",
     "lint:game-api-mapping": "node scripts/check-game-api-mapping.mjs",
     "test:examples": "node scripts/test-examples.mjs",
-    "prebuild": "npm run sdl:gen && npm run graphql:gen && npm run lint:schema && npm run lint:game-api-mapping && npm run check:content-policy",
+    "prebuild": "npm run sdl:gen && npm run graphql:gen && npm run lint:schema && npm run lint:game-api-mapping && npm run build:klee-names && npm run build:unreal-llms && npm run check:content-policy",
     "//prebuild:content-policy": "check:content-policy runs LAST, after sdl:gen and graphql:gen, because that is the moment an upstream leak enters this repo. A description naming a private repo arrives here by being copied from the sibling API's SDL and fanned out into the reference pages, and check:generated cannot see it -- regenerating from a leaky SDL reproduces the leak byte-for-byte and reports agreement. So the check that matters is the one that reads the freshly generated content, not the one that compares it to its own generator.",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
@@ -27,11 +29,13 @@
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
     "screenshots": "tsx scripts/capture-management-ui-screenshots.mts",
-    "test:e2e": "playwright test app-first-onboarding.spec.ts"
+    "test:e2e": "playwright test app-first-onboarding.spec.ts",
+    "build:klee-names": "node scripts/build-klee-names.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.1",
     "@docusaurus/faster": "3.10.1",
+    "@docusaurus/plugin-client-redirects": "3.10.1",
     "@docusaurus/plugin-content-docs": "3.10.1",
     "@docusaurus/preset-classic": "3.10.1",
     "@easyops-cn/docusaurus-search-local": "^0.55.2",
@@ -52,6 +56,7 @@
     "@playwright/test": "^1.52.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.2.3",
+    "raw-loader": "^4.0.2",
     "tsx": "^4.19.4",
     "typescript": "~5.6.2"
   },
