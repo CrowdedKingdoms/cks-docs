@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
@@ -13,6 +15,20 @@ import type * as Preset from '@docusaurus/preset-classic';
 const managementSchema = './static/schema/management-api.graphql';
 const gameSchema = './static/schema/game-api.graphql';
 const crowdyJsSchema = './static/schema/crowdyjs.graphql';
+
+// Old Unreal SDK URLs and where they moved. The map is a plain JSON file so a page move
+// and its redirect land in the same review, and so scripts can read it without loading
+// this config.
+//
+// It is fed to the redirects plugin through `createRedirects` rather than the static
+// `redirects` option, because the plugin refuses a `to` path that does not exist and the
+// map is filled AHEAD of the pages landing: an entry whose target is not built yet is
+// simply not emitted, and starts working on the first build that has the target page.
+// A `from` that still exists as a page is dropped by the plugin with a warning, so an
+// entry becomes live only once the old page is actually gone.
+const unrealSdkRedirects: {from: string; to: string}[] = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'scripts/unreal-sdk-redirects.json'), 'utf8'),
+);
 
 // ---------------------------------------------------------------------------------------
 // WHICH SITE THIS BUILD IS.
@@ -297,6 +313,28 @@ const config: Config = {
         sidebarPath: './sidebars/releases.ts',
       },
     ],
+
+    // -------- Client-side redirects for moved pages --------
+    // See the note on `unrealSdkRedirects` at the top: the map lists redirects whose
+    // targets may not exist yet, so it is applied per existing route instead of as a
+    // static list the plugin would validate and refuse.
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        createRedirects(existingPath: string) {
+          const from = unrealSdkRedirects
+            .filter((r) => r.to === existingPath)
+            .map((r) => r.from);
+          return from.length ? from : undefined;
+        },
+      },
+    ],
+
+    // -------- Vendored Klee (Blueprint renderer) --------
+    // Aliases `@vendor/klee` to vendor/klee/src/klee.ts and strips its `/// #if DEBUG_UI`
+    // blocks, so the TypeScript source is compiled by this site's bundler and never by
+    // `tsc` (it is not strict-clean). See vendor/klee/VENDORED.md.
+    './src/plugins/klee-vendor',
 
     // -------- GraphQL schema reference generators (nested into host instance) --------
     // Each call generates Markdown into the host docs instance's `reference/graphql/` folder

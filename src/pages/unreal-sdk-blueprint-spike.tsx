@@ -1,0 +1,27 @@
+import type {ReactNode} from 'react';
+import Layout from '@theme/Layout';
+import Blueprint from '@site/src/components/Blueprint';
+
+// Every Blueprint snippet on one page, for the renderer check in scripts/blueprint-component.spec.ts
+// and for eyeballing a graph outside a docs page. Keep the list in step with static/bp/unreal-sdk/.
+export const SNIPPETS = [
+  'qs-login',
+  'qs-entity',
+  'qs-event',
+  'qs-model-read',
+  'identity-policies',
+];
+
+export default function UnrealSdkBlueprintSpike(): ReactNode {
+  return (
+    <Layout title="Blueprint snippets" noFooter>
+      <main className="container margin-vert--lg">
+        <h1>Blueprint snippets</h1>
+        {SNIPPETS.map((id) => (
+          <Blueprint key={id} src={id} title={id} height={420} />
+        ))}
+        <Blueprint src="does-not-exist" title="Missing file" height={120} />
+      </main>
+    </Layout>
+  );
+}
