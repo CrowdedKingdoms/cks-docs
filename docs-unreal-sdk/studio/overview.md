@@ -2,113 +2,79 @@
 slug: overview
 sidebar_position: 1
 title: Crowdy Studio Overview
+description: What Crowdy Studio is, when to use it, and the pages in its nav rail.
 ---
 
 # Crowdy Studio Overview
 
-Crowdy Studio is the management plane for the Crowded Kingdoms SDK. It runs inside the Unreal Editor as a dockable tab.
+Crowdy Studio is the management console for your app, and it runs inside the Unreal Editor as a dockable tab. You use it to point your project at an app, and to author the server-side pieces your runtime reads: teams, channels, grids, and the Game Model schema.
 
-Use it to:
+Use it when you:
 
-- Pick the app your project talks to.
-- Write the backend URLs into your project settings.
-- Author the game-plane data your runtime reads (teams, channels, grids, game models).
-- Inspect live state during Play in Editor.
+- Start a project: sign in, pick the app, and write its ids and endpoints into the project with Config Sync.
+- Author server-side data ahead of play: teams, channels, grids, the Game Model schema.
+- Debug: watch a running Play in Editor session in the Inspector, or check the baked registry.
 
-:::tip[Start here before you write any runtime code. Most setup mistakes come from a project pointed at the wrong app, or one that never ran Config Sync. Both are fixed in this tab.]
+:::tip[Start here before you write any runtime code.]
+Most setup mistakes come from a project pointed at the wrong app, or one that never ran Config Sync. Both are fixed on the Project page.
 :::
 
 ## Open Crowdy Studio
 
-You can open the tab three ways:
+Two ways:
 
-- The Tools menu: Tools, Crowdy SDK, Crowdy Studio.
-- The Crowded Kingdoms toolbar button.
-- Dock the tab anywhere in the editor and reopen it from your saved layout.
+- The Tools menu: **Tools, Crowdy SDK, Crowdy Studio**.
+- The **Crowded Kingdoms** wordmark button on the level editor toolbar, next to Play.
 
-It is a normal editor tab, so you can dock it next to the World Outliner or float it on a second monitor.
+The tab is called **Crowdy Studio**. Dock it anywhere, or float it on a second monitor, and it reopens from your saved layout.
 
-{/* TODO: replace with real screenshot */}
-![Crowdy Studio tab docked in the Unreal Editor](/img/unreal-sdk/studio-tab-docked.png)
+![The Home page of Crowdy Studio: account, organization, active app, and project sync status cards](/img/unreal-sdk/studio-home.png)
+
+## Editor-only, one-way
+
+Crowdy Studio is an editor module and never ships in a packaged build. It writes settings and server data; the runtime reads those on its own and never talks to Studio.
+
+:::info[Studio is editor-only and has no runtime API.]
+Studio writes three things into your project: the connection settings in `DefaultGame.ini` (Config Sync and the Connection tab), the baked registry asset under `Content/CrowdySDK` (the Registry page), and a per-user session file under `Saved/`. Your game reads the settings and the registry at startup. Everything else Studio authors lives on the server.
+:::
 
 ## Native pages and the Web Console
 
-Crowdy Studio has two surfaces.
+Studio has two surfaces.
 
-**Native pages** are built into the editor. They cover the work you do while building the project: selecting an app, syncing config, authoring teams and channels, and reading live state. These pages talk to the game API directly.
+**Native pages** are Slate UI built into the editor. They cover the work you do while building: choosing an app, syncing config, authoring teams, channels, grids and models, and reading live state.
 
-**The Web Console** is an embedded browser. Click the Web Console button and Crowdy Studio opens an authenticated browser view for admin surfaces: members, billing, tokens, and secrets.
+**The Web Console** is an embedded browser for account and organization administration: members, billing, tokens, secrets. It signs you in with the session you already have in Studio. The nav rail's bottom button opens it on your organization's overview.
 
-It uses single sign-on from your editor session, so you do not sign in again. Use it for account and organization administration that does not belong in the editor itself.
+## The nav rail
+
+The rail on the left lists the pages. A toggle at the top folds it to icons (hover an icon for its label) and remembers your choice.
+
+| Page | Group | Needs sign-in | What it is for |
+|---|---|---|---|
+| **Setup Wizard** | | No | The guided first run: sign in, pick an app, sync. Studio lands here after you sign in. |
+| **Home** | | Yes | Status cards: account, organization, active app, project sync. |
+| **Project** | CONFIGURE | Yes | Pick the app, create one, and run [Config Sync](./config-sync.md). See [Projects and Apps](./projects-and-apps.md). |
+| **Teams** | AUTHORING | Yes | Author teams, members, roles, and the team policy. See [Teams and Channels](./teams-and-channels.md). |
+| **Channels** | AUTHORING | Yes | Author named channels and the session channel. |
+| **Grid** | AUTHORING | Yes | Author spatial permission regions. See [Grids](./grids.md). |
+| **Game Model** | AUTHORING | Yes | Browse, sync, and clean up the server-owned schema. See [Game Models authoring](./game-models-authoring.md). |
+| **Inspector** | DEBUG | No | A read-only view of a running Play in Editor session. See [Inspector and Registry](./inspector-and-registry.md). |
+| **Registry** | DEBUG | No | The baked metadata that ships in packaged builds, and the button that rebuilds it. |
+| **Web Console** | | Yes | Pinned at the bottom: opens the browser console for admin surfaces. |
+
+The Effect Graph is not a Studio page. It is an asset editor that opens when you double-click a Crowdy Effect asset in the Content Browser. See [Effect Graph](./effect-graph.md).
 
 ## Signing in
 
-You sign in with one of two credential types, and they grant different access.
+Sign in with your account: email and password, a sign-in link sent by email, or a social provider. That gives you full authoring. An organization token gives management-only access: it can browse apps and run Config Sync, but not author teams, channels, grids or models. See [Signing In](./sign-in.md).
 
-- **A session sign-in** -- email + password, a social provider, or a magic link -- gives you full
-  authoring: teams, channels, grids, game models, Config Sync, and the Web Console. All three
-  converge on the same result: an identity session token capable of minting the app-scoped tokens
-  authoring needs.
-- **An organization token** gives you management-only access. Token sign-in cannot author game-plane data such as teams and channels. Use it when you only need to browse apps, sync config, or reach admin surfaces.
-
-:::caution[If a game-plane authoring page looks read-only, check which credential you signed in with. Token sign-in is the usual cause.]
-:::
-
-### The sign-in page
-
-The sign-in page's layout reflects the order it recommends:
-
-- **Federated provider buttons** ("Continue with Google", etc.) at the top, shown only when the backend
-  has at least one provider enabled.
-- An **"or continue with email"** divider.
-- **Email + password** -- the standard "Log In" button.
-- **"Email me a sign-in link"** -- magic-link sign-in, reusing the email field above.
-- An **email + password** sign-in, which works against every server.
-- The **organization token** field, tucked behind a "Use an organization token instead" toggle at the
-  bottom, since it is the management-only option.
-
-Two things that trip people up the first time:
-
-- **There is no "Continue with Mock" and no instant sign-in link any more.** The mock OAuth provider
-  and the token the server used to hand back from "Email me a sign-in link" were both parts of the dev
-  auth bypass, deleted on 2026-08-20. The sign-in link now always arrives by email, on every backend,
-  so a backend with email delivery switched off cannot complete that flow at all -- use email +
-  password there.
-
-:::note[Grids are admin-plane only. Every grid operation requires the `manage_apps` permission, and there is no player-scoped grid query. Grid authoring lives in Crowdy Studio, not in game code.]
-:::
-
-## The pages
-
-The native side is a set of pages, and each one has its own doc.
-
-- **Setup Wizard.** First-run walkthrough that points your project at an app and runs the initial Config Sync.
-- **Home.** Landing page with your current app and environment at a glance.
-- **Project.** App selection, the backend selector for Dev, Production, or Custom, and Config Sync.
-- **Teams.** Author teams and permissions that your runtime joins and queries. See [Teams](/unreal-sdk/services/teams).
-- **Channels.** Author named channels for `Multicast` events and raw channel messages. See [Channels](/unreal-sdk/runtime/channels).
-- **Grid.** Admin-plane grid authoring. Requires `manage_apps`.
-- **Game Model.** Author the server-authoritative model schema your runtime reads.
-- **Inspector.** Read-only live state during Play in Editor.
-- **Registry.** View baked metadata and rebuild it with the Rebuild button. See [Packaging](/unreal-sdk/guides/packaging).
-
-## Config Sync
-
-Config Sync is the page you return to most. It writes the selected app's AppID, OrgId, and game API URLs into your project settings.
-
-Before it writes, it shows a before-and-after diff so you can see exactly what changes. Press Sync to Project to apply.
-
-:::tip[The change applies to a running Play in Editor session without a restart, so you can switch apps and test against the new backend immediately.]
-:::
-
-{/* TODO: replace with real screenshot */}
-![Config Sync diff with the Sync to Project button](/img/unreal-sdk/studio-config-sync-diff.png)
-
-:::warning[Every playable map still needs a `UCrowdyMapProfile`. Config Sync points the project at an app, but with no map profile the entity subsystem, auto replicator, and actor manager do nothing on that map, and replication looks dead. See [Map Profiles](/unreal-sdk/runtime/map-profile).]
+:::caution[If an authoring page looks read-only, check which credential you signed in with.]
+Token sign-in is the usual cause.
 :::
 
 ## Where to go next
 
-- New project: run the Setup Wizard, then Config Sync.
-- Building gameplay: read [Entities and Spawning](/unreal-sdk/runtime/entities-and-spawning).
-- Shipping a build: read [Packaging](/unreal-sdk/guides/packaging) and rebuild the registry first.
+- New project: [sign in](./sign-in.md), then [pick your app](./projects-and-apps.md) and run [Config Sync](./config-sync.md).
+- Building gameplay: [Entities and Spawning](../runtime/entities-and-spawning.md).
+- Shipping a build: [Packaging](../guides/packaging.md), and rebuild the [registry](./inspector-and-registry.md) first.

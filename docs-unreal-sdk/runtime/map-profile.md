@@ -91,7 +91,7 @@ Create a data asset, pick the profile class, then set its fields.
 4. Open it and set the fields. For a standard setup, enable `bEnableNetworking`, leave `ActorManagement.BackendClass` at the Actor Pool default, and enable `bUseAutoReplicator`.
 
 
-![Map profile data asset in the details panel](/img/unreal-sdk/map-profile-asset.png)
+![Map profile data asset in the details panel](pathname:///img/unreal-sdk/map-profile-asset.png)
 
 ## Assign the profile
 

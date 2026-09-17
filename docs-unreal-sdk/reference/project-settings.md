@@ -14,7 +14,7 @@ In a config file they are written under this section:
 [/Script/CrowdyReplication.CrowdySDKDeveloperSettings]
 ```
 
-:::note[The network fields are written by the Crowdy Studio console, which is the single source of truth. Set them with Config Sync, not by hand. See [Setup and Config Sync](/unreal-sdk/studio/setup-and-config-sync).]
+:::note[The network fields are written by the Crowdy Studio console, which is the single source of truth. Set them with Config Sync, not by hand. See [Config Sync](/unreal-sdk/studio/config-sync).]
 :::
 
 ## Network

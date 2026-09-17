@@ -207,7 +207,7 @@ it has nothing to call and always errors.
 | **Social Sign In** | `BeginSocialSignIn` |
 | **Restore Session** | `RestoreSession` |
 
-![Crowdy Auth BP Nodes](/img/unreal-sdk/crowdy-auth-bp-nodes.png)
+![Crowdy Auth BP Nodes](pathname:///img/unreal-sdk/crowdy-auth-bp-nodes.png)
 Each node's `OnSuccess` fires with an `FCrowdyAuthResult`, and `OnError` fires with an error message –
 the same shape as the C++ delegates above. Drop a node onto your sign-in Widget Blueprint graph, wire its
 inputs (email/password, or nothing for Restore Session), and handle the two exec pins.
