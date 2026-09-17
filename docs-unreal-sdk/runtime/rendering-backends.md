@@ -91,7 +91,7 @@ The backend is chosen in the map profile, inside `ActorManagement` (a `FCrowdyAc
 - `BackendConfig`: an instanced `UCrowdyRenderingBackendConfig`. Set this to an instance of your config class.
 
 
-![Map profile actor management with backend class and backend config fields](/img/unreal-sdk/map-profile-backend-select.png)
+![Map profile actor management with backend class and backend config fields](pathname:///img/unreal-sdk/map-profile-backend-select.png)
 
 Assign the profile to your map in Project Settings, Plugins, Crowdy SDK, Map Profiles. See [Map Profiles](/unreal-sdk/runtime/map-profile) for the full setup.
 
