@@ -4461,36 +4461,28 @@ The low-level connection re-assigns a server on its own; the SDK only surfaces i
 The connection belongs to the transport and recovers on its own. Asking the UI to show a disconnect must not be able to cancel that.
 :::
 
-## The connection monitor
+## Reacting to a drop
 
-`UCrowdyConnectionMonitor` is an opt-in game-instance subsystem that turns the raw timeout into a reconnect ladder. Call `InitConnectionMonitor()` once, in your Game Instance's `Init`; until then it does nothing. It attaches to the SDK subsystem's events alongside anything you bound yourself, in any order. `GetReconnectState()` (Blueprint: **Get Reconnect State**, pure) is the last state it reported, for a HUD that polls instead of binding. From then on it broadcasts `OnConnectionStateChanged` (an `FOnConnectionStatusChange`) with an `ECrowdyReconnectState`:
+There is no reconnect code to write. The SDK asks for the connection again itself, and the game hears two events: **On UDP Timed Out** when a re-assignment failed and the SDK is opening the connection again, and **On UDP Connection Success** when it is back. Bind both once, in your Game Instance's `Init`, and do the visible thing in each.
 
-| State | When |
-|---|---|
-| `Disconnected` | **On UDP Timed Out** arrived. |
-| `Connecting` | Every 10 seconds after that the monitor calls `RequestUDPAccess()` again and broadcasts this, up to 6 attempts. |
-| `Connected` | The connection came back. The attempt counter resets. |
-| `Failed` | Six attempts failed. The monitor stops. |
-
-This is the monitor's own ladder state, distinct from `EUDPConnectionState` above.
-
-:::warning[Failed is a dead end. After six attempts, about a minute, nothing brings the connection back on its own.]
-The game decides what happens next: a retry button that calls `RequestUDPAccess`, a return to the menu, a message. Do not wait for a seventh attempt.
+:::note[Do not call RequestUDPAccess from the timeout handler.]
+The SDK calls it itself as soon as the event has been broadcast. A second request from the game is a second reconnect in flight for the same client.
 :::
 
-The lantern village dims every placed lantern while the connection is down and restores them when it is back: `WatchConnection`, called from `Init`, starts the monitor and binds `HandleConnectionStateChanged`, which receives every ladder state, so the whole reaction is one function.
+The lantern village dims every placed lantern while the connection is down and restores them when it is back: `WatchConnection`, called from `Init`, binds the two events to `HandleConnectionLost` and `HandleConnectionRestored`.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
 ```cpp
 // LanternGameInstance.h
-#include "Network/UDP/CrowdyConnectionMonitor.h"
-
 void WatchConnection();
 
 UFUNCTION()
-void HandleConnectionStateChanged(ECrowdyReconnectState NewState);
+void HandleConnectionLost();
+
+UFUNCTION()
+void HandleConnectionRestored();
 
 // LanternGameInstance.cpp
 #include "EngineUtils.h"
@@ -4498,18 +4490,25 @@ void HandleConnectionStateChanged(ECrowdyReconnectState NewState);
 
 void ULanternGameInstance::WatchConnection()
 {
-	UCrowdyConnectionMonitor* Monitor = GetSubsystem<UCrowdyConnectionMonitor>();
-	Monitor->InitConnectionMonitor();
-	Monitor->OnConnectionStateChanged.AddDynamic(this, &ULanternGameInstance::HandleConnectionStateChanged);
+	// The SDK reconnects by itself after a timeout; a game only reacts to the two events.
+	UCrowdySDKSubsystem* Sdk = GetSubsystem<UCrowdySDKSubsystem>();
+	Sdk->OnUDPTimedOut.AddDynamic(this, &ULanternGameInstance::HandleConnectionLost);
+	Sdk->OnUDPConnectionSuccess.AddDynamic(this, &ULanternGameInstance::HandleConnectionRestored);
 }
 
-void ULanternGameInstance::HandleConnectionStateChanged(ECrowdyReconnectState NewState)
+void ULanternGameInstance::HandleConnectionLost()
 {
-	// Dim every placed lantern while the connection is down, restore them when it returns.
-	const bool bUp = NewState == ECrowdyReconnectState::Connected;
 	for (TActorIterator<ALantern> It(GetWorld()); It; ++It)
 	{
-		It->Light->SetIntensity(bUp ? 5000.f : 0.f);
+		It->Light->SetIntensity(0.f);
+	}
+}
+
+void ULanternGameInstance::HandleConnectionRestored()
+{
+	for (TActorIterator<ALantern> It(GetWorld()); It; ++It)
+	{
+		It->Light->SetIntensity(5000.f);
 	}
 }
 ```
@@ -4517,7 +4516,7 @@ void ULanternGameInstance::HandleConnectionStateChanged(ECrowdyReconnectState Ne
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Instance Blueprint, from **Event Init**, a **Crowdy Connection Monitor** getter feeds **Init Connection Monitor** and then **Bind Event to On Connection State Changed**, whose custom event `OnReconnectState` receives `New State`. Dimming every lantern needs a loop, which is more than a six-node figure shows, so the graph binds the event and stops.
+In the Game Instance Blueprint, from **Event Init**, a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Timed Out** and then **Bind Event to On UDP Connection Success**; the custom events `OnConnectionLost` and `OnConnectionRestored` are theirs. Dimming every lantern needs a loop, which is more than a six-node figure shows, so the graph binds the events and stops.
 
 [Blueprint snippet: conn-events, see /bp/unreal-sdk/conn-events.txt]
 
@@ -4547,7 +4546,6 @@ Five functions on `UCrowdySDKSubsystem` are deprecated (the compiler warns on ea
 - `Reconnecting` needs nothing from you. Only `Disconnected` after a timeout does.
 - `GateKeep` is an answer, not a failure. Retrying against a full app asks a server with no room whether it has room.
 - Coming up joins the channels. A Multicast event sent before **On UDP Connection Success** is queued and flushed when the bootstrap finishes; see [Channels](./channels.md).
-- The monitor is opt-in. Without `InitConnectionMonitor` its event never fires.
 - `crowdy.net.send.bundle` changes take effect on the next connect.
 
 ## Related

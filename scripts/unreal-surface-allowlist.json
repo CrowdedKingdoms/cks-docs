@@ -3026,5 +3026,40 @@
     "id": "USerializationFunctionLibrary::GenerateVoxelID",
     "reason": "internal",
     "note": "Voxel addressing for the persistence feature, which is being retired; the symbol carries no deprecation marker yet, so the node is still offered in the palette undocumented."
+  },
+  {
+    "id": "UCrowdyConnectionMonitor",
+    "reason": "deprecated",
+    "note": "the SDK reconnects on its own after a timeout; starting the monitor adds a second retry loop"
+  },
+  {
+    "id": "UCrowdyConnectionMonitor::InitConnectionMonitor",
+    "reason": "deprecated",
+    "note": "the SDK reconnects on its own after a timeout; starting the monitor adds a second retry loop"
+  },
+  {
+    "id": "UCrowdyConnectionMonitor::AttachTo",
+    "reason": "deprecated",
+    "note": "the SDK reconnects on its own after a timeout; starting the monitor adds a second retry loop"
+  },
+  {
+    "id": "UCrowdyConnectionMonitor::GetReconnectState",
+    "reason": "deprecated",
+    "note": "the SDK reconnects on its own after a timeout; starting the monitor adds a second retry loop"
+  },
+  {
+    "id": "UCrowdyConnectionMonitor::OnConnectionStateChanged",
+    "reason": "deprecated",
+    "note": "the SDK reconnects on its own after a timeout; starting the monitor adds a second retry loop"
+  },
+  {
+    "id": "ECrowdyReconnectState",
+    "reason": "deprecated",
+    "note": "the SDK reconnects on its own after a timeout; starting the monitor adds a second retry loop"
+  },
+  {
+    "id": "FOnConnectionStatusChange",
+    "reason": "deprecated",
+    "note": "the SDK reconnects on its own after a timeout; starting the monitor adds a second retry loop"
   }
 ]
