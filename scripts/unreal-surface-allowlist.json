@@ -3076,5 +3076,2215 @@
     "id": "UCrowdyActorPoolBackend::ResolvePolicyClass",
     "reason": "internal",
     "note": "the backend's own policy resolution step, public so its test can call it without a world"
+  },
+  {
+    "id": "UCrowdyGameSession::ClearCurrentSessionData",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::GetAppTokenAuthorizedServerClientPort",
+    "reason": "internal",
+    "note": "a token or endpoint the SDK installs for itself; reading it from a game is the credential leak the authentication page forbids"
+  },
+  {
+    "id": "UCrowdyGameSession::GetAppTokenAuthorizedServerIp4",
+    "reason": "internal",
+    "note": "a token or endpoint the SDK installs for itself; reading it from a game is the credential leak the authentication page forbids"
+  },
+  {
+    "id": "UCrowdyGameSession::GetAppTokenExpiresAt",
+    "reason": "internal",
+    "note": "a token or endpoint the SDK installs for itself; reading it from a game is the credential leak the authentication page forbids"
+  },
+  {
+    "id": "UCrowdyGameSession::GetGameApiUrl",
+    "reason": "internal",
+    "note": "a token or endpoint the SDK installs for itself; reading it from a game is the credential leak the authentication page forbids"
+  },
+  {
+    "id": "UCrowdyGameSession::GetGameApiWsUrl",
+    "reason": "internal",
+    "note": "a token or endpoint the SDK installs for itself; reading it from a game is the credential leak the authentication page forbids"
+  },
+  {
+    "id": "UCrowdyGameSession::GetGameToken",
+    "reason": "internal",
+    "note": "a token or endpoint the SDK installs for itself; reading it from a game is the credential leak the authentication page forbids"
+  },
+  {
+    "id": "UCrowdyGameSession::GetGameTokenID",
+    "reason": "internal",
+    "note": "a token or endpoint the SDK installs for itself; reading it from a game is the credential leak the authentication page forbids"
+  },
+  {
+    "id": "UCrowdyGameSession::GetLastMinigameCoordinates",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::GetLaunchUrl",
+    "reason": "internal",
+    "note": "a token or endpoint the SDK installs for itself; reading it from a game is the credential leak the authentication page forbids"
+  },
+  {
+    "id": "UCrowdyGameSession::GetReplicationServerClientPort",
+    "reason": "internal",
+    "note": "a token or endpoint the SDK installs for itself; reading it from a game is the credential leak the authentication page forbids"
+  },
+  {
+    "id": "UCrowdyGameSession::GetReplicationServerIp4",
+    "reason": "internal",
+    "note": "a token or endpoint the SDK installs for itself; reading it from a game is the credential leak the authentication page forbids"
+  },
+  {
+    "id": "UCrowdyGameSession::GetSessionGameTokenID",
+    "reason": "internal",
+    "note": "a token or endpoint the SDK installs for itself; reading it from a game is the credential leak the authentication page forbids"
+  },
+  {
+    "id": "UCrowdyGameSession::GetSessionToken",
+    "reason": "internal",
+    "note": "a token or endpoint the SDK installs for itself; reading it from a game is the credential leak the authentication page forbids"
+  },
+  {
+    "id": "UCrowdyGameSession::SetAppID",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetAppTokenAuthorizedServer",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetAppTokenExpiresAt",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetGameApiUrl",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetGameApiWsUrl",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetGameToken",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetGameTokenID",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetLastMinigameCoordinates",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetLaunchUrl",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetPlayerCurrentChunkCoordinates",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetReplicationServer",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetSessionGameTokenID",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetSessionToken",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetUserID",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetUUID",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetWasInMinigame",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyActiveSessionMemory",
+    "reason": "internal",
+    "note": "game-instance memory that carries the active Game Model session across a map travel; documented as behaviour on game-models/sessions, no reader touches the class"
+  },
+  {
+    "id": "FCrowdyEffectAssignmentSpec",
+    "reason": "internal",
+    "note": "the graph compiler's intermediate spec; BlueprintType so it shows in the type picker, but nothing for a game to construct"
+  },
+  {
+    "id": "FCrowdyEffectCallSpec",
+    "reason": "internal",
+    "note": "the graph compiler's intermediate spec; BlueprintType so it shows in the type picker, but nothing for a game to construct"
+  },
+  {
+    "id": "FCrowdyEffectIfSpec",
+    "reason": "internal",
+    "note": "the graph compiler's intermediate spec; BlueprintType so it shows in the type picker, but nothing for a game to construct"
+  },
+  {
+    "id": "FCrowdyEffectOperand",
+    "reason": "internal",
+    "note": "the graph compiler's intermediate spec; BlueprintType so it shows in the type picker, but nothing for a game to construct"
+  },
+  {
+    "id": "FCrowdyEffectSpec",
+    "reason": "internal",
+    "note": "the graph compiler's intermediate spec; BlueprintType so it shows in the type picker, but nothing for a game to construct"
+  },
+  {
+    "id": "FCrowdyEffectTerm",
+    "reason": "internal",
+    "note": "the graph compiler's intermediate spec; BlueprintType so it shows in the type picker, but nothing for a game to construct"
+  },
+  {
+    "id": "ECrowdyEffectAssignmentOp",
+    "reason": "internal",
+    "note": "the graph compiler's intermediate spec; BlueprintType so it shows in the type picker, but nothing for a game to construct"
+  },
+  {
+    "id": "ECrowdyEffectBinaryOp",
+    "reason": "internal",
+    "note": "the graph compiler's intermediate spec; BlueprintType so it shows in the type picker, but nothing for a game to construct"
+  },
+  {
+    "id": "ECrowdyEffectComparator",
+    "reason": "internal",
+    "note": "the graph compiler's intermediate spec; BlueprintType so it shows in the type picker, but nothing for a game to construct"
+  },
+  {
+    "id": "ECrowdyEffectOperandKind",
+    "reason": "internal",
+    "note": "the graph compiler's intermediate spec; BlueprintType so it shows in the type picker, but nothing for a game to construct"
+  },
+  {
+    "id": "ECrowdyEffectRole",
+    "reason": "internal",
+    "note": "the graph compiler's intermediate spec; BlueprintType so it shows in the type picker, but nothing for a game to construct"
+  },
+  {
+    "id": "CrowdyContainerTest",
+    "reason": "internal",
+    "note": "key-only markers on the SDK's own test fixture classes so they never reach a live app"
+  },
+  {
+    "id": "CrowdyTestFixture",
+    "reason": "internal",
+    "note": "key-only markers on the SDK's own test fixture classes so they never reach a live app"
+  },
+  {
+    "id": "ECrowdyEffectAssignOp",
+    "reason": "editor",
+    "note": "the graph compiler's intermediate spec (the retired picker's IR); a reader authors EffectScript text or the Studio graph, never this shape"
+  },
+  {
+    "id": "ECrowdyEffectExprKind",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "ECrowdyEffectFnCatalog",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "ECrowdyEffectRefBase",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "ECrowdyEffectSeverity",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "ECrowdyEffectStmtKind",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "ECrowdyEffectTokenType",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "ECrowdyModelNotificationCarrier",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyAttributeChange",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "FCrowdyAttributeDef",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyAttributeRegistry",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyCoalesceRequest",
+    "reason": "internal",
+    "note": "the coalescing window and invoke-budget governor inside the subsystem; the caller-visible behaviour is on game-models/coalescing"
+  },
+  {
+    "id": "FCrowdyDerivedComponentContainer",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "FCrowdyEffectAuthoredShape",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "FCrowdyEffectAuthoredSurface",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "FCrowdyEffectAutomationAuthoring",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "FCrowdyEffectDiagnostic",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectExpr",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectFnCallee",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectLowering",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectLoweringContext",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectLoweringResult",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectParamDecl",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectParser",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectParseResult",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectProgram",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectSpecBuilder",
+    "reason": "editor",
+    "note": "the graph compiler's intermediate spec (the retired picker's IR); a reader authors EffectScript text or the Studio graph, never this shape"
+  },
+  {
+    "id": "FCrowdyEffectSpecPrinter",
+    "reason": "editor",
+    "note": "the graph compiler's intermediate spec (the retired picker's IR); a reader authors EffectScript text or the Studio graph, never this shape"
+  },
+  {
+    "id": "FCrowdyEffectStatement",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectToken",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectVocabulary",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "FCrowdyEffectVocabularyType",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "FCrowdyGameModelAutomationInput",
+    "reason": "editor",
+    "note": "the neutral compiled shape a function or automation declaration lowers to and the Studio marshaller that turns it into an upsert; described on the functions and invoke-policies pages, never constructed by a game"
+  },
+  {
+    "id": "FCrowdyGameModelAutomationTriggerInput",
+    "reason": "editor",
+    "note": "the neutral compiled shape a function or automation declaration lowers to and the Studio marshaller that turns it into an upsert; described on the functions and invoke-policies pages, never constructed by a game"
+  },
+  {
+    "id": "FCrowdyGameModelMutation",
+    "reason": "editor",
+    "note": "the neutral compiled shape a function or automation declaration lowers to and the Studio marshaller that turns it into an upsert; described on the functions and invoke-policies pages, never constructed by a game"
+  },
+  {
+    "id": "FCrowdyGameModelNotification",
+    "reason": "editor",
+    "note": "the neutral compiled shape a function or automation declaration lowers to and the Studio marshaller that turns it into an upsert; described on the functions and invoke-policies pages, never constructed by a game"
+  },
+  {
+    "id": "FCrowdyGameModelNotificationArg",
+    "reason": "editor",
+    "note": "the neutral compiled shape a function or automation declaration lowers to and the Studio marshaller that turns it into an upsert; described on the functions and invoke-policies pages, never constructed by a game"
+  },
+  {
+    "id": "FCrowdyGameModelTimer",
+    "reason": "editor",
+    "note": "the neutral compiled shape a function or automation declaration lowers to and the Studio marshaller that turns it into an upsert; described on the functions and invoke-policies pages, never constructed by a game"
+  },
+  {
+    "id": "FCrowdyGameModelTimerParam",
+    "reason": "editor",
+    "note": "the neutral compiled shape a function or automation declaration lowers to and the Studio marshaller that turns it into an upsert; described on the functions and invoke-policies pages, never constructed by a game"
+  },
+  {
+    "id": "FCrowdyInventoryBlueprintOptions",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "FCrowdyKitBlueprint",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "FCrowdyKitInventoryNames",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "FCrowdyManifestApplyOutcome",
+    "reason": "internal",
+    "note": "the pacing and retry runner the subsystem drives for Apply Container Manifest; the result struct and pacing are documented on pre-seeding"
+  },
+  {
+    "id": "FCrowdyManifestApplyRunner",
+    "reason": "internal",
+    "note": "the pacing and retry runner the subsystem drives for Apply Container Manifest; the result struct and pacing are documented on pre-seeding"
+  },
+  {
+    "id": "FCrowdyMergedBlueprints",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "FCrowdyModelAttributeEntry",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelAttributeLookup",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelChangeHint",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "FCrowdyModelIdentityProvider",
+    "reason": "internal",
+    "note": "the SDK's own cross-module identity seam, not a customer extension point; the reader-facing transforms are FCrowdyModelIdentity on ensured-identity"
+  },
+  {
+    "id": "FCrowdyModelValueCodec",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "ICrowdyModelIdentity",
+    "reason": "internal",
+    "note": "the SDK's own cross-module identity seam, not a customer extension point; the reader-facing transforms are FCrowdyModelIdentity on ensured-identity"
+  },
+  {
+    "id": "ICrowdyModelNotificationSink",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyContainerStandIn",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "FConflict",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "FDeclaredFunction",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "EOwnerIdKind",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "FCrowdyTrustedAuthority",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "FCrowdyBulkResolveHit",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "FCrowdyCoalescedInvoke",
+    "reason": "internal",
+    "note": "the coalescing window and invoke-budget governor inside the subsystem; the caller-visible behaviour is on game-models/coalescing"
+  },
+  {
+    "id": "FCrowdyCoalesceKey",
+    "reason": "internal",
+    "note": "the coalescing window and invoke-budget governor inside the subsystem; the caller-visible behaviour is on game-models/coalescing"
+  },
+  {
+    "id": "FCrowdyInvokeBindingGuard",
+    "reason": "internal",
+    "note": "the coalescing window and invoke-budget governor inside the subsystem; the caller-visible behaviour is on game-models/coalescing"
+  },
+  {
+    "id": "FCrowdyPendingBindBackoff",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "FCrowdyPendingInvokeRetry",
+    "reason": "internal",
+    "note": "the coalescing window and invoke-budget governor inside the subsystem; the caller-visible behaviour is on game-models/coalescing"
+  },
+  {
+    "id": "FPendingWrite",
+    "reason": "internal",
+    "note": "the kit action's own parameter builder or row parser, public for headless tests; the node is the API"
+  },
+  {
+    "id": "ECrowdyPullOnStartStamp",
+    "reason": "editor",
+    "note": "the Blueprint editor extension behind the Game Model Class toggle and Container Type field; editor process only"
+  },
+  {
+    "id": "UCrowdyContainerBlueprintExtension",
+    "reason": "editor",
+    "note": "the Blueprint editor extension behind the Game Model Class toggle and Container Type field; editor process only"
+  },
+  {
+    "id": "FCrowdyAppTokenFields",
+    "reason": "internal",
+    "note": "the sign-in pipeline's own plumbing: dependency injection at startup, the reactive TOKEN_EXPIRED re-mint, and the mint payload shape"
+  },
+  {
+    "id": "EAuthFlow",
+    "reason": "internal",
+    "note": "the sign-in pipeline's own plumbing: dependency injection at startup, the reactive TOKEN_EXPIRED re-mint, and the mint payload shape"
+  },
+  {
+    "id": "FCrowdyContainerManifestScan",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerManifestScanResult",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerManifestSkip",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerScan",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerScanPlan",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyScannedAsset",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "UCrowdyContainerManifestCommandlet",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FOnModelChanged",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "FGameSessionInfo::Reset",
+    "reason": "internal",
+    "note": "sign-out bookkeeping on the client's connection state struct"
+  },
+  {
+    "id": "UCrowdyGameSession::GetPlayerCurrentChunkCoordinates",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "UCrowdyGameSession::SetHostID",
+    "reason": "internal",
+    "note": "UCrowdyGameSession is the client's own connection state; the SDK's login and handshake write it, a game never sets it"
+  },
+  {
+    "id": "CrowdyEffectBinaryPrecedence",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "CrowdyCanonicalNumber::ToText",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "CrowdyCoalesce::HashString",
+    "reason": "internal",
+    "note": "the coalescing window and invoke-budget governor inside the subsystem; the caller-visible behaviour is on game-models/coalescing"
+  },
+  {
+    "id": "CrowdyCoalesce::MixHash",
+    "reason": "internal",
+    "note": "the coalescing window and invoke-budget governor inside the subsystem; the caller-visible behaviour is on game-models/coalescing"
+  },
+  {
+    "id": "CrowdyCombatKitNames::ApplyEffectFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyCombatKitNames::AttackFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyCombatKitNames::CombatantTypeName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyCombatKitNames::EffectTypeName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyCombatKitNames::PrefixedFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyCombatKitNames::RespawnFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyCombatKitNames::ReviveFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyCombatKitNames::SyncFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyCombatKitNames::TEXT",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyCombatKitNames::ToSnakeCase",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyCombatKitNames::EffectKeys::TEXT",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyCombatKitNames::Keys::TEXT",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyEffectAuthoredSurface::BuildLoweringContext",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectAuthoredSurface::BuildTagPayload",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectAuthoredSurface::Compile",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectAuthoredSurface::CompileResolved",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectAuthoredSurface::FromEffect",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectAuthoredSurface::FromEffectSettings",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectAuthoredSurface::FromJson",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectAuthoredSurface::IsCurrentTagVersion",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectAuthoredSurface::ResolveCarrier",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectAuthoredSurface::ResolveTargetClass",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectAuthoredSurface::ResolveVocabularyFromClasses",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectAuthoredSurface::ResolveVocabularyFromTypes",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectAuthoredSurface::ToJson",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectDuplicateFunctionCheck::FindOtherEffectsWithFunctionName",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectDuplicateFunctionCheck::SetSweepHook",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectFunctionCatalog::FindFunctionsOnContainerType",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectFunctionCatalog::IsCatalogAvailable",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectFunctionCatalog::SetCatalogHook",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectGraphCompile::CompileGraphToSpec",
+    "reason": "editor",
+    "note": "the graph compiler's intermediate spec (the retired picker's IR); a reader authors EffectScript text or the Studio graph, never this shape"
+  },
+  {
+    "id": "CrowdyEffectGraphCompile::GetCompileHook",
+    "reason": "editor",
+    "note": "the graph compiler's intermediate spec (the retired picker's IR); a reader authors EffectScript text or the Studio graph, never this shape"
+  },
+  {
+    "id": "CrowdyEffectGraphCompile::SetCompileHook",
+    "reason": "editor",
+    "note": "the graph compiler's intermediate spec (the retired picker's IR); a reader authors EffectScript text or the Studio graph, never this shape"
+  },
+  {
+    "id": "CrowdyEffectMagnitudeJson::FromCanonicalJson",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectMagnitudeJson::ToCanonicalJson",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEffectTagKeys::TEXT",
+    "reason": "internal",
+    "note": "schema-sync and asset-validation seams behind Preview and Sync to Server; not reachable from gameplay code"
+  },
+  {
+    "id": "CrowdyEntityClassContainer::GetDerivedComponentContainers",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "CrowdyEntityClassContainer::RecordNamesAnotherClass",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "CrowdyEntityClassContainer::ResolveRecordedClass",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "CrowdyEntityClassContainer::ResolveRecordedContainerClass",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "CrowdyEntityClassContainer::ResolveTaggedClass",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "CrowdyEntityClassContainer::TryGetContainerTypeName",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "CrowdyGameModelMarshalling::BuildAutomationTriggerUpsertInput",
+    "reason": "editor",
+    "note": "the neutral compiled shape a function or automation declaration lowers to and the Studio marshaller that turns it into an upsert; described on the functions and invoke-policies pages, never constructed by a game"
+  },
+  {
+    "id": "CrowdyGameModelMarshalling::BuildAutomationUpsertInput",
+    "reason": "editor",
+    "note": "the neutral compiled shape a function or automation declaration lowers to and the Studio marshaller that turns it into an upsert; described on the functions and invoke-policies pages, never constructed by a game"
+  },
+  {
+    "id": "CrowdyGameModelMarshalling::BuildFunctionUpsertInput",
+    "reason": "editor",
+    "note": "the neutral compiled shape a function or automation declaration lowers to and the Studio marshaller that turns it into an upsert; described on the functions and invoke-policies pages, never constructed by a game"
+  },
+  {
+    "id": "CrowdyGameModelMetaKeys::CollectionTouchFunctionName",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "CrowdyGameModelMetaKeys::GameModelChannelPayloadForms",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "CrowdyGameModelMetaKeys::HasGameModelChannelPrefix",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "CrowdyGameModelMetaKeys::HasModelMeta",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "CrowdyGameModelMetaKeys::IsReservedCollectionFunctionName",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "CrowdyGameModelMetaKeys::IsReservedCollectionKey",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "CrowdyGameModelMetaKeys::IsValidVisibility",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "CrowdyGameModelMetaKeys::ResolvedServerKeyForProperty",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "CrowdyGameModelMetaKeys::ServerKeyForProperty",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "CrowdyGameModelMetaKeys::TEXT",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "CrowdyKit::AllowPolicy",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::AndPolicies",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::AndPolicy",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::ApplyTrustedAuthority",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::BlueprintField",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::ComposeBlueprints",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::ConditionPolicy",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::FeatureGate",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::GridPermissionPolicy",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::GroupPermissionPolicy",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::InventoryBlueprint",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::InventoryNames",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::IsAutomationPolicy",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::IsCurrentTurnPolicy",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::IsHostPolicy",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::IsParticipantPolicy",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::KitPolicyJson",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::MergeBlueprints",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::NotPolicy",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::OrPolicy",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::OwnerEquals",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::OwnerEqualsCaller",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::OwnerMirrorProperty",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::OwnerOfSelfPolicy",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::Policy",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKit::ToSnakeCase",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKitActionSupport::ClampDoubleToInt32",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKitActionSupport::MakeStringValueJson",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKitActionSupport::ResolveModel",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKitJson::ArrayOfObjects",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKitJson::Canonical",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyKitJson::ObjectValue",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "CrowdyLeaderboardsKitNames::EntryTypeName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyLeaderboardsKitNames::SubmitScoreFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyLeaderboardsKitNames::TEXT",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyLeaderboardsKitNames::ToSnakeCase",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyLeaderboardsKitNames::Keys::TEXT",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyModelErrorText::FromInvokeResult",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "CrowdyModelErrorText::SubsystemUnavailable",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "CrowdyModelListen::PassesFilter",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::AdvanceTimeFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::CropTypeName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::FunctionNameForPrefix",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::GatherNodeFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::GrowCropFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::HarvestFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::RegenNodeFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::ResourceNodeTypeName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::SetWeatherFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::SpawnWaveFunctionName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::TEXT",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::ToSnakeCase",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::WaveSpawnerTypeName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::WorldStateTypeName",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::Keys::TEXT",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "CrowdyWorldsimKitNames::Params::TEXT",
+    "reason": "internal",
+    "note": "the kit's type and function name helpers, a drift guard the action classes resolve for you"
+  },
+  {
+    "id": "FCrowdyApplyManifestResult::IsComplete",
+    "reason": "internal",
+    "note": "the pacing and retry runner the subsystem drives for Apply Container Manifest; the result struct and pacing are documented on pre-seeding"
+  },
+  {
+    "id": "FCrowdyAttributeDef::TEXT",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyAttributeRegistry::ClassHasModelAttributes",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyAttributeRegistry::DiscoverForClass",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyAttributeRegistry::FindContainerClassByTypeName",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyAttributeRegistry::GetContainerTypeName",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyAttributeRegistry::IsContainerAppScoped",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyAttributeRegistry::IsTestContainer",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyAttributeRegistry::IsTestFixture",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyAttributeRegistry::MapPropertyToValueType",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyEffectDiagnostic::ToString",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectLowering::CollectUndeclaredParams",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectLowering::IsReservedParamName",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectLowering::Lower",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectLoweringContext::TEXT",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectLoweringResult::HasErrors",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectMagnitude::GetNameKey",
+    "reason": "internal",
+    "note": "the magnitude name as an FName for the Overrides lookup in the marshaller; find-only, C++ only"
+  },
+  {
+    "id": "FCrowdyEffectMagnitude::TEXT",
+    "reason": "internal",
+    "note": "a TEXT() macro use the header scan read as a member; not a symbol"
+  },
+  {
+    "id": "FCrowdyEffectParser::Parse",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectParser::ParseExpression",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectParser::TokenizeExpression",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectParseResult::HasErrors",
+    "reason": "internal",
+    "note": "the EffectScript parser and lowering pipeline UCrowdyEffect::Compile drives; its output is documented, its types are not an API"
+  },
+  {
+    "id": "FCrowdyEffectSpecBuilder::BuildProgram",
+    "reason": "editor",
+    "note": "the graph compiler's intermediate spec (the retired picker's IR); a reader authors EffectScript text or the Studio graph, never this shape"
+  },
+  {
+    "id": "FCrowdyEffectSpecPrinter::PrintExpression",
+    "reason": "editor",
+    "note": "the graph compiler's intermediate spec (the retired picker's IR); a reader authors EffectScript text or the Studio graph, never this shape"
+  },
+  {
+    "id": "FCrowdyEffectSpecPrinter::PrintOperand",
+    "reason": "editor",
+    "note": "the graph compiler's intermediate spec (the retired picker's IR); a reader authors EffectScript text or the Studio graph, never this shape"
+  },
+  {
+    "id": "FCrowdyEffectSpecPrinter::PrintTermChain",
+    "reason": "editor",
+    "note": "the graph compiler's intermediate spec (the retired picker's IR); a reader authors EffectScript text or the Studio graph, never this shape"
+  },
+  {
+    "id": "FCrowdyGameModelAutomationInput::TEXT",
+    "reason": "editor",
+    "note": "the neutral compiled shape a function or automation declaration lowers to and the Studio marshaller that turns it into an upsert; described on the functions and invoke-policies pages, never constructed by a game"
+  },
+  {
+    "id": "FCrowdyGameModelFunctionInput::TEXT",
+    "reason": "editor",
+    "note": "the neutral compiled shape a function or automation declaration lowers to and the Studio marshaller that turns it into an upsert; described on the functions and invoke-policies pages, never constructed by a game"
+  },
+  {
+    "id": "FCrowdyManifestApplyRunner::Abort",
+    "reason": "internal",
+    "note": "the pacing and retry runner the subsystem drives for Apply Container Manifest; the result struct and pacing are documented on pre-seeding"
+  },
+  {
+    "id": "FCrowdyManifestApplyRunner::GetActive",
+    "reason": "internal",
+    "note": "the pacing and retry runner the subsystem drives for Apply Container Manifest; the result struct and pacing are documented on pre-seeding"
+  },
+  {
+    "id": "FCrowdyManifestApplyRunner::IsDone",
+    "reason": "internal",
+    "note": "the pacing and retry runner the subsystem drives for Apply Container Manifest; the result struct and pacing are documented on pre-seeding"
+  },
+  {
+    "id": "FCrowdyManifestApplyRunner::RetryDelaySeconds",
+    "reason": "internal",
+    "note": "the pacing and retry runner the subsystem drives for Apply Container Manifest; the result struct and pacing are documented on pre-seeding"
+  },
+  {
+    "id": "FCrowdyManifestApplyRunner::SetPacing",
+    "reason": "internal",
+    "note": "the pacing and retry runner the subsystem drives for Apply Container Manifest; the result struct and pacing are documented on pre-seeding"
+  },
+  {
+    "id": "FCrowdyManifestApplyRunner::Start",
+    "reason": "internal",
+    "note": "the pacing and retry runner the subsystem drives for Apply Container Manifest; the result struct and pacing are documented on pre-seeding"
+  },
+  {
+    "id": "FCrowdyModelAttributeLookup::Find",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelAttributeLookup::FindOnRep",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelAttributeLookup::FindProperty",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelAttributeLookup::Install",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelAttributeLookup::InvalidateAll",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelAttributeLookup::InvalidateClass",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelAttributeLookup::NumCachedClasses",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelAttributeLookup::Uninstall",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelValueCodec::DecodeJsonToProperty",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelValueCodec::EncodePropertyDefaultToJson",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelValueCodec::IsModelRefStruct",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelValueCodec::IsSupportedArrayInner",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyModelValueCodec::MapAggregatePropertyToValueType",
+    "reason": "internal",
+    "note": "attribute discovery, the per-class lookup cache, and the value codec behind the typed getters; the metadata keys they read are documented on containers-and-attributes"
+  },
+  {
+    "id": "FCrowdyTrustedAuthority::Automation",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "FCrowdyTrustedAuthority::CustomRule",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "FCrowdyTrustedAuthority::Host",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "FCrowdyTrustedAuthority::Owner",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "FCrowdyTrustedAuthority::Server",
+    "reason": "internal",
+    "note": "the builders that emit a kit's own schema and policies at deploy time; a game authors its own schema through effects and the Studio page, never these"
+  },
+  {
+    "id": "ICrowdyModelIdentity::GetHostID",
+    "reason": "internal",
+    "note": "the SDK's own cross-module identity seam, not a customer extension point; the reader-facing transforms are FCrowdyModelIdentity on ensured-identity"
+  },
+  {
+    "id": "ICrowdyModelIdentity::GetNetIDForParticipant",
+    "reason": "internal",
+    "note": "the SDK's own cross-module identity seam, not a customer extension point; the reader-facing transforms are FCrowdyModelIdentity on ensured-identity"
+  },
+  {
+    "id": "ICrowdyModelIdentity::IsLocallyOwned",
+    "reason": "internal",
+    "note": "the SDK's own cross-module identity seam, not a customer extension point; the reader-facing transforms are FCrowdyModelIdentity on ensured-identity"
+  },
+  {
+    "id": "ICrowdyModelIdentity::TryGetCachedOwnerUserId",
+    "reason": "internal",
+    "note": "the SDK's own cross-module identity seam, not a customer extension point; the reader-facing transforms are FCrowdyModelIdentity on ensured-identity"
+  },
+  {
+    "id": "ICrowdyModelIdentity::TryGetLocalUserId",
+    "reason": "internal",
+    "note": "the SDK's own cross-module identity seam, not a customer extension point; the reader-facing transforms are FCrowdyModelIdentity on ensured-identity"
+  },
+  {
+    "id": "ICrowdyModelNotificationSink::OnModelChanged",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyApplyStatusEffectAction::BuildApplyEffectParams",
+    "reason": "internal",
+    "note": "the kit action's own parameter builder or row parser, public for headless tests; the node is the API"
+  },
+  {
+    "id": "UCrowdyCombatAttackAction::BuildAttackParams",
+    "reason": "internal",
+    "note": "the kit action's own parameter builder or row parser, public for headless tests; the node is the API"
+  },
+  {
+    "id": "UCrowdyEffect::ApplyValueTypeChangeDefaults",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::BuildAutomationInput",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::BuildSignalNotification",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::BuildTimerInput",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::CallableFromToWireString",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::Compile",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::DiagnoseScriptBody",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::EnsureBoolDefault",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::GetAuthoredShape",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::GetAutomationAuthoring",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::InvalidateCoalesceSpec",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::IsLegacyRequiredEncoding",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::IsNumericMagnitude",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::IsValidSignalName",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::MakeSignalHandlerName",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::MigrateCallableFrom",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::MigrateMagnitude",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::ResolveCarrier",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::ResolveMagnitudeRequired",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::ResolveMagnitudeValueType",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::ResolveNotificationCarrier",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::ResolveSourceContainerClass",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::ReturnTypeToWireString",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::TEXT",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::TryGetCoalesceSpec",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::ValueTypeToWireString",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::WireStringToValueType",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::WireStringToWriteSource",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffect::WriteSourceToWireString",
+    "reason": "internal",
+    "note": "compile, migration, and wire-string helpers the effect asset runs on itself under IsDataValid and the schema sync; a gameplay caller uses UCrowdyEffects instead"
+  },
+  {
+    "id": "UCrowdyEffects::ApplyInternal",
+    "reason": "internal",
+    "note": "the shared resolve, marshal, and merge-key steps behind Apply, public so they are testable with no world; their behaviour is documented on effects-cpp and coalescing"
+  },
+  {
+    "id": "UCrowdyEffects::BuildInvokeParams",
+    "reason": "internal",
+    "note": "the shared resolve, marshal, and merge-key steps behind Apply, public so they are testable with no world; their behaviour is documented on effects-cpp and coalescing"
+  },
+  {
+    "id": "UCrowdyEffects::BuildMergeDiscriminator",
+    "reason": "internal",
+    "note": "the shared resolve, marshal, and merge-key steps behind Apply, public so they are testable with no world; their behaviour is documented on effects-cpp and coalescing"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ApplyDataContainerMutations",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ApplyDataContainerState",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ApplyInvokeMutations",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ApplyMutationsToContainer",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ApplyStateToContainer",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::BindEntityContainer",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ClassifySessionError",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ConsumeSelfEcho",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::DebugStopWatchingContainerChanges",
+    "reason": "internal",
+    "note": "driven by the crowdy.gamemodel.watchcontainers and unwatchcontainers console variables, which are documented; stripped from Shipping"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::DebugWatchContainerChanges",
+    "reason": "internal",
+    "note": "driven by the crowdy.gamemodel.watchcontainers and unwatchcontainers console variables, which are documented; stripped from Shipping"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::DecodeChannelModelChangedId",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::DecodeChannelSessionCue",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::DecodeChannelSignal",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::DecodeContainerIdFromState",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::DispatchSignal",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::EnqueueCoalescedInvoke",
+    "reason": "internal",
+    "note": "the coalescing window and invoke-budget governor inside the subsystem; the caller-visible behaviour is on game-models/coalescing"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::EnrollDerivedComponentContainers",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetBoundContainerIds",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetBulkStateCallCount",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetBulkStateRowCount",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetRecentInvokeCount",
+    "reason": "internal",
+    "note": "the coalescing window and invoke-budget governor inside the subsystem; the caller-visible behaviour is on game-models/coalescing"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetSubParticipants",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::HandleModelChangedByContainer",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::InvokeAndApply",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::IsBudgetRefusal",
+    "reason": "internal",
+    "note": "the coalescing window and invoke-budget governor inside the subsystem; the caller-visible behaviour is on game-models/coalescing"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::IsCoalescingAvailable",
+    "reason": "internal",
+    "note": "the coalescing window and invoke-budget governor inside the subsystem; the caller-visible behaviour is on game-models/coalescing"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::IsContainerTypeAppScoped",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::IsCurrentWorldForGameInstance",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::IsLocalUsersTurn",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::MakeHintFromPing",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::MarkSelfActed",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::NotifyModelChanged",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ParseLeftReason",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ParseParticipantState",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ParseSessionAdmission",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ParseSessionEndReason",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ParseSessionEventKind",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ParseSessionPresence",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ParseSessionSeedState",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ParseSessionStatus",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::PullContainerState",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::PullContainerStateRows",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::PullContainerStates",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ReplayCachedContainerStateToSubscriber",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ResolveBudgetRetryDelaySeconds",
+    "reason": "internal",
+    "note": "the coalescing window and invoke-budget governor inside the subsystem; the caller-visible behaviour is on game-models/coalescing"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ResolveContainerSessionId",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ResolveHostTerm",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ResolveLeaveIncarnation",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ResolveLive",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ResolveOrCreateContainer",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ResolvePendingRetryDelaySeconds",
+    "reason": "internal",
+    "note": "the backoff for re-driving the container resolve of an unbound entity, public for headless tests"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ResolveTargetNetID",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::SessionAdmissionWord",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::SessionPresenceWord",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::SessionSeedStateWord",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::SetLastModelError",
+    "reason": "internal",
+    "note": "the notification decode and apply path every carrier funnels into; documented as behaviour on game-models/change-pings-and-pull, not callable API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ShouldPullOnBindForClass",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::StretchCoalesceWindowSeconds",
+    "reason": "internal",
+    "note": "the coalescing window and invoke-budget governor inside the subsystem; the caller-visible behaviour is on game-models/coalescing"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ToBpParticipant",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ToBpSession",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ToBpSessionEvent",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ToBpSnapshot",
+    "reason": "internal",
+    "note": "server-word parsing and Blueprint-struct mapping at the session facade edge, public for headless tests; the Blueprint helpers on game-models/sessions are the API"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::TryGetCachedOwnerUserId",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::TryGetCachedValueJson",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::TryGetContainerId",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::TryGetContainerTypeForContainerId",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::TryGetContainerValueJson",
+    "reason": "internal",
+    "note": "the bind, cache, and bulk-resolve engine room behind the UCrowdyModel and UCrowdyGameModel libraries; its behaviour is on containers-and-attributes, ensured-identity, and pre-seeding"
+  },
+  {
+    "id": "UCrowdyGatherNodeAction::BuildGatherParams",
+    "reason": "internal",
+    "note": "the kit action's own parameter builder or row parser, public for headless tests; the node is the API"
+  },
+  {
+    "id": "UCrowdyGetCombatantStateAction::ParseCombatantState",
+    "reason": "internal",
+    "note": "the kit action's own parameter builder or row parser, public for headless tests; the node is the API"
+  },
+  {
+    "id": "UCrowdyGetLeaderboardAction::ParseLeaderboardEntry",
+    "reason": "internal",
+    "note": "the kit action's own parameter builder or row parser, public for headless tests; the node is the API"
+  },
+  {
+    "id": "UCrowdyGetLeaderboardAction::RankEntries",
+    "reason": "internal",
+    "note": "the kit action's own parameter builder or row parser, public for headless tests; the node is the API"
+  },
+  {
+    "id": "UCrowdyGetWorldStateAction::ParseWorldState",
+    "reason": "internal",
+    "note": "the kit action's own parameter builder or row parser, public for headless tests; the node is the API"
+  },
+  {
+    "id": "UCrowdyGuildPreset::TEXT",
+    "reason": "internal",
+    "note": "the layer preset's display-name virtual and a macro-use artifact of the header scan"
+  },
+  {
+    "id": "UCrowdyHarvestCropAction::BuildHarvestParams",
+    "reason": "internal",
+    "note": "the kit action's own parameter builder or row parser, public for headless tests; the node is the API"
+  },
+  {
+    "id": "UCrowdyKitLayerPreset::GetLayerDisplayName",
+    "reason": "internal",
+    "note": "the layer preset's display-name virtual and a macro-use artifact of the header scan"
+  },
+  {
+    "id": "UCrowdyListCropsAction::ParseCrop",
+    "reason": "internal",
+    "note": "the kit action's own parameter builder or row parser, public for headless tests; the node is the API"
+  },
+  {
+    "id": "UCrowdyListResourceNodesAction::ParseResourceNode",
+    "reason": "internal",
+    "note": "the kit action's own parameter builder or row parser, public for headless tests; the node is the API"
+  },
+  {
+    "id": "UCrowdyModelValue::AsDouble",
+    "reason": "internal",
+    "note": "C++-only double-precision overload of As Float, for a PC_Double pin; not on the palette by design"
+  },
+  {
+    "id": "UCrowdySubmitScoreAction::BuildSubmitScoreParams",
+    "reason": "internal",
+    "note": "the kit action's own parameter builder or row parser, public for headless tests; the node is the API"
+  },
+  {
+    "id": "UCrowdySyncCombatantAction::BuildSyncParams",
+    "reason": "internal",
+    "note": "the kit action's own parameter builder or row parser, public for headless tests; the node is the API"
+  },
+  {
+    "id": "CrowdyContainerMarker::FindExtension",
+    "reason": "editor",
+    "note": "the Blueprint editor extension behind the Game Model Class toggle and Container Type field; editor process only"
+  },
+  {
+    "id": "CrowdyContainerMarker::GetPullModelOnStart",
+    "reason": "editor",
+    "note": "the Blueprint editor extension behind the Game Model Class toggle and Container Type field; editor process only"
+  },
+  {
+    "id": "CrowdyContainerMarker::IsGameModelContainerClass",
+    "reason": "editor",
+    "note": "the Blueprint editor extension behind the Game Model Class toggle and Container Type field; editor process only"
+  },
+  {
+    "id": "CrowdyContainerMarker::IsMarkedContainer",
+    "reason": "editor",
+    "note": "the Blueprint editor extension behind the Game Model Class toggle and Container Type field; editor process only"
+  },
+  {
+    "id": "CrowdyContainerMarker::ResolveContainerTypeName",
+    "reason": "editor",
+    "note": "the Blueprint editor extension behind the Game Model Class toggle and Container Type field; editor process only"
+  },
+  {
+    "id": "CrowdyContainerMarker::ResolvePullOnStartStamp",
+    "reason": "editor",
+    "note": "the Blueprint editor extension behind the Game Model Class toggle and Container Type field; editor process only"
+  },
+  {
+    "id": "CrowdyContainerMarker::ResolveTypeName",
+    "reason": "editor",
+    "note": "the Blueprint editor extension behind the Game Model Class toggle and Container Type field; editor process only"
+  },
+  {
+    "id": "CrowdyContainerMarker::SetAuthoredTypeName",
+    "reason": "editor",
+    "note": "the Blueprint editor extension behind the Game Model Class toggle and Container Type field; editor process only"
+  },
+  {
+    "id": "CrowdyContainerMarker::SetMarked",
+    "reason": "editor",
+    "note": "the Blueprint editor extension behind the Game Model Class toggle and Container Type field; editor process only"
+  },
+  {
+    "id": "CrowdyContainerMarker::SetPullModelOnStart",
+    "reason": "editor",
+    "note": "the Blueprint editor extension behind the Game Model Class toggle and Container Type field; editor process only"
+  },
+  {
+    "id": "CrowdyContainerMarker::ShouldStampPullOnStartOff",
+    "reason": "editor",
+    "note": "the Blueprint editor extension behind the Game Model Class toggle and Container Type field; editor process only"
+  },
+  {
+    "id": "UCrowdyAuthentication::InjectDependencies",
+    "reason": "internal",
+    "note": "the sign-in pipeline's own plumbing: dependency injection at startup, the reactive TOKEN_EXPIRED re-mint, and the mint payload shape"
+  },
+  {
+    "id": "UCrowdyAuthentication::RecoverExpiredAppToken",
+    "reason": "internal",
+    "note": "the sign-in pipeline's own plumbing: dependency injection at startup, the reactive TOKEN_EXPIRED re-mint, and the mint payload shape"
+  },
+  {
+    "id": "FCrowdyContainerManifestScan::ManifestPackageNameForMap",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerManifestScan::RowsMatch",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerManifestScan::SaveManifest",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerManifestScan::ScanActor",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerManifestScan::ScanWorld",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerScan::BuildContainerScanPlan",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerScan::IsPathUnderAnyRoot",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerScan::PartitionScannedAssets",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerScan::ResolveScannedRoots",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerScanPlan::Describe",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "FCrowdyContainerScanPlan::DescribeStatus",
+    "reason": "editor",
+    "note": "the editor-side manifest scan behind Studio's Scan open map and the CrowdyContainerManifest commandlet; editor process only"
+  },
+  {
+    "id": "UCrowdyGameSession::GetCurrentGameSessionInfo",
+    "reason": "internal",
+    "note": "returns the connection-state struct whose fields include both tokens; the four scalar accessors are the read surface"
+  },
+  {
+    "id": "FGameSessionInfo",
+    "reason": "internal",
+    "note": "the SDK's connection-state struct; carries both tokens, so a game never breaks it into a widget or a log"
+  },
+  {
+    "id": "CrowdyKitDeployLayers",
+    "reason": "internal",
+    "note": "Studio's kit deploy seam; takes an admin token, so a game deploys a kit from Studio, never from game code"
+  },
+  {
+    "id": "CrowdyKitPreviewLayers",
+    "reason": "internal",
+    "note": "Studio's kit deploy seam; the preview behind the Deploy Kit card"
+  },
+  {
+    "id": "CrowdyKitDeployedNames",
+    "reason": "internal",
+    "note": "Studio's kit deploy seam; the name list the schema sync uses to protect a deployed kit"
+  },
+  {
+    "id": "FCrowdyKitDeployOutcome",
+    "reason": "internal",
+    "note": "Studio's kit deploy seam; the completion shape of CrowdyKitDeployLayers"
+  },
+  {
+    "id": "FCrowdyKitPreview",
+    "reason": "internal",
+    "note": "Studio's kit deploy seam; the counts CrowdyKitPreviewLayers answers"
+  },
+  {
+    "id": "UCrowdyContainerManifest::FindDuplicateRows",
+    "reason": "editor",
+    "note": "the manifest asset's duplicate-key check behind its editor data validation; a reader sees the validation error, not the call"
   }
 ]

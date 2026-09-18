@@ -13,8 +13,8 @@ The consumer facing classes you use most, with the module they live in and where
 
 | Class | Module | What it is for |
 | --- | --- | --- |
-| `UCrowdySDKSubsystem` | CrowdySDK | Sign-in, UDP connection, and voice. Sign-in returns the identity **session** token; the UDP connection uses an **app-scoped** token minted after sign-in. A `UGameInstanceSubsystem`. See [authentication](/unreal-sdk/runtime/authentication) and [voice](/unreal-sdk/services/voice-chat). |
-| `UCrowdyAuthentication` | CrowdyServices | Owns sign-in (email + password, magic link, social), the app-scoped token mint/refresh lifecycle, and encrypted session persistence (`RestoreSession`/`ClearSavedSession`/`HasSavedSession`). A `UGameInstanceSubsystem`. See [authentication](/unreal-sdk/runtime/authentication). |
+| `UCrowdySDKSubsystem` | CrowdySDK | Sign-in, UDP connection, and voice. Sign-in returns the identity **session** token; the UDP connection uses an **app-scoped** token minted after sign-in. A `UGameInstanceSubsystem`. See [authentication](../services/authentication.md) and [voice](/unreal-sdk/services/voice-chat). |
+| `UCrowdyAuthentication` | CrowdyServices | Owns sign-in (email + password, magic link, social), the app-scoped token mint/refresh lifecycle, and encrypted session persistence (`RestoreSession`/`ClearSavedSession`/`HasSavedSession`). A `UGameInstanceSubsystem`. See [authentication](../services/authentication.md). |
 | `UCrowdyEntityComponent` | CrowdyReplication | Turns an actor into an entity. Identity, ownership, mode, lifecycle. Also the entry point for `MarkStateDirty`/`MarkAllStateDirty`. See [entities](/unreal-sdk/runtime/entities-and-spawning). |
 | `ICrowdyEntityComponentProvider` | CrowdyReplication | Optional interface an actor implements (in C++ or Blueprint) so `GetCrowdyEntityComponent` can find its entity component when `FindComponentByClass` would not. See [host authority](/unreal-sdk/runtime/host-authority). |
 | `UActorUpdateExecutor` | CrowdyReplication | The per entity snapshot hook for Dynamic state. See [continuous state](/unreal-sdk/runtime/continuous-state). |

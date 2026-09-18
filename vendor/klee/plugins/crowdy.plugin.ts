@@ -31,6 +31,7 @@ const ENGINE_FUNCTION_NAMES: { [memberName: string]: string } = {
     "Conv_VectorToString": "To String (Vector)",
     "Conv_StringToText": "To Text (String)",
     "GetTransform": "Get Actor Transform",
+    "RemoveFromParent": "Remove from Parent",
 };
 
 const CROWDY_NODE_TITLES: { [classPath: string]: string } = {
@@ -183,6 +184,19 @@ class CrowdyAddDelegateParser extends NodeParser {
     }
 }
 
+// Make Map: upstream Klee knows Make Array but not its map sibling; the editor titles it "Make Map".
+class CrowdyMakeMapParser extends NodeParser {
+    constructor() {
+        super({});
+    }
+
+    public parse(data: ParsingNodeData): NodeControl {
+        data.node.title = "Make Map";
+        data.node.backgroundColor = Constants.DEFAULT_FUNC_PURE_BACKGROUND_COLOR;
+        return new HeadedNodeControl(data.node, IconLibrary.MAKE_ARRAY);
+    }
+}
+
 class CrowdyEffectNodeParser extends NodeParser {
     constructor() {
         super({});
@@ -204,6 +218,7 @@ export const CrowdyPlugin: NodeParserPlugin = {
             "/Script/BlueprintGraph.K2Node_CustomEvent": () => new CrowdyCustomEventParser(),
             "/Script/BlueprintGraph.K2Node_GetSubsystem": () => new CrowdyGetSubsystemParser(),
             "/Script/BlueprintGraph.K2Node_AddDelegate": () => new CrowdyAddDelegateParser(),
+            "/Script/BlueprintGraph.K2Node_MakeMap": () => new CrowdyMakeMapParser(),
         };
         for (const classPath of ASYNC_NODE_CLASSES) {
             parsers[classPath] = () => new CrowdyAsyncActionParser();

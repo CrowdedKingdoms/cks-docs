@@ -62,7 +62,7 @@ Create a Blueprint with **Game Instance** as its parent class and make it the pr
 </TabItem>
 </Tabs>
 
-**Success signal.** The log reports `Login ok`, then `Connected to the app` (the two handlers in the C++ block; in Blueprint, bind **On UDP Connection Success** on the Crowdy SDK Subsystem for the second moment). From then on `Get UDP Connection State` on the subsystem reads connected. See [Authentication](./runtime/authentication.md) for the sign-in link and provider flows.
+**Success signal.** The log reports `Login ok`, then `Connected to the app` (the two handlers in the C++ block; in Blueprint, bind **On UDP Connection Success** on the Crowdy SDK Subsystem for the second moment). From then on `Get UDP Connection State` on the subsystem reads connected. See [Authentication](./services/authentication.md) for the sign-in link and provider flows.
 
 :::caution[A test account belongs in a config file or a pin default, never in shipped code.]
 :::

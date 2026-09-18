@@ -8,7 +8,7 @@ class ULanternFuel : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadOnly, Category = "Game Model", meta = (CrowdyModel, CrowdyKey = "fuel", CrowdyOnRep = "OnRep_Fuel"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game Model", meta = (CrowdyModel, CrowdyKey = "fuel", CrowdyOnRep = "OnRep_Fuel", ClampMin = "0", ClampMax = "100"))
 	float Fuel = 100.f;
 
 	UFUNCTION()
