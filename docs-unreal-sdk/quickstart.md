@@ -18,15 +18,15 @@ Two words you will meet on every step. An **entity** is an actor other players c
 
 1. [Install the plugin](./installation.md) and confirm your project compiles.
 2. Open Crowdy Studio, [sign in](./studio/sign-in.md), pick your app on the Project page, and press **Sync to project** on its Configuration tab. See [Config Sync](./studio/config-sync.md).
-3. Give your test map a [map profile](./runtime/map-profile.md): create a `UCrowdyMapProfile` asset with **Enable Networking** on, and assign it to the map under **Project Settings, Plugins, Crowdy SDK, Map Profiles**.
+3. Optional: give your test map a [map profile](./runtime/map-profile.md) of its own. Without one it runs on the SDK's shipped default, which is enough for this page.
 
 ![The Project page's Configuration tab, with the diff and the Sync to project button](/img/unreal-sdk/qs-config-sync.png)
 
 :::caution[If you skip the sync, the SDK has no app id or Game API URLs to connect with, and nothing replicates.]
 :::
 
-:::warning[Every playable map still needs a map profile.]
-Config Sync points the project at an app. It does not activate the SDK on a map. Without a profile the entity subsystem does nothing on that map, and every step below looks dead even though the connection is fine.
+:::note[A map with no profile of its own runs on the SDK's shipped default.]
+Config Sync points the project at an app; a map profile decides what the SDK does on a map. With none assigned, the shipped default applies (networking on, the actor pool drawing remote entities with the shipped transform policy), so every step below works without authoring one. Author a profile when you need per-map settings; see [Map profiles](./runtime/map-profile.md).
 :::
 
 ## About the code on this page

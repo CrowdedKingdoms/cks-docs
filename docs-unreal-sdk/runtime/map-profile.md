@@ -22,7 +22,7 @@ In the Content Browser, **Add**, **Miscellaneous**, **Data Asset**, pick **Crowd
 
 ![The shipped default map profile asset in the Details panel](/img/unreal-sdk/map-profile-asset.png)
 
-The screenshot is the SDK's own shipped default profile. Note that **Backend Config** is empty on it; the section below explains why that matters.
+The screenshot is the SDK's own shipped default profile. **Backend Config** is empty on it, which is fine: the actor pool runs on a built-in config when none is set.
 
 | Field | Default | What it controls |
 |---|---|---|
@@ -37,8 +37,8 @@ The screenshot is the SDK's own shipped default profile. Note that **Backend Con
 | `StateRelevanceDistance` | Four Chunks | Shown as **State Relevance Distance**. How far a Crowdy State delta travels, as a chunk count (`ECrowdyReplicationDistance`), tighter than the continuous channel. |
 | `StateKeyframeIntervalSeconds` | 2.0 | Period of the Crowdy State keyframe, the full re-send of every property marked `CrowdyHeartbeat`. 0 turns the keyframe off map-wide; on-change replication is unaffected. |
 
-:::warning[A backend class is not a backend config. The shipped default profile names one and sets no config, so the actor pool refuses to start on it.]
-`ActorManagement.BackendClass` defaults to `UCrowdyActorPoolBackend`, and that backend needs `ActorManagement.BackendConfig` set to an **Actor Pool Backend Config** with a `ReplicationPolicyClass`. On the shipped asset the config is empty, so `InitializeBackend` logs a warning and returns false, the actor manager refuses the backend, and remote entities that arrive as continuous-state updates are tracked but never drawn. Entities announced by a spawn event still get their proxy actor, and Crowdy State still applies to level-placed and spawned actors; what is missing is the pooled proxy for Dynamic-mode movement. Author your own profile with a config before you rely on movement from another client. See [Rendering backends](./rendering-backends.md).
+:::note[An empty Backend Config means the built-in default, not a disabled backend.]
+`ActorManagement.BackendClass` defaults to `UCrowdyActorPoolBackend`. With `ActorManagement.BackendConfig` left empty, the backend creates a transient **Actor Pool Backend Config** and applies remote movement with `UCrowdyTransformRepPolicy`, the shipped policy that reads the default executor's `FCrowdyActorState` (location and rotation) and interpolates between samples. Set a config of your own when your executor sends a state struct of its own, when you want pool sizes per class, or when you want a different pool policy. A config of another backend's class is still refused with a warning naming the field. See [Rendering backends](./rendering-backends.md).
 :::
 
 ## Assign the profile

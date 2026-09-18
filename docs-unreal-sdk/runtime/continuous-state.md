@@ -105,7 +105,7 @@ A `CrowdyState` property whose name and canonical type also match a field of the
 
 - `Mode` is orthogonal to `Ownership` and to Crowdy State. Do not set Dynamic hoping to make properties replicate; they already do.
 - `_Implementation`, `const`, `override`. The shipped default is the template.
-- The snapshot is applied through the backend, so a refused backend means tracked-but-not-drawn movement; the log says so at map load.
+- The snapshot is applied through the backend's policy. With no Backend Config the shipped `UCrowdyTransformRepPolicy` applies `FCrowdyActorState`; a custom struct like `FLanternPlayerState` is skipped until the profile names a policy that reads it, so the proxy stands still while the owner moves.
 - `GetActorState` is the owner's function. A proxy that needs a value from the snapshot gets it from the backend's policy, not by calling the executor.
 - `RegisterStateClass` on `UCrowdyActorManager` is filled for you at `BeginPlay`; you never call it.
 
