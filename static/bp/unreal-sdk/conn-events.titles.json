@@ -1,0 +1,32 @@
+[
+	{
+		"name": "K2Node_Event_0",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event Init",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_GetSubsystem_0",
+		"class": "/Script/BlueprintGraph.K2Node_GetSubsystem",
+		"title": "Crowdy Connection Monitor",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Init Connection Monitor\nTarget is Crowdy Connection Monitor",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AddDelegate_0",
+		"class": "/Script/BlueprintGraph.K2Node_AddDelegate",
+		"title": "Bind Event to On Connection State Changed",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnReconnectState\nCustom Event",
+		"title_drawn": true
+	}
+]

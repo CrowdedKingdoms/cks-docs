@@ -1,195 +1,100 @@
 ---
 slug: replicated-subsystems
-sidebar_position: 12
+sidebar_position: 13
 title: Replicated Subsystems
+description: Give a world or game-instance subsystem Crowdy State properties and CrowdyEvent functions by inheriting one of two bases, the enrollment order that must hold, and the two things a subsystem cannot do that an actor can.
 ---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # Replicated Subsystems
 
-A UE Subsystem can take part in CrowdySDK's view planes the same way an entity actor does, without ever becoming an actor. Mark a `CrowdyState` property on it and the value diffs and replicates; declare a `CrowdyEvent` on it and the call rides the reliable channel to every peer.
+A UE subsystem is not an actor, but it can take part in both view-plane mechanisms: `meta=(CrowdyState)` properties diff and replicate on it exactly as on an actor, and `meta=(CrowdyEvent)` functions ride the reliable channel. Two abstract bases do the enrollment; a function library exists for the cases they do not cover.
 
-This is the path for session-wide singleton state that has no natural home on any one actor: a shared match clock, a round phase, a world weather setting, a global toggle every client should see.
+## When to use one
 
-## What this is, and is not
+For a world-level value that belongs to nobody in particular and every client should agree on: a village clock, a weather phase, a match state on the view plane. A subsystem is host-owned, a singleton every client resolves by class path with no handshake, so it is the natural home for "the one of these".
 
-Replicated subsystems ride the exact same **view plane** as [Crowdy State](/unreal-sdk/runtime/crowdy-state) and [CrowdyEvents](/unreal-sdk/runtime/rpc-events-cpp). Nothing here is new netcode. It is the same two planes, pointed at a `UObject` that happens to be a subsystem instead of an actor.
-
-That means the same rule decides what belongs here.
-
-:::warning[This is the client-authoritative view plane. Host precedence is a convention, not enforcement, and there is no server checking any of it. A modified client can lie. Authoritative or cheat-sensitive state, anything a cheater changing it would matter for, or anything that must survive a reconnect, belongs on the separate server-authoritative path (not yet documented), never on a replicated subsystem.]
+:::danger[Host-owned only, on the view plane. A replicated subsystem is not where a score lives.]
+Host precedence is a convention here as everywhere on this plane. A match score, a winner, anything a client could gain by lying about, is a [Game Model](../game-models/overview.md); a subsystem is for the shared cosmetic state around it.
 :::
 
-Use a replicated subsystem for shared, view-only session state: a phase label, a cosmetic world setting, a countdown a late joiner should see roughly right. Keep the score, the match result, and the economy on the server-authoritative path instead.
+## Inherit a base
 
-## Host-owned only
+| Base | Extends | Enrolls |
+|---|---|---|
+| `UCrowdyReplicatedWorldSubsystem` | `UWorldSubsystem` | Once, in its own `Initialize`; unenrolls in `Deinitialize`. Created only in Play in Editor and game worlds. |
+| `UCrowdyReplicatedGameInstanceSubsystem` | `UGameInstanceSubsystem` | Per world: into each new world's registry when that world's actors are initialized, out again as the world is cleaned up. It outlives worlds, and the entity registry it enrolls into is per world. |
 
-A subsystem is a singleton. There is exactly one instance per client, and no per-player copy for peers to hold as a proxy. So the only ownership model that makes sense is **host-owned**: the elected host drives the subsystem's state, and every other client holds it as a read-only proxy fed from the host.
+Both have one protected hook, `GetReplicatedOwnership()`, which returns `ECrowdyOwnership::Host` and is the only supported answer for a singleton: a per-owner proxy makes no sense for a class every client holds exactly once.
 
-That is the supported scope, and it is the default. You do not pick an owner; enrollment defaults to `ECrowdyOwnership::Host`. The client-owned-observed-by-peers model an actor entity uses does not apply to a singleton and is not supported here. Per-player state stays on actors.
+The lantern village's night clock is a world subsystem: `ULanternNightSubsystem` holds one Crowdy State property, `NightPhase`, marked `CrowdyHeartbeat` so a late joiner converges, with a notify, `OnRep_NightPhase`, that sets every lantern's intensity from the phase, one CrowdyEvent, `AnnounceDawn`, a Multicast that resets the phase on every client, and a `BlueprintCallable`, `AdvanceNight`, the host calls to step it.
 
-Because the host drives it, the [host convention](/unreal-sdk/runtime/host-authority) is what decides whose writes count:
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
 
-- On the host, the subsystem's `CrowdyState` diffs and its `CrowdyEvent` sends go out.
-- On every other client, the subsystem is a read-only proxy. It applies what the host sends and does not emit on its own.
+<CppSnippet id="subsys-world" />
 
-Host election is followed for you. If the host changes mid-session, the client that becomes host starts driving the subsystem and the client that loses the role stops. No replicated subsystem ends up with two writers, and none ends up with zero.
+The game-instance twin is `ULanternCalendarSubsystem` on the other base: a `DayCount` declared the same way, which survives travel between village levels and needs no override of `Initialize` at all. The block is the declaration only; a notify and a caller are yours to add:
 
-## Make a subsystem replicate
+<CppSnippet id="subsys-gi" />
 
-There are three ways in, from most to least ergonomic. They all reduce to the same two registry calls; pick the one that fits how much you control the subsystem's class.
+</TabItem>
+<TabItem value="bp" label="Blueprint">
 
-:::note[There is no single templated base like `TCrowdyReplicated<T>`, because UHT cannot reflect a class template. Every UCLASS has to be one concrete type, so the surface is instead a function library plus two concrete abstract bases, one per subsystem scope. The base you inherit still funnels through the same library calls.]
+A replicated subsystem is defined in C++; a Blueprint may not subclass one. Once the class exists, its Blueprint surface appears by itself: a **Get Lantern Night Subsystem** getter node (the editor offers one for every `BlueprintType` world or game-instance subsystem), and off it every `BlueprintCallable` and `BlueprintPure` the class declares, `Advance Night` here. A `CrowdyState` property with `BlueprintReadWrite` is readable the same way. There is no pasted graph on this page because a graph would name your class, not one the site can ship; the shape is Event BeginPlay, the getter, the call, behind a **Crowdy Has Authority** branch (the [host-gate figure](./host-authority.md#checking-authority)), since only the host's write to a host-owned subsystem ships.
+
+</TabItem>
+</Tabs>
+
+:::warning[If you override Initialize or Deinitialize, call Super. Enrollment lives inside the base's override.]
+There is no separate hook and no runtime check. A subclass that overrides `Initialize` without calling `Super::Initialize` is never enrolled, and nothing it replicates ever leaves the machine.
 :::
 
-### Inherit a replicated base (recommended)
-
-Two abstract base classes handle the whole enroll and unenroll lifecycle, including the fiddly per-world part for game-instance subsystems. Inherit the one that matches your subsystem's scope:
-
-- `UCrowdyReplicatedWorldSubsystem` for a `UWorldSubsystem`.
-- `UCrowdyReplicatedGameInstanceSubsystem` for a `UGameInstanceSubsystem`.
-
-```cpp
-#include "Replication/Subsystems/CrowdyReplicatedSubsystem.h"
-
-UCLASS()
-class UMatchClockSubsystem : public UCrowdyReplicatedWorldSubsystem
-{
-    GENERATED_BODY()
-
-public:
-    UPROPERTY(meta = (CrowdyState, CrowdyHeartbeat, CrowdyOnRep = "OnRep_Phase"))
-    uint8 RoundPhase = 0;
-
-    UFUNCTION()
-    void OnRep_Phase();
-};
-```
-
-That is the entire setup. The base enrolls the subsystem when it initializes and unenrolls when it deinitializes. `RoundPhase` diffs and replicates from the host to every peer, and `OnRep_Phase` fires on the receivers.
-
-:::warning[If you override `Initialize` or `Deinitialize` on your subclass, you must call `Super::Initialize(Collection)` and `Super::Deinitialize()`. Enrollment happens inside the base's overrides; skip the `Super` call and the subsystem is never enrolled and never replicates.]
+:::danger[A world subsystem must null-check GetGameInstance() in Initialize.]
+Any further work you add to `Initialize` after `Super::Initialize` runs on a transient game world the engine creates at startup, whose game instance is set only after the world exists. `GetGameInstance()` returns null there, and reaching through it crashes with an access violation on launch that Play in Editor never reproduces. The SDK's own world subsystems guard for it; so must yours.
 :::
 
-The base exposes one hook, `GetReplicatedOwnership()`, which returns `ECrowdyOwnership::Host`. Host is the supported mode for a subsystem, so leave it as it is.
+**Success signal.** On the host, call `AdvanceNight` and every client's `OnRep_NightPhase` runs at the next tick; `crowdy.state.trace 1` logs the delta. `AnnounceDawn` shows up in `crowdy.rpc.trace 1` as a reliable send over the session channel.
 
-### Call the library nodes (when you cannot re-parent)
+## What a subsystem cannot do
 
-If you do not own the subsystem's base class, or you are wiring this from Blueprint, enroll it explicitly with the function-library nodes under **Crowdy SDK | Subsystem Replication**:
+Two consequences of having no actor.
 
-```cpp
-#include "Replication/Subsystems/CrowdyReplicatedSubsystemLibrary.h"
-
-// In your subsystem's Initialize, after Super:
-UCrowdyReplicatedSubsystemLibrary::RegisterReplicatedSubsystem(this, ECrowdyOwnership::Host);
-
-// In Deinitialize, before Super:
-UCrowdyReplicatedSubsystemLibrary::UnregisterReplicatedSubsystem(this);
-```
-
-Both nodes default the `Subsystem` argument to `self`, so from the subsystem's own graph you can leave that pin unconnected. When you take this route, you own the lifecycle: pair every register with an unregister.
-
-:::caution[The library nodes resolve the world from the subsystem you pass in. That is unambiguous for a `UWorldSubsystem`, but a `UGameInstanceSubsystem` outlives worlds and has no single world of its own, so a node called once cannot do per-world re-enrollment for it. For a game-instance subsystem, prefer `UCrowdyReplicatedGameInstanceSubsystem`, which re-enrolls into each world for you (see below). Calling `RegisterReplicatedSubsystem` on a world with no CrowdySDK entity subsystem, such as an editor or preview world, is a harmless no-op with a warning, never a crash.]
+:::warning[Every CrowdyEvent on a subsystem needs an explicit CrowdyRecipient of Multicast or Host.]
+The default recipient, `SpatialMulticast`, needs a world position to send from. A subsystem has none, so the send is rejected with `uses SpatialMulticast, which has no location; set CrowdyRecipient=Multicast or Host. Dropping.` `OwningClient` also works, delivered over the channel and gated on receipt, but on a host-owned singleton the owner is the host, so `Host` says what you mean.
 :::
 
-### The two-line manual pattern (under the hood)
+- A `CrowdyOwnerOnly` property never transmits on a subsystem: the targeted path addresses an actor's owner, and a host-owned singleton has none. The replicator logs `is non-spatial; owner-only propert(ies) not emitted` once and moves on.
+- There is no spawn event and no `InitialState`. A subsystem's first values on a late joiner come from its class defaults and then the keyframe, which is why `CrowdyHeartbeat` belongs on every property a newcomer must see.
 
-Both paths above call the same two functions on `UCrowdyEntitySubsystem`. You can call them directly:
+## The library, for cases the bases do not cover
 
-```cpp
-// Enroll (host-owned): mints this subsystem's deterministic NetID and starts tracking it.
-GetWorld()->GetSubsystem<UCrowdyEntitySubsystem>()->RegisterParticipant(this, ECrowdyOwnership::Host);
+`UCrowdyReplicatedSubsystemLibrary` is what the bases call. **Register Replicated Subsystem** (`RegisterReplicatedSubsystem(Subsystem, Ownership)`, `Subsystem` defaults to self) resolves the entity subsystem from the caller's world and enrolls it, returning the participant's NetID or an invalid `FGuid` on failure; **Unregister Replicated Subsystem** reverses it. In a world with no entity subsystem, which is any editor world, unregister is silent and register logs a warning and enrolls nothing.
 
-// Unenroll:
-GetWorld()->GetSubsystem<UCrowdyEntitySubsystem>()->UnregisterParticipant(this);
-```
-
-This is what the base classes and the library nodes reduce to. Reach for it only when you already hold a pointer to a specific entity subsystem you want to enroll into; otherwise the base class is less to get wrong.
-
-:::caution[If you hand-roll enrollment from a world subsystem's own `Initialize`, force both dependencies to initialize before you enroll:]
-
-```cpp
-Collection.InitializeDependency(UCrowdyEntitySubsystem::StaticClass());
-Collection.InitializeDependency(UCrowdyStateReplicator::StaticClass());
-```
-
-The state replicator binds its entity-registration listener in its own `Initialize`. Enroll before that runs and the registration fires into the void, so the subsystem is never tracked and never replicates, with no later rescan to recover it. Depending on the entity subsystem alone is not enough; it does not pull the replicator in. `UCrowdyReplicatedWorldSubsystem` already does both for you, which is why it is the safer path.
+:::caution[Do not call Register Replicated Subsystem from a game-instance subsystem.]
+Its world is the ambiguous "current" world. Inherit `UCrowdyReplicatedGameInstanceSubsystem`, which enrolls per world, instead.
 :::
 
-## World versus game instance: the lifecycle difference
+Underneath both is the two-call pattern on `UCrowdyEntitySubsystem`, `RegisterParticipant(Participant, Ownership)` and `UnregisterParticipant(Participant)`, which any `UObject` may use. If you write it by hand in a world subsystem's `Initialize`, the order below is not optional.
 
-The CrowdySDK entity subsystem is a **world** subsystem: it is created with a world and dies with it. That is the whole reason the two base classes differ.
-
-- A `UWorldSubsystem` shares that lifetime exactly. It enrolls once when it initializes and unenrolls when it deinitializes, and there is nothing more to do. `UCrowdyReplicatedWorldSubsystem` does exactly that.
-- A `UGameInstanceSubsystem` **outlives worlds**. One instance spans every level you travel through, while a fresh entity subsystem is created for each world. So it must re-enroll into every new world and unenroll as each world tears down. `UCrowdyReplicatedGameInstanceSubsystem` binds the engine's per-world init and cleanup events and does this for you, filtering to only the worlds owned by its own game instance.
-
-You do not wire any of that if you inherit the matching base. It matters only if you hand-roll enrollment for a game-instance subsystem, in which case you own the per-world bracket yourself.
-
-:::note[Identity needs no handshake. A host-owned subsystem's NetID is derived deterministically from its class path, so every client computes the same id for the same subsystem with no negotiation. That is what lets the host's deltas address the right proxy on every peer the moment they enroll.]
+:::warning[Initialize both dependencies before enrolling: the entity subsystem, then the state replicator.]
+`Collection.InitializeDependency(UCrowdyEntitySubsystem::StaticClass())` and then `Collection.InitializeDependency(UCrowdyStateReplicator::StaticClass())`, before the register call. The replicator binds the registration event in its own `Initialize`; enroll first and the broadcast fires before anyone is listening, the subsystem is never tracked, and no later rescan recovers it. Depending on the entity subsystem alone does not pull the replicator in.
 :::
 
-## What replicates
+## Gotchas
 
-### Crowdy State properties
-
-Every rule from [Crowdy State](/unreal-sdk/runtime/crowdy-state) applies: mark a `UPROPERTY` with `meta=(CrowdyState)` (see the [state metadata keys](/unreal-sdk/reference/state-meta-keys) reference), and the host diffs it each replication tick and ships only what changed. `CrowdyOnRep`, quantized struct types, and the `LayoutHash` guard all behave exactly as they do on an actor. Two differences are worth calling out for a singleton:
-
-- **`CrowdyOwnerOnly` does not transmit.** Owner-only delivery targets an entity's owning client, and a host-owned singleton has no per-player owner to target, so an owner-only property on a subsystem is silently not sent. Leave subsystem properties on the default spatial (broadcast) scope.
-- **There is no spawn `InitialState`.** An actor entity can seed a late joiner from the `InitialState` it was spawned with; a subsystem is not spawned, so its only baseline for a peer that joins late is the periodic keyframe. Mark any property that must converge for a late joiner with `meta=(CrowdyHeartbeat)`, so the host re-sends it on the keyframe interval regardless of whether it changed. A property left un-marked still replicates on change; it just does not re-send a baseline on its own.
-
-### CrowdyEvents
-
-Declare a `CrowdyEvent` on the subsystem exactly as you would on an actor, with one constraint on the recipient:
-
-```cpp
-#include "Replication/RPC/CrowdyEvent.h"
-
-UFUNCTION(meta = (CrowdyEvent, CrowdyRecipient = "Multicast"))
-void AnnouncePhase_Implementation(uint8 Phase);
-CROWDY_EVENT(AnnouncePhase)
-```
-
-A subsystem has no location in the world, so a spatial recipient has nothing to reach. Use one of the non-spatial recipients:
-
-- **`Multicast`** rides the reliable [channel](/unreal-sdk/runtime/channels) to every member (the default session channel, or a named one with `CrowdyChannel`).
-- **`Host`** is delivered so that only the elected host runs it.
-
-:::caution[`SpatialMulticast`, which is also the default when you set no recipient, is **rejected** on a subsystem. A subsystem CrowdyEvent with no explicit recipient is dropped at send with an error that tells you to set `CrowdyRecipient=Multicast` or `Host`. Always name a non-spatial recipient on a subsystem event.]
-:::
-
-## Keep subsystem state small: the channel cap
-
-A subsystem's Crowdy State deltas and its CrowdyEvents both ride the reliable channel, and the channel has a hard per-message payload cap of **1024 bytes**. Unlike the spatial path, the channel does **not** fragment: a message that encodes over the cap is dropped with an error, not split across datagrams.
-
-So keep replicated subsystem state small and low-rate. A handful of scalar properties, an enum, a short string: fine. A large struct, a long string, or many properties all changing on the same tick can push a single delta over the cap and drop it. If you need to move more than that, it likely does not belong on this view plane at all; the server-authoritative path (not yet documented) is where larger, durable data lives, and it has no such cap.
-
-## Testing
-
-One caveat splits the two planes when you test a replicated subsystem:
-
-- **Subsystem CrowdyEvents work single-client.** Turn on `crowdy.rpc.loopback 1` and the event self-receives on one PIE client; a `Multicast` body also runs locally by default.
-- **Subsystem Crowdy State has no single-client loopback.** The single-client loopback used for actor Crowdy State clones the actor into a stand-in proxy, and a singleton subsystem cannot be duplicated that way, so there is nothing to receive on. To see a subsystem property replicate you need a genuine 2-client PIE session: the host edits the property and the other client's `OnRep` fires.
-
-## Debugging
-
-The traces are the same ones the two planes already use, and a subsystem participant shows up in them labelled as a channel delivery.
-
-- `crowdy.state.trace` prints one line per Crowdy State delta as it is sent and received. For a subsystem the send line is labelled `channel`, so you can tell a subsystem delta from a spatial actor delta at a glance.
-- `crowdy.rpc.trace` prints CrowdyEvent send and receive, including the `nonSpatial` flag on a subsystem send. `crowdy.rpc.reliable.trace` narrows to just the reliable-channel transport the subsystem's Multicast events ride.
-
-```text
-crowdy.state.trace 1
-crowdy.rpc.trace 1
-```
-
-:::note[Trace output is GUIDs and byte counts only. It never includes bearer tokens or other secret material, so a trace log is safe to share when reporting an issue.]
-:::
-
-For the full CVar table, see the [console variables reference](/unreal-sdk/reference/console-cvars).
+- Both bases are `Abstract`. Your concrete subclass is what the engine instantiates.
+- A subsystem's NetID is the hash of its class path. Rename the class and every client agrees on the new id at the same time, because they all run one build.
+- The world base is created only in PIE and game worlds. In an editor world it does not exist, and that is correct.
+- The game-instance base ignores worlds owned by another game instance, so two PIE clients in one process each enroll their own.
+- A subsystem's traffic shares the session channel with Game Model change pings and the two ownership-transfer events. Its reliable sends have the same 1024-byte payload cap as any [Multicast call](./rpc-events-cpp.md#containers-and-their-bounds).
 
 ## Related
 
-- [Crowdy State](/unreal-sdk/runtime/crowdy-state): the property-replication plane a subsystem's `CrowdyState` properties ride.
-- [RPC Events in C++](/unreal-sdk/runtime/rpc-events-cpp): the CrowdyEvent system a subsystem's events ride.
-- [Channels](/unreal-sdk/runtime/channels): the reliable delivery group a subsystem's Multicast events and Crowdy State deltas travel over.
-- [Host Authority](/unreal-sdk/runtime/host-authority): the convention that decides which client drives a host-owned subsystem.
-- [Classes and Subsystems](/unreal-sdk/reference/subsystems): where `UCrowdyEntitySubsystem` and the rest of the SDK's subsystems live.
+- [Crowdy State](./crowdy-state.md): the properties a subsystem replicates.
+- [RPC events in C++](./rpc-events-cpp.md): the events it declares.
+- [Recipients and routing](./recipients-and-routing.md): why the default recipient is rejected here.
+- [Channels](./channels.md): the transport a subsystem's deltas and events ride.
+- [Host authority](./host-authority.md): who drives a host-owned subsystem.

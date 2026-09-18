@@ -1,0 +1,20 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event ActorBeginOverlap",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_Self_0",
+		"class": "/Script/BlueprintGraph.K2Node_Self",
+		"title": "Self-Reference",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Request Ownership Transfer",
+		"title_drawn": true
+	}
+]

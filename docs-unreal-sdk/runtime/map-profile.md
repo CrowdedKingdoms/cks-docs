@@ -1,133 +1,104 @@
 ---
 slug: map-profile
 sidebar_position: 1
-title: Map Profile
+title: Map Profiles
+description: The data asset that switches the SDK on for a map, how the SDK finds it, what each field controls, and the one field the shipped default leaves empty.
 ---
 
-# Map Profile
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-A map profile is required setup. Every playable map needs a `UCrowdyMapProfile` assigned to it.
+# Map Profiles
 
-This page covers what a map profile is, the fields it carries, and how to create and assign one.
+A map profile is a `UCrowdyMapProfile` data asset: one asset configures one map end to end, and it is the switch that turns the SDK on there. No profile resolved means no networking on that map, however correct the code is.
 
-:::warning[Most common setup mistake]
-Without a profile, the SDK is inactive on that map. The entity subsystem, the auto replicator, and the actor manager all silently do nothing. Replication looks dead even though your code is correct.
-:::
+## When you need one
 
-## What a map profile is
-
-`UCrowdyMapProfile` is a `UDataAsset`. It tells the SDK whether to run on a map and how to manage actors there.
-
-The SDK resolves the profile for the current world through `UCrowdySDKDeveloperSettings::ResolveProfileForWorld`. If no profile resolves, the SDK stays inactive and logs a warning.
-
-### Top-level fields
-
-| Field | Type | Purpose |
-| --- | --- | --- |
-| `bEnableNetworking` | bool | Gates the SDK on the map. When false, the SDK does not run here. |
-| `ActorManagement` | `FCrowdyActorManagementConfigStruct` | Backend selection and actor tracking settings. |
-| `bUseAutoReplicator` | bool | Enables the auto replicator, which polls Dynamic entity state and sends it. |
-| `ReplicationIntervalHz` | int | Replication rate in hertz. Range 1 to 10, default 10. Shared cadence for both the auto replicator and the Crowdy State replicator. |
-| `bUseStateReplicator` | bool | Default true. Master switch for the Crowdy State per-property replicator on this map. When false, Crowdy State does not run here. |
-| `StateRelevanceDistance` | `ECrowdyReplicationDistance` | Spatial relevance radius for Crowdy State deltas, tighter than the continuous channel. Default `Four_Chunks`. |
-| `StateKeyframeIntervalSeconds` | float | How often, in seconds, `CrowdyHeartbeat`-marked properties are re-sent as a keyframe baseline. Default 2.0. Set it to 0 or below to disable the keyframe heartbeat map-wide. |
-
-### ActorManagement fields
-
-`ActorManagement` is an `FCrowdyActorManagementConfigStruct`. It carries the actor tracking and rendering backend settings.
-
-| Field | Type | Notes |
-| --- | --- | --- |
-| `bUseCrowdyActorTracker` | bool | Use the Crowdy actor tracker. |
-| `bDispatchUpdatesOnGameThread` | bool | Dispatch state updates on the game thread. |
-| `bEnableOwnerTracking` | bool | Default true. Echo the owner's own state back as a network proxy. |
-| `ActorTimeoutThreshold` | float | Time before an untracked actor is considered gone. |
-| `MaxTrackedActors` | int | Cap on tracked actors. |
-| `MaxUpdatesPerBatch` | int | Cap on updates processed per batch. |
-| `MaxBatchWaitTime` | float | Maximum time to wait while filling a batch. |
-| `BackendClass` | `TSubclassOf<UCrowdyRenderingBackend>` | The rendering backend. Defaults to `UCrowdyActorPoolBackend`. |
-| `BackendConfig` | instanced `UCrowdyRenderingBackendConfig` | Settings for the selected backend. |
-
-The Actor Pool backend uses `UCrowdyActorPoolBackendConfig` for its `BackendConfig`. That config exposes:
-
-- `ReplicationPolicyClass`
-- `PoolPolicyClass`
-- `DefaultPoolSizePerClass` (default 8)
-- `PerClassPoolOverrides`
-
-:::note[To select a different backend, see [Rendering Backends](/unreal-sdk/runtime/rendering-backends).]
-:::
-
-## Crowdy State replication
-
-Crowdy State is the fast, client-authoritative view plane for per-property replication. The map profile controls whether it runs and how often it re-baselines.
-
-- `bUseStateReplicator` gates the whole plane on the map. Leave it true for maps that use replicated variables.
-- `StateRelevanceDistance` sets how far a Crowdy State delta travels from the sender, the same chunk-based scale as `ECrowdyReplicationDistance`.
-- `StateKeyframeIntervalSeconds` is a safety net, not the mechanism. On-change replication ships a changed property every tick regardless of this value. The keyframe heartbeat only re-sends `CrowdyHeartbeat`-marked properties periodically so a late or desynced observer converges. Set it to 0 (or any value at or below 0) to turn the heartbeat off map-wide; edits still replicate on change.
-
-Per entity, `UCrowdyEntityComponent` can further set `StateHeartbeat` to `Off` to suppress the heartbeat for one entity. See [Crowdy State](/unreal-sdk/runtime/crowdy-state) for the full plane, and the [state metadata keys](/unreal-sdk/reference/state-meta-keys) reference for `CrowdyHeartbeat` and the other per-property keys.
-
-### Authoring a replicated Blueprint variable
-
-You do not need C++ to put a variable on the Crowdy State plane. Select a variable in an Actor or Actor Component Blueprint and use the "Crowdy Replication" dropdown in its Details panel:
-
-- Choose `Replicated` to replicate the variable on the Crowdy State plane. `None` removes it. A future server-authoritative mode is reserved but not selectable yet.
-- Picking `Replicated` auto-creates an `OnRep_<Variable>` RepNotify function you can fill in.
-- A `Heartbeat` toggle defaults on when you first enter `Replicated`, opting the variable into the keyframe heartbeat described above.
-- Advanced sub-options cover owner-only delivery and manual-dirty scheduling.
-- An unsupported variable type fails the Blueprint compile with a clear message rather than silently not replicating.
-- Get and Set nodes for a replicated variable show the same replication badge Unreal draws on natively replicated variables.
-
-The mode you pick maps to [`ECrowdyReplicationMode`](/unreal-sdk/reference/enums). For the full authoring walkthrough, see [Crowdy State](/unreal-sdk/runtime/crowdy-state).
+Every map that plays. The [Quickstart](../quickstart.md) creates one before its first entity. A map that should run without the SDK still gets a profile, with **Enable Networking** unticked; that records the intent and silences the "no profile" warning.
 
 ## Create the asset
 
-Create a data asset, pick the profile class, then set its fields.
+In the Content Browser, **Add**, **Miscellaneous**, **Data Asset**, pick **Crowdy Map Profile**. The Details panel shows every field of the asset:
 
-1. In the Content Browser, right-click and choose Miscellaneous, then Data Asset.
-2. Pick `CrowdyMapProfile` as the asset class.
-3. Name it, for example `MP_DefaultMapProfile`.
-4. Open it and set the fields. For a standard setup, enable `bEnableNetworking`, leave `ActorManagement.BackendClass` at the Actor Pool default, and enable `bUseAutoReplicator`.
+![The shipped default map profile asset in the Details panel](/img/unreal-sdk/map-profile-asset.png)
 
+The screenshot is the SDK's own shipped default profile. Note that **Backend Config** is empty on it; the section below explains why that matters.
 
-![Map profile data asset in the details panel](pathname:///img/unreal-sdk/map-profile-asset.png)
+| Field | Default | What it controls |
+|---|---|---|
+| `bEnableNetworking` | on | Gates the host subsystem, the event router, and the entity subsystem on this map. Off means the map runs with the SDK loaded but idle. |
+| `ActorManagement` | see [Rendering backends](./rendering-backends.md) | Which backend draws remote entities (`BackendClass`, `BackendConfig`) and the actor tracker settings. |
+| `bUseAutoReplicator` | on | The continuous state channel for Dynamic entities. See [Continuous state](./continuous-state.md). |
+| `ReplicationIntervalHz` | 10 (1 to 10) | Shown as **Replication Interval (Hertz)**. The send cadence shared by the continuous channel and the Crowdy State replicator. Greyed out in the Details panel when Use Auto Replicator is off, but still read by the Crowdy State replicator. |
+| `bSendActorStateOnlyOnChange` | on | Shown as **Send Actor State Only On Change**. An unchanged Dynamic entity sends a keyframe or a heartbeat instead of restating its state every interval. |
+| `ActorKeyframeIntervalSeconds` | 3.0 | Full re-send period for an unchanged Dynamic entity, so a late observer converges. 0 turns keyframes off. |
+| `ActorHeartbeatIntervalSeconds` | 1.0 | Heartbeat period for an unchanged Dynamic entity: the spatial header and no state, which is what keeps an idle entity from being reaped. 0 turns heartbeats off. |
+| `bUseStateReplicator` | on | Master switch for Crowdy State property replication. See [Crowdy State](./crowdy-state.md). |
+| `StateRelevanceDistance` | Four Chunks | Shown as **State Relevance Distance**. How far a Crowdy State delta travels, as a chunk count (`ECrowdyReplicationDistance`), tighter than the continuous channel. |
+| `StateKeyframeIntervalSeconds` | 2.0 | Period of the Crowdy State keyframe, the full re-send of every property marked `CrowdyHeartbeat`. 0 turns the keyframe off map-wide; on-change replication is unaffected. |
+
+:::warning[A backend class is not a backend config. The shipped default profile names one and sets no config, so the actor pool refuses to start on it.]
+`ActorManagement.BackendClass` defaults to `UCrowdyActorPoolBackend`, and that backend needs `ActorManagement.BackendConfig` set to an **Actor Pool Backend Config** with a `ReplicationPolicyClass`. On the shipped asset the config is empty, so `InitializeBackend` logs a warning and returns false, the actor manager refuses the backend, and remote entities that arrive as continuous-state updates are tracked but never drawn. Entities announced by a spawn event still get their proxy actor, and Crowdy State still applies to level-placed and spawned actors; what is missing is the pooled proxy for Dynamic-mode movement. Author your own profile with a config before you rely on movement from another client. See [Rendering backends](./rendering-backends.md).
+:::
 
 ## Assign the profile
 
-:::caution[Profiles are assigned in project settings, not on the map asset itself.]
+Open **Project Settings, Plugins, Crowdy SDK** and find the **Map Profiles** category of `UCrowdySDKDeveloperSettings`:
+
+![The Map Profiles category in Project Settings: Default Profile and the Map Profiles map](/img/unreal-sdk/map-profiles-settings.png)
+
+- `MapProfiles` maps a level asset to a profile. The lookup is by the map's short name, with the Play in Editor prefix stripped, so a PIE session resolves the same entry as a packaged build.
+- `DefaultProfile` covers every map without an entry.
+
+The SDK resolves the profile for a world through `UCrowdySDKDeveloperSettings::ResolveProfileForWorld`, in this order:
+
+1. A `MapProfiles` entry whose map matches the current one.
+2. `DefaultProfile`, if set.
+3. The profile a plugin ships. The Crowdy SDK plugin registers its own `DA_CrowdySDKDefaultProfile` at module startup through `RegisterShippedDefaultProfile`, so a project that sets nothing at all runs on that asset rather than going inactive. The log says so once per world.
+4. Nothing: the SDK stays inactive on the map and logs a warning, once per world, naming the map and the fix.
+
+:::caution[An entry that names an asset that fails to load is a broken setting, not an absent one. Resolution stops there.]
+A `MapProfiles` row or a `DefaultProfile` that points at an asset the build cannot load returns no profile and does not fall through to the next step. The warning names the asset path; check that it still exists and is packaged.
 :::
 
-1. Open Edit, Project Settings.
-2. Go to Plugins, Crowdy SDK, Map Profiles.
-3. Set one of:
-   - `DefaultProfile`: used for any map that is not listed in `MapProfiles`.
-   - `MapProfiles`: a per-map map. Add an entry that points a specific map to a specific profile.
+Every SDK subsystem resolves through the same function, and both warnings are reported once per world rather than once per subsystem, so you will see one line, not a dozen.
 
-When to use which:
+## Check it from code
 
-- Use `MapProfiles` when different maps need different backends or replication settings.
-- Use `DefaultProfile` as a fallback so unlisted maps still have the SDK active.
+A lantern that never lights for other players is nearly always a map with no profile. The example, `CheckMapProfile`, called from the lantern's `BeginPlay`, asks the same question the SDK asks, once, so the answer is in the log before anything else is suspected.
 
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
 
-![Crowdy SDK map profile settings](/img/unreal-sdk/map-profile-settings.png)
+<CppSnippet id="map-profile-cpp" />
 
-The settings section in the config file is `[/Script/CrowdyReplication.CrowdySDKDeveloperSettings]`. See [Project Settings](/unreal-sdk/reference/project-settings) for the full settings reference.
+`ResolveProfileForWorld` is a plain C++ static. There is no Blueprint node for it.
 
-:::warning[No profile means dead replication]
-With no profile resolved for a map, the entity subsystem, auto replicator, and actor manager do nothing. You get a warning in the log, but no error, so replication looks dead.
+</TabItem>
+<TabItem value="bp" label="Blueprint">
 
-If entities are not replicating on a map, check that the map has a profile through `DefaultProfile` or `MapProfiles` first.
-:::
+There is no Blueprint node for profile resolution: assigning a profile is Project Settings and Data Asset editing only, which the two screenshots above cover. What a Blueprint can read is the connection, `Get UDP Connection State` on the Crowdy SDK Subsystem; a connected state with dead entities is the profile symptom.
 
-## Minimal working profile
+</TabItem>
+</Tabs>
 
-For most maps, this is enough:
+**Success signal.** With a resolved profile the entity subsystem logs registrations once `crowdy.entity.trace 1` is on. Without one, the log carries a single `resolved no map profile` warning for the map and no entity ever registers.
 
-- `bEnableNetworking`: true
-- `ActorManagement.BackendClass`: `UCrowdyActorPoolBackend` (the default)
-- `bUseAutoReplicator`: true
-- `ReplicationIntervalHz`: 10
+## The shipped default, in one paragraph
 
-:::tip[Assign that asset as `DefaultProfile` and the SDK is active on every map that does not have its own entry.]
-:::
+The plugin registers a shipped profile under the provider name `CrowdySDK`, and only one registration is in effect at a time: a second plugin offering a different profile is refused and logged, so which one a map runs on never depends on module load order. `UnregisterShippedDefaultProfile` withdraws an offer at module shutdown; `GetShippedDefaultProfilePath` and `GetShippedDefaultProfileProvider` report what is currently offered; `ResolveShippedDefaultProfile` returns the asset, or null with a reason when an offer exists but its asset failed to load. None of these is something a game calls; they exist so a plugin can carry a profile.
+
+## Gotchas
+
+- No profile, no networking. Check this first when a map looks dead.
+- The shipped default profile draws nothing from the continuous channel: it has no `BackendConfig`. It is a way to get entities registering, not a template for a shipping map.
+- A non-networked map wants a profile with **Enable Networking** off, not no profile. The warning text asks for exactly that.
+- `StateKeyframeIntervalSeconds` is a safety net, not the mechanism. Changed properties ship on change whatever the interval; 0 only stops the periodic baseline for `CrowdyHeartbeat` properties.
+- `ReplicationIntervalHz` is one clock for two channels: continuous state and Crowdy State share it but send independently.
+
+## Related
+
+- [Rendering backends](./rendering-backends.md): `BackendClass`, `BackendConfig`, and the policy classes.
+- [Continuous state](./continuous-state.md): what `bUseAutoReplicator` and the keyframe and heartbeat intervals drive.
+- [Crowdy State](./crowdy-state.md): what `bUseStateReplicator`, `StateRelevanceDistance`, and `StateKeyframeIntervalSeconds` drive.
+- [Config Sync](../studio/config-sync.md): the network half of the same settings class, written by Crowdy Studio.

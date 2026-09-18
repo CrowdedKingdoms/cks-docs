@@ -1,0 +1,26 @@
+[
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnClaimRequested\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AsyncAction_0",
+		"class": "/Script/BlueprintGraph.K2Node_AsyncAction",
+		"title": "Is Crowdy Entity Host (Server)",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_Self_0",
+		"class": "/Script/BlueprintGraph.K2Node_Self",
+		"title": "Self-Reference",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Grant Ownership Transfer To Player",
+		"title_drawn": true
+	}
+]

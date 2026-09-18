@@ -10,6 +10,23 @@ export const SNIPPETS = [
   'qs-event',
   'qs-model-read',
   'identity-policies',
+  'ch-create',
+  'ch-publish',
+  'conn-events',
+  'despawn',
+  'ec-is-owned',
+  'ec-on-spawned',
+  'host-check-server',
+  'host-gate',
+  'own-grant',
+  'own-request',
+  'recipient-each',
+  'rpc-mark-event',
+  'spawn-entity',
+  'state-mark',
+  'state-onrep',
+  'state-static-dirty',
+  'video-receive',
 ];
 
 export default function UnrealSdkBlueprintSpike(): ReactNode {

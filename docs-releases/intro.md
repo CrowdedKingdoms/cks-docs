@@ -1450,7 +1450,7 @@ ownership surface. New capabilities:
   server-validated host check (the **Is Crowdy Entity Host (Server)** node); and client-side
   ownership helpers (`DoesCrowdyEntityOwn`, `IsCrowdyEntityHost`, `GetCrowdyEntityComponent`).
   See [Host authority](/unreal-sdk/runtime/host-authority) and
-  [Entities and spawning](/unreal-sdk/runtime/entities-and-spawning#ownership-and-authority).
+  [Ownership transfer](/unreal-sdk/runtime/ownership-transfer).
 
 **Breaking changes**
 

@@ -1,105 +1,129 @@
 ---
 slug: rendering-backends
-sidebar_position: 3
+sidebar_position: 14
 title: Rendering Backends
+description: "How a remote entity's continuous state becomes something on screen: the actor-pool backend the SDK ships, the policy class you subclass to apply your own state struct, the pool policy, and how to write a backend of your own."
 ---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # Rendering Backends
 
-A rendering backend decides how a replicated entity appears on remote clients.
+A rendering backend turns the [continuous state](./continuous-state.md) a remote entity's owner sends into something on screen for everyone else. The SDK ships one, the actor pool; a project customises it through two policy classes, or replaces it by implementing four methods.
 
-When the owner of an entity sends state, every other client holds a remote proxy. The backend turns that incoming state into something on screen. It:
+## When you touch this
 
-- Activates a visual when an entity comes into range.
-- Deactivates it when the entity leaves.
-- Applies interpolated state each frame.
+When a Dynamic entity moves on its owner and not on anyone else, when you want your own state struct applied to a proxy, or when pooled actors of the entity's class are the wrong way to draw a crowd. A Static entity never comes through here: its proxy is spawned by the spawn event and driven by Crowdy State and events.
 
-The backend is pluggable through the `UCrowdyRenderingBackend` interface. The class is abstract, `Blueprintable`, and `EditInlineNew`.
+## The default: the actor pool
 
-## The default backend
+`FCrowdyActorManagementConfigStruct::BackendClass` on the map profile defaults to `UCrowdyActorPoolBackend`, so a profile that never chose a backend gets this one. It uses `UCrowdyActorPoolSubsystem` to keep a pool of pre-spawned actors per entity class, checks one out when a remote entity appears, registers it in the entity registry so entity-targeted events reach it like any actor, and hands every update to a `UCrowdyRepApplicationPolicy` you provide.
 
-The shipped default is `UCrowdyActorPoolBackend`. It spawns and pools real actors for each entity class.
+![The Actor Management category of a map profile: Backend Class and Backend Config](/img/unreal-sdk/map-profile-backend-select.png)
 
-Most projects never change it. If you do nothing, the map profile resolves to this backend with `UCrowdyActorPoolBackendConfig`.
+The screenshot is the SDK's shipped default profile, and its **Backend Config** reads None. That is the whole warning below.
 
-You only need a custom backend when actor pooling is the wrong model for your project. A Mass Entity based backend is also under works, and will be available in a future release.
-
-:::note[The backend is selected per map through the map profile. See [Map Profiles](/unreal-sdk/runtime/map-profile) for how a profile is resolved for a world.]
+:::warning[Naming a backend is not configuring it. The shipped default profile sets no Backend Config, so the actor pool refuses to start on it.]
+`UCrowdyActorPoolBackend::InitializeBackend` needs `BackendConfig` to be an **Actor Pool Backend Config** with a `ReplicationPolicyClass`. Without one it logs `Backend Config is not set, but this backend needs a CrowdyActorPoolBackendConfig to know what to spawn` and returns false; the actor manager then logs `could not initialize, so no remote entity will be drawn on this map` and installs nothing. Remote entities that arrive as continuous-state updates are tracked, slotted, and updated with nothing on screen. Spawn-event proxies and Crowdy State are unaffected. See [Map profiles](./map-profile.md).
 :::
 
-## Writing a custom backend
+### Configure it
 
-Subclass `UCrowdyRenderingBackend` and implement the four required overrides. The two lifecycle overrides are optional.
+`UCrowdyActorPoolBackendConfig`, set as the profile's `BackendConfig`:
 
-### Required overrides
+| Field | Default | Effect |
+|---|---|---|
+| `ReplicationPolicyClass` | none, required | Your `UCrowdyRepApplicationPolicy` subclass. Unset or invalid and the backend refuses to initialize. |
+| `PoolPolicyClass` | none, optional | A `UCrowdyActorPoolPolicy` subclass. Unset means the concrete base, which already hides pooled actors, shows them on activation, and strips proxy movement. |
+| `DefaultPoolSizePerClass` | 8 | Pools are created lazily per entity class at this size. |
+| `PerClassPoolOverrides` | empty | A per-class pool size; a class listed here is also pre-warmed at map load. |
 
-These are pure virtual. You must implement all four.
-
-- `ActivateInstance(int32 SlotId, const FGuid& UUID, UClass* EntityClass, const FInstancedStruct& InitialState)`: create or claim a visual for this entity. The actor manager calls this when an entity becomes visible.
-- `DeactivateInstance(int32 SlotId, const FGuid& UUID)`: release the visual for this entity. Called when the entity leaves range or is destroyed.
-- `ExtractUpdate(const FInstancedStruct& State, int64 ServerTimestampMs, int32 SlotId)`: take an incoming state snapshot and store it against the slot, keyed by the server timestamp, so it can be interpolated.
-- `ApplyInterpolation(int32 SlotId, int64 RenderTimeMs)`: drive the visual to the interpolated state for the given render time. Called each frame.
-
-### Optional overrides
-
-- `InitializeBackend(UWorld* World, UCrowdyRenderingBackendConfig* Config)`: one-time setup when the backend starts. Read your config here.
-- `DeinitializeBackend()`: tear down anything you allocated in `InitializeBackend`.
-
-### Skeleton
-
-```cpp
-UCLASS(EditInlineNew)
-class UMyRenderingBackend : public UCrowdyRenderingBackend
-{
-    GENERATED_BODY()
-
-public:
-    virtual void InitializeBackend(UWorld* World, UCrowdyRenderingBackendConfig* Config) override;
-    virtual void DeinitializeBackend() override;
-
-    virtual void ActivateInstance(int32 SlotId, const FGuid& UUID, UClass* EntityClass, const FInstancedStruct& InitialState) override;
-    virtual void DeactivateInstance(int32 SlotId, const FGuid& UUID) override;
-    virtual void ExtractUpdate(const FInstancedStruct& State, int64 ServerTimestampMs, int32 SlotId) override;
-    virtual void ApplyInterpolation(int32 SlotId, int64 RenderTimeMs) override;
-};
-```
-
-## Pairing a config class
-
-A custom backend carries its own settings in a `UCrowdyRenderingBackendConfig` subclass. Define one config class alongside your backend, then read it in `InitializeBackend`.
-
-```cpp
-UCLASS(EditInlineNew)
-class UMyRenderingBackendConfig : public UCrowdyRenderingBackendConfig
-{
-    GENERATED_BODY()
-
-public:
-    UPROPERTY(EditAnywhere)
-    int32 MaxVisibleInstances = 256;
-};
-```
-
-:::tip[The Actor Pool backend follows the same pattern. Its config is `UCrowdyActorPoolBackendConfig`, with fields such as `DefaultPoolSizePerClass` (default 8) and `PerClassPoolOverrides`.]
+:::caution[ReplicationPolicyClass is abstract and must be set. PoolPolicyClass is concrete and may be left empty.]
+`UCrowdyRepApplicationPolicy` has two pure virtuals and requires your subclass. `UCrowdyActorPoolPolicy` ships full bodies and is meant to be instantiated as is. Do not confuse the two.
 :::
 
-## Selecting the backend in the map profile
+### The replication application policy
 
-The backend is chosen in the map profile, inside `ActorManagement` (a `FCrowdyActorManagementConfigStruct`). Two fields control it:
+`UCrowdyRepApplicationPolicy` is the piece most projects write: it reads your state struct out of each update and applies it to the pooled actor each frame.
 
-- `BackendClass`: a `TSubclassOf<UCrowdyRenderingBackend>`. Defaults to `UCrowdyActorPoolBackend`. Set this to your backend class.
-- `BackendConfig`: an instanced `UCrowdyRenderingBackendConfig`. Set this to an instance of your config class.
+| Override | Called | What you do |
+|---|---|---|
+| `ExtractFields(State, ServerTimestampMs, SlotId)` | Per update, per slot | Read your struct out of `State` into your own per-slot buffers. Return false when the struct type is wrong and the update is skipped. |
+| `ApplyToActor(Actor, SlotId, RenderTimeMs)` | Per frame, per active slot | Apply the buffered state, interpolated to `RenderTimeMs`, to the actor. |
+| `OnInstanceActivated(Actor, InitialState)` | Once, when a slot activates | A `BlueprintNativeEvent`: set initial state on the actor. |
+| `OnInstanceDeactivated(SlotId)` | When the entity leaves | Clean up per-slot state. |
+| `GetExpectedSlotCount()` | At startup | How many slots to pre-allocate; 64 by default. Match your expected player count. |
 
+`ULanternRepPolicy` applies the `bTorchLit` flag the [continuous state](./continuous-state.md) page added to `ALanternPlayer`'s `FLanternPlayerState`: `ExtractFields` stores it per slot and returns false for any other struct type, `ApplyToActor` sets the proxy torch's visibility from it. A flag is a discrete value, not something to interpolate over `RenderTimeMs`, so the policy applies the latest. The policy header includes `LanternPlayer.h` for the struct, so this snippet depends on the [`executor-override` block](./continuous-state.md#a-custom-executor) being in your project first.
 
-![Map profile actor management with backend class and backend config fields](pathname:///img/unreal-sdk/map-profile-backend-select.png)
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
 
-Assign the profile to your map in Project Settings, Plugins, Crowdy SDK, Map Profiles. See [Map Profiles](/unreal-sdk/runtime/map-profile) for the full setup.
+<CppSnippet id="backend-policy" />
 
-## Do not re-subscribe to the ActorTracker
+</TabItem>
+<TabItem value="bp" label="Blueprint">
 
-The actor manager already drives your backend. It calls `ActivateInstance` and `DeactivateInstance` for you as entities come and go.
+`ExtractFields` and `ApplyToActor` are C++ only, so the policy class is C++. Set it as **Replication Policy Class** on the Actor Pool Backend Config in the map profile's Details panel. `OnInstanceActivated` is the one hook a Blueprint subclass of the policy may implement.
 
-:::warning[A custom backend must never subscribe to the ActorTracker itself. The actor manager is already the single caller of `ActivateInstance` and `DeactivateInstance`. If your backend also subscribes, every entity is activated twice and you get a double spawn.]
+</TabItem>
+</Tabs>
+
+### The pool policy
+
+`UCrowdyActorPoolPolicy` decides what a pooled actor does at three moments, each a `BlueprintNativeEvent` a Blueprint subclass can implement without C++: `OnActorPooled(Actor)` once per actor right after it is spawned into the pool, `OnActorActivated(Actor, InitialState)` when it is checked out (its `InitialState` is empty in the shipped pool, and the identity lands on the component right after it returns), and `OnActorDeactivated(Actor)` when it goes back. The base hides and shows the actor and disables proxy movement; subclass only to add per-actor behaviour at those moments.
+
+Pooled actors are genuinely spawned (`SpawnActorDeferred` and `FinishSpawning`), so their constructors and Blueprint-added components run. Before `BeginPlay` the pool marks any entity component on them dormant, so a pre-warmed actor registers no entity and no listener, Game Model containers included, acts on an actor that stands for nothing. `UCrowdyActorPoolSubsystem::RegisterPool(FCrowdyPoolConfig)` (`ActorClass`, `PoolPolicyClass`, `PoolSize`) is what the backend calls to create a pool, a no-op for a class that already has one; `AcquireActor` and `ReleaseActor` check actors out and in. `crowdy.pool.trace 1` logs spawn, release, and reuse.
+
+## What a pooled proxy does and does not do
+
+:::warning[A pooled Dynamic proxy never sees the spawn event's InitialState.]
+The spawn event creates a proxy actor and broadcasts `OnCrowdySpawned` with the payload; the actor pool then treats that actor as an orphan, destroys it, and swaps in a pre-warmed pooled actor that never received it. Anything a proxy needs to look right must be a class default or a field of the replicated state struct, never a one-time spawn value.
 :::
 
-Treat the four required overrides as your only entry points for activation and update. Do not reach into the tracker to find entities on your own.
+:::warning[The owner of a client-spawned Dynamic entity sees two visuals.]
+The pool is fed only by inbound network state, so the owner ends up with the local actor it drives directly and the pooled proxy the server echoes back, interpolation-delayed. There is no per-entity flag to choose. Hide one side yourself, in the entity's own code: `SetActorHiddenInGame` on the local actor when `IsLocallyOwned()` if the round-tripped proxy is the one that should show. The tracker's owner-tracking gate suppresses only the local player's own avatar echo, never another owned entity's.
+:::
+
+- A proxy's `GetNetID()` and `GetRole()` work: the backend assigns the identity to the pooled actor's component when it checks it out. `RemoteProxy` is the role it reports.
+
+## Swapping at runtime
+
+`UCrowdyActorManager::SetBackend(NewBackend)` (Blueprint: **Set Backend**) swaps the active backend: the previous one is deinitialized, slot state is preserved, and the new one receives `ApplyInterpolation` from the next tick. The new backend must already be initialized, and `InitializeBackend` is C++ only, so this is a C++ operation in practice. `GetActiveBackend()` is the live backend, null when none initialized; a backend that refused to initialize is absent here and present in the profile, which is how to tell the two apart from code.
+
+## Writing a backend
+
+Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendConfig` subclass carrying whatever your backend needs (an instanced mesh, a pool size). Four overrides are required and two optional:
+
+| Override | Required | Contract |
+|---|---|---|
+| `ActivateInstance(SlotId, UUID, EntityClass, InitialState)` | yes | A remote instance became visible. Acquire the rendering resource for `SlotId`. `EntityClass` is never null. |
+| `DeactivateInstance(SlotId, UUID)` | yes | It left. Release the resource and the per-slot state. |
+| `ExtractUpdate(State, ServerTimestampMs, SlotId)` | yes | An update arrived. Parse the struct into your interpolation buffers. |
+| `ApplyInterpolation(SlotId, RenderTimeMs)` | yes | Apply the interpolated state; `RenderTimeMs` is already offset by the interpolation delay. |
+| `InitializeBackend(World, Config)` | no | Acquire subsystems, read the config. Return false, after logging the reason and the remedy, when you cannot draw with what you were given; the manager refuses you rather than installing you. |
+| `DeinitializeBackend()` | no | Release what you held. |
+
+`DrawsEntitiesAsCrowdRows()` is one more, for a backend that represents entities without spawning an actor of the entity's class; the editor reads it off the class default object to decide whether to show authoring surfaces that only make sense on that representation. The default is false. A Mass Entity based backend exists as a separate, opt-in plugin and is the only current override; it is not part of the core SDK and is out of scope for this guide.
+
+`SlotId` is a stable index the actor manager assigns for the instance's lifetime; keep your per-instance state in arrays indexed by it.
+
+:::danger[A custom backend must never subscribe to the actor tracker itself.]
+The actor manager is already the single caller of `ActivateInstance` and `DeactivateInstance`. A backend that also subscribes to `UCrowdyActorTracker` activates every entity twice and spawns everything double. The four overrides are your only entry points.
+:::
+
+## Gotchas
+
+- `BackendClass` alone draws nothing. Set `BackendConfig`, and inside it `ReplicationPolicyClass`.
+- `bUseCrowdyActorTracker` off on the profile means no tracker, no manager, and no backend at all.
+- A pooled proxy's spawn-time look comes from class defaults or the state struct, never the spawn payload.
+- Pool exhaustion is a warning per entity, `Pool exhausted for <class>`, and the entity is not drawn until a slot frees. Raise `DefaultPoolSizePerClass` or add a `PerClassPoolOverrides` row.
+- A class that arrives over the wire before it is loaded cannot be drawn; see Preloaded Entity Classes on [Entities and spawning](./entities-and-spawning.md).
+
+## Related
+
+- [Map profiles](./map-profile.md): where `BackendClass` and `BackendConfig` live.
+- [Continuous state](./continuous-state.md): the executor that produces what the policy consumes.
+- [Entities and spawning](./entities-and-spawning.md): the actor tracker and the spawn event.
+- [Entity component](./entity-component.md): the identity a pooled actor is given.

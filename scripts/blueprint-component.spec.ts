@@ -1,4 +1,6 @@
 import {test, expect} from '@playwright/test';
+import fs from 'node:fs';
+import path from 'node:path';
 
 // Checks the Blueprint component against a served site: the graph draws, and Copy nodes puts the
 // exact clipboard text a reader pastes into Unreal on the clipboard. The clipboard part is why this
@@ -56,7 +58,10 @@ test('renders the graph and copies the clipboard text', async ({page, request}) 
 type EditorTitle = {name: string; class: string; title: string; title_drawn?: boolean; crowdy_subtitle?: string};
 type RenderedNode = {name: string; title: string; subTitles: string[]};
 
-const ALL_SNIPPETS = ['qs-login', 'qs-entity', 'qs-event', 'qs-model-read', 'identity-policies'];
+// The spike page's SNIPPETS list is the one list of published snippets; read it from the source so a
+// snippet added there is checked here without a second list to keep in step.
+const SPIKE_PAGE = path.join(__dirname, '..', 'src', 'pages', 'unreal-sdk-blueprint-spike.tsx');
+const ALL_SNIPPETS = [...fs.readFileSync(SPIKE_PAGE, 'utf8').matchAll(/^\s*'([a-z0-9-]+)',\s*$/gm)].map((m) => m[1]);
 
 test('every node renders with the title the editor shows', async ({page, request}) => {
   await page.goto('/unreal-sdk-blueprint-spike');

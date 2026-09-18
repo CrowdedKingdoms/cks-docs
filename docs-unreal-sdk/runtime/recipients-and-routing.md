@@ -1,140 +1,119 @@
 ---
 slug: recipients-and-routing
-sidebar_position: 9
+sidebar_position: 6
 title: Recipients and Routing
+description: The four CrowdyEvent recipients, what a chunk is and how far a spatial event travels, what reliable means on the channel path, and the targeted sends for callers with no actor.
 ---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # Recipients and Routing
 
-Every CrowdyEvent has a recipient. The recipient decides who runs the receiver and how far the event travels.
-
-You set the recipient with the `CrowdyRecipient` meta on the receiver function. It does not change at the call site, so pick the recipient when you declare the event.
-
-The recipient enum is `ECrowdyEventRecipient`. It has four values:
-
-- `SpatialMulticast`
-- `Multicast`
-- `OwningClient`
-- `Host`
-
-This page covers what each one does, how the spatial path thins delivery with decay and distance, and when to choose each.
-
-:::note[An event is always aimed at the entity its sender object belongs to, by NetID, and the receiving actor must carry a `UCrowdyEntityComponent`. That is true for every recipient. The recipient only changes which clients run the body once the event reaches them.]
-:::
+Every CrowdyEvent names a recipient, and the recipient decides two things: who runs the body, and which transport carries it. This page is the delivery model behind both the [C++](./rpc-events-cpp.md) and the [Blueprint](./rpc-events-blueprint.md) authoring pages.
 
 ## The four recipients
 
-You declare the recipient on the receiver function:
-
-```cpp
-#include "Replication/RPC/CrowdyEvent.h"
-
-UFUNCTION(meta=(CrowdyEvent, CrowdyRecipient="OwningClient"))
-void Heal_Implementation(int32 Amount);
-CROWDY_EVENT(Heal)
-```
-
-Call `Heal(25)` to send. With `OwningClient`, only the entity's owner runs `Heal_Implementation`.
+`ECrowdyEventRecipient`, set with `CrowdyRecipient` in C++ or the Recipient dropdown in Blueprint. `SpatialMulticast` is the default when the key is omitted.
 
 | Recipient | Travels over | Distance and decay | Who runs the body |
-|-----------|-------------|--------------------|-------------------|
-| `SpatialMulticast` (default) | Spatial UDP | Yes, decay-thinned | Clients near the entity |
-| `Multicast` | A named channel | No, any distance | Every channel member |
-| `OwningClient` | Targeted delivery | No | Only the entity's owner |
-| `Host` | Targeted delivery | No | Only the elected host |
+|---|---|---|---|
+| `SpatialMulticast` (default) | The spatial path, addressed by the sender's chunk | Yes: `CrowdyDistance` and `CrowdyDecay` | Every client in range, the caller included |
+| `Multicast` | A channel: the session channel, or the one `CrowdyChannel` names | No: every member, any distance, never thinned | Every channel member, the caller included |
+| `OwningClient` | A targeted delivery to one client | No | Only the target entity's owner. A non-owner's call becomes a request to the owner; the owner's own call runs locally and sends nothing. |
+| `Host` | A targeted delivery to one client | No | Only the elected host. A non-host's call becomes a request; the host's own call runs locally. The host runs it on whatever instance it holds, whoever owns that entity. |
 
-### SpatialMulticast
+The decision is a pure function of the recipient, the participant kind, and the local authority facts, so it is the same on every client and in every build.
 
-`SpatialMulticast` is the default. The event travels the spatial path: it reaches clients that are near the entity, and decay and distance thin that delivery.
-
-Use it for events that only matter to players who can see the entity, such as a one-shot animation, a hit reaction, or a cosmetic effect tied to a location in the world.
-
-On a SpatialMulticast event the owner runs the body locally and announces to the others. Remote clients run the `_Implementation`. The owner does not receive its own announcement back.
-
-```cpp
-UFUNCTION(meta=(CrowdyEvent, CrowdyRecipient="SpatialMulticast", CrowdyDistance="Four_Chunks", CrowdyDecay="Linear_50"))
-void PlayHitSpark_Implementation(FVector Location);
-CROWDY_EVENT(PlayHitSpark)
-```
-
-### Multicast
-
-`Multicast` routes the event over a named channel set by `CrowdyChannel`. It reaches every member of that channel at any distance, with no decay.
-
-Use it for events that must reach players regardless of where they stand, such as a world-wide chat line or a match-wide announcement.
-
-```cpp
-UFUNCTION(meta=(CrowdyEvent, CrowdyRecipient="Multicast", CrowdyChannel="SampleWorldChat"))
-void Announce_Implementation(FString Message);
-CROWDY_EVENT(Announce)
-```
-
-The SDK joins every referenced channel on UDP connect, plus a default session channel. See [Channels](/unreal-sdk/runtime/channels) for how channels are joined and named.
-
-### OwningClient
-
-`OwningClient` is targeted, point-to-point delivery: the server delivers the event to one client, and only the entity's owner runs the body.
-
-Use it when only the player who owns the entity should react, such as a private result, a personal reward, or a correction meant for the owner alone.
-
-`OwningClient` ignores distance and decay. Those apply only to `SpatialMulticast`.
-
-### Host
-
-`Host` is targeted delivery to the elected host. Only the host runs the body.
-
-Use it when a client needs to hand a decision to the host, such as requesting a host-owned spawn or asking the host to arbitrate something that is a convention rather than an enforced rule.
-
-The host is a convention, not an enforced server role. See [Host Authority](/unreal-sdk/runtime/host-authority) for how the host is elected and how to check whether this client is the host.
-
-:::note[`OwningClient` and `Host` are targeted delivery. They do not fan out to nearby clients and they do not use a channel. Distance and decay have no effect on them.]
+:::warning[On a replicated subsystem the default recipient is rejected. Set Multicast or Host explicitly.]
+A subsystem has no world position, so a `SpatialMulticast` event declared on one has nowhere to be sent from. The send logs `uses SpatialMulticast, which has no location; set CrowdyRecipient=Multicast or Host. Dropping.` and consumes the call so a Blueprint caller does not run the body as a fallback. Since `SpatialMulticast` is what an unannotated event gets, every event on a subsystem needs the key written out. See [Replicated subsystems](./replicated-subsystems.md).
 :::
 
-## How decay and distance thin spatial delivery
+## Spatial: chunks, distance, and decay
 
-`ECrowdyDecayRate` and `ECrowdyReplicationDistance` apply only to `SpatialMulticast`. The other three recipients ignore them.
+The world is divided into chunks of `ChunkSize` units on a side; a spatial event is sent from the sender's chunk and reaches every client whose actor stands within `CrowdyDistance` chunks of it. `ChunkSize` lives on the game session (`UCrowdyGameSession::GetChunkSize`, `SetChunkSize`) and defaults to 1600 units, so `ECrowdyReplicationDistance::Four_Chunks` is 6400 units at the default. A distance is a chunk count, not a world distance: changing the chunk size changes what every distance value means.
 
-**Distance** sets how far the event can reach, measured in chunks. The values run from `None` to `Eight_Chunks`, and the default is `Eight_Chunks`. A smaller distance means the event reaches only clients close to the entity, and clients past the cutoff never receive it.
+To see which chunk a point falls in, `UHelperFunctions::GetChunkCoordinateAtLocation(WorldContextObject, WorldLocation, ChunkX, ChunkY, ChunkZ)` (Blueprint: **Get Chunk Coordinate At Location**) reads the session's chunk size and returns the three `int64` coordinates; the older `GetChunkCoordinatesAtWorldLocation` without a world context is deprecated.
 
-**Decay** thins delivery within that distance:
-
-- With `No_Decay` (the default) every client inside the distance receives the event.
-- With a decay rate, the chance of delivery falls off as a client gets farther from the entity, so far clients are more likely to be skipped than near ones.
-
-Decay is a way to keep traffic down for events where a missed copy at long range does not matter.
-
-The decay values are:
+`ECrowdyReplicationDistance` runs from `None` through `One_Chunk` to `Eight_Chunks` (the default). `ECrowdyDecayRate` thins delivery with distance:
 
 | Value | Effect |
-|-------|--------|
-| `No_Decay` (default) | Every client inside the distance receives the event |
-| `Exponential_Decay` | Delivery chance falls off exponentially with distance |
-| `Linear_50` | Linear falloff, the strongest of the linear rates |
-| `Linear_25` | Linear falloff, thinner again |
-| `Linear_10` | Sparse delivery at range |
-| `Linear_5` | Sparsest delivery at range |
+|---|---|
+| `No_Decay` (default) | Every client inside the distance receives the event. |
+| `Exponential_Decay` | Delivery probability falls off exponentially with distance. |
+| `Linear_50`, `Linear_25`, `Linear_10`, `Linear_5` | Linear falloff, from the mildest to the most aggressive. |
 
-Set both on the receiver:
+Decay is a server-side filter applied before the event reaches remote clients. Use it for high-rate cosmetic events where a distant client missing some of them is fine.
 
-```cpp
-UFUNCTION(meta=(CrowdyEvent, CrowdyRecipient="SpatialMulticast", CrowdyDistance="Eight_Chunks", CrowdyDecay="Exponential_Decay"))
-void Footstep_Implementation(FVector Location);
-CROWDY_EVENT(Footstep)
-```
+## Multicast: what reliable means
 
-:::tip[Use a tighter distance and some decay for high-frequency cosmetic events like footsteps. Use `Eight_Chunks` and `No_Decay` for events a nearby player must not miss, like a death effect.]
+A `Multicast` event rides a [channel](./channels.md). "Reliable" here means coverage: every member of the channel is a recipient, at any distance, with no decay. It does not mean guaranteed delivery. The transport is still UDP with no acknowledgement, no retransmit, and no duplicate suppression.
+
+:::warning[Reliable is coverage, not delivery. A late joiner gets nothing from a past Multicast call.]
+Treat a Multicast event like any other fire-and-forget call for anything that must not be silently missed. If a value has to be right on a client that missed the event or joined afterwards, put it in a [Crowdy State](./crowdy-state.md) property or a [Game Model](../game-models/overview.md); an event has no history to replay.
 :::
 
-## Choosing a recipient
+The payload of a Multicast call is capped at 1024 bytes (see the [C++ page](./rpc-events-cpp.md#containers-and-their-bounds)); a large container belongs on `SpatialMulticast`.
 
-- The event matters only to players who can see the entity: use `SpatialMulticast`. Add distance and decay to control reach and traffic.
-- The event must reach players regardless of distance: use `Multicast` over a named channel.
-- Only the owner should react: use `OwningClient`.
-- The host should handle it: use `Host`.
+## Targeted: OwningClient and Host
 
-:::tip[If you are unsure, start with `SpatialMulticast`. It is the default and it fits most in-world events.]
+Both are delivered by the server as a single-actor message to exactly one client, never as a broadcast. On receipt an actor participant drops a broadcast that claims to carry an owner-only or host-only function, since a real one never arrives that way. On a subsystem there is no single-actor transport, so the same events legitimately arrive as channel broadcasts and are gated by identity on receipt.
+
+:::caution[A Host send needs the host's own entity within the sender's known range.]
+The targeted message is addressed to the host's avatar entity and the chunk it stands in. If this client holds no record of that entity, the send logs `Run-On-Host '<name>' dropped ... the host's avatar is not in range` and the call is gone; it is not queued until the host comes into range.
 :::
 
-## Reference
+An `OwningClient` event aimed at a world entity nobody owns has no destination and drops; use `Host` for a world entity.
 
-For the full enum values, see the [Enums Reference](/unreal-sdk/reference/enums). For the channel side of `Multicast`, see [Channels](/unreal-sdk/runtime/channels). For the host side of `Host`, see [Host Authority](/unreal-sdk/runtime/host-authority).
+The lantern world uses `Host` for a relight: a client whose lantern has gone dark asks the elected host to relight it, and the host acts on whichever `ALantern` instance it holds. The lantern the host holds is a proxy of another client's entity, so setting `bLit` on it would stay on the host; the receiver marks the property dirty as well, which on an entity the host does not own is the [host push](./crowdy-state-static.md#on-an-entity-you-do-not-own-the-host-push) that makes the owner adopt the value. `Flicker` from the [Quickstart](../quickstart.md) is the `SpatialMulticast` row; the other two recipients are described in the table above and need no new member.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+<CppSnippet id="recipient-each" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+A `RequestRelight` custom event with Crowdy Replicates ticked and **Recipient** set to **Host**; its body is **Set Visibility** on `Light`, fed by **Get Light**. Call it from any client whose lantern is dark and it runs on the host alone.
+
+<Blueprint src="recipient-each" title="RequestRelight, a Custom Event with Recipient Host, Get Light, Set Visibility" />
+
+</TabItem>
+</Tabs>
+
+## Receiving raw notifications in Blueprint
+
+`UCrowdyBlueprintReceptionLayer` (**Crowdy Blueprint Reception Layer**) is a Blueprintable object that receives the wire-level notifications behind the systems on this page, for a game that wants to see them before the SDK's own routing does: subclass it in Blueprint, list the payload structs it claims in `SupportedEvents` (empty means unclaimed events only) and the actor update types in `SupportedActorUpdateTypes`, create it with **Create and Register Layer** (`CreateAndRegisterLayer(WorldContextObject, Class)`), and bind its two events. `OnEventNotificationReceived` (`FOnGameEventNotificationReceived`) delivers an `FGameEventNotificationBP` (the sender `UUID`, the chunk, the `Timestamp`, and the `Event` as an instanced struct); `OnActorUpdateReceived` (`FOnActorUpdateReceived`) delivers an `FActorUpdateNotificationBP` with the same envelope around an `ActorUpdate` struct. A game that uses CrowdyEvents and Crowdy State never needs one; it exists for custom payloads sent with `SendCrowdyEvent` and for diagnostics.
+
+## Delivery is on the game thread
+
+Every routing and dispatch entry point in `FCrowdyRPC` and `UCrowdyEventRouter` is game-thread only, and every handler runs there. A handler may spawn, destroy, and touch components without marshalling.
+
+## Sending without an actor
+
+Two lower-level entry points exist for callers the ordinary path cannot serve.
+
+**A CrowdyEvent for an entity you hold only by identity.** `FCrowdyRPC::SendToTarget(World, Target, Fn, Frame)` sends a receiver function to an entity described by an `FCrowdyRpcTarget`: its `NetID`, an optional `Location`, its `OwnerID`, and this client's `Role` toward it. It routes by the function's own recipient, all four of them, and where this client already holds a registration for the entity the record's owner, role, and position win over the target's fields. It returns false only when there was no transport at all; every drop returns true, so a caller must not run a local body as a fallback for a refused send. Read the location from the entity's own live state, never from a caller's argument, because the location decides which region the message is addressed to. A plain `UObject` that stands for an entity with no actor can also implement `ICrowdyEventSource` and use the ordinary `CROWDY_EVENT` call; the send path asks the interface for the identity and the position it would otherwise read from an actor. The five overrides are `GetEventEntityID` (the entity's NetID), `GetEventLocation` (where it stands right now, or false when unknown), `GetEventOwnerID` (the owning player, invalid for a world entity), `GetEventRole`, and `IsEventLocallyOwned` (only an owner, or the host for a world entity, may originate). Answer for the entity you stand for, read live; never hand back a location a caller passed in, because the location decides which region the event is addressed to.
+
+**A struct payload with no declared receiver.** `UCrowdyUtilities::SendCrowdyEvent(WorldContextObject, TargetEntity, Payload, Recipient, DecayRate, ReplicationDistance)` in C++, **Send Crowdy Event** (`K2_SendCrowdyEvent`, a wildcard struct pin) in Blueprint, broadcasts any `USTRUCT` at a target actor with an explicit recipient. It goes through `UCrowdyEntitySubsystem::DispatchGameEvent`, whose `ECrowdyTarget` (`Everyone`, `Entity`, `Owner`, `Host`, `AllExceptSender`) is the wire-level addressing the recipient enum maps onto; `DispatchGameEventAt` is the same send from an explicit location, `DispatchGameEventView` and `DispatchGameEventViewAt` borrow the payload instead of copying it, and `DispatchSingleActorMessage` and `DispatchSingleActorMessageTo` are the targeted delivery behind OwningClient and Host. A handler receives the struct, and may declare an `FCrowdyEventContext` as an optional second parameter to read the `SenderID`, the `TargetID`, the `Target`, and `bSentByLocalPlayer`. `UCrowdyEntityComponent::SendEvent(Payload, Scope)` is the same send addressed at the component's own entity, with `ECrowdyEventScope::Everyone` or `OwnerOnly`.
+
+:::caution[The struct send has none of the compile-time checking a CrowdyEvent receiver gets.]
+Any struct is accepted, there is no `_Implementation` naming convention to tie a sender to a receiver, and a mismatch is found at runtime or not at all. Prefer a `CrowdyEvent` unless you are building a system on top of the SDK.
+:::
+
+## Gotchas
+
+- Omitting `CrowdyRecipient` means `SpatialMulticast`. Write the key out on anything that is not an actor.
+- Decay and distance are read only for `SpatialMulticast`. Setting them on a `Multicast` event does nothing.
+- `OwningClient` on a host-owned world entity drops. Use `Host`.
+- The Host recipient has no ownership gate. The host may act on any entity it holds.
+- Changing `ChunkSize` changes the meaning of every distance in the project.
+
+## Related
+
+- [RPC events in C++](./rpc-events-cpp.md) and [in Blueprint](./rpc-events-blueprint.md).
+- [Channels](./channels.md): what the Multicast path rides, and the session channel.
+- [Host authority](./host-authority.md): who the Host recipient reaches.
+- [Replicated subsystems](./replicated-subsystems.md): the non-spatial participant.
+- [Enums](../reference/enums.md).

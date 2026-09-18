@@ -8,6 +8,7 @@ import { ParsingNodeData } from "../src/parser/parsing-node-data";
 import { CallFunctionNodeParser } from "../src/parser/node-parsers/call-function-node.parser";
 import { CustomEventNodeParser } from "../src/parser/node-parsers/custom-event-node.parser";
 import { CallFunctionNode } from "../src/data/nodes/call-function.node";
+import { PinProperty } from "../src/data/pin/pin-property";
 import { insertSpacesBetweenCapitalizedWords } from "../src/utils/text-utils";
 import { CrowdyFunctionNames, CrowdyFunctionNamesByClass } from "./crowdy-names.generated";
 
@@ -29,6 +30,7 @@ const ENGINE_FUNCTION_NAMES: { [memberName: string]: string } = {
     "Conv_GuidToString": "To String (Guid)",
     "Conv_VectorToString": "To String (Vector)",
     "Conv_StringToText": "To Text (String)",
+    "GetTransform": "Get Actor Transform",
 };
 
 const CROWDY_NODE_TITLES: { [classPath: string]: string } = {
@@ -78,6 +80,16 @@ class CrowdyCallFunctionParser extends CallFunctionNodeParser {
             if (node.functionReference?.memberName) {
                 node.title = displayName(node.functionReference.memberParent?.className, node.functionReference.memberName);
             }
+            // A call on the Blueprint's own class carries no MemberParent; the editor still names the class in the
+            // subtitle, and the self pin's type is where the text carries it.
+            if (node.functionReference?.selfContext) {
+                const selfPin = node.customProperties.find(p => (p as PinProperty)?.name?.toLowerCase() === "self") as PinProperty | undefined;
+                const className = referencedClassName(selfPin?.subCategoryObject?.class);
+                const subtitle = node.subTitles.find(s => s.text === "Target is self context");
+                if (className && subtitle) {
+                    subtitle.text = `Target is ${identifierDisplayName(className)}`;
+                }
+            }
         };
     }
 
@@ -94,8 +106,24 @@ class CrowdyCallFunctionParser extends CallFunctionNodeParser {
     }
 }
 
+// The editor's display form of an identifier: a space before each capital that follows a lower-case letter or a
+// digit, and one between an acronym and the word after it (CrowdySDKSubsystem -> Crowdy SDK Subsystem).
+function identifierDisplayName(name: string): string {
+    return name.replace(/([a-z0-9])([A-Z])/g, "$1 $2").replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2");
+}
+
+// The last path segment of a class reference such as "/Script/CoreUObject.Class'/Script/CrowdyServices.CrowdyChannels'".
+function referencedClassName(line: string | undefined): string | undefined {
+    const match = line && /\.([A-Za-z0-9_]+)'"?\s*$/.exec(line.trim());
+    return match ? match[1] : undefined;
+}
+
 class CrowdyCustomEventParser extends CustomEventNodeParser {
     public parse(data: ParsingNodeData): NodeControl {
+        // The export carries each parameter twice: as the drawn "Pin" and as the "UserDefinedPin" declaration
+        // behind it. The generic pass turns both into pins; the declaration has no PinId, so it is dropped here.
+        data.node.customProperties = data.node.customProperties.filter(
+            p => !(p instanceof PinProperty) || (p as PinProperty).id !== undefined);
         const meta = data.lines.find(l => l.trim().startsWith("MetaData="));
         const keys: { [key: string]: string } = {};
         for (const m of (meta || "").matchAll(/\("([^"]+)",\s*"([^"]*)"\)/g)) {
@@ -126,6 +154,35 @@ class CrowdyAsyncActionParser extends NodeParser {
     }
 }
 
+// Get <World/Game Instance> Subsystem: a pure getter the editor titles with the subsystem class's display name.
+class CrowdyGetSubsystemParser extends NodeParser {
+    constructor() {
+        super({});
+    }
+
+    public parse(data: ParsingNodeData): NodeControl {
+        const className = referencedClassName(data.lines.find(l => l.trim().startsWith("CustomClass=")));
+        data.node.title = className ? identifierDisplayName(className) : data.node.title;
+        data.node.backgroundColor = Constants.DEFAULT_FUNC_PURE_BACKGROUND_COLOR;
+        return new HeadedNodeControl(data.node, IconLibrary.FUNCTION);
+    }
+}
+
+// Bind Event to <Delegate>: an Add Delegate node named after the delegate property it binds.
+class CrowdyAddDelegateParser extends NodeParser {
+    constructor() {
+        super({});
+    }
+
+    public parse(data: ParsingNodeData): NodeControl {
+        const ref = data.lines.find(l => l.trim().startsWith("DelegateReference="));
+        const member = ref && /MemberName="([^"]+)"/.exec(ref);
+        data.node.title = member ? `Bind Event to ${identifierDisplayName(member[1])}` : data.node.title;
+        data.node.backgroundColor = Constants.DEFAULT_FUNC_BACKGROUND_COLOR;
+        return new HeadedNodeControl(data.node, IconLibrary.FUNCTION);
+    }
+}
+
 class CrowdyEffectNodeParser extends NodeParser {
     constructor() {
         super({});
@@ -145,6 +202,8 @@ export const CrowdyPlugin: NodeParserPlugin = {
         const parsers: { [classPath: string]: () => NodeParser } = {
             "/Script/BlueprintGraph.K2Node_CallFunction": () => new CrowdyCallFunctionParser(),
             "/Script/BlueprintGraph.K2Node_CustomEvent": () => new CrowdyCustomEventParser(),
+            "/Script/BlueprintGraph.K2Node_GetSubsystem": () => new CrowdyGetSubsystemParser(),
+            "/Script/BlueprintGraph.K2Node_AddDelegate": () => new CrowdyAddDelegateParser(),
         };
         for (const classPath of ASYNC_NODE_CLASSES) {
             parsers[classPath] = () => new CrowdyAsyncActionParser();

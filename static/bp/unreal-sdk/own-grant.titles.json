@@ -1,0 +1,50 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event BeginPlay",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_GetSubsystem_0",
+		"class": "/Script/BlueprintGraph.K2Node_GetSubsystem",
+		"title": "Crowdy Entity Subsystem",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AddDelegate_0",
+		"class": "/Script/BlueprintGraph.K2Node_AddDelegate",
+		"title": "Bind Event to On Ownership Requested",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnClaimRequested\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_Self_0",
+		"class": "/Script/BlueprintGraph.K2Node_Self",
+		"title": "Self-Reference",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "==",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_IfThenElse_0",
+		"class": "/Script/BlueprintGraph.K2Node_IfThenElse",
+		"title": "Branch",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_1",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Grant Ownership Transfer To Player",
+		"title_drawn": true
+	}
+]

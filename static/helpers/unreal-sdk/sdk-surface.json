@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-17T18:22:46Z",
+  "generated": "2026-09-18T17:43:28Z",
   "sdk_version": "2.14.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
@@ -2648,6 +2648,25 @@
         "BlueprintInternalUseOnly": "true",
         "WorldContext": "WorldContext"
       },
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyConnectionMonitor::GetReconnectState",
+      "class": "UCrowdyConnectionMonitor",
+      "name": "GetReconnectState",
+      "display_name": "Get Reconnect State",
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Network/UDP/CrowdyConnectionMonitor.h",
+      "public_header": true,
+      "callable": false,
+      "pure": true,
+      "static": false,
+      "return_type": "ECrowdyReconnectState",
+      "category": "CrowdySDK|Connection|Status",
+      "specifiers": [
+        "BlueprintPure"
+      ],
+      "meta": {},
       "editor_module": false
     },
     {
@@ -65168,6 +65187,52 @@
       "blueprint": true,
       "module": "CrowdyReplication",
       "header": "CrowdyReplication/Public/Replication/GameModel/Kit/CrowdyCombatKitActions.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyConnectionMonitor::AttachTo",
+      "owner": "UCrowdyConnectionMonitor",
+      "owner_kind": "class",
+      "name": "AttachTo",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void AttachTo(UCrowdySDKSubsystem* Sdk, UCrowdyUDPSubsystem* Udp)",
+      "return_type": "void",
+      "params": "UCrowdySDKSubsystem* Sdk, UCrowdyUDPSubsystem* Udp",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Network/UDP/CrowdyConnectionMonitor.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyConnectionMonitor::GetReconnectState",
+      "owner": "UCrowdyConnectionMonitor",
+      "owner_kind": "class",
+      "name": "GetReconnectState",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "ECrowdyReconnectState GetReconnectState() const",
+      "return_type": "ECrowdyReconnectState",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Network/UDP/CrowdyConnectionMonitor.h",
       "editor_module": false
     },
     {
