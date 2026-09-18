@@ -199,6 +199,17 @@ mutation Refresh { refreshAppToken { token expiresAt } }
 Send the current app token as the Bearer. Switching to a **different** app always
 routes back through the Overworld for a fresh per-app token.
 
+**Native clients that hold a UDP session:** pass `currentServer` (the `ip4` +
+`clientPort` that `serverWithLeastClients` gave you) and read `authorizedServer`
+on the response. When it is set, the new token is already known to the Buddy you
+are on -- keep the socket and switch tokens. When it is `null`, call
+`serverWithLeastClients` again for a fresh placement. It is `null` when your node
+is gone, draining or Full, **and also when the node is running near its capacity
+and a cooler sibling has room**: the refresh is the cheapest moment for the fleet
+to spread players, so under load expect to be moved occasionally. The SDKs
+(CrowdyJS `PortalAPI.refresh(currentServer)`, CrowdyCPP `refreshToken`) already
+do this; browser clients on the UDP proxy re-place on every refresh by design.
+
 ## What an app token may do
 
 An app token is accepted on the Game API + realtime surface **only for its own
