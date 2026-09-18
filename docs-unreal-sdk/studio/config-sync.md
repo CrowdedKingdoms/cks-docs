@@ -19,7 +19,7 @@ Config Sync writes the selected app's ids and endpoints into your project's sett
 3. Open the **Configuration** tab under the app's details. It shows every value the sync would write. A value that differs from what the project holds is drawn in gold with the current value on a "was" line beneath it, and a badge beside the tab strip reads **IN SYNC** or **N TO CHANGE**.
 4. Read the diff, then press **Sync to project**.
 
-![The Configuration tab with a pending change: gold values, the N TO CHANGE badge, and the Sync to project button](pathname:///img/unreal-sdk/studio-config-sync.png)
+![The Configuration tab with a pending change: gold values, the N TO CHANGE badge, and the Sync to project button](/img/unreal-sdk/studio-config-sync.png)
 
 The rows are **App ID**, **Org ID**, **Game API HTTP URL**, **Game API WS URL**, and a read-only **Shared origin**, which comes from the backend selector on the Sign In page rather than from the app.
 

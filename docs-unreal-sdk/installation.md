@@ -49,7 +49,7 @@ Once the project opens in the editor (after Step 5), check the Output Log for `M
 
 From the editor: open the project, go to **Edit, Plugins**, search for `CrowdySDK`, tick **Enabled**, and restart when asked.
 
-![The Plugins window with CrowdySDK found and enabled](pathname:///img/unreal-sdk/plugins-window.png)
+![The Plugins window with CrowdySDK found and enabled](/img/unreal-sdk/plugins-window.png)
 
 Or add it to your `.uproject` by hand:
 

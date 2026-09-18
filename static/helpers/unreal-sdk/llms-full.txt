@@ -96,7 +96,7 @@ Once the project opens in the editor (after Step 5), check the Output Log for `M
 
 From the editor: open the project, go to **Edit, Plugins**, search for `CrowdySDK`, tick **Enabled**, and restart when asked.
 
-![The Plugins window with CrowdySDK found and enabled](pathname:///img/unreal-sdk/plugins-window.png)
+![The Plugins window with CrowdySDK found and enabled](/img/unreal-sdk/plugins-window.png)
 
 Or add it to your `.uproject` by hand:
 
@@ -186,7 +186,7 @@ Two words you will meet on every step. An **entity** is an actor other players c
 2. Open Crowdy Studio, [sign in](./studio/sign-in.md), pick your app on the Project page, and press **Sync to project** on its Configuration tab. See [Config Sync](./studio/config-sync.md).
 3. Give your test map a [map profile](./runtime/map-profile.md): create a `UCrowdyMapProfile` asset with **Enable Networking** on, and assign it to the map under **Project Settings, Plugins, Crowdy SDK, Map Profiles**.
 
-![The Project page's Configuration tab, with the diff and the Sync to project button](pathname:///img/unreal-sdk/qs-config-sync.png)
+![The Project page's Configuration tab, with the diff and the Sync to project button](/img/unreal-sdk/qs-config-sync.png)
 
 :::caution[If you skip the sync, the SDK has no app id or Game API URLs to connect with, and nothing replicates.]
 :::
@@ -1097,7 +1097,7 @@ Crowdy Studio opens on its Sign In page. You sign in once; Studio remembers the 
 
 ## The sign-in page, top to bottom
 
-![The Sign In page: backend selector, provider buttons, email and password, sign-in link, organization token](pathname:///img/unreal-sdk/studio-sign-in.png)
+![The Sign In page: backend selector, email and password, sign-in link, organization token; the provider buttons appear above the form when the backend offers them](/img/unreal-sdk/studio-sign-in.png)
 
 1. **Backend.** A selector above the form. Leave it at its default unless Crowded Kingdoms told you otherwise.
 2. **Continue with ...** buttons, one per social provider your backend offers: Google, GitHub, Discord, Apple, or Microsoft. The section is hidden when none is offered. A provider sign-in opens your system browser, never an embedded web view, and returns to Studio when it completes.
@@ -1198,7 +1198,7 @@ Under the details are two tabs, **Configuration** and **Connection**, which are 
 
 Press **Create app** in the page header. It needs an organization to create in: pick one in the filter, or have an app of that organization selected. The dialog opens inside the page in two steps.
 
-![The Create app dialog, step 1: name, URL identifier preview, datacenter cards, advanced options](pathname:///img/unreal-sdk/studio-create-app.png)
+![The Create app dialog, step 1: name, URL identifier preview, datacenter cards, advanced options](/img/unreal-sdk/studio-create-app.png)
 
 **Step 1, Name your app.** Type a name; the URL identifier (lowercase letters, digits, hyphens) is derived from it, and **Advanced options** lets you override it and add a description. Pick a datacenter card. The first available datacenter is preselected.
 
@@ -1238,7 +1238,7 @@ Config Sync writes the selected app's ids and endpoints into your project's sett
 3. Open the **Configuration** tab under the app's details. It shows every value the sync would write. A value that differs from what the project holds is drawn in gold with the current value on a "was" line beneath it, and a badge beside the tab strip reads **IN SYNC** or **N TO CHANGE**.
 4. Read the diff, then press **Sync to project**.
 
-![The Configuration tab with a pending change: gold values, the N TO CHANGE badge, and the Sync to project button](pathname:///img/unreal-sdk/studio-config-sync.png)
+![The Configuration tab with a pending change: gold values, the N TO CHANGE badge, and the Sync to project button](/img/unreal-sdk/studio-config-sync.png)
 
 The rows are **App ID**, **Org ID**, **Game API HTTP URL**, **Game API WS URL**, and a read-only **Shared origin**, which comes from the backend selector on the Sign In page rather than from the app.
 
@@ -1512,7 +1512,7 @@ Above the tabs, visible from every tab, sit three readiness pills (**App**, **Se
 
 Pressing **Sync to Server** opens a review sheet headed **Send ...?**; there is no separate yes or no dialog. It lists every pending change grouped by kind, in apply order (Models, Attributes, Functions, Automations, Triggers), each row ticked. Untick anything you are not ready to send; whatever the rest needs is added back for you. Read the headline and counts, then press **Send**. A change list that moved under you refuses to send rather than sending something you did not review.
 
-![The Send review sheet opened from Sync to Server, listing the pending changes by kind](pathname:///img/unreal-sdk/studio-gm-sync-preview.png)
+![The Send review sheet opened from Sync to Server, listing the pending changes by kind](/img/unreal-sdk/studio-gm-sync-preview.png)
 
 :::warning[A sync can change which effects and policies the server enforces. The preview shows exactly what changes.]
 An SDK update can change what an effect's invoke policy says, for example by adding an ownership or participation requirement to an effect that had none. The change is inert in your project until the next Sync to Server pushes the recomputed policy; a call that worked for months then starts returning "You are not allowed to do that". The review panel counts changes but does not single out an authority change from a cosmetic one. After updating the SDK, open each effect asset and read its **Deploy Payload** panel before you sync: it prints the exact function definition a sync would send, invoke policy included.
@@ -1548,7 +1548,7 @@ After **Preview changes** has run, the model list carries two kinds of mark, alw
 
 Press **What do these marks mean?** on the reconcile strip for the legend. Until a preview has run, the list says "Not checked against the project yet".
 
-![The Models tab after Preview changes: provenance glyphs and drift words on the rows that differ](pathname:///img/unreal-sdk/studio-gm-drift.png)
+![The Models tab after Preview changes: provenance glyphs and drift words on the rows that differ](/img/unreal-sdk/studio-gm-drift.png)
 
 ## Staged deletes
 
@@ -1605,7 +1605,7 @@ Create the asset from the Content Browser under the **Crowdy** category. Its Det
 
 Both compile to the same function definition, and everything downstream (the schema sync, the Apply Crowdy Effect node, the change notification) is identical whichever you pick.
 
-![The effect asset editor in Script mode: the source text, the Compile Preview, the Deploy Payload summary, and the Details panel](pathname:///img/unreal-sdk/effect-graph-example.png)
+![The effect asset editor in Script mode: the source text, the Compile Preview, the Deploy Payload summary, and the Details panel](/img/unreal-sdk/effect-graph-example.png)
 
 The screenshot shows Script mode. Graph mode replaces the text pane with the canvas described next; the toolbar and the Details panel are the same.
 
@@ -2338,9 +2338,9 @@ This path resolves the class by id against loaded classes; a spawn event carries
 
 Inbound actor updates arrive at `UCrowdyActorTracker`, a world subsystem the actor manager listens to. Its settings live on the `ActorManagement` struct of the [map profile](./map-profile.md) (`FCrowdyActorManagementConfigStruct`, the same struct a `UCrowdyActorManagementConfig` asset holds):
 
-![The actor management config: the tracker settings and the backend selection](pathname:///img/unreal-sdk/actor-config.png)
+![The map profile with Actor Management expanded and an Actor Pool Backend Config assigned: the tracker settings and the backend selection](/img/unreal-sdk/actor-config.png)
 
-The same fields are visible expanded under **Actor Management** in the [map profile screenshot](./map-profile.md#create-the-asset).
+The shipped default profile ships with **Backend Config** set to None; the [map profile page](./map-profile.md#create-the-asset) shows that state and how to assign one.
 
 | Field | Default | Effect |
 |---|---|---|
@@ -2740,7 +2740,7 @@ Once Crowdy Replicates is ticked, three more rows appear. **Recipient** is the `
 - **Owning Client**: only the target entity's owner; another client's call becomes a request to that owner.
 - **Host**: only the elected host; another client's call becomes a request to the host.
 
-**Decay Rate** and **Replication Distance** sit below the recipient and are greyed out unless the recipient is Spatial Multicast, because only the spatial path reads them. **Channel** appears only for Multicast: type a channel name, or press **Pick** to choose from the app's channels, which the picker fetches live from Crowdy Studio when you are signed in there; free text always works.
+**Decay Rate** and **Replication Distance** sit below the recipient and are greyed out unless the recipient is Spatial Multicast, because only the spatial path reads them. **Channel** appears only for Multicast: type a channel name, or press **Pick** to choose from the app's channels, which the picker fetches live from Crowdy Studio when you are signed in there; free text always works. **Is A One-Shot Action** belongs to the opt-in crowd rendering backend, which this guide does not cover; leave it unticked.
 
 :::warning[A channel you type here must already exist. Only the session channel is created for you.]
 A typo, or a channel nobody created, logs a warning at connect time and every call to the event silently reaches nobody. See [Channels](./channels.md).
@@ -3009,7 +3009,7 @@ void ALantern::OnRep_Lit()
 
 Select the variable, set **Crowdy Replication** to **Replicated**, and a **RepNotify** field appears; the editor creates the `OnRep_` function. The variable's Get and Set nodes then carry the replication badge:
 
-![The replication badge on a Crowdy-replicated variable's Get and Set nodes](pathname:///img/unreal-sdk/bp-replication-badge.png)
+![The replication badge on a Crowdy-replicated variable's Get and Set nodes](/img/unreal-sdk/bp-replication-badge.png)
 
 The body of the notify, drawn here as a custom event named `OnRep_Lit` because a generated graph cannot draw the editor-made function itself: **Get bLit** feeds **Set Visibility** on `Light`.
 

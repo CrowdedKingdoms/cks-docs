@@ -20,7 +20,7 @@ Two words you will meet on every step. An **entity** is an actor other players c
 2. Open Crowdy Studio, [sign in](./studio/sign-in.md), pick your app on the Project page, and press **Sync to project** on its Configuration tab. See [Config Sync](./studio/config-sync.md).
 3. Give your test map a [map profile](./runtime/map-profile.md): create a `UCrowdyMapProfile` asset with **Enable Networking** on, and assign it to the map under **Project Settings, Plugins, Crowdy SDK, Map Profiles**.
 
-![The Project page's Configuration tab, with the diff and the Sync to project button](pathname:///img/unreal-sdk/qs-config-sync.png)
+![The Project page's Configuration tab, with the diff and the Sync to project button](/img/unreal-sdk/qs-config-sync.png)
 
 :::caution[If you skip the sync, the SDK has no app id or Game API URLs to connect with, and nothing replicates.]
 :::

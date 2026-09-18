@@ -75,7 +75,7 @@ The [Quickstart](../quickstart.md) lantern is the `state-onrep` example: `bLit` 
 
 Select the variable, set **Crowdy Replication** to **Replicated**, and a **RepNotify** field appears; the editor creates the `OnRep_` function. The variable's Get and Set nodes then carry the replication badge:
 
-![The replication badge on a Crowdy-replicated variable's Get and Set nodes](pathname:///img/unreal-sdk/bp-replication-badge.png)
+![The replication badge on a Crowdy-replicated variable's Get and Set nodes](/img/unreal-sdk/bp-replication-badge.png)
 
 The body of the notify, drawn here as a custom event named `OnRep_Lit` because a generated graph cannot draw the editor-made function itself: **Get bLit** feeds **Set Visibility** on `Light`.
 

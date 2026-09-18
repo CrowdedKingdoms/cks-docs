@@ -11,7 +11,7 @@ Crowdy Studio opens on its Sign In page. You sign in once; Studio remembers the 
 
 ## The sign-in page, top to bottom
 
-![The Sign In page: backend selector, provider buttons, email and password, sign-in link, organization token](pathname:///img/unreal-sdk/studio-sign-in.png)
+![The Sign In page: backend selector, email and password, sign-in link, organization token; the provider buttons appear above the form when the backend offers them](/img/unreal-sdk/studio-sign-in.png)
 
 1. **Backend.** A selector above the form. Leave it at its default unless Crowded Kingdoms told you otherwise.
 2. **Continue with ...** buttons, one per social provider your backend offers: Google, GitHub, Discord, Apple, or Microsoft. The section is hidden when none is offered. A provider sign-in opens your system browser, never an embedded web view, and returns to Studio when it completes.
