@@ -8,25 +8,31 @@
 	{
 		"name": "K2Node_GetSubsystem_0",
 		"class": "/Script/BlueprintGraph.K2Node_GetSubsystem",
-		"title": "Crowdy Connection Monitor",
-		"title_drawn": true
-	},
-	{
-		"name": "K2Node_CallFunction_0",
-		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
-		"title": "Init Connection Monitor\nTarget is Crowdy Connection Monitor",
+		"title": "Crowdy SDK Subsystem",
 		"title_drawn": true
 	},
 	{
 		"name": "K2Node_AddDelegate_0",
 		"class": "/Script/BlueprintGraph.K2Node_AddDelegate",
-		"title": "Bind Event to On Connection State Changed",
+		"title": "Bind Event to On UDP Timed Out",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AddDelegate_1",
+		"class": "/Script/BlueprintGraph.K2Node_AddDelegate",
+		"title": "Bind Event to On UDP Connection Success",
 		"title_drawn": true
 	},
 	{
 		"name": "K2Node_CustomEvent_0",
 		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
-		"title": "OnReconnectState\nCustom Event",
+		"title": "OnConnectionLost\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CustomEvent_1",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnConnectionRestored\nCustom Event",
 		"title_drawn": true
 	}
 ]

@@ -1,10 +1,11 @@
 // LanternGameInstance.h
-#include "Network/UDP/CrowdyConnectionMonitor.h"
-
 void WatchConnection();
 
 UFUNCTION()
-void HandleConnectionStateChanged(ECrowdyReconnectState NewState);
+void HandleConnectionLost();
+
+UFUNCTION()
+void HandleConnectionRestored();
 
 // LanternGameInstance.cpp
 #include "EngineUtils.h"
@@ -12,17 +13,24 @@ void HandleConnectionStateChanged(ECrowdyReconnectState NewState);
 
 void ULanternGameInstance::WatchConnection()
 {
-	UCrowdyConnectionMonitor* Monitor = GetSubsystem<UCrowdyConnectionMonitor>();
-	Monitor->InitConnectionMonitor();
-	Monitor->OnConnectionStateChanged.AddDynamic(this, &ULanternGameInstance::HandleConnectionStateChanged);
+	// The SDK reconnects by itself after a timeout; a game only reacts to the two events.
+	UCrowdySDKSubsystem* Sdk = GetSubsystem<UCrowdySDKSubsystem>();
+	Sdk->OnUDPTimedOut.AddDynamic(this, &ULanternGameInstance::HandleConnectionLost);
+	Sdk->OnUDPConnectionSuccess.AddDynamic(this, &ULanternGameInstance::HandleConnectionRestored);
 }
 
-void ULanternGameInstance::HandleConnectionStateChanged(ECrowdyReconnectState NewState)
+void ULanternGameInstance::HandleConnectionLost()
 {
-	// Dim every placed lantern while the connection is down, restore them when it returns.
-	const bool bUp = NewState == ECrowdyReconnectState::Connected;
 	for (TActorIterator<ALantern> It(GetWorld()); It; ++It)
 	{
-		It->Light->SetIntensity(bUp ? 5000.f : 0.f);
+		It->Light->SetIntensity(0.f);
+	}
+}
+
+void ULanternGameInstance::HandleConnectionRestored()
+{
+	for (TActorIterator<ALantern> It(GetWorld()); It; ++It)
+	{
+		It->Light->SetIntensity(5000.f);
 	}
 }
