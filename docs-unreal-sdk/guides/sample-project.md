@@ -211,7 +211,7 @@ Raw messages are fire and forget, with no ordering or receipt. Reach for a Multi
 
 ## Required setup
 
-The sample project is already set up for you. The only thing you need to do is to sign up for a developer account and then log in through the Crowdy Studio and then through game. Make sure to sync the `Crowd` app first if it's not already. Logging in through the game yields the identity session token; an **app-scoped token** for the `Crowd` app is minted from it before replication works — see [authentication](/unreal-sdk/runtime/authentication).
+The sample project is already set up for you. The only thing you need to do is to sign up for a developer account and then log in through the Crowdy Studio and then through game. Make sure to sync the `Crowd` app first if it's not already. Logging in through the game yields the identity session token; an **app-scoped token** for the `Crowd` app is minted from it before replication works; see [authentication](../services/authentication.md).
 
 
 ## Where to go next

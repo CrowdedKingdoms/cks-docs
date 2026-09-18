@@ -3,7 +3,7 @@
 #include "LanternPost.generated.h"
 
 UCLASS()
-class ALanternPost : public ALantern
+class ALanternPost : public ALantern, public ICrowdyBindingKeyProvider
 {
 	GENERATED_BODY()
 

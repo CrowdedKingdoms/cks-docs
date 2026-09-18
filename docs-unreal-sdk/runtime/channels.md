@@ -137,7 +137,7 @@ A `Multicast` CrowdyEvent is encoded into a channel payload and published over t
 - A named channel is join-only from the SDK's side. Create it in Crowdy Studio or at runtime, then `RegisterReliableRpcChannel` if you created it after connecting.
 - `send_messages` gates publishing, not membership. An announce-only channel is a channel whose joiners lack it.
 - The sender never receives an echo of its own message.
-- Channel management is a Game API call and needs the app-scoped token the sign-in gives you; see [Authentication](./authentication.md). The wire protocol and the GraphQL calls are on the [Game API channels page](/game-api/channels).
+- Channel management is a Game API call and needs the app-scoped token the sign-in gives you; see [Authentication](../services/authentication.md). The wire protocol and the GraphQL calls are on the [Game API channels page](/game-api/channels).
 
 ## Related
 

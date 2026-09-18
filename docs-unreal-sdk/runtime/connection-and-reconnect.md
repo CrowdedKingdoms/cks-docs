@@ -100,5 +100,5 @@ Five functions on `UCrowdySDKSubsystem` are deprecated (the compiler warns on ea
 
 - [Channels](./channels.md): what connecting joins.
 - [Video frames](./video-frames.md): the largest consumer of the receive budget.
-- [Authentication](./authentication.md): the sign-in that requests the connection.
+- [Authentication](../services/authentication.md): the sign-in that requests the connection.
 - [Console variables](../reference/console-cvars.md).

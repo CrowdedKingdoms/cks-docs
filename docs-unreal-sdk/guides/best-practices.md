@@ -50,7 +50,7 @@ entity's pose, not for who **decides** a rule.
 - Sign in and sync the app in Crowdy Studio before networking.
   [Studio overview](/unreal-sdk/studio/overview).
 - Gameplay uses an **app-scoped token**, not the identity session token.
-  [Authentication](/unreal-sdk/runtime/authentication).
+  [Authentication](../services/authentication.md).
 - There is no unauthenticated shortcut. Use email + password, magic link,
   or social sign-in.
 
