@@ -56,7 +56,7 @@ Under the details are two tabs, **Configuration** and **Connection**, which are 
 
 Press **Create app** in the page header. It needs an organization to create in: pick one in the filter, or have an app of that organization selected. The dialog opens inside the page in two steps.
 
-![The Create app dialog, step 1: name, URL identifier preview, datacenter cards, advanced options](pathname:///img/unreal-sdk/studio-create-app.png)
+![The Create app dialog, step 1: name, URL identifier preview, datacenter cards, advanced options](/img/unreal-sdk/studio-create-app.png)
 
 **Step 1, Name your app.** Type a name; the URL identifier (lowercase letters, digits, hyphens) is derived from it, and **Advanced options** lets you override it and add a description. Pick a datacenter card. The first available datacenter is preselected.
 

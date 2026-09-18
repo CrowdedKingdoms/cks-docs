@@ -100,9 +100,9 @@ This path resolves the class by id against loaded classes; a spawn event carries
 
 Inbound actor updates arrive at `UCrowdyActorTracker`, a world subsystem the actor manager listens to. Its settings live on the `ActorManagement` struct of the [map profile](./map-profile.md) (`FCrowdyActorManagementConfigStruct`, the same struct a `UCrowdyActorManagementConfig` asset holds):
 
-![The actor management config: the tracker settings and the backend selection](pathname:///img/unreal-sdk/actor-config.png)
+![The map profile with Actor Management expanded and an Actor Pool Backend Config assigned: the tracker settings and the backend selection](/img/unreal-sdk/actor-config.png)
 
-The same fields are visible expanded under **Actor Management** in the [map profile screenshot](./map-profile.md#create-the-asset).
+The shipped default profile ships with **Backend Config** set to None; the [map profile page](./map-profile.md#create-the-asset) shows that state and how to assign one.
 
 | Field | Default | Effect |
 |---|---|---|

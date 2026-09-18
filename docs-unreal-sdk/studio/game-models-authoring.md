@@ -36,7 +36,7 @@ Above the tabs, visible from every tab, sit three readiness pills (**App**, **Se
 
 Pressing **Sync to Server** opens a review sheet headed **Send ...?**; there is no separate yes or no dialog. It lists every pending change grouped by kind, in apply order (Models, Attributes, Functions, Automations, Triggers), each row ticked. Untick anything you are not ready to send; whatever the rest needs is added back for you. Read the headline and counts, then press **Send**. A change list that moved under you refuses to send rather than sending something you did not review.
 
-![The Send review sheet opened from Sync to Server, listing the pending changes by kind](pathname:///img/unreal-sdk/studio-gm-sync-preview.png)
+![The Send review sheet opened from Sync to Server, listing the pending changes by kind](/img/unreal-sdk/studio-gm-sync-preview.png)
 
 :::warning[A sync can change which effects and policies the server enforces. The preview shows exactly what changes.]
 An SDK update can change what an effect's invoke policy says, for example by adding an ownership or participation requirement to an effect that had none. The change is inert in your project until the next Sync to Server pushes the recomputed policy; a call that worked for months then starts returning "You are not allowed to do that". The review panel counts changes but does not single out an authority change from a cosmetic one. After updating the SDK, open each effect asset and read its **Deploy Payload** panel before you sync: it prints the exact function definition a sync would send, invoke policy included.
@@ -72,7 +72,7 @@ After **Preview changes** has run, the model list carries two kinds of mark, alw
 
 Press **What do these marks mean?** on the reconcile strip for the legend. Until a preview has run, the list says "Not checked against the project yet".
 
-![The Models tab after Preview changes: provenance glyphs and drift words on the rows that differ](pathname:///img/unreal-sdk/studio-gm-drift.png)
+![The Models tab after Preview changes: provenance glyphs and drift words on the rows that differ](/img/unreal-sdk/studio-gm-drift.png)
 
 ## Staged deletes
 

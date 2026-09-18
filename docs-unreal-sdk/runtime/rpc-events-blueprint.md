@@ -44,7 +44,7 @@ Once Crowdy Replicates is ticked, three more rows appear. **Recipient** is the `
 - **Owning Client**: only the target entity's owner; another client's call becomes a request to that owner.
 - **Host**: only the elected host; another client's call becomes a request to the host.
 
-**Decay Rate** and **Replication Distance** sit below the recipient and are greyed out unless the recipient is Spatial Multicast, because only the spatial path reads them. **Channel** appears only for Multicast: type a channel name, or press **Pick** to choose from the app's channels, which the picker fetches live from Crowdy Studio when you are signed in there; free text always works.
+**Decay Rate** and **Replication Distance** sit below the recipient and are greyed out unless the recipient is Spatial Multicast, because only the spatial path reads them. **Channel** appears only for Multicast: type a channel name, or press **Pick** to choose from the app's channels, which the picker fetches live from Crowdy Studio when you are signed in there; free text always works. **Is A One-Shot Action** belongs to the opt-in crowd rendering backend, which this guide does not cover; leave it unticked.
 
 :::warning[A channel you type here must already exist. Only the session channel is created for you.]
 A typo, or a channel nobody created, logs a warning at connect time and every call to the event silently reaches nobody. See [Channels](./channels.md).

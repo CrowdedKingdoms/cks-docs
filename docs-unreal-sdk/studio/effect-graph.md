@@ -24,7 +24,7 @@ Create the asset from the Content Browser under the **Crowdy** category. Its Det
 
 Both compile to the same function definition, and everything downstream (the schema sync, the Apply Crowdy Effect node, the change notification) is identical whichever you pick.
 
-![The effect asset editor in Script mode: the source text, the Compile Preview, the Deploy Payload summary, and the Details panel](pathname:///img/unreal-sdk/effect-graph-example.png)
+![The effect asset editor in Script mode: the source text, the Compile Preview, the Deploy Payload summary, and the Details panel](/img/unreal-sdk/effect-graph-example.png)
 
 The screenshot shows Script mode. Graph mode replaces the text pane with the canvas described next; the toolbar and the Details panel are the same.
 
