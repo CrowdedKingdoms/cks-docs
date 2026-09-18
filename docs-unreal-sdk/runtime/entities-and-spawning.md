@@ -102,7 +102,7 @@ Inbound actor updates arrive at `UCrowdyActorTracker`, a world subsystem the act
 
 ![The map profile with Actor Management expanded and an Actor Pool Backend Config assigned: the tracker settings and the backend selection](/img/unreal-sdk/actor-config.png)
 
-The shipped default profile ships with **Backend Config** set to None; the [map profile page](./map-profile.md#create-the-asset) shows that state and how to assign one.
+The shipped default profile leaves **Backend Config** at None and runs on the built-in one; the [map profile page](./map-profile.md#create-the-asset) shows that state and when to assign your own.
 
 | Field | Default | Effect |
 |---|---|---|

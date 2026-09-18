@@ -184,15 +184,15 @@ Two words you will meet on every step. An **entity** is an actor other players c
 
 1. [Install the plugin](./installation.md) and confirm your project compiles.
 2. Open Crowdy Studio, [sign in](./studio/sign-in.md), pick your app on the Project page, and press **Sync to project** on its Configuration tab. See [Config Sync](./studio/config-sync.md).
-3. Give your test map a [map profile](./runtime/map-profile.md): create a `UCrowdyMapProfile` asset with **Enable Networking** on, and assign it to the map under **Project Settings, Plugins, Crowdy SDK, Map Profiles**.
+3. Optional: give your test map a [map profile](./runtime/map-profile.md) of its own. Without one it runs on the SDK's shipped default, which is enough for this page.
 
 ![The Project page's Configuration tab, with the diff and the Sync to project button](/img/unreal-sdk/qs-config-sync.png)
 
 :::caution[If you skip the sync, the SDK has no app id or Game API URLs to connect with, and nothing replicates.]
 :::
 
-:::warning[Every playable map still needs a map profile.]
-Config Sync points the project at an app. It does not activate the SDK on a map. Without a profile the entity subsystem does nothing on that map, and every step below looks dead even though the connection is fine.
+:::note[A map with no profile of its own runs on the SDK's shipped default.]
+Config Sync points the project at an app; a map profile decides what the SDK does on a map. With none assigned, the shipped default applies (networking on, the actor pool drawing remote entities with the shipped transform policy), so every step below works without authoring one. Author a profile when you need per-map settings; see [Map profiles](./runtime/map-profile.md).
 :::
 
 ## About the code on this page
@@ -1772,7 +1772,7 @@ In the Content Browser, **Add**, **Miscellaneous**, **Data Asset**, pick **Crowd
 
 ![The shipped default map profile asset in the Details panel](/img/unreal-sdk/map-profile-asset.png)
 
-The screenshot is the SDK's own shipped default profile. Note that **Backend Config** is empty on it; the section below explains why that matters.
+The screenshot is the SDK's own shipped default profile. **Backend Config** is empty on it, which is fine: the actor pool runs on a built-in config when none is set.
 
 | Field | Default | What it controls |
 |---|---|---|
@@ -1787,8 +1787,8 @@ The screenshot is the SDK's own shipped default profile. Note that **Backend Con
 | `StateRelevanceDistance` | Four Chunks | Shown as **State Relevance Distance**. How far a Crowdy State delta travels, as a chunk count (`ECrowdyReplicationDistance`), tighter than the continuous channel. |
 | `StateKeyframeIntervalSeconds` | 2.0 | Period of the Crowdy State keyframe, the full re-send of every property marked `CrowdyHeartbeat`. 0 turns the keyframe off map-wide; on-change replication is unaffected. |
 
-:::warning[A backend class is not a backend config. The shipped default profile names one and sets no config, so the actor pool refuses to start on it.]
-`ActorManagement.BackendClass` defaults to `UCrowdyActorPoolBackend`, and that backend needs `ActorManagement.BackendConfig` set to an **Actor Pool Backend Config** with a `ReplicationPolicyClass`. On the shipped asset the config is empty, so `InitializeBackend` logs a warning and returns false, the actor manager refuses the backend, and remote entities that arrive as continuous-state updates are tracked but never drawn. Entities announced by a spawn event still get their proxy actor, and Crowdy State still applies to level-placed and spawned actors; what is missing is the pooled proxy for Dynamic-mode movement. Author your own profile with a config before you rely on movement from another client. See [Rendering backends](./rendering-backends.md).
+:::note[An empty Backend Config means the built-in default, not a disabled backend.]
+`ActorManagement.BackendClass` defaults to `UCrowdyActorPoolBackend`. With `ActorManagement.BackendConfig` left empty, the backend creates a transient **Actor Pool Backend Config** and applies remote movement with `UCrowdyTransformRepPolicy`, the shipped policy that reads the default executor's `FCrowdyActorState` (location and rotation) and interpolates between samples. Set a config of your own when your executor sends a state struct of its own, when you want pool sizes per class, or when you want a different pool policy. A config of another backend's class is still refused with a warning naming the field. See [Rendering backends](./rendering-backends.md).
 :::
 
 ## Assign the profile
@@ -2340,7 +2340,7 @@ Inbound actor updates arrive at `UCrowdyActorTracker`, a world subsystem the act
 
 ![The map profile with Actor Management expanded and an Actor Pool Backend Config assigned: the tracker settings and the backend selection](/img/unreal-sdk/actor-config.png)
 
-The shipped default profile ships with **Backend Config** set to None; the [map profile page](./map-profile.md#create-the-asset) shows that state and how to assign one.
+The shipped default profile leaves **Backend Config** at None and runs on the built-in one; the [map profile page](./map-profile.md#create-the-asset) shows that state and when to assign your own.
 
 | Field | Default | Effect |
 |---|---|---|
@@ -3444,7 +3444,7 @@ A `CrowdyState` property whose name and canonical type also match a field of the
 
 - `Mode` is orthogonal to `Ownership` and to Crowdy State. Do not set Dynamic hoping to make properties replicate; they already do.
 - `_Implementation`, `const`, `override`. The shipped default is the template.
-- The snapshot is applied through the backend, so a refused backend means tracked-but-not-drawn movement; the log says so at map load.
+- The snapshot is applied through the backend's policy. With no Backend Config the shipped `UCrowdyTransformRepPolicy` applies `FCrowdyActorState`; a custom struct like `FLanternPlayerState` is skipped until the profile names a policy that reads it, so the proxy stands still while the owner moves.
 - `GetActorState` is the owner's function. A proxy that needs a value from the snapshot gets it from the backend's policy, not by calling the executor.
 - `RegisterStateClass` on `UCrowdyActorManager` is filled for you at `BeginPlay`; you never call it.
 
@@ -4049,14 +4049,14 @@ When a Dynamic entity moves on its owner and not on anyone else, when you want y
 
 ## The default: the actor pool
 
-`FCrowdyActorManagementConfigStruct::BackendClass` on the map profile defaults to `UCrowdyActorPoolBackend`, so a profile that never chose a backend gets this one. It uses `UCrowdyActorPoolSubsystem` to keep a pool of pre-spawned actors per entity class, checks one out when a remote entity appears, registers it in the entity registry so entity-targeted events reach it like any actor, and hands every update to a `UCrowdyRepApplicationPolicy` you provide.
+`FCrowdyActorManagementConfigStruct::BackendClass` on the map profile defaults to `UCrowdyActorPoolBackend`, so a profile that never chose a backend gets this one. It uses `UCrowdyActorPoolSubsystem` to keep a pool of pre-spawned actors per entity class, checks one out when a remote entity appears, registers it in the entity registry so entity-targeted events reach it like any actor, and hands every update to a `UCrowdyRepApplicationPolicy`: the shipped `UCrowdyTransformRepPolicy` unless you provide one.
 
 ![The Actor Management category of a map profile: Backend Class and Backend Config](/img/unreal-sdk/map-profile-backend-select.png)
 
-The screenshot is the SDK's shipped default profile, and its **Backend Config** reads None. That is the whole warning below.
+The screenshot is the SDK's shipped default profile, and its **Backend Config** reads None: the backend runs on a built-in config in that case.
 
-:::warning[Naming a backend is not configuring it. The shipped default profile sets no Backend Config, so the actor pool refuses to start on it.]
-`UCrowdyActorPoolBackend::InitializeBackend` needs `BackendConfig` to be an **Actor Pool Backend Config** with a `ReplicationPolicyClass`. Without one it logs `Backend Config is not set, but this backend needs a CrowdyActorPoolBackendConfig to know what to spawn` and returns false; the actor manager then logs `could not initialize, so no remote entity will be drawn on this map` and installs nothing. Remote entities that arrive as continuous-state updates are tracked, slotted, and updated with nothing on screen. Spawn-event proxies and Crowdy State are unaffected. See [Map profiles](./map-profile.md).
+:::note[No Backend Config means the built-in one: the actor pool with the transform policy.]
+When `BackendConfig` is empty, `UCrowdyActorPoolBackend::InitializeBackend` creates a transient **Actor Pool Backend Config** and, since it names no policy, instantiates `UCrowdyTransformRepPolicy`: it reads the default executor's `FCrowdyActorState` and sets the pooled actor's location and rotation, interpolating between the last two samples. A `BackendConfig` of another backend's class is refused: the backend logs `Backend Config is a <class>, but this backend needs a CrowdyActorPoolBackendConfig` and returns false, the actor manager logs `could not initialize, so no remote entity will be drawn on this map`, and remote entities arriving as continuous-state updates are tracked with nothing on screen. Spawn-event proxies and Crowdy State are unaffected either way. See [Map profiles](./map-profile.md).
 :::
 
 ### Configure it
@@ -4065,18 +4065,18 @@ The screenshot is the SDK's shipped default profile, and its **Backend Config** 
 
 | Field | Default | Effect |
 |---|---|---|
-| `ReplicationPolicyClass` | none, required | Your `UCrowdyRepApplicationPolicy` subclass. Unset or invalid and the backend refuses to initialize. |
+| `ReplicationPolicyClass` | none | Your `UCrowdyRepApplicationPolicy` subclass. Unset means `UCrowdyTransformRepPolicy`, which applies `FCrowdyActorState`; set it when your executor sends a struct of your own. |
 | `PoolPolicyClass` | none, optional | A `UCrowdyActorPoolPolicy` subclass. Unset means the concrete base, which already hides pooled actors, shows them on activation, and strips proxy movement. |
 | `DefaultPoolSizePerClass` | 8 | Pools are created lazily per entity class at this size. |
 | `PerClassPoolOverrides` | empty | A per-class pool size; a class listed here is also pre-warmed at map load. |
 
-:::caution[ReplicationPolicyClass is abstract and must be set. PoolPolicyClass is concrete and may be left empty.]
-`UCrowdyRepApplicationPolicy` has two pure virtuals and requires your subclass. `UCrowdyActorPoolPolicy` ships full bodies and is meant to be instantiated as is. Do not confuse the two.
+:::caution[A custom executor needs a matching policy. The default policy reads FCrowdyActorState and refuses anything else.]
+`UCrowdyTransformRepPolicy` skips an update whose struct is not `FCrowdyActorState`, so a Dynamic entity whose executor sends its own struct stands still until its profile names a policy that reads it. `UCrowdyRepApplicationPolicy` has two pure virtuals and requires a subclass; `UCrowdyActorPoolPolicy` ships full bodies and is meant to be instantiated as is.
 :::
 
 ### The replication application policy
 
-`UCrowdyRepApplicationPolicy` is the piece most projects write: it reads your state struct out of each update and applies it to the pooled actor each frame.
+`UCrowdyRepApplicationPolicy` reads a state struct out of each update and applies it to the pooled actor each frame. The shipped `UCrowdyTransformRepPolicy` does that for `FCrowdyActorState`; you write one when your executor sends a struct of your own.
 
 | Override | Called | What you do |
 |---|---|---|
@@ -4192,7 +4192,7 @@ The actor manager is already the single caller of `ActivateInstance` and `Deacti
 
 ## Gotchas
 
-- `BackendClass` alone draws nothing. Set `BackendConfig`, and inside it `ReplicationPolicyClass`.
+- `BackendClass` alone draws the default executor's movement through `UCrowdyTransformRepPolicy`. A custom state struct needs `BackendConfig` with a `ReplicationPolicyClass` that reads it.
 - `bUseCrowdyActorTracker` off on the profile means no tracker, no manager, and no backend at all.
 - A pooled proxy's spawn-time look comes from class defaults or the state struct, never the spawn payload.
 - Pool exhaustion is a warning per entity, `Pool exhausted for <class>`, and the entity is not drawn until a slot frees. Raise `DefaultPoolSizePerClass` or add a `PerClassPoolOverrides` row.

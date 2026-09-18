@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-18T17:43:28Z",
+  "generated": "2026-09-18T20:42:04Z",
   "sdk_version": "2.14.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
@@ -32097,6 +32097,40 @@
       "editor_module": true
     },
     {
+      "id": "FSample",
+      "name": "FSample",
+      "kind": "struct",
+      "scope": "UCrowdyTransformRepPolicy",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "Location",
+          "type": "FVector",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Rotation",
+          "type": "FRotator",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "TimestampMs",
+          "type": "int64",
+          "static": false,
+          "uproperty": false
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Data/CrowdyTransformRepPolicy.h",
+      "editor_module": false
+    },
+    {
       "id": "FScopedEntityContext",
       "name": "FScopedEntityContext",
       "kind": "struct",
@@ -39992,6 +40026,23 @@
       "enumerators": [],
       "module": "CrowdyReplication",
       "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSessionActions.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyTransformRepPolicy",
+      "name": "UCrowdyTransformRepPolicy",
+      "kind": "class",
+      "scope": "",
+      "reflected": "UCLASS",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [
+        "UCrowdyRepApplicationPolicy"
+      ],
+      "fields": [],
+      "enumerators": [],
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Data/CrowdyTransformRepPolicy.h",
       "editor_module": false
     },
     {
@@ -61116,6 +61167,52 @@
       "blueprint": false,
       "module": "CrowdyReplication",
       "header": "CrowdyReplication/Public/Replication/Subsystems/CrowdyActorManager.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyActorPoolBackend::ResolveConfig",
+      "owner": "UCrowdyActorPoolBackend",
+      "owner_kind": "class",
+      "name": "ResolveConfig",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "UCrowdyActorPoolBackendConfig* ResolveConfig(UCrowdyRenderingBackendConfig* Config, UObject* Outer)",
+      "return_type": "UCrowdyActorPoolBackendConfig*",
+      "params": "UCrowdyRenderingBackendConfig* Config, UObject* Outer",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Data/CrowdyActorPoolBackend.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyActorPoolBackend::ResolvePolicyClass",
+      "owner": "UCrowdyActorPoolBackend",
+      "owner_kind": "class",
+      "name": "ResolvePolicyClass",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "UClass* ResolvePolicyClass(const UCrowdyActorPoolBackendConfig* Config)",
+      "return_type": "UClass*",
+      "params": "const UCrowdyActorPoolBackendConfig* Config",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Data/CrowdyActorPoolBackend.h",
       "editor_module": false
     },
     {

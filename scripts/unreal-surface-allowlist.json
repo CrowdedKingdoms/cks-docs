@@ -3061,5 +3061,20 @@
     "id": "FOnConnectionStatusChange",
     "reason": "deprecated",
     "note": "the SDK reconnects on its own after a timeout; starting the monitor adds a second retry loop"
+  },
+  {
+    "id": "FSample",
+    "reason": "internal",
+    "note": "private per-slot sample of UCrowdyTransformRepPolicy"
+  },
+  {
+    "id": "UCrowdyActorPoolBackend::ResolveConfig",
+    "reason": "internal",
+    "note": "the backend's own config resolution step, public so its test can call it without a world"
+  },
+  {
+    "id": "UCrowdyActorPoolBackend::ResolvePolicyClass",
+    "reason": "internal",
+    "note": "the backend's own policy resolution step, public so its test can call it without a world"
   }
 ]
