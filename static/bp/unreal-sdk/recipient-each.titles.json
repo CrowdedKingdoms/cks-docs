@@ -1,0 +1,21 @@
+[
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "RequestRelight\nCustom Event",
+		"title_drawn": true,
+		"crowdy_subtitle": "Crowdy Host\nExecutes on Host"
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get Light",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Set Visibility\nTarget is Scene Component",
+		"title_drawn": true
+	}
+]

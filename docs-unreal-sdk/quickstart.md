@@ -126,7 +126,7 @@ Now the blink comes from the looped-back receive instead of the local run, and t
 
 A Crowdy State property is a `UPROPERTY` marked `CrowdyState`. The owning client changes it; the SDK diffs it every tick and ships the change to every proxy, then runs the `CrowdyOnRep` function there. It works in either entity mode, Static or Dynamic.
 
-The flicker in step 2 is a moment: a client that joins afterwards never sees it. The lantern's lit state is different, it has to be the same on every client, late joiners included, so it is a replicated property, `bLit`. Walking out of the lantern flips it, and `OnRep_Lit` applies it to the light wherever the value lands. The owner runs the notify itself, since nothing arrives for the client that made the change.
+The flicker in step 2 is a moment: a client that joins afterwards never sees it. The lantern's lit state is different, it has to be the same on every client, late joiners included, so it is a replicated property, `bLit`. Walking out of the lantern flips it, and `OnRep_Lit` applies it to the light wherever the value lands. The SDK runs the owner's notify too, on the tick that ships the change; calling it here as well makes the light react on the same frame. That is safe because `OnRep_Lit` only applies the current value.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
