@@ -47,6 +47,14 @@ export const SNIPPETS = [
   'auth-social',
   'auth-events',
   'signin-widget',
+  'team-create',
+  'team-join',
+  'team-query',
+  'team-events',
+  'avatar-set',
+  'avatar-get',
+  'avatar-events',
+  'voice-toggle',
 ];
 
 export default function UnrealSdkBlueprintSpike(): ReactNode {

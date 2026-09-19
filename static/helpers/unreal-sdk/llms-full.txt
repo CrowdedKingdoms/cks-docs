@@ -1280,6 +1280,10 @@ All of it lands on one settings class, `UCrowdySDKDeveloperSettings`, which you 
 They are read-only in Project Settings on purpose, so that Crowdy Studio is the one source of truth. A value pasted into `DefaultGame.ini` by hand is overwritten by the next sync, and a project whose settings drift from its app fails to connect with no obvious error.
 :::
 
+The same goes for the two runtime setters on `UCrowdySDKSubsystem`: `SetDiscoveryUrl` stores a shared origin for this session and is read only when `Environment` is Custom (it warns otherwise), and `SetGameApiUrl` stores one Game API HTTP endpoint for this session, an address that is normally resolved from the origin rather than typed. `ReloadEndpointsFromSettings` is kept for existing call sites and does nothing: the API client re-reads both endpoints from the settings on every call, so a sync already reaches a running session.
+
+`RequestVersionInfo` asks the server for its version before or after sign-in and answers on `OnVersionInfo` (`FOnVersionInfo`, two `FGameVersion` parameters: the server's version and, in `ClientVersion`, the minimum client version it still accepts). Both arrive as zeroes when the query fails.
+
 ## Where the settings land
 
 The class is `Config=Game`, so the values are written to `Config/DefaultGame.ini` under:
@@ -1413,7 +1417,7 @@ A grid is a region of your world, in chunk coordinates, that carries a permissio
 ## Grids are server-side only
 
 - Every grid operation requires the `manage_apps` permission on the organization.
-- There is no player-scoped grid query. Game code cannot list or read grids at runtime, and there is no runtime grid API in the SDK. The one runtime call that touches grids is `Request Teleport Permission` on the Crowdy SDK subsystem, which asks the server whether the player may enter a chunk and answers on `On Teleport Permission`.
+- There is no player-scoped grid query. Game code cannot list or read grids at runtime, and there is no runtime grid API in the SDK. The one runtime call that touches grids is `Request Teleport Permission` on the Crowdy SDK subsystem, which asks the server whether the player may enter a chunk and answers on `On Teleport Permission` (`OnTeleportPermission`, an `FOnTeleportPermission` with one `bAllowed` parameter).
 - Enforcement is server-side. When a client tries to act inside a region, the server checks the whitelist and the grants, then allows or rejects. The client never receives the grid definition.
 
 :::warning[Do not try to drive grid operations from gameplay code.]
@@ -3308,7 +3312,7 @@ Two more client-side helpers on `UCrowdyUtilities` answer ownership questions wi
 
 ## The server-validated check
 
-For the moment a local answer is not enough, ask the server. `UCrowdyIsEntityHostServer` is a latent Blueprint node, **Is Crowdy Entity Host (Server)** (`IsCrowdyEntityHostServer`), with three pins of type `FCrowdyHostCheckPin`: **Is Host**, **Is Not Host**, and **Failed**. In C++ call `UCrowdyHostSubsystem::CheckEntityIsHost(Entity, Callback)` and receive `bSuccess` and `bIsHost` on the game thread.
+For the moment a local answer is not enough, ask the server; [Host election](../services/host-election.md) owns this check and its pins in full, and the short form is here. `UCrowdyIsEntityHostServer` is a latent Blueprint node, **Is Crowdy Entity Host (Server)** (`IsCrowdyEntityHostServer`), with three pins of type `FCrowdyHostCheckPin`: **Is Host**, **Is Not Host**, and **Failed**. In C++ call `UCrowdyHostSubsystem::CheckEntityIsHost(Entity, Callback)` and receive `bSuccess` and `bIsHost` on the game thread.
 
 The server elects a host per user, not per actor, so the check forks: for the local player's own entity it asks the server directly; for any other actor it resolves that actor's owner on the server and compares with the elected host. The other actor must have sent at least one update, or the server has no row for it and the answer is Failed.
 
@@ -3373,6 +3377,7 @@ The server-validated check is still not enforcement. It tells you the current tr
 ## Related
 
 - [The Host Is a Convention](../concepts/host-is-a-convention.md): election as a convention, and the two checks compared.
+- [Host election](../services/host-election.md): the host subsystem and the server-validated check in full, from the service side.
 - [Ownership transfer](./ownership-transfer.md): the grant flow the server check feeds.
 - [Entity component](./entity-component.md): `Ownership`, `HostOverride`, and `IsLocallyOwned`.
 - [Crowdy State](./crowdy-state.md#host-precedence): what a host-sourced delta does on the receiver.
@@ -5632,7 +5637,7 @@ The trigger and target fields, all hidden until Run Automatically is on:
 | Field (Details name) | Member | Meaning |
 |---|---|---|
 | Enabled | `bEnabled` | Author it but keep it paused when off. |
-| Automation Trigger | `AutomationTrigger` | `EveryInterval` (Every N milliseconds), `Cron` (Cron schedule), `OnPropertyChange` (On property change), `OnFunctionInvoked` (On function invoked). `ECrowdyEffectAutomationTrigger`. |
+| Automation Trigger | `AutomationTrigger` | `EveryInterval` (Every N milliseconds), `Cron` (Cron schedule), `OnPropertyChange` (On property change), `OnFunctionInvoked` (On function invoked), `OnPlayerLeft` (On player left), `OnPlayerCountChanged` (On player count changed). `ECrowdyEffectAutomationTrigger`. |
 | Interval (ms) | `AutomationIntervalMs` | Every N milliseconds only. Default 1000. |
 | Cron Expression | `AutomationCronExpr` | Cron only. |
 | On Property Key | `AutomationChangePropertyKey` | On property change only: the server key that fires it. |
@@ -5685,6 +5690,14 @@ Naming this effect's own function in Watch Function Name is legal: it re-trigger
 Most game logic writes properties from inside functions. `Any`, the default, sees both a direct write and a write a function makes while it runs; `Direct` sees only the first, so an automation watching a property that only effects ever write never fires. Narrow it only when a function's own writes should deliberately not re-trigger the automation.
 :::
 
+## Two triggers that watch presence, not player action
+
+`OnPlayerLeft` (`onEvent "player_left"`) fires once per actor the platform stops seeing, the last player's included, so it is the one trigger that still runs for an app that has just emptied. `OnPlayerCountChanged` (`onEvent "player_count_changed"`) fires on a transition of the app's active-player gauge, coalesced on the trailing edge, and never at zero. Neither takes a filter: On Property Key, Observe Writes From, Watch Function Name, and On Container Type are all inapplicable to them and stay hidden in the Details panel. The function reads what happened through its own parameters instead, for example `user_id` and `remaining_player_count` on `OnPlayerLeft`; the server documents each event's full parameter list.
+
+:::warning[A presence trigger answers whether the platform still sees someone. It does not know, and cannot tell you, whether whatever they were doing is actually over.]
+Treat a run on `OnPlayerLeft` or `OnPlayerCountChanged` as one input, not a verdict. Use it to update your own bookkeeping, such as a counter or a last-known value, and keep the decision to end something in an explicit function a caller invokes, or in a check the automation makes against your own state before it writes. Do not let a `player_left` run clear truth another part of your model holds by itself: a shared map-load hitch can make the platform briefly stop seeing every actor at once, and a client that leaves and returns inside the platform's presence window looks identical to one that never left.
+:::
+
 ## Timers
 
 A timer is one delayed call an effect arms when it commits, transactionally with the effect's writes: if the effect fails nothing is scheduled. The `Timers` array holds up to four `FCrowdyEffectTimer` entries:
@@ -5715,6 +5728,7 @@ A timer fires exactly once. A timer that re-arms itself is bounded one cascade l
 - Debounce drops events; it is not the summing merge on [Coalescing](./coalescing.md).
 - A kit's ticks (the Combat status-effect tick, Living World's day and crop ticks) are automations the kit deploys for you. [Kits](./kits.md).
 - Gas Limit above the platform ceiling is authored and then silently not used.
+- `OnPlayerLeft` and `OnPlayerCountChanged` accept no filter fields; Debounce and Automation Target Mode still apply to both.
 
 ## Related
 
@@ -7318,485 +7332,1012 @@ Expect the refusal in a UI that lists identities with a remove button; do not tr
 - [Teams](../services/teams.md) and [Avatars](../services/avatars.md): services that need a signed-in player.
 - [Sign in on the Management API](/management-api/authentication): the calls at the GraphQL level.
 
-# Voice Chat
-Source: https://docs.crowdedkingdoms.com/unreal-sdk/services/voice-chat
-
-# Voice Chat
-
-Voice chat lives on `UCrowdySDKSubsystem`. There is no wrapper to write: get the subsystem and call the functions.
-
-You toggle two separate things:
-
-- Your microphone capture (sending your voice).
-- Your playback of other players (hearing them).
-
-Each side has its own start and stop call, so you can be sending without listening, listening without sending, or both at once.
-
-:::tip[Capture and playback are independent. For push-to-talk, drive capture from a key while leaving playback running.]
-:::
-
-## The functions
-
-All of these are members of `UCrowdySDKSubsystem` (module CrowdySDK), and all are `BlueprintCallable`.
-
-Microphone capture (sending your voice):
-
-- `StartVoiceChat()` begins capturing your microphone.
-- `StopVoiceChat()` stops capturing.
-
-Playback (hearing other players):
-
-- `PlayVoiceChat()` lets you hear others.
-- `MuteVoiceChat()` stops playback for you locally.
-
-Extras:
-
-- `ToggleOwnerEcho(bool)` echoes your own microphone back to you. Use it to confirm capture is working.
-- `SetVoiceChatStreamTimeoutThreshold(float)` sets how long a silent or stalled stream waits before it is considered timed out.
-
-## A toggle
-
-Grab the subsystem, then call the start and stop pair. This example tracks a flag and flips both capture and playback together.
-
-<Tabs>
-<TabItem value="cpp" label="C++" default>
-
-```cpp
-#include "Subsystem/CrowdySDKSubsystem.h"
-
-void AMyPlayerController::ToggleVoice()
-{
-    UCrowdySDKSubsystem* Voice = GetGameInstance()->GetSubsystem<UCrowdySDKSubsystem>();
-    if (!Voice)
-    {
-        return;
-    }
-
-    if (!bVoiceOn)
-    {
-        Voice->StartVoiceChat();
-        Voice->PlayVoiceChat();
-    }
-    else
-    {
-        Voice->StopVoiceChat();
-        Voice->MuteVoiceChat();
-    }
-
-    bVoiceOn = !bVoiceOn;
-}
-```
-
-</TabItem>
-<TabItem value="blueprint" label="Blueprint">
-
-The same functions are exposed as `BlueprintCallable` nodes. The behavior is identical to the C++ calls.
-
-- Get the Crowdy SDK Subsystem.
-- Call Start Voice Chat, Stop Voice Chat, Play Voice Chat, Mute Voice Chat, Toggle Owner Echo, or Set Voice Chat Stream Timeout Threshold directly.
-
-{/* TODO: replace with real screenshot */}
-![Blueprint nodes for toggling voice chat on the Crowdy SDK Subsystem](/img/unreal-sdk/voice-chat-blueprint.png)
-
-</TabItem>
-</Tabs>
-
-:::tip[Push-to-talk]
-Call `StartVoiceChat()` on key down and `StopVoiceChat()` on key up, and leave `PlayVoiceChat()` running so you always hear others.
-:::
-
-## Checking your microphone
-
-To confirm capture is reaching the system before anyone else is connected, turn on owner echo:
-
-```cpp
-Voice->StartVoiceChat();
-Voice->ToggleOwnerEcho(true);
-```
-
-You should hear your own microphone.
-
-:::note[Call `ToggleOwnerEcho(false)` to stop the echo once you have confirmed it.]
-:::
-
-## Sample reference
-
-The sample project drives these same calls from a switch.
-
-`ASampleVoiceSwitch` toggles `StartVoiceChat` and `StopVoiceChat`, along with the play and mute pair, on `UCrowdySDKSubsystem` when you interact with it. See the sample project for the full setup.
-
 # Teams
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/services/teams
 
 # Teams
 
-Teams group players together and carry permissions.
+A team is a persistent, named group of players, scoped to your app, with membership, roles, and
+permissions the app controls. A game creates, joins, and manages teams live from `UCrowdyTeams`; Crowdy
+Studio's Teams pane edits the same rows ahead of time.
 
-You can set teams up ahead of time in Crowdy Studio, or create and manage them at runtime from game code. This page covers the runtime side: `UCrowdyTeams`.
+## When you touch this
 
-`UCrowdyTeams` is a game instance subsystem in the `CrowdyServices` module. It:
+Any time players need a group that outlives one session, a guild, a faction, a village, with roles you
+can grant and revoke. In the example world a village is a team: joining one is how a player shows they
+belong to a place.
 
-- Keeps a local cache of the teams the current player belongs to.
-- Exposes per-call delegates for creating, joining, leaving, and querying teams and their roles.
+## Runtime and Studio, one dataset
 
-:::note[Creating and managing teams is not limited to Crowdy Studio. The same create, update, delete, role, and policy operations are available at runtime through `UCrowdyTeams`, subject to your app's team creation policy.]
+Creating, updating, and deleting teams is not a Studio-only workflow. The same create, update, delete,
+role, and policy operations run from game code through `UCrowdyTeams`, subject to your app's team
+creation policy, and Crowdy Studio's Teams pane reads and writes the identical server rows. There is one
+store, not two.
 
-Studio is convenient for setting teams up ahead of time and for admin work, but game code can do it live. See the Studio [Teams and Channels](/unreal-sdk/studio/teams-and-channels) page for the edit-time workflow.
+Membership, roles, and permissions are server-authoritative truth, pulled through `UCrowdyTeams` rather
+than trusted from the client, the same split every server-owned system in the SDK follows: see
+[Game Models](../game-models/overview.md) for the general two-plane story. Teams are not themselves a
+Game Model in this version: there is no `CrowdyContainer` here, just the Team API `UCrowdyTeams` wraps
+one call at a time. If you came looking for a container, see
+[Change pings and pull](../game-models/change-pings-and-pull.md) instead.
+
+The server owns team, role, and permission storage and every authorization check; a disallowed call comes
+back through the error delegate rather than being refused on the client. The exact GraphQL shape behind
+each call is on [Teams](/game-api/teams) and in the
+[operations reference](/game-api/reference/graphql/operations/mutations/create-team); a team can also be
+granted permissions over a grid region, covered on
+[Grids and permissions](/game-api/grids-and-permissions#group-grants-per-team-or-group).
+
+Every call below is asynchronous and answers through exactly one of the two delegates it is given, even
+when the request never reaches the server.
+
+## Reading the cache first
+
+`GetCachedMyTeams` and its neighbors read a local snapshot of the player's own memberships, refreshed only
+by `GetMyTeams`; a join, leave or role change does not touch it, so call `GetMyTeams` again after a
+mutation you want the cache to reflect. Read it for the value to show now; treat a query's result and
+`OnMyTeamsCacheChanged` as the update that follows.
+
+| Call | Returns |
+|---|---|
+| `HasCachedTeams()` | Whether the cache has been populated yet. |
+| `GetCachedMyTeams()` | The player's memberships (`TArray<FCrowdyTeamMembership>`) as of the last refresh. |
+| `IsPlayerInTeam(TeamId)` | Whether the player belongs to that team, from the cache. |
+| `GetMyTeamById(TeamId, OutMembership)` | The cached membership for one team, if any. |
+| `IsInAnyTeam()` | Whether the cache holds at least one membership. |
+| `GetPrimaryMembership(OutMembership)` | The first cached membership. |
+| `HasPermissionInTeam(TeamId, Permission)` | Whether the cached membership grants an `ECrowdyTeamPermission`. |
+
+`OnMyTeamsCacheChanged` (`FOnMyTeamsCacheChanged`, `Memberships`) is a multicast, Blueprint-assignable
+delegate that fires after `GetMyTeams` answers, and only then. Bind it once and re-read the cache; do not
+poll.
+
+## Queries
+
+Each query takes an `FOnTeamError` alongside its success delegate; bind it to a `UFUNCTION` with the
+signature `(FCrowdyTeamError Error, FString Message)`, where `Message` repeats `Error.Message`.
+
+| Call | Success delegate | Notes |
+|---|---|---|
+| `GetMyTeams(OnSuccess, OnError)` | `FOnMyTeamsSuccess` | Repopulates the cache and fires `OnMyTeamsCacheChanged`. |
+| `GetTeam(TeamId, OnSuccess, OnError)` | `FOnTeamSuccess` | One team by id. |
+| `GetTeams(OnSuccess, OnError)` | `FOnTeamsSuccess` | Every team in the app, not just the player's. |
+| `GetTeamMembers(TeamId, OnSuccess, OnError)` | `FOnTeamMembersSuccess` | |
+| `GetTeamRoles(TeamId, OnSuccess, OnError)` | `FOnTeamRolesSuccess` | |
+| `GetTeamPolicy(OnSuccess, OnError)` | `FOnTeamPolicySuccess` | App-wide, not per-team. |
+| `GetPendingJoinRequests(TeamId, OnSuccess, OnError)` | `FOnTeamMembersSuccess` | See the warning below. |
+
+:::note[GetPendingJoinRequests re-fetches the full member list and filters on the client.]
+It runs the same query as `GetTeamMembers` and then keeps only the members whose status is pending. That
+is fine at team scale, a handful to a few dozen members, but do not call it in a hot loop expecting a
+cheaper, dedicated request.
 :::
 
-## Read the cache first
+## Creating and managing a team
 
-Read membership from the cache for instant UI.
+Every mutation reports success through its own delegate and failure through the shared `FOnTeamError`.
 
-The cache is a snapshot that the SDK refreshes in the background. Treat the cache as the value to render now, and treat the callbacks and the change delegate as eventual truth that may update it.
+**Team lifecycle:** `CreateTeam(Name, Description, MembershipPolicy, OnSuccess, OnError)` returns
+`FOnTeamSuccess` with the new `FCrowdyTeam`; `UpdateTeam(TeamId, Name, Description, OnSuccess, OnError)`
+also returns `FOnTeamSuccess`; `DeleteTeam(TeamId, OnSuccess, OnError)` returns `FOnTeamVoidSuccess`.
 
-Cache accessors:
+**Membership:** `JoinTeam(TeamId, OnSuccess, OnError)` honors the team's `ECrowdyTeamMembershipPolicy`,
+seating the player immediately for an `Open` team; `RequestToJoinTeam(TeamId, OnSuccess, OnError)` is for
+a `Request` policy team and returns a pending member. Both return `FOnTeamMemberSuccess`.
+`LeaveTeam(TeamId, OnSuccess, OnError)` returns `FOnTeamVoidSuccess`. `AddTeamMember(TeamId, UserId,
+OnSuccess, OnError)` is the admin add that bypasses the membership policy; `RemoveTeamMember(TeamId,
+UserId, OnSuccess, OnError)` takes them off. `AddTeamMember` answers with `FOnTeamMemberSuccess`,
+`RemoveTeamMember` with `FOnTeamVoidSuccess`.
 
-- `GetCachedMyTeams()` returns the teams the player currently belongs to.
-- `HasCachedTeams()` returns whether the cache has been populated yet.
-- `IsPlayerInTeam(int64 GroupId)` returns whether the player is in a given team.
-- `HasPermissionInTeam(int64 GroupId, ECrowdyTeamPermission Permission)` returns whether the player holds a permission in a given team.
+**Roles and permissions:** `CreateTeamRole(TeamId, RoleName, Permissions, Rank, OnSuccess, OnError)` and
+`UpdateTeamRole(TeamRoleId, RoleName, Permissions, OnSuccess, OnError)` return `FOnTeamRoleSuccess`;
+`DeleteTeamRole(TeamRoleId, OnSuccess, OnError)` returns `FOnTeamVoidSuccess`.
+`SetTeamMemberRoles(TeamId, UserId, RoleIds, OnSuccess, OnError)` returns `FOnTeamMemberSuccess`.
+`Permissions` is an `FCrowdyTeamPermissions` your code builds before the call.
 
-When the cache changes, the multicast delegate `OnMyTeamsCacheChanged` fires. Bind to it and re-read the cache to refresh your UI.
+:::warning[SetTeamMemberRoles replaces the member's roles, it does not add to them.]
+Pass every role the member should end up holding, including ones they already have, or the call drops
+the roles you left out.
+:::
+
+**App-wide policy:** `SetTeamPolicy(CreationPolicy, DefaultMembershipPolicy, OnSuccess, OnError)` returns
+`FOnTeamPolicySuccess` and is an app-admin operation.
+
+## Data types
+
+| Struct | Holds |
+|---|---|
+| `FCrowdyTeam` | `TeamId`, `AppId`, `Name`, `Description`, `OwnerUserId`, `MembershipPolicy`, `Status`, `CreatedAt`. |
+| `FCrowdyTeamMember` | `TeamMemberId`, `TeamId`, `UserId`, `Status` (active or pending), `Roles` sorted by rank, `CreatedAt`. |
+| `FCrowdyTeamMembership` | `Team`, `Roles`, the effective `Permissions` (a server-computed union across roles), `JoinedAt`, and `HasPermission(ECrowdyTeamPermission)`. |
+| `FCrowdyTeamPermissions` | Flags `bManageTeam`, `bManageMembers`, `bManageRoles`, `bInviteMembers`, all `BlueprintReadWrite`, and `Has()`. Build one to pass into `CreateTeamRole` or `UpdateTeamRole`. |
+| `FCrowdyTeamPolicy` | `AppId`, `CreationPolicy`, `DefaultMembershipPolicy`, `MaxMembers` (0 is uncapped), `MaxTeamsPerUser` (0 is uncapped). |
+| `FCrowdyTeamRole` | `TeamRoleId`, `TeamId`, `RoleName`, `Rank`, `bIsSystem` (every team has an undeletable system leader role), `Permissions`, `CreatedAt`. |
+| `FCrowdyTeamError` | `Code` (`ECrowdyTeamErrorCode`) and `Message`. |
+
+| Enum | Values |
+|---|---|
+| `ECrowdyTeamCreationPolicy` | `Admin`, `Member`, `Anyone` |
+| `ECrowdyTeamMembershipPolicy` | `Open`, `Request`, `Invite`, `Admin` |
+| `ECrowdyTeamPermission` | `ManageTeam`, `ManageMembers`, `ManageRoles`, `InviteMembers` |
+| `ECrowdyTeamErrorCode` | `Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError` |
+
+:::note[Code is a coarse bucket, not a precise diagnosis.]
+`FCrowdyTeamError` is built by pattern-matching the server's message text; there is no structured error
+code from the server. Read `Message` for the detail and branch on `Code` only for the broad cases.
+:::
+
+## Blueprint nodes
+
+The subsystem's per-call delegates need a Create Event node per call. For a graph that just drops in a
+node, use the async-action latent nodes instead: one static factory and `Activate()` per node, with
+multicast `OnSuccess`/`OnError` (`FTeamsAsyncOnError`, the same two parameters as `FOnTeamError`),
+wrapping the same server calls.
+
+| Node | Class | Returns |
+|---|---|---|
+| Get My Teams | `UCrowdyTeams_GetMyTeams` | `FCrowdyMyTeamsResult` |
+| Get Team | `UCrowdyTeams_GetTeam` | `FCrowdyTeam` |
+| Get All Teams | `UCrowdyTeams_GetTeams` | `FCrowdyTeamsResult` |
+| Get Team Members | `UCrowdyTeams_GetTeamMembers` | `FCrowdyTeamMembersResult` |
+| Get Team Roles | `UCrowdyTeams_GetTeamRoles` | `FCrowdyTeamRolesResult` |
+| Get Team Policy | `UCrowdyTeams_GetTeamPolicy` | `FCrowdyTeamPolicy` |
+| Get Pending Join Requests | `UCrowdyTeams_GetPendingJoinRequests` | `FCrowdyTeamMembersResult` |
+| Create Team | `UCrowdyTeams_CreateTeam` | `FCrowdyTeam` |
+| Update Team | `UCrowdyTeams_UpdateTeam` | `FCrowdyTeam` |
+| Delete Team | `UCrowdyTeams_DeleteTeam` | void |
+| Join Team | `UCrowdyTeams_JoinTeam` | `FCrowdyTeamMember` |
+| Request to Join Team | `UCrowdyTeams_RequestToJoinTeam` | `FCrowdyTeamMember` |
+| Leave Team | `UCrowdyTeams_LeaveTeam` | void |
+| Add Team Member | `UCrowdyTeams_AddTeamMember` | `FCrowdyTeamMember` |
+| Remove Team Member | `UCrowdyTeams_RemoveTeamMember` | void |
+| Set Team Member Roles | `UCrowdyTeams_SetTeamMemberRoles` | `FCrowdyTeamMember` |
+| Create Team Role | `UCrowdyTeams_CreateTeamRole` | `FCrowdyTeamRole` |
+| Update Team Role | `UCrowdyTeams_UpdateTeamRole` | `FCrowdyTeamRole` |
+| Delete Team Role | `UCrowdyTeams_DeleteTeamRole` | void |
+| Set Team Policy | `UCrowdyTeams_SetTeamPolicy` | `FCrowdyTeamPolicy` |
+
+`FCrowdyTeamsResult`, `FCrowdyMyTeamsResult`, `FCrowdyTeamMembersResult`, and `FCrowdyTeamRolesResult`
+each wrap one multi-item result (`Teams`, `Memberships`, `Members`, `Roles`); a single-item call like
+`GetTeam` or `CreateTeam` returns its struct directly.
+
+Each async-action node's own `On Success` pin is a multicast delegate named after its call:
+`FTeamAsyncOnSuccess` (Get Team, Create Team, Update Team), `FTeamsAsyncOnSuccess` (Get All Teams),
+`FMyTeamsAsyncOnSuccess` (Get My Teams), `FMemberAsyncOnSuccess` (Join Team, Request to Join Team, Add
+Team Member, Set Team Member Roles), `FMembersAsyncOnSuccess` (Get Team Members, Get Pending Join
+Requests), `FRoleAsyncOnSuccess` (Create Team Role, Update Team Role), `FRolesAsyncOnSuccess` (Get Team
+Roles), `FPolicyAsyncOnSuccess` (Get Team Policy, Set Team Policy), and `FVoidAsyncOnSuccess` (Delete
+Team, Leave Team, Remove Team Member, Delete Team Role). These are separate from the per-call
+`FOnTeam*Success` delegates above; the async-action nodes never use those.
+
+:::caution[Bind a per-call delegate to a UFUNCTION on a UObject that outlives the request.]
+The response arrives asynchronously; if the object is gone by then, the callback has nowhere to land.
+:::
+
+:::note[Four per-call delegates carry a TArray by value.]
+`FOnTeamsSuccess`, `FOnTeamMembersSuccess`, `FOnTeamRolesSuccess`, and `FOnMyTeamsSuccess` pass their array
+by value. In C++ bind a handler with a by-value `TArray` parameter to match. In Blueprint prefer the
+async-action nodes above, whose result pins are structs.
+:::
+
+## Example: founding and joining a village
+
+A village is a team. The player asks to join "the Village," and a successful join lights their `Torch`,
+the light component the example cast already carries, to show membership at a glance.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+A "Found the Village" button calls `FoundVillage()`, which calls `CreateTeam("The Village", "Everyone
+who shares one fire.", Open, HandleVillageFounded, FOnTeamError())`; `HandleVillageFounded(FCrowdyTeam)`
+stores the new id in a private `VillageTeamId`, read back through the `BlueprintPure` `GetVillageTeamId()`:
 
 ```cpp
-UCrowdyTeams* Teams = GetGameInstance()->GetSubsystem<UCrowdyTeams>();
+// LanternGameInstance.h
+#include "Subsystem/CrowdyTeams.h"
 
-if (Teams->HasCachedTeams())
+public:
+	// A Found the Village button calls this; the id the handler keeps is the one every player joins.
+	UFUNCTION(BlueprintCallable, Category = "Lantern")
+	void FoundVillage();
+
+	UFUNCTION(BlueprintPure, Category = "Lantern")
+	int64 GetVillageTeamId() const { return VillageTeamId; }
+
+private:
+	int64 VillageTeamId = 0;
+
+	UFUNCTION()
+	void HandleVillageFounded(FCrowdyTeam Team);
+
+// LanternGameInstance.cpp
+void ULanternGameInstance::FoundVillage()
 {
-    const bool bInTeam = Teams->IsPlayerInTeam(GroupId);
-    // Update your UI from the cached value.
+	UCrowdyTeams* Teams = GetSubsystem<UCrowdyTeams>();
+	FOnTeamSuccess Founded;
+	Founded.BindDynamic(this, &ULanternGameInstance::HandleVillageFounded);
+	Teams->CreateTeam(TEXT("The Village"), TEXT("Everyone who shares one fire."),
+		ECrowdyTeamMembershipPolicy::Open, Founded, FOnTeamError());
+}
+
+void ULanternGameInstance::HandleVillageFounded(FCrowdyTeam Team)
+{
+	VillageTeamId = Team.TeamId;
 }
 ```
 
-:::tip[Do not block on a query before drawing UI. Read the cache, draw, and let `OnMyTeamsCacheChanged` push the next update when the truth arrives.]
-:::
-
-## Join a team
-
-`JoinTeam` takes the team's `GroupId` and two per-call dynamic delegates: one for success and one for error.
-
-<Tabs>
-<TabItem value="cpp" label="C++" default>
+Overlapping the village post calls `JoinVillage()`, which calls `JoinTeam(GetVillageTeamId(), ...)`;
+on success `HandleJoinedVillage(FCrowdyTeamMember)` sets `Torch->SetVisibility(true)`:
 
 ```cpp
-void JoinTeam(int64 GroupId, FOnTeamMemberSuccess OnSuccess, FOnTeamError OnError);
+// LanternPlayer.h
+#include "Subsystem/CrowdyTeams.h"
+
+virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+void JoinVillage();
+
+UFUNCTION()
+void HandleJoinedVillage(FCrowdyTeamMember Member);
+
+// LanternPlayer.cpp
+#include "LanternGameInstance.h"
+#include "LanternPost.h"
+
+void ALanternPlayer::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+	if (Cast<ALanternPost>(OtherActor))
+	{
+		JoinVillage();
+	}
+}
+
+void ALanternPlayer::JoinVillage()
+{
+	const ULanternGameInstance* Game = GetGameInstance<ULanternGameInstance>();
+	UCrowdyTeams* Teams = Game ? Game->GetSubsystem<UCrowdyTeams>() : nullptr;
+	if (!Teams || Game->GetVillageTeamId() == 0)
+	{
+		return;
+	}
+	// Open membership seats the player at once; a Request team would answer with a pending member instead.
+	FOnTeamMemberSuccess Joined;
+	Joined.BindDynamic(this, &ALanternPlayer::HandleJoinedVillage);
+	Teams->JoinTeam(Game->GetVillageTeamId(), Joined, FOnTeamError());
+}
+
+void ALanternPlayer::HandleJoinedVillage(FCrowdyTeamMember Member)
+{
+	Torch->SetVisibility(true);
+}
 ```
 
-Bind each delegate to a `UFUNCTION` on a `UObject` you own:
+`ShowVillageMembership()`, called from `BeginPlay`, guards on `HasCachedTeams()` and sets
+`Torch->SetVisibility(Teams->IsPlayerInTeam(GetVillageTeamId()))` from the cache alone, before any round
+trip completes:
 
-- The success delegate runs when the server confirms the join.
-- The error delegate runs when the call fails.
+```cpp
+// LanternPlayer.h
+void ShowVillageMembership();
 
-After a successful join the cache updates and `OnMyTeamsCacheChanged` fires, so most UI work belongs in that handler rather than in the per-call success handler.
+// LanternPlayer.cpp
+#include "LanternGameInstance.h"
+#include "Subsystem/CrowdyTeams.h"
 
-`LeaveTeam`, `GetMyTeams`, `GetTeam`, `GetTeamMembers`, and the other queries follow the same shape: pass the arguments plus a success and an error delegate.
+void ALanternPlayer::ShowVillageMembership()
+{
+	const ULanternGameInstance* Game = GetGameInstance<ULanternGameInstance>();
+	UCrowdyTeams* Teams = Game ? Game->GetSubsystem<UCrowdyTeams>() : nullptr;
+	// The cache holds this player's own memberships only, and nothing until the first Get My Teams has answered.
+	if (!Teams || !Teams->HasCachedTeams())
+	{
+		return;
+	}
+	Torch->SetVisibility(Teams->IsPlayerInTeam(Game->GetVillageTeamId()));
+}
+```
+
+`WatchVillage()`, bound at `BeginPlay`, calls `OnMyTeamsCacheChanged.AddDynamic` and `GetMyTeams()`;
+`HandleVillageCacheChanged(const TArray<FCrowdyTeamMembership>&)` re-runs `ShowVillageMembership()`
+whenever the cache changes, from anywhere:
+
+```cpp
+// LanternPlayer.h
+#include "Subsystem/CrowdyTeams.h"
+
+void WatchVillage();
+
+UFUNCTION()
+void HandleVillageCacheChanged(const TArray<FCrowdyTeamMembership>& Memberships);
+
+// LanternPlayer.cpp
+void ALanternPlayer::WatchVillage()
+{
+	UCrowdyTeams* Teams = GetGameInstance()->GetSubsystem<UCrowdyTeams>();
+	Teams->OnMyTeamsCacheChanged.AddDynamic(this, &ALanternPlayer::HandleVillageCacheChanged);
+	// Only Get My Teams fills the cache; a join or a leave does not, so pull again after one.
+	Teams->GetMyTeams(FOnMyTeamsSuccess(), FOnTeamError());
+}
+
+void ALanternPlayer::HandleVillageCacheChanged(const TArray<FCrowdyTeamMembership>& Memberships)
+{
+	ShowVillageMembership();
+}
+```
 
 </TabItem>
-<TabItem value="blueprint" label="Blueprint">
+<TabItem value="bp" label="Blueprint">
 
-The same operations are available as Blueprint nodes. You can call Join Team, read the cached membership, and bind to On My Teams Cache Changed without C++.
+The Blueprint needs an `int64` variable `VillageTeamId` and the `Torch` light component the cast already
+has.
 
-![Teams Blueprint nodes for joining and reading cached membership](/img/unreal-sdk/teams-blueprint-nodes.png)
+Creating the village: the **Create Team** async node takes `Name` and `Description` literals and a
+`MembershipPolicy` of `Open`; its `On Success` pin fires when the server has the team, breaks the `Team`
+output, and sets `TeamId` into `VillageTeamId`.
+
+[Blueprint snippet: team-create, see /bp/unreal-sdk/team-create.txt]
+
+Joining it: overlapping the village post fires **Event ActorBeginOverlap**, which reads `VillageTeamId`
+and calls **Join Team**; its `On Success` pin gets the `Torch` and sets its visibility.
+
+[Blueprint snippet: team-join, see /bp/unreal-sdk/team-join.txt]
+
+Reading the cache on spawn: **Event BeginPlay** gets the `Torch`, gets the **Crowdy Teams** subsystem and
+`VillageTeamId`, and feeds them into **Is Player in Team** (pure), whose return value drives the torch's
+visibility directly, no network call. The cache is empty until **Get My Teams** has answered once, so on
+its own this graph hides the torch on spawn; the sync step below is what shows it. A **Has Cached Teams**
+(pure) check into **Branch** guards the read, so the visibility set only runs once the cache has answered.
+
+[Blueprint snippet: team-query, see /bp/unreal-sdk/team-query.txt]
+
+Staying in sync: add a custom event with one input, `Memberships` (array of `Crowdy Team Membership`),
+connect it with **Bind Event to On My Teams Cache Changed** at Begin Play, then call **Get My Teams**; the
+event's body re-runs the membership check above. No figure is shown for this step; the C++ tab shows the
+same one.
 
 </TabItem>
 </Tabs>
 
-## Create and manage teams at runtime
+## Gotchas
 
-Your game can create a team and manage it without ever opening Crowdy Studio.
+- The cache holds only the player's own memberships. `GetTeams` lists every team in the app; the cache
+  never does.
+- Only `GetMyTeams` writes the cache and fires `OnMyTeamsCacheChanged`. After a join, leave or role change,
+  call `GetMyTeams` again or `IsPlayerInTeam` keeps answering from before the mutation.
+- `GetPendingJoinRequests` filters the full member list on the client; it is not a dedicated server call.
+- `SetTeamMemberRoles` replaces the member's role set. Pass the full set every time.
+- `FCrowdyTeamError::Code` is pattern-matched from the server's message text, not a structured server
+  code; treat it as a coarse bucket and `Message` as the detail.
+- A per-call delegate needs a `UFUNCTION` on a `UObject` that outlives the request, including when the
+  request never reaches the server.
+- Four per-call delegates carry a `TArray` by value; bind a by-value handler in C++, or use the async-action
+  nodes in Blueprint.
 
-`CreateTeam` makes a new team owned by the current player:
+## Related
 
-```cpp
-void CreateTeam(const FString& Name, const FString& Description,
-                ECrowdyTeamMembershipPolicy MembershipPolicy,
-                FOnTeamSuccess OnSuccess, FOnTeamError OnError);
-```
-
-The success delegate receives the new `FCrowdyGroup`, including its `GroupId`, which you then use for the other calls. The membership policy decides whether players join directly or request to join.
-
-The rest of the management surface follows the same per-call delegate shape:
-
-- Team lifecycle: `UpdateTeam`, `DeleteTeam`.
-- Members: `AddTeamMember`, `RemoveTeamMember`, `RequestToJoinTeam`.
-- Roles and permissions: `CreateTeamRole`, `UpdateTeamRole`, `DeleteTeamRole`, `SetTeamMemberRoles`.
-- App-wide policy: `SetTeamPolicy`.
-
-:::note[Whether a given player is allowed to create or change a team is decided by the server from your app's policy and the player's role, so a failed call comes back through the error delegate rather than being blocked on the client.]
-:::
-
-## Complete example
-
-This actor joins a team on demand and reflects membership from the cache. It binds the join result delegates and the cache-changed delegate to its own `UFUNCTION`s.
-
-```cpp
-// SampleTeamsActor.h
-#pragma once
-
-#include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "SampleTeamsActor.generated.h"
-
-UCLASS()
-class ASampleTeamsActor : public AActor
-{
-    GENERATED_BODY()
-
-public:
-    UPROPERTY(EditAnywhere, Category = "Teams")
-    int64 GroupId = 0;
-
-    virtual void BeginPlay() override;
-
-    void RequestJoin();
-
-private:
-    UFUNCTION()
-    void HandleJoinSuccess();
-
-    UFUNCTION()
-    void HandleJoinError(const FString& Error);
-
-    UFUNCTION()
-    void HandleMyTeamsChanged();
-
-    void RefreshFromCache();
-};
-```
-
-```cpp
-// SampleTeamsActor.cpp
-#include "SampleTeamsActor.h"
-#include "Engine/GameInstance.h"
-#include "Subsystem/CrowdyTeams.h"
-
-void ASampleTeamsActor::BeginPlay()
-{
-    Super::BeginPlay();
-
-    if (UCrowdyTeams* Teams = GetGameInstance()->GetSubsystem<UCrowdyTeams>())
-    {
-        Teams->OnMyTeamsCacheChanged.AddDynamic(this, &ASampleTeamsActor::HandleMyTeamsChanged);
-    }
-
-    RefreshFromCache();
-}
-
-void ASampleTeamsActor::RequestJoin()
-{
-    UCrowdyTeams* Teams = GetGameInstance()->GetSubsystem<UCrowdyTeams>();
-    if (!Teams)
-    {
-        return;
-    }
-
-    FOnTeamMemberSuccess OnSuccess;
-    OnSuccess.BindDynamic(this, &ASampleTeamsActor::HandleJoinSuccess);
-
-    FOnTeamError OnError;
-    OnError.BindDynamic(this, &ASampleTeamsActor::HandleJoinError);
-
-    Teams->JoinTeam(GroupId, OnSuccess, OnError);
-}
-
-void ASampleTeamsActor::HandleJoinSuccess()
-{
-    // The server confirmed the join. The cache update follows and
-    // drives the UI through HandleMyTeamsChanged.
-    UE_LOG(LogTemp, Log, TEXT("Joined team %lld"), GroupId);
-}
-
-void ASampleTeamsActor::HandleJoinError(const FString& Error)
-{
-    UE_LOG(LogTemp, Warning, TEXT("Join failed: %s"), *Error);
-}
-
-void ASampleTeamsActor::HandleMyTeamsChanged()
-{
-    RefreshFromCache();
-}
-
-void ASampleTeamsActor::RefreshFromCache()
-{
-    UCrowdyTeams* Teams = GetGameInstance()->GetSubsystem<UCrowdyTeams>();
-    if (!Teams || !Teams->HasCachedTeams())
-    {
-        return;
-    }
-
-    const bool bInTeam = Teams->IsPlayerInTeam(GroupId);
-    // Apply bInTeam to your widget here.
-}
-```
-
-The exact delegate signatures (`FOnTeamMemberSuccess`, `FOnTeamError`) are declared in the `UCrowdyTeams` header. Match your `UFUNCTION` parameters to those declarations when you bind.
-
-:::warning[Bind to `UFUNCTION`s on a `UObject` that outlives the call. If the object is destroyed before the server responds, the callback has nowhere to land.]
-
-The actor above unbinds implicitly when it is destroyed, but if you bind from a shorter-lived object, unbind in its teardown.
-:::
-
-## See also
-
-- [Crowdy Studio](/unreal-sdk/studio/overview) for authoring teams and their permissions.
-- The Teams example in the sample project (`ASampleTeamsSwitch`) joins a team and reflects membership from the cache, refreshing on `OnMyTeamsCacheChanged`.
+- [Authentication](./authentication.md): a signed-in player is what every team call needs.
+- [Avatars](./avatars.md)
+- [Voice chat](./voice-chat.md)
+- [Host election](./host-election.md)
+- [Channels](../runtime/channels.md): a sibling group-like system that shares the same permission table.
+- [Change pings and pull](../game-models/change-pings-and-pull.md): what teams are not, in this version.
+- [Teams and Channels in Crowdy Studio](../studio/teams-and-channels.md): the same data, authored ahead of time.
 
 # Avatars
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/services/avatars
 
 # Avatars
 
-An avatar is a player profile scoped to your app. It is stored data that travels with the player and survives between sessions: a display name, a chosen loadout, cosmetic selections, progression flags, or any small struct your game defines.
+An avatar is a player-owned profile: an identity a player picks from and carries across sessions, holding small state other players can read and only the owner can write. It is not a live world actor and it is not a Game Model; it is a stored profile the rest of the SDK reads to seed one, distinct from [authoritative gameplay truth](../game-models/overview.md).
 
-Each avatar carries three kinds of state:
+## When you touch this
 
-- A public part that other players can read.
-- A private part that only the owning player can read.
-- An app-state blob for your game's own data.
+When you build a profile or loadout screen, when a player changes a cosmetic or setting that should survive between sessions, or when you seed an entity's spawn state from a stored value the player already owns.
 
-Avatars live on `UCrowdyAvatars`, a game instance subsystem in the CrowdyServices module.
+## The record
 
-:::note[Avatars are not the same as entities. An entity is a live, replicated actor in the world. An avatar is a stored profile. You read an avatar to populate UI or to seed an entity's initial state, and you write to it when the player changes something that should persist.]
+`UCrowdyAvatars` (Game Instance subsystem, category **Crowdy SDK > Avatars**) owns every avatar call. An avatar record, `FCrowdyAvatar`, holds:
+
+| Field | Holds |
+|---|---|
+| `AvatarId` | The avatar's `int64` id. |
+| `UserId` | The owning player's `int64` id. |
+| `Name` | Display name. |
+| `PublicState` | Base64 blob, readable by every player. |
+| `PrivateState` | Base64 blob, readable by the owner only; stripped server-side on a non-owner read. |
+| `CreatedAt` | Creation timestamp. |
+
+Per-app data is a separate record, `FCrowdyAppAvatarState`, keyed by `AppId` and `AvatarId`: `RawState` (base64, empty string means not set), `CreatedAt`, `UpdatedAt`. This is the slot for cosmetics, settings, or any small struct your game defines; the avatar record's own fields do not hold arbitrary game data.
+
+:::warning[Only the owner may write an avatar, and the SDK does not check locally.]
+Every write, `UpdateAvatar`, `UpdateAvatarState`, `UpdatePublicAvatarState`, `UpdatePrivateAvatarState`, `UpdateAvatarAppState`, `DeleteAvatar`, is owner-only, enforced by the Game API against the caller's app-scoped token. `UCrowdyAvatars` performs no local ownership check: a write for an avatar the signed-in player does not own is sent over the wire and refused server-side, surfaced through `OnError` and usually classified `Forbidden`.
 :::
 
-## Get the subsystem
+## Reading avatars: cache versus network
 
-`UCrowdyAvatars` is a game instance subsystem, so you fetch it from the game instance.
+`GetCachedMyAvatars`, `HasCachedAvatars`, and `GetMyAvatarById` are synchronous, cache-only, and never populate themselves. Only `GetMyAvatars` (a network refresh) repopulates the cache and fires `OnMyAvatarsCacheChanged` (`FOnMyAvatarsCacheChanged`, one param, the refreshed array) so anything watching the cache updates without polling. A create, rename, delete or state write does not touch the cache, so call `GetMyAvatars` again after a write you want the cache to reflect.
 
-```cpp
-UCrowdyAvatars* Avatars = GetGameInstance()->GetSubsystem<UCrowdyAvatars>();
-```
+`GetAvatar` reads any avatar by id, including one you do not own; `GetUserAvatars` lists another user's avatars. Neither is limited to the signed-in player.
 
-Hold the pointer for the lifetime of the object that uses it. The subsystem lives as long as the game instance does.
+## Reading and writing per-app state
 
-## Read your avatars
+`GetAvatarAppState` and `GetAvatarAppStates` (batch) read the calling app's slot for one or many avatars. `UpdateAvatarAppState` replaces it.
 
-The subsystem keeps a local cache of the signed-in player's avatars. Read the cache for instant UI, and treat the network as eventual truth.
-
-- `GetCachedMyAvatars` returns what the subsystem currently knows. It is synchronous and safe to call every frame for UI.
-- `OnMyAvatarsCacheChanged` is a multicast delegate that fires whenever the cache updates. Bind a UFUNCTION to it and refresh your UI from the cache when it fires.
-- `GetMyAvatars` asks the server for the current set and refreshes the cache. Call it on login, or when you want to force a resync.
-
-A typical pattern is to bind to the change delegate first, then kick off `GetMyAvatars`, then build your UI off whatever the cache holds.
-
-```cpp
-void UMyProfileWidget::Activate()
-{
-    UCrowdyAvatars* Avatars = GetGameInstance()->GetSubsystem<UCrowdyAvatars>();
-    Avatars->OnMyAvatarsCacheChanged.AddDynamic(this, &UMyProfileWidget::HandleAvatarsChanged);
-
-    // Seed the UI from whatever is already cached.
-    HandleAvatarsChanged();
-
-    // Then ask the server to refresh.
-    Avatars->GetMyAvatars(/* per-call delegates */);
-}
-
-void UMyProfileWidget::HandleAvatarsChanged()
-{
-    UCrowdyAvatars* Avatars = GetGameInstance()->GetSubsystem<UCrowdyAvatars>();
-    const TArray<FCrowdyAvatar> Mine = Avatars->GetCachedMyAvatars();
-    RebuildListFrom(Mine);
-}
-```
-
-:::tip[Read the cache for anything that drives UI this frame. Use the change delegate to know when to redraw. Reserve `GetMyAvatars` for explicit resync points so you are not round-tripping the server on every interaction.]
-Same blueprint async nodes are a available for the whole operations that are supposed to be performed using Crowdy Avatars.
+:::warning[AppId always comes from project settings; there is no per-call override.]
+`GetAvatarAppState`, `GetAvatarAppStates`, and `UpdateAvatarAppState` resolve `AppId` from project settings, not a parameter. This subsystem cannot target a different app's slot.
 :::
 
-## Create, update, and delete
+`UpdatePublicAvatarState` and `UpdatePrivateAvatarState` each leave the other field untouched on the server; `UpdateAvatarState` replaces both public and private state atomically.
 
-The subsystem exposes the lifecycle operations you would expect:
-
-- `CreateAvatar` makes a new avatar for the signed-in player.
-- `UpdateAvatar` changes top-level fields on an existing avatar.
-- `DeleteAvatar` removes one.
-
-The three state parts each have their own update entry point so you can write just the slice you changed:
-
-- `UpdatePublicAvatarState` writes the public part.
-- `UpdatePrivateAvatarState` writes the private part.
-- `UpdateAvatarAppState` writes the app-state blob.
-
-These are network operations. Like the other CrowdyServices subsystems, they take per-call dynamic delegates for success and error, which you bind to UFUNCTIONs.
-
-After a successful write the cache updates and `OnMyAvatarsCacheChanged` fires, so your UI can react without you threading the result through by hand.
-
-:::note[Write only the part you changed. If the player edited their public display name, call `UpdatePublicAvatarState` and leave the private and app-state parts alone. Splitting the writes keeps payloads small and avoids overwriting data another part of your game owns.]
+:::caution[The combined write still round-trips an unchanged field.]
+Calling `UpdateAvatarState` with a field's old value does not clear it, it just resends it. Prefer the separate `UpdatePublicAvatarState` / `UpdatePrivateAvatarState` calls when only one field changes.
 :::
 
-## Store your own struct in app state
+## Serializing struct state
 
-The app-state blob is where your game's data goes. You do not work with raw bytes. The subsystem provides serialization helpers that move a `USTRUCT` in and out of app state, so you define a plain struct and let the helpers handle the conversion.
+State fields are base64 strings on the wire. `SerializeToAvatarState` and `DeserializeFromAvatarState` convert any `USTRUCT` to and from that string; `GetAvatarAppStateAs` and `SetAvatarAppStateAs` are latent wrappers that fetch-and-deserialize or serialize-and-write in one call.
 
-Define the struct your game wants to persist on the profile:
+:::warning[The State pin is a wildcard: one struct, string or scalar, never an array.]
+`SerializeToAvatarState`, `DeserializeFromAvatarState`, `GetAvatarAppStateAs`, and `SetAvatarAppStateAs` are `CustomThunk` with a `CustomStructureParam`. The `int32&` in the C++ signature is a wildcard pin in Blueprint: connect a struct pin (or a single string, bool, integer or float) and the pin takes that type. An array, set or map pin is refused.
+:::
 
-```cpp
-USTRUCT()
-struct FMyAvatarProfile
-{
-    GENERATED_BODY()
+The lantern serializes its torch color as a small cosmetic struct, writes it to the app-state slot, and re-applies it on spawn. The example assumes the player already has an avatar (created in Studio or with `CreateAvatar`); with none, `AvatarId` stays 0 and every call below returns early.
 
-    UPROPERTY()
-    FString Title;
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
 
-    UPROPERTY()
-    int32 Prestige = 0;
-
-    UPROPERTY()
-    TArray<FName> UnlockedCosmetics;
-};
-```
-
-The save and restore paths mirror each other:
-
-- To save, fill in the struct and hand it to the app-state update path through the serialization helper.
-- To restore, read the avatar from the cache and run the inverse helper to get your struct back.
+`SetTorchColor` writes the picked `FLinearColor` directly with `FMemoryWriter`, byte-identical to what `SerializeToAvatarState` would produce for a linear color; C++ cannot call that helper itself, since its struct pin is a `CustomThunk` wildcard. `UpdateAvatarAppState` sends the encoded bytes, and `Torch` only recolours once the write's `OnSuccess` handler, `ApplyTorchColor`, confirms it.
 
 ```cpp
-void USaveExample::SaveProfile(const FMyAvatarProfile& Profile)
+// LanternPlayer.h
+UFUNCTION(BlueprintCallable, Category = "Lantern")
+void SetTorchColor(FLinearColor NewColor);
+
+// LanternPlayer.cpp
+#include "Misc/Base64.h"
+#include "Serialization/MemoryWriter.h"
+#include "Subsystem/CrowdyAvatars.h"
+
+void ALanternPlayer::SetTorchColor(FLinearColor NewColor)
 {
-    UCrowdyAvatars* Avatars = GetGameInstance()->GetSubsystem<UCrowdyAvatars>();
-
-    // The serialization helper turns your struct into app state,
-    // then UpdateAvatarAppState writes it for the chosen avatar.
-    Avatars->UpdateAvatarAppState(/* target avatar, serialized Profile, per-call delegates */);
-}
-
-void USaveExample::RestoreProfile()
-{
-    UCrowdyAvatars* Avatars = GetGameInstance()->GetSubsystem<UCrowdyAvatars>();
-
-    const TArray<FCrowdyAvatar> Mine = Avatars->GetCachedMyAvatars();
-    if (Mine.Num() == 0)
-    {
-        return;
-    }
-
-    // Read the app state from the cached avatar and run the helper
-    // to deserialize it back into your struct.
-    FMyAvatarProfile Profile;
-    // Profile = <deserialize app state of Mine[0] with the helper>;
-
-    ApplyProfileToGame(Profile);
+	UCrowdyAvatars* Avatars = GetGameInstance()->GetSubsystem<UCrowdyAvatars>();
+	if (!Avatars || AvatarId == 0)
+	{
+		return;
+	}
+	// App state is an opaque base64 blob; these 16 bytes match what Serialize Struct to Avatar State writes for a Linear Color.
+	TArray<uint8> Bytes;
+	FMemoryWriter Writer(Bytes);
+	Writer << NewColor;
+	FOnAppStateSuccess Saved;
+	Saved.BindDynamic(this, &ALanternPlayer::ApplyTorchColor);
+	Avatars->UpdateAvatarAppState(AvatarId, FBase64::Encode(Bytes), Saved, FOnAvatarError());
 }
 ```
 
-The exact helper names and the shape of `FCrowdyAvatar` come from the shipped headers. The pattern is the same in every case: keep a regular `USTRUCT` in your game code, serialize it into app state when you write, and deserialize it back when you read.
+`LoadTorchColor` calls `GetAvatarAppState`; the handler `ApplyTorchColor`, shared with the write above, base64-decodes, guards on 16 bytes, and reads the color with `FMemoryReader` straight into `Torch`. The latent `GetAvatarAppStateAs` is not used here for the same wildcard-thunk reason as above.
 
-:::caution[App state is part of the player's profile, not server-authoritative gameplay truth. Keep cheat-sensitive numbers (currency balances, match results) in Game Models or your persistence layer, not in avatar app state. Use app state for profile data: cosmetics, titles, preferences, and similar.]
+```cpp
+// LanternPlayer.h
+#include "Subsystem/CrowdyAvatars.h"
+
+void LoadTorchColor();
+
+UFUNCTION()
+void ApplyTorchColor(FCrowdyAppAvatarState AppState);
+
+// LanternPlayer.cpp
+#include "Misc/Base64.h"
+#include "Serialization/MemoryReader.h"
+
+void ALanternPlayer::LoadTorchColor()
+{
+	UCrowdyAvatars* Avatars = GetGameInstance()->GetSubsystem<UCrowdyAvatars>();
+	if (!Avatars || AvatarId == 0)
+	{
+		return;
+	}
+	FOnAppStateSuccess Loaded;
+	Loaded.BindDynamic(this, &ALanternPlayer::ApplyTorchColor);
+	Avatars->GetAvatarAppState(AvatarId, Loaded, FOnAvatarError());
+}
+
+void ALanternPlayer::ApplyTorchColor(FCrowdyAppAvatarState AppState)
+{
+	// An empty Raw State is an avatar that never saved a color; anything but a Linear Color's 16 bytes is ignored too.
+	TArray<uint8> Bytes;
+	if (!FBase64::Decode(AppState.RawState, Bytes) || Bytes.Num() != static_cast<int32>(sizeof(FLinearColor)))
+	{
+		return;
+	}
+	FLinearColor Color;
+	FMemoryReader Reader(Bytes);
+	Reader << Color;
+	Torch->SetLightColor(Color);
+}
+```
+
+`WatchAvatars`, bound at `BeginPlay`, picks up `AvatarId` from the first entry of a cache refresh and calls `LoadTorchColor`, so a cache change elsewhere still lands the stored color.
+
+```cpp
+// LanternPlayer.h
+#include "Subsystem/CrowdyAvatars.h"
+
+// The keeper this player plays as: their first avatar, learned when the cache answers.
+UPROPERTY(BlueprintReadOnly, Category = "Lantern")
+int64 AvatarId = 0;
+
+void WatchAvatars();
+
+UFUNCTION()
+void HandleAvatarsChanged(const TArray<FCrowdyAvatar>& Avatars);
+
+// LanternPlayer.cpp
+void ALanternPlayer::WatchAvatars()
+{
+	UCrowdyAvatars* Avatars = GetGameInstance()->GetSubsystem<UCrowdyAvatars>();
+	Avatars->OnMyAvatarsCacheChanged.AddDynamic(this, &ALanternPlayer::HandleAvatarsChanged);
+	Avatars->GetMyAvatars(FOnAvatarsSuccess(), FOnAvatarError());
+}
+
+void ALanternPlayer::HandleAvatarsChanged(const TArray<FCrowdyAvatar>& Avatars)
+{
+	if (Avatars.Num() == 0)
+	{
+		return;
+	}
+	AvatarId = Avatars[0].AvatarId;
+	LoadTorchColor();
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+Variables the Blueprint needs: `Torch` (a `UPointLightComponent` reference) and `AvatarId` (`int64`). Set `AvatarId` from a **Get My Avatars** result (the first entry's `AvatarId`) or from the cache-changed event described below; the two graphs read it and do nothing while it is 0.
+
+Saving the color: `OnTorchColorPicked` (custom event, `NewColor`) runs **Serialize Struct to Avatar State** on `NewColor`, reads `AvatarId`, and passes the result to the **Update Avatar App State** async node; its `OnSuccess` pin calls **Set Light Color** on `Torch` with `NewColor`.
+
+[Blueprint snippet: avatar-set, see /bp/unreal-sdk/avatar-set.txt]
+
+Loading it on spawn: `Event BeginPlay` gets the **Crowdy Avatars** subsystem, reads `AvatarId`, and calls the latent **Get Avatar App State As**, whose wildcard output feeds `NewLightColor`; a **Branch** on its `bSuccess` output calls **Set Light Color** on `Torch`.
+
+[Blueprint snippet: avatar-get, see /bp/unreal-sdk/avatar-get.txt]
+
+Following cache changes: no figure is shown for this step. Add a custom event with one input, `Avatars` (array of `Crowdy Avatar`), bind it with **Bind Event to On My Avatars Cache Changed** at Begin Play, set `AvatarId` from the first entry in its body, then run the loading path above; the C++ tab's `WatchAvatars` is the same step.
+
+</TabItem>
+</Tabs>
+
+## Async action nodes
+
+Every network call above also exists as a Blueprint async action node with the same name and, as its underlying class, the subsystem name plus the call (**Get My Avatars** `UCrowdyAvatars_GetMyAvatars`, **Get Avatar** `UCrowdyAvatars_GetAvatar`, **Get User Avatars** `UCrowdyAvatars_GetUserAvatars`, **Get Avatar App State** `UCrowdyAvatars_GetAvatarAppState`, **Get Avatar App States** `UCrowdyAvatars_GetAvatarAppStates`, **Create Avatar** `UCrowdyAvatars_CreateAvatar`, **Update Avatar** `UCrowdyAvatars_UpdateAvatar`, **Delete Avatar** `UCrowdyAvatars_DeleteAvatar`, **Update Public Avatar State** `UCrowdyAvatars_UpdatePublicAvatarState`, **Update Private Avatar State** `UCrowdyAvatars_UpdatePrivateAvatarState`, **Update Avatar App State** `UCrowdyAvatars_UpdateAvatarAppState`), each with its own `On Success` and `On Error` exec pins instead of a bound delegate. Their pins are the multicast `FAvatarAsyncOnSuccess`, `FAvatarsAsyncOnSuccess`, `FAppStateAsyncOnSuccess`, `FAppStatesAsyncOnSuccess`, `FAvatarVoidAsyncOnSuccess` and `FAvatarsAsyncOnError`; the subsystem's per-call `FOnAvatarSuccess`, `FOnAvatarsSuccess`, `FOnAppStateSuccess`, `FOnAppStatesSuccess`, `FOnAvatarVoidSuccess` and `FOnAvatarError` are a separate family the async nodes never expose. `TArray` results arrive wrapped, `FCrowdyAvatarList` for a list of avatars and `FCrowdyAppAvatarStateList` for a list of app states, so the result is one struct pin. `UpdateAvatarState` (the combined public-and-private write), `GetMyAvatarById`, `HasCachedAvatars`, `GetCachedMyAvatars`, `SerializeToAvatarState`, `DeserializeFromAvatarState`, `GetAvatarAppStateAs`, and `SetAvatarAppStateAs` have no async action node; a Blueprint reaches those only through the subsystem functions shown above.
+
+## Creating and removing avatars
+
+`CreateAvatar(Name, OnSuccess, OnError)` makes a new avatar for the signed-in player; `UpdateAvatar(AvatarId, Name, ...)` renames one; `DeleteAvatar(AvatarId, OnVoidSuccess, OnError)` removes one. All three are owner-only, enforced the same way as the state writes above.
+
+## Error codes
+
+`FCrowdyAvatarError` carries a `Code` (`ECrowdyAvatarErrorCode`: `Unknown`, `NotFound`, `Forbidden`, `NetworkError`, `ServerError`) and a `Message`. Bind `FOnAvatarError` to a `UFUNCTION` with the signature `(FCrowdyAvatarError Error, FString Message)`; `Message` repeats `Error.Message`. The async nodes' `FAvatarsAsyncOnError` has the same two parameters.
+
+:::caution[The error code is a client-side guess, not a server code.]
+`ECrowdyAvatarErrorCode` is classified from the error message text by substring match, not a code the server sends. Branch on it for a coarse UI response; do not treat it as a stable server contract.
 :::
 
-## How this fits the rest of the SDK
+Cosmetic selections and progression flags belong here; currency balances and match results do not. Avatar state, public, private, or app, is profile data, not server-authoritative gameplay truth, which belongs in [Game Models](../game-models/overview.md).
 
-Reach for a different system when the data is not profile data:
+## Gotchas
 
-- For replicated, live world state, spawn an entity instead. See [Entities and spawning](/unreal-sdk/runtime/entities-and-spawning).
-- For per-subject saved gameplay structs over a fast path, use the persistence subsystem. See [Persistence](/unreal-sdk/services/persistence).
-- For team membership tied to the player, see [Teams](/unreal-sdk/services/teams).
+- `GetCachedMyAvatars`, `HasCachedAvatars`, and `GetMyAvatarById` never populate themselves; only `GetMyAvatars` does. A create, rename, delete or state write leaves the cache as it was.
+- Every write is owner-only and enforced server-side; a non-owner's write is sent, not blocked locally.
+- `AppId` for the per-app state calls always comes from project settings; there is no per-call override.
+- The serialization helpers take a wildcard pin: one struct, string or scalar. An array, set or map pin is refused.
+- `ECrowdyAvatarErrorCode` is a client-side text classification, not a server-issued code.
 
-A common flow is to read the avatar on login, seed an entity's initial spawn state from the public part, and write back to app state when the player changes something that should persist.
+## Related
+
+- [Teams](./teams.md): a sibling service on the same subsystem pattern.
+- [Containers and attributes](../game-models/containers-and-attributes.md): the Game Model contrast, avatar state is not a container.
+- [Entities and spawning](../runtime/entities-and-spawning.md): seeding an entity's spawn state from an avatar's public part.
+
+# Voice Chat
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/services/voice-chat
+
+# Voice Chat
+
+Voice chat is a thin, opt-in add-on: capture your microphone, encode it, send it over the SDK's own UDP transport, decode and play back what other players send. The two-plane model does not apply here. There is no server truth for voice, only a live stream the server relays between clients and never stores.
+
+## When you touch this
+
+When your game wants live player-to-player audio alongside its gameplay: push-to-talk, an always-on party channel, or a quick way to confirm a build's audio path with owner echo before anyone else connects.
+
+## The functions
+
+All six live on `UCrowdySDKSubsystem` (Game Instance subsystem, module CrowdySDK, category **CrowdySDK > Communication**). There is no separate wrapper to write: get the subsystem and call them. They need only `CrowdySDK` in your module's Build.cs; you list `CrowdyVoice` only to reach the voice classes directly, below.
+
+| Call | Does |
+|---|---|
+| `StartVoiceChat()` | Begins capturing your microphone. |
+| `StopVoiceChat()` | Stops capturing. |
+| `PlayVoiceChat()` | Enables local playback of other players. |
+| `MuteVoiceChat()` | Disables local playback. |
+| `SetVoiceChatStreamTimeoutThreshold(float InSeconds)` | How long a silent remote stream is kept before it is dropped. |
+| `ToggleOwnerEcho(bool bEnable)` | Loops your own captured audio back to you, for confirming capture without a second client. |
+
+Capture and playback are independent: you can send without listening, listen without sending, or both. Internally all six forward to `UVoiceChatSubsystem` and `FVoiceChatService`. Neither is exposed to Blueprint; from C++ `UVoiceChatSubsystem` is a world subsystem in the `CrowdyVoice` module, so you reach it only if your Build.cs lists `CrowdyVoice`, and the six calls above are the supported way in.
+
+## A push-to-talk toggle
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`StartTalking` and `StopTalking` bind to an Enhanced Input action's Started and Completed triggers in `SetupPlayerInputComponent`, the same "fetch the game instance subsystem" pattern every page in this section uses: capture starts while the action is held and stops on release.
+
+```cpp
+// LanternPlayer.h
+#include "InputAction.h"
+
+virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+// Hold to talk: capture runs between the action's Started and Completed triggers.
+UPROPERTY(EditDefaultsOnly, Category = "Lantern")
+TObjectPtr<UInputAction> TalkAction;
+
+void StartTalking();
+void StopTalking();
+
+// LanternPlayer.cpp
+#include "EnhancedInputComponent.h"
+#include "Subsystem/CrowdySDKSubsystem.h"
+
+void ALanternPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if (Input && TalkAction)
+	{
+		Input->BindAction(TalkAction, ETriggerEvent::Started, this, &ALanternPlayer::StartTalking);
+		Input->BindAction(TalkAction, ETriggerEvent::Completed, this, &ALanternPlayer::StopTalking);
+	}
+}
+
+void ALanternPlayer::StartTalking()
+{
+	GetGameInstance()->GetSubsystem<UCrowdySDKSubsystem>()->StartVoiceChat();
+	Torch->SetIntensity(8000.f);
+}
+
+void ALanternPlayer::StopTalking()
+{
+	GetGameInstance()->GetSubsystem<UCrowdySDKSubsystem>()->StopVoiceChat();
+	Torch->SetIntensity(2000.f);
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+Two custom events stand for the input action's Started and Completed pins. **OnTalkStarted** calls **Start Voice Chat**; **OnTalkCompleted** calls **Stop Voice Chat**; one **Crowdy SDK Subsystem** node feeds both calls.
+
+[Blueprint snippet: voice-toggle, see /bp/unreal-sdk/voice-toggle.txt]
+
+</TabItem>
+</Tabs>
+
+`StartTalking` and `StopTalking` also brighten and dim the `Torch` (`SetIntensity(8000.f)` /
+`SetIntensity(2000.f)`), so the example has a visible signal beyond the console trace described below.
+
+## Confirming capture with owner echo
+
+Turn on owner echo, speak, and you should hear yourself:
+
+```cpp
+Voice->StartVoiceChat();
+Voice->ToggleOwnerEcho(true);
+```
+
+:::caution[Turn owner echo back off once capture is confirmed.]
+Leaving `ToggleOwnerEcho(true)` on means the player hears their own microphone continuously, not just during the check.
+:::
+
+## Watching activity
+
+There is no Blueprint event for incoming voice, so nothing to show in a graph; the tool is a console variable. `crowdy.voice.trace 1` (read in code through `CrowdyVoiceTrace::Voice`) gates `LogCrowdyVoice` info logging for the voice subsystem, the capture and playback service, and the device monitor. Use it as a troubleshooting knob, not as a gameplay hook.
+
+## The device monitor (Windows only)
+
+The SDK spawns an audio device monitor for its own use when the voice subsystem starts. It watches audio devices connect and disconnect on Windows only; on every other platform it logs "Audio device monitoring is only supported on Windows" and does nothing. It is a private class with nothing for a game to call or bind.
+
+## Reaching the voice subsystem from C++
+
+`UVoiceChatSubsystem` is not exposed to Blueprint. From C++ it is an ordinary world subsystem: add `CrowdyVoice` to your module's `PublicDependencyModuleNames` and call `GetWorld()->GetSubsystem<UVoiceChatSubsystem>()`. `IsCapturing()` is true only while the capture device stream is open and delivering samples, so a `StartVoiceChat()` that found no microphone reads false.
+
+It declares four delegates: `OnAudioNotify` (`FAudioNotify`, no parameters), `OnAudioDataGenerated` (`FOnAudioDataGenerated`), `OnAudioDataReceived` (`FOnAudioDataReceived`), and `OnStreamTimeout` (`FOnStreamTimeout`). Only `OnAudioNotify` fires, once per decoded incoming voice frame from any remote player; bind it with `AddDynamic` to a `UFUNCTION` with no parameters. The other three are declared and never broadcast in the current build.
+
+:::caution[This is not a supported binding surface.]
+`OnAudioNotify` is the one voice delegate that fires; the other three never do, and none carries a player id or the audio itself. Treat a bind on it as a talk indicator at most, and the trace CVar above as the observation tool.
+:::
+
+## How the transport works
+
+Captured audio is compressed with Opus (`FVoiceChatService` owns the encoder and decoder pair, one decoder per remote player) and sent as an ordinary `FClientAudioPacketMessageRequest` over the same UDP channel every other RPC uses, not a separate connection. The service decodes each incoming frame and hands the samples to a per-player playback buffer, `FAudioChatTrack`, which is why device output uses a procedural sound wave rather than a fixed asset.
+
+The `CrowdyVoice` module links `AudioCapture`, `AudioCaptureCore`, `AudioMixer`, and `Voice` purely to read the local microphone. A project that only plays back other players and never calls `StartVoiceChat()` does not need capture hardware access, though `UCrowdySDKSubsystem` always depends on `CrowdyVoice` since the six calls live there regardless.
+
+## Gotchas
+
+- Voice is relayed live like any other RPC; the server stores nothing, so there is no truth to check against Game Models.
+- The six calls need only `CrowdySDK` in Build.cs; `UVoiceChatSubsystem` needs `CrowdyVoice`, and of its four delegates only `OnAudioNotify` fires.
+- The device monitor is the SDK's own; it does something on Windows only and exposes nothing to a game.
+- `ToggleOwnerEcho(true)` is a one-time check, not a setting to leave on.
+- `SetVoiceChatStreamTimeoutThreshold` only affects how long a silent stream is kept; it does not mute or drop active audio.
+
+## Related
+
+- [Authentication](./authentication.md): the subsystem-fetch pattern this page reuses.
+- [Connection and reconnect](../runtime/connection-and-reconnect.md): the shared UDP transport voice rides on.
+- [Troubleshooting](../guides/troubleshooting.md): the trace CVar pattern used above.
+
+# Host Election
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/services/host-election
+
+# Host Election
+
+`UCrowdyHostSubsystem` tracks who the SDK elected host and can also ask the server directly, for the one caller who cannot afford to be wrong. The local convenience answer, and why election is a convention and not enforcement, lives on [Host Authority](../runtime/host-authority.md); this page is the subsystem and the server-validated check it is built around.
+
+## When you touch this
+
+Reading `IsHost` or the elected id for ordinary view-plane logic is the common case, and [Host Authority](../runtime/host-authority.md) covers it. Reach for the check on this page only when a wrong answer costs something: granting an ownership transfer, starting a host-only sequence you cannot cheaply undo, anything where a stale or spoofed local read is a real risk.
+
+## The host subsystem
+
+`UCrowdyHostSubsystem` is a world subsystem, re-created per world, that re-reads the elected host from the login session each time.
+
+| Member | One line |
+|---|---|
+| `GetHostID()` | The host's entity id as an `FGuid`. No display name override, so Blueprint lists the node as **Get Host ID**: an upper-case run stays together. |
+| `IsHostSet()` | Whether an election result has arrived yet. |
+| `GetHostUserID()` (**Get Host User ID**) | The host's raw user id, 0 until known. Backed by a `std::atomic<int64>` read with relaxed ordering, so it is safe to call from any thread as well as from Blueprint. |
+| `IsHost()` (**Is Host**) | Compares this client's own user id to the tracked host id. The same local, unenforced answer as `GetCrowdyHasAuthority` on [Host Authority](../runtime/host-authority.md); also safe from any thread. |
+| `OnHostElected` (`FOnCrowdyHostElected`, `HostID`, `PreviousHostID`) | Fires on the game thread when the elected host changes, the first result included (0 to the first host); a poll that repeats the same host does not fire it. |
+| `CheckEntityIsHost(Entity, Callback)` | The server-validated check, C++ entry point; see below. |
+
+:::note[Under normal operation the server agrees with the local view.]
+`IsHost()` and the server-validated `CheckEntityIsHost` answer the same question at different trust levels, and day to day they say the same thing. The server check exists for the moment you cannot assume the caller is running an unmodified client, not because the local view is usually wrong.
+:::
+
+## The server-validated check
+
+`CheckEntityIsHost` is server-validated in a specific sense: for the local player's own entity it asks the server's `amIGameHost` query directly; for any other actor it resolves that actor's server-side owner user id and compares it to the elected host user id. [Host discovery](/game-api/host-discovery#amigamehost) on the Game API covers the query itself; this page states only what the SDK does with the answer.
+
+That answer is still not enforcement by itself. `CheckEntityIsHost` tells the caller the current truth about who is host so the caller can gate something, most often a [Game Model](../game-models/overview.md) mutation behind an invoke policy; the check is not the gate.
+
+The lantern world uses it exactly there: a claim on a lantern post is only granted after a definite server yes.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`GetSubsystem<UCrowdyHostSubsystem>()` gets the world subsystem; its callback runs on the game thread with `bSuccess` and `bIsHost`. Capturing `this` as a `TWeakObjectPtr` matters because the callback runs after a round trip to the server.
+
+```cpp
+// LanternPost.h
+void VerifyThenGrant(const FGuid& RequesterID);
+
+// LanternPost.cpp
+#include "Replication/Ownership/CrowdyOwnershipTransfer.h"
+#include "Subsystem/CrowdyHostSubsystem.h"
+
+void ALanternPost::VerifyThenGrant(const FGuid& RequesterID)
+{
+	UCrowdyHostSubsystem* Host = GetWorld()->GetSubsystem<UCrowdyHostSubsystem>();
+	if (!Host)
+	{
+		return;
+	}
+	// Failed is not the same as "not host"; grant only on a definite yes from the server, and only if the post still exists.
+	TWeakObjectPtr<ALanternPost> WeakThis(this);
+	Host->CheckEntityIsHost(this, [WeakThis, RequesterID](bool bSuccess, bool bIsHost)
+	{
+		ALanternPost* Post = WeakThis.Get();
+		if (!Post || !bSuccess || !bIsHost)
+		{
+			return;
+		}
+		UCrowdyOwnershipTransfer::GrantOwnershipTransferToPlayer(Post, Post, RequesterID);
+	});
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+This graph needs no extra variables; everything comes from the event's own parameters and Self. From the `OnClaimRequested` custom event (params `TargetEntity` Actor, `RequesterActor` Actor, `RequesterID` Guid), the latent **Is Crowdy Entity Host (Server)** node (`Entity` defaults to Self) runs the check; its **Is Host** pin continues to **Grant Ownership Transfer To Player**, with `Target Entity` fed by Self and `New Owner Player ID` fed by the event's `Requester ID`.
+
+[Blueprint snippet: host-check-server, see /bp/unreal-sdk/host-check-server.txt]
+
+The **Is Not Host** and **Failed** pins are left unwired in this graph; both are explained below.
+
+</TabItem>
+</Tabs>
+
+`UCrowdyIsEntityHostServer::IsCrowdyEntityHostServer` (display **Is Crowdy Entity Host (Server)**, category **Crowdy SDK > Session**) is the Blueprint front end for `CheckEntityIsHost`; from C++, call `CheckEntityIsHost` directly rather than this node. It exposes three pins of type `FCrowdyHostCheckPin`: **Is Host** (`OnIsHost`), **Is Not Host** (`OnIsNotHost`), and **Failed** (`OnFailed`). Exactly one of `OnIsHost` or `OnIsNotHost` fires on a definite answer; `OnFailed` fires when the answer could not be determined at all.
+
+:::warning[Failed and Is Not Host are different answers. Treat Failed as unknown, never as a confirmed no.]
+`bSuccess == false`, or the **Failed** pin, means the check could not be resolved: no host elected yet, a network or GraphQL error, or an actor the server has no row for because it never sent an update. `bIsHost` carries no meaning in that case. Retry or wait; do not take the branch you would take for "not the host".
+:::
+
+:::caution[Every completion still runs, even after the awaiting Blueprint node is gone.]
+The subsystem is world-scoped, but a Blueprint graph waiting on `CheckEntityIsHost` is not tied to that lifetime the same way. Each call owns its own completion, so concurrent checks never answer each other, and a completion still fires after the world that started it has torn down; a dropped node's pins simply never receive it, rather than the callback hanging or crashing. Do not rely on a check outliving a level travel to reach your handler.
+:::
+
+:::caution[A world subsystem must null-check GetGameInstance() in Initialize.]
+`UCrowdyHostSubsystem::Initialize` does exactly this, and any world subsystem you write alongside it must too: during engine start, a transient world exists before its game instance is set, so `GetGameInstance()` returns null while `Initialize` runs on it.
+:::
+
+## Gotchas
+
+- `IsHost()` and `GetHostUserID()` are the local, unenforced view. Reach for `CheckEntityIsHost` only when the caller cannot afford a spoofed or stale answer.
+- `GetHostID()` has no display name override; find it in Blueprint as **Get Host ID**.
+- `CheckEntityIsHost` needs the target actor to have sent at least one update. A freshly spawned, never-updated actor answers Failed, the same as an unresolved entity.
+- `IsHost` is documented safe from any thread; `GetHostUserID` is a single atomic read, so it is too. Nothing else on this subsystem carries that guarantee.
+- The check itself gates nothing. What you do with `bIsHost` still needs its own invoke policy on the Game Model side if the outcome is worth cheating for.
+
+## Related
+
+- [Host Authority](../runtime/host-authority.md): the local, unenforced view of who is host, and the same examples from the view-plane side.
+- [Ownership transfer](../runtime/ownership-transfer.md): the grant flow the server check feeds in the lantern world.
+- [Game Models overview](../game-models/overview.md): where a validated answer becomes an enforced invoke policy.
+- [Host discovery](/game-api/host-discovery#amigamehost) on the Game API: the `amIGameHost` and actor-owner queries underneath this subsystem.
+
+# UI Interfaces
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/services/ui-interfaces
+
+# UI Interfaces
+
+A small set of Blueprint interfaces a game can implement to let the SDK drive its HUD, player, and
+minigame classes, plus two things that are not UI at all but live in the same module: the Blueprint
+reception layer, which forwards incoming events and actor updates to delegates without a line of C++,
+and `UCrowdyUtilities`, an entity and session helper library. All of it lives in `CrowdyServices`.
+
+## When you touch this
+
+When you want the SDK to open and close your widgets instead of doing it by hand, when a Blueprint-only
+project needs to receive game events or actor updates without binding a delegate in C++, or when gameplay
+code needs an entity's id, owner, or host state and you would rather call a library function than reach
+into the entity component yourself.
+
+Nothing else in the SDK requires any of this. CrowdyState, RPC, and Game Models work with none of
+`ICrowdyHUD`, `ICrowdyUIRootWidget`, `ICrowdyPlayer`, `ICrowdyMinigame`, or `ACrowdyHUDBase` implemented.
+
+## HUD hooks
+
+`ICrowdyUIRootWidget` is the contract for a widget that owns the four UI layers and stacks widgets on
+them. `ICrowdyHUD` is the contract for a HUD actor that routes commands to that root widget. Each `I`
+interface is the Blueprint-facing half of a `UINTERFACE` pair; the generated class you never call
+directly is `UCrowdyUIRootWidget` for the first and `UCrowdyHUD` for the second.
+`ACrowdyHUDBase` (`Blueprintable`, `Abstract`, derives `AHUD`) implements `ICrowdyHUD` for you and adds
+two editable properties, `HUDWidgetClass` and `WidgetSetConfig`. `UW_CrowdyHUD` is the SDK's own
+`UUserWidget` implementation of `ICrowdyUIRootWidget`. `HUDWidgetClass` defaults to none: make a Widget
+Blueprint parented to `UW_CrowdyHUD` with four Overlay widgets named `GameLayer`, `GameMenuLayer`,
+`MenuLayer` and `ModalLayer`, and assign it as **HUD Widget Class** on your HUD Blueprint's class
+defaults; until then BeginPlay logs a warning and starts no widget system.
+
+| Interface | Function | Does | Parameters that matter |
+|---|---|---|---|
+| `ICrowdyUIRootWidget` | `PushToLayer` | Creates and pushes a widget onto one of the four layers | `Layer` (`ECrowdyUILayer`), `bClearLayerFirst`, `WidgetClass` |
+| `ICrowdyUIRootWidget` | `PopFromLayer` | Pops the top widget off a layer | `Layer`, `bRemoveFromParent` |
+| `ICrowdyUIRootWidget` | `GetLayer` | Returns the `UOverlay` backing a layer | `Layer` |
+| `ICrowdyHUD` | `ExecuteUICommand` (**Execute Crowdy UI Command**) | Routes an `FGameplayTag` command to the HUD | `Command`, `bHideOtherWidgetsInLayer`, `bChangeInputMode` |
+| `ICrowdyHUD` | `GetWidgetReference` | Returns an already-created widget of the given class, or null | `WidgetClass` |
+| `ICrowdyHUD` | `ToggleLayerVisibility` | Shows or hides a whole layer | `Layer`, `bVisible` |
+| `ACrowdyHUDBase` | `InitializeCrowdyWidgets` | `BlueprintNativeEvent` called once from BeginPlay; the default creates every widget in `WidgetSetConfig`. Override to add to that and call the parent | none |
+
+`UCrowdySDKSubsystem::OnCrowdyHUDReady` (**Crowdy HUD Ready**, `FOnCrowdyHUDReady`, no parameters) fires
+once `ACrowdyHUDBase` has created every widget in `WidgetSetConfig`; bind it on the Crowdy SDK Subsystem
+when something must wait for the HUD to exist.
+
+`ECrowdyUILayer` (`GameLayer`, `GameMenuLayer`, `MenuLayer`, `ModalLayer`) names the four layers.
+`ECrowdyInputMode` (`Game`, `GameAndUI`, `UI`) is the input mode a widget switches to. A widget set is a
+`UCrowdyWidgetSet` data asset, one `FWidgetSpec` per tag in its `WidgetSpecMap`, each spec carrying a
+`WidgetClass`, `Layer`, `bClearLayerFirst`, `bStartVisible`, and the entering and exiting input modes.
+`ACrowdyHUDBase::WidgetSetConfig` points at one; its private `ToggleWidget` and `GetWidget` do the actual
+show and lookup work behind `ExecuteUICommand` and `GetWidgetReference`.
+
+Set both `HUDWidgetClass` and `WidgetSetConfig` on the HUD Blueprint's class defaults; they are saved with
+it.
+
+This section has no example: the tables above are the reference.
+
+## Player and minigame hooks
+
+`ICrowdyPlayer::GetPlayerName` and `ICrowdyPlayer::InteractMessage` (an interact prompt with a `Message`
+and a `Duration`) are the player-facing hooks, generated alongside `UCrowdyPlayer`.
+`ICrowdyMinigame::GetMinigameName` and `ICrowdyMinigame::JoinMinigame` are their minigame equivalents,
+generated alongside `UCrowdyMinigame`.
+
+:::warning[GetPlayerName and GetMinigameName are placeholders today.]
+Both are hooks the SDK never calls and never implements; whatever you return is yours, and nothing in the
+SDK reads it. Do not build a feature that expects the SDK to fill either one.
+:::
+
+## The Blueprint reception layer
+
+`UCrowdyBlueprintReceptionLayer` lets a Blueprint receive game events and actor updates without binding a
+delegate in C++. `CreateAndRegisterLayer(WorldContextObject, Class)` spawns one and registers it. Once
+registered, it broadcasts `OnEventNotificationReceived` (an `FGameEventNotificationBP`) for a matching
+game event and `OnActorUpdateReceived` (an `FActorUpdateNotificationBP`) for a matching actor update.
+
+Three `EditDefaultsOnly` arrays say what a layer subscribes to: `SupportedResponseTypes`
+(`ECrowdyMessageType`), `SupportedActorUpdateTypes` (`FName`), and `SupportedEvents` (the struct types to
+receive).
+
+:::warning[An empty SupportedEvents array is a catch-all when the event opcode is listed.]
+With `SupportedEvents` empty and `Client Event Notification` or `Server Event Notification` in
+`SupportedResponseTypes`, the layer receives every event no other layer claimed. With all three arrays
+empty it receives nothing. The same rule pairs `SupportedActorUpdateTypes` with `Actor Update
+Notification`: empty plus the opcode is every actor update, empty alone is none.
+:::
+
+`DispatchToBlueprint` and the `RegisterLayer` internals are C++-only and not exposed to Blueprint;
+`RegisterLayer` is safe to call more than once and builds one subscription per declared type, or the
+unclaimed fallback when nothing is declared and the matching opcode is listed.
+
+## The utilities library
+
+`UCrowdyUtilities` is a static Blueprint function library for entities, sessions, and events. It is not
+UI-specific, but it lives in the same module.
+
+| Function | Does |
+|---|---|
+| `SpawnCrowdyEntity`, `DestroyCrowdyEntity` | Spawns or destroys an entity actor |
+| `GetCrowdyEntityID`, `GetCrowdyEntity` | Converts between an entity actor and its id |
+| `GetLocalPlayerEntityID` | The local player's entity id |
+| `GetCrowdyEntityOwnerID`, `GetAllCrowdyEntitiesByOwner` | An entity's owner, or every entity a given owner has |
+| `CrowdyIsEntityRegistered` | Whether an id is a known entity |
+| `GetCrowdyEntityRole` | An entity's `ECrowdyRole` |
+| `DoesCrowdyEntityOwn` | Whether one actor owns another, by Crowdy identity |
+| `GetCrowdyEntityComponent` | An actor's entity component, falling back to `FindComponentByClass` when the actor does not implement `ICrowdyEntityComponentProvider` |
+| `IsCrowdyEntityLocallyControlled`, `IsCrowdyEntityPlayerControlled` (and its exec-flow twin `SwitchIsCrowdyEntityPlayerControlled`) | Local or player control checks |
+| `CrowdyIsRemoteProxy` (and its exec-flow twin `SwitchCrowdyIsRemoteProxy`) | Whether this is a remote proxy of the entity |
+| `K2_SendCrowdyEvent` (display name **Send Crowdy Event**; C++-only template `SendCrowdyEvent<T>` for the same call without the Blueprint thunk) | Sends a game event struct with `Recipient`, `DecayRate`, and `ReplicationDistance` |
+| `CrowdyHasAuthority` (exec-flow, **Switch Crowdy Has Authority**) / `GetCrowdyHasAuthority` (pure, **Crowdy Has Authority**) | True when this client is the host |
+| `CrowdyIsConnectedToServer` | Whether the realtime connection is up |
+| `CrowdyGetHostID` | The current host's id |
+| `IsCrowdyEntityHost` | Whether this actor is the host player's own entity (its id equals the host id). For "owned by the host" compare `GetCrowdyEntityOwnerID` with `CrowdyGetHostID` |
+
+:::warning[DoesCrowdyEntityOwn compares Crowdy ownership, not AActor::GetOwner.]
+The name invites Unreal's actor-owner meaning, but this checks Crowdy entity ownership instead; it will
+not agree with `AActor::GetOwner()` for an entity whose Unreal owner was never set to match.
+:::
+
+`IsCrowdyEntityHost` and `IsCrowdyEntityLocallyControlled` both fold in host election state. See
+[Host election](./host-election.md) and [Host authority](../runtime/host-authority.md) for what "host"
+means before relying on either.
+
+## Gotchas
+
+- Every hook on this page is optional. Nothing else in the SDK requires an implementation of any of them.
+- `GetPlayerName` and `GetMinigameName` are placeholders the SDK never calls; nothing reads what you return.
+- `HUDWidgetClass` defaults to none. Without a `UW_CrowdyHUD` Widget Blueprint assigned, the HUD base starts
+  no widget system and `OnCrowdyHUDReady` never fires.
+- The reception layer's `SupportedEvents` is a claim list, not a filter: empty plus the event opcode in
+  `SupportedResponseTypes` widens the layer to every unclaimed event; empty alone receives nothing.
+- The reception layer forwards transport-level notifications to Blueprint. It is not the Game Model
+  change-ping and pull mechanism on [Change pings and pull](../game-models/change-pings-and-pull.md);
+  the two do not replace each other.
+- Everything on this page logs under `LogCrowdyServices`, gated by two trace CVars:
+  `crowdy.services.trace` (`CrowdyServicesTrace::Services`) for the utilities library and reception
+  layer, and `crowdy.hud.trace` (`CrowdyServicesTrace::Hud`) for HUD-side calls.
+
+## Related
+
+- [Host election](./host-election.md) and [Host authority](../runtime/host-authority.md): what
+  `IsCrowdyEntityHost` and `IsCrowdyEntityLocallyControlled` fold in.
+- [Channels](../runtime/channels.md): the message plane the reception layer's subscriptions ride.
+- [Change pings and pull](../game-models/change-pings-and-pull.md): the Game Model notification and pull
+  path, a different mechanism from the reception layer above.
 
 # Persistence
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/services/persistence

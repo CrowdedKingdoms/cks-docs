@@ -7,7 +7,9 @@ import { NodeParser } from "../src/parser/node.parser";
 import { ParsingNodeData } from "../src/parser/parsing-node-data";
 import { CallFunctionNodeParser } from "../src/parser/node-parsers/call-function-node.parser";
 import { CustomEventNodeParser } from "../src/parser/node-parsers/custom-event-node.parser";
+import { StructNodeParser } from "../src/parser/node-parsers/struct-node.parser";
 import { CallFunctionNode } from "../src/data/nodes/call-function.node";
+import { StructNode } from "../src/data/nodes/struct.node";
 import { PinProperty } from "../src/data/pin/pin-property";
 import { insertSpacesBetweenCapitalizedWords } from "../src/utils/text-utils";
 import { CrowdyFunctionNames, CrowdyFunctionNamesByClass } from "./crowdy-names.generated";
@@ -90,6 +92,14 @@ class CrowdyCallFunctionParser extends CallFunctionNodeParser {
                 if (className && subtitle) {
                     subtitle.text = `Target is ${identifierDisplayName(className)}`;
                 }
+                return;
+            }
+            // Upstream splits the target class with a lower-to-upper rule only, so an acronym run stays glued to
+            // the word after it ("Crowdy SDKSubsystem"); the editor breaks the run before its last capital.
+            const parentName = node.functionReference?.memberParent?.className;
+            const targetSubtitle = parentName && node.subTitles.find(s => s.text.startsWith("Target is "));
+            if (parentName && targetSubtitle) {
+                targetSubtitle.text = `Target is ${identifierDisplayName(parentName)}`;
             }
         };
     }
@@ -197,6 +207,18 @@ class CrowdyMakeMapParser extends NodeParser {
     }
 }
 
+// Break <Struct>: upstream titles the node with the struct's C++ name ("Break CrowdyTeam"); the editor draws the
+// struct's display name ("Break Crowdy Team").
+class CrowdyBreakStructParser extends StructNodeParser {
+    public parse(data: ParsingNodeData): NodeControl {
+        this.parseProperties(data);
+        const structType = (data.node as StructNode).structType;
+        data.node.backgroundColor = Constants.DARK_BLUE;
+        data.node.title = `Break ${identifierDisplayName(structType?.className || "")}`.trim();
+        return new HeadedNodeControl(data.node, IconLibrary.BREAK_STRUCT);
+    }
+}
+
 class CrowdyEffectNodeParser extends NodeParser {
     constructor() {
         super({});
@@ -219,6 +241,7 @@ export const CrowdyPlugin: NodeParserPlugin = {
             "/Script/BlueprintGraph.K2Node_GetSubsystem": () => new CrowdyGetSubsystemParser(),
             "/Script/BlueprintGraph.K2Node_AddDelegate": () => new CrowdyAddDelegateParser(),
             "/Script/BlueprintGraph.K2Node_MakeMap": () => new CrowdyMakeMapParser(),
+            "/Script/BlueprintGraph.K2Node_BreakStruct": () => new CrowdyBreakStructParser(),
         };
         for (const classPath of ASYNC_NODE_CLASSES) {
             parsers[classPath] = () => new CrowdyAsyncActionParser();

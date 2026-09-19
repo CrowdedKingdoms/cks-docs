@@ -5286,5 +5286,305 @@
     "id": "UCrowdyContainerManifest::FindDuplicateRows",
     "reason": "editor",
     "note": "the manifest asset's duplicate-key check behind its editor data validation; a reader sees the validation error, not the call"
+  },
+  {
+    "id": "UCrowdyPersistenceSubsystem",
+    "reason": "deprecated",
+    "note": "Superseded by Game Models; the page goes when its redirect target exists."
+  },
+  {
+    "id": "UCrowdyPersistenceSubsystem::ClearAllState",
+    "reason": "deprecated",
+    "note": "Superseded by Game Models; the page goes when its redirect target exists."
+  },
+  {
+    "id": "UCrowdyPersistenceSubsystem::K2_PullState",
+    "reason": "deprecated",
+    "note": "Superseded by Game Models; the page goes when its redirect target exists."
+  },
+  {
+    "id": "UCrowdyPersistenceSubsystem::K2_PushState",
+    "reason": "deprecated",
+    "note": "Superseded by Game Models; the page goes when its redirect target exists."
+  },
+  {
+    "id": "UCrowdyPersistenceSubsystem::InitialSetup",
+    "reason": "deprecated",
+    "note": "Superseded by Game Models; the page goes when its redirect target exists."
+  },
+  {
+    "id": "EPullStateResult",
+    "reason": "deprecated",
+    "note": "Result enum of the persistence subsystem's pull; superseded by Game Models with it."
+  },
+  {
+    "id": "FCrowdyPullStateLatentAction",
+    "reason": "deprecated",
+    "note": "Latent action behind the persistence subsystem's pull; superseded by Game Models with it."
+  },
+  {
+    "id": "FCrowdyWildcardStruct",
+    "reason": "deprecated",
+    "note": "Wildcard pin marker of the persistence subsystem's push and pull; superseded by Game Models with it."
+  },
+  {
+    "id": "ICrowdyPersistentOwner",
+    "reason": "deprecated",
+    "note": "Owner interface of the persistence subsystem; superseded by Game Models with it."
+  },
+  {
+    "id": "ICrowdyPersistentOwner::GetPersistentKey",
+    "reason": "deprecated",
+    "note": "Owner interface of the persistence subsystem; superseded by Game Models with it."
+  },
+  {
+    "id": "ICrowdyPersistentOwner::OnPersistentStateRestored",
+    "reason": "deprecated",
+    "note": "Owner interface of the persistence subsystem; superseded by Game Models with it."
+  },
+  {
+    "id": "UCrowdyPersistentOwner",
+    "reason": "deprecated",
+    "note": "UINTERFACE half of ICrowdyPersistentOwner; superseded by Game Models with it."
+  },
+  {
+    "id": "FCallbackPullOp",
+    "reason": "deprecated",
+    "note": "Private bookkeeping of the persistence subsystem; superseded by Game Models with it."
+  },
+  {
+    "id": "FPendingPullOp",
+    "reason": "deprecated",
+    "note": "Private bookkeeping of the persistence subsystem; superseded by Game Models with it."
+  },
+  {
+    "id": "FPendingPushVerification",
+    "reason": "deprecated",
+    "note": "Private bookkeeping of the persistence subsystem; superseded by Game Models with it."
+  },
+  {
+    "id": "FPersistenceTypeInfo",
+    "reason": "deprecated",
+    "note": "Private bookkeeping of the persistence subsystem; superseded by Game Models with it."
+  },
+  {
+    "id": "FPulledChunk",
+    "reason": "deprecated",
+    "note": "Private bookkeeping of the persistence subsystem; superseded by Game Models with it."
+  },
+  {
+    "id": "FQueuedPush",
+    "reason": "deprecated",
+    "note": "Private bookkeeping of the persistence subsystem; superseded by Game Models with it."
+  },
+  {
+    "id": "UCrowdyAuthSaveGame",
+    "reason": "internal",
+    "note": "Private save-game shape behind RestoreSession; a game reads the session through UCrowdyAuthentication, never this object."
+  },
+  {
+    "id": "FCrowdySDKModule",
+    "reason": "internal",
+    "note": "Module boilerplate."
+  },
+  {
+    "id": "CrowdySDKTrace::Sdk",
+    "reason": "internal",
+    "note": "Namespace helper behind crowdy.sdk.trace, documented on console-cvars."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::SetGameSessionInfo",
+    "reason": "internal",
+    "note": "Installs the signed-in session's ids and tokens; UCrowdyAuthentication calls it after sign-in. A game never hand-feeds tokens here."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::SetExpectedActorUpdateStateSize",
+    "reason": "internal",
+    "note": "Pre-size hint for the actor update parser; the SDK sets it from the registry, nothing a game measures."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::DispatchActorHeartbeat",
+    "reason": "internal",
+    "note": "Wire-level send below the entity component, which keeps its own actors present; recipients-and-routing documents the supported paths."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::K2_DispatchGameEvent",
+    "reason": "internal",
+    "note": "Raw wire send with explicit chunk coordinates; the documented paths are CrowdyEvents, Send Crowdy Event and the entity component's SendEvent."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::DispatchActorUpdate",
+    "reason": "internal",
+    "note": "Wire-level send below the entity component, C++ only; recipients-and-routing documents the supported paths."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::DispatchGameEvent",
+    "reason": "internal",
+    "note": "Raw wire send behind UCrowdyEntitySubsystem::DispatchGameEvent, which recipients-and-routing documents."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::DispatchGameEvent_Internal",
+    "reason": "internal",
+    "note": "Raw wire send behind UCrowdyEntitySubsystem::DispatchGameEvent, which recipients-and-routing documents."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::DispatchGameEventView_Internal",
+    "reason": "internal",
+    "note": "Raw wire send behind UCrowdyEntitySubsystem::DispatchGameEvent, which recipients-and-routing documents."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::DispatchSingleActorMessage_Internal",
+    "reason": "internal",
+    "note": "Raw wire send behind UCrowdyEntitySubsystem::DispatchSingleActorMessage, which recipients-and-routing documents."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::GetServiceRegistry",
+    "reason": "internal",
+    "note": "The network router the SDK's own services subscribe through; a game receives through CrowdyEvents, the reception layer or the entity component."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::SendMessage",
+    "reason": "internal",
+    "note": "Raw ICrowdyMessage send the SDK's own services use; nothing a game constructs."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::Subscribe",
+    "reason": "internal",
+    "note": "Router subscription the SDK's own services use; a game receives through CrowdyEvents, the reception layer or the entity component."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::SubscribeToActorUpdatePayload",
+    "reason": "internal",
+    "note": "Router subscription the SDK's own services use; a game receives through CrowdyEvents, the reception layer or the entity component."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::SubscribeToAllPayloads",
+    "reason": "internal",
+    "note": "Router subscription the SDK's own services use; a game receives through CrowdyEvents, the reception layer or the entity component."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::SubscribeToEventPayload",
+    "reason": "internal",
+    "note": "Router subscription the SDK's own services use; a game receives through CrowdyEvents, the reception layer or the entity component."
+  },
+  {
+    "id": "UCrowdySDKSubsystem::SubscribeToOpcode",
+    "reason": "internal",
+    "note": "Router subscription the SDK's own services use; a game receives through CrowdyEvents, the reception layer or the entity component."
+  },
+  {
+    "id": "AWinAudioDeviceMonitor::GetAvailableAudioDevices",
+    "reason": "internal",
+    "note": "Private, non-exported actor the voice subsystem spawns for itself; a game cannot include or reference it."
+  },
+  {
+    "id": "AWinAudioDeviceMonitor::InitializeAudioDeviceMonitoring",
+    "reason": "internal",
+    "note": "Private, non-exported actor the voice subsystem spawns for itself; a game cannot include or reference it."
+  },
+  {
+    "id": "AWinAudioDeviceMonitor::ShutdownAudioDeviceMonitoring",
+    "reason": "internal",
+    "note": "Private, non-exported actor the voice subsystem spawns for itself; a game cannot include or reference it."
+  },
+  {
+    "id": "AWinAudioDeviceMonitor::OnAudioDeviceConnected",
+    "reason": "internal",
+    "note": "Private, non-exported actor the voice subsystem spawns for itself; a game cannot include or reference it."
+  },
+  {
+    "id": "AWinAudioDeviceMonitor::OnAudioDeviceDisconnected",
+    "reason": "internal",
+    "note": "Private, non-exported actor the voice subsystem spawns for itself; a game cannot include or reference it."
+  },
+  {
+    "id": "FVoiceChatService::CleanupDecoder",
+    "reason": "internal",
+    "note": "Opus capture and playback service driven by UCrowdySDKSubsystem's six voice calls; not a game surface."
+  },
+  {
+    "id": "FVoiceChatService::CompressAudioData",
+    "reason": "internal",
+    "note": "Opus capture and playback service driven by UCrowdySDKSubsystem's six voice calls; not a game surface."
+  },
+  {
+    "id": "FVoiceChatService::DecompressAudioData",
+    "reason": "internal",
+    "note": "Opus capture and playback service driven by UCrowdySDKSubsystem's six voice calls; not a game surface."
+  },
+  {
+    "id": "FVoiceChatService::HandleClientAudioNotification",
+    "reason": "internal",
+    "note": "Opus capture and playback service driven by UCrowdySDKSubsystem's six voice calls; not a game surface."
+  },
+  {
+    "id": "FVoiceChatService::SendAudioData",
+    "reason": "internal",
+    "note": "Opus capture and playback service driven by UCrowdySDKSubsystem's six voice calls; not a game surface."
+  },
+  {
+    "id": "FVoiceChatService::SetVoiceChatManagerReference",
+    "reason": "internal",
+    "note": "Opus capture and playback service driven by UCrowdySDKSubsystem's six voice calls; not a game surface."
+  },
+  {
+    "id": "UVoiceChatSubsystem::HandleAudioGeneration",
+    "reason": "internal",
+    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
+  },
+  {
+    "id": "UVoiceChatSubsystem::HandleIncomingAudio",
+    "reason": "internal",
+    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
+  },
+  {
+    "id": "UVoiceChatSubsystem::InitializeAudioCapture",
+    "reason": "internal",
+    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
+  },
+  {
+    "id": "UVoiceChatSubsystem::InitializeVoiceChatSubsystem",
+    "reason": "internal",
+    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
+  },
+  {
+    "id": "UVoiceChatSubsystem::ManagePlaybackBuffer",
+    "reason": "internal",
+    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
+  },
+  {
+    "id": "UVoiceChatSubsystem::ProcessAudioDataThread",
+    "reason": "internal",
+    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
+  },
+  {
+    "id": "UVoiceChatSubsystem::SetStreamTimeoutThreshold",
+    "reason": "internal",
+    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
+  },
+  {
+    "id": "UVoiceChatSubsystem::SetVoiceChatService",
+    "reason": "internal",
+    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
+  },
+  {
+    "id": "UVoiceChatSubsystem::StartVoiceCapture",
+    "reason": "internal",
+    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
+  },
+  {
+    "id": "UVoiceChatSubsystem::StopTicking",
+    "reason": "internal",
+    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
+  },
+  {
+    "id": "UVoiceChatSubsystem::StopVoiceCapture",
+    "reason": "internal",
+    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
+  },
+  {
+    "id": "UVoiceChatSubsystem::TickPlayback",
+    "reason": "internal",
+    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
   }
 ]

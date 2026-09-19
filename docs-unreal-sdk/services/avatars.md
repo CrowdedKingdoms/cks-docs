@@ -2,158 +2,130 @@
 slug: avatars
 sidebar_position: 3
 title: Avatars
+description: "A player's stored profile: the record fields, who may write them, per-app state keyed by AppId, the cache-only reads versus the network refresh, and the struct serialization helpers, in C++ and Blueprint."
 ---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # Avatars
 
-An avatar is a player profile scoped to your app. It is stored data that travels with the player and survives between sessions: a display name, a chosen loadout, cosmetic selections, progression flags, or any small struct your game defines.
+An avatar is a player-owned profile: an identity a player picks from and carries across sessions, holding small state other players can read and only the owner can write. It is not a live world actor and it is not a Game Model; it is a stored profile the rest of the SDK reads to seed one, distinct from [authoritative gameplay truth](../game-models/overview.md).
 
-Each avatar carries three kinds of state:
+## When you touch this
 
-- A public part that other players can read.
-- A private part that only the owning player can read.
-- An app-state blob for your game's own data.
+When you build a profile or loadout screen, when a player changes a cosmetic or setting that should survive between sessions, or when you seed an entity's spawn state from a stored value the player already owns.
 
-Avatars live on `UCrowdyAvatars`, a game instance subsystem in the CrowdyServices module.
+## The record
 
-:::note[Avatars are not the same as entities. An entity is a live, replicated actor in the world. An avatar is a stored profile. You read an avatar to populate UI or to seed an entity's initial state, and you write to it when the player changes something that should persist.]
+`UCrowdyAvatars` (Game Instance subsystem, category **Crowdy SDK > Avatars**) owns every avatar call. An avatar record, `FCrowdyAvatar`, holds:
+
+| Field | Holds |
+|---|---|
+| `AvatarId` | The avatar's `int64` id. |
+| `UserId` | The owning player's `int64` id. |
+| `Name` | Display name. |
+| `PublicState` | Base64 blob, readable by every player. |
+| `PrivateState` | Base64 blob, readable by the owner only; stripped server-side on a non-owner read. |
+| `CreatedAt` | Creation timestamp. |
+
+Per-app data is a separate record, `FCrowdyAppAvatarState`, keyed by `AppId` and `AvatarId`: `RawState` (base64, empty string means not set), `CreatedAt`, `UpdatedAt`. This is the slot for cosmetics, settings, or any small struct your game defines; the avatar record's own fields do not hold arbitrary game data.
+
+:::warning[Only the owner may write an avatar, and the SDK does not check locally.]
+Every write, `UpdateAvatar`, `UpdateAvatarState`, `UpdatePublicAvatarState`, `UpdatePrivateAvatarState`, `UpdateAvatarAppState`, `DeleteAvatar`, is owner-only, enforced by the Game API against the caller's app-scoped token. `UCrowdyAvatars` performs no local ownership check: a write for an avatar the signed-in player does not own is sent over the wire and refused server-side, surfaced through `OnError` and usually classified `Forbidden`.
 :::
 
-## Get the subsystem
+## Reading avatars: cache versus network
 
-`UCrowdyAvatars` is a game instance subsystem, so you fetch it from the game instance.
+`GetCachedMyAvatars`, `HasCachedAvatars`, and `GetMyAvatarById` are synchronous, cache-only, and never populate themselves. Only `GetMyAvatars` (a network refresh) repopulates the cache and fires `OnMyAvatarsCacheChanged` (`FOnMyAvatarsCacheChanged`, one param, the refreshed array) so anything watching the cache updates without polling. A create, rename, delete or state write does not touch the cache, so call `GetMyAvatars` again after a write you want the cache to reflect.
 
-```cpp
-UCrowdyAvatars* Avatars = GetGameInstance()->GetSubsystem<UCrowdyAvatars>();
-```
+`GetAvatar` reads any avatar by id, including one you do not own; `GetUserAvatars` lists another user's avatars. Neither is limited to the signed-in player.
 
-Hold the pointer for the lifetime of the object that uses it. The subsystem lives as long as the game instance does.
+## Reading and writing per-app state
 
-## Read your avatars
+`GetAvatarAppState` and `GetAvatarAppStates` (batch) read the calling app's slot for one or many avatars. `UpdateAvatarAppState` replaces it.
 
-The subsystem keeps a local cache of the signed-in player's avatars. Read the cache for instant UI, and treat the network as eventual truth.
-
-- `GetCachedMyAvatars` returns what the subsystem currently knows. It is synchronous and safe to call every frame for UI.
-- `OnMyAvatarsCacheChanged` is a multicast delegate that fires whenever the cache updates. Bind a UFUNCTION to it and refresh your UI from the cache when it fires.
-- `GetMyAvatars` asks the server for the current set and refreshes the cache. Call it on login, or when you want to force a resync.
-
-A typical pattern is to bind to the change delegate first, then kick off `GetMyAvatars`, then build your UI off whatever the cache holds.
-
-```cpp
-void UMyProfileWidget::Activate()
-{
-    UCrowdyAvatars* Avatars = GetGameInstance()->GetSubsystem<UCrowdyAvatars>();
-    Avatars->OnMyAvatarsCacheChanged.AddDynamic(this, &UMyProfileWidget::HandleAvatarsChanged);
-
-    // Seed the UI from whatever is already cached.
-    HandleAvatarsChanged();
-
-    // Then ask the server to refresh.
-    Avatars->GetMyAvatars(/* per-call delegates */);
-}
-
-void UMyProfileWidget::HandleAvatarsChanged()
-{
-    UCrowdyAvatars* Avatars = GetGameInstance()->GetSubsystem<UCrowdyAvatars>();
-    const TArray<FCrowdyAvatar> Mine = Avatars->GetCachedMyAvatars();
-    RebuildListFrom(Mine);
-}
-```
-
-:::tip[Read the cache for anything that drives UI this frame. Use the change delegate to know when to redraw. Reserve `GetMyAvatars` for explicit resync points so you are not round-tripping the server on every interaction.]
-Same blueprint async nodes are a available for the whole operations that are supposed to be performed using Crowdy Avatars.
+:::warning[AppId always comes from project settings; there is no per-call override.]
+`GetAvatarAppState`, `GetAvatarAppStates`, and `UpdateAvatarAppState` resolve `AppId` from project settings, not a parameter. This subsystem cannot target a different app's slot.
 :::
 
-## Create, update, and delete
+`UpdatePublicAvatarState` and `UpdatePrivateAvatarState` each leave the other field untouched on the server; `UpdateAvatarState` replaces both public and private state atomically.
 
-The subsystem exposes the lifecycle operations you would expect:
-
-- `CreateAvatar` makes a new avatar for the signed-in player.
-- `UpdateAvatar` changes top-level fields on an existing avatar.
-- `DeleteAvatar` removes one.
-
-The three state parts each have their own update entry point so you can write just the slice you changed:
-
-- `UpdatePublicAvatarState` writes the public part.
-- `UpdatePrivateAvatarState` writes the private part.
-- `UpdateAvatarAppState` writes the app-state blob.
-
-These are network operations. Like the other CrowdyServices subsystems, they take per-call dynamic delegates for success and error, which you bind to UFUNCTIONs.
-
-After a successful write the cache updates and `OnMyAvatarsCacheChanged` fires, so your UI can react without you threading the result through by hand.
-
-
-:::note[Write only the part you changed. If the player edited their public display name, call `UpdatePublicAvatarState` and leave the private and app-state parts alone. Splitting the writes keeps payloads small and avoids overwriting data another part of your game owns.]
+:::caution[The combined write still round-trips an unchanged field.]
+Calling `UpdateAvatarState` with a field's old value does not clear it, it just resends it. Prefer the separate `UpdatePublicAvatarState` / `UpdatePrivateAvatarState` calls when only one field changes.
 :::
 
-## Store your own struct in app state
+## Serializing struct state
 
-The app-state blob is where your game's data goes. You do not work with raw bytes. The subsystem provides serialization helpers that move a `USTRUCT` in and out of app state, so you define a plain struct and let the helpers handle the conversion.
+State fields are base64 strings on the wire. `SerializeToAvatarState` and `DeserializeFromAvatarState` convert any `USTRUCT` to and from that string; `GetAvatarAppStateAs` and `SetAvatarAppStateAs` are latent wrappers that fetch-and-deserialize or serialize-and-write in one call.
 
-Define the struct your game wants to persist on the profile:
-
-```cpp
-USTRUCT()
-struct FMyAvatarProfile
-{
-    GENERATED_BODY()
-
-    UPROPERTY()
-    FString Title;
-
-    UPROPERTY()
-    int32 Prestige = 0;
-
-    UPROPERTY()
-    TArray<FName> UnlockedCosmetics;
-};
-```
-
-The save and restore paths mirror each other:
-
-- To save, fill in the struct and hand it to the app-state update path through the serialization helper.
-- To restore, read the avatar from the cache and run the inverse helper to get your struct back.
-
-```cpp
-void USaveExample::SaveProfile(const FMyAvatarProfile& Profile)
-{
-    UCrowdyAvatars* Avatars = GetGameInstance()->GetSubsystem<UCrowdyAvatars>();
-
-    // The serialization helper turns your struct into app state,
-    // then UpdateAvatarAppState writes it for the chosen avatar.
-    Avatars->UpdateAvatarAppState(/* target avatar, serialized Profile, per-call delegates */);
-}
-
-void USaveExample::RestoreProfile()
-{
-    UCrowdyAvatars* Avatars = GetGameInstance()->GetSubsystem<UCrowdyAvatars>();
-
-    const TArray<FCrowdyAvatar> Mine = Avatars->GetCachedMyAvatars();
-    if (Mine.Num() == 0)
-    {
-        return;
-    }
-
-    // Read the app state from the cached avatar and run the helper
-    // to deserialize it back into your struct.
-    FMyAvatarProfile Profile;
-    // Profile = <deserialize app state of Mine[0] with the helper>;
-
-    ApplyProfileToGame(Profile);
-}
-```
-
-The exact helper names and the shape of `FCrowdyAvatar` come from the shipped headers. The pattern is the same in every case: keep a regular `USTRUCT` in your game code, serialize it into app state when you write, and deserialize it back when you read.
-
-:::caution[App state is part of the player's profile, not server-authoritative gameplay truth. Keep cheat-sensitive numbers (currency balances, match results) in Game Models or your persistence layer, not in avatar app state. Use app state for profile data: cosmetics, titles, preferences, and similar.]
+:::warning[The State pin is a wildcard: one struct, string or scalar, never an array.]
+`SerializeToAvatarState`, `DeserializeFromAvatarState`, `GetAvatarAppStateAs`, and `SetAvatarAppStateAs` are `CustomThunk` with a `CustomStructureParam`. The `int32&` in the C++ signature is a wildcard pin in Blueprint: connect a struct pin (or a single string, bool, integer or float) and the pin takes that type. An array, set or map pin is refused.
 :::
 
-## How this fits the rest of the SDK
+The lantern serializes its torch color as a small cosmetic struct, writes it to the app-state slot, and re-applies it on spawn. The example assumes the player already has an avatar (created in Studio or with `CreateAvatar`); with none, `AvatarId` stays 0 and every call below returns early.
 
-Reach for a different system when the data is not profile data:
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
 
-- For replicated, live world state, spawn an entity instead. See [Entities and spawning](/unreal-sdk/runtime/entities-and-spawning).
-- For per-subject saved gameplay structs over a fast path, use the persistence subsystem. See [Persistence](/unreal-sdk/services/persistence).
-- For team membership tied to the player, see [Teams](/unreal-sdk/services/teams).
+`SetTorchColor` writes the picked `FLinearColor` directly with `FMemoryWriter`, byte-identical to what `SerializeToAvatarState` would produce for a linear color; C++ cannot call that helper itself, since its struct pin is a `CustomThunk` wildcard. `UpdateAvatarAppState` sends the encoded bytes, and `Torch` only recolours once the write's `OnSuccess` handler, `ApplyTorchColor`, confirms it.
 
-A common flow is to read the avatar on login, seed an entity's initial spawn state from the public part, and write back to app state when the player changes something that should persist.
+<CppSnippet id="avatar-set" />
+
+`LoadTorchColor` calls `GetAvatarAppState`; the handler `ApplyTorchColor`, shared with the write above, base64-decodes, guards on 16 bytes, and reads the color with `FMemoryReader` straight into `Torch`. The latent `GetAvatarAppStateAs` is not used here for the same wildcard-thunk reason as above.
+
+<CppSnippet id="avatar-get" />
+
+`WatchAvatars`, bound at `BeginPlay`, picks up `AvatarId` from the first entry of a cache refresh and calls `LoadTorchColor`, so a cache change elsewhere still lands the stored color.
+
+<CppSnippet id="avatar-events" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+Variables the Blueprint needs: `Torch` (a `UPointLightComponent` reference) and `AvatarId` (`int64`). Set `AvatarId` from a **Get My Avatars** result (the first entry's `AvatarId`) or from the cache-changed event described below; the two graphs read it and do nothing while it is 0.
+
+Saving the color: `OnTorchColorPicked` (custom event, `NewColor`) runs **Serialize Struct to Avatar State** on `NewColor`, reads `AvatarId`, and passes the result to the **Update Avatar App State** async node; its `OnSuccess` pin calls **Set Light Color** on `Torch` with `NewColor`.
+
+<Blueprint src="avatar-set" title="OnTorchColorPicked, Serialize Struct to Avatar State, Get AvatarId, Update Avatar App State, Get Torch, Set Light Color" />
+
+Loading it on spawn: `Event BeginPlay` gets the **Crowdy Avatars** subsystem, reads `AvatarId`, and calls the latent **Get Avatar App State As**, whose wildcard output feeds `NewLightColor`; a **Branch** on its `bSuccess` output calls **Set Light Color** on `Torch`.
+
+<Blueprint src="avatar-get" title="Event BeginPlay, Crowdy Avatars, Get AvatarId, Get Avatar App State As, Branch, Get Torch, Set Light Color" />
+
+Following cache changes: no figure is shown for this step. Add a custom event with one input, `Avatars` (array of `Crowdy Avatar`), bind it with **Bind Event to On My Avatars Cache Changed** at Begin Play, set `AvatarId` from the first entry in its body, then run the loading path above; the C++ tab's `WatchAvatars` is the same step.
+
+</TabItem>
+</Tabs>
+
+## Async action nodes
+
+Every network call above also exists as a Blueprint async action node with the same name and, as its underlying class, the subsystem name plus the call (**Get My Avatars** `UCrowdyAvatars_GetMyAvatars`, **Get Avatar** `UCrowdyAvatars_GetAvatar`, **Get User Avatars** `UCrowdyAvatars_GetUserAvatars`, **Get Avatar App State** `UCrowdyAvatars_GetAvatarAppState`, **Get Avatar App States** `UCrowdyAvatars_GetAvatarAppStates`, **Create Avatar** `UCrowdyAvatars_CreateAvatar`, **Update Avatar** `UCrowdyAvatars_UpdateAvatar`, **Delete Avatar** `UCrowdyAvatars_DeleteAvatar`, **Update Public Avatar State** `UCrowdyAvatars_UpdatePublicAvatarState`, **Update Private Avatar State** `UCrowdyAvatars_UpdatePrivateAvatarState`, **Update Avatar App State** `UCrowdyAvatars_UpdateAvatarAppState`), each with its own `On Success` and `On Error` exec pins instead of a bound delegate. Their pins are the multicast `FAvatarAsyncOnSuccess`, `FAvatarsAsyncOnSuccess`, `FAppStateAsyncOnSuccess`, `FAppStatesAsyncOnSuccess`, `FAvatarVoidAsyncOnSuccess` and `FAvatarsAsyncOnError`; the subsystem's per-call `FOnAvatarSuccess`, `FOnAvatarsSuccess`, `FOnAppStateSuccess`, `FOnAppStatesSuccess`, `FOnAvatarVoidSuccess` and `FOnAvatarError` are a separate family the async nodes never expose. `TArray` results arrive wrapped, `FCrowdyAvatarList` for a list of avatars and `FCrowdyAppAvatarStateList` for a list of app states, so the result is one struct pin. `UpdateAvatarState` (the combined public-and-private write), `GetMyAvatarById`, `HasCachedAvatars`, `GetCachedMyAvatars`, `SerializeToAvatarState`, `DeserializeFromAvatarState`, `GetAvatarAppStateAs`, and `SetAvatarAppStateAs` have no async action node; a Blueprint reaches those only through the subsystem functions shown above.
+
+## Creating and removing avatars
+
+`CreateAvatar(Name, OnSuccess, OnError)` makes a new avatar for the signed-in player; `UpdateAvatar(AvatarId, Name, ...)` renames one; `DeleteAvatar(AvatarId, OnVoidSuccess, OnError)` removes one. All three are owner-only, enforced the same way as the state writes above.
+
+## Error codes
+
+`FCrowdyAvatarError` carries a `Code` (`ECrowdyAvatarErrorCode`: `Unknown`, `NotFound`, `Forbidden`, `NetworkError`, `ServerError`) and a `Message`. Bind `FOnAvatarError` to a `UFUNCTION` with the signature `(FCrowdyAvatarError Error, FString Message)`; `Message` repeats `Error.Message`. The async nodes' `FAvatarsAsyncOnError` has the same two parameters.
+
+:::caution[The error code is a client-side guess, not a server code.]
+`ECrowdyAvatarErrorCode` is classified from the error message text by substring match, not a code the server sends. Branch on it for a coarse UI response; do not treat it as a stable server contract.
+:::
+
+Cosmetic selections and progression flags belong here; currency balances and match results do not. Avatar state, public, private, or app, is profile data, not server-authoritative gameplay truth, which belongs in [Game Models](../game-models/overview.md).
+
+## Gotchas
+
+- `GetCachedMyAvatars`, `HasCachedAvatars`, and `GetMyAvatarById` never populate themselves; only `GetMyAvatars` does. A create, rename, delete or state write leaves the cache as it was.
+- Every write is owner-only and enforced server-side; a non-owner's write is sent, not blocked locally.
+- `AppId` for the per-app state calls always comes from project settings; there is no per-call override.
+- The serialization helpers take a wildcard pin: one struct, string or scalar. An array, set or map pin is refused.
+- `ECrowdyAvatarErrorCode` is a client-side text classification, not a server-issued code.
+
+## Related
+
+- [Teams](./teams.md): a sibling service on the same subsystem pattern.
+- [Containers and attributes](../game-models/containers-and-attributes.md): the Game Model contrast, avatar state is not a container.
+- [Entities and spawning](../runtime/entities-and-spawning.md): seeding an entity's spawn state from an avatar's public part.
