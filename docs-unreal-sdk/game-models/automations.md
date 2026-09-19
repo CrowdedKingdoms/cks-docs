@@ -22,7 +22,7 @@ The trigger and target fields, all hidden until Run Automatically is on:
 | Field (Details name) | Member | Meaning |
 |---|---|---|
 | Enabled | `bEnabled` | Author it but keep it paused when off. |
-| Automation Trigger | `AutomationTrigger` | `EveryInterval` (Every N milliseconds), `Cron` (Cron schedule), `OnPropertyChange` (On property change), `OnFunctionInvoked` (On function invoked). `ECrowdyEffectAutomationTrigger`. |
+| Automation Trigger | `AutomationTrigger` | `EveryInterval` (Every N milliseconds), `Cron` (Cron schedule), `OnPropertyChange` (On property change), `OnFunctionInvoked` (On function invoked), `OnPlayerLeft` (On player left), `OnPlayerCountChanged` (On player count changed). `ECrowdyEffectAutomationTrigger`. |
 | Interval (ms) | `AutomationIntervalMs` | Every N milliseconds only. Default 1000. |
 | Cron Expression | `AutomationCronExpr` | Cron only. |
 | On Property Key | `AutomationChangePropertyKey` | On property change only: the server key that fires it. |
@@ -75,6 +75,14 @@ Naming this effect's own function in Watch Function Name is legal: it re-trigger
 Most game logic writes properties from inside functions. `Any`, the default, sees both a direct write and a write a function makes while it runs; `Direct` sees only the first, so an automation watching a property that only effects ever write never fires. Narrow it only when a function's own writes should deliberately not re-trigger the automation.
 :::
 
+## Two triggers that watch presence, not player action
+
+`OnPlayerLeft` (`onEvent "player_left"`) fires once per actor the platform stops seeing, the last player's included, so it is the one trigger that still runs for an app that has just emptied. `OnPlayerCountChanged` (`onEvent "player_count_changed"`) fires on a transition of the app's active-player gauge, coalesced on the trailing edge, and never at zero. Neither takes a filter: On Property Key, Observe Writes From, Watch Function Name, and On Container Type are all inapplicable to them and stay hidden in the Details panel. The function reads what happened through its own parameters instead, for example `user_id` and `remaining_player_count` on `OnPlayerLeft`; the server documents each event's full parameter list.
+
+:::warning[A presence trigger answers whether the platform still sees someone. It does not know, and cannot tell you, whether whatever they were doing is actually over.]
+Treat a run on `OnPlayerLeft` or `OnPlayerCountChanged` as one input, not a verdict. Use it to update your own bookkeeping, such as a counter or a last-known value, and keep the decision to end something in an explicit function a caller invokes, or in a check the automation makes against your own state before it writes. Do not let a `player_left` run clear truth another part of your model holds by itself: a shared map-load hitch can make the platform briefly stop seeing every actor at once, and a client that leaves and returns inside the platform's presence window looks identical to one that never left.
+:::
+
 ## Timers
 
 A timer is one delayed call an effect arms when it commits, transactionally with the effect's writes: if the effect fails nothing is scheduled. The `Timers` array holds up to four `FCrowdyEffectTimer` entries:
@@ -105,6 +113,7 @@ A timer fires exactly once. A timer that re-arms itself is bounded one cascade l
 - Debounce drops events; it is not the summing merge on [Coalescing](./coalescing.md).
 - A kit's ticks (the Combat status-effect tick, Living World's day and crop ticks) are automations the kit deploys for you. [Kits](./kits.md).
 - Gas Limit above the platform ceiling is authored and then silently not used.
+- `OnPlayerLeft` and `OnPlayerCountChanged` accept no filter fields; Debounce and Automation Target Mode still apply to both.
 
 ## Related
 

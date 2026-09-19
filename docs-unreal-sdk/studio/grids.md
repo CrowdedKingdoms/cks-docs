@@ -12,7 +12,7 @@ A grid is a region of your world, in chunk coordinates, that carries a permissio
 ## Grids are server-side only
 
 - Every grid operation requires the `manage_apps` permission on the organization.
-- There is no player-scoped grid query. Game code cannot list or read grids at runtime, and there is no runtime grid API in the SDK. The one runtime call that touches grids is `Request Teleport Permission` on the Crowdy SDK subsystem, which asks the server whether the player may enter a chunk and answers on `On Teleport Permission`.
+- There is no player-scoped grid query. Game code cannot list or read grids at runtime, and there is no runtime grid API in the SDK. The one runtime call that touches grids is `Request Teleport Permission` on the Crowdy SDK subsystem, which asks the server whether the player may enter a chunk and answers on `On Teleport Permission` (`OnTeleportPermission`, an `FOnTeleportPermission` with one `bAllowed` parameter).
 - Enforcement is server-side. When a client tries to act inside a region, the server checks the whitelist and the grants, then allows or rejects. The client never receives the grid definition.
 
 :::warning[Do not try to drive grid operations from gameplay code.]

@@ -4,6 +4,6 @@
   "link": {
     "type": "generated-index",
     "title": "Player Services",
-    "description": "Signing in, voice chat, teams, avatars, and saved progress for the players in your game."
+    "description": "Sign-in, teams, avatars, voice, host election and the optional UI hooks."
   }
 }

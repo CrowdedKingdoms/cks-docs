@@ -70,7 +70,7 @@ Two more client-side helpers on `UCrowdyUtilities` answer ownership questions wi
 
 ## The server-validated check
 
-For the moment a local answer is not enough, ask the server. `UCrowdyIsEntityHostServer` is a latent Blueprint node, **Is Crowdy Entity Host (Server)** (`IsCrowdyEntityHostServer`), with three pins of type `FCrowdyHostCheckPin`: **Is Host**, **Is Not Host**, and **Failed**. In C++ call `UCrowdyHostSubsystem::CheckEntityIsHost(Entity, Callback)` and receive `bSuccess` and `bIsHost` on the game thread.
+For the moment a local answer is not enough, ask the server; [Host election](../services/host-election.md) owns this check and its pins in full, and the short form is here. `UCrowdyIsEntityHostServer` is a latent Blueprint node, **Is Crowdy Entity Host (Server)** (`IsCrowdyEntityHostServer`), with three pins of type `FCrowdyHostCheckPin`: **Is Host**, **Is Not Host**, and **Failed**. In C++ call `UCrowdyHostSubsystem::CheckEntityIsHost(Entity, Callback)` and receive `bSuccess` and `bIsHost` on the game thread.
 
 The server elects a host per user, not per actor, so the check forks: for the local player's own entity it asks the server directly; for any other actor it resolves that actor's owner on the server and compares with the elected host. The other actor must have sent at least one update, or the server has no row for it and the answer is Failed.
 
@@ -108,6 +108,7 @@ The server-validated check is still not enforcement. It tells you the current tr
 ## Related
 
 - [The Host Is a Convention](../concepts/host-is-a-convention.md): election as a convention, and the two checks compared.
+- [Host election](../services/host-election.md): the host subsystem and the server-validated check in full, from the service side.
 - [Ownership transfer](./ownership-transfer.md): the grant flow the server check feeds.
 - [Entity component](./entity-component.md): `Ownership`, `HostOverride`, and `IsLocallyOwned`.
 - [Crowdy State](./crowdy-state.md#host-precedence): what a host-sourced delta does on the receiver.
