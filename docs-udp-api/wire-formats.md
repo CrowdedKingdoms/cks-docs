@@ -37,6 +37,8 @@ CHANNEL_MESSAGE_REQUEST = 17;       // client -> server: publish to a channel
 CHANNEL_MESSAGE_NOTIFICATION = 18;  // server -> client: deliver a channel message
 COMMAND_RECONNECT = 22;             // server -> client: reconnect to a different server (load shedding)
 CLIENT_ACTOR_HEARTBEAT = 26;        // client -> server: optional keep-alive for the client's own actor (see "Actor presence and heartbeats")
+CLIENT_CAPABILITIES = 29;           // client -> server: what this client can read (see "Signed bundles"); server v0.30.0+
+MESSAGE_BUNDLE_SIGNED = 30;         // server -> client: a bundle with ONE trailing HMAC, only to a client that advertised it
 // other values in 19–127 are unused / reserved or internal server-to-server
 ```
 
@@ -157,6 +159,39 @@ The server accumulates notifications for about 1 ms and sends them as one bundle
 (at most 1232 bytes, at most 32 members). A lone notification is sent unwrapped.
 `COMMAND_RECONNECT` (22) and `COMMAND_SESSION_RELEASED` (28) are never bundled, so
 their first byte is always the opcode. Clients must parse bundles.
+
+### Signed bundles — `MESSAGE_BUNDLE_SIGNED` (30) and `CLIENT_CAPABILITIES` (29)
+
+Since replication server v0.30.0 a client can ask for its downlink bundles to be
+signed **once** instead of once per member. It sends `CLIENT_CAPABILITIES` (29): the
+long-form spatial layout below (so the usual session and HMAC checks apply), chunk
+`(0,0,0)`, distance 0, no actor UUID, and a 4-byte little-endian flags word as the
+app payload; bit 0 (`BUNDLE_SIGNED = 1`) means "I parse `MESSAGE_BUNDLE_SIGNED`". The
+server binds the flags to the worker that serves this client's flow and forgets them
+when the session goes, so a client sends the message **after every assignment,
+reassignment and token refresh, and again every ~15 s** (the SDKs do). Until it lands
+the client is served in the form described above, which it must keep parsing.
+
+A `MESSAGE_BUNDLE_SIGNED` is:
+
+```
+[1B 30] { [2B u16 LE length][member] } … [32B HMAC]
+```
+
+The members are notification bodies with `containsAuth = 0` and **no per-member
+HMAC** (the same layout the long form shows for an unsigned message: the tail is
+just epoch millis + sequence). The trailing 32 bytes are
+`HMAC-SHA256(key = token, message = everything-before || token)` — exactly the
+client-message scheme in "HMAC details", so one validator serves both directions. To
+read one: verify the tail, strip 32 bytes, treat byte 0 as `MESSAGE_BUNDLE` and walk.
+Seven 165-byte actor updates fit where six signed ones did; a member above 1 197
+bytes (video fragments) still travels alone, signed per message; `COMMAND_RECONNECT`
+and `COMMAND_SESSION_RELEASED` are never bundled either way. Even a single
+notification to such a client arrives as a one-member signed bundle.
+
+CrowdyJS 17.6.0 (`realtime` binary relay: `advertiseCapabilities`, default on) and
+CrowdyCPP 0.42.0 (`Config::advertiseCapabilities`, default on) do this for you; a
+server older than v0.30.0 ignores the capability message.
 
 ### Client → server
 
