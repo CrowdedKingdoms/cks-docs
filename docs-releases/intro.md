@@ -30,6 +30,69 @@ supported path.
 
 :::
 
+## 2026-09-21 (Replication API v0.30.0 / v0.31.0, Game API v2.8, CrowdyJS 17.6, CrowdyCPP 0.42)
+
+Everything here is additive; a client that does nothing new sees nothing new.
+
+- **Signed downlink bundles, opt-in** (Replication API v0.30.0). A client that
+  sends `CLIENT_CAPABILITIES` (opcode 29) with the `BUNDLE_SIGNED` bit receives its
+  bundled notifications as `MESSAGE_BUNDLE_SIGNED` (opcode 30): the same framing,
+  members without a per-member HMAC, and **one** 32-byte HMAC over the whole
+  datagram. Seven actor members fit per bundle instead of six and the server does
+  one HMAC per datagram instead of one per member; measured on the test tier, egress
+  per delivered notification fell 18 %. A client that never advertises is served
+  exactly as before, and a server older than v0.30.0 ignores opcode 29. Details and
+  the verification recipe: [Wire formats — signed bundles](/replication-api/wire-formats#signed-bundles--message_bundle_signed-30-and-client_capabilities-29).
+- **CrowdyJS 17.6.0 and CrowdyCPP 0.42.0 advertise `BUNDLE_SIGNED`** on every
+  `ready` and every 15 s (a token refresh or a server-side migration resets the
+  server's record). CrowdyCPP verifies the trailing HMAC; CrowdyJS strips it and walks
+  (it never verified downlink HMACs). Nothing to change in a game.
+- **Replication API v0.31.0 — interest-scoped peer presence.** Server-internal: the
+  peer heartbeat no longer announces every actor to every server, so a sparse world
+  no longer hits a fleet-wide chunk ceiling (~8 000 populated chunks) however many
+  servers run. No wire change; nothing to change in a client.
+- **CLIENT compute mods: tick rate and mouse input** (Game API v2.8.0, CrowdyJS
+  17.6.0). A CLIENT crate may set `[package.metadata.crowdy] tick_interval_ms`
+  (16–1000; default 1000) in its `Cargo.toml` — the only key admitted in that table —
+  and call `api::pointer_clicks()` (CLIENT only, `input` capability group, 400/s) to
+  drain the host game's mouse clicks each tick. See
+  [Build mods — tick rate and mouse input](/build-a-game/bwf-mod-development#tick-rate-and-mouse-input-client-game-api-v280--crowdyjs-1760).
+- **`emit_spatial("server_event", …)` is opcode 139** (`SERVER_EVENT_NOTIFICATION`)
+  with the payload framed `[u16 eventType LE][state…]`, and `client_event` is 138
+  (Game API v2.8.0). Before this a `server_event` went out as an untyped generic
+  spatial blob that typed decoders (CrowdyJS's event router, a CLIENT mod's scene
+  catalog) never saw. [Compute host API](/game-api/compute-host-api#replication-and-events).
+
+## 2026-09-19 (Game API v2.7.0, Replication API v0.29.x)
+
+- **`refreshAppToken` may now answer `authorizedServer: null` while your server is
+  healthy.** A native client that passes `currentServer` on refresh is told to keep
+  its socket when the reply names a server and to call `serverWithLeastClients`
+  again when it is `null`; since v2.7.0 `null` is also returned when the node is
+  running near its capacity and a cooler sibling has room — the refresh is the
+  cheapest moment for the fleet to spread players, so under load expect to be moved
+  occasionally. CrowdyJS `PortalAPI.refresh(currentServer)` and CrowdyCPP
+  `refreshToken` already do this; browser clients on the UDP proxy re-place on every
+  refresh by design. [Portals & app-scoped tokens](/management-api/portals-and-app-tokens).
+- **Placement avoids hot servers** (Game API v2.7.0) and the replication servers
+  rebalance resident players below their Full line (Replication API v0.29.0–v0.29.5,
+  which also bundles server-to-server traffic). Server-side only; a client sees at
+  most a `COMMAND_RECONNECT` it already had to handle.
+
+## 2026-09-16 (Game API v2.6.0, CrowdyJS 17.5, CrowdyCPP 0.41)
+
+- **Bulk container reads and keyed seeding.** `gameModelContainers` pages for real
+  (omitted `limit` = 200, max 1 000, `BAD_REQUEST` above) and forwards `bindingKey`;
+  `containerStates(appId, containerIds)` (max 500) is the bulk twin of
+  `containerState`; `seed` accepts a per-container `bindingKey` and a per-type
+  `scope: session | app`; `createSession({ seedFromApp })` stamps the app's keyed
+  template rows into the new session (max 2 000 rows). Seeded copies of an ended
+  session are dropped after the tier's retention window — **7 days on every tier**.
+  CrowdyJS 17.5.0 wraps all of it (`containers()`, `containerStates()`, `seed`,
+  `createSession({ seedFromApp })`, `kit.matches.create({ seedFromApp })`); CrowdyCPP
+  0.41.0 mirrors it. [Game models](/game-api/game-models),
+  [CrowdyJS game model](/crowdyjs/game-model).
+
 ## 2026-09-15 (Replication API v0.28.0, Game API / Management API)
 
 Security hardening from an internal review of authentication and authorization.
@@ -64,6 +127,30 @@ Nothing here changes a conforming client; each item says what would.
   every first-party client already does. Same-app app tokens are unchanged.
 - `OrgTokenWithSecret.token`'s description now says what is true: returned once, stored
   hashed.
+
+## 2026-09-14 (Game API v2.1–v2.4, CrowdyJS 17.2–17.4, CrowdyCPP 0.38–0.40)
+
+- **Game-model sessions** (Game API v2.4.0, CrowdyJS 17.4.0): `leaveSession`,
+  `setSessionAdmission`, `transferSessionHost`, `endSession`, `sessionSnapshot`,
+  `sessionEvents`, `sessionInspect` and the `sessionChanged` subscription; `GmSession`
+  carries `admission`, `maxParticipants`, `participantCount`, `hostUserId`,
+  `hostTerm`, `revision`, `endedAt`, `endReason`. Two rules: `leaveSession` requires
+  the `incarnation` the join returned, and **presence is the player's replicated
+  actor** — a participant with no fresh actor after the join grace window is expired
+  by the server (create with `presence: 'none'` to opt out). Error codes
+  `SESSION_FULL`, `SESSION_LOCKED`, `SESSION_CLOSED`, `SESSION_ENDED`,
+  `SESSION_NOT_PARTICIPANT`, `SESSION_TARGET_NOT_PARTICIPANT`,
+  `SESSION_INCARNATION_STALE`, `SESSION_HOST_TERM_STALE`.
+  [Roster, admission, host and presence](/crowdyjs/game-model#roster-admission-host-and-presence-1740).
+- **Third-party hosting on Crowdy Games** (Game API v2.1.0, CrowdyJS 17.2.0):
+  `client.hosting` (claim a slug, publish a bundle, list), the Node subpath
+  `@crowdedkingdoms/crowdyjs/hosting` (`publishDirectory`), and `EmbeddedHost` for
+  sign-in under the Crowdy Games shell. Hosting mutations take an identity session,
+  never an app token. [Hosting](/crowdyjs/hosting).
+- **Guided "Create repository on GitHub"** (Game API v2.3.0, CrowdyJS 17.3.0):
+  `githubNewRepositoryUrl` / `githubRepositorySlug`,
+  `controller.createGitHubRepository()`, `status.repositorySelection`. The GitHub
+  App still cannot create a repository itself. [Crowdy Studio and GitHub](/game-api/crowdy-studio-github).
 
 ## 2026-09-13 (Replication API v0.27.0, CrowdyCPP 0.37, CrowdyJS 17.1)
 
