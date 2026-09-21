@@ -33,8 +33,8 @@ export abstract class NodeParser {
         // Remove array index suffix of a property like the EnumEntries(0) in K2Node_SwitchEnum
         key = key.replace(/\((.+)\)/g, "");
 
+        if (!this._propertyParsers || !Object.prototype.hasOwnProperty.call(this._propertyParsers, key)) return false;
         const propertyParser = this._propertyParsers[key];
-        if (!propertyParser) return false;
 
         propertyParser(node, value);
         return true;

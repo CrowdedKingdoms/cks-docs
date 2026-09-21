@@ -122,6 +122,8 @@ export class NodeParserRegistry {
 
 
     public getParser(nodeClass: UnrealNodeClass): (() => NodeParser) | undefined {
+        // The class name comes from the pasted text, so only a registered key may dispatch, never a prototype member.
+        if (!Object.prototype.hasOwnProperty.call(this._nodeParsers, nodeClass)) return undefined;
         return this._nodeParsers[nodeClass];
     }
 }

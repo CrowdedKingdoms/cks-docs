@@ -23,10 +23,10 @@ export class SelectNodeParser extends NodeParser {
                     let keyValue = property.split('=');
 
                     if (keyValue[0] == "PinCategory") {
-                        category = keyValue[1].replace('"', '') as PinCategory;
+                        category = keyValue[1].replace(/"/g, '') as PinCategory;
                     }
                     if (keyValue[0] == "PinSubCategory") {
-                        subCategory = keyValue[1].replace('"', '');
+                        subCategory = keyValue[1].replace(/"/g, '');
                     }
                 }
 

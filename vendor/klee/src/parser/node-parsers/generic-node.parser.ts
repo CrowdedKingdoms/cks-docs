@@ -124,7 +124,8 @@ export class GenericNodeParser extends NodeParser {
         data = data.trim();
         data = data.substr(1, data.length - 2);
 
-        const propertyParser = this._customPropertyParsers[type];
+        const propertyParser = Object.prototype.hasOwnProperty.call(this._customPropertyParsers, type)
+            ? this._customPropertyParsers[type] : undefined;
         if(!propertyParser) {
             console.info(`There is no implementation for custom property type '${type}'. Skip this property`);
             return;

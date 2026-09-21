@@ -12,7 +12,7 @@ export class BlueprintParserUtils {
     }
 
     static stripLine(text: string): string {
-        return text.replace('\t', '').trim();
+        return text.replace(/\t/g, '').trim();
     }
 
     static parseColor(value: string): string {
