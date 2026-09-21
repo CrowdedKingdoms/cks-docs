@@ -74,10 +74,12 @@
 ## Unreal SDK
 
 - [Unreal SDK docs root](https://docs.crowdedkingdoms.com/unreal-sdk/intro): the Unreal Engine plugin, driven from C++ or Blueprint.
-- [Unreal SDK best practices](https://docs.crowdedkingdoms.com/unreal-sdk/guides/best-practices)
+- [Unreal SDK quickstart](https://docs.crowdedkingdoms.com/unreal-sdk/quickstart): sign in and sync your app, sign the player in at runtime, then build one lantern that shows an entity, an RPC event, a replicated property, and a server-owned value.
+- [For AI agents (Unreal SDK)](https://docs.crowdedkingdoms.com/unreal-sdk/for-ai-agents): the fastest correct path for a coding agent working in an Unreal project on the plugin.
+- [Unreal SDK agent drop-in file](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/AGENTS.md): copy into a project's root, `CLAUDE.md`, or `.cursorrules`.
 - [Every Unreal SDK page in one file](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-full.txt): all pages in reading order, with each page's source URL. Blueprint graphs appear as pointers to their clipboard text under `/bp/unreal-sdk/`.
 - [SDK surface inventory (JSON)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/sdk-surface.json): every Blueprint-callable function, delegate, async action, subsystem, struct, enum, setting, console variable, metadata key, log category and C++ type the plugin exports, with module and header.
-- Agent guidance for the Unreal SDK will be published at `https://docs.crowdedkingdoms.com/helpers/unreal-sdk/AGENTS.md` once written.
+- Blueprint clipboard text: one plain-text file per Blueprint graph referenced from the docs, at `https://docs.crowdedkingdoms.com/bp/unreal-sdk/<graph>.txt` (for example [qs-entity](https://docs.crowdedkingdoms.com/bp/unreal-sdk/qs-entity.txt)), named as the pointer lines in `llms-full.txt` name them, ready to paste into the editor.
 
 ## Changelog
 
