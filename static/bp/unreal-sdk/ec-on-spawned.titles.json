@@ -1,0 +1,38 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event BeginPlay",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Get Crowdy Entity Component",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AddDelegate_0",
+		"class": "/Script/BlueprintGraph.K2Node_AddDelegate",
+		"title": "Bind Event to On Crowdy Spawned",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnLanternSpawned\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get Light",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_1",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Set Visibility\nTarget is Scene Component",
+		"title_drawn": true
+	}
+]

@@ -204,7 +204,7 @@ always gets a fresh per-app token (pattern A/B/C again). See
 
 ## SDKs
 
-The **[Unreal SDK](/unreal-sdk/runtime/authentication)** implements this flow for
+The **[Unreal SDK](/unreal-sdk/services/authentication)** implements this flow for
 Unreal projects (sign-in → mint → `RequestUDPAccess`). For browsers, CrowdyJS
 wraps the same model behind `client.auth` + `client.portal` — see
 [CrowdyJS](/crowdyjs/intro). A custom native client talks to the GraphQL

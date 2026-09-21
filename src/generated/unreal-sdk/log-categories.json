@@ -1,0 +1,134 @@
+{
+  "generated_from": "2026-09-21T14:43:18Z",
+  "sdk_version": "2.14.0",
+  "table": "log-categories",
+  "columns": [
+    {
+      "key": "category",
+      "label": "Category",
+      "kind": "code"
+    },
+    {
+      "key": "module",
+      "label": "Module",
+      "kind": "text"
+    },
+    {
+      "key": "trace_cvars",
+      "label": "Trace CVar",
+      "kind": "list"
+    }
+  ],
+  "rows": [
+    {
+      "id": "LogCrowdySDK",
+      "category": "LogCrowdySDK",
+      "module": "CrowdySDK",
+      "trace_cvars": [
+        "crowdy.sdk.trace"
+      ],
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "LogCrowdyNet",
+      "category": "LogCrowdyNet",
+      "module": "CrowdyNet",
+      "trace_cvars": [
+        "crowdy.net.trace",
+        "crowdy.query.trace",
+        "crowdy.serialize.trace"
+      ],
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "LogCrowdyGameModel",
+      "category": "LogCrowdyGameModel",
+      "module": "CrowdyReplication",
+      "trace_cvars": [
+        "crowdy.gamemodel.trace"
+      ],
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "LogCrowdyReplication",
+      "category": "LogCrowdyReplication",
+      "module": "CrowdyReplication",
+      "trace_cvars": [
+        "crowdy.entity.trace",
+        "crowdy.pool.trace",
+        "crowdy.state.trace"
+      ],
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "LogCrowdyRPC",
+      "category": "LogCrowdyRPC",
+      "module": "CrowdyReplication",
+      "trace_cvars": [
+        "crowdy.rpc.reliable.trace",
+        "crowdy.rpc.trace"
+      ],
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "LogCrowdyServices",
+      "category": "LogCrowdyServices",
+      "module": "CrowdyServices",
+      "trace_cvars": [
+        "crowdy.hud.trace",
+        "crowdy.services.trace"
+      ],
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "LogCrowdyVoice",
+      "category": "LogCrowdyVoice",
+      "module": "CrowdyVoice",
+      "trace_cvars": [
+        "crowdy.voice.trace"
+      ],
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "LogCrowdyCpp",
+      "category": "LogCrowdyCpp",
+      "module": "CrowdyCppBridge",
+      "trace_cvars": [],
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "LogCrowdyNodes",
+      "category": "LogCrowdyNodes",
+      "module": "CrowdyNodes",
+      "trace_cvars": [],
+      "editor": true,
+      "allowlist": ""
+    },
+    {
+      "id": "LogCrowdyEditor",
+      "category": "LogCrowdyEditor",
+      "module": "CrowdySDKEditor",
+      "trace_cvars": [],
+      "editor": true,
+      "allowlist": ""
+    },
+    {
+      "id": "LogCrowdyStudio",
+      "category": "LogCrowdyStudio",
+      "module": "CrowdyStudio",
+      "trace_cvars": [
+        "crowdy.studio.trace"
+      ],
+      "editor": true,
+      "allowlist": ""
+    }
+  ]
+}

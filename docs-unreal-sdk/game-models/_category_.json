@@ -1,0 +1,9 @@
+{
+  "label": "Game Models",
+  "position": 40,
+  "link": {
+    "type": "generated-index",
+    "title": "Game Models",
+    "description": "Server-authoritative gameplay state: declaring models, reading and mutating them from Unreal, effects, and the policies that gate them."
+  }
+}

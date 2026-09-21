@@ -1,356 +1,263 @@
 ---
 slug: crowdy-state
-sidebar_position: 6
-title: Crowdy State (Property Replication)
+sidebar_position: 7
+title: Crowdy State
+description: Mark a property CrowdyState and the owning client diffs it every tick and ships the change to every proxy; the five metadata keys, the notify, the keyframe, what a property may be and what is rejected at discovery, the static Mark Crowdy State Dirty nodes and the host push they become on an entity you do not own, host precedence, and how to see a property that silently dropped out.
 ---
 
-# Crowdy State (Property Replication)
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-Crowdy State replicates a property on an entity without you writing a snapshot struct or an executor.
+# Crowdy State
 
-Mark a `UPROPERTY` on an entity actor, and the owning client diffs that property's value every replication tick, ships only what changed, and writes it back onto the same property on every other client's copy of the actor. No wire struct, no `GetActorState` override, no manual send call, unless you want one.
+Mark a `UPROPERTY` with `meta=(CrowdyState)` and the client that owns the entity diffs it at the map's replication cadence and ships only the changed values to every proxy, which write them back onto their own copy of the actor. No wire struct, no executor, no manual send unless you ask for one. It replicates single values: POD leaves and `USTRUCT`s made of them, never containers or object references, and it says so once at startup for each property it drops.
 
-This page covers what Crowdy State is and is not, the five metadata keys, how the diffing and delivery actually work, what quantizes for free, the host convention, ownership transfer, and the honest limits: what does not replicate yet, and what happens at the edges.
+## When to use it
 
-## What Crowdy State is, and is not
+For view state that has to be the same on every client, late joiners included: a lantern's lit flag, an animation stance, a cosmetic colour. It works in either entity mode, Static or Dynamic, and on a [replicated subsystem](./replicated-subsystems.md).
 
-Crowdy State is the fast, client-authoritative **view plane**. It exists to make a value on a live actor look right on every client: an animation flag, a facing direction, a "is aiming" bool, anything you would otherwise hand-roll into a continuous state struct.
+:::danger[Authoritative or cheat-sensitive state never belongs in Crowdy State.]
+This is the view plane. The owner writes a value and every other client believes it; the host's precedence below is a convention the receiver honours, not a check. Hit points, currency, inventory: a [Game Model](../game-models/overview.md) attribute, always. See [The Two Planes](../concepts/two-planes.md).
+:::
 
-Crowdy State is not truth, and it is not enforced. It is a sibling to [Actor State](/unreal-sdk/runtime/continuous-state), the executor-based snapshot channel. It is a view plane only: authoritative, cheat-sensitive, or persistent state is out of scope for Crowdy State and is handled by a separate server-authoritative path that is not yet documented.
+## Prerequisites
 
-(Building a browser/TypeScript client instead? The adjacent problem — typed, SDK-managed actor/chunk/message state over the platform's standard replication surfaces — is covered by CrowdyJS [World Stores](/crowdyjs/stores).)
+The actor carries a `UCrowdyEntityComponent`, and the map profile's `bUseStateReplicator` is on (the default). A property the class declares is discovered at startup by the auto registry, which builds the class's replication layout once; the layout is baked into the [registry](../studio/inspector-and-registry.md) for packaged builds, so no metadata is read at runtime.
 
-Use this rule to decide where a value belongs:
+## The metadata keys
 
-- Would a cheater changing this value matter? Or does the value need to survive a reconnect? It does not belong on this plane. Keep it on the server-authoritative path instead.
-- Is it just how things look, sound, or animate right now, and nothing breaks if a modified client lies about it? Put it in **Crowdy State**.
+All on the `UPROPERTY`, all spelled exactly as shown.
 
-HP, currency, inventory, anything cheat-sensitive or that must persist: none of that belongs here. Movement-adjacent gameplay flags, cosmetic state, and anything view-only: that is exactly what this plane is for.
+| Key | Value | Effect |
+|---|---|---|
+| `CrowdyState` | none | The marker. The property replicates on the view plane. |
+| `CrowdyOnRep` | a function name | A parameterless `UFUNCTION` run after the value is written, on the receiver and on the sender. Read the property for the new value; there is no previous-value argument. |
+| `CrowdyOwnerOnly` | none | Delivered only to the owning client, over the targeted path, never on the spatial broadcast. Scope, not secrecy. |
+| `CrowdyHeartbeat` | none | Opt in to the periodic keyframe: the property is re-sent every `StateKeyframeIntervalSeconds` even when unchanged, so a late or desynced observer converges. Off by default in C++; the Blueprint dropdown turns it on. |
+| `CrowdyManualDirty` | none | Never auto-diffed. The value ships only when you mark it, with `MarkStateDirty`. For a property that is expensive to compare every tick. See [Marking state from outside the actor](#marking-state-from-outside-the-actor). |
 
-## Before you start
-
-Crowdy State rides the same entity you already have.
-
-:::warning[Prerequisites]
-The actor must carry a `UCrowdyEntityComponent`. A Crowdy State property is written back by NetID, exactly like a CrowdyEvent, so an actor with no entity component has nothing to address.
-
-The map also needs a map profile with the state replicator enabled (`bUseStateReplicator`, on by default), or nothing sends. See [Map Profile](/unreal-sdk/runtime/map-profile).
+:::warning[An enum without CrowdyHeartbeat can show a stale value to a late joiner.]
+An enum is held state: sent on change, never re-sent. A client that starts observing after the last change, or that loses the one datagram carrying it, shows the wrong value until it changes again. The startup scan warns once per such property; `crowdy.state.heartbeat.advisories` lists every one it found. Add `CrowdyHeartbeat`, or tick Keyframe heartbeat in the variable's Crowdy Replication settings, unless the value is meant to be transient.
 :::
 
 ## Mark a property
 
-### C++
+The Quickstart's `bLit` is the plain form: assign, and the change ships. This page adds a second property to `ALantern`, `TimesLit`, marked `CrowdyManualDirty`, so the count is pushed once per lighting instead of compared every tick. `RecordLighting` (a plain `void RecordLighting();` member you declare in the header) is called from the owner-gated overlap of the Quickstart's step 3; it increments the count and marks it, and every proxy's `OnRep_TimesLit` scales the light by the count.
 
-Add `meta=(CrowdyState)` to a `UPROPERTY`.
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
 
-```cpp
-UPROPERTY(meta = (CrowdyState))
-bool bIsAiming = false;
+<CppSnippet id="state-mark" />
 
-UPROPERTY(meta = (CrowdyState, CrowdyOnRep = "OnRep_Stance"))
-uint8 Stance = 0;
+</TabItem>
+<TabItem value="bp" label="Blueprint">
 
-UFUNCTION()
-void OnRep_Stance();
-```
+Add an Integer variable `TimesLit`, set its **Replication** dropdown under **Crowdy Replication** to **Replicated**, and tick **Update manually** there (the other two toggles are **Keyframe heartbeat** and **Only send to owner**). From **Event ActorBeginOverlap**, the pure **Is Crowdy Entity Locally Controlled** feeds a **Branch**; on the true side **Get TimesLit** feeds a **+**, **Set TimesLit** stores the result, and the static **Mark Crowdy State Dirty** schedules it with `TimesLit` on the Property Name pin and `Target` left as self (the member form on the component would need a component getter as well). Seven nodes, one of them the owner gate the lantern's C++ overlap handler has: on a proxy the mark is not ignored, it becomes the [host push](#on-an-entity-you-do-not-own-the-host-push) described below.
 
-That is the whole setup for a C++ property. It is discovered automatically, laid out in declaration order alongside your other `CrowdyState` properties on the class, and diffed by the owning client from then on.
+<Blueprint src="state-mark" title="Event ActorBeginOverlap, Is Crowdy Entity Locally Controlled, Branch, Get TimesLit, +, Set TimesLit, Mark Crowdy State Dirty" />
 
-### Blueprint
+</TabItem>
+</Tabs>
 
-A Blueprint variable uses the same metadata, set from the variable's Details panel instead of a UPROPERTY line.
+## The notify
 
-1. Select the variable in **My Blueprint**.
-2. In the Details panel, find the **Crowdy Replication** dropdown.
-3. Set it to **Replicated**. This writes the `CrowdyState` key onto the variable.
-4. With Replicated selected, a **RepNotify** field appears. Point it at a parameterless custom event if you want a notify when the value changes (this writes `CrowdyOnRep`). Picking Replicated also auto-creates an `OnRep_<Var>` event graph for you the first time, if you have not named one.
-5. A **Heartbeat** toggle also appears, and it defaults On the first time a variable enters Replicated mode (this writes `CrowdyHeartbeat`). Leave it on if you want the variable to ride the periodic keyframe; turn it off for a pure on-change property. See [Keyframes and spawn state](#no-relevance-gain-hook-keyframes-and-spawn-state) for what the heartbeat does.
-6. Open **Advanced** for two more toggles: **Only send to owner** (`CrowdyOwnerOnly`) and **Update manually** (`CrowdyManualDirty`). Leave both off for the common case: a spatially broadcast, auto-diffed property.
+`CrowdyOnRep` names a parameterless function, GAS-style. It fires wherever the value genuinely moved since the last send: on every receiver after the write, and on the sender itself, because a sent delta never comes back to its sender and the owner would otherwise never run it. A keyframe re-sending an unchanged value fires nothing, and a manual dirty mark on a value that did not move fires nothing either. Each slot fires at most once per tick, and a change the notify makes to its own property is folded into the sent baseline rather than re-sent.
 
-Compiling the Blueprint is what makes the change take effect. A Blueprint variable becomes a real `FProperty` on the generated class, so it flows through the exact same discovery path as a C++ property, with no separate Blueprint-only logic.
+The [Quickstart](../quickstart.md) lantern is the `state-onrep` example: `bLit` with `CrowdyOnRep = "OnRep_Lit"`, and a notify that sets the light's visibility.
 
-After you Compile, a Crowdy State-replicated variable's **Get** and **Set** graph nodes show the same top-right replication corner badge Unreal draws on natively-replicated variables. That badge is your quick visual confirmation the variable is on the plane; it appears on the next Compile after you switch the dropdown to Replicated, and disappears again if you switch it back to None and Compile.
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
 
-:::note[Crowdy State and Unreal's own native variable replication are mutually exclusive. Switching a variable to Replicated clears any native replication on it, and the compiler will flag it if you try to enable both.]
+<CppSnippet id="state-onrep" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+Select the variable, set **Crowdy Replication** to **Replicated**, and a **RepNotify** field appears; the editor creates the `OnRep_` function. The variable's Get and Set nodes then carry the replication badge:
+
+![The replication badge on a Crowdy-replicated variable's Get and Set nodes](/img/unreal-sdk/bp-replication-badge.png)
+
+The body of the notify, drawn here as a custom event named `OnRep_Lit` because a generated graph cannot draw the editor-made function itself: **Get bLit** feeds **Set Visibility** on `Light`.
+
+<Blueprint src="state-onrep" title="OnRep_Lit, Get bLit, Get Light, Set Visibility" />
+
+</TabItem>
+</Tabs>
+
+:::caution[The notify runs on the sender too, at the next replication tick, and only on a real change.]
+Write the notify as the one place the value is applied to the world, the way `OnRep_Lit` drives the light, and keep it idempotent. The Quickstart calls `OnRep_Lit` itself right after the assignment for an immediate local response; the replicator runs it once more on the tick that ships the change, which is harmless for a notify that only applies the current value and wrong for one that counts its own calls.
 :::
 
-:::tip[If the variable's type cannot replicate on this plane (an object reference, a container, a static array), the Details panel tells you inline instead of silently doing nothing. See [Unsupported types](#unsupported-types-for-now) below for the full list.]
+## What ships, and when
+
+Only the owning client diffs. A remote proxy never diffs; it applies. The cadence is the map profile's `ReplicationIntervalHz` (1 to 10, default 10), the same clock the continuous channel uses, though the two send independently. Each tick the replicator compares every auto-diffed property of every entity this client drives against a shadow copy of the last sent value and encodes the changed ones into one `FCrowdyStateDelta`; owner-only properties go out as a second, targeted delta. Every `StateKeyframeIntervalSeconds` (default 2, on the map profile; 0 turns it off) each entity also emits a keyframe carrying its `CrowdyHeartbeat` properties, unless the entity's `StateHeartbeat` is Off. A delta travels as far as the profile's `StateRelevanceDistance` (Four Chunks by default), which is tighter than the continuous channel.
+
+A struct with a native net serializer (`FVector_NetQuantize`, `FRotator`) rides the engine's own quantized serializer automatically; a plain `FVector` stays exact. Quantization is chosen by type, not by a key. See [What a state property may be](#what-a-state-property-may-be).
+
+Every delta carries a layout hash that folds each property's name and canonical type in declaration order. A receiver whose own hash for the class differs drops the delta cleanly rather than reading bytes by position, so adding, removing, reordering, or retyping a replicated property on one build and not another costs you deltas, not corruption. An enum property is carried as its underlying integer (blob version 2, `CrowdyStateBlobVersion`); a peer on the older format drops these deltas rather than misparsing them, so every client of an app runs one build.
+
+## What a state property may be
+
+You marked a property `CrowdyState` and nothing arrives, or you are about to mark one and want to know if it will. The classifier every surface shares, `FCrowdyStateLayoutBuilder::ClassifyStateProperty` (with `IsStateReplicatable` as the yes-or-no form and `DescribeStateSupport` for the sentence), decides at discovery; the Blueprint compiler's variable check and the variable-details dropdown reuse it, so every surface reports the same reason.
+
+### Accepted
+
+| Kind | Examples | Notes |
+|---|---|---|
+| Numeric | `int32`, `int64`, `uint8`, `float`, `double` | Diffed and sent as their bytes. |
+| Boolean | `bool` | |
+| Enum | `enum class E : uint8`, `TEnumAsByte` | Carried as the underlying integer. Consider `CrowdyHeartbeat`; see [The metadata keys](#the-metadata-keys). |
+| Name and string | `FName`, `FString` | |
+| Plain struct | any `USTRUCT` whose fields, at every depth, hold no container | One slot in the layout; diffed and sent as one unit. |
+| Net-serialized struct | `FVector`, `FRotator`, `FVector_NetQuantize`, any struct with a native net serializer | Rides its own `NetSerializeItem`, quantized as the engine defines it, and exempt from the nested-container check because its serializer bounds the decode. |
+
+### Rejected
+
+:::warning[Containers and object references are rejected at discovery, in any position, including inside a struct. Use a CrowdyEvent or a Game Model.]
+The error names the escape hatch: `CrowdyState: property 'Players' on '/Script/MyGame.Lantern' is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Game Model container. Omitting it.` A list of who lit the lantern is a `TArray` parameter on a [CrowdyEvent](./rpc-events-cpp.md) if it is a moment, or a [Game Model](../game-models/overview.md) container if it is truth. Never re-attempt it here.
 :::
 
-## The five metadata keys
+| Rejected | The reason discovery logs |
+|---|---|
+| `TArray`, `TSet`, `TMap` | `is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Game Model container` |
+| A plain struct that holds a container at any depth | `is a USTRUCT that transitively contains a container (TArray/TSet/TMap); such nested containers are rejected because a forged element count would drive an unbounded allocation on decode` |
+| A fixed-size C array (`float Values[4]`) | `is a fixed-size array; CrowdyState replicates only single-value POD and USTRUCT properties (its positional diff would miss changes past element 0)` |
+| `UObject*`, `TSubclassOf`, soft object and class references, interfaces, delegates | `is an object/interface/delegate reference; CrowdyState replicates only POD and USTRUCT values` |
+| Anything else, `FText` for one | `has an unsupported type 'X'; CrowdyState replicates only POD and USTRUCT values` |
 
-These are the five keys, summarized below. The [Crowdy State metadata keys reference](/unreal-sdk/reference/state-meta-keys) collects the same table in compact form for quick lookup.
+A rejected property is omitted from the class's layout, so it never corrupts the positional wire order of the ones that were accepted; the rest of the class replicates normally. The line is an error and is not gated by `crowdy.state.trace`, so it is in the log whether or not tracing is on.
 
-| Key | Blueprint label | Meaning |
-| --- | --- | --- |
-| `CrowdyState` | Replicated (the mode) | Marks the property for Crowdy State. Required; the other four keys do nothing without it. |
-| `CrowdyOnRep` | RepNotify | The name of a parameterless notify function, run on the receiver right after the property is written, and only when its value actually changed. |
-| `CrowdyOwnerOnly` | Only send to owner | Delivery scope: this property ships only to the entity's owning client, never on the spatial broadcast. |
-| `CrowdyManualDirty` | Update manually | Skip the automatic per-tick diff. The value ships only when you explicitly mark it dirty. |
-| `CrowdyHeartbeat` | Heartbeat | Opt this property into the periodic keyframe re-send. Without it, the property still replicates on change; it is just never re-sent while unchanged. |
+### Structs
 
-```cpp
-UPROPERTY(meta = (CrowdyState,
-    CrowdyOnRep = "OnRep_StaminaHint",
-    CrowdyOwnerOnly,
-    CrowdyManualDirty,
-    CrowdyHeartbeat))
-float StaminaHint = 1.0f;
-```
+A plain `USTRUCT` is a single slot. The whole struct is compared with the engine's `Identical` and, when any field differs, the whole struct is sent; on the receiver every field lands together, before the notify runs. That is the reason to use one: two fields that must always be seen together, a colour and an intensity, cannot arrive half-applied the way two separate properties can.
 
-A few things worth being precise about:
+The lantern's glow is such a pair. `FLanternGlow` holds a colour and an intensity; `WarmGlow` on the owner changes both, and `OnRep_Glow` applies both to the light in one step.
 
-- **Four of the five keys are bare markers.** `CrowdyState`, `CrowdyOwnerOnly`, `CrowdyManualDirty`, and `CrowdyHeartbeat` take no value: you add the bare key to turn each on. The code tests only whether the key is present, so writing `= true` is unnecessary, and `= false` would still read as on. `CrowdyOnRep` is the one key that takes a value, the notify function's name.
-- **`CrowdyOnRep` is parameterless, GAS-style.** The notify function takes no arguments and gets no "previous value." Read the new value directly off the property inside the notify.
-- **`CrowdyOnRep` fires on change, not on receipt.** The receiver only runs the notify when the incoming value actually differs from what it already held. A keyframe that re-sends an unchanged value is an idempotent no-op: the value is not rewritten and the notify does not fire. This matters when you mark a heartbeat property with a notify -- you will not get a notify every keyframe interval, only on a real change.
-- **`CrowdyOwnerOnly` is a delivery scope, not secrecy.** It routes the property down a targeted, single-recipient path instead of the spatial broadcast, so only the owning client's copy is written. It is not encryption and it is not access control; it changes who receives the value, not who could in principle intercept it.
-- **`CrowdyManualDirty` properties are never auto-diffed.** Nothing about the value changing on its own triggers a send. You push it yourself with `MarkStateDirty` (below). One call marks it dirty for exactly the next send; after that send goes out, the bit clears and you call it again for the next update.
-- **`CrowdyHeartbeat` is opt-in, and only affects the periodic re-send.** A marked property is included in the keyframe heartbeat; an unmarked one is not. Neither setting touches on-change replication: a changed property always ships on the next tick regardless of this key. In C++ you must add the key explicitly. In Blueprint the Heartbeat toggle defaults On the first time a variable becomes Replicated, so Blueprint and C++ have deliberately different defaults.
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
 
-## Owner diffing
+<CppSnippet id="state-struct" />
 
-Only the client that owns an entity diffs that entity's `CrowdyState` properties. A remote proxy never diffs; it only receives and applies.
+</TabItem>
+<TabItem value="bp" label="Blueprint">
 
-Keep in mind a player is itself an entity, and a client can own many entities at once: its own pawn, anything it spawned, anything reassigned to it. Each owned entity is diffed independently at the map's replication cadence.
+A Blueprint variable of a C++ struct type replicates the same way: set its **Crowdy Replication** dropdown to **Replicated** and give it a RepNotify, exactly as for a scalar. Authoring a new struct type in Blueprint for this is unusual, so this section has no Blueprint graph of its own; the mechanics of marking and notifying are under [Mark a property](#mark-a-property) and [The notify](#the-notify).
 
-The cadence is the same `ReplicationIntervalHz` your map profile already sets for [Actor State](/unreal-sdk/runtime/continuous-state) (1 to 10, default 10), and the spatial broadcast uses a tight relevance distance, so a Crowdy State delta reaches roughly the same audience a `SpatialMulticast` CrowdyEvent would.
+</TabItem>
+</Tabs>
 
-Each tick, for each owned entity:
-
-1. Every `CrowdyState` property on the entity's class is compared against its own shadow copy of the last-sent value.
-2. Only the properties that changed are encoded into one delta.
-3. Spatial properties (not `CrowdyOwnerOnly`) go out on the broadcast path; `CrowdyOwnerOnly` properties that changed go out as a second, targeted delta to the owner alone.
-4. `CrowdyManualDirty` properties are never part of this automatic diff; they only appear in a delta if you flagged them since the last send.
-
-If nothing on an entity changed since the last tick, no delta is sent for it at all.
-
-## Type-driven quantization
-
-Some struct types shrink automatically on the wire, with no metadata to set.
-
-If a property's type is a struct that has a native net serializer, for example `FVector_NetQuantize` or any of the `_NetQuantize` family, Crowdy State uses that serializer instead of the generic path. That is strictly opt-in by type: declare the property as `FVector_NetQuantize` instead of `FVector` and it quantizes; there is no key that turns quantization on or off for an arbitrary type.
-
-```cpp
-// Exact on the wire, no quantization.
-UPROPERTY(meta = (CrowdyState))
-FVector ExactLocation;
-
-// Quantized automatically because FVector_NetQuantize carries a native net serializer.
-UPROPERTY(meta = (CrowdyState))
-FVector_NetQuantize CompactLocation;
-```
-
-:::caution[This is not limited to the `_NetQuantize` family by name. Any struct that declares a native net serializer quantizes the same way. `FRotator` is the example worth knowing: it has one, so a plain `FRotator` marked `CrowdyState` rounds to roughly 0.0055 degrees per axis on the wire. It is not exact, and it does not need to be marked as quantized; the engine's own serializer for that type is what is doing it. A plain `FVector` has no native net serializer, so it stays exact.]
+:::caution[A struct diffs and ships as one unit.]
+Changing one field of a five-field struct re-sends all five. Five scalar properties diff independently and each ships alone. Group fields into a struct when they must land together; keep them separate when they change at different times.
 :::
 
-## Host precedence: a convention, not enforcement
+### Where the list you wanted belongs
 
-Crowdy State follows the same rule the rest of the SDK does: [the host is a convention](/unreal-sdk/runtime/host-authority), not a server that rejects anything.
+| You wanted | Put it on |
+|---|---|
+| The names of the players who lit the lantern this match | A Game Model container, if it is truth the server should hold; otherwise a `TArray<FString>` parameter on a `Multicast` CrowdyEvent when it changes. |
+| A ring buffer of recent positions | The [continuous state](./continuous-state.md) snapshot, as fixed fields, or nothing: the proxy interpolates for you. |
+| A reference to another actor | Its NetID as an `FGuid`, resolved with `FindEntity` on the receiver. |
+| A list of active effects | A Game Model collection. |
 
-For an entity you own, the receive side applies this rule:
+## Marking state from outside the actor
 
-- A correction that arrives from the elected host is applied, and your own shadow adopts the host's values so your next diff does not immediately revert them.
-- A delta from anyone else, for an entity you own, is dropped. You are the one driving your own entities; a non-host peer does not get to write into them.
+`UCrowdyStateBlueprintLibrary` has two static nodes that schedule a `CrowdyManualDirty` property to ship without first fetching the actor's Crowdy Entity Component: **Mark Crowdy State Dirty** and **Mark All Crowdy States Dirty**. Each resolves the target actor's component and forwards to its `MarkStateDirty` or `MarkAllStateDirty`. Use them whenever the caller does not already hold the component: a graph on another actor, a function library, a UI widget. From the actor's own graph either form works; the static one needs no component reference wired in.
 
-That is the entire mechanism, and it is worth being honest about what it does not do. This plane is client-authoritative and there is no server checking any of it. A modified client that lies about being the host, or forges the "this came from the host" flag, would have its correction honored exactly as if it were real. If a value needs real protection against a cheating client, it does not belong on this plane at all; keep it on the server-authoritative path instead.
+### The two nodes
 
-## Authority and world entities
+| Node | C++ | What it does |
+|---|---|---|
+| **Mark Crowdy State Dirty** | `UCrowdyStateBlueprintLibrary::MarkCrowdyStateDirty(Target, PropertyName)` | Schedules one manual-dirty property on the target's entity for the next replication tick. |
+| **Mark All Crowdy States Dirty** | `UCrowdyStateBlueprintLibrary::MarkAllCrowdyStatesDirty(Target)` | Schedules every manual-dirty property on that entity. |
 
-Everything above assumes the common case: you own an entity, you diff it, and the elected host may correct it. Two fields on `UCrowdyEntityComponent` let you change that default, and they are what make world objects and host overrides work.
+Both are `DefaultToSelf` on `Target`: from an actor's own graph you wire nothing and pick the property. From a component graph or a plain object graph, self is not an actor, so wire the actor in; the node shows a "Wire an Actor into Target" hint until you do.
 
-### Two fields: Ownership and HostOverride
+Both are safe no-ops, never a crash, when the target is null, has no entity component, or the map runs no state replicator. On an entity this client does not drive the two differ: **Mark All Crowdy States Dirty** is ignored, while **Mark Crowdy State Dirty** is not a no-op at all; it becomes the host push described below. On an entity this client does drive, marking a property that is auto-diffed anyway is a no-op logged at verbose level as `ignored: not a manual-dirty property`, never an error.
 
-On the entity component's Details panel:
+The example is the same `TimesLit` member [Mark a property](#mark-a-property) added; this is the alternate call site, not a second gameplay moment.
 
-- **Ownership** (default **Local Client**): who owns and simulates this entity.
-  - **Local Client**: this client owns it. The normal case, your pawn or anything you spawned. Its role is `Owner`.
-  - **Host**: whichever client is currently host owns it. For level-placed world and AI entities that belong to the session rather than to any one player. Its role is `Host Owned`, and it carries no per-client owner id.
-- **HostOverride** (default **Allow**), shown only when Ownership is Local Client: whether the elected host may override this entity's Crowdy State as a super-user.
-  - **Allow**: a host correction is applied, and your own shadow adopts it so your next diff does not immediately revert it.
-  - **Owner Only**: only you change this entity. Even a host correction is dropped.
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
 
-Ownership is a separate axis from `Mode` (Dynamic/Static) and from `IdentityPolicy`. `Mode` governs the continuous [Actor State](/unreal-sdk/runtime/continuous-state) channel and has nothing to do with who owns the entity. A world entity almost always wants `IdentityPolicy = Stable`, so every client computes the same NetID for it; the component warns if you set Ownership to Host with any other identity policy.
+<CppSnippet id="state-static-dirty" />
 
-:::note[These fields only take effect on an entity that resolves its own identity (a level-placed actor, or one placed with `IdentityPolicy = Stable`). An entity spawned at runtime through `SpawnCrowdyEntity` already gets its role from the spawn event, so it ignores Ownership: a host-spawned runtime entity is already host-owned in practice.]
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+From **Event ActorBeginOverlap**, the pure **Is Crowdy Entity Locally Controlled** feeds a **Branch**, and the true side calls **Mark Crowdy State Dirty** with `Target` left unwired (self) and `TimesLit` picked from the Property Name dropdown. No component reference is needed. The branch is the owner gate the C++ caller has: on a proxy the same mark becomes the push described below, which is not what an overlap on a proxy means.
+
+<Blueprint src="state-static-dirty" title="Event ActorBeginOverlap, Is Crowdy Entity Locally Controlled, Branch, Mark Crowdy State Dirty" />
+
+</TabItem>
+</Tabs>
+
+### The property picker
+
+The Property Name pin carries a dropdown, supplied in the editor by `FCrowdyStatePropertyPinFactory`, listing the resolved target class's properties that are marked `CrowdyManualDirty` and pass the type check. The dropdown is editor-only metadata scanning; the name you pick bakes into the compiled Blueprint as a literal `FName`, so a packaged build never reads metadata for this node.
+
+:::note[If your property is not in the dropdown, it is either auto-diffed already or it failed the type check.]
+An auto-diffed property does not need marking; assign it and it ships. A property that failed the check was omitted from the layout at startup with an error; see [What a state property may be](#what-a-state-property-may-be).
 :::
 
-### The host as a super-user
+### On an entity you do not own: the host push
 
-The elected host can write Crowdy State onto an entity it does not own, as a deliberate one-shot push. The mechanism is the same `Mark Crowdy State Dirty` you already use for manual-dirty properties, this time pointed at an entity you do not own:
+**Mark Crowdy State Dirty** on an entity another client owns is not a no-op. It becomes a one-shot super-user push: the live value of the named property is read on the next replication tick and broadcast once, with no shadow and no ongoing tracking, stamped host-sourced when the caller is the elected host. It works for any Crowdy State property on that entity, not only the manual-dirty ones, because a host override may need to correct anything. An `OwnerOnly` entity refuses it at the source: the push is dropped before it is sent, and a receiver drops one that arrives anyway.
 
-```cpp
-// From host-side code: correct a door on another player's entity.
-UCrowdyStateBlueprintLibrary::MarkCrowdyStateDirty(OtherPlayersDoor, TEXT("bIsOpen"));
-```
+A host-owned world entity is the other case. On the host it is tracked with auto-diff off, so a plain `CrowdyState` property on it never ships on change; the host's mark works only for a `CrowdyManualDirty` property (the `CrowdyHeartbeat` keyframe still restates the rest). Mark a host-owned entity's changing properties manual-dirty, or give them `CrowdyHeartbeat`.
 
-When the target is an entity you do not own, `Mark Crowdy State Dirty` reads the property's current value off that entity and broadcasts it once, stamped as coming from the host if you are the host. There is no shadow and no ongoing tracking; it is a single authoritative correction, not a subscription.
+The receiver honours a push by the entity's `HostOverride` policy: `Allow` (the default) adopts a host-sourced value into the owner's baseline. A push from a client that is not the host is not stamped, so the real owner drops it, and every other proxy applies it, so the proxies disagree with the owner until the owner's next change. That is the hazard behind the owner gate above: a mark issued on a proxy by mistake is a push.
 
-This is deliberately a separate, explicit path. Host-owned entities are never auto-diffed, and a host override is never a background diff. Keeping one explicit push path for all host-authority writes is what avoids the "host sets X, the client re-sends its own Y, and they fight" race that a second implicit mechanism would create.
-
-What the receiver does with the push depends on who owns the target and on its HostOverride:
-
-- On the entity's **owner**, an **Allow** correction from the host is applied and adopted; an **Owner Only** correction is dropped; and a push from anyone who is not the host is dropped (host precedence, exactly as in the section above).
-- On a **third client** that holds the entity as a proxy, the correction is applied like any other delta. Enforcement is owner-side; proxies reflect what they receive. That is the unenforced view plane working as intended, not a hole.
-
-:::warning[Anyone can call `Mark Crowdy State Dirty` on any entity, not just the host. A non-host push is not stamped host-sourced, so the real owner drops it, but this is a convention, not a security boundary: a modified client can forge the host-sourced flag. Cheat-sensitive state belongs on the server-authoritative path, never here.]
+:::warning[A push on an entity you do not own is a live correction with no undo.]
+The value on the calling client is broadcast as it stands. There is no shadow to revert to and no acknowledgement. Read the current value first, set what you mean, then mark.
 :::
 
-### World entities: only the host writes them
-
-A Host-owned entity (a world prop, a shared switch, a session-owned AI) has no per-client owner. While you are the host, you drive it: it is tracked, its manual-dirty properties push when you mark them, and it emits the periodic keyframe for any `CrowdyHeartbeat`-marked properties so a late joiner still gets a baseline. Its ordinary properties are not auto-diffed; a world entity changes only when you explicitly push it.
-
-On the receive side, a delta for a world entity is applied only if it is host-sourced; a push from a non-host client is dropped. So world state has a single writer (the host) by convention, the same way an owned entity has a single writer (its owner).
-
-### Host changes and level travel
-
-Host identity survives a level change (it lives on the game-instance session, not the world). Host-owned tracking follows it for you:
-
-- If you spawn into a level where the host is already elected, your world entities register and are tracked correctly with no host-changed event, because tracking reads the current host live at registration.
-- If the host changes mid-session, the client that becomes host starts driving every world entity, and the client that loses the role stops driving them (it no longer emits their state, keyframes included). No world entity ends up with two writers, and none ends up with zero.
-
-You do not wire any of this. Place the world entity with `Ownership = Host` and `IdentityPolicy = Stable`, and the SDK tracks host election for you. For the general host convention (the `GetCrowdyHasAuthority` check, `OnHostElected`), see [Host Authority](/unreal-sdk/runtime/host-authority).
-
-## Ownership transfer: request and grant
-
-Ownership is not fixed for the life of an entity. A client can ask the current owner to hand an entity over, and the owner grants or ignores it. Like everything else on this plane, this is a coordination convention, not an enforced boundary: the transfer re-points who diffs the entity, nothing more. It is also transient, so a client that first observes the entity after a grant sees the spawn-time owner, not the transferred one.
-
-The whole flow lives on a static Blueprint library, `UCrowdyOwnershipTransfer`, so you never have to fetch the entity component by hand:
-
-- `RequestOwnershipTransfer(Target)`: from a client that does not own `Target`, ask its current authority for ownership.
-- `GrantOwnershipTransfer(Target, NewOwner)`: from the authority, hand `Target` to whoever owns `NewOwner` (pass that player's avatar, or any entity they own).
-- `GrantOwnershipTransferToPlayer(Target, NewOwnerPlayerID)`: the same grant, but by player id. The request handler hands you the requester's id directly, which is handy when that player has no local avatar to resolve.
-- `GrantOwnershipToHost(Target)`: make `Target` host-owned, a world entity owned by whichever client is host.
-
-Each of these is a safe no-op, never a crash, when the target is null or is not a registered Crowdy entity.
-
-### The handshake
-
-A request reaches the entity's current authority (its owning client, or the host for a host-owned world entity). What happens next depends on one per-entity flag on `UCrowdyEntityComponent`:
-
-- If `bAutoApproveOwnershipRequests` is set, the authority grants immediately.
-- Otherwise the authority's `UCrowdyEntitySubsystem::OnOwnershipRequested` fires. Your game code decides: call a Grant node to approve, or do nothing to reject. **Ignoring a request is the rejection.** There is no explicit deny call and no error path; silence is the answer.
-
-A grant is announced reliably to every client and surfaces as `UCrowdyEntitySubsystem::OnEntityOwnershipChanged`, so all clients agree on who now owns the entity.
-
-### What a transfer actually changes
-
-Under the hood a transfer re-points `OwnerID` on the entity record and re-derives the entity's role from it. An actor's NetID is owner-independent, so it keeps the same NetID and stays addressable: existing references and in-flight sends still resolve. The old owner stops diffing the entity, the new owner builds a fresh shadow and starts diffing, and every bystander keeps its proxy.
-
-:::caution[Two by-design edges are worth knowing. A new owner that never observed the entity has no history for it, so it re-baselines from the proxy defaults it holds; if the exact current values matter, put them in the spawn `InitialState` or push them explicitly after the grant. And granting to a player id that has no local presence on the granting client orphans the entity until it is re-granted. Neither is a bug; both fall out of this being a transient view plane rather than a persistent record.]
+:::caution[Anyone can call this on any entity. Precedence is a convention, not enforcement.]
+A modified client can stamp its own pushes host-sourced. This orders who wins on the view plane and nothing more; see [Host authority](./host-authority.md) and [The Two Planes](../concepts/two-planes.md).
 :::
 
-## No relevance-gain hook: keyframes and spawn state
+## A field that silently does nothing
 
-Crowdy State has no "you just became relevant, here is a full snapshot" trigger. A newly relevant peer gets a baseline in one of two ways:
+The first thing to check. Discovery logs an unconditional error for every marked property it cannot carry, of the shape `CrowdyState: property 'X' on '/Script/MyGame.Lantern' is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Game Model container. Omitting it.` The reasons are a container, a struct that buries a container, a fixed-size array, an object or interface or delegate reference, or an otherwise unsupported type such as `FText`; [Rejected](#rejected) lists them. Two more lines to know: a property marked both `CrowdyState` and `CrowdyModel` is dropped with `is marked both CrowdyState and CrowdyModel; a field lives in exactly one plane`, and a property whose name and type also appear in the actor's continuous-state executor struct is dropped with `also lives in its executor state struct ... Dropping it from the CrowdyState layout`, so a field lives on exactly one channel.
 
-- The entity's spawn `InitialState`, the same struct passed to `SpawnCrowdyEntity`, if the values it needs were included there.
-- The next periodic keyframe heartbeat, for properties that opt into it.
-
-### The keyframe is opt-in per property
-
-The keyframe heartbeat is a redundant, periodic full re-send of a property's current value, whether or not it changed, so a peer that missed everything up to that point still converges. It is **not automatic**: a property rides the heartbeat only if you mark it `meta=(CrowdyHeartbeat)`. An unmarked property still replicates the instant it changes; it is simply never re-sent while it sits unchanged.
-
-This keeps the plane cheap by default. Most transient view state does not need a periodic baseline, so it should not pay for one. Opt a property in only when a late or packet-loss-desynced observer genuinely needs to converge to it without waiting for the next change.
-
-There are three levels of control, from broad to narrow:
-
-- **Map-wide off switch.** The map profile's `StateKeyframeIntervalSeconds` (default 2 seconds) sets the heartbeat interval. Set it to `0` to disable the heartbeat for the whole map. On-change replication is unaffected; only the periodic baseline stops.
-- **Per-entity kill switch.** `ECrowdyStateHeartbeat` on `UCrowdyEntityComponent` is `Inherit` by default (follow the map) or `Off` (never emit a keyframe for this entity, regardless of its property marks or the map setting). A kill switch for always-active entities.
-- **Per-property opt-in.** `meta=(CrowdyHeartbeat)` on the property itself. In C++ you add this key explicitly; in Blueprint the Heartbeat toggle in the Crowdy Replication dropdown defaults On the first time the variable becomes Replicated.
-
-When the heartbeat does fire for an entity, it is staggered per entity so heartbeats do not all land on the same tick, and it carries every marked spatial (non-`CrowdyOwnerOnly`) property's current value at once.
-
-:::caution[Be plain with yourself about the gap this leaves. If a peer becomes relevant right after a keyframe went out, and nothing on that entity changes in the meantime, that peer can hold stale or default values for up to one full keyframe interval before it sees a correct baseline. And a property with no `CrowdyHeartbeat` mark gets no periodic baseline at all: a peer that became relevant after the last change holds the default until the next change. This is a known, accepted design, not a bug to work around client-side. If a value absolutely cannot be wrong for even a few seconds after becoming relevant, put it in the spawn `InitialState`, or mark it `CrowdyHeartbeat` and accept the periodic cost, or reconsider whether it belongs on this transient view plane at all.]
-:::
-
-## Manual dirty: pushing a value yourself
-
-A `CrowdyManualDirty` property sits out of the automatic diff entirely. Nothing ships until you say so.
-
-```cpp
-// C++, from the owning entity's own code.
-CrowdyEntity->MarkStateDirty(TEXT("StaminaHint"));
-
-// Or flag every manual-dirty property on this entity at once.
-CrowdyEntity->MarkAllStateDirty();
-```
-
-Both are `UFUNCTION(BlueprintCallable)` on `UCrowdyEntityComponent`, so they are available from Blueprint the same way. Call `MarkStateDirty` by property name after you change the value; it takes effect on the entity's next send tick, then the flag clears. On an entity you own, that schedules the manual-dirty property. On an entity you do not own, the same call is a one-shot host override push instead, described in [Authority and world entities](#authority-and-world-entities). Either way it is a harmless no-op, never an error, when the map runs no state replicator at all.
-
-## Executor-state exclusivity
-
-A single field lives on exactly one replication plane, never both.
-
-If a property is marked `CrowdyState` and its name and type also match a field already declared in that actor's [Actor State](/unreal-sdk/runtime/continuous-state) executor struct, Crowdy State drops that property from its own layout at discovery time and logs an error. The continuous state channel keeps sole ownership of that field; Crowdy State will not also try to replicate it down a second path.
-
-If you see that error, the fix is to pick one plane: either remove the field from your executor state struct and let Crowdy State own it, or remove the `CrowdyState` metadata and let the executor keep owning it.
-
-## Unsupported types (for now)
-
-Crowdy State covers plain values and plain structs: numbers, bools, enums, names, strings, and USTRUCTs built from those. A few categories are explicitly out of scope on this plane today:
-
-- **Object references.** `UObject*`, soft references, class references, anything that names another object.
-- **Containers.** `TArray`, `TSet`, `TMap`, in any position, including buried inside a struct.
-- **Static (fixed-size) arrays.** A C-style `Score[4]` on a UPROPERTY.
-
-A property of one of these kinds is rejected at discovery with a clear error and simply does not appear in the layout; it never corrupts the properties around it. If you need to replicate a reference or a collection, reach for a [CrowdyEvent RPC](/unreal-sdk/runtime/rpc-events-cpp), which supports arrays, sets, maps, and object references directly as call parameters. If the data is authoritative, it belongs on the server-authoritative path, not here.
-
-:::note[Container support on this plane may become its own future phase. It is not planned as part of the current design; this page describes what exists today.]
-:::
-
-## The LayoutHash guard
-
-Every delta carries a hash of the sending client's property layout for that class. The receiver compares it against its own layout for the same class before touching anything.
-
-If the two do not match, for example two clients running builds where a `CrowdyState` property was added, removed, reordered, or changed type, the receiver drops the delta cleanly instead of misreading bytes into the wrong properties. You will not see corrupted state from a layout mismatch; you will see a dropped delta and a warning in the log.
-
-## Scale and per-observer batching
-
-Be clear-eyed about what happens on the wire today, because it is easy to assume more batching exists than actually does.
-
-Every Crowdy State delta your client sends is its own standalone UDP datagram. A spatial (broadcast) delta is one `DispatchGameEvent` call producing one message; a targeted, owner-only delta is one `DispatchSingleActorMessage` call producing one message. There is no client-side queue that gathers several entities' deltas, or several properties across different entities, into a single packet before it hits the socket. One dispatched delta is one send, at every layer between the replicator and the network socket.
-
-The protocol does define a `MESSAGE_BUNDLE` message type, and since replication server v0.27.0 it is accepted in both directions: a client may pack several signed requests into one datagram and the server processes each member as if it had arrived alone (see [wire formats](/replication-api/wire-formats#message-bundle-per-datagram); CrowdyCPP 0.37 and CrowdyJS 17.1 do this by default). The Unreal SDK, however, uses `MESSAGE_BUNDLE` only on **receive**: if an incoming datagram is a bundle of several messages, the client splits it apart and dispatches each one individually. There is no path in this client that builds an outbound bundle. So `MESSAGE_BUNDLE` is not evidence of, and not yet a mechanism for, batching your own outbound Crowdy State traffic from Unreal.
-
-The spatial path already multicasts one delta to every relevant client in range, which is the batching Crowdy State gives you today: one send reaches many recipients, rather than one send per recipient. True per-observer batching, coalescing many different entities' state into a single packet tailored to one recipient, or relevance-aware fan-out that only sends what a specific observer needs, is a capability that would live on the relay server, not the client. It does not exist yet. This page will be updated if and when that lands; nothing here should be read as promising it is already happening under the hood.
-
-## Debugging
-
-Turn on `crowdy.state.trace` to see per-delta info lines as they are sent and received.
+These fire at class registration and are not gated by the trace variable. Grep the log for `CrowdyState: property`, which all three lines share, before turning anything on. When the property is in the layout but the change is not arriving, that is the other question:
 
 ```text
-crowdy.state.trace 1
+crowdy.state.trace 1     per delta: entity, changed-property count, byte size, spatial or owner-only or keyframe
+crowdy.state.loopback 1  decode your own deltas onto a local mirror entity, for a single-client test
 ```
 
-With it on, you get one line per delta: which entity, how many properties changed, how many bytes the encoded blob was, and whether it went out as spatial, owner-only, or a keyframe. Warnings (a dropped foreign delta for an entity you own, a `LayoutHash` mismatch, a rejected property type) and errors (an executor-state exclusivity conflict) print regardless of the trace setting.
+Two read-only diagnostics on `UCrowdyStateReplicator` answer the same questions from code or Blueprint: `IsStateReplicated(Actor)` is true when the actor's class carries at least one accepted property, whichever client drives it, and `GetLastSentStateBytes(Actor)` is the blob size this client last sent for the actor, or -1 when this client does not drive it. `crowdy.state.scopes` adds a CPU trace scope around each delta decode for profiling.
 
-:::note[Trace output never includes bearer tokens or other secret material. It is safe to share a trace log when reporting an issue.]
+## Host precedence
+
+When the local client is the elected host, every delta it sends is stamped host-sourced. A receiver that owns the entity adopts a host-sourced value into its own baseline instead of reverting it on the next diff, provided the entity's `HostOverride` is `Allow` (the default); `OwnerOnly` drops even a host correction. A host-owned world entity is driven by the host alone, and only by explicit pushes: its manual-dirty marks and its keyframe, never a background diff. See [Host authority](./host-authority.md).
+
+:::warning[Host precedence is a convention with no server-side check. A forged host-sourced flag is honoured as real.]
+It orders who wins on the view plane; it does not make either value trustworthy. If the value matters, it is a Game Model attribute and the question does not arise.
 :::
 
-### Single-client loopback
+## Gotchas
 
-Crowdy State normally needs two clients to see anything: one owns and diffs the entity, another receives and applies. `crowdy.state.loopback` lets you exercise the full receive path with a single PIE client, the same way `crowdy.rpc.loopback` does for CrowdyEvents.
-
-```text
-crowdy.state.loopback 1
-```
-
-With it on, each owned, tracked entity gets a lazily-spawned local "mirror" -- a distinct `RemoteProxy` entity. Every outgoing delta is replayed onto that mirror through the real receive path, so decode, apply, and `CrowdyOnRep` all run with just one client. It is off by default, so a normal session is byte-for-byte unaffected.
-
-:::caution[Loopback replays what actually gets sent; it does not change what triggers a send. A `CrowdyManualDirty` property still needs an explicit `Mark Crowdy State Dirty` to go out. Setting the value alone does not replicate it, with or without loopback on. If your loopback test shows nothing, check that you marked the property dirty, not just that you changed it.]
-:::
-
-Two read-only handles help you check state in the editor without printing anything:
-
-- `UCrowdyStateReplicator::IsStateReplicated(const AActor*)` tells you whether an actor's class carries at least one `CrowdyState` property, regardless of whether this client currently owns it.
-- `UCrowdyStateReplicator::GetLastSentStateBytes(const AActor*)` reports the blob size this client last sent for that actor, or `-1` if this client does not drive it. It is a local diagnostic of what you last sent, not a guarantee of what any peer received.
-
-For the full CVar table and the rest of the SDK's log categories, see the [console variables reference](/unreal-sdk/reference/console-cvars).
+- Grep for `CrowdyState: property` first. A property that is not in the layout replicates nothing and says so once, at startup, as an error.
+- The notify has no parameters and no old value. Keep the previous value yourself if you need it.
+- A Blueprint variable that is both natively Replicated and Crowdy Replicated fails to compile. In C++, keep `Replicated` off a `CrowdyState` property.
+- `CrowdyOwnerOnly` is delivery scope, not secrecy. The value still travels in the clear to the owner.
+- `StateKeyframeIntervalSeconds` at 0 stops the baseline re-send only; on-change replication is unaffected.
+- The loopback and trace variables are test aids. Leave them off in a normal session.
+- `FText` is not accepted on this plane, though it is on a CrowdyEvent. Use an `FString` or an `FName`.
+- A struct that is net-serialized is exempt from the nested-container check only because its serializer bounds the decode. A plain struct with a `TArray` inside is rejected however small the array.
+- Quantization is decided by the struct's type. To ship a quantized position, declare `FVector_NetQuantize`, not `FVector`.
+- `Target` on the static nodes defaults to self only where self is an actor. In a component or widget graph, wire the actor.
+- The push is scheduled, not sent. It goes out on the next replication tick with the value the property holds then.
+- Marking twice in one tick sends once.
+- A host-owned world entity is written only through the host's manual-dirty marks and the keyframe; assigning a plain property on it and waiting does nothing. See [Host authority](./host-authority.md).
 
 ## Related
 
-- [Actor State](/unreal-sdk/runtime/continuous-state): the executor-based snapshot channel Crowdy State sits alongside.
-- [Crowdy State metadata keys](/unreal-sdk/reference/state-meta-keys): the compact reference table for the five keys.
-- [RPC Events in C++](/unreal-sdk/runtime/rpc-events-cpp): the event path for object references, containers, and one-off signals.
-- [Host Authority](/unreal-sdk/runtime/host-authority): the convention Crowdy State's host precedence is built on.
-- [Entities and Spawning](/unreal-sdk/runtime/entities-and-spawning): `InitialState` and the owner/proxy split Crowdy State relies on.
+- [Continuous state](./continuous-state.md): the sibling channel for many fields that move together.
+- [Map profiles](./map-profile.md): the cadence, the relevance distance, and the keyframe interval.
+- [State meta keys](../reference/state-meta-keys.md).
+- [RPC events in C++](./rpc-events-cpp.md): containers and object references as event parameters.
+- [The Two Planes](../concepts/two-planes.md): what belongs on a Game Model instead.
+- [Host authority](./host-authority.md): host-owned entities and the host override.
+- [Ownership transfer](./ownership-transfer.md): making another client the owner instead of pushing over it.
