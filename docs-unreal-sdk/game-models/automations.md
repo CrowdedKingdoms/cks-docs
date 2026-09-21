@@ -1,6 +1,6 @@
 ---
 slug: automations
-sidebar_position: 9
+sidebar_position: 10
 title: Automations
 description: "Make a Game Model function run on its own, on a schedule, when a property changes, or when another function is invoked, and arm delayed timers from an effect, all authored on the effect asset with no runtime call."
 ---
@@ -57,7 +57,7 @@ self.fuel -= (now() - self.last_burn) / 6000
 self.last_burn = now()
 ```
 
-An interval-driven function looks like this on the Studio Game Model page's **Advanced** tab, which shows what the server holds for it; here the description reads "Runs on a fixed interval." and the invoke scope is Player.
+The Studio Game Model page's **Advanced** tab shows what the server holds for an automation-driven function; the screenshot is another such function, not `burn_fuel`, and its Player scope is what that function was authored with, not the Server scope an automation entry point should declare (see [EffectScript](./effect-script.md#timers-and-automations)).
 
 ![The Advanced tab's Functions editor showing an interval-driven function with its invoke scope and mutation](/img/unreal-sdk/studio-automation.png)
 

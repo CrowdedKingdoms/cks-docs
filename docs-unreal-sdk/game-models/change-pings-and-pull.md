@@ -1,6 +1,6 @@
 ---
 slug: change-pings-and-pull
-sidebar_position: 15
+sidebar_position: 16
 title: Change Pings and Pull
 description: "How a client learns a Game Model value changed and gets the confirmed value: the notification carriers, the one re-pull they all funnel into, the zero-setup Listen for Model Changes node, signals, and the two switches to turn on when a change does not show up."
 ---

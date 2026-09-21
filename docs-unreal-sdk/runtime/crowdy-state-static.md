@@ -54,7 +54,7 @@ An auto-diffed property does not need marking; assign it and it ships. A propert
 
 ## On an entity you do not own: the host push
 
-**Mark Crowdy State Dirty** on an entity another client owns is not a no-op. It becomes a one-shot super-user push: the current live value of the named property is read and broadcast once, with no shadow and no ongoing tracking, stamped host-sourced when the caller is the elected host. It works for any Crowdy State property on that entity, not only the manual-dirty ones, because a host override may need to correct anything. An `OwnerOnly` entity refuses it at the source: the push is dropped before it is sent, and a receiver drops one that arrives anyway.
+**Mark Crowdy State Dirty** on an entity another client owns is not a no-op. It becomes a one-shot super-user push: the live value of the named property is read on the next replication tick and broadcast once, with no shadow and no ongoing tracking, stamped host-sourced when the caller is the elected host. It works for any Crowdy State property on that entity, not only the manual-dirty ones, because a host override may need to correct anything. An `OwnerOnly` entity refuses it at the source: the push is dropped before it is sent, and a receiver drops one that arrives anyway.
 
 A host-owned world entity is the other case. On the host it is tracked with auto-diff off, so a plain `CrowdyState` property on it never ships on change; the host's mark works only for a `CrowdyManualDirty` property (the `CrowdyHeartbeat` keyframe still restates the rest). Mark a host-owned entity's changing properties manual-dirty, or give them `CrowdyHeartbeat`.
 

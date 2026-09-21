@@ -2,14 +2,25 @@
 slug: game-models-authoring
 sidebar_position: 7
 title: Game Models Authoring
-description: Browse, sync, reconcile, and safely delete your app's Game Model schema on the Game Model page in Crowdy Studio.
+description: What the Game Model page in Crowdy Studio does, in the order you use it, and where the things it shows are authored.
 ---
 
 # Game Models Authoring
 
-The Game Model page is where the schema you author in code and in Effect assets meets the server. It shows what the server holds, what your project would change, and it is the one place a sync or a delete runs from.
+The Game Model page is where what you built in your project meets the server: it shows what the server currently holds for your app, what your project would change, and it is the one place a sync or a delete runs from. This page explains the Studio page; the building itself happens in your project, and the [Game Models section](../game-models/overview.md) teaches it.
 
-Vocabulary the page uses, and this guide keeps to: a container type is a **Model**, a property definition is an **Attribute**, and a container instance is a **Live model**.
+## What the page is about, in two minutes
+
+Some of your gameplay state must be trusted: hit points, currency, inventory, scores. The SDK keeps that state on the server as **Game Models**, and your Unreal project describes their shape:
+
+- A **Model** is a type of server-side record, declared in your project as a container class (a C++ class or a Blueprint marked as a Game Model class). Its **Attributes** are the values it holds, declared as properties on that class. A **Live model** is one record of that type on the server, belonging to a player, a placed object, or the match.
+- An **Effect** is a small server-side function that changes attributes, for example "refuel this lantern by 25". You author it in your project as a **Crowdy Effect** asset, either as a short script or as a node graph, and players trigger it from gameplay. The server runs it and decides.
+
+None of that is authored here. You declare models and attributes in code ([Containers and attributes](../game-models/containers-and-attributes.md)), you write Effects in the effect asset ([Authoring an Effect](../game-models/authoring-effects.md), the [EffectScript reference](../game-models/effect-script.md), or the [Effect Graph](../game-models/effect-graph.md) editor), and then you come to this page to push those definitions to the server and to see how the server's copy compares with yours.
+
+:::tip[Reading order]
+If you have not built a Game Model yet, read the [Game Models overview](../game-models/overview.md) first and come back here when you have a container class or an Effect asset to sync. Everything below assumes you have something to push.
+:::
 
 :::note[The page needs an account sign-in.]
 Its subtitle says so: a session that can mint an app token. An organization token will not do.
@@ -17,7 +28,7 @@ Its subtitle says so: a session that can mint an app token. An organization toke
 
 ## Open the page
 
-Open Crowdy Studio, sign in, select your app on the Project page, then pick **Game Model** in the AUTHORING group of the nav rail.
+Open Crowdy Studio, sign in, select your app on the Project page, then pick **Game Model** in the AUTHORING group of the sidebar.
 
 ![The Game Model page: the reconcile strip, the pre-seed strip, and the Models tab with the model list](/img/unreal-sdk/studio-gm-browser.png)
 
@@ -36,7 +47,7 @@ Above the tabs, visible from every tab, sit three readiness pills (**App**, **Se
 A default value, a policy, or a magnitude is compared as canonical JSON: object keys sorted, numbers normalised, arrays kept in order. Reordering the same properties, reformatting a JSON default, or a whitespace change never shows as a change, and a preview that reports one is reporting a real difference. Do not expect a cosmetic edit to produce a delta, and do not expect it to hide one either.
 :::
 
-**Sync to Server** writes: container types, property definitions, and functions. It never deletes server state. If an effect needs the app's session channel, the sync creates it for you.
+**Sync to Server** writes: container types, property definitions, functions, automations, and triggers. It never deletes server state. If an effect needs the app's session channel, the sync creates it for you.
 
 Pressing **Sync to Server** opens a review sheet headed **Send ...?**; there is no separate yes or no dialog. It lists every pending change grouped by kind, in apply order (Models, Attributes, Functions, Automations, Triggers), each row ticked. Untick anything you are not ready to send; whatever the rest needs is added back for you. Read the headline and counts, then press **Send**. A change list that moved under you refuses to send rather than sending something you did not review.
 
@@ -107,6 +118,7 @@ The server refuses nothing and cascades nothing for an attribute delete. Studio'
 
 ## Related
 
-- [Effect Graph](./effect-graph.md): authoring the effect functions a sync pushes.
+- [Authoring an Effect](../game-models/authoring-effects.md), [EffectScript](../game-models/effect-script.md) and the [Effect Graph](../game-models/effect-graph.md): writing the Effects a sync pushes.
+- [Containers and attributes](../game-models/containers-and-attributes.md): declaring the models and attributes a sync pushes.
 - [Game Models overview](../game-models/overview.md): declaring models and reading them at runtime.
 - [The Two Planes](../concepts/two-planes.md): why the schema lives on the server.

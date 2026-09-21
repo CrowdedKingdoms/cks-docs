@@ -121,7 +121,7 @@ on purpose. Raise `CrowdyDistance` (values run `None` to `Eight_Chunks`, default
 If you need delivery at any distance, switch to `Multicast` with a `CrowdyChannel`, or use `OwningClient` or
 `Host` for targeted delivery.
 
-:::note[The owner of a SpatialMulticast event runs the body locally and announces to the others. The owner never runs its own `Name_Implementation` from the network, because the owner has no proxy of itself.]
+:::note[The owner of a SpatialMulticast event runs the body locally and announces to the others. The owner never runs its own `Name_Implementation` from the network: an event is not delivered back to its sender, even where a Dynamic entity's owner sees its own echoed proxy.]
 :::
 
 ### The event was never registered, or the receiving function cannot be found

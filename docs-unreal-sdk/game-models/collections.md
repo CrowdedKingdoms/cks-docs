@@ -1,6 +1,6 @@
 ---
 slug: collections
-sidebar_position: 11
+sidebar_position: 12
 title: Collections and Free Containers
 description: "Containers with no actor, addressed by id: create, refresh, read, write, and delete them, then model a container that owns other containers, an inventory or a chest, as a collection of typed edges."
 ---
@@ -60,12 +60,12 @@ A custom relationship on Add and the default on Get returns an empty collection,
 
 ### The lantern post's oil chest
 
-A placed `ALanternPost` has an oil chest: a free container of an `OilChest` type whose items are flasks, created once in Studio, its id pasted into the post's `OilChestId` property. When a player walks up to the post, `CountOil` reads the chest's items with their state, `HandleOilCounted` sums each flask's `amount`, and the light brightens with the total.
+A placed `ALanternPost` has an oil chest: a free container of an `OilChest` type whose items are flasks, created once with **Create Game Model** (or seeded through the Game Model page's Advanced tab bulk seeding), its id pasted into the post's `OilChestId` property. When a player walks up to the post, `CountOil` reads the chest's items with their state, `HandleOilCounted` sums each flask's `amount`, and the light brightens with the total.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-The handler bound to `Succeeded` takes the items as `const TArray<FCrowdyCollectionItem>&`; a by-value parameter does not match the delegate and `AddDynamic` will not compile.
+The handler bound to `Succeeded` takes the items as `const TArray<FCrowdyCollectionItem>&`; a by-value parameter does not match the delegate and `AddDynamic` will not compile. On the tagged v2.14.0 plugin the delegate is still by value and the handler takes `TArray<FCrowdyCollectionItem>`; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).
 
 <CppSnippet id="coll-query" />
 

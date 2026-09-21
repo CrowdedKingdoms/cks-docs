@@ -19,7 +19,7 @@ Create a **Crowdy Effect** (`UCrowdyEffect`) Data Asset in the Content Browser a
 
 ![The effect asset editor on FX_LanternRefuel: the two-line script, the Compile Preview reading No diagnostics, the Deploy Payload summary, and the Details panel](/img/unreal-sdk/effect-asset-details.png)
 
-The asset can also be authored as a node graph on the same editor's canvas (**Authoring Mode** Graph); that surface is [Effect Graph](../studio/effect-graph.md). Both compile to the same function. This page uses the script.
+The asset can also be authored as a node graph on the same editor's canvas (**Authoring Mode** Graph); that surface is [Effect Graph](./effect-graph.md). Both compile to the same function. This page uses the script.
 
 ## The Details panel, top to bottom
 
@@ -113,5 +113,5 @@ There is no test-invoke button. The tested route is: sync the effect, press Play
 - [EffectScript](./effect-script.md): the language reference.
 - [Applying an effect from C++](./effects-cpp.md) and [from Blueprint](./effects-blueprint.md): using the asset.
 - [Invoke policies](./invoke-policies.md): `require` lines and the inferred gate.
-- [Effect Graph](../studio/effect-graph.md): the node-graph surface on the same asset.
+- [Effect Graph](./effect-graph.md): the node-graph surface on the same asset.
 - [Game Models authoring](../studio/game-models-authoring.md): the whole-app sync.

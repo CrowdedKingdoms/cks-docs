@@ -1,6 +1,6 @@
 ---
 slug: pre-seeding
-sidebar_position: 12
+sidebar_position: 13
 title: Pre-seeding Containers
 description: "Create the Game Model rows a map's placed objects will bind before any client asks for them, from the editor scan and the Studio card, or at runtime from the Apply Container Manifest node, and understand app scope against session scope."
 ---

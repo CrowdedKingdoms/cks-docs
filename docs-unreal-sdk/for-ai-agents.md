@@ -51,7 +51,7 @@ Four of the six are `meta=(...)` keys; the entity is a component and the effect 
 | `CrowdyModel` + `CrowdyKey` + `CrowdyOnRep` | A `UPROPERTY` on a container class; the server owns the value, the notify is parameterless | `gm-container` | [Containers and attributes](./game-models/containers-and-attributes.md#reacting-to-a-change) |
 | `CrowdyEffect` | Not a meta key: a `UCrowdyEffect` asset authored in Studio or Effect Script, referenced from C++ as `TObjectPtr<UCrowdyEffect>` | `fx-declare` | [Effects from C++](./game-models/effects-cpp.md#declaring-the-reference), [Effect Script](./game-models/effect-script.md) |
 
-Two rules the examples assume: a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); and a `CrowdyOnRep` function takes no parameters, read the property for the new value ([The Two Planes](./concepts/two-planes.md#the-nine-design-rules)).
+Two rules the examples assume: a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); and a `CrowdyOnRep` function takes no parameters, read the property for the new value ([The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code)).
 
 ## Three things that break silently in a cooked build
 

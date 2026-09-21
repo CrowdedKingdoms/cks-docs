@@ -87,7 +87,7 @@ The owner evaluates `GetActorState` every interval; whether anything goes out is
 
 | Map profile field | Default | Effect |
 |---|---|---|
-| `bUseAutoReplicator` | on | Off means no polling at all. A map with no profile is the same. |
+| `bUseAutoReplicator` | on | Off means no polling at all. |
 | `ReplicationIntervalHz` | 10 | The cadence, 1 to 10 Hz. Shared with Crowdy State, which sends separately. |
 | `bSendActorStateOnlyOnChange` | on | An unchanged snapshot does not repeat. Off restores an unconditional send every interval. |
 | `ActorKeyframeIntervalSeconds` | 3.0 | A full re-send of an unchanged snapshot, so a late or lossy observer converges. 0 disables. |

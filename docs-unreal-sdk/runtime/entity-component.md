@@ -60,7 +60,7 @@ Category **Crowdy SDK, Entity Component** in the Blueprint palette.
 | `OnCrowdyDestroyed` (`FOnCrowdyEntityDestroyed`) | `bIsLocallyOwned` | On every client when the entity is torn down, before the delay. |
 | `OnCrowdyOwnershipAssigned` (`FOnCrowdyOwnershipAssigned`) | `NewOwnerID`, `NewRole`, `bIsLocallyOwned` | Once the entity knows its owner, on the tick after registration (so a bind in `BeginPlay` still gets it), and again on every reassignment. `NewOwnerID` is invalid for a host-owned entity. |
 
-The example binds all three in `ALantern::BeginPlay`. A lantern the player drops at runtime is the kind of entity that receives all three: the spawn path announces `OnCrowdySpawned` right after `BeginPlay`, on the owner and on every proxy, so a bind made there is in place in time. A level-placed post never gets the spawn event; on it only the destroy and ownership handlers ever run. The light shows on spawn, hides on destroy, and brightens or dims as the answer to "do I own this" arrives.
+The example binds all three in `ALantern::BeginPlay`, after `Super::BeginPlay()`; the three `AddDynamic` lines in the block go there. A lantern the player drops at runtime is the kind of entity that receives all three: the spawn path announces `OnCrowdySpawned` right after `BeginPlay`, on the owner and on every proxy, so a bind made there is in place in time. A level-placed post never gets the spawn event; on it only the destroy and ownership handlers ever run. The light shows on spawn, hides on destroy, and brightens or dims as the answer to "do I own this" arrives.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">

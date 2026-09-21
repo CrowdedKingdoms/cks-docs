@@ -14,7 +14,7 @@ Config Sync writes the selected app's ids and endpoints into your project's sett
 
 ## Run a sync
 
-1. Open Crowdy Studio, [sign in](./sign-in.md), and pick **Project** in the nav rail.
+1. Open Crowdy Studio, [sign in](./sign-in.md), and pick **Project** in the sidebar.
 2. Select the app the project should talk to.
 3. Open the **Configuration** tab under the app's details. It shows every value the sync would write. A value that differs from what the project holds is drawn in gold with the current value on a "was" line beneath it, and a badge beside the tab strip reads **IN SYNC** or **N TO CHANGE**.
 4. Read the diff, then press **Sync to project**.
@@ -61,6 +61,8 @@ All of it lands on one settings class, `UCrowdySDKDeveloperSettings`, which you 
 They are read-only in Project Settings on purpose, so that Crowdy Studio is the one source of truth. A value pasted into `DefaultGame.ini` by hand is overwritten by the next sync, and a project whose settings drift from its app fails to connect with no obvious error.
 :::
 
+### The runtime setters
+
 The same goes for the two runtime setters on `UCrowdySDKSubsystem`: `SetDiscoveryUrl` stores a shared origin for this session and is read only when `Environment` is Custom (it warns otherwise), and `SetGameApiUrl` stores one Game API HTTP endpoint for this session, an address that is normally resolved from the origin rather than typed. `ReloadEndpointsFromSettings` is kept for existing call sites and does nothing: the API client re-reads both endpoints from the settings on every call, so a sync already reaches a running session.
 
 `RequestVersionInfo` asks the server for its version before or after sign-in and answers on `OnVersionInfo` (`FOnVersionInfo`, two `FGameVersion` parameters: the server's version and, in `ClientVersion`, the minimum client version it still accepts). Both arrive as zeroes when the query fails.
@@ -79,8 +81,8 @@ Commit that file as usual; it holds ids and URLs, not secrets.
 
 The **N TO CHANGE** badge tells you. It goes non-zero whenever the values the selected app would write differ from what the project holds: you selected a different app, changed the backend selector, or the app's endpoints moved. Press **Sync to project** again. Updating the plugin does not require a sync: the values live in `DefaultGame.ini` and the badge stays **IN SYNC**. Sync again only when the badge says so.
 
-:::warning[Every playable map still needs a map profile.]
-Config Sync points the project at an app. It does not activate the SDK on a map. Without a [map profile](../runtime/map-profile.md) the entity subsystem, the auto replicator, and the actor manager do nothing on that map, and replication looks dead even though the connection is fine.
+:::warning[Config Sync does not decide what a map does; the map profile does.]
+Config Sync points the project at an app. A map with no [map profile](../runtime/map-profile.md) of its own runs on the SDK's shipped default; a `MapProfiles` row or `DefaultProfile` naming an asset that fails to load resolves to no profile, and on that map the entity subsystem, the auto replicator, and the actor manager do nothing, so replication looks dead even though the connection is fine. The warning in the log names the asset.
 :::
 
 ## The Setup Wizard

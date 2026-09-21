@@ -7,14 +7,19 @@ description: What a game session is, how the server decides a player is still th
 
 # Sessions and Presence
 
-A game session is one match, room, lobby, or table. The server keeps the truth about it: who is in it, who may join, who is host, who is present, whose turn it is. Your client asks and the server answers.
+A game session is a group of players playing together, as the server sees it. Your game decides what one session stands for: a match, a lobby waiting to become a match, a room, a table. The server keeps the record of it, and every client reads that record rather than keeping its own.
 
 ## What a session is
 
-A session is server truth on the truth plane. It holds the roster, the admission rule, the seat cap, the host, presence, the turn, a revision counter, and a status. A Blueprint check such as `Is Session Host` only decides what to show; the server enforces the rule when you act.
+The record the server keeps for one session holds: the roster (who is in it and since when), the admission rule (open, locked, or closed), the seat cap, who is host, who is present, whose turn it is, a revision counter that goes up on every change, and a status (active while it runs; completed or abandoned once it has ended).
+
+Two things follow from the server keeping it:
+
+- **Your client does not decide any of it.** Joining, leaving, changing the host, or taking a turn is a request; the server applies the rule and answers. A Blueprint check such as `Is Session Host` tells you what to show, and the server still refuses a host action from a client that is not the host.
+- **Game Model state belongs to a session.** A container created during a match belongs to that match's session; reads and Effects run inside the session your client is in (the "active session"). That is what ties this page to the [truth plane](./two-planes.md): the session is the scope a Game Model value lives in.
 
 :::note[One word, three things.]
-A **game session** (this page) is a match. The **login session** is your signed-in identity. The **session channel** is a transport every client of the app joins. Be precise about which one a sentence means.
+A **game session** (this page) is the group of players. The **login session** is your signed-in identity. The **session channel** is a transport every client of the app joins. Be precise about which one a sentence means.
 :::
 
 ## Presence is the player's actor
@@ -30,7 +35,7 @@ By default any fresh actor of yours counts. An advanced Join option binds presen
 ## The lifecycle
 
 1. **Create.** Names the session. The creator is joined, is the host, and by default the new session becomes the caller's active session.
-2. **Join.** Takes the session id (the room code). Joining a session you are already in is how you reconnect: you get your roster row back with a new incarnation, and any older window of yours becomes stale.
+2. **Join.** Takes the session id (the room code). Joining a session you are already in is how you reconnect: you get your roster row back with a new incarnation (a per-join counter the server hands back; Leave quotes it), and any older window of yours becomes stale.
 3. **Play.** Game Model reads and Effects run inside the active session.
 4. **Leave.** Requires the incarnation the join returned. The SDK remembers it per session, so most code never touches it. A different client, or a fresh launch, must Join again first.
 5. **Host actions.** Set Admission, Transfer Host, and End are host-only; Set Turn may also be called by the player whose turn it is. By default (the Advanced **Refuse If Host Changed** pin) the SDK sends the host term it last read, and the server refuses with `HostTermStale` if the host changed since, so a stale host cannot act by accident.
@@ -57,7 +62,7 @@ The session channel is not the session. It is a shared transport, named `__crowd
 
 ## Related
 
-- [The Two Planes](./two-planes.md): why a session is truth.
+- [The Two Planes](./two-planes.md): why the server, not your client, keeps this record.
 - [The Host Is a Convention](./host-is-a-convention.md): the session host versus the elected view-plane host.
-- [Game Models overview](../game-models/overview.md): reads, Effects, and sessions in code.
+- [Game Models overview](../game-models/overview.md) and [Sessions](../game-models/sessions.md): reads, Effects, and the session API in code.
 - [Channels](../runtime/channels.md): the session channel and named channels.

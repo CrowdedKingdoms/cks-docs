@@ -41,24 +41,9 @@ Nothing on the wire is rejected for not coming from the host, and a modified cli
 
 ## The host subsystem
 
-`UCrowdyHostSubsystem` is a world subsystem that tracks the election result and broadcasts it.
+`UCrowdyHostSubsystem` is a world subsystem that tracks the election result and broadcasts it. `IsHost()` is the same answer as `GetCrowdyHasAuthority`; `IsHostSet()` says whether an election result has arrived at all, so an early `IsHost()` false does not mean "someone else is host"; `GetHostID()` is the host's entity id, the id the host's own entities are owned under, and `GetHostUserID()` its raw user id, a different number. The member table, the thread-safety notes, and the server-validated check it carries are on [Host election](../services/host-election.md).
 
-| Member | One line |
-|---|---|
-| `IsHost()` | True when the local user is the elected host. The same answer as `GetCrowdyHasAuthority`. |
-| `IsHostSet()` | Whether a host has been elected yet. False before the first election result arrives, so an early `IsHost()` false does not mean "someone else is host". |
-| `GetHostID()` | The host's entity id as an `FGuid`, the id the host's own entities are owned under. |
-| `GetHostUserID()` | The host's raw user id, 0 while unknown. A different id from `GetHostID`. |
-| `OnHostElected` (`FOnCrowdyHostElected`, `HostID`, `PreviousHostID`) | Fires on the game thread whenever the host changes, including the first time. |
-| `CheckEntityIsHost(Entity, Callback)` | The server-validated check, C++ entry point; see below. |
-
-The identity itself lives with your login session and survives level travel; the world subsystem re-reads it in each world.
-
-:::caution[A world subsystem must null-check GetGameInstance() in Initialize.]
-`UCrowdyHostSubsystem::Initialize` does exactly this, and any world subsystem you write alongside it must too. During engine start a transient game world is created whose game instance is set only after the world exists, so `GetGameInstance()` returns null while `Initialize` runs on it; dereferencing it there is an access violation at startup that never shows in Play in Editor. Return early when it is null. See [Replicated subsystems](./replicated-subsystems.md).
-:::
-
-Bind `OnHostElected` rather than caching the answer at `BeginPlay`: the host changes when the current one leaves, and a host-owned entity's authority moves with it.
+Bind `OnHostElected` (`FOnCrowdyHostElected`, `HostID`, `PreviousHostID`, on the game thread) rather than caching the answer at `BeginPlay`: the host changes when the current one leaves, and a host-owned entity's authority moves with it. A world subsystem of your own that lives next to it must null-check `GetGameInstance()` in `Initialize`; [Replicated subsystems](./replicated-subsystems.md#inherit-a-base) says why.
 
 ## World entities and the host override
 
@@ -70,30 +55,7 @@ Two more client-side helpers on `UCrowdyUtilities` answer ownership questions wi
 
 ## The server-validated check
 
-For the moment a local answer is not enough, ask the server; [Host election](../services/host-election.md) owns this check and its pins in full, and the short form is here. `UCrowdyIsEntityHostServer` is a latent Blueprint node, **Is Crowdy Entity Host (Server)** (`IsCrowdyEntityHostServer`), with three pins of type `FCrowdyHostCheckPin`: **Is Host**, **Is Not Host**, and **Failed**. In C++ call `UCrowdyHostSubsystem::CheckEntityIsHost(Entity, Callback)` and receive `bSuccess` and `bIsHost` on the game thread.
-
-The server elects a host per user, not per actor, so the check forks: for the local player's own entity it asks the server directly; for any other actor it resolves that actor's owner on the server and compares with the elected host. The other actor must have sent at least one update, or the server has no row for it and the answer is Failed.
-
-The lantern world uses it where a wrong answer costs something: when a player asks to own a lantern post, the post's `HandleOwnershipRequested` (the [ownership transfer](./ownership-transfer.md) page's grant handler) calls `VerifyThenGrant`, which confirms with the server that this client really is the host and grants only on a definite yes. The callback runs after a round trip, so it holds the post as a `TWeakObjectPtr` and does nothing if the post is gone.
-
-<Tabs groupId="lang">
-<TabItem value="cpp" label="C++">
-
-<CppSnippet id="host-check-server" />
-
-</TabItem>
-<TabItem value="bp" label="Blueprint">
-
-The graph starts from the `OnClaimRequested` custom event of the [ownership transfer](./ownership-transfer.md) figure. The latent **Is Crowdy Entity Host (Server)** node's `Entity` pin defaults to self, and only its **Is Host** pin continues, to **Grant Ownership Transfer To Player** with `Target Entity` wired to a Self reference and `New Owner Player ID` fed by the event's `Requester ID`. The **Is Not Host** and **Failed** pins are left unwired here and explained below.
-
-<Blueprint src="host-check-server" title="OnClaimRequested, Is Crowdy Entity Host (Server), Grant Ownership Transfer To Player" />
-
-</TabItem>
-</Tabs>
-
-:::warning[Failed and Is Not Host are different answers. Treat Failed as unknown, never as a confirmed no.]
-`bSuccess == false`, or the **Failed** pin, means the answer could not be determined: no host elected yet, a network error, an entity the server has no row for. `bIsHost` is meaningless then. Retry or wait; do not take the branch you would take for "not the host".
-:::
+For the moment a local answer is not enough, ask the server. `UCrowdyHostSubsystem::CheckEntityIsHost(Entity, Callback)` in C++, or the latent **Is Crowdy Entity Host (Server)** node in Blueprint, asks the server whether an entity's owner is the elected host and answers Is Host, Is Not Host, or Failed, where Failed means unknown, never a confirmed no. The lantern world uses it where a wrong answer costs something: a claim on a lantern post is granted only after a definite server yes. The check, its pins, its failure cases, and that example in both languages are on [Host election](../services/host-election.md#the-server-validated-check).
 
 The server-validated check is still not enforcement. It tells you the current truth about who the host is; what you do with the answer runs on an unenforced plane.
 
@@ -101,7 +63,7 @@ The server-validated check is still not enforcement. It tells you the current tr
 
 - `IsHostSet()` before `IsHost()`. Until an election result arrives, every client reads false.
 - `GetHostID()` and `GetHostUserID()` are different ids. Compare `GetOwnerID()` with the first only for an entity a player spawned; a host-owned entity carries no owner id at all, so ask `GetRole() == ECrowdyRole::HostOwned`, `IsLocallyOwned()`, or `DoesCrowdyEntityOwn` instead.
-- A host-owned entity is written by explicit pushes. Assigning a property on it and waiting does nothing.
+- A host-owned entity is written by explicit pushes. Assigning a property on it and waiting does nothing. A [replicated subsystem](./replicated-subsystems.md) the host owns is the exception: it is auto-diffed.
 - `HostOverride` is a view-plane tie-breaker. If the value matters, it belongs in a Game Model.
 - The server check needs the target to exist on the server. A freshly spawned, never-updated entity answers Failed.
 

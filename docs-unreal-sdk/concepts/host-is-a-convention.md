@@ -29,10 +29,6 @@ Neither the client-derived check nor the server-validated one below is an enforc
 `bSuccess == false` from `CheckEntityIsHost`, or the `OnFailed` pin, means the answer could not be determined: no host elected yet, a network error, an unresolved entity. It is not the same as "not the host". Do not treat it as a confident no.
 :::
 
-:::info[A past disagreement between the two server answers has been fixed.]
-The server's "am I host" answer and its "who is host" answer briefly disagreed for the elected host. That is resolved server-side; the two agree.
-:::
-
 ## Host-owned world entities
 
 A level-placed entity with `Ownership = Host` is `HostOwned`: whichever client is host at the moment owns it, so every client shares one authority for world and AI objects. The host's writes to such an entity are explicit pushes (`MarkStateDirty`, `MarkAllStateDirty`), never a background diff, so an implicit and an explicit write can never race.

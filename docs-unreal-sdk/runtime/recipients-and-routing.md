@@ -75,7 +75,7 @@ The lantern world uses `Host` for a relight: a client whose lantern has gone dar
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-A `RequestRelight` custom event with Crowdy Replicates ticked and **Recipient** set to **Host**; its body is **Set Visibility** on `Light`, fed by **Get Light**. Call it from any client whose lantern is dark and it runs on the host alone.
+A `RequestRelight` custom event with Crowdy Replicates ticked and **Recipient** set to **Host**; its body is **Set Visibility** on `Light`, fed by **Get Light**. Call it from any client whose lantern is dark and it runs on the host alone. The figure is the visible half only. To make the owner adopt the value as the C++ does, add two nodes after it: **Set Lit** to true, then **Mark Crowdy State Dirty** with `Lit` as the property name; without them the relight stays on the host's proxy.
 
 <Blueprint src="recipient-each" title="RequestRelight, a Custom Event with Recipient Host, Get Light, Set Visibility" />
 

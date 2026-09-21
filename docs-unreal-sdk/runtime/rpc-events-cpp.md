@@ -25,11 +25,11 @@ Both halves work on any actor or component that carries a `UCrowdyEntityComponen
 UnrealHeaderTool does not expand macros when it scans for reflected declarations. A `UFUNCTION` produced by a macro is invisible to reflection, so `CROWDY_EVENT` generates only the non-reflected thunk and the routing lives on the receiver's metadata.
 :::
 
-The lantern's second event is `Sparkle`: the owner announces a one-time ignition sparkle at `BeginPlay`, everyone in range tints the light and reads a set of spark offsets. The four blocks below are facets of that one member.
+The lantern's second event is `Sparkle`: the owner announces a one-time ignition sparkle at `BeginPlay`, everyone in range tints the light and reads a set of spark offsets. The four blocks below are facets of that one member. `FLanternSparkleStyle`, the struct the receiver takes, is declared under [Parameters](#parameters) below.
 
 <CppSnippet id="rpc-declare" />
 
-The call in `BeginPlay`, behind the owner check that every `SpatialMulticast` send needs:
+The call, inside `ALantern::BeginPlay` after `Super::BeginPlay()`, behind the owner check that every `SpatialMulticast` send needs:
 
 <CppSnippet id="rpc-call" />
 

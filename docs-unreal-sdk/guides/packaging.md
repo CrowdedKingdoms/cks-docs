@@ -42,7 +42,7 @@ Every map that ships resolves a [map profile](../runtime/map-profile.md), one of
 
 - An entry in the per-map `MapProfiles` map names it, or
 - `DefaultProfile` is set for unlisted maps, or
-- Neither is set, and the map runs on the SDK's shipped default profile (networking on, the actor pool drawing).
+- Neither is set, and the map runs on the SDK's shipped default profile (networking on, the actor pool drawing; on the tagged v2.14.0 plugin the default draws nothing, see [What's Changed](./whats-changed.md#unreleased-after-v2140)).
 
 The cook hazard is the first two: a `MapProfiles` row or a `DefaultProfile` whose asset is not packaged resolves to nothing. The SDK then logs `check that the asset still exists and is packaged`, and the entity subsystem, the auto replicator, and the actor manager do nothing on that map, so replication looks dead.
 
@@ -62,7 +62,8 @@ The relevant fields live under the `[/Script/CrowdyReplication.CrowdySDKDevelope
 
 To sync them, open Crowdy Studio, go to the Project page, and run **Config Sync**. It shows a before-and-after diff and writes the selected app's values into the project settings when you click **Sync to project** on the Project page's Configuration tab.
 
-:::tip[See [Project Settings](../reference/project-settings.md) for the full field list.]
+:::tip
+See [Project settings](../reference/project-settings.md) for the full field list.
 :::
 
 ## 5. What Shipping strips

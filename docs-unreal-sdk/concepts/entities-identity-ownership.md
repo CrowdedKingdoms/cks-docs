@@ -86,7 +86,7 @@ A lantern post is a lantern that belongs to the level rather than to a player: t
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-All three settings are `EditAnywhere`, so a constructor (or the Details panel, or Class Defaults) is where they are set. `ALanternPost` inherits everything else from `ALantern`, so a post flickers and lights like any lantern, and its `IsLocallyOwned()` checks are true on the host alone:
+All three settings are `EditAnywhere`, so a constructor (or the Details panel, or Class Defaults) is where they are set. `ALanternPost` inherits everything else from `ALantern`, so a post flickers and lights like any lantern, and its `IsLocallyOwned()` checks are true on the host alone. The second base class, `ICrowdyBindingKeyProvider`, is for a later page, [Ensured identity](../game-models/ensured-identity.md), which adds its one override and include; drop it here, or paste it with that override:
 
 <CppSnippet id="identity-policies" />
 
@@ -107,7 +107,7 @@ Pan the graph with the right mouse button. Press **Copy nodes**, then Ctrl+V in 
 ## Gotchas
 
 - `IsLocallyOwned()` is the question to ask. Do not compare ids by hand to decide who is in charge.
-- A remote proxy exists on every client except the owner; the owner has the real thing and no proxy of itself.
+- A proxy of a Static entity never exists on its owner; the owner has the real thing, and an event it sends never comes back to it. A Dynamic entity's owner may see its own echoed proxy as well; see [Rendering backends](../runtime/rendering-backends.md).
 - Stable identity depends on level placement. An actor you create in code with Stable set does not agree across clients; spawn it through the SDK instead.
 - Identity Policy has no Blueprint getter. If a graph needs it, it is probably asking the wrong question; ask `Get Role` instead.
 

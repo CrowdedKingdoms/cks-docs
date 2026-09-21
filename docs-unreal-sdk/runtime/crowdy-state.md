@@ -42,7 +42,7 @@ An enum is held state: sent on change, never re-sent. A client that starts obser
 
 ## Mark a property
 
-The Quickstart's `bLit` is the plain form: assign, and the change ships. This page adds a second property to `ALantern`, `TimesLit`, marked `CrowdyManualDirty`, so the count is pushed once per lighting instead of compared every tick. `RecordLighting`, called from the owner-gated overlap, increments it and marks it; every proxy's `OnRep_TimesLit` scales the light by the count.
+The Quickstart's `bLit` is the plain form: assign, and the change ships. This page adds a second property to `ALantern`, `TimesLit`, marked `CrowdyManualDirty`, so the count is pushed once per lighting instead of compared every tick. `RecordLighting` (a plain `void RecordLighting();` member you declare in the header) is called from the owner-gated overlap of the Quickstart's step 3; it increments the count and marks it, and every proxy's `OnRep_TimesLit` scales the light by the count.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">

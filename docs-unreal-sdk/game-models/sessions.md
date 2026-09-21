@@ -1,6 +1,6 @@
 ---
 slug: sessions
-sidebar_position: 16
+sidebar_position: 17
 title: Sessions
 description: "The Game Model session API: create, find, join, watch, and leave a match, room, or lobby, the host-only actions and the turn, the active session every call falls back to, and every node and struct grouped in one place."
 ---
@@ -10,7 +10,7 @@ import TabItem from '@theme/TabItem';
 
 # Sessions
 
-A Game Model session is one match, room, lobby, or table: server truth with a roster, an admission rule, a seat cap, a host, presence, a turn, and a revision counter. Every Game Model call takes a `SessionId`, and the SDK remembers an active session so most of them can leave it empty. [Sessions and Presence](../concepts/sessions-and-presence.md) is the concept; this page is the Unreal surface, every callable of it.
+A Game Model session is a group of players playing together, as the server records it: your match, room, lobby, or table. The record holds a roster, an admission rule, a seat cap, a host, presence, a turn, and a revision counter, and Game Model state created during play belongs to it. Every Game Model call takes a `SessionId`, and the SDK remembers an active session so most of them can leave it empty. [Sessions and Presence](../concepts/sessions-and-presence.md) is the concept; this page is the Unreal surface, every callable of it.
 
 :::warning[UCrowdyGameSession is not a Game Model session.]
 Same word, unrelated type. `UCrowdyGameSession` is this client's own sign-in and connection state: app id, user id, the server it is assigned to. It has no session id and is not truth about any match. Its read-only accessors are on [Authentication](../services/authentication.md). Everything on this page is the other thing: the session other players are in with you.
@@ -52,7 +52,7 @@ All under **Crowdy SDK, Game Model, Sessions and Turns**. Every `Failed` pin car
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-The C++ facade on the subsystem takes a completion instead of pins and does not set the active session for you: call `SetActiveSession` in the completion, as `HostNight` and `JoinNight` do, or every later empty-`SessionId` call, the Leave below included, targets the app scope instead of the night; call `WatchSession` if you want the change event. The async nodes do both by default (`Make Active`, `Watch For Changes`). The owning client's pawn creates the night in `HostNight` from `BeginPlay` and turns its torch yellow to show it is hosting.
+The C++ facade on the subsystem takes a completion instead of pins and does not set the active session for you: call `SetActiveSession` in the completion, as `HostNight` and `JoinNight` do, or every later empty-`SessionId` call, the Leave below included, targets the app scope instead of the night; call `WatchSession` if you want the change event. The async nodes do both by default (`Make Active`, `Watch For Changes`). The owning client's pawn creates the night in `HostNight` from `BeginPlay` and turns its torch yellow to show it is hosting. The `BeginPlay` and overlap bodies shown here are the part this page adds to `ALanternPlayer`; the lantern drop on [Entities and spawning](../runtime/entities-and-spawning.md) and the enlist on [Kits](./kits.md) sit in the same functions.
 
 <CppSnippet id="sess-create" />
 
@@ -63,7 +63,7 @@ Walking up to a lantern post (`NotifyActorBeginOverlap`) joins the night whose i
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The pawn Blueprint needs a **Point Light** named `Torch`. **Event BeginPlay** runs **Create Game Session** with `Name` = `Village Night`; on `Succeeded`, **Set Light Color** on `Torch`.
+The pawn Blueprint needs a **Point Light** named `Torch`. **Event BeginPlay** runs **Create Game Session** with `Name` = `Village Night`; on `Succeeded`, **Set Light Color** on `Torch`. The figures leave out the owner gate the C++ has: a pooled proxy of this pawn runs `BeginPlay` and its overlaps too, so put an **Is Crowdy Entity Locally Controlled** branch in front of Create, Join, and Leave, as every other pawn graph on this site does.
 
 <Blueprint src="sess-create" title="Event BeginPlay, Create Game Session, Get Torch, Set Light Color" />
 
@@ -109,7 +109,7 @@ Your Create or Join on this subsystem recorded it, so `Incarnation` 0 is right f
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The same query as the C++ block: a custom event `RefreshNight` runs **List Game Sessions** with `Admission` = `Open` (`Status` stays `Active`); on `Succeeded`, **Is Not Empty** over `Sessions` drives **Set Visibility** on `Torch`, so the torch shows while there is an open night to join. The pawn Blueprint needs the `Torch` component. In C++, a handler bound to the array-carrying `Succeeded` pins takes the array as `const TArray<T>&`.
+The same query as the C++ block: a custom event `RefreshNight` runs **List Game Sessions** with `Admission` = `Open` (`Status` stays `Active`); on `Succeeded`, **Is Not Empty** over `Sessions` drives **Set Visibility** on `Torch`, so the torch shows while there is an open night to join. The pawn Blueprint needs the `Torch` component. In C++, a handler bound to the array-carrying `Succeeded` pins takes the array as `const TArray<T>&` (by value on the tagged v2.14.0 plugin; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140)).
 
 <Blueprint src="sess-query" title="RefreshNight, List Game Sessions, IS NOT EMPTY, Get Torch, Set Visibility" />
 

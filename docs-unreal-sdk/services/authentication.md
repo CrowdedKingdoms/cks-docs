@@ -71,7 +71,7 @@ The Game Instance signs the player in from `Init`, binds the outcome event befor
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-<CppSnippet id="auth-login" />
+The C++ is the `ULanternGameInstance` block on [Player Sign-in](../runtime/player-sign-in.md): bind `OnLogin` and `OnUDPConnectionSuccess` on the Crowdy SDK Subsystem in `Init`, then call `Login` with the account read from `Config/DefaultGame.ini`. The rich surface in the table above is reached the same way, through `GetSubsystem<UCrowdyAuthentication>()`, with the per-call delegates passed as arguments.
 
 </TabItem>
 <TabItem value="bp" label="Blueprint">

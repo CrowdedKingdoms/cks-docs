@@ -12,6 +12,8 @@ import TabItem from '@theme/TabItem';
 
 A UE subsystem is not an actor, but it can take part in both view-plane mechanisms: `meta=(CrowdyState)` properties diff and replicate on it exactly as on an actor, and `meta=(CrowdyEvent)` functions ride the reliable channel. Two abstract bases do the enrollment; a function library exists for the cases they do not cover.
 
+One difference from a host-owned world actor, whose Crowdy State moves only on explicit marks and the keyframe: a subsystem is auto-diffed on the host, so assign the property and the change ships. Its deltas ride the reliable channel with no spatial filter.
+
 ## When to use one
 
 For a world-level value that belongs to nobody in particular and every client should agree on: a village clock, a weather phase, a match state on the view plane. A subsystem is host-owned, a singleton every client resolves by class path with no handshake, so it is the natural home for "the one of these".

@@ -15,7 +15,7 @@ The Project page is a single split view: the app list on the left, the selected 
 
 ## The Project page
 
-Open Crowdy Studio, sign in, and pick **Project** in the nav rail (the CONFIGURE group).
+Open Crowdy Studio, sign in, and pick **Project** in the sidebar (the CONFIGURE group).
 
 ![The Project page: organization filter and app list on the left, the selected app's details and Configuration tab on the right](/img/unreal-sdk/studio-projects.png)
 

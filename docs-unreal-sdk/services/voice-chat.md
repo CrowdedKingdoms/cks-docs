@@ -58,6 +58,7 @@ Two custom events stand for the input action's Started and Completed pins. **OnT
 Turn on owner echo, speak, and you should hear yourself:
 
 ```cpp
+UCrowdySDKSubsystem* Voice = GetGameInstance()->GetSubsystem<UCrowdySDKSubsystem>();
 Voice->StartVoiceChat();
 Voice->ToggleOwnerEcho(true);
 ```

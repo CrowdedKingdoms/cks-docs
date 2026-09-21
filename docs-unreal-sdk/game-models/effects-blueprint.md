@@ -1,6 +1,6 @@
 ---
 slug: effects-blueprint
-sidebar_position: 6
+sidebar_position: 7
 title: Applying an Effect from Blueprint
 description: "Applying an authored Crowdy Effect from Blueprint with the Apply Crowdy Effect node family: one typed pin per tuning parameter, a Source pin only when the effect needs one, Succeeded and Failed pins, and a typed Return Value beside the raw JSON one."
 ---

@@ -1,4 +1,4 @@
-import {test, expect} from '@playwright/test';
+import {test, expect, type Page} from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -20,12 +20,72 @@ test.use({
   permissions: ['clipboard-read', 'clipboard-write'],
 });
 
+// The graphs under test are the ones the docs actually embed: every <Blueprint src="..."> under
+// docs-unreal-sdk, each visited at its own page URL. A page's URL is its folder plus its frontmatter
+// slug (or file name), under the plugin's /unreal-sdk route base.
+const DOCS_DIR = path.join(__dirname, '..', 'docs-unreal-sdk');
+const ROUTE_BASE = '/unreal-sdk';
+
+function listMarkdown(dir: string): string[] {
+  return fs.readdirSync(dir, {withFileTypes: true}).flatMap((entry) => {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) return listMarkdown(full);
+    return /\.mdx?$/.test(entry.name) ? [full] : [];
+  });
+}
+
+function pageUrl(file: string): string {
+  const text = fs.readFileSync(file, 'utf8');
+  const slugMatch = text.match(/^slug:\s*(\S+)\s*$/m);
+  const slug = slugMatch?.[1] ?? path.basename(file).replace(/\.mdx?$/, '');
+  if (slug.startsWith('/')) return `${ROUTE_BASE}${slug}`;
+  const folder = path.relative(DOCS_DIR, path.dirname(file)).split(path.sep).filter(Boolean).join('/');
+  return folder ? `${ROUTE_BASE}/${folder}/${slug}` : `${ROUTE_BASE}/${slug}`;
+}
+
+// page URL -> snippet ids embedded on it, in document order.
+const PAGE_SNIPPETS = new Map<string, string[]>();
+for (const file of listMarkdown(DOCS_DIR)) {
+  const ids = [...fs.readFileSync(file, 'utf8').matchAll(/<Blueprint\s[^>]*?\bsrc="([a-z0-9-]+)"/g)].map((m) => m[1]);
+  if (ids.length) PAGE_SNIPPETS.set(pageUrl(file), ids);
+}
+const ALL_SNIPPETS = [...new Set([...PAGE_SNIPPETS.values()].flat())];
+const pageOf = (id: string) => [...PAGE_SNIPPETS.entries()].find(([, ids]) => ids.includes(id))?.[0];
+
+// A page labels the canvas with its caption, not the snippet id, so the figure is found through its
+// download link, the one place the id is stable in the markup.
+const figureFor = (page: Page, id: string) =>
+  page.locator('figure', {has: page.locator(`a[href$="/bp/unreal-sdk/${id}.txt"]`)}).first();
+
+// Pages keep their graphs on the Blueprint side of a C++/Blueprint tab pair, hidden until picked.
+async function showBlueprintTabs(page: Page): Promise<void> {
+  // The page renders client side after load; a figure's download link is in the DOM even while hidden.
+  await page.locator('a[href*="/bp/unreal-sdk/"]').first().waitFor({state: 'attached'});
+  const tabs = page.getByRole('tab', {name: 'Blueprint'});
+  const count = await tabs.count();
+  for (let i = 0; i < count; i++) {
+    const tab = tabs.nth(i);
+    if ((await tab.getAttribute('aria-selected')) === 'true') continue;
+    await tab.click();
+  }
+}
+
+test('the docs embed at least one Blueprint graph', () => {
+  expect(ALL_SNIPPETS.length).toBeGreaterThan(0);
+  console.log(`discovered ${ALL_SNIPPETS.length} graphs on ${PAGE_SNIPPETS.size} pages`);
+});
+
 test('renders the graph and copies the clipboard text', async ({page, request}) => {
+  const url = pageOf(snippet);
+  expect(url, `${snippet} is embedded by a page under docs-unreal-sdk`).toBeTruthy();
   const expected = await (await request.get(`${baseURL}/bp/unreal-sdk/${snippet}.txt`)).text();
   expect(expected).toContain('Begin Object');
 
-  await page.goto('/unreal-sdk-blueprint-spike');
-  const figure = page.locator('figure', {has: page.locator(`canvas[aria-label*="${snippet}"]`)}).first();
+  await page.goto(url!);
+  await showBlueprintTabs(page);
+  const figure = figureFor(page, snippet);
+  await expect(figure).toBeVisible();
+  await figure.scrollIntoViewIfNeeded();
   // Located structurally, not by name: the label changes to "Copied" and a name filter would lose it.
   const button = figure.locator('button');
   await expect(button).toHaveText('Copy nodes');
@@ -58,51 +118,54 @@ test('renders the graph and copies the clipboard text', async ({page, request}) 
 type EditorTitle = {name: string; class: string; title: string; title_drawn?: boolean; crowdy_subtitle?: string};
 type RenderedNode = {name: string; title: string; subTitles: string[]};
 
-// The spike page's SNIPPETS list is the one list of published snippets; read it from the source so a
-// snippet added there is checked here without a second list to keep in step.
-const SPIKE_PAGE = path.join(__dirname, '..', 'src', 'pages', 'unreal-sdk-blueprint-spike.tsx');
-const ALL_SNIPPETS = [...fs.readFileSync(SPIKE_PAGE, 'utf8').matchAll(/^\s*'([a-z0-9-]+)',\s*$/gm)].map((m) => m[1]);
-
 test('every node renders with the title the editor shows', async ({page, request}) => {
-  await page.goto('/unreal-sdk-blueprint-spike');
+  test.setTimeout(120_000 + 20_000 * PAGE_SNIPPETS.size);
   const mismatches: string[] = [];
-  for (const id of ALL_SNIPPETS) {
-    const res = await request.get(`${baseURL}/bp/unreal-sdk/${id}.titles.json`);
-    expect(res.ok(), `${id}.titles.json is published`).toBeTruthy();
-    const expected = (await res.json()) as EditorTitle[];
-    const canvas = page.locator(`canvas[aria-label="${id}"]`);
-    await expect(canvas).toHaveCount(1);
-    await expect.poll(async () => canvas.evaluate((c) => Boolean((c as {__klee?: unknown}).__klee))).toBe(true);
-    // Read the header labels the canvas actually draws, not the node data: a title set after the
-    // label was built changes the data and leaves the drawing stale.
-    const rendered = (await canvas.evaluate((c) => {
-      type Label = {text?: string};
-      type Panel = {children?: Label[]};
-      type Control = {node: {name: string; title: string; subTitles?: {text: string}[]}; header?: {titlePanel?: Panel}};
-      const scene = (c as unknown as {__klee: {app: {scene: {nodes: Control[]}}}}).__klee.app.scene;
-      return scene.nodes.map((n) => {
-        const labels = (n.header?.titlePanel?.children ?? []).map((l) => l.text ?? '');
-        return labels.length
-          ? {name: n.node.name, title: labels[0], subTitles: labels.slice(1)}
-          : {name: n.node.name, title: n.node.title, subTitles: (n.node.subTitles ?? []).map((s) => s.text)};
-      });
-    })) as RenderedNode[];
-    for (const want of expected) {
-      if (want.class.endsWith("EdGraphNode_Comment")) continue;
-      const got = rendered.find((n) => n.name === want.name);
-      if (!got) { mismatches.push(`${id}: ${want.name} not rendered`); continue; }
-      const [wantTitle, ...wantRest] = want.title.split('\n');
-      if (want.title_drawn === false) continue;
-      if (got.title !== wantTitle) mismatches.push(`${id}: ${want.name} title "${got.title}" != editor "${wantTitle}"`);
-      for (const line of wantRest) {
-        if (!got.subTitles.includes(line)) mismatches.push(`${id}: ${want.name} missing subtitle "${line}" (has ${JSON.stringify(got.subTitles)})`);
-      }
-      if (want.crowdy_subtitle) {
-        for (const line of want.crowdy_subtitle.split('\n')) {
-          if (!got.subTitles.includes(line)) mismatches.push(`${id}: ${want.name} missing Crowdy subtitle "${line}" (has ${JSON.stringify(got.subTitles)})`);
+  let checked = 0;
+  for (const [url, ids] of PAGE_SNIPPETS) {
+    await page.goto(url);
+    await showBlueprintTabs(page);
+    for (const id of ids) {
+      const res = await request.get(`${baseURL}/bp/unreal-sdk/${id}.titles.json`);
+      expect(res.ok(), `${id}.titles.json is published`).toBeTruthy();
+      const expected = (await res.json()) as EditorTitle[];
+      const canvas = figureFor(page, id).locator('canvas');
+      await expect(canvas, `${id} on ${url}`).toBeVisible();
+      await canvas.scrollIntoViewIfNeeded();
+      await expect.poll(async () => canvas.evaluate((c) => Boolean((c as {__klee?: unknown}).__klee))).toBe(true);
+      // Read the header labels the canvas actually draws, not the node data: a title set after the
+      // label was built changes the data and leaves the drawing stale.
+      const rendered = (await canvas.evaluate((c) => {
+        type Label = {text?: string};
+        type Panel = {children?: Label[]};
+        type Control = {node: {name: string; title: string; subTitles?: {text: string}[]}; header?: {titlePanel?: Panel}};
+        const scene = (c as unknown as {__klee: {app: {scene: {nodes: Control[]}}}}).__klee.app.scene;
+        return scene.nodes.map((n) => {
+          const labels = (n.header?.titlePanel?.children ?? []).map((l) => l.text ?? '');
+          return labels.length
+            ? {name: n.node.name, title: labels[0], subTitles: labels.slice(1)}
+            : {name: n.node.name, title: n.node.title, subTitles: (n.node.subTitles ?? []).map((s) => s.text)};
+        });
+      })) as RenderedNode[];
+      checked += 1;
+      for (const want of expected) {
+        if (want.class.endsWith("EdGraphNode_Comment")) continue;
+        const got = rendered.find((n) => n.name === want.name);
+        if (!got) { mismatches.push(`${id}: ${want.name} not rendered`); continue; }
+        const [wantTitle, ...wantRest] = want.title.split('\n');
+        if (want.title_drawn === false) continue;
+        if (got.title !== wantTitle) mismatches.push(`${id}: ${want.name} title "${got.title}" != editor "${wantTitle}"`);
+        for (const line of wantRest) {
+          if (!got.subTitles.includes(line)) mismatches.push(`${id}: ${want.name} missing subtitle "${line}" (has ${JSON.stringify(got.subTitles)})`);
+        }
+        if (want.crowdy_subtitle) {
+          for (const line of want.crowdy_subtitle.split('\n')) {
+            if (!got.subTitles.includes(line)) mismatches.push(`${id}: ${want.name} missing Crowdy subtitle "${line}" (has ${JSON.stringify(got.subTitles)})`);
+          }
         }
       }
     }
   }
+  console.log(`checked ${checked} embedded graphs (${ALL_SNIPPETS.length} distinct) on ${PAGE_SNIPPETS.size} pages`);
   expect(mismatches, mismatches.join('\n')).toEqual([]);
 });

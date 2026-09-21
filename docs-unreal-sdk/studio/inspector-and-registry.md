@@ -7,12 +7,12 @@ description: Watch a running Play in Editor session in the Inspector, and rebake
 
 # Inspector and Registry
 
-The two pages in the nav rail's DEBUG group. Neither needs a sign-in.
+The two pages in the sidebar's DEBUG group. Neither needs a sign-in.
 
 - The **Inspector** is a read-only view of the running Play in Editor session.
 - The **Registry** shows the baked metadata a packaged build reads, and rebuilds it.
 
-Open Crowdy Studio (**Tools, Crowdy SDK, Crowdy Studio**) and pick either page in the nav rail.
+Open Crowdy Studio (**Tools, Crowdy SDK, Crowdy Studio**) and pick either page in the sidebar.
 
 ## Inspector
 
@@ -33,7 +33,7 @@ What it lists:
 ![The Inspector page with no session running](/img/unreal-sdk/studio-inspector.png)
 
 :::tip[If the Inspector is empty while you are playing, check the map profile.]
-With no [map profile](../runtime/map-profile.md) the entity subsystem does nothing on that map and the session looks dead.
+A [map profile](../runtime/map-profile.md) row that names an asset that failed to load resolves to no profile; the entity subsystem then does nothing on that map and the session looks dead. The log warning names the asset. A map with no row runs on the shipped default.
 :::
 
 To change teams, channels, or entity state, use the runtime APIs in your game: [Teams](../services/teams.md), [Channels](../runtime/channels.md), [Entities and Spawning](../runtime/entities-and-spawning.md).

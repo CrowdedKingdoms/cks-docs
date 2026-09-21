@@ -1,6 +1,6 @@
 ---
 slug: effect-graph
-sidebar_position: 8
+sidebar_position: 5
 title: Effect Graph
 description: Author a Crowdy Effect's server function as a node graph in the effect asset editor, compile it locally, and sync it to the server.
 ---
@@ -10,7 +10,7 @@ description: Author a Crowdy Effect's server function as a node graph in the eff
 A Crowdy Effect is a data asset that describes one server function: what it writes to a model's attributes, under which conditions, with which tuning parameters. The effect asset editor lets you author that function as a node graph, compile it locally, and sync it to the server.
 
 :::note[This is an asset editor, not a Crowdy Studio page.]
-It opens when you double-click a **Crowdy Effect** asset in the Content Browser. It has no entry in the Studio nav rail; the [Game Model page](./game-models-authoring.md) is where a whole-app sync runs.
+It opens when you double-click a **Crowdy Effect** asset in the Content Browser. It has no entry in the Studio sidebar; the [Game Model page](../studio/game-models-authoring.md) is where a whole-app sync runs.
 :::
 
 ## The asset and its modes
@@ -38,7 +38,7 @@ Right-click the canvas to place a node. Each family has its own colour.
 | Value | Constant | A Number, Bool, String, or Null literal. |
 | Arithmetic | Binary Op | `+ - * / %`. |
 | Comparison | Compare | `== != < > <= >=`. |
-| Logic | Logic | `&&` and `||`. |
+| Logic | Logic | `&&` and `\|\|`. |
 | Unary | Unary | One node whose Op is Not (`!`) or Negate (unary minus). |
 | Function | Call | A builtin such as `max`, `clamp`, or `coalesce`. |
 | Server Function | Server Call | Another authored effect's function, called by name. Drawn in its own colour so it never reads as a builtin. |
@@ -71,9 +71,7 @@ A node goes red for a missing or duplicate Result node, an unconnected required 
 
 The toolbar's **Sync to Server** syncs this effect's function and its container type to the schema on the server. Only this effect is affected; other server schema is never deleted. The label beside it shows the effect's state: **Synced**, **Unsynced** (drifted), **Not on server**, or **Unknown**.
 
-:::warning[Compile, then read the Deploy Payload, then sync.]
-The **Deploy Payload** panel prints the exact definition a sync would send, invoke policy included. After an SDK update, a recomputed policy can add an ownership or participation requirement to an effect that had none, and the change only reaches the server at the next sync. If a requirement you did not author appears in the payload, decide before you sync, not after players start seeing "You are not allowed to do that".
-:::
+Compile, then read the **Deploy Payload** panel, then sync: the panel prints the exact definition a sync would send, invoke policy included, and a policy the SDK recomputed after an update reaches the server only at that sync. [Authoring effects](./authoring-effects.md#how-it-reaches-the-server) has the warning in full.
 
 ## Gotchas
 
@@ -84,5 +82,5 @@ The **Deploy Payload** panel prints the exact definition a sync would send, invo
 
 ## Related
 
-- [Game Models authoring](./game-models-authoring.md): the whole-app sync and the review panel.
-- [Game Models overview](../game-models/overview.md): applying an effect from Blueprint or C++.
+- [Game Models authoring](../studio/game-models-authoring.md): the whole-app sync and the review panel.
+- [Game Models overview](./overview.md): applying an effect from Blueprint or C++.

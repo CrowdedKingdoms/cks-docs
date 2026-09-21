@@ -29,19 +29,19 @@ No gameplay value ever flows from the view plane into the truth plane as trusted
 A change on the server produces a ping. Every client that cares re-pulls and gets the confirmed value. Your code sees it land through a `CrowdyOnRep` function, never through a push handler.
 :::
 
-## The nine design rules
+## What the split means for your code
 
-These are the rules the SDK holds itself to, in plain words. You will meet each of them again in the Game Models section.
+Each of these follows from the split above. The page that owns the detail is linked.
 
-1. **The planes never collapse.** Cheat-sensitive state goes to Game Models, never to Crowdy State, no matter how tempting the low latency.
-2. **A packaged build reads a baked registry.** Cooked builds strip Unreal metadata, so the markers you write (`CrowdyEvent`, `CrowdyState`, `CrowdyModel`) are baked into a registry asset at cook time. Shipped code never reads metadata at runtime.
-3. **The app id is a string on the wire.** Server ids are 64-bit; every API call sends the app id as a JSON string, and every id you store is an `int64`.
-4. **A rep-notify function takes no parameters.** `CrowdyOnRep` names a parameterless function, GAS-style; read the property for the new value.
-5. **The change ping is a plain struct.** The "re-read me" notification is an ordinary instanced struct dispatched as a game event, not pre-encoded bytes.
-6. **Server function parameters travel as JSON.** The marshaller walks your properties and emits JSON, never a binary blob.
-7. **A schema diff is structural.** Studio compares canonicalised JSON when it decides what a sync changes; a key order or whitespace difference is not a change.
-8. **Every Game Model call names a session.** Queries and mutations are scoped to a session; the active session is supplied for you.
-9. **An empty policy clears the policy.** An effect with no invoke policy is sent as an explicit null that removes the server's policy, so "no policy" is never "no gate" by accident.
+1. **If a cheater would want to change it, it is a Game Model attribute.** Hit points, currency, inventory, scores, cooldowns, anything a win depends on. Crowdy State is for what players see: position, animation, a light that is on or off. The low latency of Crowdy State is not a reason to put a trusted value there. See [Game Models overview](../game-models/overview.md).
+2. **Never decide gameplay from another client's Crowdy State.** Every client writes its own view state and nothing checks it, so a remote client's health bar, hit flag or score in Crowdy State is a claim, not a fact. Read the trusted value from the Game Model instead. See [Crowdy State](../runtime/crowdy-state.md).
+3. **Change a trusted value by asking, not by writing.** Your code applies an Effect; the server runs it, decides, and confirms. There is no client-side write to a Game Model attribute. See [Applying an Effect from C++](../game-models/effects-cpp.md).
+4. **Expect the confirmed value to arrive a moment later, through a `CrowdyOnRep` function.** A change on the server pings you, the SDK re-reads, and your rep-notify function runs with no parameters: read the property for the new value. Design for that delay: predict locally if you must, and let the confirmed value overwrite the prediction. See [Change pings and pull](../game-models/change-pings-and-pull.md).
+5. **Gate every function a player can call.** An Effect players may invoke needs a `require` line; an empty policy is sent to the server as "no policy" and removes any gate that was there. See [Invoke policies](../game-models/invoke-policies.md).
+6. **Do not build authority on "I am the host".** The host is an elected client that coordinates view-plane work; it can leave, change, or lie. Anything that must be true for everyone goes through a Game Model function. See [The Host Is a Convention](./host-is-a-convention.md).
+7. **Every server id is 64-bit.** Store app, user, team and container ids as `int64` (Blueprint `Integer64`), never as a 32-bit integer or a parsed number; the app id travels as a string. See [Game Models overview](../game-models/overview.md#ids-are-64-bit-and-the-sdk-does-the-json).
+8. **Game Model reads and writes happen inside a session.** Create or join one and the SDK scopes every later call to it; leave it when the match ends, or the next map keeps binding into the old one. See [Sessions](../game-models/sessions.md).
+9. **A packaged build only knows the markers it was cooked with.** `CrowdyEvent`, `CrowdyState` and `CrowdyModel` markers are baked into a registry at cook time; add a marker, cook again, and never read Unreal metadata at runtime in shipped code. See [Packaging](../guides/packaging.md).
 
 ## Deciding where a field goes
 

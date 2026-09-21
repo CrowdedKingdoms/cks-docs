@@ -1,6 +1,6 @@
 ---
 slug: ensured-identity
-sidebar_position: 13
+sidebar_position: 14
 title: Ensured Identity
 description: "How a placed or runtime-added container gets one identity every client derives the same way, when to author a binding key yourself, how a component becomes its own container, and the trace lines that say a bind has not landed."
 ---

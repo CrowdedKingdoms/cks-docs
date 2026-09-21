@@ -1,6 +1,6 @@
 ---
 slug: kits
-sidebar_position: 14
+sidebar_position: 15
 title: Game Kits
 description: "Combat, Living World, Leaderboards, and Guild are pre-built slices of Game Model schema an app deploys in one step. What each gives you for free, what it assumes about names, how to deploy one, and the runtime nodes a game calls afterwards."
 ---
@@ -130,7 +130,7 @@ For the board, an Integer variable `NightsSurvived` and a custom event `SurviveN
 - `TypePrefix` on every node must match the prefix the kit was deployed with, or the node names a function that does not exist.
 - Spawn Combatant needs `Actor` to be a registered Game Model entity already; a Combat Attack needs the target spawned first.
 - A Combat layer with `bTurnBased` gates the attack on the session turn: see **Set Game Session Turn** on [Sessions](./sessions.md).
-- The Living World singleton is admin-created. `Get World State` fails with a clear reason until it exists.
+- The Living World singleton is admin-created, and the kit deploy from Studio does not create it. Create the one `<TypePrefix>WorldState` row as an admin, through the Game Model page's Advanced tab bulk seeding or the JavaScript SDK's `kit.worldsim.ensureWorld` ([World simulation](/crowdyjs/game-kit#world-simulation)); `Get World State` fails with a clear reason until it exists.
 - A kit's automations spend the app's automation budget like any other. [Automations](./automations.md).
 
 ## Related

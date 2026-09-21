@@ -21,7 +21,7 @@ The only surface is this Studio page. Sign in with your account; the page's subt
 
 ## Open the Grid page
 
-Open Crowdy Studio, sign in, select your app on the Project page, then pick **Grid** in the AUTHORING group of the nav rail.
+Open Crowdy Studio, sign in, select your app on the Project page, then pick **Grid** in the AUTHORING group of the sidebar.
 
 ![The Grid page: Create grid, Create grid from selection, Scan for grids, Visualize in viewport, and Effective permissions cards](/img/unreal-sdk/studio-grids.png)
 

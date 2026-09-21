@@ -1,6 +1,6 @@
 ---
 slug: coalescing
-sidebar_position: 10
+sidebar_position: 11
 title: Coalescing
 description: "Merge a burst of applies of one effect to one target into a single server call by summing one tuning parameter, what has to agree for two applies to merge, and what changes for the caller, which is timing and nothing else."
 ---

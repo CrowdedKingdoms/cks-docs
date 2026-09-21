@@ -1,6 +1,6 @@
 ---
 slug: invoke-policies
-sidebar_position: 8
+sidebar_position: 9
 title: Invoke Policies
 description: "How a Game Model function decides who may call it: the require lines on the effect, the gate the compiler infers when you write none, and why an empty policy clears the server's rather than leaving it alone."
 ---

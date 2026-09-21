@@ -10,11 +10,11 @@ import TabItem from '@theme/TabItem';
 
 # Map Profiles
 
-A map profile is a `UCrowdyMapProfile` data asset: one asset configures one map end to end, and it is the switch that turns the SDK on there. No profile resolved means no networking on that map, however correct the code is.
+A map profile is a `UCrowdyMapProfile` data asset: one asset configures one map end to end. A map you configure nothing for runs on the profile the plugin ships; a profile of your own is how you change a map's settings, or switch the SDK off there. A configured row whose asset fails to load resolves to no profile, and that map has no networking however correct the code is.
 
 ## When you need one
 
-Every map that plays. The [Quickstart](../quickstart.md) creates one before its first entity. A map that should run without the SDK still gets a profile, with **Enable Networking** unticked; that records the intent and silences the "no profile" warning.
+When a map needs settings the shipped default does not have: a Backend Config of your own, a different send cadence, a tighter relevance distance. The [Quickstart](../quickstart.md) authors none and runs on the shipped default. A map that should run without the SDK gets a profile with **Enable Networking** unticked; that records the intent, and it is the only way to switch the SDK off on one map.
 
 ## Create the asset
 
@@ -65,7 +65,7 @@ Every SDK subsystem resolves through the same function, and both warnings are re
 
 ## Check it from code
 
-A lantern that never lights for other players is nearly always a map with no profile. The example, `CheckMapProfile`, called from the lantern's `BeginPlay`, asks the same question the SDK asks, once, so the answer is in the log before anything else is suspected.
+A lantern that never lights for other players is nearly always a map whose profile did not resolve. The example, `CheckMapProfile`, called from the lantern's `BeginPlay`, asks the same question the SDK asks, once, so the answer is in the log before anything else is suspected.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -90,8 +90,8 @@ The plugin registers a shipped profile under the provider name `CrowdySDK`, and 
 
 ## Gotchas
 
-- No profile, no networking. Check this first when a map looks dead.
-- The shipped default profile draws nothing from the continuous channel: it has no `BackendConfig`. It is a way to get entities registering, not a template for a shipping map.
+- A `MapProfiles` row or `DefaultProfile` naming an asset that did not load means no networking on that map. Check this first when a map looks dead; the warning names the asset.
+- The shipped default profile has no `BackendConfig`. On the current source that means the built-in transform policy draws remote entities. On the tagged v2.14.0 plugin it means nothing is drawn from the continuous channel: on that release, author a profile whose **Actor Pool Backend Config** names `UCrowdyTransformRepPolicy`. See [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).
 - A non-networked map wants a profile with **Enable Networking** off, not no profile. The warning text asks for exactly that.
 - `StateKeyframeIntervalSeconds` is a safety net, not the mechanism. Changed properties ship on change whatever the interval; 0 only stops the periodic baseline for `CrowdyHeartbeat` properties.
 - `ReplicationIntervalHz` is one clock for two channels: continuous state and Crowdy State share it but send independently.

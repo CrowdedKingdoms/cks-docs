@@ -17,7 +17,7 @@ Sign in with your account (email and password, a sign-in link, or a provider). A
 
 ## Open the pages
 
-Open Crowdy Studio (**Tools, Crowdy SDK, Crowdy Studio**), sign in, and select your app on the Project page. Then pick **Teams** or **Channels** in the AUTHORING group of the nav rail. Press **Refresh** if the list is empty.
+Open Crowdy Studio (**Tools, Crowdy SDK, Crowdy Studio**), sign in, and select your app on the Project page. Then pick **Teams** or **Channels** in the AUTHORING group of the sidebar. Press **Refresh** if the list is empty.
 
 ## Teams
 

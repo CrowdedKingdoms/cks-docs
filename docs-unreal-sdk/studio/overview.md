@@ -2,7 +2,7 @@
 slug: overview
 sidebar_position: 1
 title: Crowdy Studio Overview
-description: What Crowdy Studio is, when to use it, and the pages in its nav rail.
+description: What Crowdy Studio is, when to use it, and the pages in its sidebar.
 ---
 
 # Crowdy Studio Overview
@@ -44,11 +44,11 @@ Studio has two surfaces.
 
 **Native pages** are Slate UI built into the editor. They cover the work you do while building: choosing an app, syncing config, authoring teams, channels, grids and models, and reading live state.
 
-**The Web Console** is an embedded browser for account and organization administration: members, billing, tokens, secrets. It signs you in with the session you already have in Studio. The nav rail's bottom button opens it on your organization's overview.
+**The Web Console** is an embedded browser for account and organization administration: members, billing, tokens, secrets. It signs you in with the session you already have in Studio. The sidebar's bottom button opens it on your organization's overview.
 
-## The nav rail
+## The sidebar
 
-The rail on the left lists the pages. A toggle at the top folds it to icons (hover an icon for its label) and remembers your choice.
+The sidebar on the left lists the pages. A toggle at the top folds it to icons (hover an icon for its label) and remembers your choice.
 
 | Page | Group | Needs sign-in | What it is for |
 |---|---|---|---|
@@ -63,7 +63,7 @@ The rail on the left lists the pages. A toggle at the top folds it to icons (hov
 | **Registry** | DEBUG | No | The baked metadata that ships in packaged builds, and the button that rebuilds it. |
 | **Web Console** | | Yes | Pinned at the bottom: opens the browser console for admin surfaces. |
 
-The Effect Graph is not a Studio page. It is an asset editor that opens when you double-click a Crowdy Effect asset in the Content Browser. See [Effect Graph](./effect-graph.md).
+Authoring the server-side behaviour itself (containers, attributes and Effects) happens in your project, not in Studio; the Game Model page here compares and pushes what you authored. That work is described in the [Game Models section](../game-models/overview.md), including the [Effect Graph](../game-models/effect-graph.md) editor that opens from a Crowdy Effect asset.
 
 ## Signing in
 

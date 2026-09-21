@@ -26,6 +26,8 @@ The screenshot is the SDK's shipped default profile, and its **Backend Config** 
 
 :::note[No Backend Config means the built-in one: the actor pool with the transform policy.]
 When `BackendConfig` is empty, `UCrowdyActorPoolBackend::InitializeBackend` creates a transient **Actor Pool Backend Config** and, since it names no policy, instantiates `UCrowdyTransformRepPolicy`: it reads the default executor's `FCrowdyActorState` and sets the pooled actor's location and rotation, interpolating between the last two samples. A `BackendConfig` of another backend's class is refused: the backend logs `Backend Config is a <class>, but this backend needs a CrowdyActorPoolBackendConfig` and returns false, the actor manager logs `could not initialize, so no remote entity will be drawn on this map`, and remote entities arriving as continuous-state updates are tracked with nothing on screen. Spawn-event proxies and Crowdy State are unaffected either way. See [Map profiles](./map-profile.md).
+
+The fallback is newer than the tagged v2.14.0 plugin. On that release an empty Backend Config, or one with no Replication Policy Class, tracks remote entities and draws nothing; set an **Actor Pool Backend Config** naming `UCrowdyTransformRepPolicy`. See [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).
 :::
 
 ### Configure it
@@ -83,7 +85,7 @@ The spawn event creates a proxy actor and broadcasts `OnCrowdySpawned` with the 
 :::
 
 :::warning[The owner of a client-spawned Dynamic entity sees two visuals.]
-The pool is fed only by inbound network state, so the owner ends up with the local actor it drives directly and the pooled proxy the server echoes back, interpolation-delayed. There is no per-entity flag to choose. Hide one side yourself, in the entity's own code: `SetActorHiddenInGame` on the local actor when `IsLocallyOwned()` if the round-tripped proxy is the one that should show. The tracker's owner-tracking gate suppresses only the local player's own avatar echo, never another owned entity's.
+The pool is fed only by inbound network state, so the owner ends up with the local actor it drives directly and the pooled proxy the server echoes back, interpolation-delayed. There is no per-entity flag to choose. Hide one side yourself, in the entity's own code: `SetActorHiddenInGame` on the local actor when `IsLocallyOwned()` if the round-tripped proxy is the one that should show. With **Enable Owner Tracking** on (the default) the local player's own avatar is echoed and drawn the same way; turning it off suppresses that one echo and no other owned entity's.
 :::
 
 - A proxy's `GetNetID()` and `GetRole()` work: the backend assigns the identity to the pooled actor's component when it checks it out. `RemoteProxy` is the role it reports.

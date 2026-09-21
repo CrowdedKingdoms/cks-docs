@@ -1,6 +1,6 @@
 ---
 slug: functions-and-return-values
-sidebar_position: 7
+sidebar_position: 8
 title: Functions and Return Values
 description: "Call a Game Model function by name with typed parameters, read the typed answer back, ask the server a question with a query effect, and share a formula between effects with fn: and the internal scope."
 ---
@@ -25,7 +25,7 @@ self.fuel += $amount
 return self.fuel
 ```
 
-It is a sibling of the `FX_LanternRefuel` asset the [apply pages](./effects-cpp.md) use, built to be called by name rather than applied from a reference; the shipped asset's body grows a `fn:` read further down this page. [Authoring effects](./authoring-effects.md) is the Details-panel walk that produces such an asset and [EffectScript](./effect-script.md) the language. Each parameter has a declared value type on the server, `int`, `float`, `bool`, `string`, or `container_ref` (`FCrowdyGameModelFunctionParam::ValueType`), and a value that does not parse as that shape is refused. The return is a slot, not a statement: the server evaluates it after every assignment has run, so it sees final state, and there is at most one per function. The authoring side of both is [EffectScript: return values and fn:](./effect-script.md#return-values-and-fn).
+It is a sibling of the `FX_LanternRefuel` asset the [apply pages](./effects-cpp.md) use, built to be called by name rather than applied from a reference; the shipped asset's body grows a `fn:` read further down this page. The two spell their names differently on purpose: a function name and a parameter name are opaque strings on the server, and the caller repeats them exactly (`Refuel`, `amount` on the node below), so this page keeps the spelling its callers use while the apply pages keep the snake_case the authoring walk shows. Pick one convention per app and keep it. [Authoring effects](./authoring-effects.md) is the Details-panel walk that produces such an asset and [EffectScript](./effect-script.md) the language. Each parameter has a declared value type on the server, `int`, `float`, `bool`, `string`, or `container_ref` (`FCrowdyGameModelFunctionParam::ValueType`), and a value that does not parse as that shape is refused. The return is a slot, not a statement: the server evaluates it after every assignment has run, so it sees final state, and there is at most one per function. The authoring side of both is [EffectScript: return values and fn:](./effect-script.md#return-values-and-fn).
 
 ## Calling one
 

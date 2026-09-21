@@ -1,6 +1,6 @@
 ---
 slug: effects-cpp
-sidebar_position: 5
+sidebar_position: 6
 title: Applying an Effect from C++
 description: "Applying an authored Crowdy Effect from C++: the UCrowdyEffects library, the reference member, the apply call, tuning parameter overrides, and what the server does with it. The asset itself is authored on the two pages before this one."
 ---

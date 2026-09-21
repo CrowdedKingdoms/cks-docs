@@ -63,7 +63,7 @@ State fields are base64 strings on the wire. `SerializeToAvatarState` and `Deser
 `SerializeToAvatarState`, `DeserializeFromAvatarState`, `GetAvatarAppStateAs`, and `SetAvatarAppStateAs` are `CustomThunk` with a `CustomStructureParam`. The `int32&` in the C++ signature is a wildcard pin in Blueprint: connect a struct pin (or a single string, bool, integer or float) and the pin takes that type. An array, set or map pin is refused.
 :::
 
-The lantern serializes its torch color as a small cosmetic struct, writes it to the app-state slot, and re-applies it on spawn. The example assumes the player already has an avatar (created in Studio or with `CreateAvatar`); with none, `AvatarId` stays 0 and every call below returns early.
+The lantern serializes its torch color as a small cosmetic struct, writes it to the app-state slot, and re-applies it on spawn. The example assumes the player already has an avatar (created with `CreateAvatar`, or **Create Avatar** in Blueprint); with none, `AvatarId` stays 0 and every call below returns early.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -76,7 +76,7 @@ The lantern serializes its torch color as a small cosmetic struct, writes it to 
 
 <CppSnippet id="avatar-get" />
 
-`WatchAvatars`, bound at `BeginPlay`, picks up `AvatarId` from the first entry of a cache refresh and calls `LoadTorchColor`, so a cache change elsewhere still lands the stored color.
+`WatchAvatars`, bound at `BeginPlay`, picks up `AvatarId` from the first entry of a cache refresh and calls `LoadTorchColor`, so a cache change elsewhere still lands the stored color. The handler takes `const TArray<FCrowdyAvatar>&`; on the tagged v2.14.0 plugin `FOnMyAvatarsCacheChanged` still passes the array by value and the handler must too, or `AddDynamic` fails to bind (see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140)).
 
 <CppSnippet id="avatar-events" />
 

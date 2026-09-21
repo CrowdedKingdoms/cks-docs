@@ -70,9 +70,7 @@ The **Is Not Host** and **Failed** pins are left unwired in this graph; both are
 The subsystem is world-scoped, but a Blueprint graph waiting on `CheckEntityIsHost` is not tied to that lifetime the same way. Each call owns its own completion, so concurrent checks never answer each other, and a completion still fires after the world that started it has torn down; a dropped node's pins simply never receive it, rather than the callback hanging or crashing. Do not rely on a check outliving a level travel to reach your handler.
 :::
 
-:::caution[A world subsystem must null-check GetGameInstance() in Initialize.]
-`UCrowdyHostSubsystem::Initialize` does exactly this, and any world subsystem you write alongside it must too: during engine start, a transient world exists before its game instance is set, so `GetGameInstance()` returns null while `Initialize` runs on it.
-:::
+`UCrowdyHostSubsystem::Initialize` null-checks `GetGameInstance()`, and any world subsystem you write alongside it must too; [Replicated subsystems](../runtime/replicated-subsystems.md#inherit-a-base) has the reason.
 
 ## Gotchas
 

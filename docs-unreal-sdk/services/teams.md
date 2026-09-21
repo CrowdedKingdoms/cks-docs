@@ -187,10 +187,13 @@ Team, Leave Team, Remove Team Member, Delete Team Role). These are separate from
 The response arrives asynchronously; if the object is gone by then, the callback has nowhere to land.
 :::
 
-:::note[Four per-call delegates carry a TArray by value.]
-`FOnTeamsSuccess`, `FOnTeamMembersSuccess`, `FOnTeamRolesSuccess`, and `FOnMyTeamsSuccess` pass their array
-by value. In C++ bind a handler with a by-value `TArray` parameter to match. In Blueprint prefer the
-async-action nodes above, whose result pins are structs.
+:::note[The array delegates pass `const TArray<T>&`, and on v2.14.0 they still pass by value.]
+`FOnTeamsSuccess`, `FOnTeamMembersSuccess`, `FOnTeamRolesSuccess`, `FOnMyTeamsSuccess`, and the cache event
+`FOnMyTeamsCacheChanged` pass their array as `const TArray<T>&`, which is what the C++ handlers on this page
+take. On the tagged v2.14.0 plugin the same delegates pass `TArray<T>` by value, and a handler must match:
+a by-value parameter there, `const TArray<T>&` from the next release. A mismatch fails to bind. See
+[What's Changed](../guides/whats-changed.md#unreleased-after-v2140). In Blueprint prefer the async-action
+nodes above, whose result pins are structs; a Blueprint pin has no by-value distinction.
 :::
 
 ## Example: founding and joining a village
@@ -269,8 +272,8 @@ same one.
   code; treat it as a coarse bucket and `Message` as the detail.
 - A per-call delegate needs a `UFUNCTION` on a `UObject` that outlives the request, including when the
   request never reaches the server.
-- Four per-call delegates carry a `TArray` by value; bind a by-value handler in C++, or use the async-action
-  nodes in Blueprint.
+- The array delegates take `const TArray<T>&` handlers, by-value ones on the tagged v2.14.0 plugin; a
+  mismatch fails to bind. The async-action nodes in Blueprint have no such split.
 
 ## Related
 

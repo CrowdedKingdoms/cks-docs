@@ -70,7 +70,7 @@ Authoring the schema and pushing it to the server happens in Crowdy Studio; that
 ## Gotchas
 
 - A Game Model attribute exists on the server only after **Sync to Server** in Studio. Until then every read returns the default you pass.
-- "Session" means three things in this SDK. The Game Model session on these pages is a match. The login session is your signed-in identity, and `UCrowdyGameSession` is the client's own connection state; see [Authentication](../services/authentication.md).
+- "Session" means several things in this SDK. The Game Model session on these pages is a match: the group of players. The login session is your signed-in identity, held by `UCrowdyGameSession`, the client's own connection state (see [Authentication](../services/authentication.md)); the session channel is a transport every client of the app joins. [Sessions and Presence](../concepts/sessions-and-presence.md) keeps the three apart.
 - The elected host of the view plane is a convention. Nothing on this plane trusts it; a host-only function is gated by the server's `is_host` policy, not by who the clients elected. [The Host Is a Convention](../concepts/host-is-a-convention.md).
 - Trace everything on this plane with `crowdy.gamemodel.trace 1`; the log category is `LogCrowdyGameModel`.
 

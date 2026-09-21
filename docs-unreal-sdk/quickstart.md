@@ -27,6 +27,8 @@ Two words you will meet on every step. An **entity** is an actor other players c
 
 :::note[A map with no profile of its own runs on the SDK's shipped default.]
 Config Sync points the project at an app; a map profile decides what the SDK does on a map. With none assigned, the shipped default applies (networking on, the actor pool drawing remote entities with the shipped transform policy), so every step below works without authoring one. Author a profile when you need per-map settings; see [Map profiles](./runtime/map-profile.md).
+
+On the tagged v2.14.0 plugin the shipped default draws nothing: its Backend Config is empty, and that release renders remote entities only through a config that names a Replication Policy Class. On that release, author a profile for your test map with an **Actor Pool Backend Config** whose policy class is `UCrowdyTransformRepPolicy` before step 1. The fallback lands with the next release; see [What's Changed](./guides/whats-changed.md#unreleased-after-v2140).
 :::
 
 ## About the code on this page
@@ -106,7 +108,7 @@ In C++ the pattern has two halves. The **receiver** is a normal `UFUNCTION` you 
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-A replicated event is a Custom Event with **Crowdy Replicates** ticked in its Details panel and a **Recipient** chosen there. Call it by name from any graph on the actor, exactly like a local custom event: here from **Event ActorBeginOverlap**, behind an **Is Locally Owned** check like the one in step 1.
+A replicated event is a Custom Event with **Crowdy Replicates** ticked in its Details panel and a **Recipient** chosen there. The figure is the receiver. Call it by name from any graph on the actor, exactly like a local custom event: from **Event ActorBeginOverlap**, behind the same **Is Locally Owned** branch as step 1; the call node is the ordinary one the editor offers for any custom event.
 
 <Blueprint src="qs-event" title="Flicker, a Custom Event with Crowdy Replicates ticked, Recipient Spatial Multicast" />
 
@@ -207,7 +209,7 @@ The two C++ files after the four steps, for comparison with your own:
 ## Gotchas
 
 - No login, no connection. Until `Get UDP Connection State` reads connected, every step looks dead.
-- Nothing happens on a map without a profile. Check that before any code.
+- A map whose `MapProfiles` row or `DefaultProfile` names an asset that did not load is inactive; the warning names the asset. Check that before any code. A map with no row at all runs on the shipped default.
 - The loopback variables are test aids. Leave them off in a normal session; they change what a single client sees.
 - An RPC receiver must be a real `UFUNCTION` you declare yourself; the `CROWDY_EVENT` macro only generates the call site.
 - A Game Model attribute exists on the server only after a sync. A read before that returns the default you pass.

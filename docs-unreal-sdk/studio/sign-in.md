@@ -56,4 +56,4 @@ Press **Sign Out** in the Studio header. It clears the stored session, clears th
 
 - [Projects and Apps](./projects-and-apps.md): pick or create the app after signing in.
 - [Config Sync](./config-sync.md): write the app's ids and endpoints into the project.
-- [Crowdy Studio overview](./overview.md): the nav rail and what needs a sign-in.
+- [Crowdy Studio overview](./overview.md): the sidebar and what needs a sign-in.

@@ -9,6 +9,8 @@ description: "Receive another player's webcam frames as whole encoded images: bi
 
 `UCrowdyVideoFrameReceiver` turns the video fragments the server fans out into whole frames and hands each one to you once, as an encoded image. The SDK does not decode it, does not know its dimensions, and has not checked that it is a valid image; turning the bytes into a texture is your code.
 
+This SDK receives only. It has no public call, node, or subsystem that sends a video frame; the frames come from a client on the same app that publishes them through another Crowdy client, such as a browser on the JavaScript SDK ([Webcam video](/crowdyjs/webcam-video)). A game built on this SDK alone never produces one.
+
 ## When you need it
 
 A picture-in-picture of a nearby player, a video wall in the village square, any feature that shows another client's camera. If the game never shows video it pays for none of this: with no listener bound a fragment is dropped the moment it reaches the receiver, with no copy and no partial frame held.
@@ -29,7 +31,7 @@ In Blueprint the receiver is reached like any world subsystem: a **Crowdy Video 
 Reassembly is turned on by the first bind. The one frame that was assembling when you bound may be missed; every frame after it is delivered. Nothing before the bind was kept.
 :::
 
-**Success signal.** With a second client sending video, the torch's intensity jumps with every completed frame, and `GetPendingSenderCount()` reads above zero while a frame is half arrived.
+**Success signal.** With a publishing client (not one built on this SDK) sending video into the same app, the torch's intensity jumps with every completed frame, and `GetPendingSenderCount()` reads above zero while a frame is half arrived.
 
 ## The frame
 

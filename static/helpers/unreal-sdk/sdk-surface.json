@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-19T13:37:44Z",
+  "generated": "2026-09-21T13:53:57Z",
   "sdk_version": "2.14.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
@@ -82768,7 +82768,7 @@
       "multicast": false,
       "return_value": false,
       "params": [
-        "TArray<FCrowdyAppAvatarState>",
+        "const TArray<FCrowdyAppAvatarState>&",
         "AppStates"
       ],
       "module": "CrowdyServices",
@@ -82973,7 +82973,7 @@
       "multicast": false,
       "return_value": false,
       "params": [
-        "TArray<FCrowdyAvatar>",
+        "const TArray<FCrowdyAvatar>&",
         "Avatars"
       ],
       "module": "CrowdyServices",
@@ -83028,7 +83028,7 @@
       "multicast": false,
       "return_value": false,
       "params": [
-        "TArray<FCrowdyChannelMember>",
+        "const TArray<FCrowdyChannelMember>&",
         "Members"
       ],
       "module": "CrowdyServices",
@@ -83088,7 +83088,7 @@
       "multicast": false,
       "return_value": false,
       "params": [
-        "TArray<FCrowdyChannelRole>",
+        "const TArray<FCrowdyChannelRole>&",
         "Roles"
       ],
       "module": "CrowdyServices",
@@ -83116,7 +83116,7 @@
       "multicast": false,
       "return_value": false,
       "params": [
-        "TArray<FCrowdyChannel>",
+        "const TArray<FCrowdyChannel>&",
         "Channels"
       ],
       "module": "CrowdyServices",
@@ -83534,7 +83534,7 @@
       "multicast": false,
       "return_value": false,
       "params": [
-        "TArray<FCrowdyChannelMembership>",
+        "const TArray<FCrowdyChannelMembership>&",
         "Memberships"
       ],
       "module": "CrowdyServices",
@@ -83562,7 +83562,7 @@
       "multicast": false,
       "return_value": false,
       "params": [
-        "TArray<FCrowdyTeamMembership>",
+        "const TArray<FCrowdyTeamMembership>&",
         "Memberships"
       ],
       "module": "CrowdyServices",
@@ -83636,7 +83636,7 @@
       "multicast": false,
       "return_value": false,
       "params": [
-        "TArray<FCrowdyTeamMember>",
+        "const TArray<FCrowdyTeamMember>&",
         "Members"
       ],
       "module": "CrowdyServices",
@@ -83678,7 +83678,7 @@
       "multicast": false,
       "return_value": false,
       "params": [
-        "TArray<FCrowdyTeamRole>",
+        "const TArray<FCrowdyTeamRole>&",
         "Roles"
       ],
       "module": "CrowdyServices",
@@ -83706,7 +83706,7 @@
       "multicast": false,
       "return_value": false,
       "params": [
-        "TArray<FCrowdyTeam>",
+        "const TArray<FCrowdyTeam>&",
         "Teams"
       ],
       "module": "CrowdyServices",
