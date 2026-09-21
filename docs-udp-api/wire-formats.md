@@ -190,8 +190,10 @@ and `COMMAND_SESSION_RELEASED` are never bundled either way. Even a single
 notification to such a client arrives as a one-member signed bundle.
 
 CrowdyJS 17.6.0 (`realtime` binary relay: `advertiseCapabilities`, default on) and
-CrowdyCPP 0.42.0 (`Config::advertiseCapabilities`, default on) do this for you; a
-server older than v0.30.0 ignores the capability message.
+CrowdyCPP 0.42.1 (`Config::advertiseCapabilities`, default on) do this for you.
+CrowdyCPP 0.42.0 built the capability message and its encoder discarded opcode 29,
+so nothing reached the server. A server older than v0.30.0 ignores the capability
+message.
 
 ### Client → server
 

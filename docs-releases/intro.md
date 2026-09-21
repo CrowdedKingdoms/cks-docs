@@ -43,10 +43,12 @@ Everything here is additive; a client that does nothing new sees nothing new.
   per delivered notification fell 18 %. A client that never advertises is served
   exactly as before, and a server older than v0.30.0 ignores opcode 29. Details and
   the verification recipe: [Wire formats — signed bundles](/replication-api/wire-formats#signed-bundles--message_bundle_signed-30-and-client_capabilities-29).
-- **CrowdyJS 17.6.0 and CrowdyCPP 0.42.0 advertise `BUNDLE_SIGNED`** on every
+- **CrowdyJS 17.6.0 and CrowdyCPP 0.42.1 advertise `BUNDLE_SIGNED`** on every
   `ready` and every 15 s (a token refresh or a server-side migration resets the
-  server's record). CrowdyCPP verifies the trailing HMAC; CrowdyJS strips it and walks
-  (it never verified downlink HMACs). Nothing to change in a game.
+  server's record). CrowdyCPP 0.42.0 built opcode 29 and never put it on the wire.
+  CrowdyCPP verifies the trailing HMAC; CrowdyJS strips it and walks
+  (it never verified downlink HMACs). Nothing to change in a game that is on
+  CrowdyJS 17.6.0 or CrowdyCPP 0.42.1.
 - **Replication API v0.31.0 — interest-scoped peer presence.** Server-internal: the
   peer heartbeat no longer announces every actor to every server, so a sparse world
   no longer hits a fleet-wide chunk ceiling (~8 000 populated chunks) however many
