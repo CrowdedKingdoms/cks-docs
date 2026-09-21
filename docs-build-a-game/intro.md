@@ -61,7 +61,7 @@ GameApiWsUrl=wss://ck.dev.crowdedkingdoms.com/graphql
 AppId=<your-app-id>
 ```
 
-Create your own app on dev and use its `appId` — The Construct's Setup wizard does exactly this, or use CK Studio's **Get started**.
+Create your own app on dev and use its `appId` — `npm run setup` in The Construct does this from a shell, or use CK Studio's **Get started**.
 
 See also [Dev tier (client integration)](/management-ui/dev-tier).
 
