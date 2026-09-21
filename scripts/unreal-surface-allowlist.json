@@ -330,7 +330,7 @@
   {
     "id": "ECrowdyStatePropertySupport",
     "reason": "internal",
-    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state-types."
+    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state, under What a state property may be."
   },
   {
     "id": "ECrowdyStateTestEnum",
@@ -1200,22 +1200,22 @@
   {
     "id": "FCrowdyRepLayout",
     "reason": "internal",
-    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state-types."
+    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state, under What a state property may be."
   },
   {
     "id": "FCrowdyRepLayout::IndexOfPropertyID",
     "reason": "internal",
-    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state-types."
+    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state, under What a state property may be."
   },
   {
     "id": "FCrowdyRepLayout::IsValid",
     "reason": "internal",
-    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state-types."
+    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state, under What a state property may be."
   },
   {
     "id": "FCrowdyRepProperty",
     "reason": "internal",
-    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state-types."
+    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state, under What a state property may be."
   },
   {
     "id": "FCrowdyRouterState",
@@ -1565,12 +1565,12 @@
   {
     "id": "FCrowdyStateLayoutBuilder::BuildLayout",
     "reason": "internal",
-    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state-types."
+    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state, under What a state property may be."
   },
   {
     "id": "FCrowdyStateLayoutBuilder::ComputeLayoutHash",
     "reason": "internal",
-    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state-types."
+    "note": "The per-class replication layout the auto registry builds; the classifier that decides what a property may be is on crowdy-state, under What a state property may be."
   },
   {
     "id": "FCrowdyStateNestedContainerStruct",
@@ -2056,21 +2056,6 @@
     "id": "TCrowdyMessagePool::Reset",
     "reason": "internal",
     "note": "Frame parsing and value serialization used by the transport."
-  },
-  {
-    "id": "TInterpolatedField",
-    "reason": "internal",
-    "note": "Interpolation buffer helper used inside the actor-pool backend."
-  },
-  {
-    "id": "TInterpolatedField::PhysicalIndex",
-    "reason": "internal",
-    "note": "Interpolation buffer helper used inside the actor-pool backend."
-  },
-  {
-    "id": "TInterpolatedField::Push",
-    "reason": "internal",
-    "note": "Interpolation buffer helper used inside the actor-pool backend."
   },
   {
     "id": "UActorUpdatePayloadRegistry",
@@ -3061,11 +3046,6 @@
     "id": "FOnConnectionStatusChange",
     "reason": "deprecated",
     "note": "the SDK reconnects on its own after a timeout; starting the monitor adds a second retry loop"
-  },
-  {
-    "id": "FSample",
-    "reason": "internal",
-    "note": "private per-slot sample of UCrowdyTransformRepPolicy"
   },
   {
     "id": "UCrowdyActorPoolBackend::ResolveConfig",

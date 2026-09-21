@@ -25,6 +25,8 @@ Every CrowdyEvent names a recipient, and the recipient decides two things: who r
 
 The decision is a pure function of the recipient, the participant kind, and the local authority facts, so it is the same on every client and in every build.
 
+"In range" is measured from the position each client's own actor updates registered, so a `SpatialMulticast` reaches only clients with a fresh actor on the map; a client whose pawn is not sending is nowhere and receives nothing. The [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity) makes the player's pawn that actor before it sends anything.
+
 :::warning[On a replicated subsystem the default recipient is rejected. Set Multicast or Host explicitly.]
 A subsystem has no world position, so a `SpatialMulticast` event declared on one has nowhere to be sent from. The send logs `uses SpatialMulticast, which has no location; set CrowdyRecipient=Multicast or Host. Dropping.` and consumes the call so a Blueprint caller does not run the body as a fallback. Since `SpatialMulticast` is what an unannotated event gets, every event on a subsystem needs the key written out. See [Replicated subsystems](./replicated-subsystems.md).
 :::
@@ -65,7 +67,7 @@ The targeted message is addressed to the host's avatar entity and the chunk it s
 
 An `OwningClient` event aimed at a world entity nobody owns has no destination and drops; use `Host` for a world entity.
 
-The lantern world uses `Host` for a relight: a client whose lantern has gone dark asks the elected host to relight it, and the host acts on whichever `ALantern` instance it holds. The lantern the host holds is a proxy of another client's entity, so setting `bLit` on it would stay on the host; the receiver marks the property dirty as well, which on an entity the host does not own is the [host push](./crowdy-state-static.md#on-an-entity-you-do-not-own-the-host-push) that makes the owner adopt the value. `Flicker` from the [Quickstart](../quickstart.md) is the `SpatialMulticast` row; the other two recipients are described in the table above and need no new member.
+The lantern world uses `Host` for a relight: a client whose lantern has gone dark asks the elected host to relight it, and the host acts on whichever `ALantern` instance it holds. The lantern the host holds is a proxy of another client's entity, so setting `bLit` on it would stay on the host; the receiver marks the property dirty as well, which on an entity the host does not own is the [host push](./crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) that makes the owner adopt the value. `Flicker` from the [Quickstart](../quickstart.md) is the `SpatialMulticast` row; the other two recipients are described in the table above and need no new member.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">

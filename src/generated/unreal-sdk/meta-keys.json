@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-09-21T13:53:57Z",
+  "generated_from": "2026-09-21T14:43:18Z",
   "sdk_version": "2.14.0",
   "table": "meta-keys",
   "columns": [
@@ -207,7 +207,7 @@
       "symbol": "CrowdyMetaKeys::CrowdyEvent",
       "header": "CrowdyMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "runtime/crowdy-state-types",
+      "page": "runtime/crowdy-state",
       "editor": false,
       "allowlist": ""
     },
@@ -328,7 +328,7 @@
       "symbol": "CrowdyStateMetaKeys::ManualDirty",
       "header": "CrowdyStateMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "runtime/crowdy-state-static",
+      "page": "runtime/crowdy-state",
       "editor": false,
       "allowlist": ""
     },

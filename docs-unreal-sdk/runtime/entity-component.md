@@ -47,7 +47,7 @@ Category **Crowdy SDK, Entity Component** in the Blueprint palette.
 | `GetMode()`, `GetOwnership()`, `GetHostOverridePolicy()`, `GetStateHeartbeat()` | The settings above, read back. There is no getter for `IdentityPolicy`. |
 | `StartReplication()`, `StopReplication()` | Join or leave the continuous channel. Meaningful for a Dynamic entity this client owns; `bAutoRegister` calls the first one for you. |
 | `SendEvent(Payload, Scope)` | Sends a struct payload addressed at this entity. `ECrowdyEventScope::Everyone` runs the entity's handlers on every client, `OwnerOnly` only on the owner. The lower-level sibling of a `CrowdyEvent`; see [Recipients and routing](./recipients-and-routing.md). |
-| `MarkStateDirty(PropertyName)`, `MarkAllStateDirty()` | Schedule one, or every, `CrowdyManualDirty` property to ship on the next replication tick. See [Crowdy State: static entry points](./crowdy-state-static.md). |
+| `MarkStateDirty(PropertyName)`, `MarkAllStateDirty()` | Schedule one, or every, `CrowdyManualDirty` property to ship on the next replication tick. See [Crowdy State: marking state from outside the actor](./crowdy-state.md#marking-state-from-outside-the-actor). |
 | `DestroyEntity()` | Broadcast the destroy event and destroy the owner after `DestroyDelay`. The same path as the subsystem's `DestroyEntity(Actor)` and `UCrowdyUtilities::DestroyCrowdyEntity`. |
 
 `IsLocallyOwned()` here takes no argument and answers for the authority; `UCrowdyEntitySubsystem::IsLocallyOwned(NetID)` answers a narrower question about the record's owner id and does not count the host of a host-owned entity. Do not treat them as interchangeable.

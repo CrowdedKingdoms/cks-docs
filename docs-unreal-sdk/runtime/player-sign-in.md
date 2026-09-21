@@ -50,10 +50,12 @@ Create a Widget Blueprint with two **Editable Text Box** widgets and a **Button*
 The `Result` a success carries holds the player's `UserID` and a token the SDK already keeps for you. The SDK's own **On Login** event on the Crowdy SDK Subsystem carries a message and no credential, on purpose; keep anything you put on screen the same way.
 :::
 
-**Success signal.** The log reads `Login ok`, then `Connected to the app`. From then on `Get UDP Connection State` on the subsystem reads connected, and the rest of the Runtime section applies.
+If this machine signed in before, restore instead of asking: call `RestoreSession` first and show the widget only on its error path, as [Authentication](../services/authentication.md#restore-a-saved-session) shows; the connection then comes up exactly as after a `Login`.
+
+**Success signal.** The log reads `Login ok`, then `Connected to the app`. From then on `Get UDP Connection State` on the subsystem reads connected, and the rest of the Runtime section applies. Start replicating your pawn only from that moment: **On UDP Connection Success** fires once the server has assigned this client and its readiness wait has elapsed, an update sent earlier is not held for it, and the [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity) spawns the pawn from the connected handler for that reason.
 
 ## Related
 
 - [Authentication](../services/authentication.md): register, magic link, social sign-in, restoring a saved session, sign-out, and the events.
-- [Quickstart](../quickstart.md): this step in the context of one complete lantern.
+- [Quickstart](../quickstart.md): this step in the context of one complete lantern, and the pawn that makes the signed-in player present.
 - [Connection and reconnect](./connection-and-reconnect.md): what the SDK does once the sign-in succeeds.

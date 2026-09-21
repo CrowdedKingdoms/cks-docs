@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-21T13:53:57Z",
+  "generated": "2026-09-21T14:43:18Z",
   "sdk_version": "2.14.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
@@ -32099,40 +32099,6 @@
       "module": "CrowdySDKEditor",
       "header": "CrowdySDKEditor/Public/Customizations/CrowdyCustomEventCustomization.h",
       "editor_module": true
-    },
-    {
-      "id": "FSample",
-      "name": "FSample",
-      "kind": "struct",
-      "scope": "UCrowdyTransformRepPolicy",
-      "reflected": "",
-      "blueprint_type": false,
-      "template": false,
-      "bases": [],
-      "fields": [
-        {
-          "name": "Location",
-          "type": "FVector",
-          "static": false,
-          "uproperty": false
-        },
-        {
-          "name": "Rotation",
-          "type": "FRotator",
-          "static": false,
-          "uproperty": false
-        },
-        {
-          "name": "TimestampMs",
-          "type": "int64",
-          "static": false,
-          "uproperty": false
-        }
-      ],
-      "enumerators": [],
-      "module": "CrowdyReplication",
-      "header": "CrowdyReplication/Public/Data/CrowdyTransformRepPolicy.h",
-      "editor_module": false
     },
     {
       "id": "FScopedEntityContext",

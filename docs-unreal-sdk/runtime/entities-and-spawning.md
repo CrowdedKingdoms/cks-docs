@@ -108,7 +108,7 @@ The shipped default profile leaves **Backend Config** at None and runs on the bu
 |---|---|---|
 | `bUseCrowdyActorTracker` | on | Off means no tracker, no actor manager, and no backend on this map. |
 | `bDispatchUpdatesOnGameThread` | off | Also broadcast each update batch to `OnUpdatesGameThread` for a Blueprint listener. |
-| `bEnableOwnerTracking` | on | Track the local player's own actor echo as well. |
+| `bEnableOwnerTracking` | on | Track the local player's own actor echo as well: the reflection the [Quickstart](../quickstart.md#2-see-yourself) uses as proof that the server is receiving you. |
 | `ActorTimeoutThreshold` | 12 s | Seconds of silence before an entity is dropped on a guess. The server announces a real departure about five seconds after the last update, so this is the fallback. |
 | `MaxTrackedActors` | 4096 | How many network-received actors may be tracked at once. A bound on forged ids, not a performance setting; set it above the largest crowd you intend to show. |
 | `MaxUpdatesPerBatch`, `MaxBatchWaitTime` | 100, 5 ms | How updates for not-yet-seen entities are batched off the game thread. |

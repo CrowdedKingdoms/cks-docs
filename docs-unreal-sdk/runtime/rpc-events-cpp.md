@@ -102,6 +102,7 @@ crowdy.rpc.dumpfn BP_Hero_C MyEvent   print one function's routing info
 
 - `SpatialMulticast` runs the body on the caller too, so guard the call with `IsLocallyOwned()`; a proxy's copy of the trigger must not send a second one.
 - A receiver declared with no `CrowdyRecipient` is `SpatialMulticast`. On a subsystem that default is rejected at send; see [Replicated subsystems](./replicated-subsystems.md).
+- A `SpatialMulticast` reaches only clients with a fresh actor of their own on the map. A client whose pawn is not sending updates is at no position, so it receives none and its own sends reach nobody; see the [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity).
 - A late joiner receives nothing from a past call. If it matters after the moment, it is state.
 - Delivery is on the game thread, always. A handler may touch actors freely.
 

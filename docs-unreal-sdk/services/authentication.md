@@ -189,6 +189,27 @@ Its two events, `OnOwnerUUIDUpdated` (`FOnOwnerUUIDUpdated`) and `OnHostIDUpdate
 
 `Login`, `Register`, the link, and the social flow persist the session token; `RestoreSession` on the next launch re-mints from it and fires `OnSessionRestored`, and the SDK connects as after any sign-in. Gate your login screen on `IsSignedIn()`.
 
+### Restore a saved session
+
+A returning player should type nothing. The Game Instance calls `RestoreSession(OnSuccess, OnError)` first, before it shows a sign-in screen or calls `Login`. The call returns `bool`: true means a saved session was found and the restore is under way, and the outcome arrives on the delegates; false means nothing is saved on this machine, `OnError` has already run with `No saved session found`, and `OnSessionRestoreFailed` has already fired, so the error path is the sign-in screen. On success the SDK re-mints the app token from the saved session token, calls `OnSuccess`, and fires `OnSessionRestored`; then, exactly as after a `Login`, it requests the realtime connection with the fresh app token and raises its own `OnLogin` on the Crowdy SDK Subsystem, so the handlers you bound for a first sign-in, `OnLogin` and `OnUDPConnectionSuccess`, run unchanged. A restore that fails after finding a saved session (the token was revoked, the network is down) reaches `OnError` the same way.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`RestoreOrSignIn` is what `Init` calls in place of the bare `Login` from the Quickstart. `OnSuccess` is the same `HandleSignedIn` every path on this page binds; `HandleRestoreFailed` falls through to `Login` with the configured account, and a game with a sign-in screen shows it there instead. The return value is ignored on purpose: both outcomes arrive on the delegates.
+
+<CppSnippet id="auth-restore" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+**Event Init** runs the latent **Restore Session** node, which takes nothing but the world context. Its **On Error** pin is the only place that asks for credentials: the graph runs **Login** with the configured account there, as the Quickstart does, and a game with a sign-in screen creates the widget from [Player Sign-in](../runtime/player-sign-in.md) and adds it to the viewport on that pin instead; a machine with nothing saved reaches it at once. **On Success** carries the `Result`, read for nothing.
+
+<Blueprint src="auth-restore" title="Event Init, Restore Session, Login" />
+
+</TabItem>
+</Tabs>
+
 :::warning[IsSignedIn is not HasSavedSession.]
 `HasSavedSession` only says a credential exists on disk. It stays true across a restart, before a restore has run, and after a restore that failed. `IsSignedIn` is true only while a sign-in or restore has completed and its app token is held in memory right now.
 :::

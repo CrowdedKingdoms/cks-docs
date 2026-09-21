@@ -80,4 +80,4 @@ The manifest that drives the other reference tables on this site does not carry 
 - [RPC metadata keys](./rpc-meta-keys.md): the keys that route the event this page's parameters ride on.
 - [RPC events in C++](../runtime/rpc-events-cpp.md): worked examples of declaring and calling an event.
 - [Console variables](./console-cvars.md): `crowdy.rpc.allowObjectLoad` and the rest.
-- [Crowdy State types](../runtime/crowdy-state-types.md): the view plane's own, stricter type rules. Crowdy State rejects containers and object references outright; RPC parameters accept both.
+- [What a state property may be](../runtime/crowdy-state.md#what-a-state-property-may-be): the view plane's own, stricter type rules. Crowdy State rejects containers and object references outright; RPC parameters accept both.

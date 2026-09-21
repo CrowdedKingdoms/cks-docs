@@ -66,9 +66,9 @@ mode, as a convenience; the underlying mechanism is the same opt-in metadata eit
 
 ## What can be marked
 
-Crowdy State covers plain values and plain structs: numbers, bools, enums, `FName`, `FString`, and USTRUCTs built from those. Object references, containers (`TArray`, `TSet`, `TMap`, including buried inside a struct), and static arrays are rejected at discovery and simply do not replicate. See [Unsupported types](/unreal-sdk/runtime/crowdy-state-types#rejected) for the full list and the reasons.
+Crowdy State covers plain values and plain structs: numbers, bools, enums, `FName`, `FString`, and USTRUCTs built from those. Object references, containers (`TArray`, `TSet`, `TMap`, including buried inside a struct), and static arrays are rejected at discovery and simply do not replicate. See [Unsupported types](/unreal-sdk/runtime/crowdy-state#rejected) for the full list and the reasons.
 
-A struct type that carries a native net serializer (`FVector_NetQuantize`, `FRotator`, and the rest of the `_NetQuantize` family) quantizes on the wire automatically, with no key to set. See [type-driven quantization](/unreal-sdk/runtime/crowdy-state-types#accepted).
+A struct type that carries a native net serializer (`FVector_NetQuantize`, `FRotator`, and the rest of the `_NetQuantize` family) quantizes on the wire automatically, with no key to set. See [type-driven quantization](/unreal-sdk/runtime/crowdy-state#accepted).
 
 A variable is either `CrowdyState` or `CrowdyModel`, never both. The unified "Crowdy Replication" dropdown
 enforces this in Blueprint; hand-written C++ metadata carrying both keys is rejected at discovery. See

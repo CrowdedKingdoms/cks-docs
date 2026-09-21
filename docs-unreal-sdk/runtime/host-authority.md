@@ -47,7 +47,7 @@ Bind `OnHostElected` (`FOnCrowdyHostElected`, `HostID`, `PreviousHostID`, on the
 
 ## World entities and the host override
 
-A level-placed entity with `Ownership = ECrowdyOwnership::Host` is `HostOwned`: whichever client is host at the moment is its one authority, and its `IsLocallyOwned()` is true there alone. Its Crowdy State is written by the host through explicit pushes (`MarkStateDirty`, `MarkAllStateDirty`, or the [static nodes](./crowdy-state-static.md)) and the keyframe, never by a background diff, so an implicit and an explicit write cannot race. On a host change the entity is re-tracked by the new host without any code of yours.
+A level-placed entity with `Ownership = ECrowdyOwnership::Host` is `HostOwned`: whichever client is host at the moment is its one authority, and its `IsLocallyOwned()` is true there alone. Its Crowdy State is written by the host through explicit pushes (`MarkStateDirty`, `MarkAllStateDirty`, or the [static nodes](./crowdy-state.md#the-two-nodes)) and the keyframe, never by a background diff, so an implicit and an explicit write cannot race. On a host change the entity is re-tracked by the new host without any code of yours.
 
 A client-owned entity (`Ownership = LocalClient`) has a `HostOverride` (`ECrowdyHostOverride`): `Allow`, the default, lets the host correct its Crowdy State as a super-user and the owner adopts the value; `OwnerOnly` refuses even a host correction. This is precedence by convention. It orders who wins on the view plane; it does not make either value trustworthy.
 

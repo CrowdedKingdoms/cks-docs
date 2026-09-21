@@ -25,7 +25,7 @@ When a Dynamic entity moves on its owner and not on anyone else, when you want y
 The screenshot is the SDK's shipped default profile, and its **Backend Config** reads None: the backend runs on a built-in config in that case.
 
 :::note[No Backend Config means the built-in one: the actor pool with the transform policy.]
-When `BackendConfig` is empty, `UCrowdyActorPoolBackend::InitializeBackend` creates a transient **Actor Pool Backend Config** and, since it names no policy, instantiates `UCrowdyTransformRepPolicy`: it reads the default executor's `FCrowdyActorState` and sets the pooled actor's location and rotation, interpolating between the last two samples. A `BackendConfig` of another backend's class is refused: the backend logs `Backend Config is a <class>, but this backend needs a CrowdyActorPoolBackendConfig` and returns false, the actor manager logs `could not initialize, so no remote entity will be drawn on this map`, and remote entities arriving as continuous-state updates are tracked with nothing on screen. Spawn-event proxies and Crowdy State are unaffected either way. See [Map profiles](./map-profile.md).
+When `BackendConfig` is empty, `UCrowdyActorPoolBackend::InitializeBackend` creates a transient **Actor Pool Backend Config** and, since it names no policy, instantiates `UCrowdyTransformRepPolicy`: it reads the default executor's `FCrowdyActorState` and sets the pooled actor's location and rotation, interpolated across a ring of recent samples with bounded extrapolation. A `BackendConfig` of another backend's class is refused: the backend logs `Backend Config is a <class>, but this backend needs a CrowdyActorPoolBackendConfig` and returns false, the actor manager logs `could not initialize, so no remote entity will be drawn on this map`, and remote entities arriving as continuous-state updates are tracked with nothing on screen. Spawn-event proxies and Crowdy State are unaffected either way. See [Map profiles](./map-profile.md).
 
 The fallback is newer than the tagged v2.14.0 plugin. On that release an empty Backend Config, or one with no Replication Policy Class, tracks remote entities and draws nothing; set an **Actor Pool Backend Config** naming `UCrowdyTransformRepPolicy`. See [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).
 :::
@@ -36,7 +36,7 @@ The fallback is newer than the tagged v2.14.0 plugin. On that release an empty B
 
 | Field | Default | Effect |
 |---|---|---|
-| `ReplicationPolicyClass` | none | Your `UCrowdyRepApplicationPolicy` subclass. Unset means `UCrowdyTransformRepPolicy`, which applies `FCrowdyActorState`; set it when your executor sends a struct of your own. |
+| `ReplicationPolicyClass` | none | Your `UCrowdyRepApplicationPolicy` subclass. Unset means `UCrowdyTransformRepPolicy`, which moves the proxy from `FCrowdyActorState`; set it when your executor sends more than the transform, and move the proxy yourself in it. |
 | `PoolPolicyClass` | none, optional | A `UCrowdyActorPoolPolicy` subclass. Unset means the concrete base, which already hides pooled actors, shows them on activation, and strips proxy movement. |
 | `DefaultPoolSizePerClass` | 8 | Pools are created lazily per entity class at this size. |
 | `PerClassPoolOverrides` | empty | A per-class pool size; a class listed here is also pre-warmed at map load. |
@@ -47,7 +47,9 @@ The fallback is newer than the tagged v2.14.0 plugin. On that release an empty B
 
 ### The replication application policy
 
-`UCrowdyRepApplicationPolicy` reads a state struct out of each update and applies it to the pooled actor each frame. The shipped `UCrowdyTransformRepPolicy` does that for `FCrowdyActorState`; you write one when your executor sends a struct of your own.
+The policy is what moves a remote player's proxy. Continuous state is how pawns, players, and AI move, so a policy's first job is to take the location and rotation out of each update and put the proxy where the owner was at `RenderTimeMs`. The shipped `UCrowdyTransformRepPolicy` does exactly that for `FCrowdyActorState`, and for a pawn that only moves it is all you need. You write your own only when your executor sends more than the transform, and then you apply the transform yourself first and your extra fields after, because a custom policy replaces the shipped one rather than adding to it: `UCrowdyActorPoolBackend::ResolvePolicyClass` instantiates the config's class instead of `UCrowdyTransformRepPolicy`, so a policy that never sets location and rotation leaves every proxy under it standing still.
+
+`UCrowdyRepApplicationPolicy` reads a state struct out of each update and applies it to the pooled actor each frame:
 
 | Override | Called | What you do |
 |---|---|---|
@@ -57,12 +59,22 @@ The fallback is newer than the tagged v2.14.0 plugin. On that release an empty B
 | `OnInstanceDeactivated(SlotId)` | When the entity leaves | Clean up per-slot state. |
 | `GetExpectedSlotCount()` | At startup | How many slots to pre-allocate; 64 by default. Match your expected player count. |
 
-`ULanternRepPolicy` applies the `bTorchLit` flag the [continuous state](./continuous-state.md) page added to `ALanternPlayer`'s `FLanternPlayerState`: `ExtractFields` stores it per slot and returns false for any other struct type, `ApplyToActor` sets the proxy torch's visibility from it. A flag is a discrete value, not something to interpolate over `RenderTimeMs`, so the policy applies the latest. The policy header includes `LanternPlayer.h` for the struct, so this snippet depends on the [`executor-override` block](./continuous-state.md#a-custom-executor) being in your project first.
+#### The sample ring
+
+Both the shipped policy and the example below keep their per-slot history in `TInterpolatedField<T, Capacity>`, a small ring buffer the SDK ships in `Data/TInterpolatedField.h`, 32 samples deep by default. `TInterpolatedField::Push(Value, TimestampMs)` stores one sample with the server timestamp the update carried. `TInterpolatedField::Sample(RenderTimeMs, LerpFn)` finds the two samples that bracket the render time by binary search and blends between them with the function you pass (`FMath::Lerp` for a location; a quaternion slerp for a rotation). When the render time runs past the newest sample, `Sample` extrapolates from the last two by calling the same function with an alpha above 1, for at most 0.2 seconds beyond the newest; after that it holds the value extrapolated to 0.2 seconds. A render time older than the oldest sample takes the same path backwards from the newest pair, with no cap; a slot is in that state only briefly after activation, until the render time, which runs one interpolation delay behind, catches up with the samples already held. A location follows that extrapolation in full; the rotation slerp clamps its alpha to 1.2, so a rotation extrapolates by at most a fifth of a step. With one sample it returns that sample; with none, the default you pass. `PhysicalIndex` is the ring's own index arithmetic, nothing you call.
+
+The reason a proxy built on it does not jitter is the render time itself: the actor manager renders at the estimated server time minus the interpolation delay (100 ms), so the proxy is always drawn a little behind the newest sample, between two samples it already holds, and never snaps to the latest one as it lands. Extrapolation only runs when an update is late, and its cap keeps a lost stream from sliding a proxy across the map.
+
+#### The example: the same shape, with your own field added
+
+`ULanternRepPolicy` is what the shipped policy does, plus one field. `FLanternPlayerState`, the struct the [continuous state](./continuous-state.md) page's executor sends for `ALanternPlayer`, carries `Location`, `Rotation`, and `bTorchLit`. The policy keeps one `TInterpolatedField<FVector>` and one `TInterpolatedField<FRotator>` per slot: `ExtractFields` refuses any other struct type and pushes the location and rotation with the update's server timestamp; `ApplyToActor` samples both at `RenderTimeMs`, calls `SetActorLocationAndRotation` on the proxy, and only then applies the torch flag to the proxy's `Torch` light. The flag is applied as the latest value: a boolean is not something to blend. `OnInstanceDeactivated` resets the slot so a reused slot never starts from a departed player's history. The policy header includes `LanternPlayer.h` for the struct, so this snippet depends on the [`executor-override` block](./continuous-state.md#a-custom-executor) being in your project first.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
 <CppSnippet id="backend-policy" />
+
+<CppSnippet id="backend-policy-apply" />
 
 </TabItem>
 <TabItem value="bp" label="Blueprint">
@@ -117,7 +129,8 @@ The actor manager is already the single caller of `ActivateInstance` and `Deacti
 
 ## Gotchas
 
-- `BackendClass` alone draws the default executor's movement through `UCrowdyTransformRepPolicy`. A custom state struct needs `BackendConfig` with a `ReplicationPolicyClass` that reads it.
+- `BackendClass` alone draws the default executor's movement through `UCrowdyTransformRepPolicy`. A custom state struct needs `BackendConfig` with a `ReplicationPolicyClass` that reads it, and that policy replaces the shipped one: apply `Location` and `Rotation` yourself before anything else, or every proxy stands still.
+- A policy built on `TInterpolatedField` is the smooth choice for anything that moves. Sample it at `RenderTimeMs`, never at the newest sample: the delay is what hides the network.
 - `bUseCrowdyActorTracker` off on the profile means no tracker, no manager, and no backend at all.
 - A pooled proxy's spawn-time look comes from class defaults or the state struct, never the spawn payload.
 - Pool exhaustion is a warning per entity, `Pool exhausted for <class>`, and the entity is not drawn until a slot frees. Raise `DefaultPoolSizePerClass` or add a `PerClassPoolOverrides` row.

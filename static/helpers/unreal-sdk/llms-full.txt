@@ -47,7 +47,7 @@ Nothing on the network works until your project knows which app it belongs to. S
 
 ## What is next
 
-Add the plugin with [Installation](./installation.md), connect your app in [Crowdy Studio](./studio/overview.md), then follow the [Quickstart](./quickstart.md) to put one entity, one event, one replicated property, and one server-owned value on screen.
+Add the plugin with [Installation](./installation.md), connect your app in [Crowdy Studio](./studio/overview.md), then follow the [Quickstart](./quickstart.md) to put your player, one entity, one event, one replicated property, and one server-owned value on screen.
 
 # Installation
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/installation
@@ -176,15 +176,18 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/quickstart
 
 # Quickstart
 
-This page builds one small thing, a lantern, and puts one of each SDK idea on it: an entity, an RPC event, a Crowdy State property, and a Game Model attribute. Each step is a few lines of C++ or a few Blueprint nodes, and each ends with something you can see. A single Play in Editor client is enough for all of it.
+This page puts you on the wire, then builds one small thing, a lantern, with one of each SDK idea on it: an entity, an RPC event, a Crowdy State property, and a Game Model attribute. Each step is a few lines of C++ or a few Blueprint nodes, and each ends with something you can see. A single Play in Editor client is enough for all of it.
 
 Two words you will meet on every step. An **entity** is an actor other players can see: an actor with a Crowdy Entity Component, which gives it a shared identity and one **owner**, the client that simulates it; every other client holds a **proxy** that plays back what the owner sends. A **map profile** is a small data asset (`UCrowdyMapProfile`) that switches the SDK on for one map; it is assigned per map under **Project Settings, Plugins, Crowdy SDK, Map Profiles**.
 
+One fact shapes the order of the steps. The server knows a client by the actor updates it sends: your player pawn, as an entity, is what makes you present, and a client with no fresh actor is at no position on the map and receives no spatial event. So the pawn comes first, the lantern after.
+
 ## Before you start
 
-1. [Install the plugin](./installation.md) and confirm your project compiles.
+1. [Install the plugin](./installation.md) into a project whose player already moves, the Third Person template or your own game, and confirm it compiles. Step 1 adds a component to the character you have; a bare Character has no body and no input, so start from one that walks.
 2. Open Crowdy Studio, [sign in](./studio/sign-in.md), pick your app on the Project page, and press **Sync to project** on its Configuration tab. See [Config Sync](./studio/config-sync.md).
 3. Optional: give your test map a [map profile](./runtime/map-profile.md) of its own. Without one it runs on the SDK's shipped default, which is enough for this page.
+4. Know that nothing on this page reaches another client until your own pawn is sending updates (step 1). An event sent before that goes to nobody.
 
 ![The Project page's Configuration tab, with the diff and the Sync to project button](/img/unreal-sdk/qs-config-sync.png)
 
@@ -199,9 +202,9 @@ On the tagged v2.14.0 plugin the shipped default draws nothing: its Backend Conf
 
 ## About the code on this page
 
-The C++ steps build one actor, `ALantern`, in two files, `Lantern.h` and `Lantern.cpp`. Step 1 gives you both files; each later step is what you add to them, and the finished actor is at the end of the page. The first comment line of each block names the file it goes in. The usual boilerplate is left out so the SDK parts stand out: add `#pragma once`, `#include "CoreMinimal.h"`, and the base class include (`GameFramework/Actor.h`, `Components/ActorComponent.h`, or `Engine/GameInstance.h`) at the top of each header yourself. Everything else, including the `.generated.h` line, is in the block.
+The C++ steps build three small things. Step 0 is the Game Instance, `LanternGameInstance.h` and `LanternGameInstance.cpp`. Step 1 is your player, `LanternPlayer.h` and `LanternPlayer.cpp`, with a Game Mode, `LanternGameMode.h` and `LanternGameMode.cpp`, that spawns it at the right moment. Steps 3 to 6 build one actor, `ALantern`, in `Lantern.h` and `Lantern.cpp`: step 3 gives you both files, each later step is what you add to them, and the finished actor is at the end of the page. The first comment line of each block names the file it goes in. The usual boilerplate is left out so the SDK parts stand out: add `#pragma once`, `#include "CoreMinimal.h"`, and the base class include (`GameFramework/Actor.h`, `GameFramework/Character.h`, `GameFramework/GameModeBase.h`, `Components/ActorComponent.h`, or `Engine/GameInstance.h`) at the top of each header yourself. Everything else, including the `.generated.h` line, is in the block.
 
-The Blueprint steps build one Actor Blueprint the same way. It needs two components before you start: a **Sphere Collision** (the trigger a player walks into) and a **Point Light** named `Light`, the thing every graph below drives. Every Blueprint figure can be panned with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+The Blueprint steps build the same three things: a Game Instance Blueprint, a Character Blueprint with a Game Mode Blueprint, and one Actor Blueprint for the lantern. The lantern needs two components before you start: a **Sphere Collision** (the trigger a player walks into) and a **Point Light** named `Light`, the thing every lantern graph drives. Every Blueprint figure can be panned with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
 
 ## 0. Sign the player in
 
@@ -280,14 +283,144 @@ Create a Blueprint with **Game Instance** as its parent class and make it the pr
 </TabItem>
 </Tabs>
 
-**Success signal.** The log reports `Login ok`, then `Connected to the app` (the two handlers in the C++ block; in Blueprint, bind **On UDP Connection Success** on the Crowdy SDK Subsystem for the second moment). From then on `Get UDP Connection State` on the subsystem reads connected. See [Authentication](./services/authentication.md) for the sign-in link and provider flows.
+**Success signal.** The log reports `Login ok`, then `Connected to the app` (the two handlers in the C++ block; in Blueprint, bind **On UDP Connection Success** on the Crowdy SDK Subsystem for the second moment). From then on `Get UDP Connection State` on the subsystem reads connected. See [Authentication](./services/authentication.md) for the sign-in link and provider flows, and for restoring a saved session so a returning player types nothing.
 
 :::caution[A test account belongs in a config file or a pin default, never in shipped code.]
 :::
 
-## 1. Add one entity
+## 1. Make your player a Crowdy entity
 
-An entity is an actor with a `UCrowdyEntityComponent`. Two of the component's defaults are what most level-placed things want: **Static** mode (event-only; the other mode, **Dynamic**, streams a state snapshot every replication interval) and a **Stable** identity every client derives the same way. This example changes the third: it sets **Ownership** to Local Client, so the client that placed the lantern owns it the moment it registers. With the default, Host, an entity is owned by the elected host, and `IsLocallyOwned()` stays false until the host is known, which happens after the sign-in above completes.
+Your player pawn is the first entity, before any lantern, because it is what makes you exist to the server. A pawn with a `UCrowdyEntityComponent` in **Dynamic** mode sends an actor update every replication interval (ten a second on the shipped profile), and a heartbeat at least once a second while it stands still; the server registers your position from those updates, and from then on you are a recipient of everything sent near you. The component needs three settings changed from their defaults: **Mode** Dynamic (the continuous channel; the default, Static, is for things that do not move), **Identity Policy** Player Derived (the identity is derived from the signed-in account, so it is the same on every client and on every launch; only valid on the locally controlled pawn), and **Ownership** Local Client (this client simulates the pawn; a pawn the Game Mode spawns is owned by the client that spawned it whatever this reads, so Local Client is the honest value; the default, Host, is for a level-placed world entity, which sends nothing until the elected host is known). Leave **State Executor** empty: the SDK's default executor snapshots the pawn's location and rotation, which is all this page needs.
+
+The identity is derived once, when the pawn begins play, and nothing re-derives it later. A pawn spawned by the Game Mode on the first frame begins play before the sign-in has answered, and its first updates leave before the server is ready for them, so the Game Mode starts players as spectators and the connected handler spawns the pawn instead. **On UDP Connection Success** fires once the server has assigned you and its readiness wait has elapsed (the SDK times that, you never do), and every update the pawn sends after it counts.
+
+One thing that gate cannot do on this release. The engine possesses a pawn spawned during play only after its `BeginPlay`, so the component derives the identity with no controller in sight, logs `Identity Policy is Player Derived on ... but the pawn is not possessed by any controller yet, so it fell back to a random id`, and registers under a random id instead of your account's. Every step on this page still works: the pawn registers and sends, you are present, the reflection draws, the spatial event reaches you, and two clients never conflate. What waits for the release that derives the identity on possession is whatever is keyed on the local player id: the host lookup, ownership requests, and the drop of your own echoed events (with two real clients, a `SpatialMulticast` body runs twice on its sender, once locally and once from the server's echo).
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`ALanternPlayer` is a Character with a `Torch` point light and the entity component. `ALanternGameMode` names it as the default pawn, starts players as spectators, binds **On UDP Connection Success** in its own `BeginPlay`, and spawns the pawn with `RestartPlayer` when the event fires. The event fires again after a re-assignment, and `RestartPlayer` keeps a pawn the player already has, so a reconnect does not respawn you.
+
+```cpp
+// LanternPlayer.h
+#include "Components/PointLightComponent.h"
+#include "Replication/Components/CrowdyEntityComponent.h"
+#include "LanternPlayer.generated.h"
+
+UCLASS()
+class ALanternPlayer : public ACharacter
+{
+	GENERATED_BODY()
+
+public:
+	ALanternPlayer();
+
+	UPROPERTY(VisibleAnywhere, Category = "Lantern")
+	TObjectPtr<UPointLightComponent> Torch;
+
+	UPROPERTY(VisibleAnywhere, Category = "Crowdy")
+	TObjectPtr<UCrowdyEntityComponent> CrowdyEntity;
+};
+
+// LanternPlayer.cpp
+#include "LanternPlayer.h"
+
+ALanternPlayer::ALanternPlayer()
+{
+	Torch = CreateDefaultSubobject<UPointLightComponent>(TEXT("Torch"));
+	Torch->SetupAttachment(RootComponent);
+
+	// Dynamic sends the transform every interval, Player Derived names the entity after the signed-in user, Local Client makes this client its sender.
+	CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
+	CrowdyEntity->Mode = ECrowdyEntityMode::Dynamic;
+	CrowdyEntity->IdentityPolicy = ECrowdyIdentityPolicy::PlayerDerived;
+	CrowdyEntity->Ownership = ECrowdyOwnership::LocalClient;
+}
+```
+
+```cpp
+// LanternGameMode.h
+#include "LanternGameMode.generated.h"
+
+// Spawns the Lantern Player only once the app connection is up, so its first update carries the signed-in identity.
+UCLASS()
+class ALanternGameMode : public AGameModeBase
+{
+	GENERATED_BODY()
+
+public:
+	ALanternGameMode();
+	virtual void BeginPlay() override;
+
+private:
+	UFUNCTION()
+	void HandleConnected();
+};
+
+// LanternGameMode.cpp
+#include "LanternGameMode.h"
+
+#include "LanternPlayer.h"
+#include "Subsystem/CrowdySDKSubsystem.h"
+
+ALanternGameMode::ALanternGameMode()
+{
+	DefaultPawnClass = ALanternPlayer::StaticClass();
+	bStartPlayersAsSpectators = true;
+}
+
+void ALanternGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	GetGameInstance()->GetSubsystem<UCrowdySDKSubsystem>()->OnUDPConnectionSuccess.AddDynamic(this, &ALanternGameMode::HandleConnected);
+}
+
+void ALanternGameMode::HandleConnected()
+{
+	// The pawn's updates from here on are what make this client present to the server; on a reconnect the player keeps the pawn it has.
+	RestartPlayer(GetWorld()->GetFirstPlayerController());
+}
+```
+
+`ALanternPlayer` has no mesh and no input of its own, so keep the body and the movement you already have: open the template's `BP_ThirdPersonCharacter` (or your own Character), set its **Parent Class** to `Lantern Player` under **Class Settings**, then create a Blueprint whose parent is `Lantern Game Mode` and set its **Default Pawn Class** to that character, overriding the C++ class the constructor names. Make that Game Mode Blueprint the project's default under **Project Settings, Maps & Modes, Default Modes, Default GameMode**, or set it as the test map's Game Mode Override in World Settings. The Game Instance from step 0 is unchanged.
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+Three Blueprints, two of them settings only.
+
+1. **The Character.** Open the template's `BP_ThirdPersonCharacter`, or your own Character that already moves; a new Blueprint with **Character** as its parent has no body and no input, so do not start from one. In the Components panel click **Add** and choose **Crowdy Entity Component**. In its Details panel, under **Crowdy SDK, Entity Component**, set **Mode** to **Dynamic**, **Identity Policy** to **Player Derived**, and **Ownership** to **Local Client**. Two rows appear once Mode is Dynamic, **State Executor** and **Auto Register**: leave the executor at None and Auto Register ticked; a third, **Host Override**, appears once Ownership is Local Client: leave it at Allow. Add a **Point Light** named `Torch` while you are there; a later page drives it.
+2. **The Game Mode.** Create a Blueprint with **Game Mode Base** as its parent class. Set **Default Pawn Class** to your Character and tick **Start Players as Spectators** under **Game Mode**. Make it the project's default under **Project Settings, Maps & Modes, Default Modes, Default GameMode**.
+3. **The spawn.** In the Game Mode's event graph, from **Event BeginPlay**, get the **Crowdy SDK Subsystem** and **Bind Event to On UDP Connection Success** to a custom event `OnConnected` (the same **Bind Event** shape the [Authentication](./services/authentication.md#after-sign-in) page uses for On Login). `OnConnected` calls **Restart Player** with **Get Player Controller** (index 0) on its New Player pin. The Game Instance from step 0 is unchanged.
+
+![The entity component's Details panel at its defaults: change Mode, Identity Policy, and Ownership](/img/unreal-sdk/entity-mode-identity.png)
+
+[Blueprint snippet: qs-player-spawn, see /bp/unreal-sdk/qs-player-spawn.txt]
+
+</TabItem>
+</Tabs>
+
+**Success signal.** Press Play. The map sits still under a fixed camera until `Connected to the app`, then your character spawns at a Player Start and you can move it. With `crowdy.entity.trace 1` on, the log shows the pawn's entity registering on the wire right after the connection comes up.
+
+:::caution[A pawn that begins play before the sign-in has answered derives its identity from user id 0.]
+Nothing warns. Two such clients conflate into one player, and the host cannot be found by its avatar. Keep the pawn's spawn behind **On UDP Connection Success**, as the block does: on this release that pawn gets a random id and one warning, which is the lesser evil, and the release that derives the identity on possession turns the same gate into the account-derived one.
+:::
+
+## 2. See yourself
+
+Walk forward. Within a second or two a second copy of your character appears where you were a moment ago and follows you around at a small delay (if you kept a bare Character with no mesh, the copy is the torch light alone). That is not a local mirror: your updates went to the server, the server fanned them back to every client in range, you included, and the actor pool on this client drew the result as a proxy of your own class, interpolated to about 100 milliseconds plus one round trip behind you. The shipped profile keeps that echo because **Enable Owner Tracking** on the map profile defaults to on; turning it off drops your own echo and nothing else.
+
+What it means: the server received your updates, so you exist to it. The same updates are what make you a recipient of the lantern's event in step 4. In a shipped game you hide one side of the pair yourself (`SetActorHiddenInGame` on the local pawn when `IsLocallyOwned()`, or leave the echo off); for this page, keep it: it is the proof.
+
+{/* Screenshot pending: qs-own-reflection (window shot, user-driven; steps in the shot manifest). */}
+
+The other way to see the same thing is two real clients. Open two Play in Editor windows signed into two different accounts, as [Testing locally](./guides/testing-locally.md#two-pie-client-setup) describes; each window shows the other's pawn as a proxy, moving as its owner moves.
+
+**Success signal.** A second character follows you. If none appears, check in this order: the log shows `Connected to the app`; the pawn spawned after it, not on the first frame; the map's profile (or the shipped default) has its actor tracker on; `crowdy.entity.trace 1` shows the registration. On the tagged v2.14.0 plugin, the note under Before you start applies: with no policy class named, the pool draws nothing.
+
+## 3. Light a lantern
+
+An entity is an actor with a `UCrowdyEntityComponent`. Two of the component's defaults are what most level-placed things want: **Static** mode (event-only; the other mode, **Dynamic**, streams a state snapshot every replication interval, as your pawn does) and a **Stable** identity every client derives the same way. This example changes the third: it sets **Ownership** to Local Client, so the client that placed the lantern owns it the moment it registers. With the default, Host, an entity is owned by the elected host, and `IsLocallyOwned()` stays false until the host is known, which happens after the sign-in above completes.
 
 The lantern is a sphere trigger with a point light on it. On the client that owns it, the light turns blue; on every other client it keeps its default colour. That is the ownership question, asked once at `BeginPlay`.
 
@@ -360,9 +493,9 @@ In the Actor Blueprint, click **Add** in the Components panel and choose **Crowd
 
 **Success signal.** Place the lantern in the map and press Play. Its light is blue, because this client owns it. The component also broadcasts `OnCrowdyOwnershipAssigned` on every client on the tick after the entity registers, with `bIsLocallyOwned` true on the owner; bind to it when you need the answer from an event rather than a poll. Once the sign-in has connected, `crowdy.entity.trace 1` logs the entity's registration on the wire.
 
-## 2. Send one RPC event
+## 4. Send one RPC event
 
-An RPC event is a function you mark with `CrowdyEvent`. You call it like any function; the SDK runs the matching receiver on the other clients. The recipient decides who: `SpatialMulticast` (everyone in range, the default), `Multicast` (everyone on the session channel), `OwningClient`, or `Host`.
+An RPC event is a function you mark with `CrowdyEvent`. You call it like any function; the SDK runs the matching receiver on the other clients. The recipient decides who: `SpatialMulticast` (everyone in range, the default), `Multicast` (everyone on the session channel), `OwningClient`, or `Host`. A spatial event is addressed by position, and a client's position is the one its pawn's updates registered: this works now because step 1 put you on the map, and it reaches only clients whose pawns did the same.
 
 The lantern's event is `Flicker`: walking into the lantern blinks its light off and on for a moment, and every client in range sees the blink. Only the owning client reacts to the overlap; on a `SpatialMulticast` event the owner runs the body itself and sends it to everyone in range, so a proxy's copy of the overlap must not send a second one.
 
@@ -406,14 +539,14 @@ void ALantern::Flicker_Implementation()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-A replicated event is a Custom Event with **Crowdy Replicates** ticked in its Details panel and a **Recipient** chosen there. The figure is the receiver. Call it by name from any graph on the actor, exactly like a local custom event: from **Event ActorBeginOverlap**, behind the same **Is Locally Owned** branch as step 1; the call node is the ordinary one the editor offers for any custom event.
+A replicated event is a Custom Event with **Crowdy Replicates** ticked in its Details panel and a **Recipient** chosen there. The figure is the receiver. Call it by name from any graph on the actor, exactly like a local custom event: from **Event ActorBeginOverlap**, behind the same **Is Locally Owned** branch as step 3; the call node is the ordinary one the editor offers for any custom event.
 
 [Blueprint snippet: qs-event, see /bp/unreal-sdk/qs-event.txt]
 
 </TabItem>
 </Tabs>
 
-**Success signal.** Walk the pawn into the lantern: the light blinks. With one client there is nobody else to receive the event; to see the send and the receive on the wire, loop it back to yourself:
+**Success signal.** Walk your pawn into the lantern: the light blinks. With one client there is nobody else to receive the event (a sender never receives its own event from the network); to see the send and the receive on the wire, loop it back to yourself:
 
 ```text
 crowdy.rpc.loopback 1
@@ -422,11 +555,11 @@ crowdy.rpc.trace 1
 
 Now the blink comes from the looped-back receive instead of the local run, and the trace logs the send and the receive (function, entity, addressing, parameter bytes). Turn both off before you measure anything.
 
-## 3. Replicate one property
+## 5. Replicate one property
 
 A Crowdy State property is a `UPROPERTY` marked `CrowdyState`. The owning client changes it; the SDK diffs it every tick and ships the change to every proxy, then runs the `CrowdyOnRep` function there. It works in either entity mode, Static or Dynamic.
 
-The flicker in step 2 is a moment: a client that joins afterwards never sees it. The lantern's lit state is different, it has to be the same on every client, late joiners included, so it is a replicated property, `bLit`. Walking out of the lantern flips it, and `OnRep_Lit` applies it to the light wherever the value lands. The SDK runs the owner's notify too, on the tick that ships the change; calling it here as well makes the light react on the same frame. That is safe because `OnRep_Lit` only applies the current value.
+The flicker in step 4 is a moment: a client that joins afterwards never sees it. The lantern's lit state is different, it has to be the same on every client, late joiners included, so it is a replicated property, `bLit`. Walking out of the lantern flips it, and `OnRep_Lit` applies it to the light wherever the value lands. The SDK runs the owner's notify too, on the tick that ships the change; calling it here as well makes the light react on the same frame. That is safe because `OnRep_Lit` only applies the current value.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -489,7 +622,7 @@ crowdy.state.trace 1
 
 The trace logs each delta and its size, and `OnRep_Lit` runs on the mirror. Turn both off afterwards.
 
-## 4. Read one server-owned value
+## 6. Read one server-owned value
 
 A Game Model attribute lives on the server. You declare it on a container class, attach the container to an entity, sync the schema from Crowdy Studio, and read the confirmed value; a change goes through an Effect on the server, never through a client write.
 
@@ -566,9 +699,9 @@ A client assignment to `Fuel` changes a local copy that the next server pull ove
 
 **Success signal.** Shortly after the connection is up, the light dims to the fuel level: `OnRep_Fuel` (or **On Game Model Changed**) ran with the confirmed value. `Is Game Model Ready` (`UCrowdyModel::IsContainerBound` in C++) turns true at the same moment, once the container is bound and the first values have landed. For the full story, including identity resolution and the pull, turn on `crowdy.gamemodel.trace 1`.
 
-## The finished lantern
+## 7. The finished lantern
 
-The two C++ files after the four steps, for comparison with your own:
+The two lantern files after steps 3 to 6, for comparison with your own:
 
 ```cpp
 // Lantern.h
@@ -685,6 +818,9 @@ void ALantern::OnRep_Lit()
 ## Gotchas
 
 - No login, no connection. Until `Get UDP Connection State` reads connected, every step looks dead.
+- No pawn, no presence. The server knows you by your pawn's updates; a client whose pawn is not sending is at no position and receives no spatial event, and its own spatial sends reach nobody. A `Multicast` event is the exception: it goes by session channel membership, which connecting joins.
+- Spawn the pawn after **On UDP Connection Success**. Before it, the identity derives from user id 0 and the first updates leave before the server is ready to take them; nothing is queued or replayed, the next interval's update is the recovery. On this release a pawn spawned after it registers under a random id with one warning (the engine possesses it after `BeginPlay`); the page works, the host lookup, ownership requests and the echo drop do not, until identity is derived on possession.
+- The Game Mode binds the event in its own `BeginPlay`. A map opened after the connection is already up never sees it; check **Get UDP Connection State** at `BeginPlay` first and restart the player at once when it reads connected, or bind in the Game Instance and spawn from there.
 - A map whose `MapProfiles` row or `DefaultProfile` names an asset that did not load is inactive; the warning names the asset. Check that before any code. A map with no row at all runs on the shipped default.
 - The loopback variables are test aids. Leave them off in a normal session; they change what a single client sees.
 - An RPC receiver must be a real `UFUNCTION` you declare yourself; the `CROWDY_EVENT` macro only generates the call site.
@@ -694,6 +830,8 @@ void ALantern::OnRep_Lit()
 
 - [The Two Planes](./concepts/two-planes.md): decide where each new piece of state goes.
 - [Entities, Identity, and Ownership](./concepts/entities-identity-ownership.md): owner, proxy, host, and what Ownership chooses.
+- [Sessions and presence](./concepts/sessions-and-presence.md): what the server counts as a present player, and when it stops.
+- [Continuous state](./runtime/continuous-state.md): what your pawn sends every interval, and how to send more than the transform.
 - [Entities and spawning](./runtime/entities-and-spawning.md): spawn entities at runtime and receive them on remote clients.
 - [RPC events in C++](./runtime/rpc-events-cpp.md) and [in Blueprint](./runtime/rpc-events-blueprint.md).
 - [Crowdy State](./runtime/crowdy-state.md): the five metadata keys and what each does.
@@ -748,7 +886,7 @@ Four of the six are `meta=(...)` keys; the entity is a component and the effect 
 | `CrowdyModel` + `CrowdyKey` + `CrowdyOnRep` | A `UPROPERTY` on a container class; the server owns the value, the notify is parameterless | `gm-container` | [Containers and attributes](./game-models/containers-and-attributes.md#reacting-to-a-change) |
 | `CrowdyEffect` | Not a meta key: a `UCrowdyEffect` asset authored in Studio or Effect Script, referenced from C++ as `TObjectPtr<UCrowdyEffect>` | `fx-declare` | [Effects from C++](./game-models/effects-cpp.md#declaring-the-reference), [Effect Script](./game-models/effect-script.md) |
 
-Two rules the examples assume: a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); and a `CrowdyOnRep` function takes no parameters, read the property for the new value ([The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code)).
+Three rules the examples assume: the first thing a client needs is its own pawn as a `Dynamic`, `PlayerDerived`, `LocalClient` entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; on this release that pawn registers under a random id, since the engine possesses a runtime spawn after its `BeginPlay`, and the page says what that costs ([Quickstart](./quickstart.md#1-make-your-player-a-crowdy-entity)); a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); and a `CrowdyOnRep` function takes no parameters, read the property for the new value ([The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code)).
 
 ## Three things that break silently in a cooked build
 
@@ -939,7 +1077,7 @@ back, and `Reset()` clears it to unset.
 An actor you spawn during play through the SDK's spawn call is told its identity by the spawner, so its policy does not matter; the spawn travels to every client carrying the NetID.
 
 :::note[PlayerDerived on anything but the local player's pawn falls back to Random.]
-The SDK logs one warning and the actor gets an id no other client shares. Keep PlayerDerived for the pawn.
+The SDK logs one warning and the actor gets an id no other client shares. Keep PlayerDerived for the pawn. The identity is read once, at the component's `BeginPlay`, and a pawn spawned during play (`RestartPlayer`, a respawn) is possessed only after that, so on this release it takes the same fallback; the [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity) says what still works.
 :::
 
 ![The entity component's Details panel: Mode, Identity Policy, and Ownership](/img/unreal-sdk/entity-mode-identity.png)
@@ -1916,12 +2054,14 @@ Create a Widget Blueprint with two **Editable Text Box** widgets and a **Button*
 The `Result` a success carries holds the player's `UserID` and a token the SDK already keeps for you. The SDK's own **On Login** event on the Crowdy SDK Subsystem carries a message and no credential, on purpose; keep anything you put on screen the same way.
 :::
 
-**Success signal.** The log reads `Login ok`, then `Connected to the app`. From then on `Get UDP Connection State` on the subsystem reads connected, and the rest of the Runtime section applies.
+If this machine signed in before, restore instead of asking: call `RestoreSession` first and show the widget only on its error path, as [Authentication](../services/authentication.md#restore-a-saved-session) shows; the connection then comes up exactly as after a `Login`.
+
+**Success signal.** The log reads `Login ok`, then `Connected to the app`. From then on `Get UDP Connection State` on the subsystem reads connected, and the rest of the Runtime section applies. Start replicating your pawn only from that moment: **On UDP Connection Success** fires once the server has assigned this client and its readiness wait has elapsed, an update sent earlier is not held for it, and the [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity) spawns the pawn from the connected handler for that reason.
 
 ## Related
 
 - [Authentication](../services/authentication.md): register, magic link, social sign-in, restoring a saved session, sign-out, and the events.
-- [Quickstart](../quickstart.md): this step in the context of one complete lantern.
+- [Quickstart](../quickstart.md): this step in the context of one complete lantern, and the pawn that makes the signed-in player present.
 - [Connection and reconnect](./connection-and-reconnect.md): what the SDK does once the sign-in succeeds.
 
 # Map Profiles
@@ -1957,7 +2097,7 @@ The screenshot is the SDK's own shipped default profile. **Backend Config** is e
 | `StateKeyframeIntervalSeconds` | 2.0 | Period of the Crowdy State keyframe, the full re-send of every property marked `CrowdyHeartbeat`. 0 turns the keyframe off map-wide; on-change replication is unaffected. |
 
 :::note[An empty Backend Config means the built-in default, not a disabled backend.]
-`ActorManagement.BackendClass` defaults to `UCrowdyActorPoolBackend`. With `ActorManagement.BackendConfig` left empty, the backend creates a transient **Actor Pool Backend Config** and applies remote movement with `UCrowdyTransformRepPolicy`, the shipped policy that reads the default executor's `FCrowdyActorState` (location and rotation) and interpolates between samples. Set a config of your own when your executor sends a state struct of its own, when you want pool sizes per class, or when you want a different pool policy. A config of another backend's class is still refused with a warning naming the field. See [Rendering backends](./rendering-backends.md).
+`ActorManagement.BackendClass` defaults to `UCrowdyActorPoolBackend`. With `ActorManagement.BackendConfig` left empty, the backend creates a transient **Actor Pool Backend Config** and applies remote movement with `UCrowdyTransformRepPolicy`, the shipped policy that reads the default executor's `FCrowdyActorState` (location and rotation) and interpolates across a ring of recent samples, extrapolating briefly when an update is late. Set a config of your own when your executor sends a state struct of its own, when you want pool sizes per class, or when you want a different pool policy. A config of another backend's class is still refused with a warning naming the field. See [Rendering backends](./rendering-backends.md).
 :::
 
 ## Assign the profile
@@ -2181,7 +2321,7 @@ The shipped default profile leaves **Backend Config** at None and runs on the bu
 |---|---|---|
 | `bUseCrowdyActorTracker` | on | Off means no tracker, no actor manager, and no backend on this map. |
 | `bDispatchUpdatesOnGameThread` | off | Also broadcast each update batch to `OnUpdatesGameThread` for a Blueprint listener. |
-| `bEnableOwnerTracking` | on | Track the local player's own actor echo as well. |
+| `bEnableOwnerTracking` | on | Track the local player's own actor echo as well: the reflection the [Quickstart](../quickstart.md#2-see-yourself) uses as proof that the server is receiving you. |
 | `ActorTimeoutThreshold` | 12 s | Seconds of silence before an entity is dropped on a guess. The server announces a real departure about five seconds after the last update, so this is the fallback. |
 | `MaxTrackedActors` | 4096 | How many network-received actors may be tracked at once. A bound on forged ids, not a performance setting; set it above the largest crowd you intend to show. |
 | `MaxUpdatesPerBatch`, `MaxBatchWaitTime` | 100, 5 ms | How updates for not-yet-seen entities are batched off the game thread. |
@@ -2250,7 +2390,7 @@ Category **Crowdy SDK, Entity Component** in the Blueprint palette.
 | `GetMode()`, `GetOwnership()`, `GetHostOverridePolicy()`, `GetStateHeartbeat()` | The settings above, read back. There is no getter for `IdentityPolicy`. |
 | `StartReplication()`, `StopReplication()` | Join or leave the continuous channel. Meaningful for a Dynamic entity this client owns; `bAutoRegister` calls the first one for you. |
 | `SendEvent(Payload, Scope)` | Sends a struct payload addressed at this entity. `ECrowdyEventScope::Everyone` runs the entity's handlers on every client, `OwnerOnly` only on the owner. The lower-level sibling of a `CrowdyEvent`; see [Recipients and routing](./recipients-and-routing.md). |
-| `MarkStateDirty(PropertyName)`, `MarkAllStateDirty()` | Schedule one, or every, `CrowdyManualDirty` property to ship on the next replication tick. See [Crowdy State: static entry points](./crowdy-state-static.md). |
+| `MarkStateDirty(PropertyName)`, `MarkAllStateDirty()` | Schedule one, or every, `CrowdyManualDirty` property to ship on the next replication tick. See [Crowdy State: marking state from outside the actor](./crowdy-state.md#marking-state-from-outside-the-actor). |
 | `DestroyEntity()` | Broadcast the destroy event and destroy the owner after `DestroyDelay`. The same path as the subsystem's `DestroyEntity(Actor)` and `UCrowdyUtilities::DestroyCrowdyEntity`. |
 
 `IsLocallyOwned()` here takes no argument and answers for the authority; `UCrowdyEntitySubsystem::IsLocallyOwned(NetID)` answers a narrower question about the record's owner id and does not count the host of a host-owned entity. Do not treat them as interchangeable.
@@ -2523,6 +2663,7 @@ crowdy.rpc.dumpfn BP_Hero_C MyEvent   print one function's routing info
 
 - `SpatialMulticast` runs the body on the caller too, so guard the call with `IsLocallyOwned()`; a proxy's copy of the trigger must not send a second one.
 - A receiver declared with no `CrowdyRecipient` is `SpatialMulticast`. On a subsystem that default is rejected at send; see [Replicated subsystems](./replicated-subsystems.md).
+- A `SpatialMulticast` reaches only clients with a fresh actor of their own on the map. A client whose pawn is not sending updates is at no position, so it receives none and its own sends reach nobody; see the [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity).
 - A late joiner receives nothing from a past call. If it matters after the moment, it is state.
 - Delivery is on the game thread, always. A handler may touch actors freely.
 
@@ -2633,6 +2774,8 @@ Every CrowdyEvent names a recipient, and the recipient decides two things: who r
 
 The decision is a pure function of the recipient, the participant kind, and the local authority facts, so it is the same on every client and in every build.
 
+"In range" is measured from the position each client's own actor updates registered, so a `SpatialMulticast` reaches only clients with a fresh actor on the map; a client whose pawn is not sending is nowhere and receives nothing. The [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity) makes the player's pawn that actor before it sends anything.
+
 :::warning[On a replicated subsystem the default recipient is rejected. Set Multicast or Host explicitly.]
 A subsystem has no world position, so a `SpatialMulticast` event declared on one has nowhere to be sent from. The send logs `uses SpatialMulticast, which has no location; set CrowdyRecipient=Multicast or Host. Dropping.` and consumes the call so a Blueprint caller does not run the body as a fallback. Since `SpatialMulticast` is what an unannotated event gets, every event on a subsystem needs the key written out. See [Replicated subsystems](./replicated-subsystems.md).
 :::
@@ -2673,7 +2816,7 @@ The targeted message is addressed to the host's avatar entity and the chunk it s
 
 An `OwningClient` event aimed at a world entity nobody owns has no destination and drops; use `Host` for a world entity.
 
-The lantern world uses `Host` for a relight: a client whose lantern has gone dark asks the elected host to relight it, and the host acts on whichever `ALantern` instance it holds. The lantern the host holds is a proxy of another client's entity, so setting `bLit` on it would stay on the host; the receiver marks the property dirty as well, which on an entity the host does not own is the [host push](./crowdy-state-static.md#on-an-entity-you-do-not-own-the-host-push) that makes the owner adopt the value. `Flicker` from the [Quickstart](../quickstart.md) is the `SpatialMulticast` row; the other two recipients are described in the table above and need no new member.
+The lantern world uses `Host` for a relight: a client whose lantern has gone dark asks the elected host to relight it, and the host acts on whichever `ALantern` instance it holds. The lantern the host holds is a proxy of another client's entity, so setting `bLit` on it would stay on the host; the receiver marks the property dirty as well, which on an entity the host does not own is the [host push](./crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) that makes the owner adopt the value. `Flicker` from the [Quickstart](../quickstart.md) is the `SpatialMulticast` row; the other two recipients are described in the table above and need no new member.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -2745,7 +2888,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/runtime/crowdy-state
 
 # Crowdy State
 
-Mark a `UPROPERTY` with `meta=(CrowdyState)` and the client that owns the entity diffs it at the map's replication cadence and ships only the changed values to every proxy, which write them back onto their own copy of the actor. No wire struct, no executor, no manual send unless you ask for one.
+Mark a `UPROPERTY` with `meta=(CrowdyState)` and the client that owns the entity diffs it at the map's replication cadence and ships only the changed values to every proxy, which write them back onto their own copy of the actor. No wire struct, no executor, no manual send unless you ask for one. It replicates single values: POD leaves and `USTRUCT`s made of them, never containers or object references, and it says so once at startup for each property it drops.
 
 ## When to use it
 
@@ -2769,7 +2912,7 @@ All on the `UPROPERTY`, all spelled exactly as shown.
 | `CrowdyOnRep` | a function name | A parameterless `UFUNCTION` run after the value is written, on the receiver and on the sender. Read the property for the new value; there is no previous-value argument. |
 | `CrowdyOwnerOnly` | none | Delivered only to the owning client, over the targeted path, never on the spatial broadcast. Scope, not secrecy. |
 | `CrowdyHeartbeat` | none | Opt in to the periodic keyframe: the property is re-sent every `StateKeyframeIntervalSeconds` even when unchanged, so a late or desynced observer converges. Off by default in C++; the Blueprint dropdown turns it on. |
-| `CrowdyManualDirty` | none | Never auto-diffed. The value ships only when you mark it, with `MarkStateDirty`. For a property that is expensive to compare every tick. See [Static entry points](./crowdy-state-static.md). |
+| `CrowdyManualDirty` | none | Never auto-diffed. The value ships only when you mark it, with `MarkStateDirty`. For a property that is expensive to compare every tick. See [Marking state from outside the actor](#marking-state-from-outside-the-actor). |
 
 :::warning[An enum without CrowdyHeartbeat can show a stale value to a late joiner.]
 An enum is held state: sent on change, never re-sent. A client that starts observing after the last change, or that loses the one datagram carrying it, shows the wrong value until it changes again. The startup scan warns once per such property; `crowdy.state.heartbeat.advisories` lists every one it found. Add `CrowdyHeartbeat`, or tick Keyframe heartbeat in the variable's Crowdy Replication settings, unless the value is meant to be transient.
@@ -2807,7 +2950,7 @@ void ALantern::OnRep_TimesLit()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-Add an Integer variable `TimesLit`, set its **Replication** dropdown under **Crowdy Replication** to **Replicated**, and tick **Update manually** there (the other two toggles are **Keyframe heartbeat** and **Only send to owner**). From **Event ActorBeginOverlap**, the pure **Is Crowdy Entity Locally Controlled** feeds a **Branch**; on the true side **Get TimesLit** feeds a **+**, **Set TimesLit** stores the result, and the static **Mark Crowdy State Dirty** schedules it with `TimesLit` on the Property Name pin and `Target` left as self (the member form on the component would need a component getter as well). Seven nodes, one of them the owner gate the lantern's C++ overlap handler has: on a proxy the mark is not ignored, it becomes the host push described on the [static entry points](./crowdy-state-static.md#on-an-entity-you-do-not-own-the-host-push) page.
+Add an Integer variable `TimesLit`, set its **Replication** dropdown under **Crowdy Replication** to **Replicated**, and tick **Update manually** there (the other two toggles are **Keyframe heartbeat** and **Only send to owner**). From **Event ActorBeginOverlap**, the pure **Is Crowdy Entity Locally Controlled** feeds a **Branch**; on the true side **Get TimesLit** feeds a **+**, **Set TimesLit** stores the result, and the static **Mark Crowdy State Dirty** schedules it with `TimesLit` on the Property Name pin and `Target` left as self (the member form on the component would need a component getter as well). Seven nodes, one of them the owner gate the lantern's C++ overlap handler has: on a proxy the mark is not ignored, it becomes the [host push](#on-an-entity-you-do-not-own-the-host-push) described below.
 
 [Blueprint snippet: state-mark, see /bp/unreal-sdk/state-mark.txt]
 
@@ -2861,71 +3004,26 @@ Write the notify as the one place the value is applied to the world, the way `On
 
 Only the owning client diffs. A remote proxy never diffs; it applies. The cadence is the map profile's `ReplicationIntervalHz` (1 to 10, default 10), the same clock the continuous channel uses, though the two send independently. Each tick the replicator compares every auto-diffed property of every entity this client drives against a shadow copy of the last sent value and encodes the changed ones into one `FCrowdyStateDelta`; owner-only properties go out as a second, targeted delta. Every `StateKeyframeIntervalSeconds` (default 2, on the map profile; 0 turns it off) each entity also emits a keyframe carrying its `CrowdyHeartbeat` properties, unless the entity's `StateHeartbeat` is Off. A delta travels as far as the profile's `StateRelevanceDistance` (Four Chunks by default), which is tighter than the continuous channel.
 
-A struct with a native net serializer (`FVector_NetQuantize`, `FRotator`) rides the engine's own quantized serializer automatically; a plain `FVector` stays exact. Quantization is chosen by type, not by a key. See [What a state property may be](./crowdy-state-types.md).
+A struct with a native net serializer (`FVector_NetQuantize`, `FRotator`) rides the engine's own quantized serializer automatically; a plain `FVector` stays exact. Quantization is chosen by type, not by a key. See [What a state property may be](#what-a-state-property-may-be).
 
 Every delta carries a layout hash that folds each property's name and canonical type in declaration order. A receiver whose own hash for the class differs drops the delta cleanly rather than reading bytes by position, so adding, removing, reordering, or retyping a replicated property on one build and not another costs you deltas, not corruption. An enum property is carried as its underlying integer (blob version 2, `CrowdyStateBlobVersion`); a peer on the older format drops these deltas rather than misparsing them, so every client of an app runs one build.
 
-## A field that silently does nothing
-
-The first thing to check. Discovery logs an unconditional error for every marked property it cannot carry, of the shape `CrowdyState: property 'X' on '/Script/MyGame.Lantern' is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Game Model container. Omitting it.` The reasons are a container, a struct that buries a container, a fixed-size array, an object or interface or delegate reference, or an otherwise unsupported type such as `FText`; [What a state property may be](./crowdy-state-types.md) lists them. Two more lines to know: a property marked both `CrowdyState` and `CrowdyModel` is dropped with `is marked both CrowdyState and CrowdyModel; a field lives in exactly one plane`, and a property whose name and type also appear in the actor's continuous-state executor struct is dropped with `also lives in its executor state struct ... Dropping it from the CrowdyState layout`, so a field lives on exactly one channel.
-
-These fire at class registration and are not gated by the trace variable. Grep the log for `CrowdyState: property`, which all three lines share, before turning anything on. When the property is in the layout but the change is not arriving, that is the other question:
-
-```text
-crowdy.state.trace 1     per delta: entity, changed-property count, byte size, spatial or owner-only or keyframe
-crowdy.state.loopback 1  decode your own deltas onto a local mirror entity, for a single-client test
-```
-
-Two read-only diagnostics on `UCrowdyStateReplicator` answer the same questions from code or Blueprint: `IsStateReplicated(Actor)` is true when the actor's class carries at least one accepted property, whichever client drives it, and `GetLastSentStateBytes(Actor)` is the blob size this client last sent for the actor, or -1 when this client does not drive it. `crowdy.state.scopes` adds a CPU trace scope around each delta decode for profiling.
-
-## Host precedence
-
-When the local client is the elected host, every delta it sends is stamped host-sourced. A receiver that owns the entity adopts a host-sourced value into its own baseline instead of reverting it on the next diff, provided the entity's `HostOverride` is `Allow` (the default); `OwnerOnly` drops even a host correction. A host-owned world entity is driven by the host alone, and only by explicit pushes: its manual-dirty marks and its keyframe, never a background diff. See [Host authority](./host-authority.md).
-
-:::warning[Host precedence is a convention with no server-side check. A forged host-sourced flag is honoured as real.]
-It orders who wins on the view plane; it does not make either value trustworthy. If the value matters, it is a Game Model attribute and the question does not arise.
-:::
-
-## Gotchas
-
-- Grep for `CrowdyState: property` first. A property that is not in the layout replicates nothing and says so once, at startup.
-- The notify has no parameters and no old value. Keep the previous value yourself if you need it.
-- A Blueprint variable that is both natively Replicated and Crowdy Replicated fails to compile. In C++, keep `Replicated` off a `CrowdyState` property.
-- `CrowdyOwnerOnly` is delivery scope, not secrecy. The value still travels in the clear to the owner.
-- `StateKeyframeIntervalSeconds` at 0 stops the baseline re-send only; on-change replication is unaffected.
-- The loopback and trace variables are test aids. Leave them off in a normal session.
-
-## Related
-
-- [What a state property may be](./crowdy-state-types.md): the accepted types, the rejections, and structs.
-- [Static entry points](./crowdy-state-static.md): `Mark Crowdy State Dirty` from any graph, and the host push.
-- [Continuous state](./continuous-state.md): the sibling channel for many fields that move together.
-- [Map profiles](./map-profile.md): the cadence, the relevance distance, and the keyframe interval.
-- [State meta keys](../reference/state-meta-keys.md).
-
-# Crowdy State Types
-Source: https://docs.crowdedkingdoms.com/unreal-sdk/runtime/crowdy-state-types
-
-# Crowdy State Types
-
-Crowdy State replicates single values: POD leaves and `USTRUCT`s made of them. It does not replicate containers or object references in any position, and it says so once at startup for each property it drops. This page is the type rule, the rejection list, and the struct example.
-
-## When you are here
+## What a state property may be
 
 You marked a property `CrowdyState` and nothing arrives, or you are about to mark one and want to know if it will. The classifier every surface shares, `FCrowdyStateLayoutBuilder::ClassifyStateProperty` (with `IsStateReplicatable` as the yes-or-no form and `DescribeStateSupport` for the sentence), decides at discovery; the Blueprint compiler's variable check and the variable-details dropdown reuse it, so every surface reports the same reason.
 
-## Accepted
+### Accepted
 
 | Kind | Examples | Notes |
 |---|---|---|
 | Numeric | `int32`, `int64`, `uint8`, `float`, `double` | Diffed and sent as their bytes. |
 | Boolean | `bool` | |
-| Enum | `enum class E : uint8`, `TEnumAsByte` | Carried as the underlying integer. Consider `CrowdyHeartbeat`; see [Crowdy State](./crowdy-state.md#the-metadata-keys). |
+| Enum | `enum class E : uint8`, `TEnumAsByte` | Carried as the underlying integer. Consider `CrowdyHeartbeat`; see [The metadata keys](#the-metadata-keys). |
 | Name and string | `FName`, `FString` | |
 | Plain struct | any `USTRUCT` whose fields, at every depth, hold no container | One slot in the layout; diffed and sent as one unit. |
 | Net-serialized struct | `FVector`, `FRotator`, `FVector_NetQuantize`, any struct with a native net serializer | Rides its own `NetSerializeItem`, quantized as the engine defines it, and exempt from the nested-container check because its serializer bounds the decode. |
 
-## Rejected
+### Rejected
 
 :::warning[Containers and object references are rejected at discovery, in any position, including inside a struct. Use a CrowdyEvent or a Game Model.]
 The error names the escape hatch: `CrowdyState: property 'Players' on '/Script/MyGame.Lantern' is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Game Model container. Omitting it.` A list of who lit the lantern is a `TArray` parameter on a [CrowdyEvent](./rpc-events-cpp.md) if it is a moment, or a [Game Model](../game-models/overview.md) container if it is truth. Never re-attempt it here.
@@ -2941,7 +3039,7 @@ The error names the escape hatch: `CrowdyState: property 'Players' on '/Script/M
 
 A rejected property is omitted from the class's layout, so it never corrupts the positional wire order of the ones that were accepted; the rest of the class replicates normally. The line is an error and is not gated by `crowdy.state.trace`, so it is in the log whether or not tracing is on.
 
-## Structs
+### Structs
 
 A plain `USTRUCT` is a single slot. The whole struct is compared with the engine's `Identical` and, when any field differs, the whole struct is sent; on the receiver every field lands together, before the notify runs. That is the reason to use one: two fields that must always be seen together, a colour and an intensity, cannot arrive half-applied the way two separate properties can.
 
@@ -2984,7 +3082,7 @@ void ALantern::OnRep_Glow()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-A Blueprint variable of a C++ struct type replicates the same way: set its **Crowdy Replication** dropdown to **Replicated** and give it a RepNotify, exactly as for a scalar. Authoring a new struct type in Blueprint for this is unusual, so this page has no Blueprint graph of its own; the mechanics of marking and notifying are on [Crowdy State](./crowdy-state.md).
+A Blueprint variable of a C++ struct type replicates the same way: set its **Crowdy Replication** dropdown to **Replicated** and give it a RepNotify, exactly as for a scalar. Authoring a new struct type in Blueprint for this is unusual, so this section has no Blueprint graph of its own; the mechanics of marking and notifying are under [Mark a property](#mark-a-property) and [The notify](#the-notify).
 
 </TabItem>
 </Tabs>
@@ -2993,7 +3091,7 @@ A Blueprint variable of a C++ struct type replicates the same way: set its **Cro
 Changing one field of a five-field struct re-sends all five. Five scalar properties diff independently and each ships alone. Group fields into a struct when they must land together; keep them separate when they change at different times.
 :::
 
-## Where the list you wanted belongs
+### Where the list you wanted belongs
 
 | You wanted | Put it on |
 |---|---|
@@ -3002,32 +3100,11 @@ Changing one field of a five-field struct re-sends all five. Five scalar propert
 | A reference to another actor | Its NetID as an `FGuid`, resolved with `FindEntity` on the receiver. |
 | A list of active effects | A Game Model collection. |
 
-## Gotchas
+## Marking state from outside the actor
 
-- `FText` is not accepted on this plane, though it is on a CrowdyEvent. Use an `FString` or an `FName`.
-- A struct that is net-serialized is exempt from the nested-container check only because its serializer bounds the decode. A plain struct with a `TArray` inside is rejected however small the array.
-- The rejection fires once, at startup, as an error. Grep for `CrowdyState: property`.
-- Quantization is decided by the struct's type. To ship a quantized position, declare `FVector_NetQuantize`, not `FVector`.
+`UCrowdyStateBlueprintLibrary` has two static nodes that schedule a `CrowdyManualDirty` property to ship without first fetching the actor's Crowdy Entity Component: **Mark Crowdy State Dirty** and **Mark All Crowdy States Dirty**. Each resolves the target actor's component and forwards to its `MarkStateDirty` or `MarkAllStateDirty`. Use them whenever the caller does not already hold the component: a graph on another actor, a function library, a UI widget. From the actor's own graph either form works; the static one needs no component reference wired in.
 
-## Related
-
-- [Crowdy State](./crowdy-state.md): the keys, the notify, the cadence.
-- [Static entry points](./crowdy-state-static.md): the manual-dirty push.
-- [RPC events in C++](./rpc-events-cpp.md): containers and object references as event parameters.
-- [The Two Planes](../concepts/two-planes.md): what belongs on a Game Model instead.
-
-# Crowdy State Static Entry Points
-Source: https://docs.crowdedkingdoms.com/unreal-sdk/runtime/crowdy-state-static
-
-# Crowdy State Static Entry Points
-
-`UCrowdyStateBlueprintLibrary` has two static nodes that schedule a `CrowdyManualDirty` property to ship without first fetching the actor's Crowdy Entity Component: **Mark Crowdy State Dirty** and **Mark All Crowdy States Dirty**. Each resolves the target actor's component and forwards to its `MarkStateDirty` or `MarkAllStateDirty`.
-
-## When to use them
-
-Whenever the caller does not already hold the component: a graph on another actor, a function library, a UI widget. From the actor's own graph either form works; the static one needs no component reference wired in.
-
-## The two nodes
+### The two nodes
 
 | Node | C++ | What it does |
 |---|---|---|
@@ -3038,7 +3115,7 @@ Both are `DefaultToSelf` on `Target`: from an actor's own graph you wire nothing
 
 Both are safe no-ops, never a crash, when the target is null, has no entity component, or the map runs no state replicator. On an entity this client does not drive the two differ: **Mark All Crowdy States Dirty** is ignored, while **Mark Crowdy State Dirty** is not a no-op at all; it becomes the host push described below. On an entity this client does drive, marking a property that is auto-diffed anyway is a no-op logged at verbose level as `ignored: not a manual-dirty property`, never an error.
 
-The example is the same `TimesLit` member the [Crowdy State](./crowdy-state.md) page added; this is the alternate call site, not a second gameplay moment.
+The example is the same `TimesLit` member [Mark a property](#mark-a-property) added; this is the alternate call site, not a second gameplay moment.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -3064,15 +3141,15 @@ From **Event ActorBeginOverlap**, the pure **Is Crowdy Entity Locally Controlled
 </TabItem>
 </Tabs>
 
-## The property picker
+### The property picker
 
 The Property Name pin carries a dropdown, supplied in the editor by `FCrowdyStatePropertyPinFactory`, listing the resolved target class's properties that are marked `CrowdyManualDirty` and pass the type check. The dropdown is editor-only metadata scanning; the name you pick bakes into the compiled Blueprint as a literal `FName`, so a packaged build never reads metadata for this node.
 
 :::note[If your property is not in the dropdown, it is either auto-diffed already or it failed the type check.]
-An auto-diffed property does not need marking; assign it and it ships. A property that failed the check was omitted from the layout at startup with an error; see [What a state property may be](./crowdy-state-types.md).
+An auto-diffed property does not need marking; assign it and it ships. A property that failed the check was omitted from the layout at startup with an error; see [What a state property may be](#what-a-state-property-may-be).
 :::
 
-## On an entity you do not own: the host push
+### On an entity you do not own: the host push
 
 **Mark Crowdy State Dirty** on an entity another client owns is not a no-op. It becomes a one-shot super-user push: the live value of the named property is read on the next replication tick and broadcast once, with no shadow and no ongoing tracking, stamped host-sourced when the caller is the elected host. It works for any Crowdy State property on that entity, not only the manual-dirty ones, because a host override may need to correct anything. An `OwnerOnly` entity refuses it at the source: the push is dropped before it is sent, and a receiver drops one that arrives anyway.
 
@@ -3088,16 +3165,50 @@ The value on the calling client is broadcast as it stands. There is no shadow to
 A modified client can stamp its own pushes host-sourced. This orders who wins on the view plane and nothing more; see [Host authority](./host-authority.md) and [The Two Planes](../concepts/two-planes.md).
 :::
 
+## A field that silently does nothing
+
+The first thing to check. Discovery logs an unconditional error for every marked property it cannot carry, of the shape `CrowdyState: property 'X' on '/Script/MyGame.Lantern' is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Game Model container. Omitting it.` The reasons are a container, a struct that buries a container, a fixed-size array, an object or interface or delegate reference, or an otherwise unsupported type such as `FText`; [Rejected](#rejected) lists them. Two more lines to know: a property marked both `CrowdyState` and `CrowdyModel` is dropped with `is marked both CrowdyState and CrowdyModel; a field lives in exactly one plane`, and a property whose name and type also appear in the actor's continuous-state executor struct is dropped with `also lives in its executor state struct ... Dropping it from the CrowdyState layout`, so a field lives on exactly one channel.
+
+These fire at class registration and are not gated by the trace variable. Grep the log for `CrowdyState: property`, which all three lines share, before turning anything on. When the property is in the layout but the change is not arriving, that is the other question:
+
+```text
+crowdy.state.trace 1     per delta: entity, changed-property count, byte size, spatial or owner-only or keyframe
+crowdy.state.loopback 1  decode your own deltas onto a local mirror entity, for a single-client test
+```
+
+Two read-only diagnostics on `UCrowdyStateReplicator` answer the same questions from code or Blueprint: `IsStateReplicated(Actor)` is true when the actor's class carries at least one accepted property, whichever client drives it, and `GetLastSentStateBytes(Actor)` is the blob size this client last sent for the actor, or -1 when this client does not drive it. `crowdy.state.scopes` adds a CPU trace scope around each delta decode for profiling.
+
+## Host precedence
+
+When the local client is the elected host, every delta it sends is stamped host-sourced. A receiver that owns the entity adopts a host-sourced value into its own baseline instead of reverting it on the next diff, provided the entity's `HostOverride` is `Allow` (the default); `OwnerOnly` drops even a host correction. A host-owned world entity is driven by the host alone, and only by explicit pushes: its manual-dirty marks and its keyframe, never a background diff. See [Host authority](./host-authority.md).
+
+:::warning[Host precedence is a convention with no server-side check. A forged host-sourced flag is honoured as real.]
+It orders who wins on the view plane; it does not make either value trustworthy. If the value matters, it is a Game Model attribute and the question does not arise.
+:::
+
 ## Gotchas
 
-- `Target` defaults to self only where self is an actor. In a component or widget graph, wire the actor.
+- Grep for `CrowdyState: property` first. A property that is not in the layout replicates nothing and says so once, at startup, as an error.
+- The notify has no parameters and no old value. Keep the previous value yourself if you need it.
+- A Blueprint variable that is both natively Replicated and Crowdy Replicated fails to compile. In C++, keep `Replicated` off a `CrowdyState` property.
+- `CrowdyOwnerOnly` is delivery scope, not secrecy. The value still travels in the clear to the owner.
+- `StateKeyframeIntervalSeconds` at 0 stops the baseline re-send only; on-change replication is unaffected.
+- The loopback and trace variables are test aids. Leave them off in a normal session.
+- `FText` is not accepted on this plane, though it is on a CrowdyEvent. Use an `FString` or an `FName`.
+- A struct that is net-serialized is exempt from the nested-container check only because its serializer bounds the decode. A plain struct with a `TArray` inside is rejected however small the array.
+- Quantization is decided by the struct's type. To ship a quantized position, declare `FVector_NetQuantize`, not `FVector`.
+- `Target` on the static nodes defaults to self only where self is an actor. In a component or widget graph, wire the actor.
 - The push is scheduled, not sent. It goes out on the next replication tick with the value the property holds then.
 - Marking twice in one tick sends once.
 - A host-owned world entity is written only through the host's manual-dirty marks and the keyframe; assigning a plain property on it and waiting does nothing. See [Host authority](./host-authority.md).
 
 ## Related
 
-- [Crowdy State](./crowdy-state.md): `CrowdyManualDirty` and the member functions these nodes forward to.
+- [Continuous state](./continuous-state.md): the sibling channel for many fields that move together.
+- [Map profiles](./map-profile.md): the cadence, the relevance distance, and the keyframe interval.
+- [State meta keys](../reference/state-meta-keys.md).
+- [RPC events in C++](./rpc-events-cpp.md): containers and object references as event parameters.
+- [The Two Planes](../concepts/two-planes.md): what belongs on a Game Model instead.
 - [Host authority](./host-authority.md): host-owned entities and the host override.
 - [Ownership transfer](./ownership-transfer.md): making another client the owner instead of pushing over it.
 
@@ -3106,11 +3217,15 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/runtime/continuous-state
 
 # Continuous State
 
-A Dynamic entity streams a snapshot: at the map's replication cadence the owner asks its `UActorUpdateExecutor` for a struct, `UCrowdyAutoReplicator` sends it, and every other client applies it through the [rendering backend](./rendering-backends.md). It is the channel for several fields that move together at high frequency, a transform first of all.
+Continuous state is how a moving entity moves on every other client. Set the entity component to Dynamic mode and, every replication interval, the owner sends a snapshot of the actor's location and rotation; each other client in range applies it to a proxy through the [rendering backend](./rendering-backends.md). There is nothing to write for that: the SDK's default executor takes the snapshot for you.
+
+:::note[What is coming]
+A later SDK release simplifies this further: continuous state will happen by itself, with location and rotation, and need no executor at all, and it adds an extension point for sending your own data alongside them. The aim is to take this setup out of your hands. Everything this page teaches keeps working.
+:::
 
 ## When to use it
 
-For movement and anything else that is one coherent snapshot: a position plus a rotation, a pose. For many small independent values that change at different times, prefer [Crowdy State](./crowdy-state.md) properties: they diff per property, ship only what changed, and need no struct or executor at all. The two are independent channels, not alternatives; an entity can use both.
+Almost always the default is enough: a pawn, a player, an AI that moves. Write a custom snapshot only when more fields must travel with the transform at the movement cadence, a pose, say. For many small independent values that change at different times, prefer [Crowdy State](./crowdy-state.md) properties: they diff per property and ship only what changed. The two are independent channels, not alternatives; an entity can use both.
 
 :::warning[Dynamic mode is unrelated to ownership and to Crowdy State property replication.]
 `Mode` on the entity component chooses whether the continuous channel runs. It does not decide where your replicated properties go, and Static mode does not disable them; both work in either mode. Set Dynamic for a moving entity and nothing else changes.
@@ -3120,7 +3235,7 @@ For movement and anything else that is one coherent snapshot: a position plus a 
 
 Set `Mode` to `ECrowdyEntityMode::Dynamic` and leave `StateExecutor` unset. The SDK's `UCrowdyDefaultActorUpdateExecutor` snapshots the actor's transform into `FCrowdyActorState`, a `Location` and a `Rotation` and deliberately nothing else. With `bAutoRegister` on (the default) the component joins the channel at `BeginPlay`; off, you call `StartReplication` yourself, and `StopReplication` leaves the channel.
 
-The lantern world's mover is `ALanternPlayer`, the player character. It carries a `UCrowdyEntityComponent` in Dynamic mode with PlayerDerived identity and LocalClient ownership, and a `Torch` point light, so a moving light is what every other client sees.
+The lantern world's mover is `ALanternPlayer`, the player character from the [Quickstart](../quickstart.md): a `UCrowdyEntityComponent` in Dynamic mode with PlayerDerived identity and LocalClient ownership, and a `Torch` point light, so a moving light is what every other client sees.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -3149,12 +3264,14 @@ public:
 };
 
 // LanternPlayer.cpp
+#include "LanternPlayer.h"
+
 ALanternPlayer::ALanternPlayer()
 {
 	Torch = CreateDefaultSubobject<UPointLightComponent>(TEXT("Torch"));
 	Torch->SetupAttachment(RootComponent);
 
-	// A player pawn joins the continuous channel in Dynamic mode; its transform tracks on every client.
+	// Dynamic sends the transform every interval, Player Derived names the entity after the signed-in user, Local Client makes this client its sender.
 	CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
 	CrowdyEntity->Mode = ECrowdyEntityMode::Dynamic;
 	CrowdyEntity->IdentityPolicy = ECrowdyIdentityPolicy::PlayerDerived;
@@ -3170,7 +3287,9 @@ On the Crowdy Entity Component set **Mode** to **Dynamic** in the Details panel 
 </TabItem>
 </Tabs>
 
-**Success signal.** On a second client the player's torch moves with the owner. `crowdy.entity.trace 1` logs the registration; the actor manager's proxy comes from the map profile's backend, so if nothing moves, check [the backend config](./map-profile.md) before the executor.
+Start the pawn only once the SDK reports the connection up (`OnUDPConnectionSuccess`, or `GetUDPConnectionState()` at `Connected`); the Quickstart spawns it from that event, and the Gotchas say why.
+
+**Success signal.** On a second client the player's torch moves with the owner. `crowdy.entity.trace 1` logs the registration; if nothing moves, check [the backend config](./map-profile.md) before the executor.
 
 :::caution[A host-owned Dynamic entity leaves BeginPlay sending nothing.]
 `bAutoRegister` starts the channel only for an entity this client owns outright. A level-placed Dynamic entity with `Ownership = Host` has no owner at `BeginPlay`, so nothing is sent until the host is known; the component logs this once. A moving world entity is driven by the host through `StartReplication` once it knows it is the host, or by an owner after an [ownership transfer](./ownership-transfer.md).
@@ -3178,16 +3297,13 @@ On the Crowdy Entity Component set **Mode** to **Dynamic** in the Details panel 
 
 ## A custom executor
 
-Subclass `UActorUpdateExecutor` when the snapshot needs more than a transform. Two `BlueprintNativeEvent`s:
-
-- `GetActorState(UpdateComponent)` returns the `FInstancedStruct` snapshot. `UpdateComponent` is the entity component driving replication; `GetOwner()` on it is the actor. Runs on the owner only, at the cadence.
-- `GetStateStruct()` returns the `UScriptStruct` the snapshot is made of. Declaring it here is what registers the type for wire serialization; no struct annotation is needed.
+Subclass `UActorUpdateExecutor` when the snapshot needs more than a transform. Two functions: `GetActorState(UpdateComponent)` returns the `FInstancedStruct` snapshot (`UpdateComponent` is the entity component; `GetOwner()` on it is the actor), and `GetStateStruct()` returns the `UScriptStruct` it is made of, which registers the type for the wire; the struct needs no annotation.
 
 :::danger[Override the `_Implementation` functions, with `const`, never the bare event names.]
 Both are `BlueprintNativeEvent`s, so the bare names are not virtual in the generated C++. A native subclass declares `GetActorState_Implementation(const UActorComponent*) const override` and `GetStateStruct_Implementation() const override`; `UCrowdyDefaultActorUpdateExecutor` is the shipped example of the correct shape. Marking `GetActorState` itself `override` does not compile, because there is nothing virtual to override.
 :::
 
-`ULanternPlayerExecutor` snapshots `FLanternPlayerState`: the transform the default carries plus one field of the player's own, `bTorchLit`, so a proxy's torch can follow its owner's. The struct is declared next to the executor, and the executor is assigned to `StateExecutor` in the character's constructor.
+`ULanternPlayerExecutor` snapshots `FLanternPlayerState`: the transform the default carries plus one field of the player's own, `bTorchLit`, so a proxy's torch can follow its owner's. The struct is declared next to the executor, and the executor is assigned to `StateExecutor` in the character's constructor. On the other clients the snapshot is applied by the backend's [replication application policy](./rendering-backends.md#the-replication-application-policy), which is what moves a remote player's proxy: the shipped one applies `Location` and `Rotation`, and a policy of your own replaces it, so write one only when your executor sends more than the transform, and then apply the transform yourself first.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -3244,50 +3360,34 @@ Create a Blueprint with **Actor Update Executor** as its parent class. In **My B
 
 ![Get Actor State and Get State Struct in the override list of an Actor Update Executor Blueprint](/img/unreal-sdk/bp-executor-overrides.png)
 
-**Get State Struct** returns the struct type; **Get Actor State** builds the snapshot with **Make InstancedStruct** from the owning actor's transform. Then set the character's **State Executor** to the new class in the Details panel. There is no generated graph for this one: an override on an executor subclass is not an actor event graph, so the screenshot above is the reference.
+**Get State Struct** returns the struct type; **Get Actor State** builds the snapshot with **Make InstancedStruct** from the owning actor's transform. Then set the character's **State Executor** to the new class in the Details panel. An override on an executor subclass is not an actor event graph, so the screenshot above is the reference.
 
 </TabItem>
 </Tabs>
 
 :::caution[Only the owner runs GetActorState. Keep it a read-only snapshot.]
-A remote proxy is fed from the network and never calls it, so a side effect inside the override happens on one client only. Read the actor, fill the struct, return it.
+A remote proxy is fed from the network and never calls it, so a side effect inside the override happens on one client only; a value the proxy needs comes from the backend's policy. Read the actor, fill the struct, return it.
 :::
 
-Class identity travels on every update alongside the snapshot, so several entity classes may share one state struct; the receiver never derives the class from the struct type. This is also what lets the default executor be shared by every entity in a project.
-
-## Cadence: what a tick sends
-
-The owner evaluates `GetActorState` every interval; whether anything goes out is the map profile's decision (`UCrowdyAutoReplicator` runs one pure rule for it, with three answers: nothing, a full snapshot, or a heartbeat):
-
-| Map profile field | Default | Effect |
-|---|---|---|
-| `bUseAutoReplicator` | on | Off means no polling at all. |
-| `ReplicationIntervalHz` | 10 | The cadence, 1 to 10 Hz. Shared with Crowdy State, which sends separately. |
-| `bSendActorStateOnlyOnChange` | on | An unchanged snapshot does not repeat. Off restores an unconditional send every interval. |
-| `ActorKeyframeIntervalSeconds` | 3.0 | A full re-send of an unchanged snapshot, so a late or lossy observer converges. 0 disables. |
-| `ActorHeartbeatIntervalSeconds` | 1.0 | A spatial header with no state, so an idle entity is not reaped by its observers. 0 disables. |
-
-:::note[An unchanged actor is not silent.]
-With both intervals at their defaults an idle entity sends a heartbeat every second and a keyframe every three. Set both to 0 and an idle entity sends nothing after its first snapshot, and its observers will time it out after the tracker's `ActorTimeoutThreshold`.
-:::
-
-## How a field ends up on exactly one channel
-
-A `CrowdyState` property whose name and canonical type also match a field of the actor's executor struct is dropped from the Crowdy State layout at discovery, with an error mentioning `also lives in its executor state struct`. Put a field in the snapshot or in a property, not both.
+The owner evaluates `GetActorState` every interval (`ReplicationIntervalHz`, 10 by default, 1 to 10 Hz, one clock shared with Crowdy State; `bUseAutoReplicator` off means no polling at all). With `bSendActorStateOnlyOnChange` on, the default, an unchanged snapshot does not repeat: a full keyframe goes out every `ActorKeyframeIntervalSeconds` (3 s) so a late or lossy observer converges, and a heartbeat every `ActorHeartbeatIntervalSeconds` (1 s) so an idle entity is not reaped; off, the snapshot goes out every interval whether it changed or not. The [map profile](./map-profile.md) page lists each field. A field lives on exactly one channel: a `CrowdyState` property whose name and canonical type also match a field of the executor struct is dropped from the Crowdy State layout at discovery, with an error mentioning `also lives in its executor state struct`.
 
 ## Gotchas
 
 - `Mode` is orthogonal to `Ownership` and to Crowdy State. Do not set Dynamic hoping to make properties replicate; they already do.
 - `_Implementation`, `const`, `override`. The shipped default is the template.
-- The snapshot is applied through the backend's policy. With no Backend Config the shipped `UCrowdyTransformRepPolicy` applies `FCrowdyActorState`; a custom struct like `FLanternPlayerState` is skipped until the profile names a policy that reads it, so the proxy stands still while the owner moves.
-- `GetActorState` is the owner's function. A proxy that needs a value from the snapshot gets it from the backend's policy, not by calling the executor.
+- Nothing is held until the connection is up. `OnUDPConnectionSuccess` already includes the server's readiness wait after assignment, so you never time anything; but an actor update sent before it is neither held nor replayed, so it is lost, mostly silently, until the next interval's update or keyframe repairs it. A Dynamic entity you own that begins play early heals that way; spawn a player pawn from the event instead, as the Quickstart does.
+- An unchanged actor is not silent. Set both intervals to 0 and an idle entity sends nothing after its first snapshot, and its observers time it out after the tracker's `ActorTimeoutThreshold`.
+- The policy is what moves the proxy. With no Backend Config the shipped `UCrowdyTransformRepPolicy` applies `FCrowdyActorState`, interpolating across a ring of recent samples with bounded extrapolation; a custom struct like `FLanternPlayerState` is skipped until the profile names a policy that reads it, and that policy must apply the transform itself, or the proxy stands still while the owner moves.
+- Class identity travels on every update, so several entity classes may share one state struct; the receiver never derives the class from the struct. This is what lets the default executor serve every entity in a project.
 - `RegisterStateClass` on `UCrowdyActorManager` is filled for you at `BeginPlay`; you never call it.
 
 ## Related
 
+- [Quickstart](../quickstart.md): the player pawn as a Dynamic entity, spawned once connected, and your own reflection as the first thing you see.
 - [Entity component](./entity-component.md): `Mode`, `StateExecutor`, `bAutoRegister`, `StartReplication`.
-- [Rendering backends](./rendering-backends.md): the policy that consumes the snapshot on a proxy.
+- [Rendering backends](./rendering-backends.md): the policy that moves a proxy from the snapshot.
 - [Map profiles](./map-profile.md): the cadence and the keyframe and heartbeat intervals.
+- [Connection and reconnect](./connection-and-reconnect.md): what `OnUDPConnectionSuccess` and `Connected` mean.
 - [Crowdy State](./crowdy-state.md): the per-property alternative.
 
 # Host Authority
@@ -3347,7 +3447,7 @@ Bind `OnHostElected` (`FOnCrowdyHostElected`, `HostID`, `PreviousHostID`, on the
 
 ## World entities and the host override
 
-A level-placed entity with `Ownership = ECrowdyOwnership::Host` is `HostOwned`: whichever client is host at the moment is its one authority, and its `IsLocallyOwned()` is true there alone. Its Crowdy State is written by the host through explicit pushes (`MarkStateDirty`, `MarkAllStateDirty`, or the [static nodes](./crowdy-state-static.md)) and the keyframe, never by a background diff, so an implicit and an explicit write cannot race. On a host change the entity is re-tracked by the new host without any code of yours.
+A level-placed entity with `Ownership = ECrowdyOwnership::Host` is `HostOwned`: whichever client is host at the moment is its one authority, and its `IsLocallyOwned()` is true there alone. Its Crowdy State is written by the host through explicit pushes (`MarkStateDirty`, `MarkAllStateDirty`, or the [static nodes](./crowdy-state.md#the-two-nodes)) and the keyframe, never by a background diff, so an implicit and an explicit write cannot race. On a host change the entity is re-tracked by the new host without any code of yours.
 
 A client-owned entity (`Ownership = LocalClient`) has a `HostOverride` (`ECrowdyHostOverride`): `Allow`, the default, lets the host correct its Crowdy State as a super-user and the owner adopts the value; `OwnerOnly` refuses even a host correction. This is precedence by convention. It orders who wins on the view plane; it does not make either value trustworthy.
 
@@ -3697,7 +3797,7 @@ When a Dynamic entity moves on its owner and not on anyone else, when you want y
 The screenshot is the SDK's shipped default profile, and its **Backend Config** reads None: the backend runs on a built-in config in that case.
 
 :::note[No Backend Config means the built-in one: the actor pool with the transform policy.]
-When `BackendConfig` is empty, `UCrowdyActorPoolBackend::InitializeBackend` creates a transient **Actor Pool Backend Config** and, since it names no policy, instantiates `UCrowdyTransformRepPolicy`: it reads the default executor's `FCrowdyActorState` and sets the pooled actor's location and rotation, interpolating between the last two samples. A `BackendConfig` of another backend's class is refused: the backend logs `Backend Config is a <class>, but this backend needs a CrowdyActorPoolBackendConfig` and returns false, the actor manager logs `could not initialize, so no remote entity will be drawn on this map`, and remote entities arriving as continuous-state updates are tracked with nothing on screen. Spawn-event proxies and Crowdy State are unaffected either way. See [Map profiles](./map-profile.md).
+When `BackendConfig` is empty, `UCrowdyActorPoolBackend::InitializeBackend` creates a transient **Actor Pool Backend Config** and, since it names no policy, instantiates `UCrowdyTransformRepPolicy`: it reads the default executor's `FCrowdyActorState` and sets the pooled actor's location and rotation, interpolated across a ring of recent samples with bounded extrapolation. A `BackendConfig` of another backend's class is refused: the backend logs `Backend Config is a <class>, but this backend needs a CrowdyActorPoolBackendConfig` and returns false, the actor manager logs `could not initialize, so no remote entity will be drawn on this map`, and remote entities arriving as continuous-state updates are tracked with nothing on screen. Spawn-event proxies and Crowdy State are unaffected either way. See [Map profiles](./map-profile.md).
 
 The fallback is newer than the tagged v2.14.0 plugin. On that release an empty Backend Config, or one with no Replication Policy Class, tracks remote entities and draws nothing; set an **Actor Pool Backend Config** naming `UCrowdyTransformRepPolicy`. See [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).
 :::
@@ -3708,7 +3808,7 @@ The fallback is newer than the tagged v2.14.0 plugin. On that release an empty B
 
 | Field | Default | Effect |
 |---|---|---|
-| `ReplicationPolicyClass` | none | Your `UCrowdyRepApplicationPolicy` subclass. Unset means `UCrowdyTransformRepPolicy`, which applies `FCrowdyActorState`; set it when your executor sends a struct of your own. |
+| `ReplicationPolicyClass` | none | Your `UCrowdyRepApplicationPolicy` subclass. Unset means `UCrowdyTransformRepPolicy`, which moves the proxy from `FCrowdyActorState`; set it when your executor sends more than the transform, and move the proxy yourself in it. |
 | `PoolPolicyClass` | none, optional | A `UCrowdyActorPoolPolicy` subclass. Unset means the concrete base, which already hides pooled actors, shows them on activation, and strips proxy movement. |
 | `DefaultPoolSizePerClass` | 8 | Pools are created lazily per entity class at this size. |
 | `PerClassPoolOverrides` | empty | A per-class pool size; a class listed here is also pre-warmed at map load. |
@@ -3719,7 +3819,9 @@ The fallback is newer than the tagged v2.14.0 plugin. On that release an empty B
 
 ### The replication application policy
 
-`UCrowdyRepApplicationPolicy` reads a state struct out of each update and applies it to the pooled actor each frame. The shipped `UCrowdyTransformRepPolicy` does that for `FCrowdyActorState`; you write one when your executor sends a struct of your own.
+The policy is what moves a remote player's proxy. Continuous state is how pawns, players, and AI move, so a policy's first job is to take the location and rotation out of each update and put the proxy where the owner was at `RenderTimeMs`. The shipped `UCrowdyTransformRepPolicy` does exactly that for `FCrowdyActorState`, and for a pawn that only moves it is all you need. You write your own only when your executor sends more than the transform, and then you apply the transform yourself first and your extra fields after, because a custom policy replaces the shipped one rather than adding to it: `UCrowdyActorPoolBackend::ResolvePolicyClass` instantiates the config's class instead of `UCrowdyTransformRepPolicy`, so a policy that never sets location and rotation leaves every proxy under it standing still.
+
+`UCrowdyRepApplicationPolicy` reads a state struct out of each update and applies it to the pooled actor each frame:
 
 | Override | Called | What you do |
 |---|---|---|
@@ -3729,7 +3831,15 @@ The fallback is newer than the tagged v2.14.0 plugin. On that release an empty B
 | `OnInstanceDeactivated(SlotId)` | When the entity leaves | Clean up per-slot state. |
 | `GetExpectedSlotCount()` | At startup | How many slots to pre-allocate; 64 by default. Match your expected player count. |
 
-`ULanternRepPolicy` applies the `bTorchLit` flag the [continuous state](./continuous-state.md) page added to `ALanternPlayer`'s `FLanternPlayerState`: `ExtractFields` stores it per slot and returns false for any other struct type, `ApplyToActor` sets the proxy torch's visibility from it. A flag is a discrete value, not something to interpolate over `RenderTimeMs`, so the policy applies the latest. The policy header includes `LanternPlayer.h` for the struct, so this snippet depends on the [`executor-override` block](./continuous-state.md#a-custom-executor) being in your project first.
+#### The sample ring
+
+Both the shipped policy and the example below keep their per-slot history in `TInterpolatedField<T, Capacity>`, a small ring buffer the SDK ships in `Data/TInterpolatedField.h`, 32 samples deep by default. `TInterpolatedField::Push(Value, TimestampMs)` stores one sample with the server timestamp the update carried. `TInterpolatedField::Sample(RenderTimeMs, LerpFn)` finds the two samples that bracket the render time by binary search and blends between them with the function you pass (`FMath::Lerp` for a location; a quaternion slerp for a rotation). When the render time runs past the newest sample, `Sample` extrapolates from the last two by calling the same function with an alpha above 1, for at most 0.2 seconds beyond the newest; after that it holds the value extrapolated to 0.2 seconds. A render time older than the oldest sample takes the same path backwards from the newest pair, with no cap; a slot is in that state only briefly after activation, until the render time, which runs one interpolation delay behind, catches up with the samples already held. A location follows that extrapolation in full; the rotation slerp clamps its alpha to 1.2, so a rotation extrapolates by at most a fifth of a step. With one sample it returns that sample; with none, the default you pass. `PhysicalIndex` is the ring's own index arithmetic, nothing you call.
+
+The reason a proxy built on it does not jitter is the render time itself: the actor manager renders at the estimated server time minus the interpolation delay (100 ms), so the proxy is always drawn a little behind the newest sample, between two samples it already holds, and never snaps to the latest one as it lands. Extrapolation only runs when an update is late, and its cap keeps a lost stream from sliding a proxy across the map.
+
+#### The example: the same shape, with your own field added
+
+`ULanternRepPolicy` is what the shipped policy does, plus one field. `FLanternPlayerState`, the struct the [continuous state](./continuous-state.md) page's executor sends for `ALanternPlayer`, carries `Location`, `Rotation`, and `bTorchLit`. The policy keeps one `TInterpolatedField<FVector>` and one `TInterpolatedField<FRotator>` per slot: `ExtractFields` refuses any other struct type and pushes the location and rotation with the update's server timestamp; `ApplyToActor` samples both at `RenderTimeMs`, calls `SetActorLocationAndRotation` on the proxy, and only then applies the torch flag to the proxy's `Torch` light. The flag is applied as the latest value: a boolean is not something to blend. `OnInstanceDeactivated` resets the slot so a reused slot never starts from a departed player's history. The policy header includes `LanternPlayer.h` for the struct, so this snippet depends on the [`executor-override` block](./continuous-state.md#a-custom-executor) being in your project first.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -3737,9 +3847,11 @@ The fallback is newer than the tagged v2.14.0 plugin. On that release an empty B
 ```cpp
 // LanternRepPolicy.h
 #include "Data/CrowdyRepApplicationPolicy.h"
+#include "Data/TInterpolatedField.h"
 #include "LanternPlayer.h"
 #include "LanternRepPolicy.generated.h"
 
+// Replaces the shipped transform policy, so it moves the proxy itself and then applies the one field of its own.
 UCLASS()
 class ULanternRepPolicy : public UCrowdyRepApplicationPolicy
 {
@@ -3748,9 +3860,14 @@ class ULanternRepPolicy : public UCrowdyRepApplicationPolicy
 public:
 	virtual bool ExtractFields(const FInstancedStruct& State, int64 ServerTimestampMs, int32 SlotId) override;
 	virtual void ApplyToActor(AActor* Actor, int32 SlotId, int64 RenderTimeMs) override;
+	virtual void OnInstanceDeactivated(int32 SlotId) override;
 
 private:
+	TArray<TInterpolatedField<FVector>> Positions;
+	TArray<TInterpolatedField<FRotator>> Rotations;
 	TArray<bool> bTorchLitBySlot;
+
+	void EnsureSlot(int32 SlotId);
 };
 
 // LanternRepPolicy.cpp
@@ -3763,22 +3880,57 @@ bool ULanternRepPolicy::ExtractFields(const FInstancedStruct& State, int64 Serve
 	const FLanternPlayerState* Player = State.GetPtr<FLanternPlayerState>();
 	if (!Player)
 	{
-		return false; // Wrong struct type; the subsystem skips this update rather than misreading it.
+		return false;
 	}
-	if (SlotId >= bTorchLitBySlot.Num())
-	{
-		bTorchLitBySlot.SetNumZeroed(SlotId + 1);
-	}
+	// Each slot keeps a ring of timestamped samples; Sample reads them back at whatever render time the pool asks for.
+	EnsureSlot(SlotId);
+	Positions[SlotId].Push(Player->Location, ServerTimestampMs);
+	Rotations[SlotId].Push(Player->Rotation, ServerTimestampMs);
 	bTorchLitBySlot[SlotId] = Player->bTorchLit;
 	return true;
 }
 
+void ULanternRepPolicy::EnsureSlot(int32 SlotId)
+{
+	if (SlotId >= Positions.Num())
+	{
+		Positions.SetNum(SlotId + 1);
+		Rotations.SetNum(SlotId + 1);
+		bTorchLitBySlot.SetNumZeroed(SlotId + 1);
+	}
+}
+```
+
+```cpp
+// LanternRepPolicy.cpp
 void ULanternRepPolicy::ApplyToActor(AActor* Actor, int32 SlotId, int64 RenderTimeMs)
 {
-	if (UPointLightComponent* Torch = Actor->FindComponentByClass<UPointLightComponent>())
+	if (!Positions.IsValidIndex(SlotId))
 	{
-		Torch->SetVisibility(bTorchLitBySlot.IsValidIndex(SlotId) && bTorchLitBySlot[SlotId]);
+		return;
 	}
+	const FVector Location = Positions[SlotId].Sample(RenderTimeMs, [](const FVector& A, const FVector& B, float T) { return FMath::Lerp(A, B, T); });
+	const FRotator Rotation = Rotations[SlotId].Sample(RenderTimeMs, [](const FRotator& A, const FRotator& B, float T)
+	{
+		return FQuat::Slerp(A.Quaternion(), B.Quaternion(), FMath::Clamp(T, 0.f, 1.2f)).GetNormalized().Rotator();
+	});
+	// The transform first, then the field of your own: the proxy's torch follows the owner's.
+	Actor->SetActorLocationAndRotation(Location, Rotation);
+	if (const ALanternPlayer* Player = Cast<ALanternPlayer>(Actor))
+	{
+		Player->Torch->SetVisibility(bTorchLitBySlot[SlotId]);
+	}
+}
+
+void ULanternRepPolicy::OnInstanceDeactivated(int32 SlotId)
+{
+	if (!Positions.IsValidIndex(SlotId))
+	{
+		return;
+	}
+	Positions[SlotId] = {};
+	Rotations[SlotId] = {};
+	bTorchLitBySlot[SlotId] = false;
 }
 ```
 
@@ -3835,7 +3987,8 @@ The actor manager is already the single caller of `ActivateInstance` and `Deacti
 
 ## Gotchas
 
-- `BackendClass` alone draws the default executor's movement through `UCrowdyTransformRepPolicy`. A custom state struct needs `BackendConfig` with a `ReplicationPolicyClass` that reads it.
+- `BackendClass` alone draws the default executor's movement through `UCrowdyTransformRepPolicy`. A custom state struct needs `BackendConfig` with a `ReplicationPolicyClass` that reads it, and that policy replaces the shipped one: apply `Location` and `Rotation` yourself before anything else, or every proxy stands still.
+- A policy built on `TInterpolatedField` is the smooth choice for anything that moves. Sample it at `RenderTimeMs`, never at the newest sample: the delay is what hides the network.
 - `bUseCrowdyActorTracker` off on the profile means no tracker, no manager, and no backend at all.
 - A pooled proxy's spawn-time look comes from class defaults or the state struct, never the spawn payload.
 - Pool exhaustion is a warning per entity, `Pool exhausted for <class>`, and the entity is not drawn until a slot frees. Raise `DefaultPoolSizePerClass` or add a `PerClassPoolOverrides` row.
@@ -4093,6 +4246,10 @@ A connection indicator in the HUD, a "reconnecting" overlay, a decision about wh
 The events on `UCrowdySDKSubsystem`, all Blueprint-assignable: **On UDP Connection Success** (`OnUDPConnectionSuccess`, an `FOnUDPConnectionSuccess`) whenever the connection comes up, including after a re-assignment, since that is a new session; **On UDP Timed Out** (`OnUDPTimedOut`, an `FOnUDPTimedOut`) when the transport gave up on a re-assignment, with the state at `Reconnecting`; **On UDP Address Notify** (`OnUDPAddressNotify`, an `FOnUDPAddressNotify` with `bSuccess` and `GateKeep`) when the server answers the access request. `RequestUDPAccess()` asks for the connection; the [Quickstart](../quickstart.md) never calls it because the sign-in does. Underneath sits `UCrowdyUDPSubsystem`, whose `GetConnectionState()` is the C++ read that needs no game thread and whose `GetUDPNetworkStats()` returns an `FUDPNetworkStatistics` (bytes and datagrams each way, messages per second, `Ping`, the client-notify counters and loss percentage); `ResetUDPNetworkStats()` zeroes it.
 
 Coming up does more than flip the state: the same handler that broadcasts **On UDP Connection Success** joins the reliable-RPC channels, which is what makes the [session channel](./channels.md) "always joined".
+
+:::note[Connected means the server is ready for your traffic, not only that the socket is open.]
+After the server assigns this client, it needs a moment to install the session before it accepts spatial traffic. The SDK waits that out itself: the state stays `Connecting` until the assignment plus the readiness wait have elapsed, and only then does it turn `Connected` and broadcast **On UDP Connection Success**. You never time anything. What the SDK does not do is hold your sends for that moment: an actor update or a spatial event sent while the state is still `Connecting` goes out, or is dropped, and is never replayed once connected; the next replication interval is the recovery. So gate the thing that starts sending, the pawn's spawn or the entity component's activation, on this event or on `Get UDP Connection State` reading `Connected`, as the [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity) does. A `Multicast` event is the one exception, queued until the channel bootstrap finishes (see the Gotchas).
+:::
 
 ## When it drops
 
@@ -7200,6 +7357,53 @@ Its two events, `OnOwnerUUIDUpdated` (`FOnOwnerUUIDUpdated`) and `OnHostIDUpdate
 
 `Login`, `Register`, the link, and the social flow persist the session token; `RestoreSession` on the next launch re-mints from it and fires `OnSessionRestored`, and the SDK connects as after any sign-in. Gate your login screen on `IsSignedIn()`.
 
+### Restore a saved session
+
+A returning player should type nothing. The Game Instance calls `RestoreSession(OnSuccess, OnError)` first, before it shows a sign-in screen or calls `Login`. The call returns `bool`: true means a saved session was found and the restore is under way, and the outcome arrives on the delegates; false means nothing is saved on this machine, `OnError` has already run with `No saved session found`, and `OnSessionRestoreFailed` has already fired, so the error path is the sign-in screen. On success the SDK re-mints the app token from the saved session token, calls `OnSuccess`, and fires `OnSessionRestored`; then, exactly as after a `Login`, it requests the realtime connection with the fresh app token and raises its own `OnLogin` on the Crowdy SDK Subsystem, so the handlers you bound for a first sign-in, `OnLogin` and `OnUDPConnectionSuccess`, run unchanged. A restore that fails after finding a saved session (the token was revoked, the network is down) reaches `OnError` the same way.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`RestoreOrSignIn` is what `Init` calls in place of the bare `Login` from the Quickstart. `OnSuccess` is the same `HandleSignedIn` every path on this page binds; `HandleRestoreFailed` falls through to `Login` with the configured account, and a game with a sign-in screen shows it there instead. The return value is ignored on purpose: both outcomes arrive on the delegates.
+
+```cpp
+// LanternGameInstance.h
+#include "Subsystem/CrowdyAuthentication.h"
+
+// Init calls this in place of Login: a machine that signed in before comes back without typing anything.
+void RestoreOrSignIn();
+
+UFUNCTION()
+void HandleRestoreFailed(FString Message);
+
+// LanternGameInstance.cpp
+void ULanternGameInstance::RestoreOrSignIn()
+{
+	UCrowdyAuthentication* Auth = GetSubsystem<UCrowdyAuthentication>();
+	FOnAuthSuccess OnSuccess;
+	OnSuccess.BindDynamic(this, &ULanternGameInstance::HandleSignedIn);
+	FOnAuthError OnError;
+	OnError.BindDynamic(this, &ULanternGameInstance::HandleRestoreFailed);
+	// False means nothing is saved on this machine and OnError has already run; a saved token the server refuses reaches OnError later.
+	Auth->RestoreSession(OnSuccess, OnError);
+}
+
+void ULanternGameInstance::HandleRestoreFailed(FString Message)
+{
+	GetSubsystem<UCrowdySDKSubsystem>()->Login(Email, Password);
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+**Event Init** runs the latent **Restore Session** node, which takes nothing but the world context. Its **On Error** pin is the only place that asks for credentials: the graph runs **Login** with the configured account there, as the Quickstart does, and a game with a sign-in screen creates the widget from [Player Sign-in](../runtime/player-sign-in.md) and adds it to the viewport on that pin instead; a machine with nothing saved reaches it at once. **On Success** carries the `Result`, read for nothing.
+
+[Blueprint snippet: auth-restore, see /bp/unreal-sdk/auth-restore.txt]
+
+</TabItem>
+</Tabs>
+
 :::warning[IsSignedIn is not HasSavedSession.]
 `HasSavedSession` only says a credential exists on disk. It stays true across a restart, before a restore has run, and after a restore that failed. `IsSignedIn` is true only while a sign-in or restore has completed and its app token is held in memory right now.
 :::
@@ -9117,7 +9321,7 @@ You built against the SDK in July, you are updating the plugin to 2.14 or later,
 
 ## Unreleased (after v2.14.0)
 
-**Not in v2.14.0.** These two changes are in the SDK source and ship with the next release; a project on the tagged 2.14.0 plugin does not have them, and must not apply the delegate change yet. One is a source break for C++ projects; the other removes work you may have done. The examples on this site are written for the source that carries both; every page they touch says what the tagged 2.14.0 plugin does instead.
+**Not in v2.14.0.** These three changes are in the SDK source and ship with the next release; a project on the tagged 2.14.0 plugin does not have them, and must not apply the delegate change yet. One is a source break for C++ projects; the other two remove work you may have done. The examples on this site are written for the source that carries all three; every page they touch says what the tagged 2.14.0 plugin does instead.
 
 - **Eighteen array delegates pass `const TArray<T>&` instead of `TArray<T>` by value.** Ten single-cast: `FOnTeamsSuccess`, `FOnTeamMembersSuccess`, `FOnTeamRolesSuccess`, `FOnMyTeamsSuccess` (teams), `FOnAvatarsSuccess`, `FOnAppStatesSuccess` (avatars), `FOnChannelsSuccess`, `FOnChannelMembersSuccess`, `FOnChannelRolesSuccess`, `FOnMyChannelsSuccess` (channels). Three multicast cache events a 2.1 project is likely to have bound with `AddDynamic`: `FOnMyTeamsCacheChanged`, `FOnMyAvatarsCacheChanged`, `FOnMyChannelsCacheChanged`. Five Game Model outcome events, for a project that adopted collections or sessions on 2.13 or 2.14: `FCrowdyCollectionItemsOutcome`, `FCrowdyTraverseOutcome` (both parameters), `FCrowdyContainerRefsOutcome`, `FCrowdySessionsOutcome`, `FCrowdySessionEventsOutcome`. **What you do:** when you take that release, any C++ `UFUNCTION` bound to one of them changes its parameter from `TArray<FCrowdyTeam> Teams` to `const TArray<FCrowdyTeam>& Teams`, and likewise for the rest. A Blueprint custom event bound to one of these pins is unaffected; Blueprint has no by-value versus by-reference distinction on the pin.
 
@@ -9126,6 +9330,7 @@ On the release that carries it, a C++ project that updates the plugin and rebuil
 :::
 
 - **The actor pool draws with no Backend Config at all.** Up to and including 2.14.0, a map profile whose Backend Config was empty, or whose config named no Replication Policy Class, left remote Dynamic entities tracked but never rendered, so choosing a Backend Config was mandatory in practice. After 2.14.0 a missing config falls back to a built-in transform-interpolation policy, `UCrowdyTransformRepPolicy`, and that step is optional. **What you do:** nothing. A project that authored its own Backend Config is unaffected; a project that left it empty and worked around the blank screen can delete the workaround once it is on that release. See [Map profile](../runtime/map-profile.md) and [Rendering backends](../runtime/rendering-backends.md).
+- **The shipped transform policy interpolates across a ring of samples.** Up to and including 2.14.0, `UCrowdyTransformRepPolicy` kept two samples per proxy: it snapped to a lone sample, blended between the two it held, and stopped at the newer one when the render time passed it, so a late update showed as a pause and the next as a jump. After 2.14.0 it keeps a ring of recent samples per proxy in `TInterpolatedField`, samples the pair that brackets the render time, and extrapolates from the last two for at most 0.2 seconds when the render time runs past the newest. **What you do:** nothing. Proxies drawn by the shipped policy move more smoothly through late and lost updates. A project that wrote its own policy to get that behavior can drop it, or rebuild it on `TInterpolatedField` and keep its extra fields; see [Rendering backends](../runtime/rendering-backends.md#the-sample-ring).
 
 ## 2026-09-17 (SDK v2.14.0)
 
@@ -9260,7 +9465,7 @@ World subsystems:
 UCrowdyEntitySubsystem* Entities = GetWorld()->GetSubsystem<UCrowdyEntitySubsystem>();
 ```
 
-Blueprint function libraries (`UCrowdyUtilities`, `UCrowdyStateBlueprintLibrary`, `UCrowdyOwnershipTransfer`, `UCrowdyReplicatedSubsystemLibrary`) are static and need no fetch; see [Entities and spawning](../runtime/entities-and-spawning.md), [Crowdy State static](../runtime/crowdy-state-static.md), [Ownership transfer](../runtime/ownership-transfer.md) and [Replicated subsystems](../runtime/replicated-subsystems.md).
+Blueprint function libraries (`UCrowdyUtilities`, `UCrowdyStateBlueprintLibrary`, `UCrowdyOwnershipTransfer`, `UCrowdyReplicatedSubsystemLibrary`) are static and need no fetch; see [Entities and spawning](../runtime/entities-and-spawning.md), [Marking state from outside the actor](../runtime/crowdy-state.md#marking-state-from-outside-the-actor), [Ownership transfer](../runtime/ownership-transfer.md) and [Replicated subsystems](../runtime/replicated-subsystems.md).
 
 ## Excluded from this table
 
@@ -9736,9 +9941,9 @@ mode, as a convenience; the underlying mechanism is the same opt-in metadata eit
 
 ## What can be marked
 
-Crowdy State covers plain values and plain structs: numbers, bools, enums, `FName`, `FString`, and USTRUCTs built from those. Object references, containers (`TArray`, `TSet`, `TMap`, including buried inside a struct), and static arrays are rejected at discovery and simply do not replicate. See [Unsupported types](/unreal-sdk/runtime/crowdy-state-types#rejected) for the full list and the reasons.
+Crowdy State covers plain values and plain structs: numbers, bools, enums, `FName`, `FString`, and USTRUCTs built from those. Object references, containers (`TArray`, `TSet`, `TMap`, including buried inside a struct), and static arrays are rejected at discovery and simply do not replicate. See [Unsupported types](/unreal-sdk/runtime/crowdy-state#rejected) for the full list and the reasons.
 
-A struct type that carries a native net serializer (`FVector_NetQuantize`, `FRotator`, and the rest of the `_NetQuantize` family) quantizes on the wire automatically, with no key to set. See [type-driven quantization](/unreal-sdk/runtime/crowdy-state-types#accepted).
+A struct type that carries a native net serializer (`FVector_NetQuantize`, `FRotator`, and the rest of the `_NetQuantize` family) quantizes on the wire automatically, with no key to set. See [type-driven quantization](/unreal-sdk/runtime/crowdy-state#accepted).
 
 A variable is either `CrowdyState` or `CrowdyModel`, never both. The unified "Crowdy Replication" dropdown
 enforces this in Blueprint; hand-written C++ metadata carrying both keys is rejected at discovery. See
@@ -10145,7 +10350,7 @@ The manifest that drives the other reference tables on this site does not carry 
 - [RPC metadata keys](./rpc-meta-keys.md): the keys that route the event this page's parameters ride on.
 - [RPC events in C++](../runtime/rpc-events-cpp.md): worked examples of declaring and calling an event.
 - [Console variables](./console-cvars.md): `crowdy.rpc.allowObjectLoad` and the rest.
-- [Crowdy State types](../runtime/crowdy-state-types.md): the view plane's own, stricter type rules. Crowdy State rejects containers and object references outright; RPC parameters accept both.
+- [What a state property may be](../runtime/crowdy-state.md#what-a-state-property-may-be): the view plane's own, stricter type rules. Crowdy State rejects containers and object references outright; RPC parameters accept both.
 
 # Log Categories
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/log-categories

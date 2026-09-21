@@ -51,7 +51,7 @@ back, and `Reset()` clears it to unset.
 An actor you spawn during play through the SDK's spawn call is told its identity by the spawner, so its policy does not matter; the spawn travels to every client carrying the NetID.
 
 :::note[PlayerDerived on anything but the local player's pawn falls back to Random.]
-The SDK logs one warning and the actor gets an id no other client shares. Keep PlayerDerived for the pawn.
+The SDK logs one warning and the actor gets an id no other client shares. Keep PlayerDerived for the pawn. The identity is read once, at the component's `BeginPlay`, and a pawn spawned during play (`RestartPlayer`, a respawn) is possessed only after that, so on this release it takes the same fallback; the [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity) says what still works.
 :::
 
 ![The entity component's Details panel: Mode, Identity Policy, and Ownership](/img/unreal-sdk/entity-mode-identity.png)

@@ -51,4 +51,4 @@ Nothing on the network works until your project knows which app it belongs to. S
 
 ## What is next
 
-Add the plugin with [Installation](./installation.md), connect your app in [Crowdy Studio](./studio/overview.md), then follow the [Quickstart](./quickstart.md) to put one entity, one event, one replicated property, and one server-owned value on screen.
+Add the plugin with [Installation](./installation.md), connect your app in [Crowdy Studio](./studio/overview.md), then follow the [Quickstart](./quickstart.md) to put your player, one entity, one event, one replicated property, and one server-owned value on screen.

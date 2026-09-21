@@ -11,8 +11,6 @@ class ALanternPlayer : public ACharacter
 public:
 	ALanternPlayer();
 
-	virtual void BeginPlay() override;
-
 	UPROPERTY(VisibleAnywhere, Category = "Lantern")
 	TObjectPtr<UPointLightComponent> Torch;
 

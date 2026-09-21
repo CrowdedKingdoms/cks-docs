@@ -59,7 +59,7 @@ World subsystems:
 UCrowdyEntitySubsystem* Entities = GetWorld()->GetSubsystem<UCrowdyEntitySubsystem>();
 ```
 
-Blueprint function libraries (`UCrowdyUtilities`, `UCrowdyStateBlueprintLibrary`, `UCrowdyOwnershipTransfer`, `UCrowdyReplicatedSubsystemLibrary`) are static and need no fetch; see [Entities and spawning](../runtime/entities-and-spawning.md), [Crowdy State static](../runtime/crowdy-state-static.md), [Ownership transfer](../runtime/ownership-transfer.md) and [Replicated subsystems](../runtime/replicated-subsystems.md).
+Blueprint function libraries (`UCrowdyUtilities`, `UCrowdyStateBlueprintLibrary`, `UCrowdyOwnershipTransfer`, `UCrowdyReplicatedSubsystemLibrary`) are static and need no fetch; see [Entities and spawning](../runtime/entities-and-spawning.md), [Marking state from outside the actor](../runtime/crowdy-state.md#marking-state-from-outside-the-actor), [Ownership transfer](../runtime/ownership-transfer.md) and [Replicated subsystems](../runtime/replicated-subsystems.md).
 
 ## Excluded from this table
 

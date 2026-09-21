@@ -3,5 +3,7 @@
   {"from": "/unreal-sdk/runtime/authentication", "to": "/unreal-sdk/services/authentication"},
   {"from": "/unreal-sdk/studio/setup-and-config-sync", "to": "/unreal-sdk/studio/config-sync"},
   {"from": "/unreal-sdk/runtime/debugging-and-logging", "to": "/unreal-sdk/guides/testing-locally"},
-  {"from": "/unreal-sdk/studio/effect-graph", "to": "/unreal-sdk/game-models/effect-graph"}
+  {"from": "/unreal-sdk/studio/effect-graph", "to": "/unreal-sdk/game-models/effect-graph"},
+  {"from": "/unreal-sdk/runtime/crowdy-state-types", "to": "/unreal-sdk/runtime/crowdy-state"},
+  {"from": "/unreal-sdk/runtime/crowdy-state-static", "to": "/unreal-sdk/runtime/crowdy-state"}
 ]

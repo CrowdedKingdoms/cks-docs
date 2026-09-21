@@ -1,7 +1,7 @@
 # Crowdy Unreal SDK: agent rules
 
-Drop this file into the root of an Unreal project that uses the Crowdy SDK, or paste it
-into CLAUDE.md / .cursorrules.
+Drop this file into a Crowdy SDK project's root, or paste it into CLAUDE.md /
+.cursorrules.
 
 ## WHAT THE SDK IS
 
@@ -32,8 +32,11 @@ into CLAUDE.md / .cursorrules.
   https://docs.crowdedkingdoms.com/unreal-sdk/game-models/overview
 - The host is a convention, not enforcement. Never gate cheat-sensitive state on "am I
   host". https://docs.crowdedkingdoms.com/unreal-sdk/concepts/host-is-a-convention
-- Presence is the player's actor and it expires: no fresh actor for 60 seconds marks the
-  participant left; an empty session times out after 5 minutes by default.
+- Presence is the player's actor and it expires: the first thing a client needs is its own
+  pawn as a Dynamic, PlayerDerived, LocalClient entity spawned after On UDP Connection
+  Success (snippet qs-player; on this release that pawn gets a random id; the Quickstart
+  says why). No fresh actor for 60 seconds marks the participant left; an empty session
+  times out after 5 minutes.
   https://docs.crowdedkingdoms.com/unreal-sdk/concepts/sessions-and-presence
 - Never hand-type the app id, org id, environment or API URLs into Project Settings or
   DefaultGame.ini. Config Sync writes them and silently overwrites what you typed.
@@ -120,7 +123,7 @@ TObjectPtr<UCrowdyEffect> RefuelEffect;
 - Do not read HasMetaData, or any marker, at runtime; the baked registry is the source.
 - Do not test a marker you just added in a package cooked before you added it; a packaged
   build reads the registry baked at its cook, so cook again. Tools > Rebuild Crowdy
-  Registry only refreshes the in-editor Registry view.
+  Registry only refreshes the editor's Registry view.
 - Do not read placement data at BeginPlay; a cooked build releases the placement guid
   before then. Read it at OnRegister.
   https://docs.crowdedkingdoms.com/unreal-sdk/concepts/entities-identity-ownership
@@ -138,7 +141,7 @@ https://docs.crowdedkingdoms.com/unreal-sdk/guides/testing-locally
   once. Set it back to 0 before testing real two-client routing.
 - `crowdy.state.loopback 1`: decodes your own deltas onto a local mirror entity so OnRep
   fires in one PIE client. Off by default.
-- Trace gates, all off by default, warnings always print: `crowdy.rpc.trace`,
+- Trace gates, off by default, warnings always print: `crowdy.rpc.trace`,
   `crowdy.state.trace`, `crowdy.entity.trace`, `crowdy.net.trace`. Full table:
   https://docs.crowdedkingdoms.com/unreal-sdk/reference/console-cvars
 - Build the editor target with Engine/Build/BatchFiles/Build.bat and read the log to
