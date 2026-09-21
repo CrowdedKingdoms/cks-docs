@@ -1,2 +1,4 @@
 # Published helper files are byte-exact on every checkout; the drop-in AGENTS.md has an 8 KB budget.
 static/helpers/** text eol=lf
+src/generated/** text eol=lf
+vendor/klee/plugins/crowdy-names.generated.ts text eol=lf
