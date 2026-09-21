@@ -31,7 +31,7 @@ import { NodeParser } from "./node.parser";
 
 export class NodeParserRegistry {
 
-    private _nodeParsers: NodeParserMap = {
+    private readonly _nodeParsers = new Map<string, () => NodeParser>(Object.entries(<NodeParserMap>{
         [UnrealNodeClass.KNOT]: () => new KnotNodeParser(),
         [UnrealNodeClass.CALL_FUNCTION]: () => new CallFunctionNodeParser(),
         [UnrealNodeClass.IF_THEN_ELSE]: () => new FlowControlNodeParser(),
@@ -65,7 +65,7 @@ export class NodeParserRegistry {
         [UnrealNodeClass.TUNNEL]: () => new TunnelNodeParser(),
         [UnrealNodeClass.CREATE_WIDGET]: () => new CreateWidgetNodeParser(),
         [UnrealNodeClass.CREATE_OBJECT]: () => new CreateObjectNodeParser(),
-    }
+    }));
 
     public constructor() {}
 
@@ -95,7 +95,7 @@ export class NodeParserRegistry {
                 let registeredNodeParsers = []
 
                 for (const [nodeClass, parser] of Object.entries(parsers)) {
-                    this._nodeParsers[nodeClass] = parser;
+                    this._nodeParsers.set(nodeClass, parser);
                     registeredNodeParsers.push(nodeClass)
                 }
 
@@ -122,8 +122,6 @@ export class NodeParserRegistry {
 
 
     public getParser(nodeClass: UnrealNodeClass): (() => NodeParser) | undefined {
-        // The class name comes from the pasted text, so only a registered key may dispatch, never a prototype member.
-        if (!Object.prototype.hasOwnProperty.call(this._nodeParsers, nodeClass)) return undefined;
-        return this._nodeParsers[nodeClass];
+        return this._nodeParsers.get(nodeClass);
     }
 }

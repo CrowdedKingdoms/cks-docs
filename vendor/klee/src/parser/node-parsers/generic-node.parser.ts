@@ -17,12 +17,10 @@ import { NodeParserRegistry } from "../node-parser-registry";
 export class GenericNodeParser extends NodeParser {
 
     private readonly _OBJECT_STARTING_TAG = "Begin Object";
-    private readonly _customPropertyParsers: {
-        [key: string]: () => CustomPropertyParser
-    } = {
-        "Pin": () => new PinPropertyParser(),
-        "UserDefinedPin": () => new PinPropertyParser(),
-    }
+    private readonly _customPropertyParsers = new Map<string, () => CustomPropertyParser>([
+        ["Pin", () => new PinPropertyParser()],
+        ["UserDefinedPin", () => new PinPropertyParser()],
+    ]);
 
     private readonly _parserRegistry: NodeParserRegistry;
 
@@ -124,8 +122,7 @@ export class GenericNodeParser extends NodeParser {
         data = data.trim();
         data = data.substr(1, data.length - 2);
 
-        const propertyParser = Object.prototype.hasOwnProperty.call(this._customPropertyParsers, type)
-            ? this._customPropertyParsers[type] : undefined;
+        const propertyParser = this._customPropertyParsers.get(type);
         if(!propertyParser) {
             console.info(`There is no implementation for custom property type '${type}'. Skip this property`);
             return;

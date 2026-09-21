@@ -18,9 +18,7 @@ export class PinPropertyParser implements CustomPropertyParser {
 
     private _property: PinProperty;
 
-    private static readonly _ATTRIBUTE_PARSERS: {
-        [key: string]: (p: PinProperty, value: string) => void
-    } = {
+    private static readonly _ATTRIBUTE_PARSERS = new Map<string, (p: PinProperty, value: string) => void>(Object.entries({
         "PinId": (p: PinProperty, value: string) => { p.id = value; },
         "PinName": (p: PinProperty, value: string) => { p.name = prettifyText(BlueprintParserUtils.parseString(value)); },
         "PinFriendlyName": (p: PinProperty, value: string) => { p.friendlyName = prettifyText(PinPropertyParser.parsePinFriendlyName(value)); },
@@ -89,7 +87,7 @@ export class PinPropertyParser implements CustomPropertyParser {
         "ParentPin": (p: PinProperty, value: string) => {
             p.parentPin = BlueprintParserUtils.parseString(value);
         },
-    }
+    }));
 
     parse(propertyData: string, nodeName: string): PinProperty {
         
@@ -107,8 +105,7 @@ export class PinPropertyParser implements CustomPropertyParser {
 
         for (const [fullMatch, key, value] of matches) {
             if(!fullMatch || !key) { console.warn(`Skipped property attribute because invalid key: '${fullMatch}'`); continue; }
-            const parse = Object.prototype.hasOwnProperty.call(PinPropertyParser._ATTRIBUTE_PARSERS, key)
-                ? PinPropertyParser._ATTRIBUTE_PARSERS[key] : undefined;
+            const parse = PinPropertyParser._ATTRIBUTE_PARSERS.get(key);
             if(!parse) {
                 console.info(`Didn't parse property attribute '${key}'. There isn't a matching parser.`);
                 continue;

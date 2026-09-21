@@ -4,12 +4,10 @@ import { NodeControl } from "../controls/nodes/node.control";
 
 export abstract class NodeParser {
 
-    protected _propertyParsers: {
-        [key: string]: (node: Node, value: string) => void
-    } = {}
+    protected _propertyParsers = new Map<string, (node: Node, value: string) => void>();
 
-    constructor(properties?) {
-        this._propertyParsers = properties;
+    constructor(properties?: { [key: string]: (node: Node, value: string) => void }) {
+        this._propertyParsers = new Map(Object.entries(properties ?? {}));
     }
 
     public parse(data: ParsingNodeData): NodeControl {
@@ -33,8 +31,8 @@ export abstract class NodeParser {
         // Remove array index suffix of a property like the EnumEntries(0) in K2Node_SwitchEnum
         key = key.replace(/\((.+)\)/g, "");
 
-        if (!this._propertyParsers || !Object.prototype.hasOwnProperty.call(this._propertyParsers, key)) return false;
-        const propertyParser = this._propertyParsers[key];
+        const propertyParser = this._propertyParsers.get(key);
+        if (!propertyParser) return false;
 
         propertyParser(node, value);
         return true;

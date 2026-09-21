@@ -77,8 +77,8 @@ function pinDefaultObjectName(lines: string[], pinName: string): string | undefi
 class CrowdyCallFunctionParser extends CallFunctionNodeParser {
     constructor() {
         super();
-        const base = this._propertyParsers["FunctionReference"];
-        this._propertyParsers["FunctionReference"] = (node: CallFunctionNode, value: string) => {
+        const base = this._propertyParsers.get("FunctionReference");
+        this._propertyParsers.set("FunctionReference", (node: CallFunctionNode, value: string) => {
             base(node, value);
             if (node.functionReference?.memberName) {
                 node.title = displayName(node.functionReference.memberParent?.className, node.functionReference.memberName);
@@ -101,7 +101,7 @@ class CrowdyCallFunctionParser extends CallFunctionNodeParser {
             if (parentName && targetSubtitle) {
                 targetSubtitle.text = `Target is ${identifierDisplayName(parentName)}`;
             }
-        };
+        });
     }
 
     public parse(data: ParsingNodeData): NodeControl {
