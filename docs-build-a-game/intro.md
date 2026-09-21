@@ -25,8 +25,9 @@ repository and this tutorial's working companion. It contains everything the cha
 built the way a real game is built: an engine-agnostic platform layer over CrowdyJS (two tokens,
 datacenter routing, token rotation), World Stores for presence and chunks, a three.js hub and a
 pixi.js **paint program** — the same shared canvas this tutorial builds — driven by one session,
-a kit-seeded game model, Crowdy Studio embedded with server and client mods, and a Setup wizard
-that creates your org and app from inside the game.
+a kit-seeded game model, Crowdy Studio embedded with server and client mods, proximity chat,
+webcam (`B`) and voice (`V`), and `npm run setup` in a shell that creates your org and app
+(hosted sign-in only in the browser — the page never collects a password).
 
 ```bash
 git clone https://github.com/CrowdedKingdoms/the-construct.git
@@ -35,11 +36,12 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5175](http://localhost:5175), create an account, let Setup create your app, then step on the
-**Paint** pad. Where a chapter below shows the raw call, the repository shows the same thing
+Open [http://localhost:5175](http://localhost:5175), sign in with Crowded Kingdoms, then step on the
+**Paint** pad (`E`). Holodeck: `WASD` move, click or hold right-mouse to look, scroll to zoom.
+Where a chapter below shows the raw call, the repository shows the same thing
 through World Stores: `src/platform/realtime/WorldStores.ts` (presence, chunks),
 `src/scenes/program-pixi/PaintScene.ts` (painting, persistence), `src/platform/network/NetworkManager.ts`
-(sign-in, minting, rotation). Read the tutorial for the mechanism and the repository for the
+(hosted sign-in, minting, rotation). Read the tutorial for the mechanism and the repository for the
 architecture.
 
 ## Prerequisites
