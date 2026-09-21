@@ -1,15 +1,13 @@
 // LanternPlayer.h
-virtual void BeginPlay() override;
-
 void HostNight();
 
 // LanternPlayer.cpp
 #include "Replication/GameModel/CrowdyGameModelSubsystem.h"
 
-void ALanternPlayer::BeginPlay()
+// The owner answer arrives on OnCrowdyOwnershipAssigned, bound in BeginPlay; a runtime-spawned pawn is not registered before that.
+void ALanternPlayer::HandleOwnershipAssigned(const FGuid& NewOwnerID, ECrowdyRole NewRole, bool bIsLocallyOwned)
 {
-	Super::BeginPlay();
-	if (CrowdyEntity->IsLocallyOwned())
+	if (bIsLocallyOwned)
 	{
 		HostNight();
 	}

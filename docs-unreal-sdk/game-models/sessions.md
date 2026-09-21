@@ -52,7 +52,7 @@ All under **Crowdy SDK, Game Model, Sessions and Turns**. Every `Failed` pin car
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-The C++ facade on the subsystem takes a completion instead of pins and does not set the active session for you: call `SetActiveSession` in the completion, as `HostNight` and `JoinNight` do, or every later empty-`SessionId` call, the Leave below included, targets the app scope instead of the night; call `WatchSession` if you want the change event. The async nodes do both by default (`Make Active`, `Watch For Changes`). The owning client's pawn creates the night in `HostNight` from `BeginPlay` and turns its torch yellow to show it is hosting. The `BeginPlay` and overlap bodies shown here are the part this page adds to `ALanternPlayer`; the lantern drop on [Entities and spawning](../runtime/entities-and-spawning.md) and the enlist on [Kits](./kits.md) sit in the same functions.
+The C++ facade on the subsystem takes a completion instead of pins and does not set the active session for you: call `SetActiveSession` in the completion, as `HostNight` and `JoinNight` do, or every later empty-`SessionId` call, the Leave below included, targets the app scope instead of the night; call `WatchSession` if you want the change event. The async nodes do both by default (`Make Active`, `Watch For Changes`). The owning client's pawn creates the night in `HostNight` once it learns it is locally owned, from `HandleOwnershipAssigned` (bound to `OnCrowdyOwnershipAssigned` in `BeginPlay`; a pawn spawned during play registers inside its first possession, after `BeginPlay`), and turns its torch yellow to show it is hosting. The handler and overlap bodies shown here are the part this page adds to `ALanternPlayer`; the lantern drop on [Entities and spawning](../runtime/entities-and-spawning.md), which declares the handler and the bind, and the enlist on [Kits](./kits.md) sit in the same functions.
 
 <CppSnippet id="sess-create" />
 
@@ -63,7 +63,7 @@ Walking up to a lantern post (`NotifyActorBeginOverlap`) joins the night whose i
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The pawn Blueprint needs a **Point Light** named `Torch`. **Event BeginPlay** runs **Create Game Session** with `Name` = `Village Night`; on `Succeeded`, **Set Light Color** on `Torch`. The figures leave out the owner gate the C++ has: a pooled proxy of this pawn runs `BeginPlay` and its overlaps too, so put an **Is Crowdy Entity Locally Controlled** branch in front of Create, Join, and Leave, as every other pawn graph on this site does.
+The pawn Blueprint needs a **Point Light** named `Torch`. **Event BeginPlay** runs **Create Game Session** with `Name` = `Village Night`; on `Succeeded`, **Set Light Color** on `Torch`. The figures leave out the owner gate the C++ has: a pooled proxy of this pawn runs `BeginPlay` and its overlaps too, so put an **Is Crowdy Entity Locally Controlled** branch in front of Create, Join, and Leave, as every other pawn graph on this site does; on a pawn spawned during play, drive Create from the entity component's **On Crowdy Ownership Assigned** event (its `Is Locally Owned` pin) rather than **Event BeginPlay**, since the pawn registers inside its first possession, after `BeginPlay`.
 
 <Blueprint src="sess-create" title="Event BeginPlay, Create Game Session, Get Torch, Set Light Color" />
 

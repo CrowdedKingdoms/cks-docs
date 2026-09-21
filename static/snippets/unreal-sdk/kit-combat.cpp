@@ -1,6 +1,4 @@
 // LanternPlayer.h
-virtual void BeginPlay() override;
-
 UPROPERTY(BlueprintReadOnly, Category = "Lantern")
 FString CombatantId;
 
@@ -12,10 +10,10 @@ void HandleEnlisted(const FString& ContainerId, const FString& ErrorMessage);
 // LanternPlayer.cpp
 #include "Replication/GameModel/Kit/CrowdyCombatKitActions.h"
 
-void ALanternPlayer::BeginPlay()
+// The owner answer arrives on OnCrowdyOwnershipAssigned, bound in BeginPlay; a runtime-spawned pawn is not registered before that.
+void ALanternPlayer::HandleOwnershipAssigned(const FGuid& NewOwnerID, ECrowdyRole NewRole, bool bIsLocallyOwned)
 {
-	Super::BeginPlay();
-	if (CrowdyEntity->IsLocallyOwned())
+	if (bIsLocallyOwned)
 	{
 		EnlistCombatant();
 	}

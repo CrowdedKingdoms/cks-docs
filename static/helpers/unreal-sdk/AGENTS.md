@@ -34,9 +34,9 @@ Drop this file into a Crowdy SDK project's root, or paste it into CLAUDE.md /
   host". https://docs.crowdedkingdoms.com/unreal-sdk/concepts/host-is-a-convention
 - Presence is the player's actor and it expires: the first thing a client needs is its own
   pawn as a Dynamic, PlayerDerived, LocalClient entity spawned after On UDP Connection
-  Success (snippet qs-player; on this release that pawn gets a random id; the Quickstart
-  says why). No fresh actor for 60 seconds marks the participant left; an empty session
-  times out after 5 minutes.
+  Success (snippet qs-player; its id lands on possession: read it in
+  OnCrowdyOwnershipAssigned, not BeginPlay). No fresh actor for 60 seconds marks the
+  participant left; an empty session times out after 5 minutes.
   https://docs.crowdedkingdoms.com/unreal-sdk/concepts/sessions-and-presence
 - Never hand-type the app id, org id, environment or API URLs into Project Settings or
   DefaultGame.ini. Config Sync writes them and silently overwrites what you typed.
@@ -47,7 +47,7 @@ Drop this file into a Crowdy SDK project's root, or paste it into CLAUDE.md /
 - Never call HasMetaData at runtime. Cooked builds strip metadata and the check answers
   false with no error. https://docs.crowdedkingdoms.com/unreal-sdk/guides/packaging
 - A handler bound to an array delegate takes const TArray<T>&. A by-value parameter does
-  not match and AddDynamic will not compile.
+  not match and AddDynamic fails to compile.
   https://docs.crowdedkingdoms.com/unreal-sdk/game-models/collections
 
 ## MARKER PATTERNS (excerpts of the docs snippets; copy, never retype)
@@ -138,7 +138,7 @@ TObjectPtr<UCrowdyEffect> RefuelEffect;
 https://docs.crowdedkingdoms.com/unreal-sdk/guides/testing-locally
 
 - `crowdy.rpc.loopback 1`: a sent CrowdyEvent is also delivered to your own receiver,
-  once. Set it back to 0 before testing real two-client routing.
+  once. Set it back to 0 before testing two-client routing.
 - `crowdy.state.loopback 1`: decodes your own deltas onto a local mirror entity so OnRep
   fires in one PIE client. Off by default.
 - Trace gates, off by default, warnings always print: `crowdy.rpc.trace`,

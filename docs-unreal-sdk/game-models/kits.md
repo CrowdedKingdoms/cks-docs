@@ -103,7 +103,7 @@ Both need a Combat kit with default options and a Leaderboards kit with the defa
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-When the owning client's pawn begins play, `EnlistCombatant` spawns its combatant with the kit's default stats and an empty prefix; `HandleEnlisted` keeps the container id in `CombatantId` and turns the torch red. There is no health visual in this cast; a health display would read `State` from a later **Get Combatant State**.
+Once the owning client's pawn learns it is locally owned (its `HandleOwnershipAssigned`, bound to `OnCrowdyOwnershipAssigned` in `BeginPlay` on [Entities and spawning](../runtime/entities-and-spawning.md); a pawn spawned during play is not registered at `BeginPlay`), `EnlistCombatant` spawns its combatant with the kit's default stats and an empty prefix; `HandleEnlisted` keeps the container id in `CombatantId` and turns the torch red. There is no health visual in this cast; a health display would read `State` from a later **Get Combatant State**.
 
 <CppSnippet id="kit-combat" />
 
@@ -114,7 +114,7 @@ At dawn the night subsystem calls `SurviveNight` on each pawn: the owning client
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The pawn Blueprint needs a `CombatantId` String variable. **Event BeginPlay** asks **Is Crowdy Entity Locally Controlled** and, through a **Branch**, only the owning client runs **Spawn Combatant** with `Actor` = Self and `Type Prefix` empty; `Succeeded` sets `CombatantId` from `Container Id`.
+The pawn Blueprint needs a `CombatantId` String variable. **Event BeginPlay** asks **Is Crowdy Entity Locally Controlled** and, through a **Branch**, only the owning client runs **Spawn Combatant** with `Actor` = Self and `Type Prefix` empty; `Succeeded` sets `CombatantId` from `Container Id`. On a pawn spawned during play, start the chain from the entity component's **On Crowdy Ownership Assigned** event and branch on its `Is Locally Owned` pin instead: the pawn registers inside its first possession, after `BeginPlay`, and the gate reads false before that.
 
 <Blueprint src="kit-combat" title="Event BeginPlay, Is Crowdy Entity Locally Controlled, Branch, Self, Spawn Combatant, Set CombatantId" />
 

@@ -292,9 +292,11 @@ Create a Blueprint with **Game Instance** as its parent class and make it the pr
 
 Your player pawn is the first entity, before any lantern, because it is what makes you exist to the server. A pawn with a `UCrowdyEntityComponent` in **Dynamic** mode sends an actor update every replication interval (ten a second on the shipped profile), and a heartbeat at least once a second while it stands still; the server registers your position from those updates, and from then on you are a recipient of everything sent near you. The component needs three settings changed from their defaults: **Mode** Dynamic (the continuous channel; the default, Static, is for things that do not move), **Identity Policy** Player Derived (the identity is derived from the signed-in account, so it is the same on every client and on every launch; only valid on the locally controlled pawn), and **Ownership** Local Client (this client simulates the pawn; a pawn the Game Mode spawns is owned by the client that spawned it whatever this reads, so Local Client is the honest value; the default, Host, is for a level-placed world entity, which sends nothing until the elected host is known). Leave **State Executor** empty: the SDK's default executor snapshots the pawn's location and rotation, which is all this page needs.
 
-The identity is derived once, when the pawn begins play, and nothing re-derives it later. A pawn spawned by the Game Mode on the first frame begins play before the sign-in has answered, and its first updates leave before the server is ready for them, so the Game Mode starts players as spectators and the connected handler spawns the pawn instead. **On UDP Connection Success** fires once the server has assigned you and its readiness wait has elapsed (the SDK times that, you never do), and every update the pawn sends after it counts.
+The identity is derived once and nothing re-derives it later: at `BeginPlay` when the pawn already has a controller, otherwise inside its first possession, which for a pawn the Game Mode spawns during play is the `RestartPlayer` call that spawned it. A pawn spawned by the Game Mode on the first frame begins play before the sign-in has answered, and its first updates leave before the server is ready for them, so the Game Mode starts players as spectators and the connected handler spawns the pawn instead. **On UDP Connection Success** fires once the server has assigned you and its readiness wait has elapsed (the SDK times that, you never do), and every update the pawn sends after it counts.
 
-One thing that gate cannot do on this release. The engine possesses a pawn spawned during play only after its `BeginPlay`, so the component derives the identity with no controller in sight, logs `Identity Policy is Player Derived on ... but the pawn is not possessed by any controller yet, so it fell back to a random id`, and registers under a random id instead of your account's. Every step on this page still works: the pawn registers and sends, you are present, the reflection draws, the spatial event reaches you, and two clients never conflate. What waits for the release that derives the identity on possession is whatever is keyed on the local player id: the host lookup, ownership requests, and the drop of your own echoed events (with two real clients, a `SpatialMulticast` body runs twice on its sender, once locally and once from the server's echo).
+Where the account id becomes readable. The engine possesses a pawn spawned during play only after its `BeginPlay`, so the component waits and registers inside that first possession, after the pawn's own **Possessed** and **Controller Changed** events; the first controller of any kind completes it, and an AI-possessed pawn takes the random-id fallback with its warning. A respawn that leaves the old pawn standing hands the account id to the new one, and the old pawn's component stops replicating. Read the id from the component's **On Crowdy Ownership Assigned** (`OnCrowdyOwnershipAssigned`) or the entity subsystem's `OnEntityRegistered`, never from `BeginPlay` or **Possessed**; **Is Locally Owned** on the pawn reads false until that registration, so a pawn graph that gates on it at `BeginPlay` runs nothing.
+
+On the tagged v2.14.0 plugin the component derives the identity at `BeginPlay` with no controller in sight, logs `Identity Policy is Player Derived on ... but the pawn is not possessed by any controller yet, so it fell back to a random id`, and registers under a random id instead of your account's. Every step on this page still works there: the pawn registers and sends, you are present, the reflection draws, the spatial event reaches you, and two clients never conflate. What that release lacks is whatever is keyed on the local player id: the host lookup, ownership requests, and the drop of your own echoed events (with two real clients, a `SpatialMulticast` body runs twice on its sender, once locally and once from the server's echo). See [What's Changed](./guides/whats-changed.md#unreleased-after-v2140).
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -403,7 +405,7 @@ Three Blueprints, two of them settings only.
 **Success signal.** Press Play. The map sits still under a fixed camera until `Connected to the app`, then your character spawns at a Player Start and you can move it. With `crowdy.entity.trace 1` on, the log shows the pawn's entity registering on the wire right after the connection comes up.
 
 :::caution[A pawn that begins play before the sign-in has answered derives its identity from user id 0.]
-Nothing warns. Two such clients conflate into one player, and the host cannot be found by its avatar. Keep the pawn's spawn behind **On UDP Connection Success**, as the block does: on this release that pawn gets a random id and one warning, which is the lesser evil, and the release that derives the identity on possession turns the same gate into the account-derived one.
+Nothing warns. Two such clients conflate into one player, and the host cannot be found by its avatar. Keep the pawn's spawn behind **On UDP Connection Success**, as the block does: the pawn then registers under your account's id inside the possession that `RestartPlayer` performs. On the tagged v2.14.0 plugin the same gate gives that pawn a random id and one warning, the lesser evil; see [What's Changed](./guides/whats-changed.md#unreleased-after-v2140).
 :::
 
 ## 2. See yourself
@@ -819,7 +821,7 @@ void ALantern::OnRep_Lit()
 
 - No login, no connection. Until `Get UDP Connection State` reads connected, every step looks dead.
 - No pawn, no presence. The server knows you by your pawn's updates; a client whose pawn is not sending is at no position and receives no spatial event, and its own spatial sends reach nobody. A `Multicast` event is the exception: it goes by session channel membership, which connecting joins.
-- Spawn the pawn after **On UDP Connection Success**. Before it, the identity derives from user id 0 and the first updates leave before the server is ready to take them; nothing is queued or replayed, the next interval's update is the recovery. On this release a pawn spawned after it registers under a random id with one warning (the engine possesses it after `BeginPlay`); the page works, the host lookup, ownership requests and the echo drop do not, until identity is derived on possession.
+- Spawn the pawn after **On UDP Connection Success**. Before it, the identity derives from user id 0 and the first updates leave before the server is ready to take them; nothing is queued or replayed, the next interval's update is the recovery. A pawn spawned after it registers inside its first possession, so read its id from **On Crowdy Ownership Assigned**, not at `BeginPlay`. On the tagged v2.14.0 plugin that pawn registers under a random id with one warning (the engine possesses it after `BeginPlay`); the page works, the host lookup, ownership requests and the echo drop do not, until the release that derives identity on possession.
 - The Game Mode binds the event in its own `BeginPlay`. A map opened after the connection is already up never sees it; check **Get UDP Connection State** at `BeginPlay` first and restart the player at once when it reads connected, or bind in the Game Instance and spawn from there.
 - A map whose `MapProfiles` row or `DefaultProfile` names an asset that did not load is inactive; the warning names the asset. Check that before any code. A map with no row at all runs on the shipped default.
 - The loopback variables are test aids. Leave them off in a normal session; they change what a single client sees.
@@ -886,7 +888,7 @@ Four of the six are `meta=(...)` keys; the entity is a component and the effect 
 | `CrowdyModel` + `CrowdyKey` + `CrowdyOnRep` | A `UPROPERTY` on a container class; the server owns the value, the notify is parameterless | `gm-container` | [Containers and attributes](./game-models/containers-and-attributes.md#reacting-to-a-change) |
 | `CrowdyEffect` | Not a meta key: a `UCrowdyEffect` asset authored in Studio or Effect Script, referenced from C++ as `TObjectPtr<UCrowdyEffect>` | `fx-declare` | [Effects from C++](./game-models/effects-cpp.md#declaring-the-reference), [Effect Script](./game-models/effect-script.md) |
 
-Three rules the examples assume: the first thing a client needs is its own pawn as a `Dynamic`, `PlayerDerived`, `LocalClient` entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; on this release that pawn registers under a random id, since the engine possesses a runtime spawn after its `BeginPlay`, and the page says what that costs ([Quickstart](./quickstart.md#1-make-your-player-a-crowdy-entity)); a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); and a `CrowdyOnRep` function takes no parameters, read the property for the new value ([The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code)).
+Three rules the examples assume: the first thing a client needs is its own pawn as a `Dynamic`, `PlayerDerived`, `LocalClient` entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; that pawn registers inside its first possession, since the engine possesses a runtime spawn after its `BeginPlay`, so read its id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned`, not at `BeginPlay` (on the tagged v2.14.0 plugin it registers under a random id instead; the page says what that costs: [Quickstart](./quickstart.md#1-make-your-player-a-crowdy-entity)); a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); and a `CrowdyOnRep` function takes no parameters, read the property for the new value ([The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code)).
 
 ## Three things that break silently in a cooked build
 
@@ -1077,7 +1079,7 @@ back, and `Reset()` clears it to unset.
 An actor you spawn during play through the SDK's spawn call is told its identity by the spawner, so its policy does not matter; the spawn travels to every client carrying the NetID.
 
 :::note[PlayerDerived on anything but the local player's pawn falls back to Random.]
-The SDK logs one warning and the actor gets an id no other client shares. Keep PlayerDerived for the pawn. The identity is read once, at the component's `BeginPlay`, and a pawn spawned during play (`RestartPlayer`, a respawn) is possessed only after that, so on this release it takes the same fallback; the [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity) says what still works.
+The SDK logs one warning and the actor gets an id no other client shares. Keep PlayerDerived for the pawn. The identity is read once: at the component's `BeginPlay` when the pawn already has a controller, otherwise inside its first possession, after the pawn's own **Possessed** and **Controller Changed** events, since a pawn spawned during play (`RestartPlayer`, a respawn) is possessed only after `BeginPlay`. The first controller of any kind completes it; an AI controller gets the fallback. A respawn that leaves the earlier pawn alive moves the account id to the new pawn and clears the old one, which stops replicating. Read the id from the component's **On Crowdy Ownership Assigned** or the entity subsystem's `OnEntityRegistered`, never from `BeginPlay` or **Possessed**; **Is Locally Owned** on the pawn is false until the registration. On the tagged v2.14.0 plugin a pawn possessed after `BeginPlay` takes the random fallback instead; the [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity) says what still works there, and [What's Changed](../guides/whats-changed.md#unreleased-after-v2140) lists the change.
 :::
 
 ![The entity component's Details panel: Mode, Identity Policy, and Ownership](/img/unreal-sdk/entity-mode-identity.png)
@@ -2193,22 +2195,38 @@ Whenever an actor created at runtime must exist on other clients: a dropped item
 
 `InitialState` is an `FInstancedStruct` of your own type. It travels with the spawn and lands in the component's `OnCrowdySpawned` event on every client; pass an empty struct when there is nothing to send.
 
-The lantern world's runtime spawn is the player arriving with a lantern. `ALanternPlayer` is the player character: a pawn carrying a `UCrowdyEntityComponent` in Dynamic mode with PlayerDerived identity and LocalClient ownership, declared in full on [Continuous state](./continuous-state.md). At `BeginPlay`, when the character is locally owned, `ALanternPlayer::DropLantern` spawns an `ALantern` a short way in front of it, and the new lantern appears there on every client in range. The `if` in the block sits in `ALanternPlayer::BeginPlay`, after `Super::BeginPlay()`.
+The lantern world's runtime spawn is the player arriving with a lantern. `ALanternPlayer` is the player character: a pawn carrying a `UCrowdyEntityComponent` in Dynamic mode with PlayerDerived identity and LocalClient ownership, declared in full on [Continuous state](./continuous-state.md). Once the character knows it is locally owned, `ALanternPlayer::DropLantern` spawns an `ALantern` a short way in front of it, and the new lantern appears there on every client in range. The moment is `OnCrowdyOwnershipAssigned`, not `BeginPlay`: a player pawn spawned during play (`RestartPlayer`) is possessed after its `BeginPlay`, and its Player Derived identity resolves inside that first possession, so `IsLocallyOwned()` is still false at `BeginPlay`. The `AddDynamic` in the block sits in `ALanternPlayer::BeginPlay`, after `Super::BeginPlay()`; the handler fires on the tick after the entity registers, on the first-frame pawn and the runtime-spawned one alike. (On the tagged v2.14.0 plugin the pawn registers at `BeginPlay` under a random id, so a `BeginPlay` gate ran there; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).)
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
 ```cpp
 // LanternPlayer.h
+virtual void BeginPlay() override;
+
+UFUNCTION()
+void HandleOwnershipAssigned(const FGuid& NewOwnerID, ECrowdyRole NewRole, bool bIsLocallyOwned);
+
 void DropLantern();
 
 // LanternPlayer.cpp
 #include "Lantern.h"
 #include "Utils/CrowdyUtilities.h"
-// Each player arrives carrying a lantern; only the owner spawns it, every client then sees it.
-if (CrowdyEntity->IsLocallyOwned())
+
+void ALanternPlayer::BeginPlay()
 {
-	DropLantern();
+	Super::BeginPlay();
+	// A pawn spawned during play registers inside its first possession, after BeginPlay, so the owner answer arrives here.
+	CrowdyEntity->OnCrowdyOwnershipAssigned.AddDynamic(this, &ALanternPlayer::HandleOwnershipAssigned);
+}
+
+void ALanternPlayer::HandleOwnershipAssigned(const FGuid& NewOwnerID, ECrowdyRole NewRole, bool bIsLocallyOwned)
+{
+	// Each player arrives carrying a lantern; only the owner spawns it, every client then sees it.
+	if (bIsLocallyOwned)
+	{
+		DropLantern();
+	}
 }
 
 void ALanternPlayer::DropLantern()
@@ -2221,7 +2239,7 @@ void ALanternPlayer::DropLantern()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-Any Actor Blueprint can spawn; nothing on the spawner needs a component. At **Event BeginPlay**, the pure **Is Crowdy Entity Locally Controlled** feeds a **Branch** (the owner gate: only the owner spawns), and on the true side **Get Actor Transform** feeds the `Spawn Transform` pin of **Spawn Crowdy Entity**, which takes the entity class and an optional Initial State struct and returns the spawned actor. The class pin in the figure names the sample lantern; pick your own entity class there.
+Any Actor Blueprint can spawn; nothing on the spawner needs a component. At **Event BeginPlay**, the pure **Is Crowdy Entity Locally Controlled** feeds a **Branch** (the owner gate: only the owner spawns), and on the true side **Get Actor Transform** feeds the `Spawn Transform` pin of **Spawn Crowdy Entity**, which takes the entity class and an optional Initial State struct and returns the spawned actor. The class pin in the figure names the sample lantern; pick your own entity class there. On the player pawn itself, start the chain from the entity component's **On Crowdy Ownership Assigned** event and branch on its `Is Locally Owned` pin instead of **Event BeginPlay**: a pawn spawned during play registers inside its first possession, after `BeginPlay`, and the gate reads false before that.
 
 [Blueprint snippet: spawn-entity, see /bp/unreal-sdk/spawn-entity.txt]
 
@@ -6501,12 +6519,10 @@ Both need a Combat kit with default options and a Leaderboards kit with the defa
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-When the owning client's pawn begins play, `EnlistCombatant` spawns its combatant with the kit's default stats and an empty prefix; `HandleEnlisted` keeps the container id in `CombatantId` and turns the torch red. There is no health visual in this cast; a health display would read `State` from a later **Get Combatant State**.
+Once the owning client's pawn learns it is locally owned (its `HandleOwnershipAssigned`, bound to `OnCrowdyOwnershipAssigned` in `BeginPlay` on [Entities and spawning](../runtime/entities-and-spawning.md); a pawn spawned during play is not registered at `BeginPlay`), `EnlistCombatant` spawns its combatant with the kit's default stats and an empty prefix; `HandleEnlisted` keeps the container id in `CombatantId` and turns the torch red. There is no health visual in this cast; a health display would read `State` from a later **Get Combatant State**.
 
 ```cpp
 // LanternPlayer.h
-virtual void BeginPlay() override;
-
 UPROPERTY(BlueprintReadOnly, Category = "Lantern")
 FString CombatantId;
 
@@ -6518,10 +6534,10 @@ void HandleEnlisted(const FString& ContainerId, const FString& ErrorMessage);
 // LanternPlayer.cpp
 #include "Replication/GameModel/Kit/CrowdyCombatKitActions.h"
 
-void ALanternPlayer::BeginPlay()
+// The owner answer arrives on OnCrowdyOwnershipAssigned, bound in BeginPlay; a runtime-spawned pawn is not registered before that.
+void ALanternPlayer::HandleOwnershipAssigned(const FGuid& NewOwnerID, ECrowdyRole NewRole, bool bIsLocallyOwned)
 {
-	Super::BeginPlay();
-	if (CrowdyEntity->IsLocallyOwned())
+	if (bIsLocallyOwned)
 	{
 		EnlistCombatant();
 	}
@@ -6588,7 +6604,7 @@ void ALanternPlayer::HandleScoreRefused(const FString& ReturnValueJson, const FS
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The pawn Blueprint needs a `CombatantId` String variable. **Event BeginPlay** asks **Is Crowdy Entity Locally Controlled** and, through a **Branch**, only the owning client runs **Spawn Combatant** with `Actor` = Self and `Type Prefix` empty; `Succeeded` sets `CombatantId` from `Container Id`.
+The pawn Blueprint needs a `CombatantId` String variable. **Event BeginPlay** asks **Is Crowdy Entity Locally Controlled** and, through a **Branch**, only the owning client runs **Spawn Combatant** with `Actor` = Self and `Type Prefix` empty; `Succeeded` sets `CombatantId` from `Container Id`. On a pawn spawned during play, start the chain from the entity component's **On Crowdy Ownership Assigned** event and branch on its `Is Locally Owned` pin instead: the pawn registers inside its first possession, after `BeginPlay`, and the gate reads false before that.
 
 [Blueprint snippet: kit-combat, see /bp/unreal-sdk/kit-combat.txt]
 
@@ -6798,21 +6814,19 @@ All under **Crowdy SDK, Game Model, Sessions and Turns**. Every `Failed` pin car
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-The C++ facade on the subsystem takes a completion instead of pins and does not set the active session for you: call `SetActiveSession` in the completion, as `HostNight` and `JoinNight` do, or every later empty-`SessionId` call, the Leave below included, targets the app scope instead of the night; call `WatchSession` if you want the change event. The async nodes do both by default (`Make Active`, `Watch For Changes`). The owning client's pawn creates the night in `HostNight` from `BeginPlay` and turns its torch yellow to show it is hosting. The `BeginPlay` and overlap bodies shown here are the part this page adds to `ALanternPlayer`; the lantern drop on [Entities and spawning](../runtime/entities-and-spawning.md) and the enlist on [Kits](./kits.md) sit in the same functions.
+The C++ facade on the subsystem takes a completion instead of pins and does not set the active session for you: call `SetActiveSession` in the completion, as `HostNight` and `JoinNight` do, or every later empty-`SessionId` call, the Leave below included, targets the app scope instead of the night; call `WatchSession` if you want the change event. The async nodes do both by default (`Make Active`, `Watch For Changes`). The owning client's pawn creates the night in `HostNight` once it learns it is locally owned, from `HandleOwnershipAssigned` (bound to `OnCrowdyOwnershipAssigned` in `BeginPlay`; a pawn spawned during play registers inside its first possession, after `BeginPlay`), and turns its torch yellow to show it is hosting. The handler and overlap bodies shown here are the part this page adds to `ALanternPlayer`; the lantern drop on [Entities and spawning](../runtime/entities-and-spawning.md), which declares the handler and the bind, and the enlist on [Kits](./kits.md) sit in the same functions.
 
 ```cpp
 // LanternPlayer.h
-virtual void BeginPlay() override;
-
 void HostNight();
 
 // LanternPlayer.cpp
 #include "Replication/GameModel/CrowdyGameModelSubsystem.h"
 
-void ALanternPlayer::BeginPlay()
+// The owner answer arrives on OnCrowdyOwnershipAssigned, bound in BeginPlay; a runtime-spawned pawn is not registered before that.
+void ALanternPlayer::HandleOwnershipAssigned(const FGuid& NewOwnerID, ECrowdyRole NewRole, bool bIsLocallyOwned)
 {
-	Super::BeginPlay();
-	if (CrowdyEntity->IsLocallyOwned())
+	if (bIsLocallyOwned)
 	{
 		HostNight();
 	}
@@ -6887,7 +6901,7 @@ void ALanternPlayer::JoinNight()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The pawn Blueprint needs a **Point Light** named `Torch`. **Event BeginPlay** runs **Create Game Session** with `Name` = `Village Night`; on `Succeeded`, **Set Light Color** on `Torch`. The figures leave out the owner gate the C++ has: a pooled proxy of this pawn runs `BeginPlay` and its overlaps too, so put an **Is Crowdy Entity Locally Controlled** branch in front of Create, Join, and Leave, as every other pawn graph on this site does.
+The pawn Blueprint needs a **Point Light** named `Torch`. **Event BeginPlay** runs **Create Game Session** with `Name` = `Village Night`; on `Succeeded`, **Set Light Color** on `Torch`. The figures leave out the owner gate the C++ has: a pooled proxy of this pawn runs `BeginPlay` and its overlaps too, so put an **Is Crowdy Entity Locally Controlled** branch in front of Create, Join, and Leave, as every other pawn graph on this site does; on a pawn spawned during play, drive Create from the entity component's **On Crowdy Ownership Assigned** event (its `Is Locally Owned` pin) rather than **Event BeginPlay**, since the pawn registers inside its first possession, after `BeginPlay`.
 
 [Blueprint snippet: sess-create, see /bp/unreal-sdk/sess-create.txt]
 
@@ -9321,7 +9335,7 @@ You built against the SDK in July, you are updating the plugin to 2.14 or later,
 
 ## Unreleased (after v2.14.0)
 
-**Not in v2.14.0.** These three changes are in the SDK source and ship with the next release; a project on the tagged 2.14.0 plugin does not have them, and must not apply the delegate change yet. One is a source break for C++ projects; the other two remove work you may have done. The examples on this site are written for the source that carries all three; every page they touch says what the tagged 2.14.0 plugin does instead.
+**Not in v2.14.0.** These four changes are in the SDK source and ship with the next release; a project on the tagged 2.14.0 plugin does not have them, and must not apply the delegate change yet. One is a source break for C++ projects; two remove work you may have done; one moves the moment a player pawn gets its identity. The examples on this site are written for the source that carries all four; every page they touch says what the tagged 2.14.0 plugin does instead.
 
 - **Eighteen array delegates pass `const TArray<T>&` instead of `TArray<T>` by value.** Ten single-cast: `FOnTeamsSuccess`, `FOnTeamMembersSuccess`, `FOnTeamRolesSuccess`, `FOnMyTeamsSuccess` (teams), `FOnAvatarsSuccess`, `FOnAppStatesSuccess` (avatars), `FOnChannelsSuccess`, `FOnChannelMembersSuccess`, `FOnChannelRolesSuccess`, `FOnMyChannelsSuccess` (channels). Three multicast cache events a 2.1 project is likely to have bound with `AddDynamic`: `FOnMyTeamsCacheChanged`, `FOnMyAvatarsCacheChanged`, `FOnMyChannelsCacheChanged`. Five Game Model outcome events, for a project that adopted collections or sessions on 2.13 or 2.14: `FCrowdyCollectionItemsOutcome`, `FCrowdyTraverseOutcome` (both parameters), `FCrowdyContainerRefsOutcome`, `FCrowdySessionsOutcome`, `FCrowdySessionEventsOutcome`. **What you do:** when you take that release, any C++ `UFUNCTION` bound to one of them changes its parameter from `TArray<FCrowdyTeam> Teams` to `const TArray<FCrowdyTeam>& Teams`, and likewise for the rest. A Blueprint custom event bound to one of these pins is unaffected; Blueprint has no by-value versus by-reference distinction on the pin.
 
@@ -9331,6 +9345,7 @@ On the release that carries it, a C++ project that updates the plugin and rebuil
 
 - **The actor pool draws with no Backend Config at all.** Up to and including 2.14.0, a map profile whose Backend Config was empty, or whose config named no Replication Policy Class, left remote Dynamic entities tracked but never rendered, so choosing a Backend Config was mandatory in practice. After 2.14.0 a missing config falls back to a built-in transform-interpolation policy, `UCrowdyTransformRepPolicy`, and that step is optional. **What you do:** nothing. A project that authored its own Backend Config is unaffected; a project that left it empty and worked around the blank screen can delete the workaround once it is on that release. See [Map profile](../runtime/map-profile.md) and [Rendering backends](../runtime/rendering-backends.md).
 - **The shipped transform policy interpolates across a ring of samples.** Up to and including 2.14.0, `UCrowdyTransformRepPolicy` kept two samples per proxy: it snapped to a lone sample, blended between the two it held, and stopped at the newer one when the render time passed it, so a late update showed as a pause and the next as a jump. After 2.14.0 it keeps a ring of recent samples per proxy in `TInterpolatedField`, samples the pair that brackets the render time, and extrapolates from the last two for at most 0.2 seconds when the render time runs past the newest. **What you do:** nothing. Proxies drawn by the shipped policy move more smoothly through late and lost updates. A project that wrote its own policy to get that behavior can drop it, or rebuild it on `TInterpolatedField` and keep its extra fields; see [Rendering backends](../runtime/rendering-backends.md#the-sample-ring).
+- **A Player Derived pawn possessed after it begins play gets its account identity on possession, respawned pawns included.** Up to and including 2.14.0, `UCrowdyEntityComponent` read the Player Derived identity once, in `BeginPlay`, and the engine possesses a pawn spawned during play (`RestartPlayer`, a respawn, a spawn from a connected handler) only after that, so every runtime-spawned player pawn registered under a random id with one warning, and whatever is keyed on the local player id (the host lookup, ownership requests, the drop of your own echoed events) never worked for it; only a pawn possessed before `BeginPlay` got the account identity. After 2.14.0 a Player Derived pawn with no controller at `BeginPlay` waits, and registers under the account id inside its first possession, after the pawn's own Possessed and Controller Changed events; the first controller of any kind completes it (an AI controller gets the old fallback and warning), a later unpossess or repossess changes nothing, and a respawn that leaves the earlier pawn alive hands the id to the new pawn and clears the old one, which stops replicating. **What you do:** read the pawn's id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned` (**On Crowdy Ownership Assigned**) or the entity subsystem's `OnEntityRegistered`, not from `BeginPlay` or Possessed: on that release a pawn graph that gates on **Is Locally Owned** at `BeginPlay` reads false and runs nothing, where on 2.14.0 it ran with the random id. A pawn that begins play before the sign-in has answered is unchanged: it derives from user id 0 without a warning, so keep the spawn behind **On UDP Connection Success**. See [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity) and [Entities, Identity, and Ownership](../concepts/entities-identity-ownership.md#identity-policies).
 
 ## 2026-09-17 (SDK v2.14.0)
 
