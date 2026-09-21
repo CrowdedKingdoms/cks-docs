@@ -140,6 +140,43 @@ crowdy_compute_sdk::register_module!(
 The downloadable client helper uses compile-ready control flow without the
 abbreviations in this explanation.
 
+### Tick rate and mouse input (CLIENT, Game API v2.8.0 / CrowdyJS 17.6.0)
+
+A CLIENT worker ticks once a second by default. Ask for a faster loop in the
+crate's `Cargo.toml` — it is the only key admitted under
+`[package.metadata.crowdy]`, and the deploy refuses anything outside 16–1000:
+
+```toml
+[package.metadata.crowdy]
+tick_interval_ms = 50   # 16..1000; default 1000
+```
+
+Inside `on_tick`, `api::pointer_clicks()` drains the mouse clicks the host game
+(the holodeck canvas) collected since the previous call. It is CLIENT-only,
+lives in the `input` capability group (rate cap 400 calls/s), and is refused on a
+SERVER module. The value is
+`{ nowMs, buttons, holdingMs, clicks }`: `buttons` is the live `MouseEvent.buttons`
+bitfield (1 = left held), `holdingMs` maps a button index to how long it has been
+held (`"0"` = left), and `clicks` is the drained list of
+`{ t: "down" | "up", button, atMs, heldMs?, nx, ny }` with canvas NDC (`nx`/`ny`
+in −1..1, +ny up). Clicks on Studio chrome are omitted, so a mod can be tested
+with the IDE open. A click-to-charge shot: start on a left `down`, draw the power
+bar from `holdingMs["0"]`, fire on the left `up` using its `heldMs`.
+
+```rust
+fn on_tick(_dt: u32) {
+    let input = match api::pointer_clicks() { Ok(v) => v, Err(_) => return };
+    if let Some(clicks) = input["clicks"].as_array() {
+        for c in clicks {
+            if c["t"] == "up" && c["button"] == 0 {
+                let charge_ms = c["heldMs"].as_u64().unwrap_or(0);
+                // fire toward (nx, ny) with charge_ms …
+            }
+        }
+    }
+}
+```
+
 ## Bundle server and client halves
 
 In a full-stack project, set distinct server and client module names and keep
