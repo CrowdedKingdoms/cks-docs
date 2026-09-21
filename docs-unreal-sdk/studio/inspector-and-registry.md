@@ -1,88 +1,90 @@
 ---
 slug: inspector-and-registry
-sidebar_position: 5
+sidebar_position: 9
 title: Inspector and Registry
+description: Watch a running Play in Editor session in the Inspector, and rebake the Crowdy metadata that packaged builds read in the Registry.
 ---
 
 # Inspector and Registry
 
-This page covers two Crowdy Studio pages you use late in a work session:
+The two pages in the sidebar's DEBUG group. Neither needs a sign-in.
 
-- The Inspector, a read-only live view of a running Play in Editor session.
-- The Registry, where you rebake Crowdy metadata before cooking.
+- The **Inspector** is a read-only view of the running Play in Editor session.
+- The **Registry** shows the baked metadata a packaged build reads, and rebuilds it.
 
-It also explains the Web Console button for admin surfaces that live outside the editor.
-
-Open Crowdy Studio from Tools, Crowdy SDK, Crowdy Studio, or the Crowded Kingdoms toolbar button. It is a dockable editor tab. Both the Inspector and Registry are native pages inside that tab.
+Open Crowdy Studio (**Tools, Crowdy SDK, Crowdy Studio**) and pick either page in the sidebar.
 
 ## Inspector
 
-The Inspector shows live state from the current Play in Editor session. It is read-only.
+The Inspector reads the live state of the current Play in Editor session and shows it as text. Nothing here changes the game. Press **Refresh** after the session connects or fetches data, or tick **Auto-refresh** and pick an interval (1, 2, or 5 seconds).
 
-You watch teams, channels, and containers as they change while you play, without adding logging to your own code.
-
-:::note[Start a Play in Editor session first, then open the Inspector page. With no PIE session running, the page has nothing to show.]
+:::note[Start a Play in Editor session first.]
+With none running the page reads "No running session".
 :::
 
-What you can read here:
+What it lists:
 
-- Teams: which teams the local player is in, pulled from the runtime cache. This mirrors what `UCrowdyTeams::GetCachedMyTeams` returns and updates as `OnMyTeamsCacheChanged` fires.
-- Channels: the channels the client has joined. The SDK joins every channel referenced by a `CrowdyChannel` event, plus the default session channel `__crowdy_session_<appId>`.
-- Containers: the live Crowdy entities and their state during the session.
+- **Session**: the app id, your user id, the game token id, your UUID, the host id, and whether a game token is held (never its value).
+- **Teams (N)**: the teams the local player is in, from the runtime cache. Until the game has fetched teams it says so.
+- **Channels (N)**: the channels the client has joined, whether the reliable RPC channels are ready, and the session channel's id.
+- **Avatars (N)**: the local player's avatars, from the cache.
+- **Entities**: the local player id, the host id, and the entities this client owns, by actor name. There is no every-entity list; the owned slice is the one that confirms spawns and ownership while you debug.
 
+![The Inspector page with no session running](/img/unreal-sdk/studio-inspector.png)
 
-![Crowdy Studio Inspector page during a Play in Editor session](/img/unreal-sdk/studio-inspector.png)
-
-The Inspector is a viewer. To change teams, channels, or entity state, use the runtime APIs in your game code. See [Teams](/unreal-sdk/services/teams), [Channels](/unreal-sdk/runtime/channels), and [Entities and Spawning](/unreal-sdk/runtime/entities-and-spawning).
-
-:::tip[If the Inspector is empty while you are playing, check that the current map has a map profile and that networking is enabled on it. With no profile, the entity subsystem and replicator do nothing and the session looks dead. See [Map Profiles](/unreal-sdk/runtime/map-profile).]
+:::tip[If the Inspector is empty while you are playing, check the map profile.]
+A [map profile](../runtime/map-profile.md) row that names an asset that failed to load resolves to no profile; the entity subsystem then does nothing on that map and the session looks dead. The log warning names the asset. A map with no row runs on the shipped default.
 :::
+
+To change teams, channels, or entity state, use the runtime APIs in your game: [Teams](../services/teams.md), [Channels](../runtime/channels.md), [Entities and Spawning](../runtime/entities-and-spawning.md).
 
 ## Registry
 
-The baked registry is `UCrowdyBakedRegistry`, a cooked snapshot of Crowdy metadata stored at `/Game/CrowdySDK/CrowdyBakedRegistry`. The SDK reads this snapshot at runtime.
+Every marker you write (`CrowdyEvent` and its routing keys, `CrowdyState` and its keys, the Game Model markers) is Unreal metadata, and a cooked build strips metadata. The SDK therefore bakes what it needs into an asset, `UCrowdyBakedRegistry` at `/Game/CrowdySDK/CrowdyBakedRegistry`, and a packaged build reads that instead. The editor and Play in Editor read live metadata, so the page can look stale until you rebuild.
 
-The snapshot exists because UObject metadata is stripped from cooked builds:
+![The Registry page: Rebuild (Deep Scan), Refresh View, the summary pills, and one card per class](/img/unreal-sdk/registry-panel.png)
 
-- At edit time the SDK can read metadata directly.
-- In a cooked build that metadata is gone, so the runtime reads the baked snapshot instead.
-
-:::warning[Shipped code never calls `HasMetaData`. It reads the baked registry.]
+:::warning[Shipped code never reads metadata. It reads the baked registry.]
+If your own game code reads a Crowdy marker at runtime, read it through the registry, never through `HasMetaData`; in a packaged build the metadata is gone and the call returns nothing.
 :::
 
-The Registry page has a Rebuild button. Pressing it rebakes the snapshot from the current state of your project.
+### The two buttons
 
+**Rebuild (Deep Scan)** regenerates the registry from every C++ class and Blueprint in the project, then refreshes the view. It is the authoritative bake, and packaging runs the same thing automatically at cook time. It runs asynchronously (assets stream in; the editor does not freeze) and shows "Rebuilding registry..." while it works. If the button is disabled, the CrowdySDK editor module is not loaded.
 
-![Crowdy Studio Registry page with the Rebuild button](/img/unreal-sdk/studio-registry.png)
+**Refresh View** re-reads the already-baked asset and redraws the page without re-baking anything. Use it after something else changed the asset on disk, such as a cook.
+
+:::note[Rebuild is optional for a correct package.]
+The cook rebakes on its own, so a packaged build is right even if you forget. Press Rebuild to verify the bake before a long cook, or to bring the in-editor view up to date.
+:::
+
+### What the page shows
+
+Three summary pills: classes, functions, and replicated properties. A search box filters by class, function, or property name, and a **Cards** / **Table** toggle picks the layout.
+
+In Cards view, each class is an expandable card with an **RPC FUNCTIONS** section and a **REPLICATED PROPERTIES** section. Expand an RPC function for its function id, recipient, decay rate, distance, whether its parameters are plain data, and whether it is replicated. Expand a replicated property for its property id, layout order, owner-only flag, manual update flag, and rep-notify function. The class header shows a layout hash and, where the class has an entity component, its Ownership and Host Override, read live from the class defaults rather than baked.
+
+In Table view the same data is one flat table: type, name, routing or notify, flags, id.
 
 ### When to press Rebuild
 
-Press Rebuild after authoring changes that affect Crowdy metadata, and before you cook a build. In practice that means:
+- After you add or change a `CrowdyEvent` receiver, or its recipient, channel, or other routing key.
+- After you change a container or any Crowdy-tagged struct.
+- Before you cook, if you want to check the bake first.
 
-- After you add or change a `CrowdyEvent` receiver, its recipient, channel, or other event meta.
-- After you change containers or other Crowdy-tagged structs.
-- Before you cook or package, so the snapshot matches your latest code.
-
-The cook also re-bakes automatically as part of its hooks, so a packaged build is correct even if you forget. Pressing Rebuild yourself keeps the in-editor snapshot current and lets you verify the bake before a long cook.
-
-:::note[This project uses Diversion for version control. The baked asset is machine-generated and belongs in `.dvignore`, not `.gitignore`. Do not commit it. It is regenerated on rebuild and on cook.]
+:::note[The baked asset is generated.]
+It is rewritten by every Rebuild and every cook. Ignore it in your version control rather than committing it.
 :::
 
-For the full packaging flow, including the registry step, see the [Packaging guide](/unreal-sdk/guides/packaging).
+For the full packaging flow, see the [Packaging guide](../guides/packaging.md).
 
-## Web Console
+## Gotchas
 
-Some surfaces are not authored in the native editor pages. Members, billing, tokens, and secrets are admin surfaces. Crowdy Studio reaches them through the Web Console button.
+- The Inspector's team, channel, and avatar lists come from the runtime caches. An empty list with a "not populated yet" note means the game has not fetched, not that there is nothing.
+- Refresh View does not rebake. If a marker you just added is missing, press Rebuild.
+- Ownership and Host Override on a class card are live values, not part of the bake.
 
-The button opens an embedded browser pointed at those admin surfaces. It uses single sign-on from the editor token, so you do not sign in again. You sign in once in Crowdy Studio, then the Web Console carries that session.
+## Related
 
-{/* TODO: replace with real screenshot */}
-![Web Console button opening admin surfaces in an embedded browser](/img/unreal-sdk/studio-web-console.png)
-
-Which surface goes where:
-
-- Native pages: game-plane authoring (teams, channels, grids, game models, the Inspector, and the Registry).
-- Web Console: account and security administration.
-
-:::note[Token sign-in gives management-only access. It cannot do game-plane authoring such as teams and channels. Sign in with your account (email + password, magic link, or social) when you need full authoring.]
-:::
+- [Packaging](../guides/packaging.md)
+- [Crowdy Studio overview](./overview.md)

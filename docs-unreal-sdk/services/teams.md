@@ -2,6 +2,7 @@
 slug: teams
 sidebar_position: 2
 title: Teams
+description: "Persistent, server-owned player groups with membership, roles, and permissions: the cache for instant UI, the per-call and async-action surfaces, and why runtime code and Crowdy Studio edit the same rows."
 ---
 
 import Tabs from '@theme/Tabs';
@@ -9,214 +10,277 @@ import TabItem from '@theme/TabItem';
 
 # Teams
 
-Teams group players together and carry permissions.
+A team is a persistent, named group of players, scoped to your app, with membership, roles, and
+permissions the app controls. A game creates, joins, and manages teams live from `UCrowdyTeams`; Crowdy
+Studio's Teams pane edits the same rows ahead of time.
 
-You can set teams up ahead of time in Crowdy Studio, or create and manage them at runtime from game code. This page covers the runtime side: `UCrowdyTeams`.
+## When you touch this
 
-`UCrowdyTeams` is a game instance subsystem in the `CrowdyServices` module. It:
+Any time players need a group that outlives one session, a guild, a faction, a village, with roles you
+can grant and revoke. In the example world a village is a team: joining one is how a player shows they
+belong to a place.
 
-- Keeps a local cache of the teams the current player belongs to.
-- Exposes per-call delegates for creating, joining, leaving, and querying teams and their roles.
+## Runtime and Studio, one dataset
 
-:::note[Creating and managing teams is not limited to Crowdy Studio. The same create, update, delete, role, and policy operations are available at runtime through `UCrowdyTeams`, subject to your app's team creation policy.]
+Creating, updating, and deleting teams is not a Studio-only workflow. The same create, update, delete,
+role, and policy operations run from game code through `UCrowdyTeams`, subject to your app's team
+creation policy, and Crowdy Studio's Teams pane reads and writes the identical server rows. There is one
+store, not two.
 
-Studio is convenient for setting teams up ahead of time and for admin work, but game code can do it live. See the Studio [Teams and Channels](/unreal-sdk/studio/teams-and-channels) page for the edit-time workflow.
+Membership, roles, and permissions are server-authoritative truth, pulled through `UCrowdyTeams` rather
+than trusted from the client, the same split every server-owned system in the SDK follows: see
+[Game Models](../game-models/overview.md) for the general two-plane story. Teams are not themselves a
+Game Model in this version: there is no `CrowdyContainer` here, just the Team API `UCrowdyTeams` wraps
+one call at a time. If you came looking for a container, see
+[Change pings and pull](../game-models/change-pings-and-pull.md) instead.
+
+The server owns team, role, and permission storage and every authorization check; a disallowed call comes
+back through the error delegate rather than being refused on the client. The exact GraphQL shape behind
+each call is on [Teams](/game-api/teams) and in the
+[operations reference](/game-api/reference/graphql/operations/mutations/create-team); a team can also be
+granted permissions over a grid region, covered on
+[Grids and permissions](/game-api/grids-and-permissions#group-grants-per-team-or-group).
+
+Every call below is asynchronous and answers through exactly one of the two delegates it is given, even
+when the request never reaches the server.
+
+## Reading the cache first
+
+`GetCachedMyTeams` and its neighbors read a local snapshot of the player's own memberships, refreshed only
+by `GetMyTeams`; a join, leave or role change does not touch it, so call `GetMyTeams` again after a
+mutation you want the cache to reflect. Read it for the value to show now; treat a query's result and
+`OnMyTeamsCacheChanged` as the update that follows.
+
+| Call | Returns |
+|---|---|
+| `HasCachedTeams()` | Whether the cache has been populated yet. |
+| `GetCachedMyTeams()` | The player's memberships (`TArray<FCrowdyTeamMembership>`) as of the last refresh. |
+| `IsPlayerInTeam(TeamId)` | Whether the player belongs to that team, from the cache. |
+| `GetMyTeamById(TeamId, OutMembership)` | The cached membership for one team, if any. |
+| `IsInAnyTeam()` | Whether the cache holds at least one membership. |
+| `GetPrimaryMembership(OutMembership)` | The first cached membership. |
+| `HasPermissionInTeam(TeamId, Permission)` | Whether the cached membership grants an `ECrowdyTeamPermission`. |
+
+`OnMyTeamsCacheChanged` (`FOnMyTeamsCacheChanged`, `Memberships`) is a multicast, Blueprint-assignable
+delegate that fires after `GetMyTeams` answers, and only then. Bind it once and re-read the cache; do not
+poll.
+
+## Queries
+
+Each query takes an `FOnTeamError` alongside its success delegate; bind it to a `UFUNCTION` with the
+signature `(FCrowdyTeamError Error, FString Message)`, where `Message` repeats `Error.Message`.
+
+| Call | Success delegate | Notes |
+|---|---|---|
+| `GetMyTeams(OnSuccess, OnError)` | `FOnMyTeamsSuccess` | Repopulates the cache and fires `OnMyTeamsCacheChanged`. |
+| `GetTeam(TeamId, OnSuccess, OnError)` | `FOnTeamSuccess` | One team by id. |
+| `GetTeams(OnSuccess, OnError)` | `FOnTeamsSuccess` | Every team in the app, not just the player's. |
+| `GetTeamMembers(TeamId, OnSuccess, OnError)` | `FOnTeamMembersSuccess` | |
+| `GetTeamRoles(TeamId, OnSuccess, OnError)` | `FOnTeamRolesSuccess` | |
+| `GetTeamPolicy(OnSuccess, OnError)` | `FOnTeamPolicySuccess` | App-wide, not per-team. |
+| `GetPendingJoinRequests(TeamId, OnSuccess, OnError)` | `FOnTeamMembersSuccess` | See the warning below. |
+
+:::note[GetPendingJoinRequests re-fetches the full member list and filters on the client.]
+It runs the same query as `GetTeamMembers` and then keeps only the members whose status is pending. That
+is fine at team scale, a handful to a few dozen members, but do not call it in a hot loop expecting a
+cheaper, dedicated request.
 :::
 
-## Read the cache first
+## Creating and managing a team
 
-Read membership from the cache for instant UI.
+Every mutation reports success through its own delegate and failure through the shared `FOnTeamError`.
 
-The cache is a snapshot that the SDK refreshes in the background. Treat the cache as the value to render now, and treat the callbacks and the change delegate as eventual truth that may update it.
+**Team lifecycle:** `CreateTeam(Name, Description, MembershipPolicy, OnSuccess, OnError)` returns
+`FOnTeamSuccess` with the new `FCrowdyTeam`; `UpdateTeam(TeamId, Name, Description, OnSuccess, OnError)`
+also returns `FOnTeamSuccess`; `DeleteTeam(TeamId, OnSuccess, OnError)` returns `FOnTeamVoidSuccess`.
 
-Cache accessors:
+**Membership:** `JoinTeam(TeamId, OnSuccess, OnError)` honors the team's `ECrowdyTeamMembershipPolicy`,
+seating the player immediately for an `Open` team; `RequestToJoinTeam(TeamId, OnSuccess, OnError)` is for
+a `Request` policy team and returns a pending member. Both return `FOnTeamMemberSuccess`.
+`LeaveTeam(TeamId, OnSuccess, OnError)` returns `FOnTeamVoidSuccess`. `AddTeamMember(TeamId, UserId,
+OnSuccess, OnError)` is the admin add that bypasses the membership policy; `RemoveTeamMember(TeamId,
+UserId, OnSuccess, OnError)` takes them off. `AddTeamMember` answers with `FOnTeamMemberSuccess`,
+`RemoveTeamMember` with `FOnTeamVoidSuccess`.
 
-- `GetCachedMyTeams()` returns the teams the player currently belongs to.
-- `HasCachedTeams()` returns whether the cache has been populated yet.
-- `IsPlayerInTeam(int64 GroupId)` returns whether the player is in a given team.
-- `HasPermissionInTeam(int64 GroupId, ECrowdyTeamPermission Permission)` returns whether the player holds a permission in a given team.
+**Roles and permissions:** `CreateTeamRole(TeamId, RoleName, Permissions, Rank, OnSuccess, OnError)` and
+`UpdateTeamRole(TeamRoleId, RoleName, Permissions, OnSuccess, OnError)` return `FOnTeamRoleSuccess`;
+`DeleteTeamRole(TeamRoleId, OnSuccess, OnError)` returns `FOnTeamVoidSuccess`.
+`SetTeamMemberRoles(TeamId, UserId, RoleIds, OnSuccess, OnError)` returns `FOnTeamMemberSuccess`.
+`Permissions` is an `FCrowdyTeamPermissions` your code builds before the call.
 
-When the cache changes, the multicast delegate `OnMyTeamsCacheChanged` fires. Bind to it and re-read the cache to refresh your UI.
-
-```cpp
-UCrowdyTeams* Teams = GetGameInstance()->GetSubsystem<UCrowdyTeams>();
-
-if (Teams->HasCachedTeams())
-{
-    const bool bInTeam = Teams->IsPlayerInTeam(GroupId);
-    // Update your UI from the cached value.
-}
-```
-
-:::tip[Do not block on a query before drawing UI. Read the cache, draw, and let `OnMyTeamsCacheChanged` push the next update when the truth arrives.]
+:::warning[SetTeamMemberRoles replaces the member's roles, it does not add to them.]
+Pass every role the member should end up holding, including ones they already have, or the call drops
+the roles you left out.
 :::
 
-## Join a team
+**App-wide policy:** `SetTeamPolicy(CreationPolicy, DefaultMembershipPolicy, OnSuccess, OnError)` returns
+`FOnTeamPolicySuccess` and is an app-admin operation.
 
-`JoinTeam` takes the team's `GroupId` and two per-call dynamic delegates: one for success and one for error.
+## Data types
 
-<Tabs>
-<TabItem value="cpp" label="C++" default>
+| Struct | Holds |
+|---|---|
+| `FCrowdyTeam` | `TeamId`, `AppId`, `Name`, `Description`, `OwnerUserId`, `MembershipPolicy`, `Status`, `CreatedAt`. |
+| `FCrowdyTeamMember` | `TeamMemberId`, `TeamId`, `UserId`, `Status` (active or pending), `Roles` sorted by rank, `CreatedAt`. |
+| `FCrowdyTeamMembership` | `Team`, `Roles`, the effective `Permissions` (a server-computed union across roles), `JoinedAt`, and `HasPermission(ECrowdyTeamPermission)`. |
+| `FCrowdyTeamPermissions` | Flags `bManageTeam`, `bManageMembers`, `bManageRoles`, `bInviteMembers`, all `BlueprintReadWrite`, and `Has()`. Build one to pass into `CreateTeamRole` or `UpdateTeamRole`. |
+| `FCrowdyTeamPolicy` | `AppId`, `CreationPolicy`, `DefaultMembershipPolicy`, `MaxMembers` (0 is uncapped), `MaxTeamsPerUser` (0 is uncapped). |
+| `FCrowdyTeamRole` | `TeamRoleId`, `TeamId`, `RoleName`, `Rank`, `bIsSystem` (every team has an undeletable system leader role), `Permissions`, `CreatedAt`. |
+| `FCrowdyTeamError` | `Code` (`ECrowdyTeamErrorCode`) and `Message`. |
 
-```cpp
-void JoinTeam(int64 GroupId, FOnTeamMemberSuccess OnSuccess, FOnTeamError OnError);
-```
+| Enum | Values |
+|---|---|
+| `ECrowdyTeamCreationPolicy` | `Admin`, `Member`, `Anyone` |
+| `ECrowdyTeamMembershipPolicy` | `Open`, `Request`, `Invite`, `Admin` |
+| `ECrowdyTeamPermission` | `ManageTeam`, `ManageMembers`, `ManageRoles`, `InviteMembers` |
+| `ECrowdyTeamErrorCode` | `Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError` |
 
-Bind each delegate to a `UFUNCTION` on a `UObject` you own:
+:::note[Code is a coarse bucket, not a precise diagnosis.]
+`FCrowdyTeamError` is built by pattern-matching the server's message text; there is no structured error
+code from the server. Read `Message` for the detail and branch on `Code` only for the broad cases.
+:::
 
-- The success delegate runs when the server confirms the join.
-- The error delegate runs when the call fails.
+## Blueprint nodes
 
-After a successful join the cache updates and `OnMyTeamsCacheChanged` fires, so most UI work belongs in that handler rather than in the per-call success handler.
+The subsystem's per-call delegates need a Create Event node per call. For a graph that just drops in a
+node, use the async-action latent nodes instead: one static factory and `Activate()` per node, with
+multicast `OnSuccess`/`OnError` (`FTeamsAsyncOnError`, the same two parameters as `FOnTeamError`),
+wrapping the same server calls.
 
-`LeaveTeam`, `GetMyTeams`, `GetTeam`, `GetTeamMembers`, and the other queries follow the same shape: pass the arguments plus a success and an error delegate.
+| Node | Class | Returns |
+|---|---|---|
+| Get My Teams | `UCrowdyTeams_GetMyTeams` | `FCrowdyMyTeamsResult` |
+| Get Team | `UCrowdyTeams_GetTeam` | `FCrowdyTeam` |
+| Get All Teams | `UCrowdyTeams_GetTeams` | `FCrowdyTeamsResult` |
+| Get Team Members | `UCrowdyTeams_GetTeamMembers` | `FCrowdyTeamMembersResult` |
+| Get Team Roles | `UCrowdyTeams_GetTeamRoles` | `FCrowdyTeamRolesResult` |
+| Get Team Policy | `UCrowdyTeams_GetTeamPolicy` | `FCrowdyTeamPolicy` |
+| Get Pending Join Requests | `UCrowdyTeams_GetPendingJoinRequests` | `FCrowdyTeamMembersResult` |
+| Create Team | `UCrowdyTeams_CreateTeam` | `FCrowdyTeam` |
+| Update Team | `UCrowdyTeams_UpdateTeam` | `FCrowdyTeam` |
+| Delete Team | `UCrowdyTeams_DeleteTeam` | void |
+| Join Team | `UCrowdyTeams_JoinTeam` | `FCrowdyTeamMember` |
+| Request to Join Team | `UCrowdyTeams_RequestToJoinTeam` | `FCrowdyTeamMember` |
+| Leave Team | `UCrowdyTeams_LeaveTeam` | void |
+| Add Team Member | `UCrowdyTeams_AddTeamMember` | `FCrowdyTeamMember` |
+| Remove Team Member | `UCrowdyTeams_RemoveTeamMember` | void |
+| Set Team Member Roles | `UCrowdyTeams_SetTeamMemberRoles` | `FCrowdyTeamMember` |
+| Create Team Role | `UCrowdyTeams_CreateTeamRole` | `FCrowdyTeamRole` |
+| Update Team Role | `UCrowdyTeams_UpdateTeamRole` | `FCrowdyTeamRole` |
+| Delete Team Role | `UCrowdyTeams_DeleteTeamRole` | void |
+| Set Team Policy | `UCrowdyTeams_SetTeamPolicy` | `FCrowdyTeamPolicy` |
+
+`FCrowdyTeamsResult`, `FCrowdyMyTeamsResult`, `FCrowdyTeamMembersResult`, and `FCrowdyTeamRolesResult`
+each wrap one multi-item result (`Teams`, `Memberships`, `Members`, `Roles`); a single-item call like
+`GetTeam` or `CreateTeam` returns its struct directly.
+
+Each async-action node's own `On Success` pin is a multicast delegate named after its call:
+`FTeamAsyncOnSuccess` (Get Team, Create Team, Update Team), `FTeamsAsyncOnSuccess` (Get All Teams),
+`FMyTeamsAsyncOnSuccess` (Get My Teams), `FMemberAsyncOnSuccess` (Join Team, Request to Join Team, Add
+Team Member, Set Team Member Roles), `FMembersAsyncOnSuccess` (Get Team Members, Get Pending Join
+Requests), `FRoleAsyncOnSuccess` (Create Team Role, Update Team Role), `FRolesAsyncOnSuccess` (Get Team
+Roles), `FPolicyAsyncOnSuccess` (Get Team Policy, Set Team Policy), and `FVoidAsyncOnSuccess` (Delete
+Team, Leave Team, Remove Team Member, Delete Team Role). These are separate from the per-call
+`FOnTeam*Success` delegates above; the async-action nodes never use those.
+
+:::caution[Bind a per-call delegate to a UFUNCTION on a UObject that outlives the request.]
+The response arrives asynchronously; if the object is gone by then, the callback has nowhere to land.
+:::
+
+:::note[The array delegates pass `const TArray<T>&`, and on v2.14.0 they still pass by value.]
+`FOnTeamsSuccess`, `FOnTeamMembersSuccess`, `FOnTeamRolesSuccess`, `FOnMyTeamsSuccess`, and the cache event
+`FOnMyTeamsCacheChanged` pass their array as `const TArray<T>&`, which is what the C++ handlers on this page
+take. On the tagged v2.14.0 plugin the same delegates pass `TArray<T>` by value, and a handler must match:
+a by-value parameter there, `const TArray<T>&` from the next release. A mismatch fails to bind. See
+[What's Changed](../guides/whats-changed.md#unreleased-after-v2140). In Blueprint prefer the async-action
+nodes above, whose result pins are structs; a Blueprint pin has no by-value distinction.
+:::
+
+## Example: founding and joining a village
+
+A village is a team. The player asks to join "the Village," and a successful join lights their `Torch`,
+the light component the example cast already carries, to show membership at a glance.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+A "Found the Village" button calls `FoundVillage()`, which calls `CreateTeam("The Village", "Everyone
+who shares one fire.", Open, HandleVillageFounded, FOnTeamError())`; `HandleVillageFounded(FCrowdyTeam)`
+stores the new id in a private `VillageTeamId`, read back through the `BlueprintPure` `GetVillageTeamId()`:
+
+<CppSnippet id="team-create" />
+
+Overlapping the village post calls `JoinVillage()`, which calls `JoinTeam(GetVillageTeamId(), ...)`;
+on success `HandleJoinedVillage(FCrowdyTeamMember)` sets `Torch->SetVisibility(true)`:
+
+<CppSnippet id="team-join" />
+
+`ShowVillageMembership()`, called from `BeginPlay`, guards on `HasCachedTeams()` and sets
+`Torch->SetVisibility(Teams->IsPlayerInTeam(GetVillageTeamId()))` from the cache alone, before any round
+trip completes:
+
+<CppSnippet id="team-query" />
+
+`WatchVillage()`, bound at `BeginPlay`, calls `OnMyTeamsCacheChanged.AddDynamic` and `GetMyTeams()`;
+`HandleVillageCacheChanged(const TArray<FCrowdyTeamMembership>&)` re-runs `ShowVillageMembership()`
+whenever the cache changes, from anywhere:
+
+<CppSnippet id="team-events" />
 
 </TabItem>
-<TabItem value="blueprint" label="Blueprint">
+<TabItem value="bp" label="Blueprint">
 
-The same operations are available as Blueprint nodes. You can call Join Team, read the cached membership, and bind to On My Teams Cache Changed without C++.
+The Blueprint needs an `int64` variable `VillageTeamId` and the `Torch` light component the cast already
+has.
 
-![Teams Blueprint nodes for joining and reading cached membership](/img/unreal-sdk/teams-blueprint-nodes.png)
+Creating the village: the **Create Team** async node takes `Name` and `Description` literals and a
+`MembershipPolicy` of `Open`; its `On Success` pin fires when the server has the team, breaks the `Team`
+output, and sets `TeamId` into `VillageTeamId`.
+
+<Blueprint src="team-create" title="OnFoundVillagePressed, Create Team, Break Crowdy Team, Set VillageTeamId" />
+
+Joining it: overlapping the village post fires **Event ActorBeginOverlap**, which reads `VillageTeamId`
+and calls **Join Team**; its `On Success` pin gets the `Torch` and sets its visibility.
+
+<Blueprint src="team-join" title="Event ActorBeginOverlap, Get VillageTeamId, Join Team, Get Torch, Set Visibility" />
+
+Reading the cache on spawn: **Event BeginPlay** gets the `Torch`, gets the **Crowdy Teams** subsystem and
+`VillageTeamId`, and feeds them into **Is Player in Team** (pure), whose return value drives the torch's
+visibility directly, no network call. The cache is empty until **Get My Teams** has answered once, so on
+its own this graph hides the torch on spawn; the sync step below is what shows it. A **Has Cached Teams**
+(pure) check into **Branch** guards the read, so the visibility set only runs once the cache has answered.
+
+<Blueprint src="team-query" title="Event BeginPlay, Has Cached Teams, Branch, Get Torch, Is Player in Team, Crowdy Teams, Get VillageTeamId, Set Visibility" />
+
+Staying in sync: add a custom event with one input, `Memberships` (array of `Crowdy Team Membership`),
+connect it with **Bind Event to On My Teams Cache Changed** at Begin Play, then call **Get My Teams**; the
+event's body re-runs the membership check above. No figure is shown for this step; the C++ tab shows the
+same one.
 
 </TabItem>
 </Tabs>
 
-## Create and manage teams at runtime
+## Gotchas
 
-Your game can create a team and manage it without ever opening Crowdy Studio.
+- The cache holds only the player's own memberships. `GetTeams` lists every team in the app; the cache
+  never does.
+- Only `GetMyTeams` writes the cache and fires `OnMyTeamsCacheChanged`. After a join, leave or role change,
+  call `GetMyTeams` again or `IsPlayerInTeam` keeps answering from before the mutation.
+- `GetPendingJoinRequests` filters the full member list on the client; it is not a dedicated server call.
+- `SetTeamMemberRoles` replaces the member's role set. Pass the full set every time.
+- `FCrowdyTeamError::Code` is pattern-matched from the server's message text, not a structured server
+  code; treat it as a coarse bucket and `Message` as the detail.
+- A per-call delegate needs a `UFUNCTION` on a `UObject` that outlives the request, including when the
+  request never reaches the server.
+- The array delegates take `const TArray<T>&` handlers, by-value ones on the tagged v2.14.0 plugin; a
+  mismatch fails to bind. The async-action nodes in Blueprint have no such split.
 
-`CreateTeam` makes a new team owned by the current player:
+## Related
 
-```cpp
-void CreateTeam(const FString& Name, const FString& Description,
-                ECrowdyTeamMembershipPolicy MembershipPolicy,
-                FOnTeamSuccess OnSuccess, FOnTeamError OnError);
-```
-
-The success delegate receives the new `FCrowdyGroup`, including its `GroupId`, which you then use for the other calls. The membership policy decides whether players join directly or request to join.
-
-The rest of the management surface follows the same per-call delegate shape:
-
-- Team lifecycle: `UpdateTeam`, `DeleteTeam`.
-- Members: `AddTeamMember`, `RemoveTeamMember`, `RequestToJoinTeam`.
-- Roles and permissions: `CreateTeamRole`, `UpdateTeamRole`, `DeleteTeamRole`, `SetTeamMemberRoles`.
-- App-wide policy: `SetTeamPolicy`.
-
-:::note[Whether a given player is allowed to create or change a team is decided by the server from your app's policy and the player's role, so a failed call comes back through the error delegate rather than being blocked on the client.]
-:::
-
-## Complete example
-
-This actor joins a team on demand and reflects membership from the cache. It binds the join result delegates and the cache-changed delegate to its own `UFUNCTION`s.
-
-```cpp
-// SampleTeamsActor.h
-#pragma once
-
-#include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "SampleTeamsActor.generated.h"
-
-UCLASS()
-class ASampleTeamsActor : public AActor
-{
-    GENERATED_BODY()
-
-public:
-    UPROPERTY(EditAnywhere, Category = "Teams")
-    int64 GroupId = 0;
-
-    virtual void BeginPlay() override;
-
-    void RequestJoin();
-
-private:
-    UFUNCTION()
-    void HandleJoinSuccess();
-
-    UFUNCTION()
-    void HandleJoinError(const FString& Error);
-
-    UFUNCTION()
-    void HandleMyTeamsChanged();
-
-    void RefreshFromCache();
-};
-```
-
-```cpp
-// SampleTeamsActor.cpp
-#include "SampleTeamsActor.h"
-#include "Engine/GameInstance.h"
-#include "Subsystem/CrowdyTeams.h"
-
-void ASampleTeamsActor::BeginPlay()
-{
-    Super::BeginPlay();
-
-    if (UCrowdyTeams* Teams = GetGameInstance()->GetSubsystem<UCrowdyTeams>())
-    {
-        Teams->OnMyTeamsCacheChanged.AddDynamic(this, &ASampleTeamsActor::HandleMyTeamsChanged);
-    }
-
-    RefreshFromCache();
-}
-
-void ASampleTeamsActor::RequestJoin()
-{
-    UCrowdyTeams* Teams = GetGameInstance()->GetSubsystem<UCrowdyTeams>();
-    if (!Teams)
-    {
-        return;
-    }
-
-    FOnTeamMemberSuccess OnSuccess;
-    OnSuccess.BindDynamic(this, &ASampleTeamsActor::HandleJoinSuccess);
-
-    FOnTeamError OnError;
-    OnError.BindDynamic(this, &ASampleTeamsActor::HandleJoinError);
-
-    Teams->JoinTeam(GroupId, OnSuccess, OnError);
-}
-
-void ASampleTeamsActor::HandleJoinSuccess()
-{
-    // The server confirmed the join. The cache update follows and
-    // drives the UI through HandleMyTeamsChanged.
-    UE_LOG(LogTemp, Log, TEXT("Joined team %lld"), GroupId);
-}
-
-void ASampleTeamsActor::HandleJoinError(const FString& Error)
-{
-    UE_LOG(LogTemp, Warning, TEXT("Join failed: %s"), *Error);
-}
-
-void ASampleTeamsActor::HandleMyTeamsChanged()
-{
-    RefreshFromCache();
-}
-
-void ASampleTeamsActor::RefreshFromCache()
-{
-    UCrowdyTeams* Teams = GetGameInstance()->GetSubsystem<UCrowdyTeams>();
-    if (!Teams || !Teams->HasCachedTeams())
-    {
-        return;
-    }
-
-    const bool bInTeam = Teams->IsPlayerInTeam(GroupId);
-    // Apply bInTeam to your widget here.
-}
-```
-
-The exact delegate signatures (`FOnTeamMemberSuccess`, `FOnTeamError`) are declared in the `UCrowdyTeams` header. Match your `UFUNCTION` parameters to those declarations when you bind.
-
-:::warning[Bind to `UFUNCTION`s on a `UObject` that outlives the call. If the object is destroyed before the server responds, the callback has nowhere to land.]
-
-The actor above unbinds implicitly when it is destroyed, but if you bind from a shorter-lived object, unbind in its teardown.
-:::
-
-## See also
-
-- [Crowdy Studio](/unreal-sdk/studio/overview) for authoring teams and their permissions.
-- The Teams example in the sample project (`ASampleTeamsSwitch`) joins a team and reflects membership from the cache, refreshing on `OnMyTeamsCacheChanged`.
+- [Authentication](./authentication.md): a signed-in player is what every team call needs.
+- [Avatars](./avatars.md)
+- [Voice chat](./voice-chat.md)
+- [Host election](./host-election.md)
+- [Channels](../runtime/channels.md): a sibling group-like system that shares the same permission table.
+- [Change pings and pull](../game-models/change-pings-and-pull.md): what teams are not, in this version.
+- [Teams and Channels in Crowdy Studio](../studio/teams-and-channels.md): the same data, authored ahead of time.

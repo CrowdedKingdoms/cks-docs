@@ -1,0 +1,9 @@
+{
+  "label": "Concepts",
+  "position": 10,
+  "link": {
+    "type": "generated-index",
+    "title": "Concepts",
+    "description": "The ideas the rest of the SDK documentation assumes: the two planes of state, entities, sessions, hosts, and how Blueprint and C++ share one surface."
+  }
+}

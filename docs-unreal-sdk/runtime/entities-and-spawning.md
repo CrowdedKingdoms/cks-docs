@@ -1,7 +1,8 @@
 ---
 slug: entities-and-spawning
-sidebar_position: 4
+sidebar_position: 2
 title: Entities and Spawning
+description: Spawn an entity at runtime so every client sees the same actor, destroy it everywhere, and understand how a remote client rebuilds an entity it has never met.
 ---
 
 import Tabs from '@theme/Tabs';
@@ -9,339 +10,127 @@ import TabItem from '@theme/TabItem';
 
 # Entities and Spawning
 
-An entity is an actor that the SDK tracks and replicates across every client. You make an actor into an entity by adding a `UCrowdyEntityComponent` to it.
+An entity is an actor with a `UCrowdyEntityComponent`. A level-placed one needs no spawn call: every client loads it and derives the same NetID. This page is about the other kind, an actor created during play, which one client spawns and every other client rebuilds from a spawn event. For identity policies, NetIDs, and the owner and proxy roles, read [Entities, Identity, and Ownership](../concepts/entities-identity-ownership.md) first.
 
-From there the component:
+## When to spawn through the SDK
 
-- Decides who owns the entity.
-- Hands you spawn and destroy callbacks.
-- Gives you the hooks for continuous state and RPC events.
+Whenever an actor created at runtime must exist on other clients: a dropped item, a thrown object, a summoned creature. The plain engine `SpawnActor` creates a local actor and tells nobody; the SDK's spawn call creates the same actor and announces it.
 
-This page covers:
+## Spawning
 
-- Adding the component in C++ or Blueprint.
-- Choosing the entity's mode and identity.
-- The owner versus remote proxy split.
-- Spawning and destroying through the SDK.
-- How a remote client rebuilds the entity from a spawn event.
+`UCrowdyEntitySubsystem::SpawnEntity(EntityClass, SpawnTransform, InitialState)` spawns the class locally with a deferred spawn, injects the entity's identity into its component before `BeginPlay`, and broadcasts a spawn event so every client in range spawns the same class as a proxy. The client that called it is the owner; `Role` is `Owner` there and `RemoteProxy` everywhere else. `UCrowdyUtilities::SpawnCrowdyEntity(WorldContextObject, EntityActorClass, SpawnTransform, InitialState)` is the same operation as a static call with a world context pin, which is the form a Blueprint uses.
 
-## Adding the entity component
+`InitialState` is an `FInstancedStruct` of your own type. It travels with the spawn and lands in the component's `OnCrowdySpawned` event on every client; pass an empty struct when there is nothing to send.
 
-Add the component in your actor constructor with `CreateDefaultSubobject`. That is enough to register the actor as an entity once it enters a networked world.
+The lantern world's runtime spawn is the player arriving with a lantern. `ALanternPlayer` is the player character: a pawn carrying a `UCrowdyEntityComponent` in Dynamic mode with PlayerDerived identity and LocalClient ownership, declared in full on [Continuous state](./continuous-state.md). Once the character knows it is locally owned, `ALanternPlayer::DropLantern` spawns an `ALantern` a short way in front of it, and the new lantern appears there on every client in range. The moment is `OnCrowdyOwnershipAssigned`, not `BeginPlay`: a player pawn spawned during play (`RestartPlayer`) is possessed after its `BeginPlay`, and its Player Derived identity resolves inside that first possession, so `IsLocallyOwned()` is still false at `BeginPlay`. The `AddDynamic` in the block sits in `ALanternPlayer::BeginPlay`, after `Super::BeginPlay()`; the handler fires on the tick after the entity registers, on the first-frame pawn and the runtime-spawned one alike. (On the tagged v2.14.0 plugin the pawn registers at `BeginPlay` under a random id, so a `BeginPlay` gate ran there; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).)
 
-<Tabs>
-<TabItem value="cpp" label="C++" default>
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
 
-```cpp
-#include "Replication/Components/CrowdyEntityComponent.h"
-
-ACrowdyExampleActor::ACrowdyExampleActor()
-{
-    PrimaryActorTick.bCanEverTick = true;
-
-    CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
-    CrowdyEntity->Mode = ECrowdyEntityMode::Dynamic;
-    CrowdyEntity->IdentityPolicy = ECrowdyIdentityPolicy::Random;
-}
-```
+<CppSnippet id="spawn-entity" />
 
 </TabItem>
-<TabItem value="blueprint" label="Blueprint">
+<TabItem value="bp" label="Blueprint">
 
-Open your actor Blueprint. In the Components panel, click Add and pick Crowdy Entity Component.
+Any Actor Blueprint can spawn; nothing on the spawner needs a component. In the player pawn's Blueprint, at **Event BeginPlay**, **Get Crowdy Entity Component** feeds **Bind Event to On Crowdy Ownership Assigned**, whose `Event` pin is wired to a custom event, `OnOwnershipAssigned`, that receives the owner id, the role, and the `Is Locally Owned` flag; the pawn registers inside its first possession, after `BeginPlay`, so this is where the answer arrives. The event's `Is Locally Owned` pin feeds a **Branch** (the owner gate: only the owner spawns), and on the true side **Get Actor Transform** feeds the `Spawn Transform` pin of **Spawn Crowdy Entity**, which takes the entity class and an optional Initial State struct and returns the spawned actor. The class pin in the figure names the sample lantern; pick your own entity class there. A spawner that is not a Player Derived pawn can run the same Branch straight from **Event BeginPlay** with the pure **Is Crowdy Entity Locally Controlled** as the condition; only a Player Derived pawn learns its identity after `BeginPlay`.
 
-
-![Add the Crowdy Entity Component in the Components panel](/img/unreal-sdk/bp-add-entity-component.png)
-
-Select the component and open the Details panel. Set Mode (Dynamic or Static) and Identity Policy (Stable, Player Derived, or Random). For a Dynamic entity, assign a State Executor.
-
-![Set Mode and Identity Policy in the Details panel](/img/unreal-sdk/bp-entity-mode-identity.png)
+<Blueprint src="spawn-entity" title="Event BeginPlay, Get Crowdy Entity Component, Bind Event to On Crowdy Ownership Assigned, OnOwnershipAssigned, Branch, Get Actor Transform, Spawn Crowdy Entity" />
 
 </TabItem>
 </Tabs>
 
-### Mode
-
-`Mode` is an `ECrowdyEntityMode`:
-
-- `Dynamic`: the entity sends continuous state through a `UActorUpdateExecutor` and is polled by the auto replicator. Use this for anything that moves or animates.
-- `Static`: the entity exists and can send and receive RPC events, but it does not stream a state snapshot. Use this for fixed objects such as a world switch or a chat relay.
-
-:::note[`StateExecutor` and `bAutoRegister` apply to `Dynamic` mode only. Actor Update Executor is covered on the [Actor State](/unreal-sdk/runtime/continuous-state) page.]
+:::warning[A runtime-spawned entity never consults its Identity Policy or its Ownership.]
+`SpawnEntity` injects a fresh NetID, `Role = Owner`, and the spawning client's player id before `BeginPlay`, so the component's `IdentityPolicy` and `Ownership` settings are not read. Setting Stable on a class you spawn does not give it a stable id, and setting Host does not make it host-owned; a level-placed `ALanternPost` is how you get both, and [Ownership transfer](./ownership-transfer.md) is how a spawned entity changes hands afterwards.
 :::
 
-### Identity policy
-
-`IdentityPolicy` is an `ECrowdyIdentityPolicy` and decides how the entity's NetID is assigned:
-
-- `Stable`: a fixed identity that is the same across sessions. Use this for a placed level actor that should keep the same NetID every run.
-- `PlayerDerived`: the identity is tied to the local player. Use this for a player pawn so the entity's NetID matches its owner.
-- `Random`: a fresh identity each time the entity is created. Use this for spawned, throwaway objects.
-
-### Ownership and authority
-
-By default an entity is owned by the client that spawns or places it (`Ownership = Local Client`, role `Owner`). These fields change that. `Ownership` and `HostOverride` take effect only on a self-resolving entity -- a level-placed actor, or one with `IdentityPolicy = Stable`. A runtime-spawned entity gets its role from the spawn event instead, so it ignores `Ownership`.
-
-- **`Ownership`** (`ECrowdyOwnership`, default `Local Client`): set it to **Host** for a level-placed world or AI entity that should belong to whichever client is the elected host rather than to any one player. Its role becomes `HostOwned`. Such an entity almost always wants `IdentityPolicy = Stable` so every client computes the same NetID; the component warns if you pick Host with any other policy.
-- **`HostOverride`** (`ECrowdyHostOverride`, default `Allow`, shown only when `Ownership = Local Client`): whether the elected host may correct this entity's Crowdy State as a super-user. `Allow` accepts and adopts a host correction; `Owner Only` drops even a host correction, so only the owner ever writes it.
-- **`StateHeartbeat`** (`ECrowdyStateHeartbeat`, default `Inherit`): `Off` is a per-entity kill switch for the Crowdy State keyframe heartbeat. On-change replication is unaffected either way.
-- **`bAutoApproveOwnershipRequests`** (default off): when set, this entity's current authority grants an incoming ownership-transfer request immediately instead of raising `OnOwnershipRequested` for game code to decide.
-
-Ownership is a separate axis from `Mode` and `IdentityPolicy`. For host precedence, world entities, and the request/grant transfer flow, see [Host Authority](/unreal-sdk/runtime/host-authority#ownership-transfer-request-and-grant) and [Crowdy State](/unreal-sdk/runtime/crowdy-state#authority-and-world-entities).
-
-## Owner, remote proxy, and IsLocallyOwned
-
-Every entity has exactly one owner. The owner simulates the entity and sends its state and events.
-
-Every other client holds a `RemoteProxy`: a copy that is fed from the network and never simulated locally. The owner does not get a proxy of itself.
-
-`GetRole()` returns an `ECrowdyRole`:
-
-- `None`: no role assigned yet.
-- `Owner`: this client owns and drives the entity.
-- `RemoteProxy`: this client mirrors an entity owned elsewhere.
-- `HostOwned`: the entity is owned by the elected host.
-
-Use `IsLocallyOwned()` to branch between the side that drives the entity and the side that only displays it.
-
-:::tip[Run input, simulation, and gameplay logic only when `IsLocallyOwned()` is true.]
+:::danger[Do not spawn an entity with the engine's SpawnActor.]
+A plain `SpawnActor` never broadcasts the spawn event. The component still registers locally, so the actor looks like an entity on the spawning client and exists nowhere else.
 :::
 
-```cpp
-void ACrowdyExampleActor::Tick(float DeltaSeconds)
-{
-    Super::Tick(DeltaSeconds);
-
-    if (CrowdyEntity->IsLocallyOwned())
-    {
-        // Drive the entity here. The executor will snapshot the result.
-    }
-}
-```
-
-Other accessors on the component:
-
-- `GetNetID()` returns the entity's network identity.
-- `GetOwnerID()` returns the identity of the owning client.
-- `GetMode()` returns the configured `ECrowdyEntityMode`.
-- `GetOwnership()`, `GetHostOverridePolicy()`, and `GetStateHeartbeat()` return the authority-config fields covered above.
-
-The component also exposes `MarkStateDirty(FName)` and `MarkAllStateDirty()` for [Crowdy State](/unreal-sdk/runtime/crowdy-state#manual-dirty-pushing-a-value-yourself) manual-dirty properties. Ownership transfer is driven through the static [ownership-transfer nodes](/unreal-sdk/runtime/host-authority#ownership-transfer-request-and-grant), not by calling the component directly.
-
-## Spawning an entity
-
-Spawn entities through the SDK so every client creates the same actor with the same identity.
-
-:::caution[Do not spawn entities with the plain engine spawn path. Use the SDK spawn calls below so identity and the spawn event stay in sync across clients.]
+:::caution[The spawn event is a one-shot spatial send. A late joiner or a distant client never sees a runtime-spawned Static entity.]
+It reaches the clients within eight chunks of the spawn point at that moment and is never replayed. A client that joins afterwards, or stands further away, has no copy unless you re-announce the spawn yourself; a Dynamic entity is rebuilt from its position updates instead (below), and anything that must exist for everyone from the start is level-placed.
 :::
 
-The spawn is deferred so the entity has its identity before `BeginPlay`. The SDK then broadcasts a spawn event so every other client spawns the same class. The `InitialState` you pass arrives in `OnCrowdySpawned` on every client, including the spawner.
+**Success signal.** On a second client the proxy appears and its `OnCrowdySpawned` fires with `bIsLocallyOwned` false. A single client can only confirm the send: `crowdy.entity.trace 1` logs the registration and the spawn event; `crowdy.rpc.loopback` replays RPC calls, not spawn events, so no proxy appears.
 
-<Tabs>
-<TabItem value="cpp" label="C++" default>
+## Destroying
 
-The Blueprint-friendly statics live on `UCrowdyUtilities` (module CrowdyServices):
+Three calls converge on the same path: broadcast a destroy event, then destroy the actor after the component's `DestroyDelay` (0 by default, so immediately).
 
-```cpp
-#include "Utils/CrowdyUtilities.h"
+| Call | Where |
+|---|---|
+| `UCrowdyEntitySubsystem::DestroyEntity(TargetEntity)` | The subsystem, given the actor. |
+| `UCrowdyUtilities::DestroyCrowdyEntity(WorldContextObject, TargetEntity)` | The static form with a world context pin; the Blueprint node. `TargetEntity` defaults to self. |
+| `UCrowdyEntityComponent::DestroyEntity()` | The component, on itself. See [Entity component](./entity-component.md). |
 
-FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation);
+On every client `OnCrowdyDestroyed` fires first, with `bIsLocallyOwned` true on the client that called the destroy and false everywhere else; nothing stops a non-owner from destroying an entity. The actor goes after the delay. A `DestroyDelay` above zero is for a dissolve or a fade the actor plays out before it disappears.
 
-FSampleSpawnInfo Info;
-Info.Tint = FLinearColor::Red;
-Info.DisplayName = TEXT("Block A");
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
 
-FInstancedStruct InitialState = FInstancedStruct::Make(Info);
-
-AActor* Spawned = UCrowdyUtilities::SpawnCrowdyEntity(
-    this,
-    ACrowdyExampleActor::StaticClass(),
-    SpawnTransform,
-    InitialState);
-```
-
-The same operation is available on the `UCrowdyEntitySubsystem` world subsystem (module CrowdyReplication) as `SpawnEntity(TSubclassOf<AActor>, const FTransform&, const FInstancedStruct&)`.
+<CppSnippet id="despawn" />
 
 </TabItem>
-<TabItem value="blueprint" label="Blueprint">
+<TabItem value="bp" label="Blueprint">
 
-To spawn from Blueprint, call Spawn Crowdy Entity with a class, a transform, and an initial state. This is the Blueprint-friendly static on `UCrowdyUtilities`.
+The player picks up a lantern of their own that has gone out: in C++ the character's overlap checks the lantern is unlit and locally owned, then `PickUpLantern` destroys it. The graph is the call alone: from **Event ActorBeginOverlap**, **Destroy Crowdy Entity** takes `Other Actor` on its `Target Entity` pin; the "unlit and yours" check is yours to add in front of it. The removal is visible on every client without any further node.
+
+<Blueprint src="despawn" title="Event ActorBeginOverlap, Destroy Crowdy Entity" />
 
 </TabItem>
 </Tabs>
 
-:::tip[Put any per-spawn data that remote clients need, such as a color or a display name, into the `InitialState` struct. That is the only payload that travels with the spawn event.]
+## Receiving a spawn on a remote client
+
+A remote client that receives the spawn event spawns the named class, injects the identity as `RemoteProxy`, finishes spawning, and broadcasts `OnCrowdySpawned` with the `InitialState` from the event. The event carries the class path, so a class that is not loaded yet is streamed in and spawned when it arrives; a destroy event that lands during the load cancels the spawn. If the class ships without a `UCrowdyEntityComponent`, the SDK adds one so the lifecycle callbacks have a home.
+
+:::note[The spawn and destroy payloads are wire format, not something you build.]
+`FCrowdyEntitySpawnEvent`, `FCrowdyEntityDestroyEvent`, and the registry's `FCrowdyEntityRecord` are Blueprint-visible types because they cross a delegate, but you never construct one. `InitialState` is the only payload you author.
 :::
 
-## Receiving the spawn on a remote client
+### A Dynamic entity can appear with no spawn event at all
 
-A remote client does not call your spawn code. Instead it:
+A Dynamic-mode entity (see [Continuous state](./continuous-state.md)) streams position updates, and each update carries the class id and the state struct type. The `UCrowdyActorManager` resolves the class from that (`RegisterStateClass` is filled in for you by each entity component's `BeginPlay`) and asks the rendering backend to draw a proxy, so a moving entity shows up on a client that joined late without any spawn round trip. A Static entity has no updates to be found by, so it always needs the spawn event.
 
-- Receives the spawn event.
-- Creates the actor.
-- Fires `OnCrowdySpawned` on the new entity's component.
-
-Bind that delegate to read the initial state and to set up owner versus proxy behavior.
-
-<Tabs>
-<TabItem value="cpp" label="C++" default>
-
-```cpp
-void ACrowdyExampleActor::BeginPlay()
-{
-    Super::BeginPlay();
-
-    CrowdyEntity->OnCrowdySpawned.AddDynamic(this, &ACrowdyExampleActor::HandleCrowdySpawned);
-    CrowdyEntity->OnCrowdyDestroyed.AddDynamic(this, &ACrowdyExampleActor::HandleCrowdyDestroyed);
-}
-
-void ACrowdyExampleActor::HandleCrowdySpawned(const FInstancedStruct& InitialState, bool bIsLocallyOwned)
-{
-    if (const FSampleSpawnInfo* Info = InitialState.GetPtr<FSampleSpawnInfo>())
-    {
-        ApplyTint(Info->Tint);
-        SetDisplayName(Info->DisplayName);
-    }
-
-    if (!bIsLocallyOwned)
-    {
-        // This client holds a RemoteProxy. Disable local input and simulation.
-    }
-}
-```
-
-</TabItem>
-<TabItem value="blueprint" label="Blueprint">
-
-In the Event Graph, find the component under Variables and add the On Crowdy Spawned event. It gives you the Initial State as an instanced struct and an Is Locally Owned boolean.
-
-- Break the initial state to read your spawn data.
-- Branch on Is Locally Owned to split owner logic from proxy display.
-- Add On Crowdy Destroyed the same way for teardown.
-
-{/* TODO: replace with real screenshot */}
-![Handle On Crowdy Spawned in the Event Graph](/img/unreal-sdk/bp-on-crowdy-spawned.png)
-
-</TabItem>
-</Tabs>
-
-:::note[`bIsLocallyOwned` tells you which side you are on without a second call. The owner side gets `true`; every proxy gets `false`.]
+:::warning[Preloaded Entity Classes is empty by default, and an observer on this path needs it.]
+This path resolves the class by id against loaded classes; a spawn event carries the class path and loads it for you, this does not. The startup scan walks loaded classes, and a Blueprint entity class that nobody on this client has spawned yet is not loaded, so an observer that meets it first over the network cannot name it. The actor manager warns `cannot resolve to a loaded class ... Preload the entity class or give it a ClassIDOverride` and the entity stays undrawn. List every Blueprint entity class a client can be shown before it spawns one itself under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes** (`PreloadedEntityClasses` on `UCrowdySDKDeveloperSettings`). Classes already loaded for another reason need no entry, and a duplicate costs nothing.
 :::
 
-## Destroying an entity
+## The actor tracker
 
-Destroy through the SDK so the destroy propagates to every client.
+Inbound actor updates arrive at `UCrowdyActorTracker`, a world subsystem the actor manager listens to. Its settings live on the `ActorManagement` struct of the [map profile](./map-profile.md) (`FCrowdyActorManagementConfigStruct`, the same struct a `UCrowdyActorManagementConfig` asset holds):
 
-<Tabs>
-<TabItem value="cpp" label="C++" default>
+![The map profile with Actor Management expanded and an Actor Pool Backend Config assigned: the tracker settings and the backend selection](/img/unreal-sdk/actor-config.png)
 
-Use the static:
+The shipped default profile leaves **Backend Config** at None and runs on the built-in one (on the tagged v2.14.0 plugin it draws nothing in that state; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140)); the [map profile page](./map-profile.md#create-the-asset) shows that state and when to assign your own.
 
-```cpp
-UCrowdyUtilities::DestroyCrowdyEntity(this, Spawned);
-```
+| Field | Default | Effect |
+|---|---|---|
+| `bUseCrowdyActorTracker` | on | Off means no tracker, no actor manager, and no backend on this map. |
+| `bDispatchUpdatesOnGameThread` | off | Also broadcast each update batch to `OnUpdatesGameThread` for a Blueprint listener. |
+| `bEnableOwnerTracking` | on | Track the local player's own actor echo as well: the reflection the [Quickstart](../quickstart.md#2-see-yourself) uses as proof that the server is receiving you. |
+| `ActorTimeoutThreshold` | 12 s | Seconds of silence before an entity is dropped on a guess. The server announces a real departure about five seconds after the last update, so this is the fallback. |
+| `MaxTrackedActors` | 4096 | How many network-received actors may be tracked at once. A bound on forged ids, not a performance setting; set it above the largest crowd you intend to show. |
+| `MaxUpdatesPerBatch`, `MaxBatchWaitTime` | 100, 5 ms | How updates for not-yet-seen entities are batched off the game thread. |
 
-Equivalents:
+The tracker's events, all on the game thread: `OnRemoteEntityAppeared` (an id seen for the first time, with its `InitialState`), `OnRemoteEntityTimedOut` (this client heard nothing for `ActorTimeoutThreshold`), `OnRemoteEntityLeft` (the server said it is gone, with an `FCrowdyActorLeft` carrying the `ECrowdyActorLeftReason`: `Stale`, or `SessionReleased` when the server ended that actor's session), and `OnRemoteEntityLeftAnnounced` (every departure, including one for an actor this client never held, for code keeping its own per-sender state). Whichever of timed-out and left reaches an actor first is the only one that reports it. The delegate types are `FOnActorSpawnRequested`, `FOnActorTimeoutRequested`, `FOnActorLeftReported` (used by both departure events), and `FOnActorUpdateGameThreadBatch`. `Configure`, `ToggleOwnerTracking`, and `ToggleBroadcastUpdatesToGameThread` change the same settings at runtime; `FCrowdyActorUpdate` is the batch element. `crowdy.replication.tracker.maxgatheredupdates` caps the backlog of gathered updates for actors already on screen. You do not normally touch any of this: the actor manager and the [rendering backend](./rendering-backends.md) consume it for you.
 
-- The subsystem method is `DestroyEntity(AActor*)`.
-- You can also call `DestroyEntity()` on the component itself.
-- `DestroyDelay` on the component sets an optional delay before the actor is torn down.
+## Looking entities up
 
-</TabItem>
-<TabItem value="blueprint" label="Blueprint">
+`UCrowdyEntitySubsystem` is the registry. `FindEntity(NetID)` returns the actor or null; `FindEntityID(Actor)` is the reverse lookup; `IsLocallyOwned(NetID)` is true when the record names the local player as the owner and the role says this client simulates it (a record that contradicts itself reads as not mine); `GetLocalPlayerID` and `GetHostID` read the two ids everything else is compared against; `SetLocalPlayerID` exists for a game that manages the player id itself, which the session normally seeds for you. `OnEntityRegistered` and `OnEntityUnregistered` (`FOnCrowdyEntityRegistered`, `FOnCrowdyEntityUnregistered`) fire with the NetID as records come and go. The Blueprint-friendly statics on `UCrowdyUtilities` wrap the same registry: `GetCrowdyEntityID`, `GetCrowdyEntity`, `GetCrowdyEntityOwnerID`, `GetCrowdyEntityRole` (an `ECrowdyRole`), `GetAllCrowdyEntitiesByOwner`, `CrowdyIsEntityRegistered`, and `GetLocalPlayerEntityID`.
 
-To remove an entity, call Destroy Crowdy Entity. This is the Blueprint-friendly static on `UCrowdyUtilities`.
+## Gotchas
 
-</TabItem>
-</Tabs>
+- `IsLocallyOwned` means two different things: on the subsystem it takes a NetID and asks the record; on the component it takes nothing and asks whether this client is the entity's authority, host-owned included. See [Entity component](./entity-component.md).
+- A spawned entity is owned by its spawner, full stop. To hand it over, use [Ownership transfer](./ownership-transfer.md).
+- `InitialState` reaches `OnCrowdySpawned` on the actor the spawn event creates. On the actor-pool backend a Dynamic entity's pooled proxy replaces that actor and never sees the payload; see [Rendering backends](./rendering-backends.md).
+- Two unrelated participants can derive the same NetID (a NetID has 32 bits of real entropy). The incumbent keeps it and the newcomer is refused with a log line; a system that binds state to an id should register through `TryRegisterEntity` and give up its claim when the `ECrowdyEntityRegistration` it returns is `RefusedIdHeldByLiveParticipant` (or `RefusedInvalidNetID` for a record with no usable id) rather than `Registered`.
+- `UHelperFunctions` has the id helpers a custom identity scheme would reach for: `GetDeterministicID(Seed)` turns a seed into the same `FGuid` on every client, with those same 32 bits of entropy, and `GetNewID` and `GetNewUUID` mint random ones. Prefer the component's identity policies; these exist for code that already has a seed.
 
-When the entity is removed, `OnCrowdyDestroyed(bool bIsLocallyOwned)` fires on every client so you can run teardown such as releasing effects or detaching widgets.
+## Related
 
-## A complete C++ example actor
-
-This actor is a `Dynamic`, randomly identified entity. It reads its spawn info on every client and runs gameplay only on the owner.
-
-```cpp
-// CrowdyExampleActor.h
-#pragma once
-
-#include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "StructUtils/InstancedStruct.h"
-#include "Replication/Components/CrowdyEntityComponent.h"
-#include "CrowdyExampleActor.generated.h"
-
-UCLASS()
-class ACrowdyExampleActor : public AActor
-{
-    GENERATED_BODY()
-
-public:
-    ACrowdyExampleActor();
-
-    virtual void BeginPlay() override;
-    virtual void Tick(float DeltaSeconds) override;
-
-private:
-    UFUNCTION()
-    void HandleCrowdySpawned(const FInstancedStruct& InitialState, bool bIsLocallyOwned);
-
-    UFUNCTION()
-    void HandleCrowdyDestroyed(bool bIsLocallyOwned);
-
-    UPROPERTY(VisibleAnywhere)
-    TObjectPtr<UCrowdyEntityComponent> CrowdyEntity;
-};
-```
-
-```cpp
-// CrowdyExampleActor.cpp
-#include "CrowdyExampleActor.h"
-
-ACrowdyExampleActor::ACrowdyExampleActor()
-{
-    PrimaryActorTick.bCanEverTick = true;
-
-    CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
-    CrowdyEntity->Mode = ECrowdyEntityMode::Dynamic;
-    CrowdyEntity->IdentityPolicy = ECrowdyIdentityPolicy::Random;
-}
-
-void ACrowdyExampleActor::BeginPlay()
-{
-    Super::BeginPlay();
-
-    CrowdyEntity->OnCrowdySpawned.AddDynamic(this, &ACrowdyExampleActor::HandleCrowdySpawned);
-    CrowdyEntity->OnCrowdyDestroyed.AddDynamic(this, &ACrowdyExampleActor::HandleCrowdyDestroyed);
-}
-
-void ACrowdyExampleActor::Tick(float DeltaSeconds)
-{
-    Super::Tick(DeltaSeconds);
-
-    if (CrowdyEntity->IsLocallyOwned())
-    {
-        // Owner-only simulation goes here.
-    }
-}
-
-void ACrowdyExampleActor::HandleCrowdySpawned(const FInstancedStruct& InitialState, bool bIsLocallyOwned)
-{
-    // Read InitialState here. This fires on every client.
-}
-
-void ACrowdyExampleActor::HandleCrowdyDestroyed(bool bIsLocallyOwned)
-{
-    // Teardown here. This fires on every client.
-}
-```
-
-For a `Dynamic` entity to actually stream state you assign a `UActorUpdateExecutor` to `CrowdyEntity->StateExecutor` in the constructor. That step and the executor overrides are on the [Continuous State](/unreal-sdk/runtime/continuous-state) page.
-
-:::warning[If replication looks dead, check that the current map has a map profile assigned. Without one, the entity subsystem and auto replicator do nothing and only log a warning. This is the most common setup mistake.]
-:::
-
-## Next steps
-
-- [Actor State](/unreal-sdk/runtime/continuous-state): stream a per-frame snapshot from a Dynamic entity through a state executor.
-- [RPC Events](/unreal-sdk/runtime/rpc-events-cpp): send `CrowdyEvent` calls aimed at an entity by NetID.
+- [Entities, Identity, and Ownership](../concepts/entities-identity-ownership.md): NetIDs, policies, owner and proxy.
+- [Entity component](./entity-component.md): every callable and event on the component.
+- [Ownership transfer](./ownership-transfer.md): moving an entity to another player.
+- [Rendering backends](./rendering-backends.md): how a proxy is drawn, and the pooled-proxy gotchas.
+- [Continuous state](./continuous-state.md): Dynamic mode and the executor.

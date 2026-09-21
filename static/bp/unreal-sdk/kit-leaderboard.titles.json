@@ -1,0 +1,32 @@
+[
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "SurviveNight\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get NightsSurvived",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_AsyncAction_0",
+		"class": "/Script/BlueprintGraph.K2Node_AsyncAction",
+		"title": "Submit Score",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_1",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get Torch",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Set Light Color\nTarget is Light Component",
+		"title_drawn": true
+	}
+]

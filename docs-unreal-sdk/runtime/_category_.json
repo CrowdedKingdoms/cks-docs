@@ -1,9 +1,9 @@
 {
   "label": "Runtime SDK",
-  "position": 4,
+  "position": 30,
   "link": {
     "type": "generated-index",
     "title": "Runtime SDK",
-    "description": "The in-game API: entities and spawning, continuous state, RPC events, channels, host authority, and how to debug it all."
+    "description": "The view plane in game: signing the player in, map profiles, entities and spawning, the entity component, RPC events and their routing, Crowdy State, continuous state, host authority and ownership transfer, replicated subsystems, rendering backends, channels, the connection, and video frames."
   }
 }

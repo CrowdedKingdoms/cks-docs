@@ -1,0 +1,14 @@
+[
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnSignInWithGooglePressed\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AsyncAction_0",
+		"class": "/Script/BlueprintGraph.K2Node_AsyncAction",
+		"title": "Social Sign In",
+		"title_drawn": true
+	}
+]

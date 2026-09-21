@@ -1,0 +1,32 @@
+[
+	{
+		"name": "K2Node_Event_0",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event Init",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_GetSubsystem_0",
+		"class": "/Script/BlueprintGraph.K2Node_GetSubsystem",
+		"title": "Crowdy Authentication",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AddDelegate_0",
+		"class": "/Script/BlueprintGraph.K2Node_AddDelegate",
+		"title": "Bind Event to On Login",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnSignedIn\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableSet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableSet",
+		"title": "Set bCanPlay",
+		"title_drawn": false
+	}
+]
