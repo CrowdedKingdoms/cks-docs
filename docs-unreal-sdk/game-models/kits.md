@@ -114,9 +114,9 @@ At dawn the night subsystem calls `SurviveNight` on each pawn: the owning client
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The pawn Blueprint needs a `CombatantId` String variable. **Event BeginPlay** asks **Is Crowdy Entity Locally Controlled** and, through a **Branch**, only the owning client runs **Spawn Combatant** with `Actor` = Self and `Type Prefix` empty; `Succeeded` sets `CombatantId` from `Container Id`. On a pawn spawned during play, start the chain from the entity component's **On Crowdy Ownership Assigned** event and branch on its `Is Locally Owned` pin instead: the pawn registers inside its first possession, after `BeginPlay`, and the gate reads false before that.
+The pawn Blueprint needs a `CombatantId` String variable. At **Event BeginPlay**, **Get Crowdy Entity Component** feeds **Bind Event to On Crowdy Ownership Assigned**, whose `Event` pin is wired to a custom event, `OnOwnershipAssigned`, with the delegate's three parameters: a pawn spawned during play registers inside its first possession, after `BeginPlay`, and this is where it learns who owns it. Its `Is Locally Owned` pin drives a **Branch**, so only the owning client runs **Spawn Combatant** with `Actor` = Self and `Type Prefix` empty; `Succeeded` sets `CombatantId` from `Container Id`.
 
-<Blueprint src="kit-combat" title="Event BeginPlay, Is Crowdy Entity Locally Controlled, Branch, Self, Spawn Combatant, Set CombatantId" />
+<Blueprint src="kit-combat" title="Event BeginPlay, Get Crowdy Entity Component, Bind Event to On Crowdy Ownership Assigned, OnOwnershipAssigned, Branch, Self, Spawn Combatant, Set CombatantId" />
 
 For the board, an Integer variable `NightsSurvived` and a custom event `SurviveNight` the night calls at dawn. **Submit Score** takes `Board Id` = `nights_survived` and `Points` from **Get NightsSurvived**; `Succeeded` colours the torch gold. A plain player's call lands on `Failed`, which the figure leaves unwired, so the torch stays as it was; bind `Failed` yourself to read the `Error Message` that names the policy.
 

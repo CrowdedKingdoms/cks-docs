@@ -184,7 +184,7 @@ Now the blink comes from the looped-back receive instead of the local run, and t
 
 ## 5. Replicate one property
 
-A Crowdy State property is a `UPROPERTY` marked `CrowdyState`. The owning client changes it; the SDK diffs it every tick and ships the change to every proxy, then runs the `CrowdyOnRep` function there. It works in either entity mode, Static or Dynamic.
+A Crowdy State property is a `UPROPERTY` marked `CrowdyState`. On the lantern, which step 3 made Local Client owned, the owner assigns and stops: the SDK diffs the property every tick, ships the change to every proxy, then runs the `CrowdyOnRep` function there. That is the client-owned pattern, in either entity mode, Static or Dynamic. A host-owned entity is different: the lantern post on the [identity page](./concepts/entities-identity-ownership.md#example), or any placed actor left at **Ownership** = Host, never ships a plain assignment; mark the property `CrowdyManualDirty` and call `MarkStateDirty` on the entity component after each write (or give it `CrowdyHeartbeat`), as [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) explains.
 
 The flicker in step 4 is a moment: a client that joins afterwards never sees it. The lantern's lit state is different, it has to be the same on every client, late joiners included, so it is a replicated property, `bLit`. Walking out of the lantern flips it, and `OnRep_Lit` applies it to the light wherever the value lands. The SDK runs the owner's notify too, on the tick that ships the change; calling it here as well makes the light react on the same frame. That is safe because `OnRep_Lit` only applies the current value.
 
@@ -203,7 +203,7 @@ There is no node for this; it is a setting on the variable.
 3. Set it to **Replicated**. A **RepNotify** field appears; the editor creates an `OnRep_Lit` function for you. In it, call **Set Visibility** on `Light` with `Lit`.
 4. Compile. The variable's Get and Set nodes now show the replication badge in their corner.
 
-From **Event ActorEndOverlap**, behind the same **Is Locally Owned** check, set `Lit` to NOT `Lit` and call `OnRep_Lit`. See [Crowdy State](./runtime/crowdy-state.md) for the other toggles in that dropdown.
+From **Event ActorEndOverlap**, behind the same **Is Locally Owned** check, set `Lit` to NOT `Lit` and call `OnRep_Lit`. That is the client-owned pattern, the lantern's. On a host-owned actor (Ownership left at Host) a plain Set ships nothing: tick **Update manually** in the same dropdown and call **Mark Crowdy State Dirty** with the variable on its Property Name pin after each Set; see [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push). See [Crowdy State](./runtime/crowdy-state.md) for the other toggles in that dropdown.
 
 </TabItem>
 </Tabs>

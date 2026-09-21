@@ -63,9 +63,9 @@ Walking up to a lantern post (`NotifyActorBeginOverlap`) joins the night whose i
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The pawn Blueprint needs a **Point Light** named `Torch`. **Event BeginPlay** runs **Create Game Session** with `Name` = `Village Night`; on `Succeeded`, **Set Light Color** on `Torch`. The figures leave out the owner gate the C++ has: a pooled proxy of this pawn runs `BeginPlay` and its overlaps too, so put an **Is Crowdy Entity Locally Controlled** branch in front of Create, Join, and Leave, as every other pawn graph on this site does; on a pawn spawned during play, drive Create from the entity component's **On Crowdy Ownership Assigned** event (its `Is Locally Owned` pin) rather than **Event BeginPlay**, since the pawn registers inside its first possession, after `BeginPlay`.
+The pawn Blueprint needs a **Point Light** named `Torch`. At **Event BeginPlay**, **Get Crowdy Entity Component** feeds **Bind Event to On Crowdy Ownership Assigned**, whose `Event` pin is wired to a custom event, `OnOwnershipAssigned`, with the delegate's three parameters; a pawn spawned during play registers inside its first possession, after `BeginPlay`, so the owner answer arrives here. Its `Is Locally Owned` pin feeds a **Branch** (the owner gate: a pooled proxy of this pawn receives the event too, with the pin false), and the true side runs **Create Game Session** with `Name` = `Village Night`; on `Succeeded`, **Set Light Color** on `Torch`. The Join and Leave figures below leave that gate out: put an **Is Crowdy Entity Locally Controlled** branch in front of them too, since a proxy runs the overlaps as well.
 
-<Blueprint src="sess-create" title="Event BeginPlay, Create Game Session, Get Torch, Set Light Color" />
+<Blueprint src="sess-create" title="Event BeginPlay, Get Crowdy Entity Component, Bind Event to On Crowdy Ownership Assigned, OnOwnershipAssigned, Branch, Create Game Session, Get Torch, Set Light Color" />
 
 **Event ActorBeginOverlap** runs **Join Game Session** with `Session Id` from a `NightSessionId` String variable; `Succeeded` colours the torch.
 

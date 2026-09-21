@@ -1,17 +1,15 @@
 # Crowdy Unreal SDK: agent rules
 
-Drop this file into a Crowdy SDK project's root, or paste it into CLAUDE.md /
-.cursorrules.
+Drop into a project root, or paste into CLAUDE.md / .cursorrules.
 
 ## WHAT THE SDK IS
 
-- A multiplayer plugin for Unreal Engine 5: entities, realtime view state, RPC events,
-  server-owned Game Models, sessions, channels and voice, from C++ or Blueprint.
-- State lives on two planes. Crowdy State is client-owned, fast, UDP, for what players see.
+- A multiplayer plugin for UE5: entities, realtime view state, RPC events, server-owned
+  Game Models, sessions, channels and voice, from C++ or Blueprint.
+- Two planes. Crowdy State is client-owned, fast, UDP, for what players see.
 - Game Models are server-owned truth for anything a cheater would want to lie about.
 - Markers in UPROPERTY/UFUNCTION/UCLASS meta declare state, events and models; an entity
-  is a UCrowdyEntityComponent. Markers are baked into a registry at cook time; a packaged
-  build never reads reflection metadata.
+  is a UCrowdyEntityComponent.
 
 ## LOCKED RULES (never trade these away)
 
@@ -50,11 +48,10 @@ Drop this file into a Crowdy SDK project's root, or paste it into CLAUDE.md /
   not match and AddDynamic fails to compile.
   https://docs.crowdedkingdoms.com/unreal-sdk/game-models/collections
 
-## MARKER PATTERNS (excerpts of the docs snippets; copy, never retype)
+## MARKER PATTERNS (snippet excerpts; copy, never retype)
 
-A UCrowdyEntityComponent (named CrowdyEntity here) makes the actor an entity; the
-constructor creates it with CreateDefaultSubobject and sets Ownership (snippet qs-entity,
-Quickstart):
+A UCrowdyEntityComponent makes the actor an entity; the constructor creates it with
+CreateDefaultSubobject and sets Ownership (snippet qs-entity):
 
 ```cpp
 	// Makes the actor an entity: every client in the session sees it, one of them owns it.
@@ -62,8 +59,12 @@ Quickstart):
 	TObjectPtr<UCrowdyEntityComponent> CrowdyEntity;
 ```
 
-CrowdyState on a property; the owner assigns and calls OnRep_Lit() itself, the SDK ships
-the change to every proxy (snippet qs-state):
+CrowdyState on a property (snippet qs-state). On a client-owned entity (Ownership =
+LocalClient) the owner assigns and calls OnRep_Lit() itself; the SDK ships it. A
+host-owned entity (Ownership = Host, the placed-actor default: Static, Stable) never
+ships a plain write: mark it CrowdyManualDirty and call MarkStateDirty after each
+write, or use CrowdyHeartbeat.
+https://docs.crowdedkingdoms.com/unreal-sdk/runtime/crowdy-state#on-an-entity-you-do-not-own-the-host-push
 
 ```cpp
 // View state: a wrong value is a visual glitch, not a cheat, so it belongs on the Crowdy State plane.
@@ -103,8 +104,8 @@ public:
 	float Fuel = 100.f;
 ```
 
-CrowdyEffect's logic is authored as an asset in Effect Script; C++ only holds a reference
-and applies it (snippet fx-declare).
+CrowdyEffect is an asset authored in Effect Script; C++ only holds a reference and
+applies it (snippet fx-declare).
 https://docs.crowdedkingdoms.com/unreal-sdk/game-models/effects-cpp
 
 ```cpp
@@ -121,9 +122,8 @@ TObjectPtr<UCrowdyEffect> RefuelEffect;
 - Do not write a Game Model attribute from the client; mutate through an effect or a
   server function and let CrowdyOnRep deliver the result.
 - Do not read HasMetaData, or any marker, at runtime; the baked registry is the source.
-- Do not test a marker you just added in a package cooked before you added it; a packaged
-  build reads the registry baked at its cook, so cook again. Tools > Rebuild Crowdy
-  Registry only refreshes the editor's Registry view.
+- Do not test a new marker in a package cooked before it existed: the registry is baked
+  at cook, so cook again. Tools > Rebuild Crowdy Registry only refreshes the editor view.
 - Do not read placement data at BeginPlay; a cooked build releases the placement guid
   before then. Read it at OnRegister.
   https://docs.crowdedkingdoms.com/unreal-sdk/concepts/entities-identity-ownership
@@ -146,11 +146,9 @@ https://docs.crowdedkingdoms.com/unreal-sdk/guides/testing-locally
   https://docs.crowdedkingdoms.com/unreal-sdk/reference/console-cvars
 - Build the editor target with Engine/Build/BatchFiles/Build.bat and read the log to
   `Link ...dll` and `Result: Succeeded`.
-  https://docs.crowdedkingdoms.com/unreal-sdk/installation
 
 ## FULL DOCS
 
-- Docs root: https://docs.crowdedkingdoms.com/unreal-sdk/intro
 - Quickstart: https://docs.crowdedkingdoms.com/unreal-sdk/quickstart
 - Agent page: https://docs.crowdedkingdoms.com/unreal-sdk/for-ai-agents
 - Every page as text: https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-full.txt

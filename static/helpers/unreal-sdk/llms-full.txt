@@ -559,7 +559,7 @@ Now the blink comes from the looped-back receive instead of the local run, and t
 
 ## 5. Replicate one property
 
-A Crowdy State property is a `UPROPERTY` marked `CrowdyState`. The owning client changes it; the SDK diffs it every tick and ships the change to every proxy, then runs the `CrowdyOnRep` function there. It works in either entity mode, Static or Dynamic.
+A Crowdy State property is a `UPROPERTY` marked `CrowdyState`. On the lantern, which step 3 made Local Client owned, the owner assigns and stops: the SDK diffs the property every tick, ships the change to every proxy, then runs the `CrowdyOnRep` function there. That is the client-owned pattern, in either entity mode, Static or Dynamic. A host-owned entity is different: the lantern post on the [identity page](./concepts/entities-identity-ownership.md#example), or any placed actor left at **Ownership** = Host, never ships a plain assignment; mark the property `CrowdyManualDirty` and call `MarkStateDirty` on the entity component after each write (or give it `CrowdyHeartbeat`), as [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) explains.
 
 The flicker in step 4 is a moment: a client that joins afterwards never sees it. The lantern's lit state is different, it has to be the same on every client, late joiners included, so it is a replicated property, `bLit`. Walking out of the lantern flips it, and `OnRep_Lit` applies it to the light wherever the value lands. The SDK runs the owner's notify too, on the tick that ships the change; calling it here as well makes the light react on the same frame. That is safe because `OnRep_Lit` only applies the current value.
 
@@ -585,7 +585,7 @@ void ALantern::NotifyActorEndOverlap(AActor* OtherActor)
 	{
 		return;
 	}
-	// Assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself.
+	// On a client-owned entity, assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself. A host-owned entity needs CrowdyManualDirty and MarkStateDirty.
 	bLit = !bLit;
 	OnRep_Lit();
 }
@@ -606,7 +606,7 @@ There is no node for this; it is a setting on the variable.
 3. Set it to **Replicated**. A **RepNotify** field appears; the editor creates an `OnRep_Lit` function for you. In it, call **Set Visibility** on `Light` with `Lit`.
 4. Compile. The variable's Get and Set nodes now show the replication badge in their corner.
 
-From **Event ActorEndOverlap**, behind the same **Is Locally Owned** check, set `Lit` to NOT `Lit` and call `OnRep_Lit`. See [Crowdy State](./runtime/crowdy-state.md) for the other toggles in that dropdown.
+From **Event ActorEndOverlap**, behind the same **Is Locally Owned** check, set `Lit` to NOT `Lit` and call `OnRep_Lit`. That is the client-owned pattern, the lantern's. On a host-owned actor (Ownership left at Host) a plain Set ships nothing: tick **Update manually** in the same dropdown and call **Mark Crowdy State Dirty** with the variable on its Property Name pin after each Set; see [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push). See [Crowdy State](./runtime/crowdy-state.md) for the other toggles in that dropdown.
 
 </TabItem>
 </Tabs>
@@ -806,7 +806,7 @@ void ALantern::NotifyActorEndOverlap(AActor* OtherActor)
 	{
 		return;
 	}
-	// Assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself.
+	// On a client-owned entity, assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself. A host-owned entity needs CrowdyManualDirty and MarkStateDirty.
 	bLit = !bLit;
 	OnRep_Lit();
 }
@@ -868,7 +868,7 @@ Ask one question: can a malicious client benefit from lying about this value? If
 | Currency | Truth | Attribute on a container scoped `CrowdyScope="App"` | [Game Model meta keys](./reference/game-model-meta-keys.md) |
 | Match score | Truth | Attribute on a container scoped to the session (the default) | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) |
 | A chat line | View | `CrowdyEvent` with the `Multicast` recipient, session channel | [Channels](./runtime/channels.md) |
-| A door's open flag | View | `CrowdyState` boolean: a lie is a visual glitch. If the door gates progress (a lock), the lock state is a Game Model attribute | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) |
+| A door's open flag | View | `CrowdyState` boolean: a lie is a visual glitch. A placed door is host-owned, so the flag is also `CrowdyManualDirty` and the host calls `MarkStateDirty` after each write. If the door gates progress (a lock), the lock state is a Game Model attribute | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes), [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) |
 | A player's display name | View | `CrowdyState` property; route it through the avatars service if it must persist | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes), [Avatars](./services/avatars.md) |
 
 :::danger[Authoritative or cheat-sensitive state never belongs in Crowdy State.]
@@ -882,13 +882,13 @@ Four of the six are `meta=(...)` keys; the entity is a component and the effect 
 | Marker | Goes on | Canonical example | Owning page |
 |---|---|---|---|
 | `CrowdyEntity` | A `UCrowdyEntityComponent` on an `AActor` (the component is the marker; set `Ownership`) | `qs-entity` | [Entities, identity, ownership](./concepts/entities-identity-ownership.md) |
-| `CrowdyState` (+ `CrowdyOnRep`) | A `UPROPERTY` on an entity actor; the owner assigns and calls the notify itself | `qs-state` | [Crowdy State](./runtime/crowdy-state.md#mark-a-property) |
+| `CrowdyState` (+ `CrowdyOnRep`) | A `UPROPERTY` on an entity actor. On a client-owned entity (`Ownership` = Local Client, the lantern) the owner assigns and calls the notify itself; on a host-owned entity (`Ownership` = Host, the default a placed actor keeps) a plain assignment never ships: add `CrowdyManualDirty` and call `MarkStateDirty` after each write, or add `CrowdyHeartbeat` | `qs-state` | [Crowdy State](./runtime/crowdy-state.md#mark-a-property), [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) |
 | `CrowdyEvent` + `CrowdyRecipient` | A `UFUNCTION` named `X_Implementation`, plus `CROWDY_EVENT(X)`; recipient is one of `SpatialMulticast`, `Multicast`, `OwningClient`, `Host` | `qs-event` | [RPC events](./runtime/rpc-events-cpp.md#routing-keys) |
 | `CrowdyContainer="Name"` | A `UCLASS`: an actor, an actor component (the example, bound to the entity it is attached to), or a subsystem | `gm-container` | [Containers and attributes](./game-models/containers-and-attributes.md#declaring-a-container) |
 | `CrowdyModel` + `CrowdyKey` + `CrowdyOnRep` | A `UPROPERTY` on a container class; the server owns the value, the notify is parameterless | `gm-container` | [Containers and attributes](./game-models/containers-and-attributes.md#reacting-to-a-change) |
 | `CrowdyEffect` | Not a meta key: a `UCrowdyEffect` asset authored in Studio or Effect Script, referenced from C++ as `TObjectPtr<UCrowdyEffect>` | `fx-declare` | [Effects from C++](./game-models/effects-cpp.md#declaring-the-reference), [Effect Script](./game-models/effect-script.md) |
 
-Three rules the examples assume: the first thing a client needs is its own pawn as a `Dynamic`, `PlayerDerived`, `LocalClient` entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; that pawn registers inside its first possession, since the engine possesses a runtime spawn after its `BeginPlay`, so read its id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned`, not at `BeginPlay` (on the tagged v2.14.0 plugin it registers under a random id instead; the page says what that costs: [Quickstart](./quickstart.md#1-make-your-player-a-crowdy-entity)); a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); and a `CrowdyOnRep` function takes no parameters, read the property for the new value ([The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code)).
+Four rules the examples assume: the first thing a client needs is its own pawn as a `Dynamic`, `PlayerDerived`, `LocalClient` entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; that pawn registers inside its first possession, since the engine possesses a runtime spawn after its `BeginPlay`, so read its id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned`, not at `BeginPlay` (on the tagged v2.14.0 plugin it registers under a random id instead; the page says what that costs: [Quickstart](./quickstart.md#1-make-your-player-a-crowdy-entity)); a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); a `CrowdyOnRep` function takes no parameters, read the property for the new value ([The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code)); and the lantern's assign-and-stop is the client-owned pattern, because the Quickstart sets its `Ownership` to Local Client: a host-owned entity (`Ownership` = Host, the default a placed actor keeps: Static, Stable, level-placed) never ships a plain `CrowdyState` write, so mark the property `CrowdyManualDirty` and call `MarkStateDirty` after each write, or give it `CrowdyHeartbeat` ([the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push)).
 
 ## Three things that break silently in a cooked build
 
@@ -2239,7 +2239,7 @@ void ALanternPlayer::DropLantern()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-Any Actor Blueprint can spawn; nothing on the spawner needs a component. At **Event BeginPlay**, the pure **Is Crowdy Entity Locally Controlled** feeds a **Branch** (the owner gate: only the owner spawns), and on the true side **Get Actor Transform** feeds the `Spawn Transform` pin of **Spawn Crowdy Entity**, which takes the entity class and an optional Initial State struct and returns the spawned actor. The class pin in the figure names the sample lantern; pick your own entity class there. On the player pawn itself, start the chain from the entity component's **On Crowdy Ownership Assigned** event and branch on its `Is Locally Owned` pin instead of **Event BeginPlay**: a pawn spawned during play registers inside its first possession, after `BeginPlay`, and the gate reads false before that.
+Any Actor Blueprint can spawn; nothing on the spawner needs a component. In the player pawn's Blueprint, at **Event BeginPlay**, **Get Crowdy Entity Component** feeds **Bind Event to On Crowdy Ownership Assigned**, whose `Event` pin is wired to a custom event, `OnOwnershipAssigned`, that receives the owner id, the role, and the `Is Locally Owned` flag; the pawn registers inside its first possession, after `BeginPlay`, so this is where the answer arrives. The event's `Is Locally Owned` pin feeds a **Branch** (the owner gate: only the owner spawns), and on the true side **Get Actor Transform** feeds the `Spawn Transform` pin of **Spawn Crowdy Entity**, which takes the entity class and an optional Initial State struct and returns the spawned actor. The class pin in the figure names the sample lantern; pick your own entity class there. A spawner that is not a Player Derived pawn can run the same Branch straight from **Event BeginPlay** with the pure **Is Crowdy Entity Locally Controlled** as the condition; only a Player Derived pawn learns its identity after `BeginPlay`.
 
 [Blueprint snippet: spawn-entity, see /bp/unreal-sdk/spawn-entity.txt]
 
@@ -6604,7 +6604,7 @@ void ALanternPlayer::HandleScoreRefused(const FString& ReturnValueJson, const FS
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The pawn Blueprint needs a `CombatantId` String variable. **Event BeginPlay** asks **Is Crowdy Entity Locally Controlled** and, through a **Branch**, only the owning client runs **Spawn Combatant** with `Actor` = Self and `Type Prefix` empty; `Succeeded` sets `CombatantId` from `Container Id`. On a pawn spawned during play, start the chain from the entity component's **On Crowdy Ownership Assigned** event and branch on its `Is Locally Owned` pin instead: the pawn registers inside its first possession, after `BeginPlay`, and the gate reads false before that.
+The pawn Blueprint needs a `CombatantId` String variable. At **Event BeginPlay**, **Get Crowdy Entity Component** feeds **Bind Event to On Crowdy Ownership Assigned**, whose `Event` pin is wired to a custom event, `OnOwnershipAssigned`, with the delegate's three parameters: a pawn spawned during play registers inside its first possession, after `BeginPlay`, and this is where it learns who owns it. Its `Is Locally Owned` pin drives a **Branch**, so only the owning client runs **Spawn Combatant** with `Actor` = Self and `Type Prefix` empty; `Succeeded` sets `CombatantId` from `Container Id`.
 
 [Blueprint snippet: kit-combat, see /bp/unreal-sdk/kit-combat.txt]
 
@@ -6901,7 +6901,7 @@ void ALanternPlayer::JoinNight()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The pawn Blueprint needs a **Point Light** named `Torch`. **Event BeginPlay** runs **Create Game Session** with `Name` = `Village Night`; on `Succeeded`, **Set Light Color** on `Torch`. The figures leave out the owner gate the C++ has: a pooled proxy of this pawn runs `BeginPlay` and its overlaps too, so put an **Is Crowdy Entity Locally Controlled** branch in front of Create, Join, and Leave, as every other pawn graph on this site does; on a pawn spawned during play, drive Create from the entity component's **On Crowdy Ownership Assigned** event (its `Is Locally Owned` pin) rather than **Event BeginPlay**, since the pawn registers inside its first possession, after `BeginPlay`.
+The pawn Blueprint needs a **Point Light** named `Torch`. At **Event BeginPlay**, **Get Crowdy Entity Component** feeds **Bind Event to On Crowdy Ownership Assigned**, whose `Event` pin is wired to a custom event, `OnOwnershipAssigned`, with the delegate's three parameters; a pawn spawned during play registers inside its first possession, after `BeginPlay`, so the owner answer arrives here. Its `Is Locally Owned` pin feeds a **Branch** (the owner gate: a pooled proxy of this pawn receives the event too, with the pin false), and the true side runs **Create Game Session** with `Name` = `Village Night`; on `Succeeded`, **Set Light Color** on `Torch`. The Join and Leave figures below leave that gate out: put an **Is Crowdy Entity Locally Controlled** branch in front of them too, since a proxy runs the overlaps as well.
 
 [Blueprint snippet: sess-create, see /bp/unreal-sdk/sess-create.txt]
 

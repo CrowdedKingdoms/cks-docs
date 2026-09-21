@@ -16,7 +16,7 @@ void ALantern::NotifyActorEndOverlap(AActor* OtherActor)
 	{
 		return;
 	}
-	// Assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself.
+	// On a client-owned entity, assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself. A host-owned entity needs CrowdyManualDirty and MarkStateDirty.
 	bLit = !bLit;
 	OnRep_Lit();
 }
