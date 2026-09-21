@@ -32,7 +32,7 @@ export abstract class NodeParser {
         key = key.replace(/\((.+)\)/g, "");
 
         const propertyParser = this._propertyParsers.get(key);
-        if (!propertyParser) return false;
+        if (typeof propertyParser !== "function") return false;
 
         propertyParser(node, value);
         return true;

@@ -60,7 +60,7 @@ export class GenericNodeParser extends NodeParser {
         this.parseCustomProperties(data);
 
         const particularImplementation = this._parserRegistry.getParser(data.node.class);
-        if(!particularImplementation) {
+        if(typeof particularImplementation !== "function") {
             console.info(`There is no particular implementation for class ${data.node.class}. Falling back to the generic node class.`);
             return new HeadedNodeControl(data.node);
         }
@@ -123,7 +123,7 @@ export class GenericNodeParser extends NodeParser {
         data = data.substr(1, data.length - 2);
 
         const propertyParser = this._customPropertyParsers.get(type);
-        if(!propertyParser) {
+        if(typeof propertyParser !== "function") {
             console.info(`There is no implementation for custom property type '${type}'. Skip this property`);
             return;
         }
