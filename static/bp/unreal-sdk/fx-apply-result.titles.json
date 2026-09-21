@@ -1,0 +1,26 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event ActorBeginOverlap",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_ApplyEffect_0",
+		"class": "/Script/CrowdyNodes.CrowdyK2Node_ApplyEffect",
+		"title": "Apply Crowdy Effect: FX_LanternRefuel",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get Light",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Set Intensity\nTarget is Light Component",
+		"title_drawn": true
+	}
+]

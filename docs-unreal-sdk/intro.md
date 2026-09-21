@@ -2,95 +2,53 @@
 slug: intro
 sidebar_position: 1
 title: Crowdy Unreal SDK
+description: What the Crowdy Unreal SDK is, the two planes of state it is built on, and how to read the rest of this guide.
 ---
 
 # Crowdy Unreal SDK
 
-The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint, with:
+The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, server-owned gameplay state, voice chat, teams, channels, and avatars.
 
-- Real-time networking for large numbers of players
-- Voice chat
-- Teams
-- Avatars
-- Saved progress
+This guide describes **SDK 2.14**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
 
-:::note[This guide is written for Unreal Engine 5.8 and a C++/BP project.]
-
-You can get the SDK Plugin from our GitHub repository [here](https://github.com/CrowdedKingdoms/CrowdySDK-Unreal/tree/v2_0).
+:::note[This guide is written for Unreal Engine 5.8 and a C++ project.]
+Gameplay can be driven entirely from Blueprint, but the plugin itself compiles as C++, so your project needs a C++ target. See [Installation](./installation.md).
 :::
 
-## How to read this guide
+## The two planes
 
-Work through it in order the first time:
+Everything the SDK replicates lives on one of two planes, and the whole guide leans on the split.
 
-1. [Crowdy Studio](/unreal-sdk/studio/overview): sign in and sync your app to your project.
-2. [Runtime SDK](/unreal-sdk/runtime/map-profile): set up a map, spawn entities, send RPC events, and check host authority.
-3. [Player Services](/unreal-sdk/services/voice-chat): voice chat, teams, avatars, and persistence.
-4. [Guides](/unreal-sdk/guides/best-practices) and [Reference](/unreal-sdk/reference/subsystems): gameplay authority, a tour of the sample project, a packaging checklist, and lookup tables.
+1. **The view plane (CrowdyState).** Fast, client-owned state such as movement, animation, and transient effects. The client that owns an entity writes its state and everyone else sees it. Nothing here is checked by a server.
+2. **The elected host is a convention.** One client is elected host to coordinate the view plane. It is a helper for shared logic, not a rule enforcer.
+3. **The truth plane (Game Models).** Server-owned gameplay state such as hit points, stats, and inventory. Clients ask the server for it and ask the server to change it; the server decides. This is the only place a rule is enforced.
+4. **The planes touch in one way.** When the server changes truth, a small notification rides the view plane saying "re-read me". No gameplay value ever flows from the view plane into the truth plane as trusted input.
 
-:::tip[Do Crowdy Studio first]
-Nothing on the network works until your project knows which app it belongs to. Sign in and sync your app before anything else.
-:::
-
-## Entities: the core idea
-
-Almost everything the SDK replicates is an **entity**. An entity is any actor you want other players to see and react to: a character, a vehicle, a thrown rock, a spawned pickup.
-
-You turn an actor into an entity by adding a `UCrowdyEntityComponent` to it.
-
-A few ideas carry through the whole guide, so it helps to meet them once here.
-
-### NetID: a shared name for one thing
-
-Every entity has a `NetID`, an `FGuid` that names that one entity on every client.
-
-When a player throws a rock, the rock has the same `NetID` on the thrower's machine and on everyone else's. That shared name is how an event aimed at "this rock" finds the right rock on each client.
-
-How an entity gets its `NetID` is the **identity policy**:
-
-- **Stable**: the `NetID` is hashed from the actor's place in the level. Every client computes the same value for the same level-placed actor, with no spawn message and no hand-typed seeds. Use this for things that already exist when the map loads.
-- **PlayerDerived**: the `NetID` comes from the signed-in user id. Use this only for the local player's own pawn.
-- **Random**: a fresh `NetID` each time. Use this for things you spawn at runtime, like a pickup or a projectile. The spawn travels to every client carrying the `NetID`, so the copies still line up.
-
-### Owner and proxy: who is in charge
-
-For each entity, exactly one client is the **owner**. The owner simulates the entity and sends its state and events.
-
-On every other client the same entity exists as a **remote proxy** that receives that state and plays it back. The owner does not get a second proxy of itself; it already has the real thing.
-
-You can ask an entity which side you are on with `IsLocallyOwned()`. Owner driven code (input, physics, decisions) runs only when you own the entity; proxies just display what arrives.
-
-### Dynamic and static: how state moves
-
-An entity replicates in one of two ways:
-
-- **Dynamic**: the SDK streams a state snapshot every replication interval, around ten times a second. This is for things that change constantly, like position and animation. You provide the snapshot with a small executor object.
-- **Static**: nothing streams. The entity changes only when you send it an event. This is for things that change in steps, like a door opening or an object being moved once.
-
-Individual properties can also replicate on their own, with no executor and no snapshot struct: mark a `UPROPERTY` and the owning client sends just that value when it changes. This is [Crowdy State](/unreal-sdk/runtime/crowdy-state), and it works on either kind of entity.
-
-### RPC events: calling a function across the network
-
-You make things happen on other clients by sending a **CrowdyEvent**, an RPC. You mark a function, call it like a normal function, and the SDK runs the matching function on the other clients.
-
-An event is aimed at an entity by its `NetID`, and you choose who receives it:
-
-- Everyone nearby
-- Everyone on a channel
-- Just the entity's owner
-- Just the host
-
-### The host is a convention
-
-One client is elected as the **host**. The host is the natural place to run shared, world level logic, like spawning world objects that belong to nobody in particular.
-
-You check whether you are the host with a single call before doing host work.
+Read [The Two Planes](./concepts/two-planes.md) before you decide where a new piece of state belongs.
 
 :::caution[The host is a convention the SDK helps you follow, not a server that enforces rules.]
 :::
 
+## Entities
+
+Almost everything on the view plane is an **entity**: an actor with a `UCrowdyEntityComponent` that has a shared identity (`NetID`) on every client, one owner, and a remote proxy everywhere else. Events (RPC calls) are aimed at entities, and replicated properties belong to them. [Entities, Identity, and Ownership](./concepts/entities-identity-ownership.md) covers the details.
+
+## How to read this guide
+
+Work through it in order the first time.
+
+1. **Start**: [Installation](./installation.md) and the [Quickstart](./quickstart.md).
+2. **Concepts**: [The Two Planes](./concepts/two-planes.md), [Entities, Identity, and Ownership](./concepts/entities-identity-ownership.md), [Sessions and Presence](./concepts/sessions-and-presence.md), [The Host Is a Convention](./concepts/host-is-a-convention.md).
+3. **Crowdy Studio**: [sign in and connect your app](./studio/overview.md) from inside the editor.
+4. **Runtime (view plane)**: [map profiles](./runtime/map-profile.md), entities, RPC events, Crowdy State.
+5. **Game Models (truth plane)**: [server-owned state, effects, and policies](./game-models/overview.md).
+6. **Services**: [voice chat](./services/voice-chat.md), [teams](./services/teams.md), [avatars](./services/avatars.md).
+7. **Guides** and **Reference**: [best practices](./guides/best-practices.md), the [sample project](./guides/sample-project.md), [packaging](./guides/packaging.md), and lookup tables such as [console variables](./reference/console-cvars.md).
+
+:::tip[Do Crowdy Studio first]
+Nothing on the network works until your project knows which app it belongs to. Sign in and run [Config Sync](./studio/config-sync.md) before anything else.
+:::
+
 ## What is next
 
-Start with [Crowdy Studio](/unreal-sdk/studio/overview) to connect your app, then move on to [Installation](/unreal-sdk/installation) if you have not added the plugin yet.
-
-The [sample project](/unreal-sdk/guides/sample-project) puts all of this together as small, interaction-driven examples you can read alongside the guide.
+Add the plugin with [Installation](./installation.md), connect your app in [Crowdy Studio](./studio/overview.md), then follow the [Quickstart](./quickstart.md) to put your player, one entity, one event, one replicated property, and one server-owned value on screen.

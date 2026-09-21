@@ -1,0 +1,402 @@
+{
+  "generated_from": "2026-09-21T14:43:18Z",
+  "sdk_version": "2.14.0",
+  "table": "cvars",
+  "columns": [
+    {
+      "key": "name",
+      "label": "Name",
+      "kind": "code"
+    },
+    {
+      "key": "kind",
+      "label": "Kind",
+      "kind": "text"
+    },
+    {
+      "key": "role",
+      "label": "Role",
+      "kind": "text"
+    },
+    {
+      "key": "trace",
+      "label": "Trace gate",
+      "kind": "flag"
+    },
+    {
+      "key": "help",
+      "label": "Help",
+      "kind": "text"
+    },
+    {
+      "key": "module",
+      "label": "Module",
+      "kind": "text"
+    }
+  ],
+  "rows": [
+    {
+      "id": "crowdy.entity.trace",
+      "name": "crowdy.entity.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs CrowdyReplication entity activity: registry add/remove, event routing and dispatch, entity components, and actor tracking/management. Off by default.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.gamemodel.trace",
+      "name": "crowdy.gamemodel.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs CrowdyReplication Game Model activity: identity resolution, invoke client, container cache/diffing, and effect lowering. Off by default.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.hud.trace",
+      "name": "crowdy.hud.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs CrowdyServices HUD activity: HUD base and widgets. Off by default.",
+      "module": "CrowdyServices",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.net.trace",
+      "name": "crowdy.net.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs CrowdyNet UDP transport activity: socket open/close, message sends and receives, worker-thread pool, and buffer pool churn. Off by default.",
+      "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.pool.trace",
+      "name": "crowdy.pool.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs CrowdyReplication actor-pool activity: spawn, release, reuse, and rendering-backend churn. Off by default.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.query.trace",
+      "name": "crowdy.query.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs CrowdyNet GraphQL activity: query dispatch and responses. Off by default.",
+      "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.rpc.reliable.trace",
+      "name": "crowdy.rpc.reliable.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs just the reliable (channel-transport) RPC path: a Multicast CrowdyEvent's channel send and the matching receive on every member. Narrower than crowdy.rpc.trace, which covers all RPC sends and receives; either one surfaces the reliable lines.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.rpc.trace",
+      "name": "crowdy.rpc.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs every CrowdyEvent RPC send and receive: function, entity, addressing, owned/delegated classification, and parameter byte size.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.sdk.trace",
+      "name": "crowdy.sdk.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs top-level CrowdySDK activity: subsystem lifecycle and configuration / gameplay-tag path registration. Off by default.",
+      "module": "CrowdySDK",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.serialize.scopes",
+      "name": "crowdy.serialize.scopes",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, emits the fine-grained CPU trace scopes inside payload decode. Each one costs two timestamps per received message and is nested inside a scope that is itself measured, so it is off by default and a reading must say whether the run carried it.",
+      "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.serialize.trace",
+      "name": "crowdy.serialize.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs CrowdyNet payload serialization: message encode/decode and payload/class registry resolves. High frequency, so off by default.",
+      "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.services.trace",
+      "name": "crowdy.services.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs CrowdyServices activity: authentication, teams, avatars, persistence, host subsystem, utilities, and Blueprint reception. Off by default.",
+      "module": "CrowdyServices",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.state.scopes",
+      "name": "crowdy.state.scopes",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, emits a CPU trace scope around each CrowdyState delta decode. Nested inside the enclosing delivery scope, so it shifts that scope's own figure: turn it on only for a run that needs the split. Off by default.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.state.trace",
+      "name": "crowdy.state.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs CrowdyReplication CrowdyState replicator activity: owned-entity diffing, delta emission, and datagram sizes. Off by default.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.studio.trace",
+      "name": "crowdy.studio.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs each CrowdyStudio console GraphQL op: its plane, operation name, and outcome (HTTP code, error count). The bearer token is never logged. Off by default.",
+      "module": "CrowdyStudio",
+      "editor": true,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.voice.trace",
+      "name": "crowdy.voice.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "When non-zero, logs CrowdyVoice activity: voice chat subsystem, capture/playback service, and audio device monitoring. Off by default.",
+      "module": "CrowdyVoice",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.gamemodel.bulkresolve",
+      "name": "crowdy.gamemodel.bulkresolve",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "1: shared (Host-owned) entities bind their Game Model containers from one paged list per type; 0: one ensure per entity.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.gamemodel.emitfallbackping",
+      "name": "crowdy.gamemodel.emitfallbackping",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "1 (default): acting client emits a fallback model-changed ping after a successful Game Model invoke so peers re-pull. 0: rely solely on the server-native model-driven notification (isolates that path in 2-client PIE).",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.net.receive.maxdrainms",
+      "name": "crowdy.net.receive.maxdrainms",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "",
+      "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.net.receive.maxmessages",
+      "name": "crowdy.net.receive.maxmessages",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "",
+      "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.net.receive.poolactorupdates",
+      "name": "crowdy.net.receive.poolactorupdates",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Reuse actor update message objects instead of allocating one per received message (default 1). Turn it off to measure what the pool is worth on the same build.",
+      "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.net.send.bundle",
+      "name": "crowdy.net.send.bundle",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "",
+      "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.replication.tracker.maxgatheredupdates",
+      "name": "crowdy.replication.tracker.maxgatheredupdates",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.rpc.allowObjectLoad",
+      "name": "crowdy.rpc.allowObjectLoad",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "When non-zero, a received object or class reference whose asset is not already resident is loaded from disk by path. Default 0 (find-only) so an untrusted peer cannot trigger arbitrary asset loads; an unresolved reference is delivered as null.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.rpc.loopback",
+      "name": "crowdy.rpc.loopback",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "When non-zero, a sent replicated CrowdyEvent is also delivered to this client's own receive path, so the whole serialize/resolve/dispatch round-trip can be tested without a second client. The call runs once locally through that path; a call made from the replayed body is sent normally but does not loop back, so there is no cascade.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.state.loopback",
+      "name": "crowdy.state.loopback",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "When non-zero, a sent CrowdyState delta for an owned entity is also decoded onto a local 'mirror' entity (a lazily-spawned second instance of the same class, RemoteProxy role, a distinct NetID) so decode/OnRep/host-authority checks can be exercised from one PIE client. Unlike crowdy.rpc.loopback this cannot replay onto the same actor (an owner's own entity silently drops a non-host-sourced delta, and decode's changed-detection would report no change against identical values); the mirror is a genuinely distinct receive target instead.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.cpp.selftest",
+      "name": "crowdy.cpp.selftest",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Link + exception-containment self test for the vendored CrowdyCPP library.",
+      "module": "CrowdyCppBridge",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.gamemodel.unwatchcontainers",
+      "name": "crowdy.gamemodel.unwatchcontainers",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Close the container-change feed opened by crowdy.gamemodel.watchcontainers.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.gamemodel.watchcontainers",
+      "name": "crowdy.gamemodel.watchcontainers",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Open the server's container-change feed over a WebSocket and log every notification. Optional argument narrows it to one container type. Diagnostic only: nothing is re-pulled from it. Run with no argument again, or crowdy.gamemodel.unwatchcontainers, to close it.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.net.routes",
+      "name": "crowdy.net.routes",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Prints the network router's subscription table: every payload key and opcode, with the struct behind it where one is registered, and every subscriber by role.",
+      "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.rpc.dumpfn",
+      "name": "crowdy.rpc.dumpfn",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Reports what a Crowdy event is in this process: resolved, replicated, its recipient, its FunctionID, and whether its compiled body carries the dispatch gate. Args: <ClassPathOrName> <FunctionName>. A Blueprint class name ends in _C.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.schema.RetagAssets",
+      "name": "crowdy.schema.RetagAssets",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "One-time migration: resaves every Blueprint the Game Model container scan cannot yet answer for from its asset-registry tags, parent-first, so the scan's fast path covers the whole project. Run on a clean sync with no other outstanding changes; expect version-stamp diff noise.",
+      "module": "CrowdySDKEditor",
+      "editor": true,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.state.heartbeat.advisories",
+      "name": "crowdy.state.heartbeat.advisories",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Lists every CrowdyState enum property this process found outside the keyframe heartbeat, and how many resolutions each one's single warning stands for.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    }
+  ]
+}

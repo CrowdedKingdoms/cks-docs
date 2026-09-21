@@ -18,4 +18,14 @@ export default defineConfig({
     colorScheme: 'light',
     trace: 'off',
   },
+  projects: [
+    {name: 'default', testIgnore: /blueprint-component\.spec\.ts/},
+    // The Blueprint component check needs a real clipboard; the machine's Edge stands in so no browser
+    // download is needed. Set BLUEPRINT_BROWSER=chrome to use Chrome instead.
+    {
+      name: 'chromium-clipboard',
+      testMatch: /blueprint-component\.spec\.ts/,
+      use: {channel: process.env.BLUEPRINT_BROWSER ?? 'msedge'},
+    },
+  ],
 });

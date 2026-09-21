@@ -1,9 +1,9 @@
 {
   "label": "Reference",
-  "position": 7,
+  "position": 70,
   "link": {
     "type": "generated-index",
     "title": "Reference",
-    "description": "Quick lookup tables: subsystems, RPC metadata keys and types, enums, console variables, and project settings."
+    "description": "Lookup tables, generated from the SDK surface where it has the data: subsystems, async actions, delegates, console variables, settings, metadata keys, enums, log categories, the RPC parameter type rules, and the surface file itself."
   }
 }

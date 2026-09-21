@@ -81,6 +81,13 @@ jobs:
       - name: Committed generated files match their generators
         run: npm run check:generated
 
+      # Every symbol in the Unreal SDK manifest is named on a page, rendered by a generated
+      # reference table, or allowlisted with a reason. The reference pages promise that a
+      # symbol dropping out of a page "reopens as a coverage gap"; this is the step that
+      # makes it one. Reads the committed tree, under a second.
+      - name: Unreal SDK surface coverage
+        run: npm run check:unreal-surface
+
       # Local `prebuild` already runs this; Docs CI used to skip it because the
       # build step is `npx docusaurus build` (no npm prebuild). No secrets.
       - name: Game-API mapping lint
