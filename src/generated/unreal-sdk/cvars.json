@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-09-21T14:43:18Z",
+  "generated_from": "2026-09-21T22:49:20Z",
   "sdk_version": "2.14.0",
   "table": "cvars",
   "columns": [
@@ -262,6 +262,17 @@
       "role": "behaviour",
       "trace": false,
       "help": "Reuse actor update message objects instead of allocating one per received message (default 1). Turn it off to measure what the pool is worth on the same build.",
+      "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.net.recv.signedbundles",
+      "name": "crowdy.net.recv.signedbundles",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "",
       "module": "CrowdyNet",
       "editor": false,
       "allowlist": ""

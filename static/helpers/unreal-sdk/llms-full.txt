@@ -4345,6 +4345,12 @@ In the Game Instance Blueprint, from **Event Init**, a **Crowdy SDK Subsystem** 
 
 Outbound replication messages of one network pass are packed into bundle datagrams. `crowdy.net.send.bundle` (default 1) controls it; 0 sends one datagram per message, a diagnostic switch rather than a setting a shipping build needs. The variable is read when a connection opens, so flipping it takes effect on the next connect, not on the live socket.
 
+## Signed inbound bundles
+
+Once the connection is up, the transport tells the replication server what this client can read (a `CLIENT_CAPABILITIES` message), and repeats it every 15 seconds so a token refresh or a server-side move, both of which reset the server's record without saying so, never leaves it stale. A server at v0.30.0 or later then packs the notifications it sends you into `MESSAGE_BUNDLE_SIGNED` datagrams: the members inside carry no signature of their own, and one HMAC at the end covers the whole datagram. The transport checks that one signature, drops the datagram if it fails, and delivers the members exactly as it delivers any other notification. Your handlers see no difference; a datagram that used to cost one verification per member costs one. An older server ignores the message and keeps signing every member, which is also what the tagged 2.14.0 plugin receives, since it never announces itself.
+
+`crowdy.net.recv.signedbundles` (default 1) is the switch; 0 stops the announcement and keeps the per-member form, for a before-and-after comparison rather than for shipping. Like `crowdy.net.send.bundle` it is read when a connection opens.
+
 ## The receive budget
 
 Inbound messages are delivered on the game thread, per frame, under two budgets: `crowdy.net.receive.maxmessages` (default 3072) caps how many messages one frame may deliver, and `crowdy.net.receive.maxdrainms` (default 4.0) caps the milliseconds one frame may spend delivering them. Whichever binds first ends that frame's drain and the rest waits for the next frame. The budget covers every message the connection receives, channel notifications and video fragments included, not only actor updates.
@@ -4364,7 +4370,7 @@ Five functions on `UCrowdySDKSubsystem` are deprecated (the compiler warns on ea
 - `Reconnecting` needs nothing from you. Only `Disconnected` after a timeout does.
 - `GateKeep` is an answer, not a failure. Retrying against a full app asks a server with no room whether it has room.
 - Coming up joins the channels. A Multicast event sent before **On UDP Connection Success** is queued and flushed when the bootstrap finishes; see [Channels](./channels.md).
-- `crowdy.net.send.bundle` changes take effect on the next connect.
+- `crowdy.net.send.bundle` and `crowdy.net.recv.signedbundles` changes take effect on the next connect.
 
 ## Related
 
@@ -9335,7 +9341,9 @@ You built against the SDK in July, you are updating the plugin to 2.14 or later,
 
 ## Unreleased (after v2.14.0)
 
-**Not in v2.14.0.** These four changes are in the SDK source and ship with the next release; a project on the tagged 2.14.0 plugin does not have them, and must not apply the delegate change yet. One is a source break for C++ projects; two remove work you may have done; one moves the moment a player pawn gets its identity. The examples on this site are written for the source that carries all four; every page they touch says what the tagged 2.14.0 plugin does instead.
+**Not in v2.14.0.** These five changes are in the SDK source and ship with the next release; a project on the tagged 2.14.0 plugin does not have them, and must not apply the delegate change yet. One is a source break for C++ projects; two remove work you may have done; one moves the moment a player pawn gets its identity; one changes how inbound traffic is signed and needs nothing from you. The examples on this site are written for the source that carries all five; every page they touch says what the tagged 2.14.0 plugin does instead.
+
+- **Inbound bundles arrive with one signature per datagram.** The transport now tells the replication server what it can read (a `CLIENT_CAPABILITIES` message, sent once the connection is up and every 15 seconds after), and a server at v0.30.0 or later answers by packing its notifications into `MESSAGE_BUNDLE_SIGNED` datagrams: one HMAC over the whole bundle instead of one per member. The messages your handlers receive are the same; only the verification cost per datagram drops. Up to and including 2.14.0 every member carried and was checked against its own signature, and an older server still does that. **What you do:** nothing. `crowdy.net.recv.signedbundles 0` turns the advertisement off for a diagnostic comparison, read when a connection opens like `crowdy.net.send.bundle`. See [Connection and reconnect](../runtime/connection-and-reconnect.md#signed-inbound-bundles).
 
 - **Eighteen array delegates pass `const TArray<T>&` instead of `TArray<T>` by value.** Ten single-cast: `FOnTeamsSuccess`, `FOnTeamMembersSuccess`, `FOnTeamRolesSuccess`, `FOnMyTeamsSuccess` (teams), `FOnAvatarsSuccess`, `FOnAppStatesSuccess` (avatars), `FOnChannelsSuccess`, `FOnChannelMembersSuccess`, `FOnChannelRolesSuccess`, `FOnMyChannelsSuccess` (channels). Three multicast cache events a 2.1 project is likely to have bound with `AddDynamic`: `FOnMyTeamsCacheChanged`, `FOnMyAvatarsCacheChanged`, `FOnMyChannelsCacheChanged`. Five Game Model outcome events, for a project that adopted collections or sessions on 2.13 or 2.14: `FCrowdyCollectionItemsOutcome`, `FCrowdyTraverseOutcome` (both parameters), `FCrowdyContainerRefsOutcome`, `FCrowdySessionsOutcome`, `FCrowdySessionEventsOutcome`. **What you do:** when you take that release, any C++ `UFUNCTION` bound to one of them changes its parameter from `TArray<FCrowdyTeam> Teams` to `const TArray<FCrowdyTeam>& Teams`, and likewise for the rest. A Blueprint custom event bound to one of these pins is unaffected; Blueprint has no by-value versus by-reference distinction on the pin.
 
@@ -9573,7 +9581,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/console-cvars
 
 # Console Variables
 
-The SDK exposes 33 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
+The SDK exposes 34 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
 logging for one area, behavior switches that change what the SDK does, and diagnostic commands that run
 once and hold no stored value. A row badged **Editor only** exists only in the editor process. Four of the
 diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`,
@@ -9609,7 +9617,7 @@ logging around Studio calls.
 
 ## Behavior switches
 
-These change what the SDK does rather than what it logs. None of the 10 exist only in the editor.
+These change what the SDK does rather than what it logs. None of the 11 exist only in the editor.
 
 <SurfaceTable
   table="cvars"
@@ -9618,12 +9626,13 @@ These change what the SDK does rather than what it logs. None of the 10 exist on
     "crowdy.net.receive.maxmessages": "How many inbound replication messages one frame may deliver; whatever is left waits for the next frame. Default 3072.",
     "crowdy.net.receive.maxdrainms": "How many milliseconds of one frame may be spent delivering inbound messages. Raise the message count first. Default 4.",
     "crowdy.net.send.bundle": "Pack one network pass's outbound messages into one datagram. Needs a replication server of v0.27.0 or later; against an older one every bundled message is dropped together. Default 1, read when a connection opens.",
+    "crowdy.net.recv.signedbundles": "Tell the replication server this client reads signed inbound bundles, so notifications arrive with one signature per datagram instead of one per member. A server older than v0.30.0 ignores it. Default 1, read when a connection opens.",
     "crowdy.replication.tracker.maxgatheredupdates": "How many actor updates for already-tracked actors may be gathered before the backlog is discarded; reached only when the world tick is not consuming them. Default 8192."
   }}
   notesLabel="Where the Help cell is empty"
 />
 
-The notes map above stands in for these four rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
+The notes map above stands in for these five rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
 
 :::warning[Leave `crowdy.rpc.allowObjectLoad` off in production.]
 While it is off, an untrusted peer cannot trigger an arbitrary asset load; an unresolved object or class
