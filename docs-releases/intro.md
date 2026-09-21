@@ -1537,7 +1537,7 @@ ownership surface. New capabilities:
   server-validated host check (the **Is Crowdy Entity Host (Server)** node); and client-side
   ownership helpers (`DoesCrowdyEntityOwn`, `IsCrowdyEntityHost`, `GetCrowdyEntityComponent`).
   See [Host authority](/unreal-sdk/runtime/host-authority) and
-  [Entities and spawning](/unreal-sdk/runtime/entities-and-spawning#ownership-and-authority).
+  [Ownership transfer](/unreal-sdk/runtime/ownership-transfer).
 
 **Breaking changes**
 
@@ -1573,7 +1573,7 @@ These are the only changes that touch an existing 2.0 project; everything above 
   Login / Register / Restore Session nodes on `UCrowdyAuthentication`. Each has
   Success/Error exec pins, so a Blueprint-only project no longer needs to wire the
   underlying delegates by hand. See
-  [Blueprint nodes](/unreal-sdk/runtime/authentication#blueprint-nodes).
+  [Blueprint nodes](/unreal-sdk/services/authentication#signing-in).
 - **Crowdy Studio's** sign-in page now offers a federated social provider or an
   emailed magic link, alongside the existing email + password, dev sign-in, and
   organization token options. All four session-scoped methods (password, social,

@@ -1,0 +1,44 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event BeginPlay",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_GetSubsystem_0",
+		"class": "/Script/BlueprintGraph.K2Node_GetSubsystem",
+		"title": "Crowdy Avatars",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AddDelegate_0",
+		"class": "/Script/BlueprintGraph.K2Node_AddDelegate",
+		"title": "Bind Event to On My Avatars Cache Changed",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnAvatarsChanged\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallArrayFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallArrayFunction",
+		"title": "GET",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_BreakStruct_0",
+		"class": "/Script/BlueprintGraph.K2Node_BreakStruct",
+		"title": "Break Crowdy Avatar",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableSet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableSet",
+		"title": "Set AvatarId",
+		"title_drawn": false
+	}
+]

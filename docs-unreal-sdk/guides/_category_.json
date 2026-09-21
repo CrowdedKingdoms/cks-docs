@@ -1,9 +1,9 @@
 {
   "label": "Guides",
-  "position": 6,
+  "position": 60,
   "link": {
     "type": "generated-index",
     "title": "Guides",
-    "description": "Gameplay authority, a tour of the sample project, a packaging checklist, and troubleshooting."
+    "description": "Where state goes, how to test locally, how to package, what to do when it breaks, the sample project, and what changed since the July docs."
   }
 }

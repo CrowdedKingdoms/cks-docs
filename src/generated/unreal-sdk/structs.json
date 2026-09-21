@@ -1,0 +1,974 @@
+{
+  "generated_from": "2026-09-21T14:43:18Z",
+  "sdk_version": "2.14.0",
+  "table": "structs",
+  "columns": [
+    {
+      "key": "name",
+      "label": "Struct",
+      "kind": "code"
+    },
+    {
+      "key": "display_name",
+      "label": "Display name",
+      "kind": "text"
+    },
+    {
+      "key": "module",
+      "label": "Module",
+      "kind": "text"
+    },
+    {
+      "key": "header",
+      "label": "Header",
+      "kind": "code"
+    },
+    {
+      "key": "page",
+      "label": "Read more",
+      "kind": "page"
+    }
+  ],
+  "rows": [
+    {
+      "id": "FActorUpdateNotificationBP",
+      "name": "FActorUpdateNotificationBP",
+      "display_name": "Actor Update Notification",
+      "module": "CrowdyNet",
+      "header": "FActorUpdateNotificationBP.h",
+      "page": "runtime/recipients-and-routing",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FActorUpdatePayloadTypeEntry",
+      "name": "FActorUpdatePayloadTypeEntry",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "ActorUpdatePayloadType.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FCrowdyAppAvatarState",
+      "name": "FCrowdyAppAvatarState",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyAppAvatarState.h",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyAvatar",
+      "name": "FCrowdyAvatar",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyAvatar.h",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyAvatarError",
+      "name": "FCrowdyAvatarError",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyAvatarError.h",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyChannel",
+      "name": "FCrowdyChannel",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyChannel.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyChannelError",
+      "name": "FCrowdyChannelError",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyChannelError.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyChannelMember",
+      "name": "FCrowdyChannelMember",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyChannelMember.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyChannelMembership",
+      "name": "FCrowdyChannelMembership",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyChannelMembership.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyChannelPermissions",
+      "name": "FCrowdyChannelPermissions",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyChannelPermissions.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyChannelPolicy",
+      "name": "FCrowdyChannelPolicy",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyChannelPolicy.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyChannelRole",
+      "name": "FCrowdyChannelRole",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyChannelRole.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyEntityDestroyEvent",
+      "name": "FCrowdyEntityDestroyEvent",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyEntitySpawnEvent.h",
+      "page": "runtime/entities-and-spawning",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyEntitySpawnEvent",
+      "name": "FCrowdyEntitySpawnEvent",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyEntitySpawnEvent.h",
+      "page": "runtime/entities-and-spawning",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyEventContext",
+      "name": "FCrowdyEventContext",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyEventContext.h",
+      "page": "runtime/recipients-and-routing",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdySelectIDAsHost",
+      "name": "FCrowdySelectIDAsHost",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdySelectIDAsHost.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FCrowdyTeam",
+      "name": "FCrowdyTeam",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyTeam.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyTeamError",
+      "name": "FCrowdyTeamError",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyTeamError.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyTeamMember",
+      "name": "FCrowdyTeamMember",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyTeamMember.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyTeamMembership",
+      "name": "FCrowdyTeamMembership",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyTeamMembership.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyTeamPermissions",
+      "name": "FCrowdyTeamPermissions",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyTeamPermissions.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyTeamPolicy",
+      "name": "FCrowdyTeamPolicy",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyTeamPolicy.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyTeamRole",
+      "name": "FCrowdyTeamRole",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyTeamRole.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyUserIdentity",
+      "name": "FCrowdyUserIdentity",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyUserIdentity.h",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FEventPayloadTypeEntry",
+      "name": "FEventPayloadTypeEntry",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "EventPayloadType.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FGameEventNotificationBP",
+      "name": "FGameEventNotificationBP",
+      "display_name": "Game Event Notification",
+      "module": "CrowdyNet",
+      "header": "FGameEventNotificationBP.h",
+      "page": "runtime/recipients-and-routing",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FGameSessionInfo",
+      "name": "FGameSessionInfo",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "CrowdyGameSession.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FUDPNetworkStatistics",
+      "name": "FUDPNetworkStatistics",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "CrowdyUDPSubsystem.h",
+      "page": "runtime/connection-and-reconnect",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyActorLeft",
+      "name": "FCrowdyActorLeft",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyActorTracker.h",
+      "page": "runtime/entities-and-spawning",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyActorManagementConfigStruct",
+      "name": "FCrowdyActorManagementConfigStruct",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyActorManagementConfig.h",
+      "page": "runtime/entities-and-spawning",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyActorState",
+      "name": "FCrowdyActorState",
+      "display_name": "Crowdy Actor State",
+      "module": "CrowdyReplication",
+      "header": "ActorUpdateExecutor.h",
+      "page": "runtime/rendering-backends",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyActorUpdate",
+      "name": "FCrowdyActorUpdate",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyActorTracker.h",
+      "page": "runtime/entities-and-spawning",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyApplyManifestResult",
+      "name": "FCrowdyApplyManifestResult",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyContainerManifestApply.h",
+      "page": "game-models/pre-seeding",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyCollectionItem",
+      "name": "FCrowdyCollectionItem",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyCombatantState",
+      "name": "FCrowdyCombatantState",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyCombatKitActions.h",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyContainerEdge",
+      "name": "FCrowdyContainerEdge",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyContainerManifestRow",
+      "name": "FCrowdyContainerManifestRow",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyContainerManifest.h",
+      "page": "game-models/pre-seeding",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyContainerRef",
+      "name": "FCrowdyContainerRef",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyCrop",
+      "name": "FCrowdyCrop",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyWorldsimKitActions.h",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyEffectAssignmentSpec",
+      "name": "FCrowdyEffectAssignmentSpec",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FCrowdyEffectCallSpec",
+      "name": "FCrowdyEffectCallSpec",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FCrowdyEffectIfSpec",
+      "name": "FCrowdyEffectIfSpec",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FCrowdyEffectMagnitude",
+      "name": "FCrowdyEffectMagnitude",
+      "display_name": "Tuning Parameter",
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffect.h",
+      "page": "game-models/effects-cpp",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyEffectOperand",
+      "name": "FCrowdyEffectOperand",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FCrowdyEffectRequireSpec",
+      "name": "FCrowdyEffectRequireSpec",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "game-models/invoke-policies",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyEffectSignal",
+      "name": "FCrowdyEffectSignal",
+      "display_name": "Signal",
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffect.h",
+      "page": "game-models/effects-cpp",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyEffectSpec",
+      "name": "FCrowdyEffectSpec",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FCrowdyEffectTerm",
+      "name": "FCrowdyEffectTerm",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FCrowdyEffectTimer",
+      "name": "FCrowdyEffectTimer",
+      "display_name": "Timer",
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffect.h",
+      "page": "game-models/automations",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyEffectTimerParam",
+      "name": "FCrowdyEffectTimerParam",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffect.h",
+      "page": "game-models/automations",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyEntityRecord",
+      "name": "FCrowdyEntityRecord",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyEntityTypes.h",
+      "page": "runtime/entities-and-spawning",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyGameModelCreateSessionOptions",
+      "name": "FCrowdyGameModelCreateSessionOptions",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyGameModelSession",
+      "name": "FCrowdyGameModelSession",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyGameModelSessionEvent",
+      "name": "FCrowdyGameModelSessionEvent",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyGameModelSessionParticipant",
+      "name": "FCrowdyGameModelSessionParticipant",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyGameModelSessionSnapshot",
+      "name": "FCrowdyGameModelSessionSnapshot",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyLeaderboardEntry",
+      "name": "FCrowdyLeaderboardEntry",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyLeaderboardsKitActions.h",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyManifestRowFailure",
+      "name": "FCrowdyManifestRowFailure",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyContainerManifestApply.h",
+      "page": "game-models/pre-seeding",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModelFailure",
+      "name": "FCrowdyModelFailure",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyModelRef",
+      "name": "FCrowdyModelRef",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyModelRef.h",
+      "page": "game-models/containers-and-attributes",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyPoolConfig",
+      "name": "FCrowdyPoolConfig",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "FCrowdyPoolConfig.h",
+      "page": "runtime/rendering-backends",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyResourceNode",
+      "name": "FCrowdyResourceNode",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyWorldsimKitActions.h",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyVideoFrame",
+      "name": "FCrowdyVideoFrame",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyVideoFrameReceiver.h",
+      "page": "runtime/video-frames",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyWorldState",
+      "name": "FCrowdyWorldState",
+      "display_name": "",
+      "module": "CrowdyReplication",
+      "header": "CrowdyWorldsimKitActions.h",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyAppAvatarStateList",
+      "name": "FCrowdyAppAvatarStateList",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyAvatarsQueryActions.h",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyAuthResult",
+      "name": "FCrowdyAuthResult",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyAuthentication.h",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyAvatarList",
+      "name": "FCrowdyAvatarList",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyAvatarsQueryActions.h",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyChannelMembersResult",
+      "name": "FCrowdyChannelMembersResult",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyChannelsQueryActions.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyChannelRolesResult",
+      "name": "FCrowdyChannelRolesResult",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyChannelsQueryActions.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyChannelsResult",
+      "name": "FCrowdyChannelsResult",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyChannelsQueryActions.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyMyChannelsResult",
+      "name": "FCrowdyMyChannelsResult",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyChannelsQueryActions.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyMyTeamsResult",
+      "name": "FCrowdyMyTeamsResult",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyTeamsQueryActions.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyTeamMembersResult",
+      "name": "FCrowdyTeamMembersResult",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyTeamsQueryActions.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyTeamRolesResult",
+      "name": "FCrowdyTeamRolesResult",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyTeamsQueryActions.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyTeamsResult",
+      "name": "FCrowdyTeamsResult",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyTeamsQueryActions.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FWidgetSpec",
+      "name": "FWidgetSpec",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "FWidgetSpec.h",
+      "page": "services/ui-interfaces",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FActorState",
+      "name": "FActorState",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FActorState.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FActorUpdateStruct",
+      "name": "FActorUpdateStruct",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FActorUpdateStruct.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FBallState",
+      "name": "FBallState",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FBaseEventState.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FBaseEventState",
+      "name": "FBaseEventState",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FBaseEventState.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FChunkCoordinate",
+      "name": "FChunkCoordinate",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "ChunkCoordinate.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FChunkData",
+      "name": "FChunkData",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FChunkData.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FChunkDataContainer",
+      "name": "FChunkDataContainer",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FChunkDataContainer.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FChunkVoxelState",
+      "name": "FChunkVoxelState",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FChunkVoxelState.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FGameObjectState",
+      "name": "FGameObjectState",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FGameObjectState.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FGameVersion",
+      "name": "FGameVersion",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FGameVersion.h",
+      "page": "studio/config-sync",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FOriginOffset",
+      "name": "FOriginOffset",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FOriginOffset.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FPlacedObjectState",
+      "name": "FPlacedObjectState",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FVoxelState.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FPlayerLastKnownAddress",
+      "name": "FPlayerLastKnownAddress",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FPlayerLastKnownAddress.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FTextMessage",
+      "name": "FTextMessage",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FTextMessage.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FVoxelCoordinate",
+      "name": "FVoxelCoordinate",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FVoxelCoordinate.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FVoxelIDData",
+      "name": "FVoxelIDData",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FVoxelIDData.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FVoxelListItem",
+      "name": "FVoxelListItem",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FVoxelListItem.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "FVoxelState",
+      "name": "FVoxelState",
+      "display_name": "",
+      "module": "CKSharedTypes",
+      "header": "FVoxelState.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    }
+  ]
+}

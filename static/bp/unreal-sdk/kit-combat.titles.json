@@ -1,0 +1,50 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event BeginPlay",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Get Crowdy Entity Component",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AddDelegate_0",
+		"class": "/Script/BlueprintGraph.K2Node_AddDelegate",
+		"title": "Bind Event to On Crowdy Ownership Assigned",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnOwnershipAssigned\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_IfThenElse_0",
+		"class": "/Script/BlueprintGraph.K2Node_IfThenElse",
+		"title": "Branch",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_Self_0",
+		"class": "/Script/BlueprintGraph.K2Node_Self",
+		"title": "Self-Reference",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_AsyncAction_0",
+		"class": "/Script/BlueprintGraph.K2Node_AsyncAction",
+		"title": "Spawn Combatant",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableSet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableSet",
+		"title": "Set CombatantId",
+		"title_drawn": false
+	}
+]
