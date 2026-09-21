@@ -1,0 +1,284 @@
+{
+  "generated_from": "2026-09-21T14:43:18Z",
+  "sdk_version": "2.14.0",
+  "table": "settings",
+  "columns": [
+    {
+      "key": "class",
+      "label": "Class",
+      "kind": "code"
+    },
+    {
+      "key": "property",
+      "label": "Property",
+      "kind": "code"
+    },
+    {
+      "key": "type",
+      "label": "Type",
+      "kind": "code"
+    },
+    {
+      "key": "category",
+      "label": "Category",
+      "kind": "text"
+    },
+    {
+      "key": "config",
+      "label": "Saved to config",
+      "kind": "flag"
+    },
+    {
+      "key": "written_by",
+      "label": "Written by",
+      "kind": "text"
+    },
+    {
+      "key": "module",
+      "label": "Module",
+      "kind": "text"
+    }
+  ],
+  "rows": [
+    {
+      "id": "UCrowdyEffectSyncSettings::bCheckEffectDriftBeforePlay",
+      "class": "UCrowdyEffectSyncSettings",
+      "property": "bCheckEffectDriftBeforePlay",
+      "type": "bool",
+      "category": "Game Model",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdySDKEditor",
+      "editor": true,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySchemaScanSettings::ScannedContentRoots",
+      "class": "UCrowdySchemaScanSettings",
+      "property": "ScannedContentRoots",
+      "type": "TArray<FString>",
+      "category": "Game Model",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyStudio",
+      "editor": true,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySchemaScanSettings::ExcludedContentRoots",
+      "class": "UCrowdySchemaScanSettings",
+      "property": "ExcludedContentRoots",
+      "type": "TArray<FString>",
+      "category": "Game Model",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyStudio",
+      "editor": true,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::Environment",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "Environment",
+      "type": "ECrowdyEnvironment",
+      "category": "Crowdy SDK|Developer|Network",
+      "config": true,
+      "written_by": "Config Sync",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::DiscoveryUrl",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "DiscoveryUrl",
+      "type": "FString",
+      "category": "Crowdy SDK|Developer|Network",
+      "config": true,
+      "written_by": "Config Sync",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::AppID",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "AppID",
+      "type": "int64",
+      "category": "Crowdy SDK|Developer|Network",
+      "config": true,
+      "written_by": "Config Sync",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::OrgId",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "OrgId",
+      "type": "int64",
+      "category": "Crowdy SDK|Developer|Network",
+      "config": true,
+      "written_by": "Config Sync",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::GameApiHttpUrl",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "GameApiHttpUrl",
+      "type": "FString",
+      "category": "Crowdy SDK|Developer|Network",
+      "config": true,
+      "written_by": "Config Sync",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::GameApiWsUrl",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "GameApiWsUrl",
+      "type": "FString",
+      "category": "Crowdy SDK|Developer|Network",
+      "config": true,
+      "written_by": "Config Sync",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::UDPProtocol",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "UDPProtocol",
+      "type": "ECrowdyUDPProtocol",
+      "category": "Crowdy SDK|Developer|Network",
+      "config": true,
+      "written_by": "Config Sync",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::UDPTimeoutSeconds",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "UDPTimeoutSeconds",
+      "type": "float",
+      "category": "Crowdy SDK|Developer|Network",
+      "config": true,
+      "written_by": "Config Sync",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::HostPollIntervalSeconds",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "HostPollIntervalSeconds",
+      "type": "float",
+      "category": "Crowdy SDK|Developer|Network",
+      "config": true,
+      "written_by": "Config Sync",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::bAutoClearPersistentStateOnShutdown",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "bAutoClearPersistentStateOnShutdown",
+      "type": "bool",
+      "category": "Crowdy SDK|Developer|Persistence",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::BakedRegistry",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "BakedRegistry",
+      "type": "TSoftObjectPtr<UCrowdyBakedRegistry>",
+      "category": "Crowdy SDK|Developer|Baked Registry",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::DefaultModelNotificationCarrier",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "DefaultModelNotificationCarrier",
+      "type": "ECrowdyEffectNotificationCarrier",
+      "category": "Crowdy SDK|Developer|Game Model",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::MapProfiles",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "MapProfiles",
+      "type": "TMap<TSoftObjectPtr<UWorld>, TSoftObjectPtr<UCrowdyMapProfile>>",
+      "category": "Crowdy SDK|Developer|Map Profiles",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::DefaultProfile",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "DefaultProfile",
+      "type": "TSoftObjectPtr<UCrowdyMapProfile>",
+      "category": "Crowdy SDK|Developer|Map Profiles",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::IDOverrides",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "IDOverrides",
+      "type": "TArray<FCrowdyIDOverride>",
+      "category": "Crowdy SDK|Type ID Overrides",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::ClassIDOverrides",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "ClassIDOverrides",
+      "type": "TArray<FCrowdyClassIDOverride>",
+      "category": "Crowdy SDK|Type ID Overrides",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::PreloadedEntityClasses",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "PreloadedEntityClasses",
+      "type": "TArray<TSoftClassPtr<AActor>>",
+      "category": "Crowdy SDK|Replication",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    }
+  ]
+}

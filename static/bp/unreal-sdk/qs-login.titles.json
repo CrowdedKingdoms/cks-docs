@@ -1,0 +1,14 @@
+[
+	{
+		"name": "K2Node_Event_0",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event Init",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_AsyncAction_0",
+		"class": "/Script/BlueprintGraph.K2Node_AsyncAction",
+		"title": "Login",
+		"title_drawn": true
+	}
+]

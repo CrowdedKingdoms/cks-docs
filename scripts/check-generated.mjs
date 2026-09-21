@@ -21,6 +21,11 @@
 //   2. derivation   static/schema/game-api.graphql  -> static/schema/management-api.graphql
 //   3. reference    static/schema/*.graphql         -> docs-*/reference/graphql/**
 //
+// A fourth, in-repo like 2 and 3 and checked alongside them: the Unreal SDK agent file
+// static/helpers/unreal-sdk/llms-full.txt is a concatenation of docs-unreal-sdk/ pages
+// (build-unreal-llms.mjs), and the reference tables under src/generated/unreal-sdk/ are
+// derived from the SDK surface manifest and those same pages (build-unreal-reference.mjs).
+//
 // Hops 2 and 3 are entirely in-repo, so they run anywhere, need no token and have no
 // cross-repo pairing to get wrong. They are also NOT what went wrong. Measured against
 // the incident: with static/schema/ at the stale commit, `graphql:gen` reproduced all
@@ -91,6 +96,9 @@ const COPIES = [
 ];
 
 const DERIVED = 'static/schema/management-api.graphql';
+const UNREAL_LLMS = 'static/helpers/unreal-sdk/llms-full.txt';
+const KLEE_NAMES = 'vendor/klee/plugins/crowdy-names.generated.ts';
+const UNREAL_REFERENCE = 'src/generated/unreal-sdk';
 const REFERENCE_PATHS = [
   'docs-management-api/reference/graphql',
   'docs-game-api/reference/graphql',
@@ -331,6 +339,30 @@ function runGraphqlGen() {
   });
 }
 
+function runKleeNames() {
+  execFileSync(process.execPath, [resolve(here, 'build-klee-names.mjs')], {
+    cwd: repo,
+    stdio: 'pipe',
+    env: process.env,
+  });
+}
+
+function runUnrealLlms() {
+  execFileSync(process.execPath, [resolve(here, 'build-unreal-llms.mjs')], {
+    cwd: repo,
+    stdio: 'pipe',
+    env: process.env,
+  });
+}
+
+function runUnrealReference() {
+  execFileSync(process.execPath, [resolve(here, 'build-unreal-reference.mjs')], {
+    cwd: repo,
+    stdio: 'pipe',
+    env: process.env,
+  });
+}
+
 // --- self-test: watch it refuse ------------------------------------------------------
 
 /**
@@ -499,6 +531,34 @@ if (!COPY_ONLY) {
       run: () => runGraphqlGen(),
     });
   }
+
+  // The Unreal SDK agent file is a concatenation of docs-unreal-sdk/ pages, so it is
+  // in-repo and stale the moment a page is edited without a rebuild. Node only.
+  checkGenerator({
+    id: 'unreal-llms',
+    describe: 'npm run build:unreal-llms  (static/helpers/unreal-sdk/llms-full.txt)',
+    paths: [UNREAL_LLMS],
+    run: () => runUnrealLlms(),
+  });
+
+  // The Blueprint renderer's display-name table is derived from the published SDK surface, so a
+  // re-exported surface without a regenerated table would render the old names. Node only.
+  checkGenerator({
+    id: 'klee-names',
+    describe: 'npm run build:klee-names  (vendor/klee/plugins/crowdy-names.generated.ts)',
+    paths: [KLEE_NAMES],
+    run: () => runKleeNames(),
+  });
+
+  // The Unreal SDK reference tables derive from the published surface AND from the pages
+  // (the "read more" column is computed from page text), so either changing without a
+  // regeneration leaves a committed table stale. Node only.
+  checkGenerator({
+    id: 'unreal-reference',
+    describe: 'npm run build:unreal-reference  (src/generated/unreal-sdk/*.json)',
+    paths: [UNREAL_REFERENCE],
+    run: () => runUnrealReference(),
+  });
 }
 
 // WHAT THIS RUN COULD NOT SEE, stated by the run itself rather than left to a reader.

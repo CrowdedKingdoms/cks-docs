@@ -1,0 +1,50 @@
+[
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnTalkStarted\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_GetSubsystem_0",
+		"class": "/Script/BlueprintGraph.K2Node_GetSubsystem",
+		"title": "Crowdy SDK Subsystem",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Start Voice Chat\nTarget is Crowdy SDK Subsystem",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get Torch",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_1",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Set Intensity\nTarget is Light Component",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CustomEvent_1",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnTalkCompleted\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_2",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Stop Voice Chat\nTarget is Crowdy SDK Subsystem",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_3",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Set Intensity\nTarget is Light Component",
+		"title_drawn": true
+	}
+]

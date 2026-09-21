@@ -1,0 +1,14 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event ActorBeginOverlap",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_ApplyEffect_0",
+		"class": "/Script/CrowdyNodes.CrowdyK2Node_ApplyEffect",
+		"title": "Apply Crowdy Effect: FX_LanternRefuel",
+		"title_drawn": true
+	}
+]

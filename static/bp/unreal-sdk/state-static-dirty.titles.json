@@ -1,0 +1,26 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event ActorBeginOverlap",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Is Crowdy Entity Locally Controlled",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_IfThenElse_0",
+		"class": "/Script/BlueprintGraph.K2Node_IfThenElse",
+		"title": "Branch",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_1",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Mark Crowdy State Dirty",
+		"title_drawn": true
+	}
+]
