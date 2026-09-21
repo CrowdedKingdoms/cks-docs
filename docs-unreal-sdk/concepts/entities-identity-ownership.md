@@ -28,6 +28,18 @@ The SDK hands you the NetID as an `FGuid` (`GetNetID()`), which is convenient to
 The wire identity is not an RFC 4122 UUID, and a hand-made `FGuid` does not name anything. Let the identity policy below, or a spawn call, mint it.
 :::
 
+### `FCrowdyActorId`, the wire type
+
+`FGuid` is the convenient face; `FCrowdyActorId` is what actually travels the wire, 32 raw octets rather
+than an RFC 4122 UUID. Build one only through its named constructors: `FromGuid` converts an `FGuid`,
+`FromOctets` and the fallible `TryFromOctets` build from an existing 32-byte view (the fallible one returns
+`bool` instead of asserting), `FromStringOrUnset` and `TryFromString` parse a hex string, and
+`FromAnsiLiteral` builds a compile-time one from a string literal for tests and defaults.
+
+Once you have one, `IsSet()` says whether it names anything, `AsOctets()` gives a read-only view of the 32
+bytes, `AppendTo` and `WriteTo` copy them into a buffer you already own, `ToString()` renders the hex form
+back, and `Reset()` clears it to unset.
+
 ## Identity policies
 
 `IdentityPolicy` on the component decides how the NetID is chosen.

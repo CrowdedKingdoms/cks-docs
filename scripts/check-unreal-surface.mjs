@@ -7,7 +7,10 @@
 // says what nobody has written about yet.
 //
 // A symbol is covered when it appears as a whole word in any page (front matter
-// excluded). What "it" means depends on the group:
+// excluded), OR when some page embeds a <SurfaceTable> that renders its row (read the same
+// way src/components/SurfaceTable.tsx does: honouring `filter`, `includeEditor` and
+// `includeAllowlisted`, from src/generated/unreal-sdk/<table>.json). What "it" means for the
+// prose check depends on the group:
 //
 //   functions        `name` or `display_name`
 //   delegates        `name`
@@ -92,6 +95,72 @@ const pages = walk(resolve(repo, DOCS)).map((file) => ({
   path: relative(repo, file).replace(/\\/g, '/'),
   text: stripFrontMatter(readFileSync(file, 'utf8').replace(/\r\n/g, '\n')),
 }));
+
+// --- generated reference tables --------------------------------------------------------
+//
+// A page can also cover a symbol by embedding it in a <SurfaceTable table="..."/> (rendered
+// from src/generated/unreal-sdk/<table>.json, scripts/build-unreal-reference.mjs), rather
+// than naming it in prose. Read every embed the same way src/components/SurfaceTable.tsx
+// renders it, honouring `filter`, `includeEditor` and `includeAllowlisted`, and treat each
+// row's `id` that survives as mentioned.
+const GENERATED_DIR = 'src/generated/unreal-sdk';
+const TABLE_FILE = {
+  subsystems: 'subsystems',
+  async_actions: 'async-actions',
+  delegates: 'delegates',
+  cvars: 'cvars',
+  settings: 'settings',
+  meta_keys: 'meta-keys',
+  enums: 'enums',
+  log_categories: 'log-categories',
+  structs: 'structs',
+};
+
+const tableCache = new Map();
+function loadTable(file) {
+  if (tableCache.has(file)) return tableCache.get(file);
+  const path = resolve(repo, GENERATED_DIR, `${file}.json`);
+  const data = existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : null;
+  tableCache.set(file, data);
+  return data;
+}
+
+function rowMatchesFilter(row, filter) {
+  if (!filter) return true;
+  const eq = filter.indexOf('=');
+  if (eq < 0) return true;
+  const key = filter.slice(0, eq).trim();
+  const want = filter.slice(eq + 1).trim();
+  const have = row[key];
+  if (Array.isArray(have)) return have.includes(want);
+  return String(have) === want;
+}
+
+// group -> Set of ids covered by some page's rendered table embed.
+const tableCoveredIds = new Map();
+const embedRe = /<SurfaceTable([\s\S]*?)\/>/g;
+for (const page of pages) {
+  for (const match of page.text.matchAll(embedRe)) {
+    const attrs = match[1];
+    const tableName = /table\s*=\s*"([^"]+)"/.exec(attrs)?.[1];
+    const group = Object.entries(TABLE_FILE).find(([, file]) => file === tableName)?.[0];
+    if (!group) continue;
+    const data = loadTable(tableName);
+    if (!data) continue;
+    const includeEditor = /\bincludeEditor\b/.test(attrs);
+    const includeAllowlisted = /\bincludeAllowlisted\b/.test(attrs);
+    const filter = /filter\s*=\s*"([^"]*)"/.exec(attrs)?.[1];
+    const set = tableCoveredIds.get(group) ?? new Set();
+    for (const row of data.rows) {
+      if (!includeEditor && row.editor) continue;
+      if (!includeAllowlisted && row.allowlist) continue;
+      if (!rowMatchesFilter(row, filter)) continue;
+      set.add(row.id);
+    }
+    tableCoveredIds.set(group, set);
+  }
+}
+const tableCovers = (group, id) => tableCoveredIds.get(group)?.has(id) === true;
 
 // Whole word: not touching an identifier character on either side. Ids may carry `::`
 // and `.`, so the test is on the page text rather than on a token set.
@@ -186,6 +255,10 @@ for (const group of Object.keys(RULES).concat('settings')) {
     if (allowed) {
       seenAllowlist.add(allowed.id);
       result.allowlisted += 1;
+      continue;
+    }
+    if (tableCovers(group, e.id)) {
+      result.covered += 1;
       continue;
     }
     const rule = group === 'settings' ? (x) => anyPageMentions(x.name) : RULES[group];

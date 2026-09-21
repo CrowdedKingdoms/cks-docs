@@ -3288,16 +3288,6 @@
     "note": "the graph compiler's intermediate spec; BlueprintType so it shows in the type picker, but nothing for a game to construct"
   },
   {
-    "id": "CrowdyContainerTest",
-    "reason": "internal",
-    "note": "key-only markers on the SDK's own test fixture classes so they never reach a live app"
-  },
-  {
-    "id": "CrowdyTestFixture",
-    "reason": "internal",
-    "note": "key-only markers on the SDK's own test fixture classes so they never reach a live app"
-  },
-  {
     "id": "ECrowdyEffectAssignOp",
     "reason": "editor",
     "note": "the graph compiler's intermediate spec (the retired picker's IR); a reader authors EffectScript text or the Studio graph, never this shape"
@@ -5290,27 +5280,27 @@
   {
     "id": "UCrowdyPersistenceSubsystem",
     "reason": "deprecated",
-    "note": "Superseded by Game Models; the page goes when its redirect target exists."
+    "note": "Deprecated; still works, receives no development. Documented under guides/whats-changed#persistence."
   },
   {
     "id": "UCrowdyPersistenceSubsystem::ClearAllState",
     "reason": "deprecated",
-    "note": "Superseded by Game Models; the page goes when its redirect target exists."
+    "note": "Deprecated; still works, receives no development. Documented under guides/whats-changed#persistence."
   },
   {
     "id": "UCrowdyPersistenceSubsystem::K2_PullState",
     "reason": "deprecated",
-    "note": "Superseded by Game Models; the page goes when its redirect target exists."
+    "note": "Deprecated; still works, receives no development. Documented under guides/whats-changed#persistence."
   },
   {
     "id": "UCrowdyPersistenceSubsystem::K2_PushState",
     "reason": "deprecated",
-    "note": "Superseded by Game Models; the page goes when its redirect target exists."
+    "note": "Deprecated; still works, receives no development. Documented under guides/whats-changed#persistence."
   },
   {
     "id": "UCrowdyPersistenceSubsystem::InitialSetup",
     "reason": "deprecated",
-    "note": "Superseded by Game Models; the page goes when its redirect target exists."
+    "note": "Deprecated; still works, receives no development. Documented under guides/whats-changed#persistence."
   },
   {
     "id": "EPullStateResult",
@@ -5586,5 +5576,1655 @@
     "id": "UVoiceChatSubsystem::TickPlayback",
     "reason": "internal",
     "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
+  },
+  {
+    "id": "E_MovementMode",
+    "reason": "internal",
+    "note": "Character, camera and voxel enums that ride in the CKSharedTypes module for a first-party game; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "EActionType",
+    "reason": "internal",
+    "note": "Character, camera and voxel enums that ride in the CKSharedTypes module for a first-party game; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "EAttachmentType",
+    "reason": "internal",
+    "note": "Character, camera and voxel enums that ride in the CKSharedTypes module for a first-party game; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "ECharacterType",
+    "reason": "internal",
+    "note": "Character, camera and voxel enums that ride in the CKSharedTypes module for a first-party game; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "EGait",
+    "reason": "internal",
+    "note": "Character, camera and voxel enums that ride in the CKSharedTypes module for a first-party game; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "EGameObjectType",
+    "reason": "internal",
+    "note": "Character, camera and voxel enums that ride in the CKSharedTypes module for a first-party game; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "EPlayerAnimationState",
+    "reason": "internal",
+    "note": "Character, camera and voxel enums that ride in the CKSharedTypes module for a first-party game; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "EPlayerCameraView",
+    "reason": "internal",
+    "note": "Character, camera and voxel enums that ride in the CKSharedTypes module for a first-party game; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "EPlayerFlightControlScheme",
+    "reason": "internal",
+    "note": "Character, camera and voxel enums that ride in the CKSharedTypes module for a first-party game; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "EVoxelSystemType",
+    "reason": "internal",
+    "note": "Character, camera and voxel enums that ride in the CKSharedTypes module for a first-party game; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "CROWDY_DEFINE_TRACE_CVAR",
+    "reason": "internal",
+    "note": "Trace CVar definition macro; documented by its effect on reference/console-cvars."
+  },
+  {
+    "id": "CrowdyApplyEffectNodeShared::GetContainerBlueprintResolver",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyApplyEffectNodeShared::IsGameModelContainerBlueprint",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyApplyEffectNodeShared::SetContainerBlueprintResolver",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyAuthoringContributions::DescribeActionEventProblem",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyAuthoringContributions::GetActionParameters",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyAuthoringContributions::IsCrowdRepresentationSelected",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyAuthoringContributions::SetActionEventValidator",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyAuthoringContributions::SetActionParameterProvider",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyAuthPayloads::EnsureGameApiGraphqlPath",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "CrowdyAuthPayloads::IsBrowserNavigableUrl",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "CrowdyAuthPayloads::ReadIdentity",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "CrowdyAuthPayloads::ReadLoginLinkPayload",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "CrowdyAuthPayloads::ReadSocialStartPayload",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "CrowdyBlueprintCompileHooks::NotifyClassCompiled",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyBlueprintCompileHooks::SetClassCompiledHook",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyBlueprintCompileHooks::SetContainerStampHook",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyBlueprintCompileHooks::StampContainerMetadata",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyCppIsModelRefusalCode",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "CrowdyEffectPayloadPreview::BuildPayloadPreview",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyEffectPickerOptions::AllowedAssignmentOps",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyEffectPickerOptions::AttributeNameForScriptCompletion",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyEffectPickerOptions::AttributePickerWrittenValue",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyEffectPickerOptions::AttributesForClass",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyEffectPickerOptions::IsOfferableContainerType",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyEffectPickerOptions::IsTransientReflectionClassName",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyEffectPickerOptions::KnownContainerTypeNames",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyEffectPickerOptions::OpForVerbLabel",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyEffectPickerOptions::PropertyKeyForAutomationTrigger",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyEffectPickerOptions::RoleWord",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyEffectPickerOptions::TargetPhrase",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyEffectPickerOptions::ValueTypeForAttribute",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyEffectPickerOptions::VerbLabel",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExpressionEditorModel::BuildBodyHighlightRuns",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExpressionEditorModel::BuildHighlightRuns",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExpressionEditorModel::BuiltinNames",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExpressionEditorModel::ClassifyChips",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExpressionEditorModel::CountLines",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExpressionEditorModel::DiagnoseBodyRanges",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExpressionEditorModel::DiagnoseRanges",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExpressionEditorModel::KeywordNames",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExpressionEditorModel::MapBodyDiagnosticsToRanges",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExpressionEditorModel::PolicyKeywordNames",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyGameModelTrace::GameModel",
+    "reason": "internal",
+    "note": "CrowdyReplication internal Game Model trust, trace and identity-override plumbing; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "CrowdyPlayerFaultBlameFromWireString",
+    "reason": "internal",
+    "note": "C++ request/result types of the low-level Game Model Invoke; the documented path is Apply and the latent action's pins (game-models/effects-cpp)."
+  },
+  {
+    "id": "CrowdyReplicationModeDecision::KeysToScrubOnSwitch",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyReplicationModeDecision::OnRepFollowsGraphRename",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyReplicationModeDecision::OwnedKeys",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioAuth::FetchAppChannelNames",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioAuth::GetSignedInToken",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioRegistry::GetLoadContainerAssetsHook",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioRegistry::HasRebuildHook",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioRegistry::RequestLoadContainerAssets",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioRegistry::RequestRebuild",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioRegistry::SetLoadContainerAssetsHook",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioRegistry::SetRebuildHook",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioSyncService::BuildSyncedStatusMessage",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioSyncService::GetCachedOutOfSyncEffects",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioSyncService::GetCachedStatus",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioSyncService::InvalidateAllCachedStatuses",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioSyncService::InvalidateCachedStatus",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioSyncService::RequestEffectSyncStatus",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioSyncService::ShouldCacheStatusResult",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioSyncService::ShouldReportDriftForPendingChannel",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioSyncService::SyncEffect",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioTrace::Enabled",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "DECLARE_LOG_CATEGORY_EXTERN",
+    "reason": "internal",
+    "note": "Exporter artefact: an engine macro parsed as a function."
+  },
+  {
+    "id": "E_PlacementMode",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "ECrowdyCppApiDomain",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "ECrowdyCppConnState",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "ECrowdyCppTokenPlane",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "ECrowdyEffectSyncStatus",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "ECrowdyExpressionChipKind",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "ECrowdyExpressionHighlightColor",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "ECrowdyKitGenre",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "ECrowdyKitInstantiableBy",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "ECrowdyKitOwnerIdKind",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "ECrowdyKitSubmitAuthority",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "ECrowdyPlayerFaultBlame",
+    "reason": "internal",
+    "note": "C++ request/result types of the low-level Game Model Invoke; the documented path is Apply and the latent action's pins (game-models/effects-cpp)."
+  },
+  {
+    "id": "EEventType",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "EFieldID",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "EKind",
+    "reason": "internal",
+    "note": "CrowdyReplication internal Game Model trust, trace and identity-override plumbing; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "EMode",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "EVoxelType",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FActorState",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FActorState::DeserializeActorState",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FActorState::SerializeActorState",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FActorUpdateStruct",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FBallState",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FBallState::FVector",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FBaseEventState",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FBaseEventState::FRotator",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FBaseEventState::FVector",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FChunkCoordinate",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FChunkCoordinate::ToString",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FChunkData",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FChunkDataContainer",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FChunkMeshBuildResult",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FChunkVoxelListBatch",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FChunkVoxelState",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCKSharedTypesModule",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyActionParameterSpec",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyAppAvatarState::ParseFromJson",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyAvatar::ParseFromJson",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyAvatarError::FromMessage",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyContainerEditorToolbar",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyContainerEditorToolbar::Register",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyContainerEditorToolbar::Unregister",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyCppAppDiscoveryResult",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppAppEndpoint",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppAppEndpoint::IsPlaced",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppAppTokenResult",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppAppTokenResult::HasAuthorizedServer",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppAssembledVideoFrame",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppAuthResult",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppBoolResult",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppBridge",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppBridge::SelfTest",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppChannelMessage",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::Cancel",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::CancelAll",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::CanceledErrorMessage",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::Close",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::CompleteLoginLink",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::GetApiEndpoint",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::GetLastTestRequest",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::InvokeFunction",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::LinkIdentity",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::ListContainers",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::ListLoginProviders",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::ListMyIdentities",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::Make",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::MintAppToken",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::MoveToDatacenter",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::NumActiveSubscriptions",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::NumPendingRequests",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::NumTestWebSocketConnections",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::Poll",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::ReadContainerState",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::RefreshAppToken",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::RegisterWithPassword",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::RequestLoginLink",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::ResolveAppEndpoints",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::RunOp",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::RunRuntimeOp",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::SeedSchema",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::SetGameToken",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::SetManagementToken",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::SetRediscoveredEndpoint",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::SetTestOnRequest",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::SetTestResponseScript",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::SignInWithPassword",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::SocialLoginComplete",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::SocialLoginStart",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::Subscribe",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::SubscribeOperation",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::TakeTestWebSocketSentFrames",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::TestWebSocketCloseFromServer",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::TestWebSocketOpen",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::TestWebSocketReceiveText",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::UnlinkIdentity",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::Unsubscribe",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::UnsubscribeAll",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::UpsertAutomation",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::UpsertAutomationTrigger",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::WasTestWebSocketClosedByClient",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::WatchRealtimeControl",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClientConfig",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppContainerStateResult",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppCurrentServer",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppInvokeResult",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppJsonResult",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppJsonValueResult",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppMutationApplied",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppRealtimeControlEvent",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppRealtimeControlEvent::IsDraining",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppRealtimeControlEvent::IsTerminal",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::ConnectAsync",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::DescribeErrorCode",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::Disconnect",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::GetAssignment",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::GetState",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::GetStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::IsDeliverableSpatialOpcode",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::IsSendableSpatialOpcode",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::IsUnauthorizedErrorCode",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::Make",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::Poll",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::SendChannelMessage",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::SendSpatial",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::SendVideoFrame",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::SetHandlers",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplication::SetToken",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplicationConfig",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplicationHandlers",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplicationStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppReplicationToken",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppRequestHandle",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppRequestHandle::IsValid",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppSendError",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppSessionAssignment",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppSpatialMessage",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppStringListResult",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppStudioOpResult",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppSubscriptionCallbacks",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppSubscriptionHandle",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppSubscriptionHandle::IsValid",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppVideoAssembler",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppVideoAssembler::Forget",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppVideoAssembler::FragmentFrame",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppVideoAssembler::GetAbandonedFrames",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppVideoAssembler::GetDroppedFragments",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppVideoAssembler::Ingest",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppVideoAssembler::PendingSenders",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppVideoAssembler::Prune",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCreateSessionOptions",
+    "reason": "internal",
+    "note": "Game API codec structs (FCrowdyGameApiCodec.h) the Game Model subsystem decodes into; a game reads the session structs the subsystem hands it, not these."
+  },
+  {
+    "id": "FCrowdyCustomEventCustomization",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyCustomEventCustomization::MakeInstance",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyEffectCustomization",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyEffectCustomization::MakeInstance",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyEnvelope",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyExpressionChip",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyExpressionCompletion",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyExpressionCompletionSource",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyExpressionCompletionSource::ApplyCompletion",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyExpressionCompletionSource::GetCompletions",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyExpressionCompletionSource::GetVocabulary",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyExpressionDiagnosticRange",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyExpressionHighlightRun",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyExpressionVocabulary",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyFrame",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyFrame::FromMessageBytes",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyGameSessionData",
+    "reason": "internal",
+    "note": "Game API codec structs (FCrowdyGameApiCodec.h) the Game Model subsystem decodes into; a game reads the session structs the subsystem hands it, not these."
+  },
+  {
+    "id": "FCrowdyGameSessionEventData",
+    "reason": "internal",
+    "note": "Game API codec structs (FCrowdyGameApiCodec.h) the Game Model subsystem decodes into; a game reads the session structs the subsystem hands it, not these."
+  },
+  {
+    "id": "FCrowdyGameSessionParticipantData",
+    "reason": "internal",
+    "note": "Game API codec structs (FCrowdyGameApiCodec.h) the Game Model subsystem decodes into; a game reads the session structs the subsystem hands it, not these."
+  },
+  {
+    "id": "FCrowdyGameSessionSnapshotData",
+    "reason": "internal",
+    "note": "Game API codec structs (FCrowdyGameApiCodec.h) the Game Model subsystem decodes into; a game reads the session structs the subsystem hands it, not these."
+  },
+  {
+    "id": "FCrowdyInvokeRequest",
+    "reason": "internal",
+    "note": "C++ request/result types of the low-level Game Model Invoke; the documented path is Apply and the latent action's pins (game-models/effects-cpp)."
+  },
+  {
+    "id": "FCrowdyInvokeResult",
+    "reason": "internal",
+    "note": "C++ request/result types of the low-level Game Model Invoke; the documented path is Apply and the latent action's pins (game-models/effects-cpp)."
+  },
+  {
+    "id": "FCrowdyKitBridge",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitBridge::DeployBundle",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitBridge::EmitBundle",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitBundle",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitCombatOptions",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitDeployResult",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitGuildOptions",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitGuildOptions::TEXT",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitLayerSpec",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitLeaderboardsOptions",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitLivingWorldOptions",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitWorldsimCrops",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitWorldsimNodes",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitWorldsimTime",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyKitWorldsimWaves",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyLoopbackAuthServer",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyLoopbackAuthServer::IsActive",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyLoopbackAuthServer::ReserveRedirectUri",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyLoopbackAuthServer::Start",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyLoopbackAuthServer::Stop",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyMutationApplied",
+    "reason": "internal",
+    "note": "C++ request/result types of the low-level Game Model Invoke; the documented path is Apply and the latent action's pins (game-models/effects-cpp)."
+  },
+  {
+    "id": "FCrowdyReplicatedVariableCustomization",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyReplicatedVariableCustomization::MakeInstance",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStructContextMenu",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStructContextMenu::Register",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStructContextMenu::Unregister",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStructCustomization",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStructCustomization::MakeInstance",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStructEditorToolbar",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStructEditorToolbar::Register",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStructEditorToolbar::Unregister",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioModule",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyTeam::MembershipPolicyFromString",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyTeam::MembershipPolicyToString",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyTeam::ParseFromJson",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyTeamError::FromMessage",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyTeamMember::ParseFromJson",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyTeamMembership::ParseFromJson",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyTeamPermissions::FromStringArray",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyTeamPermissions::ToKey",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyTeamPermissions::ToStringArray",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyTeamPolicy::CreationPolicyFromString",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyTeamPolicy::CreationPolicyToString",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyTeamPolicy::ParseFromJson",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyTeamRole::ParseFromJson",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FCrowdyUserIdentity::FromJson",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FGameObjectState",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FOnLoopbackError",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FOnLoopbackToken",
+    "reason": "internal",
+    "note": "CrowdyNet internal parsing, auth-payload and loopback-auth-server helpers; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FOriginOffset",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FPlacedObjectState",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FPlacedObjectState::Deserialize",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FPlacedObjectState::ReadValue",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FPlacedObjectState::Serialize",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FPlacedObjectState::ToString",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FPlacedObjectState::WriteValue",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FPlayerLastKnownAddress",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FRpcSignatureResult",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio expression/customization implementation; not runtime SDK surface."
+  },
+  {
+    "id": "FSection",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FTextMessage",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FVoxelCoordinate",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FVoxelDefinition",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FVoxelDefinition::MinValue",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FVoxelIDData",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FVoxelListItem",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FVoxelState",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FVoxelState::DeserializeFromBytes",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FVoxelState::GetVersion",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FVoxelState::IsVLO",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FVoxelState::ResetVoxelState",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FVoxelState::SerializeToBytes",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "FVoxelState::ToString",
+    "reason": "internal",
+    "note": "CKSharedTypes wire-format and serialization internals for game state structs (voxel/chunk/actor state); not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "GetCrowdyCppCrypto",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "GetFunctionEntryName",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "HasCrowdyReplicatesMeta",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "ISubsystemInitializable",
+    "reason": "internal",
+    "note": "Interface with one virtual that nothing in the plugin implements; unused."
+  },
+  {
+    "id": "ISubsystemInitializable::PostSubsystemInit",
+    "reason": "internal",
+    "note": "The unused interface's one virtual."
+  },
+  {
+    "id": "ResolveCrowdyRecipient",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring implementation; not runtime SDK surface."
+  },
+  {
+    "id": "TArray<FCrowdyEffectDiagnostic>",
+    "reason": "internal",
+    "note": "CrowdySDKEditor internal implementation detail; not part of the SDK contract a game integrates against."
+  },
+  {
+    "id": "USubsystemInitializable",
+    "reason": "internal",
+    "note": "UInterface half of ISubsystemInitializable; unused."
   }
 ]

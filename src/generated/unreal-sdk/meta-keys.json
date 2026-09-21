@@ -1,0 +1,369 @@
+{
+  "generated_from": "2026-09-19T13:37:44Z",
+  "sdk_version": "2.14.0",
+  "table": "meta-keys",
+  "columns": [
+    {
+      "key": "key",
+      "label": "Key",
+      "kind": "code"
+    },
+    {
+      "key": "owner",
+      "label": "Namespace",
+      "kind": "code"
+    },
+    {
+      "key": "symbol",
+      "label": "Symbol",
+      "kind": "code"
+    },
+    {
+      "key": "header",
+      "label": "Header",
+      "kind": "code"
+    },
+    {
+      "key": "module",
+      "label": "Module",
+      "kind": "text"
+    },
+    {
+      "key": "page",
+      "label": "Read more",
+      "kind": "page"
+    }
+  ],
+  "rows": [
+    {
+      "id": "__crowdy_netid",
+      "key": "__crowdy_netid",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::ReservedNetIdMetaKey",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "game-models/containers-and-attributes",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "__crowdy_touch_",
+      "key": "__crowdy_touch_",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::CollectionTouchFunctionPrefix",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy_rev",
+      "key": "crowdy_rev",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::CollectionRevKey",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyContainer",
+      "key": "CrowdyContainer",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::Container",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "game-models/containers-and-attributes",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyContainerTest",
+      "key": "CrowdyContainerTest",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::ContainerTest",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyContainerType",
+      "key": "CrowdyContainerType",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::ContainerTypeAssetTag",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "game-models/containers-and-attributes",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyInstantiableBy",
+      "key": "CrowdyInstantiableBy",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::InstantiableBy",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "game-models/pre-seeding",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyKey",
+      "key": "CrowdyKey",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::Key",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "game-models/containers-and-attributes",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyModel",
+      "key": "CrowdyModel",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::Model",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "concepts/two-planes",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyPullOnStart",
+      "key": "CrowdyPullOnStart",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::PullOnStart",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "game-models/containers-and-attributes",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyScan",
+      "key": "CrowdyScan",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::ScanAssetTag",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "game-models/containers-and-attributes",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyScope",
+      "key": "CrowdyScope",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::Scope",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "concepts/two-planes",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyTestFixture",
+      "key": "CrowdyTestFixture",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::TestFixture",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyVisibility",
+      "key": "CrowdyVisibility",
+      "owner": "CrowdyGameModelMetaKeys",
+      "symbol": "CrowdyGameModelMetaKeys::Visibility",
+      "header": "CrowdyGameModelMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "game-models/containers-and-attributes",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyEntity",
+      "key": "CrowdyEntity",
+      "owner": "CrowdyMetaKeys",
+      "symbol": "CrowdyMetaKeys::CrowdyEntity",
+      "header": "CrowdyMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "guides/troubleshooting",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyEvent",
+      "key": "CrowdyEvent",
+      "owner": "CrowdyMetaKeys",
+      "symbol": "CrowdyMetaKeys::CrowdyEvent",
+      "header": "CrowdyMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "runtime/crowdy-state-types",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyPersistent",
+      "key": "CrowdyPersistent",
+      "owner": "CrowdyMetaKeys",
+      "symbol": "CrowdyMetaKeys::CrowdyPersistent",
+      "header": "CrowdyMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "guides/sample-project",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdySingleton",
+      "key": "CrowdySingleton",
+      "owner": "CrowdyMetaKeys",
+      "symbol": "CrowdyMetaKeys::CrowdySingleton",
+      "header": "CrowdyMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyAction",
+      "key": "CrowdyAction",
+      "owner": "CrowdyRpcMetaKeys",
+      "symbol": "CrowdyRpcMetaKeys::Action",
+      "header": "CrowdyRPC.h",
+      "module": "CrowdyReplication",
+      "page": "runtime/rpc-events-cpp",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyChannel",
+      "key": "CrowdyChannel",
+      "owner": "CrowdyRpcMetaKeys",
+      "symbol": "CrowdyRpcMetaKeys::Channel",
+      "header": "CrowdyRPC.h",
+      "module": "CrowdyReplication",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyDecay",
+      "key": "CrowdyDecay",
+      "owner": "CrowdyRpcMetaKeys",
+      "symbol": "CrowdyRpcMetaKeys::Decay",
+      "header": "CrowdyRPC.h",
+      "module": "CrowdyReplication",
+      "page": "runtime/recipients-and-routing",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyDistance",
+      "key": "CrowdyDistance",
+      "owner": "CrowdyRpcMetaKeys",
+      "symbol": "CrowdyRpcMetaKeys::Distance",
+      "header": "CrowdyRPC.h",
+      "module": "CrowdyReplication",
+      "page": "runtime/recipients-and-routing",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyRecipient",
+      "key": "CrowdyRecipient",
+      "owner": "CrowdyRpcMetaKeys",
+      "symbol": "CrowdyRpcMetaKeys::Recipient",
+      "header": "CrowdyRPC.h",
+      "module": "CrowdyReplication",
+      "page": "runtime/recipients-and-routing",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyReplicate",
+      "key": "CrowdyReplicate",
+      "owner": "CrowdyRpcMetaKeys",
+      "symbol": "CrowdyRpcMetaKeys::LegacyReplicate",
+      "header": "CrowdyRPC.h",
+      "module": "CrowdyReplication",
+      "page": "runtime/rpc-events-blueprint",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyReplicates",
+      "key": "CrowdyReplicates",
+      "owner": "CrowdyRpcMetaKeys",
+      "symbol": "CrowdyRpcMetaKeys::Replicates",
+      "header": "CrowdyRPC.h",
+      "module": "CrowdyReplication",
+      "page": "runtime/rpc-events-blueprint",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyHeartbeat",
+      "key": "CrowdyHeartbeat",
+      "owner": "CrowdyStateMetaKeys",
+      "symbol": "CrowdyStateMetaKeys::Heartbeat",
+      "header": "CrowdyStateMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "runtime/crowdy-state",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyManualDirty",
+      "key": "CrowdyManualDirty",
+      "owner": "CrowdyStateMetaKeys",
+      "symbol": "CrowdyStateMetaKeys::ManualDirty",
+      "header": "CrowdyStateMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "runtime/crowdy-state-static",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyOnRep",
+      "key": "CrowdyOnRep",
+      "owner": "CrowdyStateMetaKeys",
+      "symbol": "CrowdyStateMetaKeys::OnRep",
+      "header": "CrowdyStateMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "game-models/containers-and-attributes",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyOwnerOnly",
+      "key": "CrowdyOwnerOnly",
+      "owner": "CrowdyStateMetaKeys",
+      "symbol": "CrowdyStateMetaKeys::OwnerOnly",
+      "header": "CrowdyStateMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "runtime/crowdy-state",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "CrowdyState",
+      "key": "CrowdyState",
+      "owner": "CrowdyStateMetaKeys",
+      "symbol": "CrowdyStateMetaKeys::Replicate",
+      "header": "CrowdyStateMetaKeys.h",
+      "module": "CrowdyReplication",
+      "page": "runtime/crowdy-state",
+      "editor": false,
+      "allowlist": ""
+    }
+  ]
+}

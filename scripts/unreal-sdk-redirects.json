@@ -1,5 +1,6 @@
 [
   {"from": "/unreal-sdk/services/persistence", "to": "/unreal-sdk/guides/whats-changed"},
   {"from": "/unreal-sdk/runtime/authentication", "to": "/unreal-sdk/services/authentication"},
-  {"from": "/unreal-sdk/studio/setup-and-config-sync", "to": "/unreal-sdk/studio/config-sync"}
+  {"from": "/unreal-sdk/studio/setup-and-config-sync", "to": "/unreal-sdk/studio/config-sync"},
+  {"from": "/unreal-sdk/runtime/debugging-and-logging", "to": "/unreal-sdk/guides/testing-locally"}
 ]

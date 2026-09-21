@@ -1,71 +1,133 @@
 ---
 slug: console-cvars
-sidebar_position: 6
-title: Console Variables and Logs
+sidebar_position: 4
+title: Console Variables
+description: "The console surface the SDK ships: trace gates you flip to see one area's internal decisions, behavior switches that change what the SDK does, and one-shot diagnostic commands, with which of them exist in a Shipping build."
 ---
 
-# Console Variables and Logs
+import SurfaceTable from '@site/src/components/SurfaceTable';
 
-A quick lookup of the console variables and log categories the SDK ships.
+# Console Variables
 
-For how to use them while debugging, see [Debugging and Logging](/unreal-sdk/runtime/debugging-and-logging).
+The SDK exposes 33 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
+logging for one area, behavior switches that change what the SDK does, and diagnostic commands that run
+once and hold no stored value. A row badged **Editor only** exists only in the editor process. Four of the
+diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`,
+`crowdy.gamemodel.watchcontainers`, `crowdy.gamemodel.unwatchcontainers`) are compiled out of a Shipping
+build and are absent there rather than silent; every other row ships in Development and Shipping.
 
-## Trace variables
+## When you land here
 
-Each trace variable gates the informational logging for one area of the SDK.
+You want to know what a `crowdy.*` name does before you type it, or you are looking for the switch that
+turns on a specific area's logging. For the workflow around them (loopback testing, two-PIE setups), see
+[Testing locally](../guides/testing-locally.md); this page is the lookup table.
 
-- They are all off by default (value 0).
-- Warnings and errors are always logged, regardless of the trace setting.
-- Set one in the console, for example `crowdy.rpc.trace 1`.
+## Trace gates
 
-| Variable | Area |
-| --- | --- |
-| `crowdy.sdk.trace` | Top level SDK: subsystem lifecycle and configuration. |
-| `crowdy.net.trace` | UDP transport: socket open and close, sends and receives, worker pool. |
-| `crowdy.query.trace` | GraphQL: query dispatch, responses, and subscription lifecycle. |
-| `crowdy.serialize.trace` | Payload serialization: message encode and decode, registry resolves. High frequency. |
-| `crowdy.entity.trace` | Entities: registry changes, event routing and dispatch, actor tracking. |
-| `crowdy.pool.trace` | Actor pool: spawn, release, reuse, and rendering backend churn. |
-| `crowdy.rpc.trace` | Every CrowdyEvent send and receive: function, entity, addressing, byte size. |
-| `crowdy.rpc.reliable.trace` | Only the reliable channel transport path for Multicast events. |
-| `crowdy.state.trace` | Crowdy State property replication: per-delta send and receive, entity, changed-property count, byte size, and whether the delta went out spatially, to the owner only, as a keyframe, or over the reliable channel for a replicated subsystem. Safe to share: it logs ids and byte counts, never property values or tokens. |
-| `crowdy.services.trace` | Services: authentication, teams, avatars, persistence, host, utilities. |
-| `crowdy.hud.trace` | The SDK HUD base and widgets. |
-| `crowdy.voice.trace` | Voice chat: subsystem, capture and playback, device monitoring. |
-| `crowdy.studio.trace` | The Crowdy Studio console GraphQL operations. Editor only. The bearer token is never logged. |
+All 16 are off by default. Fourteen turn on that area's informational lines when set to `1`; the two
+`.scopes` entries add Unreal Insights CPU scopes instead and log nothing. Warnings and errors print
+regardless of the setting.
 
-:::caution[`crowdy.serialize.trace` is high frequency. It logs every message encode and decode, so leave it off unless you are actively debugging serialization.]
+<SurfaceTable table="cvars" filter="role=trace" includeEditor />
+
+:::caution[`crowdy.serialize.trace` and `crowdy.serialize.scopes` are high frequency.]
+They log on every message encode and decode. Leave them off unless you are actively debugging
+serialization.
 :::
 
-## Behavior variables
-
-These change behavior rather than logging.
-
-| Variable | Effect |
-| --- | --- |
-| `crowdy.rpc.loopback` | When non-zero, a CrowdyEvent you send is also delivered to your own receive path, so you can test the full round trip with a single client. |
-| `crowdy.state.loopback` | When non-zero, the single-client sibling of `crowdy.rpc.loopback` for Crowdy State. Each owned, tracked entity gets a lazily spawned local mirror (a distinct RemoteProxy entity with its own NetID), and every outgoing delta is replayed onto the mirror through the real receive path, so decode and OnRep fire with just one PIE client. Off by default. |
-| `crowdy.rpc.allowObjectLoad` | When non-zero, a received object or class reference whose asset is not already loaded is loaded from disk by path. Off by default so an untrusted peer cannot trigger arbitrary asset loads; an unresolved reference is delivered as null. |
-
-:::warning[Leave `crowdy.rpc.allowObjectLoad` off in production. While it is off, an untrusted peer cannot trigger arbitrary asset loads, and an unresolved reference is delivered as null.]
+:::note[`crowdy.serialize.scopes` and `crowdy.state.scopes` are nested CPU trace scopes.]
+Each nests inside a wider enclosing scope, so turning one on shifts the timing you read for that
+enclosing scope too. If you are taking a performance reading, say whether the flag was on.
 :::
 
-## Log categories
+`crowdy.studio.trace` is editor only and never logs the bearer token, a pattern worth copying in your own
+logging around Studio calls.
 
-Each module logs under its own category.
+## Behavior switches
 
-Enable verbose output for one with, for example, `Log LogCrowdyRPC Verbose`.
+These change what the SDK does rather than what it logs. None of the 10 exist only in the editor.
 
-| Category | Module |
-| --- | --- |
-| `LogCrowdySDK` | CrowdySDK |
-| `LogCrowdyNet` | CrowdyNet |
-| `LogCrowdyReplication` | CrowdyReplication |
-| `LogCrowdyRPC` | CrowdyReplication (RPC) |
-| `LogCrowdyServices` | CrowdyServices |
-| `LogCrowdyVoice` | CrowdyVoice |
-| `LogCrowdyStudio` | CrowdyStudio (editor) |
-| `LogCrowdyEditor` | CrowdySDKEditor (editor) |
+<SurfaceTable
+  table="cvars"
+  filter="role=behaviour"
+  notes={{
+    "crowdy.net.receive.maxmessages": "How many inbound replication messages one frame may deliver; whatever is left waits for the next frame. Default 3072.",
+    "crowdy.net.receive.maxdrainms": "How many milliseconds of one frame may be spent delivering inbound messages. Raise the message count first. Default 4.",
+    "crowdy.net.send.bundle": "Pack one network pass's outbound messages into one datagram. Needs a replication server of v0.27.0 or later; against an older one every bundled message is dropped together. Default 1, read when a connection opens.",
+    "crowdy.replication.tracker.maxgatheredupdates": "How many actor updates for already-tracked actors may be gathered before the backlog is discarded; reached only when the world tick is not consuming them. Default 8192."
+  }}
+  notesLabel="Where the Help cell is empty"
+/>
 
-:::note[Info level lines are gated behind the matching trace variable; warnings and errors always print. Turn on the trace variable for the area you are debugging, then read the matching log category.]
+The notes map above stands in for these four rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
+
+:::warning[Leave `crowdy.rpc.allowObjectLoad` off in production.]
+While it is off, an untrusted peer cannot trigger an arbitrary asset load; an unresolved object or class
+reference in a received RPC is delivered as null instead.
 :::
+
+`crowdy.rpc.loopback` and `crowdy.state.loopback` are not the same switch wearing two names.
+`crowdy.rpc.loopback` delivers a sent event back to your own receive path. `crowdy.state.loopback` cannot
+replay onto the same actor that sent the delta: an owner's own entity drops a non-host-sourced delta, and
+changed-detection on decode sees no change against identical values. Instead it spawns a distinct,
+lazily-created mirror entity and replays deltas onto that, so `CrowdyOnRep` still fires with one PIE
+client. Expect two entities, not one, when you turn it on.
+
+`crowdy.net.receive.poolactorupdates` defaults to `1` (pooling on). Turning it off is for an A/B
+measurement against the same build, not a fix for anything.
+
+## Diagnostic commands
+
+Seven commands with no stored value. Only `crowdy.rpc.dumpfn` takes arguments and prints usage without
+them; every other command acts as soon as you run it, and `crowdy.schema.RetagAssets` starts resaving
+assets immediately. Four are compiled out of a Shipping build: `crowdy.rpc.dumpfn`,
+`crowdy.state.heartbeat.advisories`, `crowdy.gamemodel.watchcontainers` and
+`crowdy.gamemodel.unwatchcontainers`.
+
+<SurfaceTable
+  table="cvars"
+  filter="role=command"
+  includeEditor
+  notes={{
+    "crowdy.rpc.dumpfn": "Not in Shipping",
+    "crowdy.state.heartbeat.advisories": "Not in Shipping",
+    "crowdy.gamemodel.watchcontainers": "Not in Shipping",
+    "crowdy.gamemodel.unwatchcontainers": "Not in Shipping",
+    "crowdy.cpp.selftest": "Every build",
+    "crowdy.net.routes": "Every build"
+  }}
+  notesLabel="Build"
+/>
+
+:::tip[`crowdy.rpc.dumpfn` and `crowdy.state.heartbeat.advisories` print structured text you can paste directly into a bug report.]
+:::
+
+:::caution[Run `crowdy.schema.RetagAssets` on a clean sync, with no other outstanding changes.]
+It is a one-time migration step you run after upgrading the SDK. Expect version-stamp diff noise in the
+assets it touches; that noise is expected, not a sign something went wrong.
+:::
+
+`crowdy.cpp.selftest` and `crowdy.net.routes` carry no build guard, so they exist in every build including
+Shipping; the four diagnostics above do not, and a Shipping console answers them with an unknown command.
+
+## Gotchas
+
+- Warnings and errors are never gated behind a trace flag. They print under the module's log category no
+  matter what.
+- `crowdy.net.receive.maxdrainms` (4 ms) and `crowdy.net.receive.maxmessages` (3072) bound one frame's
+  receive drain. If drains keep ending on the time budget, delivery is costing more per message than the
+  frame can afford, and raising the count is not the lever.
+- `crowdy.gamemodel.bulkresolve` (default `1`) makes Host-owned entities bind their Game Model containers
+  from one paged list per type instead of one ensure per entity. Leave it on unless you are isolating a
+  regression against the old per-entity path.
+- The two Game Model watch commands, `crowdy.gamemodel.watchcontainers` and
+  `crowdy.gamemodel.unwatchcontainers`, are diagnostics: they open or close a feed and log what arrives,
+  but nothing is re-pulled and no cache is written from them.
+
+## Related
+
+- [Log categories](./log-categories.md): the category each trace gate's lines print under.
+- [Project settings](./project-settings.md): the settings-class properties that sit beside these CVars.
+- [Testing locally](../guides/testing-locally.md): loopback and two-PIE workflows built on these switches.
+- [Change pings and pull](../game-models/change-pings-and-pull.md): where `crowdy.gamemodel.emitfallbackping`
+  and the watch commands fit in a Game Model debugging session.

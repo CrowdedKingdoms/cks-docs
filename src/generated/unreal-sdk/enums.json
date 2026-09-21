@@ -1,0 +1,1054 @@
+{
+  "generated_from": "2026-09-19T13:37:44Z",
+  "sdk_version": "2.14.0",
+  "table": "enums",
+  "columns": [
+    {
+      "key": "name",
+      "label": "Enum",
+      "kind": "code"
+    },
+    {
+      "key": "values",
+      "label": "Values",
+      "kind": "list"
+    },
+    {
+      "key": "module",
+      "label": "Module",
+      "kind": "text"
+    },
+    {
+      "key": "header",
+      "label": "Header",
+      "kind": "code"
+    },
+    {
+      "key": "page",
+      "label": "Read more",
+      "kind": "page"
+    }
+  ],
+  "rows": [
+    {
+      "id": "ECrowdyReconnectState",
+      "name": "ECrowdyReconnectState",
+      "values": [
+        "Disconnected",
+        "Connecting",
+        "Connected",
+        "Failed"
+      ],
+      "module": "CrowdySDK",
+      "header": "CrowdyConnectionMonitor.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "deprecated"
+    },
+    {
+      "id": "ECrowdyActorLeftReason",
+      "name": "ECrowdyActorLeftReason",
+      "values": [
+        "Stale",
+        "SessionReleased"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyMessageType.h",
+      "page": "runtime/entities-and-spawning",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyActorType",
+      "name": "ECrowdyActorType",
+      "values": [
+        "NONE",
+        "NPC_1"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyMessageType.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "ECrowdyAvatarErrorCode",
+      "name": "ECrowdyAvatarErrorCode",
+      "values": [
+        "Unknown",
+        "NotFound",
+        "Forbidden",
+        "NetworkError",
+        "ServerError"
+      ],
+      "module": "CrowdyNet",
+      "header": "FCrowdyAvatarError.h",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyChannelCreationPolicy",
+      "name": "ECrowdyChannelCreationPolicy",
+      "values": [
+        "Admin",
+        "Member",
+        "Anyone"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyChannelCreationPolicy.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyChannelErrorCode",
+      "name": "ECrowdyChannelErrorCode",
+      "values": [
+        "Unknown",
+        "NotFound",
+        "Forbidden",
+        "PolicyViolation",
+        "AlreadyMember",
+        "NotMember",
+        "NetworkError",
+        "ServerError"
+      ],
+      "module": "CrowdyNet",
+      "header": "FCrowdyChannelError.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyChannelMembershipPolicy",
+      "name": "ECrowdyChannelMembershipPolicy",
+      "values": [
+        "Open",
+        "Request",
+        "Invite",
+        "Admin"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyChannelMembershipPolicy.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyChannelPermission",
+      "name": "ECrowdyChannelPermission",
+      "values": [
+        "SendMessages",
+        "ManageChannel",
+        "ManageMembers",
+        "ManageRoles",
+        "InviteMembers"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyChannelPermission.h",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyDecayRate",
+      "name": "ECrowdyDecayRate",
+      "values": [
+        "No_Decay",
+        "Exponential_Decay",
+        "Linear_50",
+        "Linear_25",
+        "Linear_10",
+        "Linear_5"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyMessageType.h",
+      "page": "runtime/recipients-and-routing",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyEventRecipient",
+      "name": "ECrowdyEventRecipient",
+      "values": [
+        "SpatialMulticast",
+        "Multicast",
+        "OwningClient",
+        "Host"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyMessageType.h",
+      "page": "runtime/recipients-and-routing",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyEventScope",
+      "name": "ECrowdyEventScope",
+      "values": [
+        "Everyone",
+        "OwnerOnly"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyTarget.h",
+      "page": "runtime/entity-component",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyReplicationDistance",
+      "name": "ECrowdyReplicationDistance",
+      "values": [
+        "None",
+        "One_Chunk",
+        "Two_Chunks",
+        "Three_Chunks",
+        "Four_Chunks",
+        "Five_Chunks",
+        "Six_Chunks",
+        "Seven_Chunks",
+        "Eight_Chunks"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyMessageType.h",
+      "page": "runtime/recipients-and-routing",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyTarget",
+      "name": "ECrowdyTarget",
+      "values": [
+        "Everyone",
+        "Entity",
+        "Owner",
+        "Host",
+        "AllExceptSender"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyTarget.h",
+      "page": "runtime/recipients-and-routing",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyTeamCreationPolicy",
+      "name": "ECrowdyTeamCreationPolicy",
+      "values": [
+        "Admin",
+        "Member",
+        "Anyone"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyTeamCreationPolicy.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyTeamErrorCode",
+      "name": "ECrowdyTeamErrorCode",
+      "values": [
+        "Unknown",
+        "NotFound",
+        "Forbidden",
+        "PolicyViolation",
+        "AlreadyMember",
+        "NotMember",
+        "NetworkError",
+        "ServerError"
+      ],
+      "module": "CrowdyNet",
+      "header": "FCrowdyTeamError.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyTeamMembershipPolicy",
+      "name": "ECrowdyTeamMembershipPolicy",
+      "values": [
+        "Open",
+        "Request",
+        "Invite",
+        "Admin"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyTeamMembershipPolicy.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyTeamPermission",
+      "name": "ECrowdyTeamPermission",
+      "values": [
+        "ManageTeam",
+        "ManageMembers",
+        "ManageRoles",
+        "InviteMembers"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyTeamPermission.h",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyUDPProtocol",
+      "name": "ECrowdyUDPProtocol",
+      "values": [
+        "Auto",
+        "IPv4",
+        "IPv6"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyUDPProtocol.h",
+      "page": "runtime/connection-and-reconnect",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyVideoCodec",
+      "name": "ECrowdyVideoCodec",
+      "values": [
+        "Jpeg",
+        "WebP",
+        "Unknown"
+      ],
+      "module": "CrowdyNet",
+      "header": "ECrowdyMessageType.h",
+      "page": "runtime/video-frames",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "EUDPConnectionState",
+      "name": "EUDPConnectionState",
+      "values": [
+        "Disconnected",
+        "Connecting",
+        "Connected",
+        "Reconnecting",
+        "GateKeep"
+      ],
+      "module": "CrowdyNet",
+      "header": "CrowdyUDPSubsystem.h",
+      "page": "runtime/connection-and-reconnect",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyEffectAssignmentOp",
+      "name": "ECrowdyEffectAssignmentOp",
+      "values": [
+        "Set",
+        "Add",
+        "Subtract",
+        "Multiply",
+        "Divide"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "ECrowdyEffectAutomationTargetMode",
+      "name": "ECrowdyEffectAutomationTargetMode",
+      "values": [
+        "Container",
+        "Type",
+        "Global"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffect.h",
+      "page": "game-models/automations",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyEffectAutomationTrigger",
+      "name": "ECrowdyEffectAutomationTrigger",
+      "values": [
+        "EveryInterval",
+        "Cron",
+        "OnPropertyChange",
+        "OnFunctionInvoked",
+        "OnPlayerLeft",
+        "OnPlayerCountChanged"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffect.h",
+      "page": "game-models/automations",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyEffectBinaryOp",
+      "name": "ECrowdyEffectBinaryOp",
+      "values": [
+        "Add",
+        "Subtract",
+        "Multiply",
+        "Divide"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "ECrowdyEffectCallableFrom",
+      "name": "ECrowdyEffectCallableFrom",
+      "values": [
+        "Players",
+        "ServerOnly",
+        "OtherEffectsOnly"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffect.h",
+      "page": "game-models/effects-cpp",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyEffectComparator",
+      "name": "ECrowdyEffectComparator",
+      "values": [
+        "Equal",
+        "NotEqual",
+        "Less",
+        "Greater",
+        "LessOrEqual",
+        "GreaterOrEqual"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "ECrowdyEffectNotificationCarrier",
+      "name": "ECrowdyEffectNotificationCarrier",
+      "values": [
+        "Default",
+        "None",
+        "Channel",
+        "Spatial"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectNotificationCarrier.h",
+      "page": "game-models/effects-cpp",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyEffectOperandKind",
+      "name": "ECrowdyEffectOperandKind",
+      "values": [
+        "Number",
+        "Attribute",
+        "Magnitude",
+        "Raw",
+        "Expression",
+        "If",
+        "Call"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "ECrowdyEffectPolicyKeyword",
+      "name": "ECrowdyEffectPolicyKeyword",
+      "values": [
+        "Owner",
+        "MyTurn",
+        "Host",
+        "Participant",
+        "Automation",
+        "Anyone"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "game-models/invoke-policies",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyEffectPropertyWriteSource",
+      "name": "ECrowdyEffectPropertyWriteSource",
+      "values": [
+        "Any",
+        "Direct",
+        "Function"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffect.h",
+      "page": "game-models/automations",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyEffectRequireKind",
+      "name": "ECrowdyEffectRequireKind",
+      "values": [
+        "Keyword",
+        "Comparison"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "game-models/invoke-policies",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyEffectReturnType",
+      "name": "ECrowdyEffectReturnType",
+      "values": [
+        "None",
+        "Int",
+        "Float",
+        "Bool",
+        "String"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffect.h",
+      "page": "game-models/effects-cpp",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyEffectRole",
+      "name": "ECrowdyEffectRole",
+      "values": [
+        "Target",
+        "Source"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "ECrowdyEffectSource",
+      "name": "ECrowdyEffectSource",
+      "values": [
+        "Text",
+        "Graph"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffectSpec.h",
+      "page": "game-models/effects-cpp",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyEffectValueType",
+      "name": "ECrowdyEffectValueType",
+      "values": [
+        "Int",
+        "Float",
+        "Bool",
+        "String",
+        "ContainerRef"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEffect.h",
+      "page": "game-models/effects-cpp",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyEntityMode",
+      "name": "ECrowdyEntityMode",
+      "values": [
+        "Dynamic",
+        "Static"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEntityComponent.h",
+      "page": "runtime/continuous-state",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyHostOverride",
+      "name": "ECrowdyHostOverride",
+      "values": [
+        "Allow",
+        "OwnerOnly"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEntityComponent.h",
+      "page": "runtime/entity-component",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyIdentityPolicy",
+      "name": "ECrowdyIdentityPolicy",
+      "values": [
+        "PlayerDerived",
+        "Stable",
+        "Random"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEntityComponent.h",
+      "page": "runtime/entity-component",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitAuthority",
+      "name": "ECrowdyKitAuthority",
+      "values": [
+        "Server",
+        "Host",
+        "Automation",
+        "Owner"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyKitLayerPreset.h",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitCreator",
+      "name": "ECrowdyKitCreator",
+      "values": [
+        "Member",
+        "Admin"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyKitLayerPreset.h",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitOwnerId",
+      "name": "ECrowdyKitOwnerId",
+      "values": [
+        "Int",
+        "String"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyKitLayerPreset.h",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyOwnership",
+      "name": "ECrowdyOwnership",
+      "values": [
+        "LocalClient",
+        "Host"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEntityComponent.h",
+      "page": "runtime/entity-component",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyRole",
+      "name": "ECrowdyRole",
+      "values": [
+        "None",
+        "Owner",
+        "RemoteProxy",
+        "HostOwned"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEntityTypes.h",
+      "page": "runtime/entity-component",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdySessionAdmission",
+      "name": "ECrowdySessionAdmission",
+      "values": [
+        "Open",
+        "Locked",
+        "Closed"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdySessionAdmissionFilter",
+      "name": "ECrowdySessionAdmissionFilter",
+      "values": [
+        "Any",
+        "Open",
+        "Locked",
+        "Closed"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdySessionEndReason",
+      "name": "ECrowdySessionEndReason",
+      "values": [
+        "None",
+        "Completed",
+        "Abandoned",
+        "EmptyTimeout",
+        "Unknown"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdySessionError",
+      "name": "ECrowdySessionError",
+      "values": [
+        "None",
+        "NotSignedIn",
+        "NotAllowed",
+        "Full",
+        "Locked",
+        "Closed",
+        "Ended",
+        "NotParticipant",
+        "TargetNotParticipant",
+        "IncarnationStale",
+        "HostTermStale",
+        "Other"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdySessionEventKind",
+      "name": "ECrowdySessionEventKind",
+      "values": [
+        "Created",
+        "ParticipantJoined",
+        "ParticipantRejoined",
+        "ParticipantLeft",
+        "ParticipantExpired",
+        "HostChanged",
+        "AdmissionChanged",
+        "TurnChanged",
+        "Ended",
+        "Unknown"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdySessionLeftReason",
+      "name": "ECrowdySessionLeftReason",
+      "values": [
+        "None",
+        "Left",
+        "PresenceExpired",
+        "SessionEnded",
+        "Kicked",
+        "Unknown"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdySessionParticipantState",
+      "name": "ECrowdySessionParticipantState",
+      "values": [
+        "Joined",
+        "Left",
+        "Unknown"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdySessionPresence",
+      "name": "ECrowdySessionPresence",
+      "values": [
+        "Actor",
+        "None"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "concepts/sessions-and-presence",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdySessionSeedState",
+      "name": "ECrowdySessionSeedState",
+      "values": [
+        "Defaults",
+        "App"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdySessionStatus",
+      "name": "ECrowdySessionStatus",
+      "values": [
+        "Active",
+        "Completed",
+        "Abandoned",
+        "Unknown"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdySessionStatusFilter",
+      "name": "ECrowdySessionStatusFilter",
+      "values": [
+        "Active",
+        "Any",
+        "Completed",
+        "Abandoned"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyGameModelSessionTypes.h",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyStateHeartbeat",
+      "name": "ECrowdyStateHeartbeat",
+      "values": [
+        "Inherit",
+        "Off"
+      ],
+      "module": "CrowdyReplication",
+      "header": "CrowdyEntityComponent.h",
+      "page": "runtime/entity-component",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyInputMode",
+      "name": "ECrowdyInputMode",
+      "values": [
+        "Game",
+        "GameAndUI",
+        "UI"
+      ],
+      "module": "CrowdyServices",
+      "header": "ECrowdyInputMode.h",
+      "page": "services/ui-interfaces",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyUILayer",
+      "name": "ECrowdyUILayer",
+      "values": [
+        "GameLayer",
+        "GameMenuLayer",
+        "MenuLayer",
+        "ModalLayer"
+      ],
+      "module": "CrowdyServices",
+      "header": "ECrowdyUILayer.h",
+      "page": "services/ui-interfaces",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "EPullStateResult",
+      "name": "EPullStateResult",
+      "values": [
+        "OnSuccess",
+        "OnFailure"
+      ],
+      "module": "CrowdyServices",
+      "header": "EPullStateResult.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "deprecated"
+    },
+    {
+      "id": "E_MovementMode",
+      "name": "E_MovementMode",
+      "values": [
+        "Parkour",
+        "Traditional"
+      ],
+      "module": "CKSharedTypes",
+      "header": "E_MovmentMode.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "EActionType",
+      "name": "EActionType",
+      "values": [
+        "None",
+        "Hurdle",
+        "Vault",
+        "Mantle"
+      ],
+      "module": "CKSharedTypes",
+      "header": "EActionType.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "EAttachmentType",
+      "name": "EAttachmentType",
+      "values": [
+        "None",
+        "FPGun"
+      ],
+      "module": "CKSharedTypes",
+      "header": "EAttachmentType.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "ECharacterType",
+      "name": "ECharacterType",
+      "values": [
+        "SandboxCharacter",
+        "MannyCharacter",
+        "QuinnCharacter",
+        "UE4Character"
+      ],
+      "module": "CKSharedTypes",
+      "header": "ECharacterType.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "EGait",
+      "name": "EGait",
+      "values": [
+        "Walk",
+        "Run",
+        "Sprint"
+      ],
+      "module": "CKSharedTypes",
+      "header": "EGait.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "EGameObjectType",
+      "name": "EGameObjectType",
+      "values": [
+        "None",
+        "Voxel",
+        "VLO",
+        "StaticMesh",
+        "ActorBP"
+      ],
+      "module": "CKSharedTypes",
+      "header": "GameObjectType.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "EPlayerAnimationState",
+      "name": "EPlayerAnimationState",
+      "values": [
+        "Standing",
+        "Crouched",
+        "Jumping",
+        "Falling",
+        "Landed",
+        "Flying"
+      ],
+      "module": "CKSharedTypes",
+      "header": "EPlayerAnimationState.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "EPlayerCameraView",
+      "name": "EPlayerCameraView",
+      "values": [
+        "ThirdPerson",
+        "FirstPerson"
+      ],
+      "module": "CKSharedTypes",
+      "header": "EPlayerCameraView.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "EPlayerFlightControlScheme",
+      "name": "EPlayerFlightControlScheme",
+      "values": [
+        "Advanced",
+        "Simple"
+      ],
+      "module": "CKSharedTypes",
+      "header": "EPlayerFlightControlScheme.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "EVoxelSystemType",
+      "name": "EVoxelSystemType",
+      "values": [
+        "Classic",
+        "VoxelPluginLegacy",
+        "Disabled"
+      ],
+      "module": "CKSharedTypes",
+      "header": "EVoxelSystemType.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    }
+  ]
+}

@@ -1,0 +1,314 @@
+{
+  "generated_from": "2026-09-19T13:37:44Z",
+  "sdk_version": "2.14.0",
+  "table": "subsystems",
+  "columns": [
+    {
+      "key": "class",
+      "label": "Class",
+      "kind": "code"
+    },
+    {
+      "key": "base",
+      "label": "Base",
+      "kind": "code"
+    },
+    {
+      "key": "outer",
+      "label": "Outer",
+      "kind": "text"
+    },
+    {
+      "key": "module",
+      "label": "Module",
+      "kind": "text"
+    },
+    {
+      "key": "page",
+      "label": "Read more",
+      "kind": "page"
+    }
+  ],
+  "rows": [
+    {
+      "id": "UCrowdyConnectionMonitor",
+      "class": "UCrowdyConnectionMonitor",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdySDK",
+      "page": "",
+      "editor": false,
+      "allowlist": "deprecated"
+    },
+    {
+      "id": "UCrowdySDKSubsystem",
+      "class": "UCrowdySDKSubsystem",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdySDK",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyCppClientSubsystem",
+      "class": "UCrowdyCppClientSubsystem",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyNet",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "UCrowdyCppReplicationSubsystem",
+      "class": "UCrowdyCppReplicationSubsystem",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyNet",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "UCrowdyGameSession",
+      "class": "UCrowdyGameSession",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyNet",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKBridgeSubsystem",
+      "class": "UCrowdySDKBridgeSubsystem",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyNet",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "UCrowdyUDPSubsystem",
+      "class": "UCrowdyUDPSubsystem",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyNet",
+      "page": "runtime/connection-and-reconnect",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyWorkerThreadsSubsystem",
+      "class": "UCrowdyWorkerThreadsSubsystem",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyNet",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "UCrowdyActiveSessionMemory",
+      "class": "UCrowdyActiveSessionMemory",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyReplication",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "UCrowdyActorManager",
+      "class": "UCrowdyActorManager",
+      "base": "UTickableWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyReplication",
+      "page": "runtime/continuous-state",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyActorPoolSubsystem",
+      "class": "UCrowdyActorPoolSubsystem",
+      "base": "UWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyReplication",
+      "page": "runtime/rendering-backends",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyActorTracker",
+      "class": "UCrowdyActorTracker",
+      "base": "UTickableWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyReplication",
+      "page": "runtime/entities-and-spawning",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAutoRegistry",
+      "class": "UCrowdyAutoRegistry",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyReplication",
+      "page": "runtime/rpc-events-cpp",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAutoReplicator",
+      "class": "UCrowdyAutoReplicator",
+      "base": "UTickableWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyReplication",
+      "page": "runtime/continuous-state",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyEntitySubsystem",
+      "class": "UCrowdyEntitySubsystem",
+      "base": "UWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyReplication",
+      "page": "runtime/entities-and-spawning",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyEventRouter",
+      "class": "UCrowdyEventRouter",
+      "base": "UTickableWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyReplication",
+      "page": "runtime/recipients-and-routing",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGameModelSubsystem",
+      "class": "UCrowdyGameModelSubsystem",
+      "base": "UWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyReplication",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyReplicatedGameInstanceSubsystem",
+      "class": "UCrowdyReplicatedGameInstanceSubsystem",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyReplication",
+      "page": "runtime/replicated-subsystems",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyReplicatedWorldSubsystem",
+      "class": "UCrowdyReplicatedWorldSubsystem",
+      "base": "UWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyReplication",
+      "page": "runtime/replicated-subsystems",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyStateReplicator",
+      "class": "UCrowdyStateReplicator",
+      "base": "UTickableWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyReplication",
+      "page": "runtime/crowdy-state",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyVideoFrameReceiver",
+      "class": "UCrowdyVideoFrameReceiver",
+      "base": "UWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyReplication",
+      "page": "runtime/video-frames",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAuthentication",
+      "class": "UCrowdyAuthentication",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAvatars",
+      "class": "UCrowdyAvatars",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels",
+      "class": "UCrowdyChannels",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyHostSubsystem",
+      "class": "UCrowdyHostSubsystem",
+      "base": "UWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyServices",
+      "page": "services/host-election",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyPersistenceSubsystem",
+      "class": "UCrowdyPersistenceSubsystem",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": "deprecated"
+    },
+    {
+      "id": "UCrowdyTeams",
+      "class": "UCrowdyTeams",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UVoiceChatSubsystem",
+      "class": "UVoiceChatSubsystem",
+      "base": "UTickableWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyVoice",
+      "page": "services/voice-chat",
+      "editor": false,
+      "allowlist": ""
+    }
+  ]
+}

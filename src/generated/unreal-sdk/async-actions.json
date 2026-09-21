@@ -1,0 +1,1875 @@
+{
+  "generated_from": "2026-09-19T13:37:44Z",
+  "sdk_version": "2.14.0",
+  "table": "async-actions",
+  "columns": [
+    {
+      "key": "node",
+      "label": "Blueprint node",
+      "kind": "text"
+    },
+    {
+      "key": "factories",
+      "label": "C++ factory",
+      "kind": "list"
+    },
+    {
+      "key": "class",
+      "label": "Class",
+      "kind": "code"
+    },
+    {
+      "key": "pins",
+      "label": "Completion pins",
+      "kind": "list"
+    },
+    {
+      "key": "module",
+      "label": "Module",
+      "kind": "text"
+    },
+    {
+      "key": "page",
+      "label": "Read more",
+      "kind": "page"
+    }
+  ],
+  "rows": [
+    {
+      "id": "UCrowdyAddEdgeAction",
+      "node": [
+        "Link Models"
+      ],
+      "factories": [
+        "AddEdge"
+      ],
+      "class": "UCrowdyAddEdgeAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAddToCollectionAction",
+      "node": [
+        "Add To Collection"
+      ],
+      "factories": [
+        "AddToCollection"
+      ],
+      "class": "UCrowdyAddToCollectionAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyApplyContainerManifestAction",
+      "node": [
+        "Apply Container Manifest"
+      ],
+      "factories": [
+        "ApplyContainerManifest"
+      ],
+      "class": "UCrowdyApplyContainerManifestAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/pre-seeding",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyApplyEffectAction",
+      "node": [
+        "Apply Crowdy Effect"
+      ],
+      "factories": [
+        "ApplyEffect"
+      ],
+      "class": "UCrowdyApplyEffectAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/effects-blueprint",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyApplyStatusEffectAction",
+      "node": [
+        "Apply Status Effect"
+      ],
+      "factories": [
+        "ApplyStatusEffect"
+      ],
+      "class": "UCrowdyApplyStatusEffectAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyCombatAttackAction",
+      "node": [
+        "Combat Attack"
+      ],
+      "factories": [
+        "CombatAttack"
+      ],
+      "class": "UCrowdyCombatAttackAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyCreateDataContainerAction",
+      "node": [
+        "Create Game Model"
+      ],
+      "factories": [
+        "CreateDataContainer"
+      ],
+      "class": "UCrowdyCreateDataContainerAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyCreateModelItemAction",
+      "node": [
+        "Create Model Item"
+      ],
+      "factories": [
+        "CreateModelItem"
+      ],
+      "class": "UCrowdyCreateModelItemAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyCreateSessionAction",
+      "node": [
+        "Create Game Session"
+      ],
+      "factories": [
+        "CreateSession"
+      ],
+      "class": "UCrowdyCreateSessionAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyDeleteContainerAction",
+      "node": [
+        "Delete Game Model"
+      ],
+      "factories": [
+        "DeleteContainer"
+      ],
+      "class": "UCrowdyDeleteContainerAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyDeleteEdgeAction",
+      "node": [
+        "Unlink Models"
+      ],
+      "factories": [
+        "DeleteEdge"
+      ],
+      "class": "UCrowdyDeleteEdgeAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyEndSessionAction",
+      "node": [
+        "End Game Session"
+      ],
+      "factories": [
+        "EndSession"
+      ],
+      "class": "UCrowdyEndSessionAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyEnsureLeaderboardEntryAction",
+      "node": [
+        "Ensure Leaderboard Entry"
+      ],
+      "factories": [
+        "EnsureLeaderboardEntry"
+      ],
+      "class": "UCrowdyEnsureLeaderboardEntryAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGatherNodeAction",
+      "node": [
+        "Gather Node"
+      ],
+      "factories": [
+        "GatherNode"
+      ],
+      "class": "UCrowdyGatherNodeAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetCollectionAction",
+      "node": [
+        "Get Collection"
+      ],
+      "factories": [
+        "GetCollection"
+      ],
+      "class": "UCrowdyGetCollectionAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetCollectionWithStateAction",
+      "node": [
+        "Get Collection With Items' State"
+      ],
+      "factories": [
+        "GetCollectionWithState"
+      ],
+      "class": "UCrowdyGetCollectionWithStateAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetCombatantStateAction",
+      "node": [
+        "Get Combatant State"
+      ],
+      "factories": [
+        "GetCombatantState"
+      ],
+      "class": "UCrowdyGetCombatantStateAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetLeaderboardAction",
+      "node": [
+        "Get Leaderboard"
+      ],
+      "factories": [
+        "GetLeaderboard"
+      ],
+      "class": "UCrowdyGetLeaderboardAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetSessionAction",
+      "node": [
+        "Get Game Session"
+      ],
+      "factories": [
+        "GetSession"
+      ],
+      "class": "UCrowdyGetSessionAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetSessionEventsAction",
+      "node": [
+        "Get Game Session Events"
+      ],
+      "factories": [
+        "GetSessionEvents"
+      ],
+      "class": "UCrowdyGetSessionEventsAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetSessionSnapshotAction",
+      "node": [
+        "Get Game Session Snapshot"
+      ],
+      "factories": [
+        "GetSessionSnapshot"
+      ],
+      "class": "UCrowdyGetSessionSnapshotAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyGetWorldStateAction",
+      "node": [
+        "Get World State"
+      ],
+      "factories": [
+        "GetWorldState"
+      ],
+      "class": "UCrowdyGetWorldStateAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyHarvestCropAction",
+      "node": [
+        "Harvest Crop"
+      ],
+      "factories": [
+        "HarvestCrop"
+      ],
+      "class": "UCrowdyHarvestCropAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyInvokeModelFunctionAction",
+      "node": [
+        "Call Model Function"
+      ],
+      "factories": [
+        "CallModelFunction"
+      ],
+      "class": "UCrowdyInvokeModelFunctionAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/functions-and-return-values",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyInvokeOnContainerAction",
+      "node": [
+        "Call Model Function (by Id, Raw JSON)"
+      ],
+      "factories": [
+        "InvokeOnContainer"
+      ],
+      "class": "UCrowdyInvokeOnContainerAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyJoinSessionAction",
+      "node": [
+        "Join Game Session"
+      ],
+      "factories": [
+        "JoinSession"
+      ],
+      "class": "UCrowdyJoinSessionAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyLeaveSessionAction",
+      "node": [
+        "Leave Game Session"
+      ],
+      "factories": [
+        "LeaveSession"
+      ],
+      "class": "UCrowdyLeaveSessionAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyListChildrenAction",
+      "node": [
+        "Get Linked Models"
+      ],
+      "factories": [
+        "ListChildren"
+      ],
+      "class": "UCrowdyListChildrenAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyListCropsAction",
+      "node": [
+        "List Crops"
+      ],
+      "factories": [
+        "ListCrops"
+      ],
+      "class": "UCrowdyListCropsAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyListenForModelChangesAction",
+      "node": [
+        "Listen for Model Changes"
+      ],
+      "factories": [
+        "ListenForModelChanges"
+      ],
+      "class": "UCrowdyListenForModelChangesAction",
+      "pins": [
+        "OnChanged"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/change-pings-and-pull",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyListResourceNodesAction",
+      "node": [
+        "List Resource Nodes"
+      ],
+      "factories": [
+        "ListResourceNodes"
+      ],
+      "class": "UCrowdyListResourceNodesAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyListSessionsAction",
+      "node": [
+        "List Game Sessions"
+      ],
+      "factories": [
+        "ListSessions"
+      ],
+      "class": "UCrowdyListSessionsAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyPlantCropAction",
+      "node": [
+        "Plant Crop"
+      ],
+      "factories": [
+        "PlantCrop"
+      ],
+      "class": "UCrowdyPlantCropAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyPullDataContainerAction",
+      "node": [
+        "Refresh Game Model (by Id)"
+      ],
+      "factories": [
+        "PullDataContainer"
+      ],
+      "class": "UCrowdyPullDataContainerAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyRemoveFromCollectionAction",
+      "node": [
+        "Remove From Collection"
+      ],
+      "factories": [
+        "RemoveFromCollection"
+      ],
+      "class": "UCrowdyRemoveFromCollectionAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyRespawnCombatantAction",
+      "node": [
+        "Respawn Combatant"
+      ],
+      "factories": [
+        "RespawnCombatant"
+      ],
+      "class": "UCrowdyRespawnCombatantAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyReviveCombatantAction",
+      "node": [
+        "Revive Combatant"
+      ],
+      "factories": [
+        "ReviveCombatant"
+      ],
+      "class": "UCrowdyReviveCombatantAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySetDataPropertyAction",
+      "node": [
+        "Set Model Attribute (by Id)"
+      ],
+      "factories": [
+        "SetDataProperty"
+      ],
+      "class": "UCrowdySetDataPropertyAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySetSessionAdmissionAction",
+      "node": [
+        "Set Game Session Admission"
+      ],
+      "factories": [
+        "SetSessionAdmission"
+      ],
+      "class": "UCrowdySetSessionAdmissionAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySetSessionTurnAction",
+      "node": [
+        "Set Game Session Turn"
+      ],
+      "factories": [
+        "SetSessionTurn"
+      ],
+      "class": "UCrowdySetSessionTurnAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySpawnCombatantAction",
+      "node": [
+        "Spawn Combatant"
+      ],
+      "factories": [
+        "SpawnCombatant"
+      ],
+      "class": "UCrowdySpawnCombatantAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySubmitScoreAction",
+      "node": [
+        "Submit Score"
+      ],
+      "factories": [
+        "SubmitScore"
+      ],
+      "class": "UCrowdySubmitScoreAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySyncCombatantAction",
+      "node": [
+        "Sync Combatant"
+      ],
+      "factories": [
+        "SyncCombatant"
+      ],
+      "class": "UCrowdySyncCombatantAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/kits",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTransferSessionHostAction",
+      "node": [
+        "Transfer Game Session Host"
+      ],
+      "factories": [
+        "TransferSessionHost"
+      ],
+      "class": "UCrowdyTransferSessionHostAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/sessions",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTraverseAction",
+      "node": [
+        "Find Linked Models"
+      ],
+      "factories": [
+        "Traverse"
+      ],
+      "class": "UCrowdyTraverseAction",
+      "pins": [
+        "Succeeded",
+        "Failed"
+      ],
+      "module": "CrowdyReplication",
+      "page": "game-models/collections",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAuth_BeginMagicLinkSignIn",
+      "node": [
+        "Magic Link Sign In"
+      ],
+      "factories": [
+        "BeginMagicLinkSignIn"
+      ],
+      "class": "UCrowdyAuth_BeginMagicLinkSignIn",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAuth_BeginSocialSignIn",
+      "node": [
+        "Social Sign In"
+      ],
+      "factories": [
+        "BeginSocialSignIn"
+      ],
+      "class": "UCrowdyAuth_BeginSocialSignIn",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAuth_Login",
+      "node": [
+        "Login"
+      ],
+      "factories": [
+        "Login"
+      ],
+      "class": "UCrowdyAuth_Login",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAuth_Register",
+      "node": [
+        "Register"
+      ],
+      "factories": [
+        "Register"
+      ],
+      "class": "UCrowdyAuth_Register",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAuth_RestoreSession",
+      "node": [
+        "Restore Session"
+      ],
+      "factories": [
+        "RestoreSession"
+      ],
+      "class": "UCrowdyAuth_RestoreSession",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAvatars_CreateAvatar",
+      "node": [
+        "Create Avatar"
+      ],
+      "factories": [
+        "CreateAvatar"
+      ],
+      "class": "UCrowdyAvatars_CreateAvatar",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAvatars_DeleteAvatar",
+      "node": [
+        "Delete Avatar"
+      ],
+      "factories": [
+        "DeleteAvatar"
+      ],
+      "class": "UCrowdyAvatars_DeleteAvatar",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAvatars_GetAvatar",
+      "node": [
+        "Get Avatar"
+      ],
+      "factories": [
+        "GetAvatar"
+      ],
+      "class": "UCrowdyAvatars_GetAvatar",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAvatars_GetAvatarAppState",
+      "node": [
+        "Get Avatar App State"
+      ],
+      "factories": [
+        "GetAvatarAppState"
+      ],
+      "class": "UCrowdyAvatars_GetAvatarAppState",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAvatars_GetAvatarAppStates",
+      "node": [
+        "Get Avatar App States"
+      ],
+      "factories": [
+        "GetAvatarAppStates"
+      ],
+      "class": "UCrowdyAvatars_GetAvatarAppStates",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAvatars_GetMyAvatars",
+      "node": [
+        "Get My Avatars"
+      ],
+      "factories": [
+        "GetMyAvatars"
+      ],
+      "class": "UCrowdyAvatars_GetMyAvatars",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAvatars_GetUserAvatars",
+      "node": [
+        "Get User Avatars"
+      ],
+      "factories": [
+        "GetUserAvatars"
+      ],
+      "class": "UCrowdyAvatars_GetUserAvatars",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAvatars_UpdateAvatar",
+      "node": [
+        "Update Avatar"
+      ],
+      "factories": [
+        "UpdateAvatar"
+      ],
+      "class": "UCrowdyAvatars_UpdateAvatar",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAvatars_UpdateAvatarAppState",
+      "node": [
+        "Update Avatar App State"
+      ],
+      "factories": [
+        "UpdateAvatarAppState"
+      ],
+      "class": "UCrowdyAvatars_UpdateAvatarAppState",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAvatars_UpdatePrivateAvatarState",
+      "node": [
+        "Update Private Avatar State"
+      ],
+      "factories": [
+        "UpdatePrivateAvatarState"
+      ],
+      "class": "UCrowdyAvatars_UpdatePrivateAvatarState",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAvatars_UpdatePublicAvatarState",
+      "node": [
+        "Update Public Avatar State"
+      ],
+      "factories": [
+        "UpdatePublicAvatarState"
+      ],
+      "class": "UCrowdyAvatars_UpdatePublicAvatarState",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/avatars",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_AddChannelMember",
+      "node": [
+        "Add Channel Member"
+      ],
+      "factories": [
+        "AddChannelMember"
+      ],
+      "class": "UCrowdyChannels_AddChannelMember",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_CreateChannel",
+      "node": [
+        "Create Channel"
+      ],
+      "factories": [
+        "CreateChannel"
+      ],
+      "class": "UCrowdyChannels_CreateChannel",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_CreateChannelRole",
+      "node": [
+        "Create Channel Role"
+      ],
+      "factories": [
+        "CreateChannelRole"
+      ],
+      "class": "UCrowdyChannels_CreateChannelRole",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_DeleteChannel",
+      "node": [
+        "Delete Channel"
+      ],
+      "factories": [
+        "DeleteChannel"
+      ],
+      "class": "UCrowdyChannels_DeleteChannel",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_DeleteChannelRole",
+      "node": [
+        "Delete Channel Role"
+      ],
+      "factories": [
+        "DeleteChannelRole"
+      ],
+      "class": "UCrowdyChannels_DeleteChannelRole",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_GetChannel",
+      "node": [
+        "Get Channel"
+      ],
+      "factories": [
+        "GetChannel"
+      ],
+      "class": "UCrowdyChannels_GetChannel",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_GetChannelMembers",
+      "node": [
+        "Get Channel Members"
+      ],
+      "factories": [
+        "GetChannelMembers"
+      ],
+      "class": "UCrowdyChannels_GetChannelMembers",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_GetChannelPolicy",
+      "node": [
+        "Get Channel Policy"
+      ],
+      "factories": [
+        "GetChannelPolicy"
+      ],
+      "class": "UCrowdyChannels_GetChannelPolicy",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_GetChannelRoles",
+      "node": [
+        "Get Channel Roles"
+      ],
+      "factories": [
+        "GetChannelRoles"
+      ],
+      "class": "UCrowdyChannels_GetChannelRoles",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_GetChannels",
+      "node": [
+        "Get All Channels"
+      ],
+      "factories": [
+        "GetChannels"
+      ],
+      "class": "UCrowdyChannels_GetChannels",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_GetMyChannels",
+      "node": [
+        "Get My Channels"
+      ],
+      "factories": [
+        "GetMyChannels"
+      ],
+      "class": "UCrowdyChannels_GetMyChannels",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_GetPendingJoinRequests",
+      "node": [
+        "Get Pending Join Requests"
+      ],
+      "factories": [
+        "GetPendingJoinRequests"
+      ],
+      "class": "UCrowdyChannels_GetPendingJoinRequests",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_JoinChannel",
+      "node": [
+        "Join Channel"
+      ],
+      "factories": [
+        "JoinChannel"
+      ],
+      "class": "UCrowdyChannels_JoinChannel",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_LeaveChannel",
+      "node": [
+        "Leave Channel"
+      ],
+      "factories": [
+        "LeaveChannel"
+      ],
+      "class": "UCrowdyChannels_LeaveChannel",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_RemoveChannelMember",
+      "node": [
+        "Remove Channel Member"
+      ],
+      "factories": [
+        "RemoveChannelMember"
+      ],
+      "class": "UCrowdyChannels_RemoveChannelMember",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_RequestToJoinChannel",
+      "node": [
+        "Request to Join Channel"
+      ],
+      "factories": [
+        "RequestToJoinChannel"
+      ],
+      "class": "UCrowdyChannels_RequestToJoinChannel",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_SetChannelMemberRoles",
+      "node": [
+        "Set Channel Member Roles"
+      ],
+      "factories": [
+        "SetChannelMemberRoles"
+      ],
+      "class": "UCrowdyChannels_SetChannelMemberRoles",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_SetChannelPolicy",
+      "node": [
+        "Set Channel Policy"
+      ],
+      "factories": [
+        "SetChannelPolicy"
+      ],
+      "class": "UCrowdyChannels_SetChannelPolicy",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_UpdateChannel",
+      "node": [
+        "Update Channel"
+      ],
+      "factories": [
+        "UpdateChannel"
+      ],
+      "class": "UCrowdyChannels_UpdateChannel",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyChannels_UpdateChannelRole",
+      "node": [
+        "Update Channel Role"
+      ],
+      "factories": [
+        "UpdateChannelRole"
+      ],
+      "class": "UCrowdyChannels_UpdateChannelRole",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyIsEntityHostServer",
+      "node": [
+        "Is Crowdy Entity Host (Server)"
+      ],
+      "factories": [
+        "IsCrowdyEntityHostServer"
+      ],
+      "class": "UCrowdyIsEntityHostServer",
+      "pins": [
+        "OnIsHost",
+        "OnIsNotHost",
+        "OnFailed"
+      ],
+      "module": "CrowdyServices",
+      "page": "concepts/host-is-a-convention",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_AddTeamMember",
+      "node": [
+        "Add Team Member"
+      ],
+      "factories": [
+        "AddTeamMember"
+      ],
+      "class": "UCrowdyTeams_AddTeamMember",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_CreateTeam",
+      "node": [
+        "Create Team"
+      ],
+      "factories": [
+        "CreateTeam"
+      ],
+      "class": "UCrowdyTeams_CreateTeam",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_CreateTeamRole",
+      "node": [
+        "Create Team Role"
+      ],
+      "factories": [
+        "CreateTeamRole"
+      ],
+      "class": "UCrowdyTeams_CreateTeamRole",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_DeleteTeam",
+      "node": [
+        "Delete Team"
+      ],
+      "factories": [
+        "DeleteTeam"
+      ],
+      "class": "UCrowdyTeams_DeleteTeam",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_DeleteTeamRole",
+      "node": [
+        "Delete Team Role"
+      ],
+      "factories": [
+        "DeleteTeamRole"
+      ],
+      "class": "UCrowdyTeams_DeleteTeamRole",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_GetMyTeams",
+      "node": [
+        "Get My Teams"
+      ],
+      "factories": [
+        "GetMyTeams"
+      ],
+      "class": "UCrowdyTeams_GetMyTeams",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_GetPendingJoinRequests",
+      "node": [
+        "Get Pending Join Requests"
+      ],
+      "factories": [
+        "GetPendingJoinRequests"
+      ],
+      "class": "UCrowdyTeams_GetPendingJoinRequests",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_GetTeam",
+      "node": [
+        "Get Team"
+      ],
+      "factories": [
+        "GetTeam"
+      ],
+      "class": "UCrowdyTeams_GetTeam",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_GetTeamMembers",
+      "node": [
+        "Get Team Members"
+      ],
+      "factories": [
+        "GetTeamMembers"
+      ],
+      "class": "UCrowdyTeams_GetTeamMembers",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_GetTeamPolicy",
+      "node": [
+        "Get Team Policy"
+      ],
+      "factories": [
+        "GetTeamPolicy"
+      ],
+      "class": "UCrowdyTeams_GetTeamPolicy",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_GetTeamRoles",
+      "node": [
+        "Get Team Roles"
+      ],
+      "factories": [
+        "GetTeamRoles"
+      ],
+      "class": "UCrowdyTeams_GetTeamRoles",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_GetTeams",
+      "node": [
+        "Get All Teams"
+      ],
+      "factories": [
+        "GetTeams"
+      ],
+      "class": "UCrowdyTeams_GetTeams",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_JoinTeam",
+      "node": [
+        "Join Team"
+      ],
+      "factories": [
+        "JoinTeam"
+      ],
+      "class": "UCrowdyTeams_JoinTeam",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_LeaveTeam",
+      "node": [
+        "Leave Team"
+      ],
+      "factories": [
+        "LeaveTeam"
+      ],
+      "class": "UCrowdyTeams_LeaveTeam",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_RemoveTeamMember",
+      "node": [
+        "Remove Team Member"
+      ],
+      "factories": [
+        "RemoveTeamMember"
+      ],
+      "class": "UCrowdyTeams_RemoveTeamMember",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_RequestToJoinTeam",
+      "node": [
+        "Request to Join Team"
+      ],
+      "factories": [
+        "RequestToJoinTeam"
+      ],
+      "class": "UCrowdyTeams_RequestToJoinTeam",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_SetTeamMemberRoles",
+      "node": [
+        "Set Team Member Roles"
+      ],
+      "factories": [
+        "SetTeamMemberRoles"
+      ],
+      "class": "UCrowdyTeams_SetTeamMemberRoles",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_SetTeamPolicy",
+      "node": [
+        "Set Team Policy"
+      ],
+      "factories": [
+        "SetTeamPolicy"
+      ],
+      "class": "UCrowdyTeams_SetTeamPolicy",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_UpdateTeam",
+      "node": [
+        "Update Team"
+      ],
+      "factories": [
+        "UpdateTeam"
+      ],
+      "class": "UCrowdyTeams_UpdateTeam",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_UpdateTeamRole",
+      "node": [
+        "Update Team Role"
+      ],
+      "factories": [
+        "UpdateTeamRole"
+      ],
+      "class": "UCrowdyTeams_UpdateTeamRole",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    }
+  ]
+}

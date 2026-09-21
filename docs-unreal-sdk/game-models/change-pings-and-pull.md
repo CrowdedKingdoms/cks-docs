@@ -107,4 +107,4 @@ If the feed shows the change and the trace shows no pull, the client never recog
 - [Functions and return values](./functions-and-return-values.md): the response half of an invoke.
 - [Automations](./automations.md): signals and the functions that fire them.
 - [Sessions](./sessions.md): the session half of the same subsystem.
-- [Debugging and logging](../runtime/debugging-and-logging.md): the trace CVars across the SDK.
+- [Testing locally](../guides/testing-locally.md): the trace CVars across the SDK.
