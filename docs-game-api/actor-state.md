@@ -10,8 +10,10 @@ around in a specific game (app), at a position (chunk). An actor optionally
 references an [avatar](avatar-state) (the reusable "class"/identity), and carries
 its own state.
 
-Like avatars, actors follow the rule: **only the owner can write; everyone can
-read the public parts.** All operations require a logged-in player.
+Like avatars, actors follow the rule: **only the owner can write; everyone in
+that app, with that app's token, can read the public parts.** A session token
+or another game's app token is answered as not found — these are game-plane
+fields and require an app token for the actor's app.
 
 > Actors vs avatars: an **avatar** is a position-less identity a player owns and
 > can reuse across games; an **actor** is one in-world instance of a character in
@@ -26,7 +28,7 @@ read the public parts.** All operations require a logged-in player.
 | `userId` | The owner |
 | `avatarId` | Optional link to one of the owner's avatars |
 | `chunk` | The chunk the actor is in (`{ x, y, z }`) |
-| `publicState` | Visible to everyone (base64 binary) |
+| `publicState` | Visible to everyone in the actor's app who holds that app's token (base64 binary) |
 | `privateState` | Visible to the owner only (base64 binary) |
 
 An actor record can come into existence two ways:
@@ -73,9 +75,9 @@ mutation {
 
 | Operation | Returns |
 | --------- | ------- |
-| `actor(uuid)` | One actor. The owner sees `privateState`; everyone else sees public state only. |
+| `actor(uuid)` | One actor in the caller's app. The owner sees `privateState`; other players in that app see public state only. Session or another app's token → not found. |
 | `actors(filter)` | **Your own** actors (filter by `appId`, `avatarId`, `uuid`, or `chunk`). |
-| `batchLookupActors(input: { uuids })` | Public state for the given actors — use this to read other players' actors in bulk. |
+| `batchLookupActors(input: { uuids })` | Public state for the given actors **in the caller's app** — uuids in other apps are omitted. Session token → not found. |
 
 ```graphql
 query {
