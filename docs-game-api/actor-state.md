@@ -76,7 +76,7 @@ mutation {
 | Operation | Returns |
 | --------- | ------- |
 | `actor(uuid)` | One actor in the caller's app. The owner sees `privateState`; other players in that app see public state only. Session or another app's token → not found. |
-| `actors(filter)` | **Your own** actors (filter by `appId`, `avatarId`, `uuid`, or `chunk`). |
+| `actors(filter)` / `actorsConnection` | **Your own** actors (filter by `appId`, `avatarId`, `uuid`, or `chunk`). Under an app token, only the ones in that app — with or without `filter.appId` (a `filter.appId` for another app is refused). A session token lists your actors across all your games. |
 | `batchLookupActors(input: { uuids })` | Public state for the given actors **in the caller's app** — uuids in other apps are omitted. Session token → not found. |
 
 ```graphql
