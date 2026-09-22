@@ -21,7 +21,7 @@ When something other than the container itself has to react, a HUD, a scoreboard
 Three things can announce a change, and all three end in `HandleModelChanged`, the subsystem's re-pull:
 
 - The server-native notification an effect authors, on the carrier its `NotificationCarrier` chose: a channel message for every member of the app's session channel, or a spatial server event for a container that carries chunk coordinates. The channel form is a payload prefixed `cmc:` followed by the container id; the spatial form stamps event type `60000` so the client recognises it among unrelated server events.
-- The fallback ping. After a successful invoke the acting client sends a tiny `FCrowdyModelChangedPing`, the entity's id and the container id, as an ordinary game event payload to its peers, so a peer that missed the server-native notification still re-pulls. `crowdy.gamemodel.emitfallbackping 0` turns it off, to prove the server-native path alone in a two-client test.
+- The fallback ping. After a successful invoke the **Unreal client that invoked** sends a tiny `FCrowdyModelChangedPing`, the entity's id and the container id, as an ordinary game event payload to its peers, so a peer that missed the server-native notification still re-pulls. `crowdy.gamemodel.emitfallbackping 0` turns it off, to prove the server-native path alone in a two-client test. A Compute module, an automation, or another client's write has **no** acting Unreal client, so this ping never fires for those writes. Peers re-pull those only when the function authored a `NotificationCarrier`, or when a client pulls explicitly.
 - A watched free container's own notification, which re-pulls the by-id cache instead of an actor.
 
 :::warning[The ping is a nudge with no authoritative payload. Never build gameplay on its fields.]
@@ -69,7 +69,7 @@ At **Event BeginPlay**, the **Crowdy Game Model Subsystem** getter (a world subs
 </Tabs>
 
 :::warning[An echoed write on the client that made the call proves nothing about what anyone else received.]
-The invoke's response carries the confirmed mutations, and the SDK applies them to the calling client's cache whatever the notification carrier is, so the caller's `CrowdyOnRep` and this delegate fire on the caller even when no notification was ever authored. Evidence of delivery to peers is a signal handler, or another client's own OnRep or delegate firing, never the invoker's.
+The invoke's response carries the confirmed mutations, and the SDK applies them to the calling client's cache whatever the notification carrier is, so the caller's `CrowdyOnRep` and this delegate fire on the caller even when no notification was ever authored. Evidence of delivery to peers is a signal handler, or another client's own OnRep or delegate firing, never the invoker's. A write with no acting Unreal client (Compute, automation) has no fallback ping at all.
 :::
 
 ## Cross-container writes
@@ -99,6 +99,8 @@ If the feed shows the change and the trace shows no pull, the client never recog
 - **Listen for Model Changes** is per world. Bind it again after a travel.
 - The two-client PIE switches are test aids; leave `emitfallbackping` at its default in a normal session.
 - A read-only query effect authors no notification, on purpose. Asking never makes peers re-pull.
+- `watchcontainers` is a diagnostic: it logs the feed and does **not** re-pull.
+- Session-scoped types can persist with `session_id` null. `gameModelEvents` / `containerChanged` filtered by `sessionId` hide those rows; omit `sessionId` unless you are actually in a Game Model session.
 - `GetLastModelErrorCode` is session-scoped despite the name; the session page owns its codes.
 
 ## Related

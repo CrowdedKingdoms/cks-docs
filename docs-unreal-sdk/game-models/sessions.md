@@ -180,7 +180,8 @@ On `UCrowdyGameModel`, each resolving the subsystem from the World Context:
 ## Gotchas
 
 - Sessions are truth-plane. Whose turn it is and who hosts are never [Crowdy State](../runtime/crowdy-state.md) properties.
-- The session host here is a server fact. The elected host of the view plane is a different thing; [The Host Is a Convention](../concepts/host-is-a-convention.md).
+- The session host here is a server fact. The elected host of the view plane is a different thing, and `is_host` on an invoke policy is that elected host, not this session host; [The Host Is a Convention](../concepts/host-is-a-convention.md) and [Invoke policies](./invoke-policies.md).
+- `is_participant` is this session: an active Create / Join record, a joined roster row, and a `SessionId` on the invoke. Teams, the login session, and the UDP session channel do not satisfy it.
 - A session nobody has been in for the empty timeout is ended by the server with `EmptyTimeout`.
 - `Role` on Join is a free label your game gives the player, empty for the server's default.
 - Session creation policy, admission semantics, and the event log are server behaviour: [Sessions, ownership, and turns](/game-api/game-models#sessions-ownership-and-turns).

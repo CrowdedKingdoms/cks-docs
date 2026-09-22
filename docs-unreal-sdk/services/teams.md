@@ -31,8 +31,9 @@ Membership, roles, and permissions are server-authoritative truth, pulled throug
 than trusted from the client, the same split every server-owned system in the SDK follows: see
 [Game Models](../game-models/overview.md) for the general two-plane story. Teams are not themselves a
 Game Model in this version: there is no `CrowdyContainer` here, just the Team API `UCrowdyTeams` wraps
-one call at a time. If you came looking for a container, see
-[Change pings and pull](../game-models/change-pings-and-pull.md) instead.
+one call at a time. Joining a team does not create a Game Model session and does not make
+`is_participant` true; [Invoke policies](../game-models/invoke-policies.md). If you came looking for a
+container, see [Change pings and pull](../game-models/change-pings-and-pull.md) instead.
 
 The server owns team, role, and permission storage and every authorization check; a disallowed call comes
 back through the error delegate rather than being refused on the client. The exact GraphQL shape behind

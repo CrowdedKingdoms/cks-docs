@@ -194,7 +194,11 @@ In CrowdyJS, `playerFaultOf(errorOrResult)` reads both carriers and returns one
 
 `GmInvokeResult.errorMessage` still exists and is **deprecated**. It now carries a
 platform-authored sentence matching `fault` rather than the engine's text, so it is safe
-to show a player as-is — but prefer `fault` and your own wording.
+to show a player as-is — but prefer `fault` and your own wording. On a policy
+refusal (`fault.code` `NOT_ALLOWED`) that sentence is **You are not allowed to do
+that.** The require leaf (owner, host, participant, a condition) is not in
+`errorMessage`; it is on `gameModelEvents.errorMessage` and in Studio's Advanced
+event log.
 
 ### Agentic Crowdy Studio stable errors
 
