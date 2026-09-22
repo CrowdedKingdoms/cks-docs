@@ -30,6 +30,49 @@ supported path.
 
 :::
 
+## 2026-09-22 (Unreal SDK v2.15.0)
+
+Six changes. One is a source break for C++ projects and is the only one that asks anything of a
+game; the rest are additive or remove work a project may have done. Per-item detail and the
+before-and-after of each: [What's Changed](/unreal-sdk/guides/whats-changed).
+
+- **Eighteen array delegates pass `const TArray<T>&` instead of `TArray<T>` by value**: the ten
+  single-cast teams, avatars and channels callbacks, three multicast cache events, and five Game
+  Model outcome events. A C++ project that updates and rebuilds gets a compile error naming the
+  handler's parameter, and changes `TArray<FCrowdyTeam> Teams` to `const TArray<FCrowdyTeam>&
+  Teams`. Blueprint pins are unaffected. Nothing changes silently: if it builds, it is right.
+- **The actor pool draws with no Backend Config at all.** Up to 2.14.0 a map profile with an empty
+  Backend Config, or one naming no Replication Policy Class, tracked remote entities and drew
+  none of them. It now falls back to the built-in `UCrowdyTransformRepPolicy`, so authoring a
+  Backend Config is optional. A project that worked around the blank screen can drop the
+  workaround. See [Rendering backends](/unreal-sdk/runtime/rendering-backends).
+- **The shipped transform policy interpolates across a ring of samples** instead of the two it
+  used to keep, and extrapolates for at most 0.2 s past the newest, so a late or lost update no
+  longer shows as a pause and a jump.
+- **A Player Derived pawn possessed after it begins play gets its account identity on
+  possession**, respawned pawns included. Up to 2.14.0 the identity was read once at `BeginPlay`,
+  which every runtime-spawned player pawn misses, so it registered under a random id and anything
+  keyed on the local player id did not work for it. **Read the pawn's id and `IsLocallyOwned()`
+  from On Crowdy Ownership Assigned, not at `BeginPlay`.** See
+  [Entities, identity and ownership](/unreal-sdk/concepts/entities-identity-ownership).
+- **The Unreal client reads signed downlink bundles** (CrowdyCPP 0.42.1 vendored). It
+  advertises `BUNDLE_SIGNED` once the realtime connection is up and every 15 s after, and a
+  Replication API v0.30.0 server then sends its notifications as `MESSAGE_BUNDLE_SIGNED`:
+  one HMAC per datagram verified in the transport instead of one per member, with the messages
+  a game receives unchanged. An older server ignores the advertisement and keeps the per-member
+  form. `crowdy.net.recv.signedbundles 0`, read when a connection opens, turns the
+  advertisement off for a before-and-after comparison. See
+  [Connection and reconnect](/unreal-sdk/runtime/connection-and-reconnect#signed-inbound-bundles).
+- **Crowdy Studio shows every value a live model holds.** The Game Model page's Live tab used
+  to summarize a selected live model on one line that named a few attributes and then said
+  "and N more". It now fills a panel under the instance list: one row per attribute with its
+  value, what it holds and its description, the attributes the model declares that this live
+  model has no value for (reading **not set**), a search box over names and values, **Copy
+  value** and **Copy values**, and an **Internal** switch for the keys the runtime keeps for
+  itself. The page's pre-seed strip hides itself while the Live tab is open, so the list and the
+  panel get its height. See
+  [Game Models authoring](/unreal-sdk/studio/game-models-authoring#the-four-tabs).
+
 ## 2026-09-21 (Replication API v0.30.0 / v0.31.0, Game API v2.8, CrowdyJS 17.6, CrowdyCPP 0.42)
 
 Everything here is additive; a client that does nothing new sees nothing new.

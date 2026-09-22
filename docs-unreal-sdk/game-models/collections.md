@@ -65,7 +65,7 @@ A placed `ALanternPost` has an oil chest: a free container of an `OilChest` type
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-The handler bound to `Succeeded` takes the items as `const TArray<FCrowdyCollectionItem>&`; a by-value parameter does not match the delegate and `AddDynamic` will not compile. On the tagged v2.14.0 plugin the delegate is still by value and the handler takes `TArray<FCrowdyCollectionItem>`; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).
+The handler bound to `Succeeded` takes the items as `const TArray<FCrowdyCollectionItem>&`; a by-value parameter does not match the delegate and `AddDynamic` will not compile.
 
 <CppSnippet id="coll-query" />
 
