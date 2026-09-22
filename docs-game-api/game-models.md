@@ -390,8 +390,14 @@ them. That is gone.) You can mix authority sources freely:
 - `owner_of_self` — the caller owns the `self` container (e.g. "only act on your
   own characters").
 - `is_current_turn` — it is the caller's turn in the session.
-- `is_host` — the caller is the app's elected [host](host-discovery).
-- `is_participant` — the caller is a participant of the session.
+- `is_host` — the caller is the app's elected [host](host-discovery)
+  (the platform role, not the Game Model session host).
+- `is_participant` — the caller is a **joined** participant of an
+  **active** Game Model session the invoke names. The server uses
+  `input.sessionId ?? self.sessionId`; a missing session id is **false**.
+  This is not Crowdy Teams membership, not the UDP session channel, and
+  not the login session. Create / join a Game Model session and pass
+  `sessionId` (see [Sessions, ownership, and turns](#sessions-ownership-and-turns)).
 - `is_automation` — the call is driven by an [autonomous process](autonomous-processes)
   (an automation / NPC), not a player. Gate a function to automations only, or
   branch logic on caller kind.
@@ -827,6 +833,10 @@ things to know: `is_host` is the app's **elected** host (the platform role, not
 the session's host) on every path; and `gameModelContainerChanged` filtered by
 `sessionId` does **not** deliver changes to app-scoped rows, because those rows
 carry no session — subscribe per type without the session filter for them.
+Session-scoped types can also persist with `session_id` null (bound with no
+active session); the same `sessionId` filter hides those events too. Omit
+`sessionId` on `gameModelEvents` and `gameModelContainerChanged` unless you
+are actually in a Game Model session.
 
 Changing a type from `session` to `app` is refused while it holds any
 session-scoped row (`BAD_REQUEST` with the count): those rows would keep
@@ -922,6 +932,7 @@ mutation {
     success
     returnValueJson
     errorMessage
+    fault { code blame retryable }
     mutationsApplied { key oldValueJson newValueJson }
   }
 }
@@ -929,8 +940,13 @@ mutation {
 
 If the invoke policy refuses the caller, `success` is `false`, `fault.code` is
 `NOT_ALLOWED`, no mutation is applied, and the refusal is recorded as a failed
-event. This is the verdict for app admins too unless the input carries
-`bypassPolicy: true` (see [Skipping a policy on purpose](#skipping-a-policy-on-purpose-bypasspolicy)),
+event. Player-facing `errorMessage` for `NOT_ALLOWED` (and sibling player
+faults) is overwritten to the generic sentence **You are not allowed to do
+that.** The require leaf — owner, host, participant, a condition — is **not**
+on that field; it is on `gameModelEvents.errorMessage` and in Studio's
+Advanced event log. Branch on `fault.code`, not on the sentence. This is the
+verdict for app admins too unless the input carries `bypassPolicy: true` (see
+[Skipping a policy on purpose](#skipping-a-policy-on-purpose-bypasspolicy)),
 in which case the result also reports `policyBypassed: true`. If the logic
 errors (e.g. arithmetic on a missing value) the transaction is rolled back,
 `success` is `false`, and the attempt is still recorded.
@@ -1075,10 +1091,17 @@ Poll the event log with `gameModelEvents`
 (filter by session, container, function, success):
 
 ```graphql
-query { gameModelEvents(appId: "1", sessionId: "<session-uuid>") {
-  functionName success callerUserId returnValueJson executedAt
+query { gameModelEvents(appId: "1") {
+  functionName success callerUserId errorMessage returnValueJson sessionId executedAt
 } }
 ```
+
+`sessionId` on the query is optional. Omit it unless you are actually in a
+Game Model session. Session-scoped types can still persist with `session_id`
+null, and a filter on `sessionId` **hides** those events (and the require
+leaf on a failed invoke). Pass `sessionId` only when the rows you care about
+were bound inside that session. The event's `errorMessage` is the engine
+text (the require leaf); the invoke result's `errorMessage` is not.
 
 Re-read `gameModelContainerState` / `gameModelContainers` after a change to get
 the new values.
@@ -1143,6 +1166,10 @@ replicas. CrowdyJS exposes this as `client.gameModel.containerChanged(...)`
 To avoid blind polling, have the **acting** client send a lightweight
 "model changed" ping over the realtime path; peers then re-pull the model. The
 ping carries no authoritative state — the model API stays the source of truth.
+Unreal's fallback ping is sent **only by the Unreal client that invoked**. A
+Compute module, an automation, or another client's write has no acting Unreal
+client, so peers re-pull those writes only when the function authored a
+`NotificationCarrier` (or a client pulls explicitly).
 
 - **Recommended — channels.** Publish a small message to a [channel](channels)
   (for example, one per session) with `sendChannelMessage`. Every channel member
