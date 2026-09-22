@@ -76,7 +76,7 @@ The lantern serializes its torch color as a small cosmetic struct, writes it to 
 
 <CppSnippet id="avatar-get" />
 
-`WatchAvatars`, bound at `BeginPlay`, picks up `AvatarId` from the first entry of a cache refresh and calls `LoadTorchColor`, so a cache change elsewhere still lands the stored color. The handler takes `const TArray<FCrowdyAvatar>&`; on the tagged v2.14.0 plugin `FOnMyAvatarsCacheChanged` still passes the array by value and the handler must too, or `AddDynamic` fails to bind (see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140)).
+`WatchAvatars`, bound at `BeginPlay`, picks up `AvatarId` from the first entry of a cache refresh and calls `LoadTorchColor`, so a cache change elsewhere still lands the stored color. The handler takes `const TArray<FCrowdyAvatar>&`.
 
 <CppSnippet id="avatar-events" />
 

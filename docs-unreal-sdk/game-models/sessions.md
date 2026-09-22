@@ -109,7 +109,7 @@ Your Create or Join on this subsystem recorded it, so `Incarnation` 0 is right f
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The same query as the C++ block: a custom event `RefreshNight` runs **List Game Sessions** with `Admission` = `Open` (`Status` stays `Active`); on `Succeeded`, **Is Not Empty** over `Sessions` drives **Set Visibility** on `Torch`, so the torch shows while there is an open night to join. The pawn Blueprint needs the `Torch` component. In C++, a handler bound to the array-carrying `Succeeded` pins takes the array as `const TArray<T>&` (by value on the tagged v2.14.0 plugin; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140)).
+The same query as the C++ block: a custom event `RefreshNight` runs **List Game Sessions** with `Admission` = `Open` (`Status` stays `Active`); on `Succeeded`, **Is Not Empty** over `Sessions` drives **Set Visibility** on `Torch`, so the torch shows while there is an open night to join. The pawn Blueprint needs the `Torch` component. In C++, a handler bound to the array-carrying `Succeeded` pins takes the array as `const TArray<T>&` (by value on 2.14.0 and earlier; see [What's Changed](../guides/whats-changed.md#2026-09-22-sdk-v2150)).
 
 <Blueprint src="sess-query" title="RefreshNight, List Game Sessions, IS NOT EMPTY, Get Torch, Set Visibility" />
 

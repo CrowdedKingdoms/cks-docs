@@ -91,7 +91,7 @@ The plugin registers a shipped profile under the provider name `CrowdySDK`, and 
 ## Gotchas
 
 - A `MapProfiles` row or `DefaultProfile` naming an asset that did not load means no networking on that map. Check this first when a map looks dead; the warning names the asset.
-- The shipped default profile has no `BackendConfig`. On the current source that means the built-in transform policy draws remote entities. On the tagged v2.14.0 plugin it means nothing is drawn from the continuous channel: on that release, author a profile whose **Actor Pool Backend Config** names `UCrowdyTransformRepPolicy`. See [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).
+- The shipped default profile has no `BackendConfig`, which means the built-in transform policy draws remote entities. On 2.14.0 and earlier nothing was drawn from the continuous channel in that state; see [What's Changed](../guides/whats-changed.md#2026-09-22-sdk-v2150).
 - A non-networked map wants a profile with **Enable Networking** off, not no profile. The warning text asks for exactly that.
 - `StateKeyframeIntervalSeconds` is a safety net, not the mechanism. Changed properties ship on change whatever the interval; 0 only stops the periodic baseline for `CrowdyHeartbeat` properties.
 - `ReplicationIntervalHz` is one clock for two channels: continuous state and Crowdy State share it but send independently.
