@@ -123,6 +123,8 @@ Precedence for one parameter is override, then curve sampled at `Level`, then `D
 
 The server evaluates the body inside one transaction: every `require` first, then the assignments in order, then the `return` against final state. A refused `require` rolls the whole invoke back. On success the caller's response carries the mutations and the return value, and the SDK applies them to the caller's cache, so the caller's `CrowdyOnRep` fires with the authoritative value, not a prediction. Peers re-pull on the notification the asset's `NotificationCarrier` chose; [Change pings and pull](./change-pings-and-pull.md) has that half. What is atomic and what is not is server behaviour: [Concurrency](/game-api/game-models#concurrency-two-players-writing-the-same-property).
 
+Do not `Apply` until the target's bind has returned. Binding is what creates or attaches the row; applying beforehand is a race, not a server health bug. Until the first pull, a getter is the class default. [Ensured identity](./ensured-identity.md). A policy refusal's `ErrorMessage` is the player-safe sentence **You are not allowed to do that**; the require leaf is on `gameModelEvents`. [Functions and return values](./functions-and-return-values.md).
+
 A signal is the one output that is not state: an entry in `Signals` names a parameterless function, `OnSignal_<Name>`, that runs when the effect commits, on the container the effect ran on, on every client that has it bound; other containers of the type do not run it, and anything else listens on **On Crowdy Signal**. Delivery rules are on [Model-driven notifications](/game-api/model-driven-notifications#signals).
 
 ## Gotchas

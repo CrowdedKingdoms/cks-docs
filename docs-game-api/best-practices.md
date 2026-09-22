@@ -43,11 +43,22 @@ effect updates `health`, then sets `is_dead` from the new value. Later
 mutations in the same invoke see earlier writes.
 
 Gate who may call the effect with an **invoke policy**
-(`owner_of_self`, `is_current_turn`, `is_host`, …). The policy applies to
-everyone, including studio admins testing the game.
+(`owner_of_self`, `is_current_turn`, `is_host`, `is_participant`, …). The
+policy applies to everyone, including studio admins testing the game.
+`is_participant` needs an active Game Model session and a `sessionId` on
+the invoke; Teams membership and the UDP session channel do not satisfy
+it.
 
 Prefer one intent-level function (`deal_damage`, `capture_camp`,
 `assign_team`) over a client composing several property writes.
+
+**Ensure or bind the container, then invoke.** Invoking a type you have
+not bound yet is a race: the row may not exist, and a getter after bind
+still shows the type default until the first pull.
+
+**Automation and Compute writes do not ping Unreal peers.** Those writes
+have no acting Unreal client, so the SDK fallback ping never fires.
+Author a `NotificationCarrier` on the function, or have clients pull.
 
 ## Clients request; they do not decide
 

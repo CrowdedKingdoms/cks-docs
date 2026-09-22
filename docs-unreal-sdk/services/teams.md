@@ -31,8 +31,9 @@ Membership, roles, and permissions are server-authoritative truth, pulled throug
 than trusted from the client, the same split every server-owned system in the SDK follows: see
 [Game Models](../game-models/overview.md) for the general two-plane story. Teams are not themselves a
 Game Model in this version: there is no `CrowdyContainer` here, just the Team API `UCrowdyTeams` wraps
-one call at a time. If you came looking for a container, see
-[Change pings and pull](../game-models/change-pings-and-pull.md) instead.
+one call at a time. Joining a team does not create a Game Model session and does not make
+`is_participant` true; [Invoke policies](../game-models/invoke-policies.md). If you came looking for a
+container, see [Change pings and pull](../game-models/change-pings-and-pull.md) instead.
 
 The server owns team, role, and permission storage and every authorization check; a disallowed call comes
 back through the error delegate rather than being refused on the client. The exact GraphQL shape behind
@@ -187,12 +188,12 @@ Team, Leave Team, Remove Team Member, Delete Team Role). These are separate from
 The response arrives asynchronously; if the object is gone by then, the callback has nowhere to land.
 :::
 
-:::note[The array delegates pass `const TArray<T>&`, and on v2.14.0 they still pass by value.]
+:::note[The array delegates pass `const TArray<T>&`.]
 `FOnTeamsSuccess`, `FOnTeamMembersSuccess`, `FOnTeamRolesSuccess`, `FOnMyTeamsSuccess`, and the cache event
 `FOnMyTeamsCacheChanged` pass their array as `const TArray<T>&`, which is what the C++ handlers on this page
-take. On the tagged v2.14.0 plugin the same delegates pass `TArray<T>` by value, and a handler must match:
-a by-value parameter there, `const TArray<T>&` from the next release. A mismatch fails to bind. See
-[What's Changed](../guides/whats-changed.md#unreleased-after-v2140). In Blueprint prefer the async-action
+take. A handler must match or it fails to bind, and a project coming from 2.14.0 or earlier, where these
+passed by value, changes its handlers once; see
+[What's Changed](../guides/whats-changed.md#2026-09-22-sdk-v2150). In Blueprint prefer the async-action
 nodes above, whose result pins are structs; a Blueprint pin has no by-value distinction.
 :::
 
@@ -272,8 +273,8 @@ same one.
   code; treat it as a coarse bucket and `Message` as the detail.
 - A per-call delegate needs a `UFUNCTION` on a `UObject` that outlives the request, including when the
   request never reaches the server.
-- The array delegates take `const TArray<T>&` handlers, by-value ones on the tagged v2.14.0 plugin; a
-  mismatch fails to bind. The async-action nodes in Blueprint have no such split.
+- The array delegates take `const TArray<T>&` handlers; a mismatch fails to bind. The async-action nodes
+  in Blueprint have no such split.
 
 ## Related
 

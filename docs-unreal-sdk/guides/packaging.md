@@ -42,7 +42,7 @@ Every map that ships resolves a [map profile](../runtime/map-profile.md), one of
 
 - An entry in the per-map `MapProfiles` map names it, or
 - `DefaultProfile` is set for unlisted maps, or
-- Neither is set, and the map runs on the SDK's shipped default profile (networking on, the actor pool drawing; on the tagged v2.14.0 plugin the default draws nothing, see [What's Changed](./whats-changed.md#unreleased-after-v2140)).
+- Neither is set, and the map runs on the SDK's shipped default profile (networking on, the actor pool drawing).
 
 The cook hazard is the first two: a `MapProfiles` row or a `DefaultProfile` whose asset is not packaged resolves to nothing. The SDK then logs `check that the asset still exists and is packaged`, and the entity subsystem, the auto replicator, and the actor manager do nothing on that map, so replication looks dead.
 

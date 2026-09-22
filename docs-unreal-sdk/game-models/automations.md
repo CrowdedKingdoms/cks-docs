@@ -15,7 +15,7 @@ The village night: fuel burns down on a schedule while the village has anyone in
 
 ## Automations react; they are not called
 
-There is no Blueprint node and no C++ function to start an automation. Tick **Run Automatically** (`bRunAutomatically`) on the effect and pick a trigger; the schema sync marks the function autonomous-invocable and creates the automation with it. The client-visible result is the same as any other function commit: the container changes, peers re-pull, `CrowdyOnRep` fires. [Change pings and pull](./change-pings-and-pull.md) is how the change arrives; this page is how it is caused.
+There is no Blueprint node and no C++ function to start an automation. Tick **Run Automatically** (`bRunAutomatically`) on the effect and pick a trigger; the schema sync marks the function autonomous-invocable and creates the automation with it. The client-visible result is the same as any other function commit: the container changes. Peers re-pull only if the function authored a `NotificationCarrier`, or if they pull explicitly. An automation has no acting Unreal client, so the SDK's fallback ping never fires for it. [Change pings and pull](./change-pings-and-pull.md) is how the change arrives; this page is how it is caused.
 
 The trigger and target fields, all hidden until Run Automatically is on:
 
@@ -45,7 +45,7 @@ The wire semantics of every field, and of timers, are on [EffectScript: timers a
 self.fuel -= 5
 ```
 
-Nothing in Unreal calls it. Every thirty seconds, while at least one player is connected to the app, each lantern's fuel drops, each bound client re-pulls, and the `OnRep_Fuel` the [Quickstart](../quickstart.md) wrote dims the light. That is the whole client side of an automation: the notify you already have.
+Nothing in Unreal calls it. Every thirty seconds, while at least one player is connected to the app, each lantern's fuel drops. Each bound client re-pulls only if this function authored a `NotificationCarrier` (or the client pulls); the `OnRep_Fuel` the [Quickstart](../quickstart.md) wrote then dims the light. That is the whole client side of an automation: the notify you **authored**, not a ping the SDK invents for a player invoke.
 
 :::warning[A schedule runs only while at least one player is connected to the app.]
 Nothing runs for an empty app. A schedule's missed runs are never made up; a timer waits and fires late when somebody returns; an event trigger is unaffected. A lantern that stops burning while nobody is in the village is fine. A value that must keep moving through an empty night is not: write that work so it is right whenever it next runs, storing a timestamp and computing the elapsed time with `now()` instead of assuming a cadence. The shape, and the per-trigger table, are on [Presence](/game-api/autonomous-processes#presence).
@@ -108,6 +108,7 @@ A timer fires exactly once. A timer that re-arms itself is bounded one cascade l
 
 ## Gotchas
 
+- An automation write is invisible to other Unreal clients unless the function authored a `NotificationCarrier` (or they pull). There is no fallback ping.
 - Every field above is asset data. Changing one is a schema change: Sync to Server from [Game Models authoring](../studio/game-models-authoring.md).
 - An effect that is Other effects only and also runs automatically infers `is_automation` as its gate when it has no `require` line. [Invoke policies](./invoke-policies.md).
 - Debounce drops events; it is not the summing merge on [Coalescing](./coalescing.md).

@@ -126,7 +126,7 @@ its own screen. **Blame attribution is the platform's job; presentation is yours
 | `extensions.blame` | Meaning | What a game should usually do |
 |---|---|---|
 | `PLATFORM` | Ours. The app's code may not have run at all. | Retry when `retryable`; otherwise say something went wrong on our side. |
-| `AUTHOR` | The app's own code or configuration. Repeating the call gets the same answer. | Do not retry. Show your own wording for "that did not work". |
+| `AUTHOR` | The app's own code or configuration. Repeating the identical call gets the same answer, except an open breaker (`TEMPORARILY_DISABLED` with `retryable: true`), which closes itself. | Do not retry unless `retryable` is true. Show your own wording for "that did not work". |
 | `BUDGET` | A metered allowance for the app or the caller is spent. Nothing is broken. | Back off. `retryable` says whether the allowance returns on its own. |
 
 `retryable` is about the **caller's** options, not about how long a fix takes: an open
@@ -136,14 +136,14 @@ allowance is not, even though neither is a bug.
 | `extensions.code` | `blame` | Meaning |
 |---|---|---|
 | `USER_CODE_ERROR` | `AUTHOR` | The app's own code failed while running. |
-| `USER_CODE_TOO_SLOW` | `AUTHOR` | It ran past the time it is allowed. |
+| `USER_CODE_TOO_SLOW` | `AUTHOR` | It ran past the time it is allowed. The message says the action took too long. For a game-model function, reduce the work or raise `run_timeout_ms`. For a compute export, reduce the work or raise the app compute policy `maxRunMs`. Repeated timeouts open the circuit. |
 | `USER_CODE_LIMIT_EXCEEDED` | `AUTHOR` | It exceeded a per-call ceiling (gas, fuel, memory, depth, database operations, response size). |
 | `INVALID_REQUEST` | `AUTHOR` | The arguments did not satisfy the function's declared contract. |
 | `NOT_ALLOWED` | `AUTHOR` | An invoke policy or permission refused this caller. Applies to app admins too: since 2026-09-08 a `manage_apps` holder is judged like a player unless the input sets `bypassPolicy: true`, and that flag itself answers `NOT_ALLOWED` for anyone without `manage_apps`. On `gameModelInvoke` a policy refusal arrives in band (`success: false`, `fault.code: NOT_ALLOWED`); a refused `bypassPolicy` is a GraphQL error. |
 | `NOT_FOUND` | `AUTHOR` | The named function, module or export does not exist for this app. |
 | `PLATFORM_BUSY` | `PLATFORM` | We could not start the work in time. The app's code never ran. Retry. |
 | `PLATFORM_ERROR` | `PLATFORM` | A platform failure. Retrying is reasonable. |
-| `TEMPORARILY_DISABLED` | either | A breaker is open, or an operator switch is off. `blame` distinguishes them. |
+| `TEMPORARILY_DISABLED` | either | A breaker is open, or an operator switch is off. `blame` distinguishes them, and so does the message. An open breaker is `AUTHOR` and `retryable`, and `extensions.retryAfterMs` is the remaining cooldown when the server knows it: the message says the action kept failing (usually by taking too long) and to shorten the call or raise its time limit. A switch or latch is `PLATFORM` and not retryable: the message says it is switched off and retrying will not turn it back on. |
 | `BUDGET_EXCEEDED` | `BUDGET` | A per-minute allowance is spent; it returns on the next window. |
 | `RATE_LIMITED` | `BUDGET` | This caller is asking too often. `extensions.retryAfterMs` when known. |
 | `QUOTA_EXHAUSTED` | `BUDGET` | A metered allowance is spent and does not return on its own. |
@@ -194,7 +194,11 @@ In CrowdyJS, `playerFaultOf(errorOrResult)` reads both carriers and returns one
 
 `GmInvokeResult.errorMessage` still exists and is **deprecated**. It now carries a
 platform-authored sentence matching `fault` rather than the engine's text, so it is safe
-to show a player as-is — but prefer `fault` and your own wording.
+to show a player as-is — but prefer `fault` and your own wording. On a policy
+refusal (`fault.code` `NOT_ALLOWED`) that sentence is **You are not allowed to do
+that.** The require leaf (owner, host, participant, a condition) is not in
+`errorMessage`; it is on `gameModelEvents.errorMessage` and in Studio's Advanced
+event log.
 
 ### Agentic Crowdy Studio stable errors
 
