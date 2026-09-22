@@ -1185,8 +1185,8 @@ Two things follow from the server keeping it:
 - **Your client does not decide any of it.** Joining, leaving, changing the host, or taking a turn is a request; the server applies the rule and answers. A Blueprint check such as `Is Session Host` tells you what to show, and the server still refuses a host action from a client that is not the host.
 - **Game Model state belongs to a session.** A container created during a match belongs to that match's session; reads and Effects run inside the session your client is in (the "active session"). That is what ties this page to the [truth plane](./two-planes.md): the session is the scope a Game Model value lives in.
 
-:::note[One word, three things.]
-A **game session** (this page) is the group of players. The **login session** is your signed-in identity. The **session channel** is a transport every client of the app joins. Be precise about which one a sentence means.
+:::note[One word, four things.]
+A **Game Model session** (this page) is the group of players the server records when you Create or Join. The **login session** is your signed-in identity. The **session channel** is a transport every client of the app joins (`__crowdy_session_<appId>`). A **Crowdy Team** is a persistent group with membership and roles. Joining a team, riding the session channel, or being signed in does not make `is_participant` true; only a joined Game Model session does. [Invoke policies](../game-models/invoke-policies.md).
 :::
 
 ## Presence is the player's actor
@@ -4547,8 +4547,10 @@ Authoring the schema and pushing it to the server happens in Crowdy Studio; that
 ## Gotchas
 
 - A Game Model attribute exists on the server only after **Sync to Server** in Studio. Until then every read returns the default you pass.
-- "Session" means several things in this SDK. The Game Model session on these pages is a match: the group of players. The login session is your signed-in identity, held by `UCrowdyGameSession`, the client's own connection state (see [Authentication](../services/authentication.md)); the session channel is a transport every client of the app joins. [Sessions and Presence](../concepts/sessions-and-presence.md) keeps the three apart.
-- The elected host of the view plane is a convention. Nothing on this plane trusts it; a host-only function is gated by the server's `is_host` policy, not by who the clients elected. [The Host Is a Convention](../concepts/host-is-a-convention.md).
+- Do not apply an Effect until `gameModelEnsureContainer` / bind has **returned**. Binding is what creates the row. Until the first pull, a getter is the C++ / Blueprint class default, so a "wrong" health or team id in that window is expected. [Ensured identity](./ensured-identity.md).
+- "Session" means several things in this SDK. The Game Model session on these pages is a match: the group of players Create / Join record. The login session is your signed-in identity, held by `UCrowdyGameSession` (see [Authentication](../services/authentication.md)). The session channel is a transport every client of the app joins. A Crowdy Team is a persistent group with roles; joining one is not joining a session. [Sessions and Presence](../concepts/sessions-and-presence.md) keeps the four apart.
+- A cross-entity Effect with no `require` infers `is_participant`. An app that never creates a Game Model session always refuses those player calls. [Invoke policies](./invoke-policies.md).
+- The elected host of the view plane is a convention. `is_host` on a function is that elected host, not the Game Model session host. [The Host Is a Convention](../concepts/host-is-a-convention.md).
 - Trace everything on this plane with `crowdy.gamemodel.trace 1`; the log category is `LogCrowdyGameModel`.
 
 ## Related
@@ -5368,6 +5370,8 @@ Precedence for one parameter is override, then curve sampled at `Level`, then `D
 
 The server evaluates the body inside one transaction: every `require` first, then the assignments in order, then the `return` against final state. A refused `require` rolls the whole invoke back. On success the caller's response carries the mutations and the return value, and the SDK applies them to the caller's cache, so the caller's `CrowdyOnRep` fires with the authoritative value, not a prediction. Peers re-pull on the notification the asset's `NotificationCarrier` chose; [Change pings and pull](./change-pings-and-pull.md) has that half. What is atomic and what is not is server behaviour: [Concurrency](/game-api/game-models#concurrency-two-players-writing-the-same-property).
 
+Do not `Apply` until the target's bind has returned. Binding is what creates or attaches the row; applying beforehand is a race, not a server health bug. Until the first pull, a getter is the class default. [Ensured identity](./ensured-identity.md). A policy refusal's `ErrorMessage` is the player-safe sentence **You are not allowed to do that**; the require leaf is on `gameModelEvents`. [Functions and return values](./functions-and-return-values.md).
+
 A signal is the one output that is not state: an entry in `Signals` names a parameterless function, `OnSignal_<Name>`, that runs when the effect commits, on the container the effect ran on, on every client that has it bound; other containers of the type do not run it, and anything else listens on **On Crowdy Signal**. Delivery rules are on [Model-driven notifications](/game-api/model-driven-notifications#signals).
 
 ## Gotchas
@@ -5455,6 +5459,10 @@ In C++ the result arrives on `UCrowdyApplyEffectAction`'s `Succeeded` delegate a
 
 `Succeeded` fires only on a committed apply: it reached the server and passed the effect's rules. `Failed` fires on a transport failure, a server rollback, a marshalling failure before anything was sent, or an apply that was still waiting in a coalescing window when the world tore down. Exactly one of the two always fires, carrying `bSuccess`, `Return Value Json`, and `Error Message`.
 
+A policy refusal is that same `Failed` pin. `Error Message` is overwritten to **You are not allowed to do that**; the require leaf is on `gameModelEvents`, Studio's Advanced event log, or `crowdy.gamemodel.trace`, not on the pin. [Functions and return values](./functions-and-return-values.md) and [Invoke policies](./invoke-policies.md).
+
+Do not apply until the target's bind has returned. Binding is what creates or attaches the row; applying beforehand is a race. Until the first pull, a getter is the Blueprint class default. [Ensured identity](./ensured-identity.md).
+
 :::warning[The typed Return Value cannot tell "no answer" from "answered zero".]
 An absent, malformed, or wrong-typed result decodes to the type's zero, so a server that returned nothing and a server that returned 0 read alike on the typed pin. When that distinction matters, read **Return Value Json**: it is empty in the first case and `0` in the second.
 :::
@@ -5482,6 +5490,7 @@ An effect whose asset has **Coalesce Repeated Applies** on may be merged with ot
 - `Target` defaults to self. On a Blueprint that is not itself a container, an unwired Target is a compile error naming the class (`is not a Game Model container`); tick **Game Model Class** on the Blueprint, or wire `Target`.
 - An actor whose container is a `LanternFuel` component must wire `Target` to **Get Model Component** with class `LanternFuel`; self does not compile there.
 - A wired `Target` that is not a registered entity fails at run time, before anything is sent: `Failed` on the latent node with `Target is not a registered entity`.
+- Do not apply until the target's bind has returned. Until the first pull, a getter is the class default.
 - The fire-and-forget node and the by-id node have no outcome pins by design. Use the latent one when the graph needs to know.
 - The raw `Overrides` map pin only appears on the degraded node. If you see it, the Effect pin is not a literal.
 - The nodes live in `CrowdyNodes`, an uncooked-only module (editor and uncooked standalone); nothing in a packaged build changes because of them.
@@ -5526,6 +5535,10 @@ Three entry points, all in category **Crowdy SDK, Game Model, Advanced**:
 | `UCrowdyModel::Invoke(Entity, FunctionName)` (**Call Model Function (Fire and Forget)**) | A parameterless function and nobody cares about the outcome. | None. The confirmed result still echoes into the cache and `CrowdyOnRep`. |
 
 `Succeeded` fires only on a committed call: it reached the server and passed the function's rules. A transport failure and a server-side rollback both route to `Failed`, still carrying `bSuccess` and `ErrorMessage`, so a refused rule is distinguishable from a lost packet without `Succeeded` ever firing on a rejected write.
+
+:::warning[`ErrorMessage` on `Failed` is a player-safe sentence, not the require leaf.]
+A policy refusal arrives as `Failed` with `ErrorMessage` overwritten to **You are not allowed to do that.** The leaf the policy actually failed — owner, host, participant, a condition — is not on that pin. The Unreal outcome is `(bSuccess, ReturnValueJson, ErrorMessage)`; it does not carry `fault.code`. Read the leaf from `gameModelEvents`, Studio's Advanced event log, or `crowdy.gamemodel.trace`. Do not treat the sentence as the leaf name. [Error codes](/overview/error-codes).
+:::
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -5623,12 +5636,13 @@ Calling `fn:` and expecting the callee's writes, signals, or timers to happen is
 
 ## Notifications
 
-**Call Model Function** adds no notification of its own. When the function it names is an authored effect whose notification names the container through the server-injected `$self_container_id`, that notification still fires; otherwise peers refresh through the fallback ping. Either way the caller's own cache is updated from the response, which is why an echoed write on the calling client says nothing about what anyone else received. [Change pings and pull](./change-pings-and-pull.md).
+**Call Model Function** adds no notification of its own. When the function it names is an authored effect whose notification names the container through the server-injected `$self_container_id`, that notification still fires; otherwise peers refresh through the fallback ping **from this Unreal client**. A Compute or automation write of the same function has no acting Unreal client and no fallback ping. Either way the caller's own cache is updated from the response, which is why an echoed write on the calling client says nothing about what anyone else received. [Change pings and pull](./change-pings-and-pull.md).
 
 ## Gotchas
 
 - `Target` and `ContainerId` are exclusive. Empty `Target` plus a `ContainerId` is the free-container route; both set is the entity route.
-- `SessionId` empty means the active session, or the app when none is active. [Sessions](./sessions.md).
+- `SessionId` empty means the active session, or the app when none is active. [Sessions](./sessions.md). An invoke that needs `is_participant` and has neither an active session nor an explicit `SessionId` is refused.
+- Do not call a function until the target's bind has returned. Until the first pull, getters are the C++ / Blueprint class default, not the server row. [Ensured identity](./ensured-identity.md).
 - A `require` line on the function is evaluated before any assignment; a refusal rolls the whole call back and lands on `Failed`. [Invoke policies](./invoke-policies.md).
 - `Params` keys are the parameter names as declared on the asset, case included.
 - A function that only other functions call still needs a sync: it is schema like any other.
@@ -5659,11 +5673,17 @@ A `require` line is a boolean expression. A bare keyword lowers to a structured 
 | Write | Server leaf | Meaning |
 |---|---|---|
 | `owner` | `owner_of_self` | The caller owns the target container. |
-| `my_turn` | `is_current_turn` | It is the caller's turn in the session. |
-| `host` | `is_host` | The caller is the session host. |
-| `participant` | `is_participant` | The caller is in the session. |
+| `my_turn` | `is_current_turn` | It is the caller's turn in the Game Model session. |
+| `host` | `is_host` | The caller is the app's **elected** host. Not the Game Model session host. [Host election](../services/host-election.md) and [Host discovery](/game-api/host-discovery). |
+| `participant` | `is_participant` | The caller is a joined participant of a **Game Model session** the invoke names. Not "in the match" by any other meaning. |
 | `automation` | `is_automation` | The caller is the server's own automation. |
 | `anyone` | an always-true `condition` | Any signed-in player. Say it explicitly when you mean it; it is never the default. |
+
+`is_participant` is true only when all three hold: the app has an **active** Game Model session, the caller is a **joined** participant of that session, and the invoke carries that session's id (`SessionId` on the call, or `self.sessionId` on the target row). A missing session id is **false**. Create Game Session and Join Game Session are what produce that record; [Sessions](./sessions.md).
+
+:::danger[Four things are called a session. Only a Game Model session satisfies `is_participant`.]
+The **login / identity session** is who signed in (`UCrowdyGameSession`). The **UDP session channel** (`__crowdy_session_<appId>`) is a transport every client of the app joins. **Crowdy Teams** membership is a persistent group with roles. A **Game Model session** is the roster Create / Join write. Joining a team, sitting in the match, or riding the session channel does not make `is_participant` true. [Sessions and Presence](../concepts/sessions-and-presence.md) keeps the four apart.
+:::
 
 `feature("premium")`, `grid_permission("access")`, and `group_permission(42)` are the argument-carrying leaves; their arguments must be literals. `&&`, `||`, and `!` become `and`, `or`, and `not`. The full vocabulary and how the server evaluates each leaf are on [Authority: deciding who may invoke a function](/game-api/game-models#authority-deciding-who-may-invoke-a-function); this page only covers what the Unreal author writes.
 
@@ -5708,7 +5728,11 @@ When a body has no `require` line at all, the compiler infers a gate rather than
 The default keys on whether the effect crosses entities, not on which container it writes: `self.hp -= source.str` writes self but reads source, so it is cross-entity and gates `is_participant`.
 
 :::warning[A freshly authored function is never open by accident.]
-No `require` line means the inferred gate above, not "anyone". If you want a function every signed-in player may call on any container, say so with `require anyone` or `require participant`, whichever your game means, and read the emitted policy back in the Deploy Payload panel.
+No `require` line means the inferred gate above, not "anyone". If you want a function every signed-in player may call on any container, say `require anyone` and read the emitted policy back in the Deploy Payload panel. `require participant` is not a synonym for anyone: it still needs a Game Model session and a `sessionId` on the invoke.
+:::
+
+:::danger[A cross-entity body with no `require` infers `is_participant`. No Game Model session means every player call fails.]
+If the Effect body reads `source.` / `ref(...)` (or any other entity) and you did not write `require owner` or `require host`, Unreal emits `is_participant`. A player-facing Effect of that shape in an app that never calls Create or Join Game Session **always** lands on `Failed` for players. Opt out with `require anyone` plus the conditions you actually mean, **or** create and join a Game Model session and pass `SessionId`. The asset's **Deploy Payload** panel prints the inferred leaf; that is what the server will evaluate, not the `require` lines you meant to write later.
 :::
 
 An authored `require` is added to the inferred gate with `and`, unless what you wrote already constrains the caller on every path (`require owner`, `require host`), in which case the inferred gate is dropped so a deliberate `require host` is not also gated on ownership. A `require` that only tests values (`self.fuel < 100`, `$damage > 0`) never loosens who may call: it is added to the inferred gate. So `require self.fuel < 100` alone still carries `owner_of_self`; the explicit body above is what you write when you want to see both.
@@ -5725,7 +5749,7 @@ For a brand-new function this is harmless: there is nothing to clear, and the in
 
 The policy applies to everyone, app admins included; there is no app-level switch that exempts a player account, so a call your own account makes is gated exactly as a stranger's. The Game API page describes a deliberate skip for admin tooling; it needs a permission a shipped client never holds.
 
-A refused `require` rolls the whole invoke back before any assignment runs and lands on the caller's `Failed` pin. The caller's own view of the outcome is on [Functions and return values](./functions-and-return-values.md).
+A refused `require` rolls the whole invoke back before any assignment runs and lands on the caller's `Failed` pin. The pin's `ErrorMessage` is a player-safe sentence, not the require leaf; the leaf is on `gameModelEvents`. [Functions and return values](./functions-and-return-values.md).
 
 ## Gotchas
 
@@ -5734,6 +5758,8 @@ A refused `require` rolls the whole invoke back before any assignment runs and l
 - The graph front end and the text body lower to the same JSON. Switching between them is a UI choice.
 - A sync ships whatever policy is authored at that moment. The review sheet counts changes but does not single out an authority change; read the Deploy Payload panel after an SDK update. [Game Models authoring](../studio/game-models-authoring.md).
 - Kit functions carry their own policies chosen from the preset's authority dropdowns, which are a friendlier face on the same grammar. [Kits](./kits.md).
+- `host` is the elected app host. The Game Model session host is a different fact; [Sessions](./sessions.md) and [The Host Is a Convention](../concepts/host-is-a-convention.md).
+- Inferred `is_participant` plus no Game Model session is a permanent player denial, not a bind race. Read the Deploy Payload before you debug health or team assignment.
 
 ## Related
 
@@ -5755,7 +5781,7 @@ The village night: fuel burns down on a schedule while the village has anyone in
 
 ## Automations react; they are not called
 
-There is no Blueprint node and no C++ function to start an automation. Tick **Run Automatically** (`bRunAutomatically`) on the effect and pick a trigger; the schema sync marks the function autonomous-invocable and creates the automation with it. The client-visible result is the same as any other function commit: the container changes, peers re-pull, `CrowdyOnRep` fires. [Change pings and pull](./change-pings-and-pull.md) is how the change arrives; this page is how it is caused.
+There is no Blueprint node and no C++ function to start an automation. Tick **Run Automatically** (`bRunAutomatically`) on the effect and pick a trigger; the schema sync marks the function autonomous-invocable and creates the automation with it. The client-visible result is the same as any other function commit: the container changes. Peers re-pull only if the function authored a `NotificationCarrier`, or if they pull explicitly. An automation has no acting Unreal client, so the SDK's fallback ping never fires for it. [Change pings and pull](./change-pings-and-pull.md) is how the change arrives; this page is how it is caused.
 
 The trigger and target fields, all hidden until Run Automatically is on:
 
@@ -5785,7 +5811,7 @@ The wire semantics of every field, and of timers, are on [EffectScript: timers a
 self.fuel -= 5
 ```
 
-Nothing in Unreal calls it. Every thirty seconds, while at least one player is connected to the app, each lantern's fuel drops, each bound client re-pulls, and the `OnRep_Fuel` the [Quickstart](../quickstart.md) wrote dims the light. That is the whole client side of an automation: the notify you already have.
+Nothing in Unreal calls it. Every thirty seconds, while at least one player is connected to the app, each lantern's fuel drops. Each bound client re-pulls only if this function authored a `NotificationCarrier` (or the client pulls); the `OnRep_Fuel` the [Quickstart](../quickstart.md) wrote then dims the light. That is the whole client side of an automation: the notify you **authored**, not a ping the SDK invents for a player invoke.
 
 :::warning[A schedule runs only while at least one player is connected to the app.]
 Nothing runs for an empty app. A schedule's missed runs are never made up; a timer waits and fires late when somebody returns; an event trigger is unaffected. A lantern that stops burning while nobody is in the village is fine. A value that must keep moving through an empty night is not: write that work so it is right whenever it next runs, storing a timestamp and computing the elapsed time with `now()` instead of assuming a cadence. The shape, and the per-trigger table, are on [Presence](/game-api/autonomous-processes#presence).
@@ -5848,6 +5874,7 @@ A timer fires exactly once. A timer that re-arms itself is bounded one cascade l
 
 ## Gotchas
 
+- An automation write is invisible to other Unreal clients unless the function authored a `NotificationCarrier` (or they pull). There is no fallback ping.
 - Every field above is asset data. Changing one is a schema change: Sync to Server from [Game Models authoring](../studio/game-models-authoring.md).
 - An effect that is Other effects only and also runs automatically infers `is_automation` as its gate when it has no `require` line. [Invoke policies](./invoke-policies.md).
 - Debounce drops events; it is not the summing merge on [Coalescing](./coalescing.md).
@@ -6302,6 +6329,7 @@ Every cooked build before this version used a path-hash identity for placed obje
 
 ## Gotchas
 
+- Pre-seeding creates the row. The client still has to bind, then pull, before a getter is the server value. Do not apply an Effect until that bind has returned.
 - Scope is per type, in code. Mixing scopes by convenience lets one match's state leak into another.
 - Do not scan an unsaved map; the scan skips dirty actors because the key a build cooks is the saved placement.
 - The manifest is per map. Applying one map's manifest inside another creates rows nobody will find; the runtime warns but does not refuse.
@@ -6408,6 +6436,7 @@ An entity that keeps sweeping and never binds is usually a type nobody may creat
 
 ## Gotchas
 
+- Wait for the bind (ensure) to return before applying an Effect. Until the first pull, getters are class defaults, so a "wrong" health or team id in that window is expected.
 - A moved placed actor keeps its key; a copied one gets a new placement guid and a new key.
 - A binding key that changes between runs is a new row every run. Keep the derivation pure.
 - The component key folds in the component's class, so two different container classes on one actor never collide, and two of the same class need distinct names or keys.
@@ -6647,7 +6676,7 @@ When something other than the container itself has to react, a HUD, a scoreboard
 Three things can announce a change, and all three end in `HandleModelChanged`, the subsystem's re-pull:
 
 - The server-native notification an effect authors, on the carrier its `NotificationCarrier` chose: a channel message for every member of the app's session channel, or a spatial server event for a container that carries chunk coordinates. The channel form is a payload prefixed `cmc:` followed by the container id; the spatial form stamps event type `60000` so the client recognises it among unrelated server events.
-- The fallback ping. After a successful invoke the acting client sends a tiny `FCrowdyModelChangedPing`, the entity's id and the container id, as an ordinary game event payload to its peers, so a peer that missed the server-native notification still re-pulls. `crowdy.gamemodel.emitfallbackping 0` turns it off, to prove the server-native path alone in a two-client test.
+- The fallback ping. After a successful invoke the **Unreal client that invoked** sends a tiny `FCrowdyModelChangedPing`, the entity's id and the container id, as an ordinary game event payload to its peers, so a peer that missed the server-native notification still re-pulls. `crowdy.gamemodel.emitfallbackping 0` turns it off, to prove the server-native path alone in a two-client test. A Compute module, an automation, or another client's write has **no** acting Unreal client, so this ping never fires for those writes. Peers re-pull those only when the function authored a `NotificationCarrier`, or when a client pulls explicitly.
 - A watched free container's own notification, which re-pulls the by-id cache instead of an actor.
 
 :::warning[The ping is a nudge with no authoritative payload. Never build gameplay on its fields.]
@@ -6727,7 +6756,7 @@ At **Event BeginPlay**, the **Crowdy Game Model Subsystem** getter (a world subs
 </Tabs>
 
 :::warning[An echoed write on the client that made the call proves nothing about what anyone else received.]
-The invoke's response carries the confirmed mutations, and the SDK applies them to the calling client's cache whatever the notification carrier is, so the caller's `CrowdyOnRep` and this delegate fire on the caller even when no notification was ever authored. Evidence of delivery to peers is a signal handler, or another client's own OnRep or delegate firing, never the invoker's.
+The invoke's response carries the confirmed mutations, and the SDK applies them to the calling client's cache whatever the notification carrier is, so the caller's `CrowdyOnRep` and this delegate fire on the caller even when no notification was ever authored. Evidence of delivery to peers is a signal handler, or another client's own OnRep or delegate firing, never the invoker's. A write with no acting Unreal client (Compute, automation) has no fallback ping at all.
 :::
 
 ## Cross-container writes
@@ -6757,6 +6786,8 @@ If the feed shows the change and the trace shows no pull, the client never recog
 - **Listen for Model Changes** is per world. Bind it again after a travel.
 - The two-client PIE switches are test aids; leave `emitfallbackping` at its default in a normal session.
 - A read-only query effect authors no notification, on purpose. Asking never makes peers re-pull.
+- `watchcontainers` is a diagnostic: it logs the feed and does **not** re-pull.
+- Session-scoped types can persist with `session_id` null. `gameModelEvents` / `containerChanged` filtered by `sessionId` hide those rows; omit `sessionId` unless you are actually in a Game Model session.
 - `GetLastModelErrorCode` is session-scoped despite the name; the session page owns its codes.
 
 ## Related
@@ -7084,7 +7115,8 @@ On `UCrowdyGameModel`, each resolving the subsystem from the World Context:
 ## Gotchas
 
 - Sessions are truth-plane. Whose turn it is and who hosts are never [Crowdy State](../runtime/crowdy-state.md) properties.
-- The session host here is a server fact. The elected host of the view plane is a different thing; [The Host Is a Convention](../concepts/host-is-a-convention.md).
+- The session host here is a server fact. The elected host of the view plane is a different thing, and `is_host` on an invoke policy is that elected host, not this session host; [The Host Is a Convention](../concepts/host-is-a-convention.md) and [Invoke policies](./invoke-policies.md).
+- `is_participant` is this session: an active Create / Join record, a joined roster row, and a `SessionId` on the invoke. Teams, the login session, and the UDP session channel do not satisfy it.
 - A session nobody has been in for the empty timeout is ended by the server with `EmptyTimeout`.
 - `Role` on Join is a free label your game gives the player, empty for the server's default.
 - Session creation policy, admission semantics, and the event log are server behaviour: [Sessions, ownership, and turns](/game-api/game-models#sessions-ownership-and-turns).
@@ -7476,8 +7508,9 @@ Membership, roles, and permissions are server-authoritative truth, pulled throug
 than trusted from the client, the same split every server-owned system in the SDK follows: see
 [Game Models](../game-models/overview.md) for the general two-plane story. Teams are not themselves a
 Game Model in this version: there is no `CrowdyContainer` here, just the Team API `UCrowdyTeams` wraps
-one call at a time. If you came looking for a container, see
-[Change pings and pull](../game-models/change-pings-and-pull.md) instead.
+one call at a time. Joining a team does not create a Game Model session and does not make
+`is_participant` true; [Invoke policies](../game-models/invoke-policies.md). If you came looking for a
+container, see [Change pings and pull](../game-models/change-pings-and-pull.md) instead.
 
 The server owns team, role, and permission storage and every authorization check; a disallowed call comes
 back through the error delegate rather than being refused on the client. The exact GraphQL shape behind
@@ -8523,7 +8556,8 @@ Two checks answer "am I the host", at two trust levels. `UCrowdyHostSubsystem::I
 ## Gotchas
 
 - A field lives on one plane. Discovery rejects a property that is both a `CrowdyState` property and a Game Model attribute; decide which one it is before you mark it.
-- The client that made a request sees the confirmed result applied to its own cache first. That proves the server accepted the change, not that any peer received it.
+- Bind, then apply. Until the bind returns and the first pull lands, a getter is the class default.
+- The client that made a request sees the confirmed result applied to its own cache first. That proves the server accepted the change, not that any peer received it. An automation or Compute write has no acting Unreal client and no fallback ping; author a `NotificationCarrier` or pull.
 - `IsLocallyOwned()` fails closed for a host-owned entity while no host is elected yet. Bind `OnCrowdyOwnershipAssigned` instead of assuming an answer at `BeginPlay`.
 - `HostOverride` is authored configuration, identical on every client. It is not sent on the wire and it is not checked by the server.
 - A per-entity cost you cannot see in one PIE client is still there. Measure with the entity count you ship, not the one you test with; [Testing Locally](./testing-locally.md) covers the loopback switches for that.
