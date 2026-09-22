@@ -175,8 +175,8 @@ api::emit_spatial("server_event", (0, 0, 0), &npc_uuid_hex, &payload, 2, 0)?;
 |---|---|---|
 | `emit_spatial(kind, chunk, uuid_hex, payload_base64, distance, decay)` | `kind`: `actor` \| `client_event` \| `server_event` \| `text`; `uuid_hex`: 64 hex chars (the 32-byte source actor UUID); payload ≤ 1024 bytes; `distance` 0–8, `decay` 0–5 | The matching notification on the [`udpNotifications`](/game-api/graphql-udp-proxy-api) stream, fanned out by proximity to the chunk — e.g. `kind: "actor"` arrives as an `ActorUpdateNotification`, so a module can drive NPC movement that clients render like any remote player. **`client_event` is opcode 138 and `server_event` is opcode 139** (`CLIENT_EVENT_NOTIFICATION` / `SERVER_EVENT_NOTIFICATION` in the [wire formats](/replication-api/wire-formats)), and for both the decoded payload must be `[u16 eventType LE][state…]` — that is the framing CrowdyJS's event router and a CLIENT mod's catalog decode (Game API v2.8.0; before it `server_event` went out as an untyped generic spatial blob that typed decoders never saw). |
 | `pointer_clicks()` — **CLIENT modules only** | no args; `input` capability group, 400 calls/s | Drains the mouse clicks the host game collected since the last call: `{ nowMs, buttons, holdingMs, clicks: [{ t: "down" \| "up", button, atMs, heldMs?, nx, ny }] }` (canvas NDC, +ny up; Studio chrome omitted). Refused on a SERVER module. Pair it with `[package.metadata.crowdy] tick_interval_ms` (16–1000) in the CLIENT crate's `Cargo.toml` for a fast enough loop; see [Build mods with Crowdy Studio](/build-a-game/bwf-mod-development#tick-rate-and-mouse-input-client-game-api-v280--crowdyjs-1760). |
-| `emit_channel(channel_id, payload_base64)` | payload ≤ 1024 bytes | A `ChannelMessageNotification` to the [channel](/game-api/channels)'s members. |
-| `emit_event(name, payload)` | payload: any JSON | A **compute event** on the server-side event bus. Modules with a `compute_event` trigger (matching `eventName`) receive it in `on_event`. Chains are cut off at a platform cascade-depth limit; nothing is sent to clients. |
+| `emit_channel(channel_id, payload_base64)` | payload ≤ 1024 bytes | A `ChannelMessageNotification` to the [channel](/game-api/channels)'s members. **On a grid**: only the grid's own [grid channels](/game-api/channels#grid-channels) (or, when the app allows it, channels the grid owner may post to); the sender uuid is `grid:<gridId>`. |
+| `emit_event(name, payload)` / `emit_event_to(target, name, payload)` (SDK 0.1.6) | payload: any JSON (≤ 16 KiB on a grid) | A **compute event** on an event bus. A studio module publishes on the app bus: modules with a `compute_event` trigger (matching `eventName`) receive it in `on_event`. **A player module publishes on its grid's bus**: modules on the same grid that subscribed to the name, the module `target` names, and studio modules with a `grid_event` trigger. Chains are cut off at a platform cascade-depth limit (8); nothing is sent to clients. |
 
 Delivery of `emit_spatial` / `emit_channel` is **best-effort**, exactly like
 player-originated realtime traffic and
@@ -190,6 +190,10 @@ With an `event` trigger bound, your `on_event` entry point gets a JSON payload
 describing the event: model activity (`function_invoked`,
 `property_changed`, `container_created`, with the fields the event carries)
 or a compute event (`name` + the JSON payload passed to `emit_event`).
+A studio module with an `event` trigger on **`grid_event`** hears player
+modules' grid buses (opt-in): the payload is
+`{ gridId, ownerUserId, sourceModule, payload }` with the event's `eventName`.
+`crowdy-game-kit-core::grid::decode` reads both shapes.
 Event handling runs under the `fuelPerInvoke` budget.
 
 ## Determinism and sandboxing
