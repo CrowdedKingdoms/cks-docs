@@ -26,6 +26,14 @@ the SDKs. Per-surface detail lives with each API.
   fan-out work.
 - Compute should **invoke Game Model effects** rather than duplicate their
   validation and mutation rules.
+- **Bind / ensure, then invoke.** A getter after bind is the class or type
+  default until the first pull.
+- An invoke-policy refusal is `success: false` with `fault.code`
+  `NOT_ALLOWED`. The player `errorMessage` is **You are not allowed to do
+  that**; the require leaf is on `gameModelEvents`.
+- Automation and Compute writes reach other Unreal clients only when the
+  function authored a notification, or a client pulls. The Unreal fallback
+  ping is sent only by the client that invoked.
 
 In short: the client requests a direct change when it knows the target; Game
 Model effects validate and commit that change; Compute handles the wider

@@ -67,7 +67,7 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 ## Step 1: Get the release
 
-Download the `v2.14.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+Download the `v2.15.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
 
 :::note[The release you install must match the version this guide describes (2.14).]
 :::
@@ -196,8 +196,6 @@ One fact shapes the order of the steps. The server knows a client by the actor u
 
 :::note[A map with no profile of its own runs on the SDK's shipped default.]
 Config Sync points the project at an app; a map profile decides what the SDK does on a map. With none assigned, the shipped default applies (networking on, the actor pool drawing remote entities with the shipped transform policy), so every step below works without authoring one. Author a profile when you need per-map settings; see [Map profiles](./runtime/map-profile.md).
-
-On the tagged v2.14.0 plugin the shipped default draws nothing: its Backend Config is empty, and that release renders remote entities only through a config that names a Replication Policy Class. On that release, author a profile for your test map with an **Actor Pool Backend Config** whose policy class is `UCrowdyTransformRepPolicy` before step 1. The fallback lands with the next release; see [What's Changed](./guides/whats-changed.md#unreleased-after-v2140).
 :::
 
 ## About the code on this page
@@ -295,8 +293,6 @@ Your player pawn is the first entity, before any lantern, because it is what mak
 The identity is derived once and nothing re-derives it later: at `BeginPlay` when the pawn already has a controller, otherwise inside its first possession, which for a pawn the Game Mode spawns during play is the `RestartPlayer` call that spawned it. A pawn spawned by the Game Mode on the first frame begins play before the sign-in has answered, and its first updates leave before the server is ready for them, so the Game Mode starts players as spectators and the connected handler spawns the pawn instead. **On UDP Connection Success** fires once the server has assigned you and its readiness wait has elapsed (the SDK times that, you never do), and every update the pawn sends after it counts.
 
 Where the account id becomes readable. The engine possesses a pawn spawned during play only after its `BeginPlay`, so the component waits and registers inside that first possession, after the pawn's own **Possessed** and **Controller Changed** events; the first controller of any kind completes it, and an AI-possessed pawn takes the random-id fallback with its warning. A respawn that leaves the old pawn standing hands the account id to the new one, and the old pawn's component stops replicating. Read the id from the component's **On Crowdy Ownership Assigned** (`OnCrowdyOwnershipAssigned`) or the entity subsystem's `OnEntityRegistered`, never from `BeginPlay` or **Possessed**; **Is Locally Owned** on the pawn reads false until that registration, so a pawn graph that gates on it at `BeginPlay` runs nothing.
-
-On the tagged v2.14.0 plugin the component derives the identity at `BeginPlay` with no controller in sight, logs `Identity Policy is Player Derived on ... but the pawn is not possessed by any controller yet, so it fell back to a random id`, and registers under a random id instead of your account's. Every step on this page still works there: the pawn registers and sends, you are present, the reflection draws, the spatial event reaches you, and two clients never conflate. What that release lacks is whatever is keyed on the local player id: the host lookup, ownership requests, and the drop of your own echoed events (with two real clients, a `SpatialMulticast` body runs twice on its sender, once locally and once from the server's echo). See [What's Changed](./guides/whats-changed.md#unreleased-after-v2140).
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -405,7 +401,7 @@ Three Blueprints, two of them settings only.
 **Success signal.** Press Play. The map sits still under a fixed camera until `Connected to the app`, then your character spawns at a Player Start and you can move it. With `crowdy.entity.trace 1` on, the log shows the pawn's entity registering on the wire right after the connection comes up.
 
 :::caution[A pawn that begins play before the sign-in has answered derives its identity from user id 0.]
-Nothing warns. Two such clients conflate into one player, and the host cannot be found by its avatar. Keep the pawn's spawn behind **On UDP Connection Success**, as the block does: the pawn then registers under your account's id inside the possession that `RestartPlayer` performs. On the tagged v2.14.0 plugin the same gate gives that pawn a random id and one warning, the lesser evil; see [What's Changed](./guides/whats-changed.md#unreleased-after-v2140).
+Nothing warns. Two such clients conflate into one player, and the host cannot be found by its avatar. Keep the pawn's spawn behind **On UDP Connection Success**, as the block does: the pawn then registers under your account's id inside the possession that `RestartPlayer` performs.
 :::
 
 ## 2. See yourself
@@ -418,7 +414,7 @@ What it means: the server received your updates, so you exist to it. The same up
 
 The other way to see the same thing is two real clients. Open two Play in Editor windows signed into two different accounts, as [Testing locally](./guides/testing-locally.md#two-pie-client-setup) describes; each window shows the other's pawn as a proxy, moving as its owner moves.
 
-**Success signal.** A second character follows you. If none appears, check in this order: the log shows `Connected to the app`; the pawn spawned after it, not on the first frame; the map's profile (or the shipped default) has its actor tracker on; `crowdy.entity.trace 1` shows the registration. On the tagged v2.14.0 plugin, the note under Before you start applies: with no policy class named, the pool draws nothing.
+**Success signal.** A second character follows you. If none appears, check in this order: the log shows `Connected to the app`; the pawn spawned after it, not on the first frame; the map's profile (or the shipped default) has its actor tracker on; `crowdy.entity.trace 1` shows the registration.
 
 ## 3. Light a lantern
 
@@ -821,7 +817,7 @@ void ALantern::OnRep_Lit()
 
 - No login, no connection. Until `Get UDP Connection State` reads connected, every step looks dead.
 - No pawn, no presence. The server knows you by your pawn's updates; a client whose pawn is not sending is at no position and receives no spatial event, and its own spatial sends reach nobody. A `Multicast` event is the exception: it goes by session channel membership, which connecting joins.
-- Spawn the pawn after **On UDP Connection Success**. Before it, the identity derives from user id 0 and the first updates leave before the server is ready to take them; nothing is queued or replayed, the next interval's update is the recovery. A pawn spawned after it registers inside its first possession, so read its id from **On Crowdy Ownership Assigned**, not at `BeginPlay`. On the tagged v2.14.0 plugin that pawn registers under a random id with one warning (the engine possesses it after `BeginPlay`); the page works, the host lookup, ownership requests and the echo drop do not, until the release that derives identity on possession.
+- Spawn the pawn after **On UDP Connection Success**. Before it, the identity derives from user id 0 and the first updates leave before the server is ready to take them; nothing is queued or replayed, the next interval's update is the recovery. A pawn spawned after it registers inside its first possession, so read its id from **On Crowdy Ownership Assigned**, not at `BeginPlay`.
 - The Game Mode binds the event in its own `BeginPlay`. A map opened after the connection is already up never sees it; check **Get UDP Connection State** at `BeginPlay` first and restart the player at once when it reads connected, or bind in the Game Instance and spawn from there.
 - A map whose `MapProfiles` row or `DefaultProfile` names an asset that did not load is inactive; the warning names the asset. Check that before any code. A map with no row at all runs on the shipped default.
 - The loopback variables are test aids. Leave them off in a normal session; they change what a single client sees.
@@ -888,7 +884,7 @@ Four of the six are `meta=(...)` keys; the entity is a component and the effect 
 | `CrowdyModel` + `CrowdyKey` + `CrowdyOnRep` | A `UPROPERTY` on a container class; the server owns the value, the notify is parameterless | `gm-container` | [Containers and attributes](./game-models/containers-and-attributes.md#reacting-to-a-change) |
 | `CrowdyEffect` | Not a meta key: a `UCrowdyEffect` asset authored in Studio or Effect Script, referenced from C++ as `TObjectPtr<UCrowdyEffect>` | `fx-declare` | [Effects from C++](./game-models/effects-cpp.md#declaring-the-reference), [Effect Script](./game-models/effect-script.md) |
 
-Four rules the examples assume: the first thing a client needs is its own pawn as a `Dynamic`, `PlayerDerived`, `LocalClient` entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; that pawn registers inside its first possession, since the engine possesses a runtime spawn after its `BeginPlay`, so read its id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned`, not at `BeginPlay` (on the tagged v2.14.0 plugin it registers under a random id instead; the page says what that costs: [Quickstart](./quickstart.md#1-make-your-player-a-crowdy-entity)); a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); a `CrowdyOnRep` function takes no parameters, read the property for the new value ([The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code)); and the lantern's assign-and-stop is the client-owned pattern, because the Quickstart sets its `Ownership` to Local Client: a host-owned entity (`Ownership` = Host, the default a placed actor keeps: Static, Stable, level-placed) never ships a plain `CrowdyState` write, so mark the property `CrowdyManualDirty` and call `MarkStateDirty` after each write, or give it `CrowdyHeartbeat` ([the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push)).
+Four rules the examples assume: the first thing a client needs is its own pawn as a `Dynamic`, `PlayerDerived`, `LocalClient` entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; that pawn registers inside its first possession, since the engine possesses a runtime spawn after its `BeginPlay`, so read its id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned`, not at `BeginPlay`; a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); a `CrowdyOnRep` function takes no parameters, read the property for the new value ([The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code)); and the lantern's assign-and-stop is the client-owned pattern, because the Quickstart sets its `Ownership` to Local Client: a host-owned entity (`Ownership` = Host, the default a placed actor keeps: Static, Stable, level-placed) never ships a plain `CrowdyState` write, so mark the property `CrowdyManualDirty` and call `MarkStateDirty` after each write, or give it `CrowdyHeartbeat` ([the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push)).
 
 ## Three things that break silently in a cooked build
 
@@ -1079,7 +1075,7 @@ back, and `Reset()` clears it to unset.
 An actor you spawn during play through the SDK's spawn call is told its identity by the spawner, so its policy does not matter; the spawn travels to every client carrying the NetID.
 
 :::note[PlayerDerived on anything but the local player's pawn falls back to Random.]
-The SDK logs one warning and the actor gets an id no other client shares. Keep PlayerDerived for the pawn. The identity is read once: at the component's `BeginPlay` when the pawn already has a controller, otherwise inside its first possession, after the pawn's own **Possessed** and **Controller Changed** events, since a pawn spawned during play (`RestartPlayer`, a respawn) is possessed only after `BeginPlay`. The first controller of any kind completes it; an AI controller gets the fallback. A respawn that leaves the earlier pawn alive moves the account id to the new pawn and clears the old one, which stops replicating. Read the id from the component's **On Crowdy Ownership Assigned** or the entity subsystem's `OnEntityRegistered`, never from `BeginPlay` or **Possessed**; **Is Locally Owned** on the pawn is false until the registration. On the tagged v2.14.0 plugin a pawn possessed after `BeginPlay` takes the random fallback instead; the [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity) says what still works there, and [What's Changed](../guides/whats-changed.md#unreleased-after-v2140) lists the change.
+The SDK logs one warning and the actor gets an id no other client shares. Keep PlayerDerived for the pawn. The identity is read once: at the component's `BeginPlay` when the pawn already has a controller, otherwise inside its first possession, after the pawn's own **Possessed** and **Controller Changed** events, since a pawn spawned during play (`RestartPlayer`, a respawn) is possessed only after `BeginPlay`. The first controller of any kind completes it; an AI controller gets the fallback. A respawn that leaves the earlier pawn alive moves the account id to the new pawn and clears the old one, which stops replicating. Read the id from the component's **On Crowdy Ownership Assigned** or the entity subsystem's `OnEntityRegistered`, never from `BeginPlay` or **Possessed**; **Is Locally Owned** on the pawn is false until the registration.
 :::
 
 ![The entity component's Details panel: Mode, Identity Policy, and Ownership](/img/unreal-sdk/entity-mode-identity.png)
@@ -1185,8 +1181,8 @@ Two things follow from the server keeping it:
 - **Your client does not decide any of it.** Joining, leaving, changing the host, or taking a turn is a request; the server applies the rule and answers. A Blueprint check such as `Is Session Host` tells you what to show, and the server still refuses a host action from a client that is not the host.
 - **Game Model state belongs to a session.** A container created during a match belongs to that match's session; reads and Effects run inside the session your client is in (the "active session"). That is what ties this page to the [truth plane](./two-planes.md): the session is the scope a Game Model value lives in.
 
-:::note[One word, three things.]
-A **game session** (this page) is the group of players. The **login session** is your signed-in identity. The **session channel** is a transport every client of the app joins. Be precise about which one a sentence means.
+:::note[One word, four things.]
+A **Game Model session** (this page) is the group of players the server records when you Create or Join. The **login session** is your signed-in identity. The **session channel** is a transport every client of the app joins (`__crowdy_session_<appId>`). A **Crowdy Team** is a persistent group with membership and roles. Joining a team, riding the session channel, or being signed in does not make `is_participant` true; only a joined Game Model session does. [Invoke policies](../game-models/invoke-policies.md).
 :::
 
 ## Presence is the player's actor
@@ -1808,7 +1804,7 @@ Pressing **Sync to Server** opens a review sheet headed **Send ...?**; there is 
 An SDK update can change what an effect's invoke policy says, for example by adding an ownership or participation requirement to an effect that had none. The change is inert in your project until the next Sync to Server pushes the recomputed policy; a call that worked for months then starts returning "You are not allowed to do that". The review panel counts changes but does not single out an authority change from a cosmetic one. After updating the SDK, open each effect asset and read its **Deploy Payload** panel before you sync: it prints the exact function definition a sync would send, invoke policy included.
 :::
 
-Below the reconcile strip is a **Pre-seed containers** strip: scan the open map, preview, and apply the app-scoped rows that map's placed objects need. It belongs with sessions and scopes in the Game Models section.
+Below the reconcile strip is a **Pre-seed containers** strip: scan the open map, preview, and apply the app-scoped rows that map's placed objects need. It belongs with sessions and scopes in the Game Models section. It is authoring work, so the strip hides itself on the Live tab and gives that height to the live list and the values panel.
 
 :::note[Since 2.14]
 Pre-seeding and the app scope for containers are new in this version.
@@ -1819,6 +1815,10 @@ Pre-seeding and the app scope for containers are new in this version.
 **Models.** What is in this app's schema, where each piece came from, and what a sync would change. A search box, a source filter (**All**, **In code**, **Only on server**), the model list, and a detail panel with the selected model's Attributes, Functions, Automations, and Live sections. A **Mark for deletion** button under the list marks the selected row.
 
 **Live.** What is running right now, read straight from the server, so it is live even outside Play. Columns: **Name**, **Id**, **Owner**, **Session**, **Binding**. Filter by type name and session id. Actions: Refresh, Copy id, **Delete live model**, **Delete all of this model**, **Delete all in app**, and a Stop button while a purge runs.
+
+Select a live model and the panel under the list fills with what it holds, one row per attribute: the attribute's name, its value, what it holds, and the attribute's description where the model gives one. Numbers read as numbers, flags as yes or no, and a structure as its own JSON rather than as the word "object". An attribute the model declares that this live model has no value for is listed too, reading **not set**, so the panel is the model's vocabulary and not only the keys that happen to be stored. Drag the handle between the list and the panel to give either one more room.
+
+The search box above the panel matches attribute names and values, so typing a number finds whichever attribute holds it. **Copy value** puts the highlighted attribute's value on the clipboard whole, however long it is; **Copy values** puts every value on it as indented JSON. **Internal** adds the keys the runtime keeps for itself, such as the revision counter that drives collection change pings.
 
 :::note[Live deletes are immediate and have no undo.]
 **Delete all of this model** and **Delete all in app** page through the server until nothing is left. They are not limited to what the current filters show.
@@ -1866,6 +1866,8 @@ The server refuses nothing and cascades nothing for an attribute delete. Studio'
 - Sync never deletes. Deletes are the separate, staged flow above.
 - Lint and Sync are different checks. Lint finds what the server sees as broken; Preview finds what your project would change.
 - The Live tab's bulk deletes ignore the filters. Read the confirmation counts.
+- The values panel shows what your token may see. The server filters an attribute out by its visibility, and a filtered attribute reads as **not set** where the model declares it and is simply absent where it does not.
+- **not set** and **none** are different answers. The first is an attribute with no stored value; the second is a value the live model stores as null.
 
 ## Related
 
@@ -2166,7 +2168,7 @@ The plugin registers a shipped profile under the provider name `CrowdySDK`, and 
 ## Gotchas
 
 - A `MapProfiles` row or `DefaultProfile` naming an asset that did not load means no networking on that map. Check this first when a map looks dead; the warning names the asset.
-- The shipped default profile has no `BackendConfig`. On the current source that means the built-in transform policy draws remote entities. On the tagged v2.14.0 plugin it means nothing is drawn from the continuous channel: on that release, author a profile whose **Actor Pool Backend Config** names `UCrowdyTransformRepPolicy`. See [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).
+- The shipped default profile has no `BackendConfig`, which means the built-in transform policy draws remote entities. On 2.14.0 and earlier nothing was drawn from the continuous channel in that state; see [What's Changed](../guides/whats-changed.md#2026-09-22-sdk-v2150).
 - A non-networked map wants a profile with **Enable Networking** off, not no profile. The warning text asks for exactly that.
 - `StateKeyframeIntervalSeconds` is a safety net, not the mechanism. Changed properties ship on change whatever the interval; 0 only stops the periodic baseline for `CrowdyHeartbeat` properties.
 - `ReplicationIntervalHz` is one clock for two channels: continuous state and Crowdy State share it but send independently.
@@ -2195,7 +2197,7 @@ Whenever an actor created at runtime must exist on other clients: a dropped item
 
 `InitialState` is an `FInstancedStruct` of your own type. It travels with the spawn and lands in the component's `OnCrowdySpawned` event on every client; pass an empty struct when there is nothing to send.
 
-The lantern world's runtime spawn is the player arriving with a lantern. `ALanternPlayer` is the player character: a pawn carrying a `UCrowdyEntityComponent` in Dynamic mode with PlayerDerived identity and LocalClient ownership, declared in full on [Continuous state](./continuous-state.md). Once the character knows it is locally owned, `ALanternPlayer::DropLantern` spawns an `ALantern` a short way in front of it, and the new lantern appears there on every client in range. The moment is `OnCrowdyOwnershipAssigned`, not `BeginPlay`: a player pawn spawned during play (`RestartPlayer`) is possessed after its `BeginPlay`, and its Player Derived identity resolves inside that first possession, so `IsLocallyOwned()` is still false at `BeginPlay`. The `AddDynamic` in the block sits in `ALanternPlayer::BeginPlay`, after `Super::BeginPlay()`; the handler fires on the tick after the entity registers, on the first-frame pawn and the runtime-spawned one alike. (On the tagged v2.14.0 plugin the pawn registers at `BeginPlay` under a random id, so a `BeginPlay` gate ran there; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).)
+The lantern world's runtime spawn is the player arriving with a lantern. `ALanternPlayer` is the player character: a pawn carrying a `UCrowdyEntityComponent` in Dynamic mode with PlayerDerived identity and LocalClient ownership, declared in full on [Continuous state](./continuous-state.md). Once the character knows it is locally owned, `ALanternPlayer::DropLantern` spawns an `ALantern` a short way in front of it, and the new lantern appears there on every client in range. The moment is `OnCrowdyOwnershipAssigned`, not `BeginPlay`: a player pawn spawned during play (`RestartPlayer`) is possessed after its `BeginPlay`, and its Player Derived identity resolves inside that first possession, so `IsLocallyOwned()` is still false at `BeginPlay`. The `AddDynamic` in the block sits in `ALanternPlayer::BeginPlay`, after `Super::BeginPlay()`; the handler fires on the tick after the entity registers, on the first-frame pawn and the runtime-spawned one alike.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -2333,7 +2335,7 @@ Inbound actor updates arrive at `UCrowdyActorTracker`, a world subsystem the act
 
 ![The map profile with Actor Management expanded and an Actor Pool Backend Config assigned: the tracker settings and the backend selection](/img/unreal-sdk/actor-config.png)
 
-The shipped default profile leaves **Backend Config** at None and runs on the built-in one (on the tagged v2.14.0 plugin it draws nothing in that state; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140)); the [map profile page](./map-profile.md#create-the-asset) shows that state and when to assign your own.
+The shipped default profile leaves **Backend Config** at None and runs on the built-in one; the [map profile page](./map-profile.md#create-the-asset) shows that state and when to assign your own.
 
 | Field | Default | Effect |
 |---|---|---|
@@ -3817,7 +3819,7 @@ The screenshot is the SDK's shipped default profile, and its **Backend Config** 
 :::note[No Backend Config means the built-in one: the actor pool with the transform policy.]
 When `BackendConfig` is empty, `UCrowdyActorPoolBackend::InitializeBackend` creates a transient **Actor Pool Backend Config** and, since it names no policy, instantiates `UCrowdyTransformRepPolicy`: it reads the default executor's `FCrowdyActorState` and sets the pooled actor's location and rotation, interpolated across a ring of recent samples with bounded extrapolation. A `BackendConfig` of another backend's class is refused: the backend logs `Backend Config is a <class>, but this backend needs a CrowdyActorPoolBackendConfig` and returns false, the actor manager logs `could not initialize, so no remote entity will be drawn on this map`, and remote entities arriving as continuous-state updates are tracked with nothing on screen. Spawn-event proxies and Crowdy State are unaffected either way. See [Map profiles](./map-profile.md).
 
-The fallback is newer than the tagged v2.14.0 plugin. On that release an empty Backend Config, or one with no Replication Policy Class, tracks remote entities and draws nothing; set an **Actor Pool Backend Config** naming `UCrowdyTransformRepPolicy`. See [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).
+The fallback arrived in 2.15.0. On 2.14.0 and earlier an empty Backend Config, or one with no Replication Policy Class, tracks remote entities and draws nothing, and the fix there is an **Actor Pool Backend Config** naming `UCrowdyTransformRepPolicy`. See [What's Changed](../guides/whats-changed.md#2026-09-22-sdk-v2150).
 :::
 
 ### Configure it
@@ -4345,6 +4347,12 @@ In the Game Instance Blueprint, from **Event Init**, a **Crowdy SDK Subsystem** 
 
 Outbound replication messages of one network pass are packed into bundle datagrams. `crowdy.net.send.bundle` (default 1) controls it; 0 sends one datagram per message, a diagnostic switch rather than a setting a shipping build needs. The variable is read when a connection opens, so flipping it takes effect on the next connect, not on the live socket.
 
+## Signed inbound bundles
+
+Once the connection is up, the transport tells the replication server what this client can read (a `CLIENT_CAPABILITIES` message), and repeats it every 15 seconds so a token refresh or a server-side move, both of which reset the server's record without saying so, never leaves it stale. A server at v0.30.0 or later then packs the notifications it sends you into `MESSAGE_BUNDLE_SIGNED` datagrams: the members inside carry no signature of their own, and one HMAC at the end covers the whole datagram. The transport checks that one signature, drops the datagram if it fails, and delivers the members exactly as it delivers any other notification. Your handlers see no difference; a datagram that used to cost one verification per member costs one. An older server ignores the message and keeps signing every member, which is also what the tagged 2.14.0 plugin receives, since it never announces itself.
+
+`crowdy.net.recv.signedbundles` (default 1) is the switch; 0 stops the announcement and keeps the per-member form, for a before-and-after comparison rather than for shipping. Like `crowdy.net.send.bundle` it is read when a connection opens.
+
 ## The receive budget
 
 Inbound messages are delivered on the game thread, per frame, under two budgets: `crowdy.net.receive.maxmessages` (default 3072) caps how many messages one frame may deliver, and `crowdy.net.receive.maxdrainms` (default 4.0) caps the milliseconds one frame may spend delivering them. Whichever binds first ends that frame's drain and the rest waits for the next frame. The budget covers every message the connection receives, channel notifications and video fragments included, not only actor updates.
@@ -4364,7 +4372,7 @@ Five functions on `UCrowdySDKSubsystem` are deprecated (the compiler warns on ea
 - `Reconnecting` needs nothing from you. Only `Disconnected` after a timeout does.
 - `GateKeep` is an answer, not a failure. Retrying against a full app asks a server with no room whether it has room.
 - Coming up joins the channels. A Multicast event sent before **On UDP Connection Success** is queued and flushed when the bootstrap finishes; see [Channels](./channels.md).
-- `crowdy.net.send.bundle` changes take effect on the next connect.
+- `crowdy.net.send.bundle` and `crowdy.net.recv.signedbundles` changes take effect on the next connect.
 
 ## Related
 
@@ -4547,8 +4555,10 @@ Authoring the schema and pushing it to the server happens in Crowdy Studio; that
 ## Gotchas
 
 - A Game Model attribute exists on the server only after **Sync to Server** in Studio. Until then every read returns the default you pass.
-- "Session" means several things in this SDK. The Game Model session on these pages is a match: the group of players. The login session is your signed-in identity, held by `UCrowdyGameSession`, the client's own connection state (see [Authentication](../services/authentication.md)); the session channel is a transport every client of the app joins. [Sessions and Presence](../concepts/sessions-and-presence.md) keeps the three apart.
-- The elected host of the view plane is a convention. Nothing on this plane trusts it; a host-only function is gated by the server's `is_host` policy, not by who the clients elected. [The Host Is a Convention](../concepts/host-is-a-convention.md).
+- Do not apply an Effect until `gameModelEnsureContainer` / bind has **returned**. Binding is what creates the row. Until the first pull, a getter is the C++ / Blueprint class default, so a "wrong" health or team id in that window is expected. [Ensured identity](./ensured-identity.md).
+- "Session" means several things in this SDK. The Game Model session on these pages is a match: the group of players Create / Join record. The login session is your signed-in identity, held by `UCrowdyGameSession` (see [Authentication](../services/authentication.md)). The session channel is a transport every client of the app joins. A Crowdy Team is a persistent group with roles; joining one is not joining a session. [Sessions and Presence](../concepts/sessions-and-presence.md) keeps the four apart.
+- A cross-entity Effect with no `require` infers `is_participant`. An app that never creates a Game Model session always refuses those player calls. [Invoke policies](./invoke-policies.md).
+- The elected host of the view plane is a convention. `is_host` on a function is that elected host, not the Game Model session host. [The Host Is a Convention](../concepts/host-is-a-convention.md).
 - Trace everything on this plane with `crowdy.gamemodel.trace 1`; the log category is `LogCrowdyGameModel`.
 
 ## Related
@@ -5368,6 +5378,8 @@ Precedence for one parameter is override, then curve sampled at `Level`, then `D
 
 The server evaluates the body inside one transaction: every `require` first, then the assignments in order, then the `return` against final state. A refused `require` rolls the whole invoke back. On success the caller's response carries the mutations and the return value, and the SDK applies them to the caller's cache, so the caller's `CrowdyOnRep` fires with the authoritative value, not a prediction. Peers re-pull on the notification the asset's `NotificationCarrier` chose; [Change pings and pull](./change-pings-and-pull.md) has that half. What is atomic and what is not is server behaviour: [Concurrency](/game-api/game-models#concurrency-two-players-writing-the-same-property).
 
+Do not `Apply` until the target's bind has returned. Binding is what creates or attaches the row; applying beforehand is a race, not a server health bug. Until the first pull, a getter is the class default. [Ensured identity](./ensured-identity.md). A policy refusal's `ErrorMessage` is the player-safe sentence **You are not allowed to do that**; the require leaf is on `gameModelEvents`. [Functions and return values](./functions-and-return-values.md).
+
 A signal is the one output that is not state: an entry in `Signals` names a parameterless function, `OnSignal_<Name>`, that runs when the effect commits, on the container the effect ran on, on every client that has it bound; other containers of the type do not run it, and anything else listens on **On Crowdy Signal**. Delivery rules are on [Model-driven notifications](/game-api/model-driven-notifications#signals).
 
 ## Gotchas
@@ -5455,6 +5467,10 @@ In C++ the result arrives on `UCrowdyApplyEffectAction`'s `Succeeded` delegate a
 
 `Succeeded` fires only on a committed apply: it reached the server and passed the effect's rules. `Failed` fires on a transport failure, a server rollback, a marshalling failure before anything was sent, or an apply that was still waiting in a coalescing window when the world tore down. Exactly one of the two always fires, carrying `bSuccess`, `Return Value Json`, and `Error Message`.
 
+A policy refusal is that same `Failed` pin. `Error Message` is overwritten to **You are not allowed to do that**; the require leaf is on `gameModelEvents`, Studio's Advanced event log, or `crowdy.gamemodel.trace`, not on the pin. [Functions and return values](./functions-and-return-values.md) and [Invoke policies](./invoke-policies.md).
+
+Do not apply until the target's bind has returned. Binding is what creates or attaches the row; applying beforehand is a race. Until the first pull, a getter is the Blueprint class default. [Ensured identity](./ensured-identity.md).
+
 :::warning[The typed Return Value cannot tell "no answer" from "answered zero".]
 An absent, malformed, or wrong-typed result decodes to the type's zero, so a server that returned nothing and a server that returned 0 read alike on the typed pin. When that distinction matters, read **Return Value Json**: it is empty in the first case and `0` in the second.
 :::
@@ -5482,6 +5498,7 @@ An effect whose asset has **Coalesce Repeated Applies** on may be merged with ot
 - `Target` defaults to self. On a Blueprint that is not itself a container, an unwired Target is a compile error naming the class (`is not a Game Model container`); tick **Game Model Class** on the Blueprint, or wire `Target`.
 - An actor whose container is a `LanternFuel` component must wire `Target` to **Get Model Component** with class `LanternFuel`; self does not compile there.
 - A wired `Target` that is not a registered entity fails at run time, before anything is sent: `Failed` on the latent node with `Target is not a registered entity`.
+- Do not apply until the target's bind has returned. Until the first pull, a getter is the class default.
 - The fire-and-forget node and the by-id node have no outcome pins by design. Use the latent one when the graph needs to know.
 - The raw `Overrides` map pin only appears on the degraded node. If you see it, the Effect pin is not a literal.
 - The nodes live in `CrowdyNodes`, an uncooked-only module (editor and uncooked standalone); nothing in a packaged build changes because of them.
@@ -5526,6 +5543,10 @@ Three entry points, all in category **Crowdy SDK, Game Model, Advanced**:
 | `UCrowdyModel::Invoke(Entity, FunctionName)` (**Call Model Function (Fire and Forget)**) | A parameterless function and nobody cares about the outcome. | None. The confirmed result still echoes into the cache and `CrowdyOnRep`. |
 
 `Succeeded` fires only on a committed call: it reached the server and passed the function's rules. A transport failure and a server-side rollback both route to `Failed`, still carrying `bSuccess` and `ErrorMessage`, so a refused rule is distinguishable from a lost packet without `Succeeded` ever firing on a rejected write.
+
+:::warning[`ErrorMessage` on `Failed` is a player-safe sentence, not the require leaf.]
+A policy refusal arrives as `Failed` with `ErrorMessage` overwritten to **You are not allowed to do that.** The leaf the policy actually failed — owner, host, participant, a condition — is not on that pin. The Unreal outcome is `(bSuccess, ReturnValueJson, ErrorMessage)`; it does not carry `fault.code`. Read the leaf from `gameModelEvents`, Studio's Advanced event log, or `crowdy.gamemodel.trace`. Do not treat the sentence as the leaf name. [Error codes](/overview/error-codes).
+:::
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -5623,12 +5644,13 @@ Calling `fn:` and expecting the callee's writes, signals, or timers to happen is
 
 ## Notifications
 
-**Call Model Function** adds no notification of its own. When the function it names is an authored effect whose notification names the container through the server-injected `$self_container_id`, that notification still fires; otherwise peers refresh through the fallback ping. Either way the caller's own cache is updated from the response, which is why an echoed write on the calling client says nothing about what anyone else received. [Change pings and pull](./change-pings-and-pull.md).
+**Call Model Function** adds no notification of its own. When the function it names is an authored effect whose notification names the container through the server-injected `$self_container_id`, that notification still fires; otherwise peers refresh through the fallback ping **from this Unreal client**. A Compute or automation write of the same function has no acting Unreal client and no fallback ping. Either way the caller's own cache is updated from the response, which is why an echoed write on the calling client says nothing about what anyone else received. [Change pings and pull](./change-pings-and-pull.md).
 
 ## Gotchas
 
 - `Target` and `ContainerId` are exclusive. Empty `Target` plus a `ContainerId` is the free-container route; both set is the entity route.
-- `SessionId` empty means the active session, or the app when none is active. [Sessions](./sessions.md).
+- `SessionId` empty means the active session, or the app when none is active. [Sessions](./sessions.md). An invoke that needs `is_participant` and has neither an active session nor an explicit `SessionId` is refused.
+- Do not call a function until the target's bind has returned. Until the first pull, getters are the C++ / Blueprint class default, not the server row. [Ensured identity](./ensured-identity.md).
 - A `require` line on the function is evaluated before any assignment; a refusal rolls the whole call back and lands on `Failed`. [Invoke policies](./invoke-policies.md).
 - `Params` keys are the parameter names as declared on the asset, case included.
 - A function that only other functions call still needs a sync: it is schema like any other.
@@ -5659,11 +5681,17 @@ A `require` line is a boolean expression. A bare keyword lowers to a structured 
 | Write | Server leaf | Meaning |
 |---|---|---|
 | `owner` | `owner_of_self` | The caller owns the target container. |
-| `my_turn` | `is_current_turn` | It is the caller's turn in the session. |
-| `host` | `is_host` | The caller is the session host. |
-| `participant` | `is_participant` | The caller is in the session. |
+| `my_turn` | `is_current_turn` | It is the caller's turn in the Game Model session. |
+| `host` | `is_host` | The caller is the app's **elected** host. Not the Game Model session host. [Host election](../services/host-election.md) and [Host discovery](/game-api/host-discovery). |
+| `participant` | `is_participant` | The caller is a joined participant of a **Game Model session** the invoke names. Not "in the match" by any other meaning. |
 | `automation` | `is_automation` | The caller is the server's own automation. |
 | `anyone` | an always-true `condition` | Any signed-in player. Say it explicitly when you mean it; it is never the default. |
+
+`is_participant` is true only when all three hold: the app has an **active** Game Model session, the caller is a **joined** participant of that session, and the invoke carries that session's id (`SessionId` on the call, or `self.sessionId` on the target row). A missing session id is **false**. Create Game Session and Join Game Session are what produce that record; [Sessions](./sessions.md).
+
+:::danger[Four things are called a session. Only a Game Model session satisfies `is_participant`.]
+The **login / identity session** is who signed in (`UCrowdyGameSession`). The **UDP session channel** (`__crowdy_session_<appId>`) is a transport every client of the app joins. **Crowdy Teams** membership is a persistent group with roles. A **Game Model session** is the roster Create / Join write. Joining a team, sitting in the match, or riding the session channel does not make `is_participant` true. [Sessions and Presence](../concepts/sessions-and-presence.md) keeps the four apart.
+:::
 
 `feature("premium")`, `grid_permission("access")`, and `group_permission(42)` are the argument-carrying leaves; their arguments must be literals. `&&`, `||`, and `!` become `and`, `or`, and `not`. The full vocabulary and how the server evaluates each leaf are on [Authority: deciding who may invoke a function](/game-api/game-models#authority-deciding-who-may-invoke-a-function); this page only covers what the Unreal author writes.
 
@@ -5708,7 +5736,11 @@ When a body has no `require` line at all, the compiler infers a gate rather than
 The default keys on whether the effect crosses entities, not on which container it writes: `self.hp -= source.str` writes self but reads source, so it is cross-entity and gates `is_participant`.
 
 :::warning[A freshly authored function is never open by accident.]
-No `require` line means the inferred gate above, not "anyone". If you want a function every signed-in player may call on any container, say so with `require anyone` or `require participant`, whichever your game means, and read the emitted policy back in the Deploy Payload panel.
+No `require` line means the inferred gate above, not "anyone". If you want a function every signed-in player may call on any container, say `require anyone` and read the emitted policy back in the Deploy Payload panel. `require participant` is not a synonym for anyone: it still needs a Game Model session and a `sessionId` on the invoke.
+:::
+
+:::danger[A cross-entity body with no `require` infers `is_participant`. No Game Model session means every player call fails.]
+If the Effect body reads `source.` / `ref(...)` (or any other entity) and you did not write `require owner` or `require host`, Unreal emits `is_participant`. A player-facing Effect of that shape in an app that never calls Create or Join Game Session **always** lands on `Failed` for players. Opt out with `require anyone` plus the conditions you actually mean, **or** create and join a Game Model session and pass `SessionId`. The asset's **Deploy Payload** panel prints the inferred leaf; that is what the server will evaluate, not the `require` lines you meant to write later.
 :::
 
 An authored `require` is added to the inferred gate with `and`, unless what you wrote already constrains the caller on every path (`require owner`, `require host`), in which case the inferred gate is dropped so a deliberate `require host` is not also gated on ownership. A `require` that only tests values (`self.fuel < 100`, `$damage > 0`) never loosens who may call: it is added to the inferred gate. So `require self.fuel < 100` alone still carries `owner_of_self`; the explicit body above is what you write when you want to see both.
@@ -5725,7 +5757,7 @@ For a brand-new function this is harmless: there is nothing to clear, and the in
 
 The policy applies to everyone, app admins included; there is no app-level switch that exempts a player account, so a call your own account makes is gated exactly as a stranger's. The Game API page describes a deliberate skip for admin tooling; it needs a permission a shipped client never holds.
 
-A refused `require` rolls the whole invoke back before any assignment runs and lands on the caller's `Failed` pin. The caller's own view of the outcome is on [Functions and return values](./functions-and-return-values.md).
+A refused `require` rolls the whole invoke back before any assignment runs and lands on the caller's `Failed` pin. The pin's `ErrorMessage` is a player-safe sentence, not the require leaf; the leaf is on `gameModelEvents`. [Functions and return values](./functions-and-return-values.md).
 
 ## Gotchas
 
@@ -5734,6 +5766,8 @@ A refused `require` rolls the whole invoke back before any assignment runs and l
 - The graph front end and the text body lower to the same JSON. Switching between them is a UI choice.
 - A sync ships whatever policy is authored at that moment. The review sheet counts changes but does not single out an authority change; read the Deploy Payload panel after an SDK update. [Game Models authoring](../studio/game-models-authoring.md).
 - Kit functions carry their own policies chosen from the preset's authority dropdowns, which are a friendlier face on the same grammar. [Kits](./kits.md).
+- `host` is the elected app host. The Game Model session host is a different fact; [Sessions](./sessions.md) and [The Host Is a Convention](../concepts/host-is-a-convention.md).
+- Inferred `is_participant` plus no Game Model session is a permanent player denial, not a bind race. Read the Deploy Payload before you debug health or team assignment.
 
 ## Related
 
@@ -5755,7 +5789,7 @@ The village night: fuel burns down on a schedule while the village has anyone in
 
 ## Automations react; they are not called
 
-There is no Blueprint node and no C++ function to start an automation. Tick **Run Automatically** (`bRunAutomatically`) on the effect and pick a trigger; the schema sync marks the function autonomous-invocable and creates the automation with it. The client-visible result is the same as any other function commit: the container changes, peers re-pull, `CrowdyOnRep` fires. [Change pings and pull](./change-pings-and-pull.md) is how the change arrives; this page is how it is caused.
+There is no Blueprint node and no C++ function to start an automation. Tick **Run Automatically** (`bRunAutomatically`) on the effect and pick a trigger; the schema sync marks the function autonomous-invocable and creates the automation with it. The client-visible result is the same as any other function commit: the container changes. Peers re-pull only if the function authored a `NotificationCarrier`, or if they pull explicitly. An automation has no acting Unreal client, so the SDK's fallback ping never fires for it. [Change pings and pull](./change-pings-and-pull.md) is how the change arrives; this page is how it is caused.
 
 The trigger and target fields, all hidden until Run Automatically is on:
 
@@ -5785,7 +5819,7 @@ The wire semantics of every field, and of timers, are on [EffectScript: timers a
 self.fuel -= 5
 ```
 
-Nothing in Unreal calls it. Every thirty seconds, while at least one player is connected to the app, each lantern's fuel drops, each bound client re-pulls, and the `OnRep_Fuel` the [Quickstart](../quickstart.md) wrote dims the light. That is the whole client side of an automation: the notify you already have.
+Nothing in Unreal calls it. Every thirty seconds, while at least one player is connected to the app, each lantern's fuel drops. Each bound client re-pulls only if this function authored a `NotificationCarrier` (or the client pulls); the `OnRep_Fuel` the [Quickstart](../quickstart.md) wrote then dims the light. That is the whole client side of an automation: the notify you **authored**, not a ping the SDK invents for a player invoke.
 
 :::warning[A schedule runs only while at least one player is connected to the app.]
 Nothing runs for an empty app. A schedule's missed runs are never made up; a timer waits and fires late when somebody returns; an event trigger is unaffected. A lantern that stops burning while nobody is in the village is fine. A value that must keep moving through an empty night is not: write that work so it is right whenever it next runs, storing a timestamp and computing the elapsed time with `now()` instead of assuming a cadence. The shape, and the per-trigger table, are on [Presence](/game-api/autonomous-processes#presence).
@@ -5848,6 +5882,7 @@ A timer fires exactly once. A timer that re-arms itself is bounded one cascade l
 
 ## Gotchas
 
+- An automation write is invisible to other Unreal clients unless the function authored a `NotificationCarrier` (or they pull). There is no fallback ping.
 - Every field above is asset data. Changing one is a schema change: Sync to Server from [Game Models authoring](../studio/game-models-authoring.md).
 - An effect that is Other effects only and also runs automatically infers `is_automation` as its gate when it has no `require` line. [Invoke policies](./invoke-policies.md).
 - Debounce drops events; it is not the summing merge on [Coalescing](./coalescing.md).
@@ -6071,7 +6106,7 @@ A placed `ALanternPost` has an oil chest: a free container of an `OilChest` type
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-The handler bound to `Succeeded` takes the items as `const TArray<FCrowdyCollectionItem>&`; a by-value parameter does not match the delegate and `AddDynamic` will not compile. On the tagged v2.14.0 plugin the delegate is still by value and the handler takes `TArray<FCrowdyCollectionItem>`; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).
+The handler bound to `Succeeded` takes the items as `const TArray<FCrowdyCollectionItem>&`; a by-value parameter does not match the delegate and `AddDynamic` will not compile.
 
 ```cpp
 // LanternPost.h
@@ -6302,6 +6337,7 @@ Every cooked build before this version used a path-hash identity for placed obje
 
 ## Gotchas
 
+- Pre-seeding creates the row. The client still has to bind, then pull, before a getter is the server value. Do not apply an Effect until that bind has returned.
 - Scope is per type, in code. Mixing scopes by convenience lets one match's state leak into another.
 - Do not scan an unsaved map; the scan skips dirty actors because the key a build cooks is the saved placement.
 - The manifest is per map. Applying one map's manifest inside another creates rows nobody will find; the runtime warns but does not refuse.
@@ -6408,6 +6444,7 @@ An entity that keeps sweeping and never binds is usually a type nobody may creat
 
 ## Gotchas
 
+- Wait for the bind (ensure) to return before applying an Effect. Until the first pull, getters are class defaults, so a "wrong" health or team id in that window is expected.
 - A moved placed actor keeps its key; a copied one gets a new placement guid and a new key.
 - A binding key that changes between runs is a new row every run. Keep the derivation pure.
 - The component key folds in the component's class, so two different container classes on one actor never collide, and two of the same class need distinct names or keys.
@@ -6647,7 +6684,7 @@ When something other than the container itself has to react, a HUD, a scoreboard
 Three things can announce a change, and all three end in `HandleModelChanged`, the subsystem's re-pull:
 
 - The server-native notification an effect authors, on the carrier its `NotificationCarrier` chose: a channel message for every member of the app's session channel, or a spatial server event for a container that carries chunk coordinates. The channel form is a payload prefixed `cmc:` followed by the container id; the spatial form stamps event type `60000` so the client recognises it among unrelated server events.
-- The fallback ping. After a successful invoke the acting client sends a tiny `FCrowdyModelChangedPing`, the entity's id and the container id, as an ordinary game event payload to its peers, so a peer that missed the server-native notification still re-pulls. `crowdy.gamemodel.emitfallbackping 0` turns it off, to prove the server-native path alone in a two-client test.
+- The fallback ping. After a successful invoke the **Unreal client that invoked** sends a tiny `FCrowdyModelChangedPing`, the entity's id and the container id, as an ordinary game event payload to its peers, so a peer that missed the server-native notification still re-pulls. `crowdy.gamemodel.emitfallbackping 0` turns it off, to prove the server-native path alone in a two-client test. A Compute module, an automation, or another client's write has **no** acting Unreal client, so this ping never fires for those writes. Peers re-pull those only when the function authored a `NotificationCarrier`, or when a client pulls explicitly.
 - A watched free container's own notification, which re-pulls the by-id cache instead of an actor.
 
 :::warning[The ping is a nudge with no authoritative payload. Never build gameplay on its fields.]
@@ -6727,7 +6764,7 @@ At **Event BeginPlay**, the **Crowdy Game Model Subsystem** getter (a world subs
 </Tabs>
 
 :::warning[An echoed write on the client that made the call proves nothing about what anyone else received.]
-The invoke's response carries the confirmed mutations, and the SDK applies them to the calling client's cache whatever the notification carrier is, so the caller's `CrowdyOnRep` and this delegate fire on the caller even when no notification was ever authored. Evidence of delivery to peers is a signal handler, or another client's own OnRep or delegate firing, never the invoker's.
+The invoke's response carries the confirmed mutations, and the SDK applies them to the calling client's cache whatever the notification carrier is, so the caller's `CrowdyOnRep` and this delegate fire on the caller even when no notification was ever authored. Evidence of delivery to peers is a signal handler, or another client's own OnRep or delegate firing, never the invoker's. A write with no acting Unreal client (Compute, automation) has no fallback ping at all.
 :::
 
 ## Cross-container writes
@@ -6757,6 +6794,8 @@ If the feed shows the change and the trace shows no pull, the client never recog
 - **Listen for Model Changes** is per world. Bind it again after a travel.
 - The two-client PIE switches are test aids; leave `emitfallbackping` at its default in a normal session.
 - A read-only query effect authors no notification, on purpose. Asking never makes peers re-pull.
+- `watchcontainers` is a diagnostic: it logs the feed and does **not** re-pull.
+- Session-scoped types can persist with `session_id` null. `gameModelEvents` / `containerChanged` filtered by `sessionId` hide those rows; omit `sessionId` unless you are actually in a Game Model session.
 - `GetLastModelErrorCode` is session-scoped despite the name; the session page owns its codes.
 
 ## Related
@@ -6978,7 +7017,7 @@ void ULanternGameInstance::RefreshNightSessions()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The same query as the C++ block: a custom event `RefreshNight` runs **List Game Sessions** with `Admission` = `Open` (`Status` stays `Active`); on `Succeeded`, **Is Not Empty** over `Sessions` drives **Set Visibility** on `Torch`, so the torch shows while there is an open night to join. The pawn Blueprint needs the `Torch` component. In C++, a handler bound to the array-carrying `Succeeded` pins takes the array as `const TArray<T>&` (by value on the tagged v2.14.0 plugin; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140)).
+The same query as the C++ block: a custom event `RefreshNight` runs **List Game Sessions** with `Admission` = `Open` (`Status` stays `Active`); on `Succeeded`, **Is Not Empty** over `Sessions` drives **Set Visibility** on `Torch`, so the torch shows while there is an open night to join. The pawn Blueprint needs the `Torch` component. In C++, a handler bound to the array-carrying `Succeeded` pins takes the array as `const TArray<T>&` (by value on 2.14.0 and earlier; see [What's Changed](../guides/whats-changed.md#2026-09-22-sdk-v2150)).
 
 [Blueprint snippet: sess-query, see /bp/unreal-sdk/sess-query.txt]
 
@@ -7084,7 +7123,8 @@ On `UCrowdyGameModel`, each resolving the subsystem from the World Context:
 ## Gotchas
 
 - Sessions are truth-plane. Whose turn it is and who hosts are never [Crowdy State](../runtime/crowdy-state.md) properties.
-- The session host here is a server fact. The elected host of the view plane is a different thing; [The Host Is a Convention](../concepts/host-is-a-convention.md).
+- The session host here is a server fact. The elected host of the view plane is a different thing, and `is_host` on an invoke policy is that elected host, not this session host; [The Host Is a Convention](../concepts/host-is-a-convention.md) and [Invoke policies](./invoke-policies.md).
+- `is_participant` is this session: an active Create / Join record, a joined roster row, and a `SessionId` on the invoke. Teams, the login session, and the UDP session channel do not satisfy it.
 - A session nobody has been in for the empty timeout is ended by the server with `EmptyTimeout`.
 - `Role` on Join is a free label your game gives the player, empty for the server's default.
 - Session creation policy, admission semantics, and the event log are server behaviour: [Sessions, ownership, and turns](/game-api/game-models#sessions-ownership-and-turns).
@@ -7476,8 +7516,9 @@ Membership, roles, and permissions are server-authoritative truth, pulled throug
 than trusted from the client, the same split every server-owned system in the SDK follows: see
 [Game Models](../game-models/overview.md) for the general two-plane story. Teams are not themselves a
 Game Model in this version: there is no `CrowdyContainer` here, just the Team API `UCrowdyTeams` wraps
-one call at a time. If you came looking for a container, see
-[Change pings and pull](../game-models/change-pings-and-pull.md) instead.
+one call at a time. Joining a team does not create a Game Model session and does not make
+`is_participant` true; [Invoke policies](../game-models/invoke-policies.md). If you came looking for a
+container, see [Change pings and pull](../game-models/change-pings-and-pull.md) instead.
 
 The server owns team, role, and permission storage and every authorization check; a disallowed call comes
 back through the error delegate rather than being refused on the client. The exact GraphQL shape behind
@@ -7632,12 +7673,12 @@ Team, Leave Team, Remove Team Member, Delete Team Role). These are separate from
 The response arrives asynchronously; if the object is gone by then, the callback has nowhere to land.
 :::
 
-:::note[The array delegates pass `const TArray<T>&`, and on v2.14.0 they still pass by value.]
+:::note[The array delegates pass `const TArray<T>&`.]
 `FOnTeamsSuccess`, `FOnTeamMembersSuccess`, `FOnTeamRolesSuccess`, `FOnMyTeamsSuccess`, and the cache event
 `FOnMyTeamsCacheChanged` pass their array as `const TArray<T>&`, which is what the C++ handlers on this page
-take. On the tagged v2.14.0 plugin the same delegates pass `TArray<T>` by value, and a handler must match:
-a by-value parameter there, `const TArray<T>&` from the next release. A mismatch fails to bind. See
-[What's Changed](../guides/whats-changed.md#unreleased-after-v2140). In Blueprint prefer the async-action
+take. A handler must match or it fails to bind, and a project coming from 2.14.0 or earlier, where these
+passed by value, changes its handlers once; see
+[What's Changed](../guides/whats-changed.md#2026-09-22-sdk-v2150). In Blueprint prefer the async-action
 nodes above, whose result pins are structs; a Blueprint pin has no by-value distinction.
 :::
 
@@ -7832,8 +7873,8 @@ same one.
   code; treat it as a coarse bucket and `Message` as the detail.
 - A per-call delegate needs a `UFUNCTION` on a `UObject` that outlives the request, including when the
   request never reaches the server.
-- The array delegates take `const TArray<T>&` handlers, by-value ones on the tagged v2.14.0 plugin; a
-  mismatch fails to bind. The async-action nodes in Blueprint have no such split.
+- The array delegates take `const TArray<T>&` handlers; a mismatch fails to bind. The async-action nodes
+  in Blueprint have no such split.
 
 ## Related
 
@@ -7979,7 +8020,7 @@ void ALanternPlayer::ApplyTorchColor(FCrowdyAppAvatarState AppState)
 }
 ```
 
-`WatchAvatars`, bound at `BeginPlay`, picks up `AvatarId` from the first entry of a cache refresh and calls `LoadTorchColor`, so a cache change elsewhere still lands the stored color. The handler takes `const TArray<FCrowdyAvatar>&`; on the tagged v2.14.0 plugin `FOnMyAvatarsCacheChanged` still passes the array by value and the handler must too, or `AddDynamic` fails to bind (see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140)).
+`WatchAvatars`, bound at `BeginPlay`, picks up `AvatarId` from the first entry of a cache refresh and calls `LoadTorchColor`, so a cache change elsewhere still lands the stored color. The handler takes `const TArray<FCrowdyAvatar>&`.
 
 ```cpp
 // LanternPlayer.h
@@ -8523,7 +8564,8 @@ Two checks answer "am I the host", at two trust levels. `UCrowdyHostSubsystem::I
 ## Gotchas
 
 - A field lives on one plane. Discovery rejects a property that is both a `CrowdyState` property and a Game Model attribute; decide which one it is before you mark it.
-- The client that made a request sees the confirmed result applied to its own cache first. That proves the server accepted the change, not that any peer received it.
+- Bind, then apply. Until the bind returns and the first pull lands, a getter is the class default.
+- The client that made a request sees the confirmed result applied to its own cache first. That proves the server accepted the change, not that any peer received it. An automation or Compute write has no acting Unreal client and no fallback ping; author a `NotificationCarrier` or pull.
 - `IsLocallyOwned()` fails closed for a host-owned entity while no host is elected yet. Bind `OnCrowdyOwnershipAssigned` instead of assuming an answer at `BeginPlay`.
 - `HostOverride` is authored configuration, identical on every client. It is not sent on the wire and it is not checked by the server.
 - A per-entity cost you cannot see in one PIE client is still there. Measure with the entity count you ship, not the one you test with; [Testing Locally](./testing-locally.md) covers the loopback switches for that.
@@ -8726,7 +8768,7 @@ Every map that ships resolves a [map profile](../runtime/map-profile.md), one of
 
 - An entry in the per-map `MapProfiles` map names it, or
 - `DefaultProfile` is set for unlisted maps, or
-- Neither is set, and the map runs on the SDK's shipped default profile (networking on, the actor pool drawing; on the tagged v2.14.0 plugin the default draws nothing, see [What's Changed](./whats-changed.md#unreleased-after-v2140)).
+- Neither is set, and the map runs on the SDK's shipped default profile (networking on, the actor pool drawing).
 
 The cook hazard is the first two: a `MapProfiles` row or a `DefaultProfile` whose asset is not packaged resolves to nothing. The SDK then logs `check that the asset still exists and is packaged`, and the entity subsystem, the auto replicator, and the actor manager do nothing on that map, so replication looks dead.
 
@@ -8869,10 +8911,11 @@ warnings:
 - "Replication Policy Class is not set on '...', so nothing would read the state arriving for these
   entities", when the config exists but names no policy.
 
-Fix: set **Backend Config** on the map profile to a Crowdy Actor Pool Backend Config asset, and set its
-**Replication Policy Class** to a `UCrowdyRepApplicationPolicy` subclass. From the release after 2.14.0 an
-empty config falls back to the built-in `UCrowdyTransformRepPolicy` and this state no longer occurs; see
-[Rendering backends](../runtime/rendering-backends.md) and [What's changed](./whats-changed.md).
+Fix: update to 2.15.0, where an empty config falls back to the built-in `UCrowdyTransformRepPolicy` and
+this state no longer occurs. On an older plugin, set **Backend Config** on the map profile to a Crowdy
+Actor Pool Backend Config asset and its **Replication Policy Class** to a `UCrowdyRepApplicationPolicy`
+subclass; see [Rendering backends](../runtime/rendering-backends.md) and
+[What's changed](./whats-changed.md).
 
 ## Events are not received
 
@@ -9079,8 +9122,8 @@ at your own network path, not the SDK. Check your route to the backend before fi
 
 - A map with nothing configured runs on the shipped default profile. The "resolved no map profile" warning
   means a configured profile asset did not load, and it is a warning, not an error.
-- On 2.14.0 an empty Backend Config, or one without a Replication Policy Class, tracks entities and draws
-  none; the warning names the field.
+- On 2.14.0 and earlier an empty Backend Config, or one without a Replication Policy Class, tracks entities
+  and draws none; the warning names the field. 2.15.0 falls back to the built-in policy.
 - Preloaded Entity Classes is empty by default. Add every entity class a client needs to see belonging to
   someone else, not just the ones it spawns itself.
 - A `CrowdyState` property needs no setup on a normal actor, but needs its own field registration on a
@@ -9327,25 +9370,29 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/guides/whats-changed
 
 # What's Changed
 
-The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, each with what changed and what your project does about it. The list comes from a diff of the 2.1.0 public headers against 2.14.0 plus what each release since carried; anything not listed here kept its name, its pins, and its behavior as far as that diff shows.
+The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, each with what changed and what your project does about it. The list comes from a diff of the 2.1.0 public headers against 2.15.0 plus what each release since carried; anything not listed here kept its name, its pins, and its behavior as far as that diff shows.
 
 ## When you come here
 
-You built against the SDK in July, you are updating the plugin to 2.14 or later, and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), and, on the release after 2.14.0, the array delegates.
+You built against the SDK in July, you are updating the plugin to 2.15 or later, and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), and, in 2.15.0, the array delegates.
 
-## Unreleased (after v2.14.0)
+## 2026-09-22 (SDK v2.15.0)
 
-**Not in v2.14.0.** These four changes are in the SDK source and ship with the next release; a project on the tagged 2.14.0 plugin does not have them, and must not apply the delegate change yet. One is a source break for C++ projects; two remove work you may have done; one moves the moment a player pawn gets its identity. The examples on this site are written for the source that carries all four; every page they touch says what the tagged 2.14.0 plugin does instead.
+**Six changes.** One is a source break for C++ projects; two remove work you may have done; one moves the moment a player pawn gets its identity; one changes how inbound traffic is signed and needs nothing from you; one is a Crowdy Studio panel. The examples on this site are written for 2.15.0.
 
-- **Eighteen array delegates pass `const TArray<T>&` instead of `TArray<T>` by value.** Ten single-cast: `FOnTeamsSuccess`, `FOnTeamMembersSuccess`, `FOnTeamRolesSuccess`, `FOnMyTeamsSuccess` (teams), `FOnAvatarsSuccess`, `FOnAppStatesSuccess` (avatars), `FOnChannelsSuccess`, `FOnChannelMembersSuccess`, `FOnChannelRolesSuccess`, `FOnMyChannelsSuccess` (channels). Three multicast cache events a 2.1 project is likely to have bound with `AddDynamic`: `FOnMyTeamsCacheChanged`, `FOnMyAvatarsCacheChanged`, `FOnMyChannelsCacheChanged`. Five Game Model outcome events, for a project that adopted collections or sessions on 2.13 or 2.14: `FCrowdyCollectionItemsOutcome`, `FCrowdyTraverseOutcome` (both parameters), `FCrowdyContainerRefsOutcome`, `FCrowdySessionsOutcome`, `FCrowdySessionEventsOutcome`. **What you do:** when you take that release, any C++ `UFUNCTION` bound to one of them changes its parameter from `TArray<FCrowdyTeam> Teams` to `const TArray<FCrowdyTeam>& Teams`, and likewise for the rest. A Blueprint custom event bound to one of these pins is unaffected; Blueprint has no by-value versus by-reference distinction on the pin.
+- **Crowdy Studio shows every value a live model holds.** The Live tab's one-line summary, which named the first few attributes and then said "and N more", is now a panel under the instance list: one row per attribute with its value, what it holds, and its description, plus the attributes the model declares that the live model has no value for, a search box over names and values, **Copy value** and **Copy values**, and an **Internal** switch for the runtime's own keys. The page's **Pre-seed containers** strip hides itself while the Live tab is open, so the list and the panel get its height. **What you do:** nothing; it is an editor panel. See [Game Models authoring](../studio/game-models-authoring.md#the-four-tabs).
 
-:::warning[This is a source break, not a behavior change, and it lands after 2.14.0]
-On the release that carries it, a C++ project that updates the plugin and rebuilds gets a compile error naming the handler's parameter. Nothing changes silently: if the project builds, it is right. On 2.14.0 the delegates are still by value, so a handler changed early fails to bind for the same reason.
+- **Inbound bundles arrive with one signature per datagram.** The transport now tells the replication server what it can read (a `CLIENT_CAPABILITIES` message, sent once the connection is up and every 15 seconds after), and a server at v0.30.0 or later answers by packing its notifications into `MESSAGE_BUNDLE_SIGNED` datagrams: one HMAC over the whole bundle instead of one per member. The messages your handlers receive are the same; only the verification cost per datagram drops. Up to and including 2.14.0 every member carried and was checked against its own signature, and an older server still does that. **What you do:** nothing. `crowdy.net.recv.signedbundles 0` turns the advertisement off for a diagnostic comparison, read when a connection opens like `crowdy.net.send.bundle`. See [Connection and reconnect](../runtime/connection-and-reconnect.md#signed-inbound-bundles).
+
+- **Eighteen array delegates pass `const TArray<T>&` instead of `TArray<T>` by value.** Ten single-cast: `FOnTeamsSuccess`, `FOnTeamMembersSuccess`, `FOnTeamRolesSuccess`, `FOnMyTeamsSuccess` (teams), `FOnAvatarsSuccess`, `FOnAppStatesSuccess` (avatars), `FOnChannelsSuccess`, `FOnChannelMembersSuccess`, `FOnChannelRolesSuccess`, `FOnMyChannelsSuccess` (channels). Three multicast cache events a 2.1 project is likely to have bound with `AddDynamic`: `FOnMyTeamsCacheChanged`, `FOnMyAvatarsCacheChanged`, `FOnMyChannelsCacheChanged`. Five Game Model outcome events, for a project that adopted collections or sessions on 2.13 or 2.14: `FCrowdyCollectionItemsOutcome`, `FCrowdyTraverseOutcome` (both parameters), `FCrowdyContainerRefsOutcome`, `FCrowdySessionsOutcome`, `FCrowdySessionEventsOutcome`. **What you do:** on 2.15.0, any C++ `UFUNCTION` bound to one of them changes its parameter from `TArray<FCrowdyTeam> Teams` to `const TArray<FCrowdyTeam>& Teams`, and likewise for the rest. A Blueprint custom event bound to one of these pins is unaffected; Blueprint has no by-value versus by-reference distinction on the pin.
+
+:::warning[This is a source break, not a behavior change]
+A C++ project that takes 2.15.0 and rebuilds gets a compile error naming the handler's parameter. Nothing changes silently: if the project builds, it is right. On 2.14.0 and earlier the delegates pass by value, so a handler changed before you update fails to bind for the same reason.
 :::
 
-- **The actor pool draws with no Backend Config at all.** Up to and including 2.14.0, a map profile whose Backend Config was empty, or whose config named no Replication Policy Class, left remote Dynamic entities tracked but never rendered, so choosing a Backend Config was mandatory in practice. After 2.14.0 a missing config falls back to a built-in transform-interpolation policy, `UCrowdyTransformRepPolicy`, and that step is optional. **What you do:** nothing. A project that authored its own Backend Config is unaffected; a project that left it empty and worked around the blank screen can delete the workaround once it is on that release. See [Map profile](../runtime/map-profile.md) and [Rendering backends](../runtime/rendering-backends.md).
-- **The shipped transform policy interpolates across a ring of samples.** Up to and including 2.14.0, `UCrowdyTransformRepPolicy` kept two samples per proxy: it snapped to a lone sample, blended between the two it held, and stopped at the newer one when the render time passed it, so a late update showed as a pause and the next as a jump. After 2.14.0 it keeps a ring of recent samples per proxy in `TInterpolatedField`, samples the pair that brackets the render time, and extrapolates from the last two for at most 0.2 seconds when the render time runs past the newest. **What you do:** nothing. Proxies drawn by the shipped policy move more smoothly through late and lost updates. A project that wrote its own policy to get that behavior can drop it, or rebuild it on `TInterpolatedField` and keep its extra fields; see [Rendering backends](../runtime/rendering-backends.md#the-sample-ring).
-- **A Player Derived pawn possessed after it begins play gets its account identity on possession, respawned pawns included.** Up to and including 2.14.0, `UCrowdyEntityComponent` read the Player Derived identity once, in `BeginPlay`, and the engine possesses a pawn spawned during play (`RestartPlayer`, a respawn, a spawn from a connected handler) only after that, so every runtime-spawned player pawn registered under a random id with one warning, and whatever is keyed on the local player id (the host lookup, ownership requests, the drop of your own echoed events) never worked for it; only a pawn possessed before `BeginPlay` got the account identity. After 2.14.0 a Player Derived pawn with no controller at `BeginPlay` waits, and registers under the account id inside its first possession, after the pawn's own Possessed and Controller Changed events; the first controller of any kind completes it (an AI controller gets the old fallback and warning), a later unpossess or repossess changes nothing, and a respawn that leaves the earlier pawn alive hands the id to the new pawn and clears the old one, which stops replicating. **What you do:** read the pawn's id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned` (**On Crowdy Ownership Assigned**) or the entity subsystem's `OnEntityRegistered`, not from `BeginPlay` or Possessed: on that release a pawn graph that gates on **Is Locally Owned** at `BeginPlay` reads false and runs nothing, where on 2.14.0 it ran with the random id. A pawn that begins play before the sign-in has answered is unchanged: it derives from user id 0 without a warning, so keep the spawn behind **On UDP Connection Success**. See [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity) and [Entities, Identity, and Ownership](../concepts/entities-identity-ownership.md#identity-policies).
+- **The actor pool draws with no Backend Config at all.** Up to and including 2.14.0, a map profile whose Backend Config was empty, or whose config named no Replication Policy Class, left remote Dynamic entities tracked but never rendered, so choosing a Backend Config was mandatory in practice. In 2.15.0 a missing config falls back to a built-in transform-interpolation policy, `UCrowdyTransformRepPolicy`, and that step is optional. **What you do:** nothing. A project that authored its own Backend Config is unaffected; a project that left it empty and worked around the blank screen can delete the workaround once it is on 2.15.0. See [Map profile](../runtime/map-profile.md) and [Rendering backends](../runtime/rendering-backends.md).
+- **The shipped transform policy interpolates across a ring of samples.** Up to and including 2.14.0, `UCrowdyTransformRepPolicy` kept two samples per proxy: it snapped to a lone sample, blended between the two it held, and stopped at the newer one when the render time passed it, so a late update showed as a pause and the next as a jump. In 2.15.0 it keeps a ring of recent samples per proxy in `TInterpolatedField`, samples the pair that brackets the render time, and extrapolates from the last two for at most 0.2 seconds when the render time runs past the newest. **What you do:** nothing. Proxies drawn by the shipped policy move more smoothly through late and lost updates. A project that wrote its own policy to get that behavior can drop it, or rebuild it on `TInterpolatedField` and keep its extra fields; see [Rendering backends](../runtime/rendering-backends.md#the-sample-ring).
+- **A Player Derived pawn possessed after it begins play gets its account identity on possession, respawned pawns included.** Up to and including 2.14.0, `UCrowdyEntityComponent` read the Player Derived identity once, in `BeginPlay`, and the engine possesses a pawn spawned during play (`RestartPlayer`, a respawn, a spawn from a connected handler) only after that, so every runtime-spawned player pawn registered under a random id with one warning, and whatever is keyed on the local player id (the host lookup, ownership requests, the drop of your own echoed events) never worked for it; only a pawn possessed before `BeginPlay` got the account identity. In 2.15.0 a Player Derived pawn with no controller at `BeginPlay` waits, and registers under the account id inside its first possession, after the pawn's own Possessed and Controller Changed events; the first controller of any kind completes it (an AI controller gets the old fallback and warning), a later unpossess or repossess changes nothing, and a respawn that leaves the earlier pawn alive hands the id to the new pawn and clears the old one, which stops replicating. **What you do:** read the pawn's id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned` (**On Crowdy Ownership Assigned**) or the entity subsystem's `OnEntityRegistered`, not from `BeginPlay` or Possessed: on 2.15.0 a pawn graph that gates on **Is Locally Owned** at `BeginPlay` reads false and runs nothing, where on 2.14.0 it ran with the random id. A pawn that begins play before the sign-in has answered is unchanged: it derives from user id 0 without a warning, so keep the spawn behind **On UDP Connection Success**. See [Quickstart](../quickstart.md#1-make-your-player-a-crowdy-entity) and [Entities, Identity, and Ownership](../concepts/entities-identity-ownership.md#identity-policies).
 
 ## 2026-09-17 (SDK v2.14.0)
 
@@ -9573,7 +9620,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/console-cvars
 
 # Console Variables
 
-The SDK exposes 33 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
+The SDK exposes 34 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
 logging for one area, behavior switches that change what the SDK does, and diagnostic commands that run
 once and hold no stored value. A row badged **Editor only** exists only in the editor process. Four of the
 diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`,
@@ -9609,7 +9656,7 @@ logging around Studio calls.
 
 ## Behavior switches
 
-These change what the SDK does rather than what it logs. None of the 10 exist only in the editor.
+These change what the SDK does rather than what it logs. None of the 11 exist only in the editor.
 
 <SurfaceTable
   table="cvars"
@@ -9618,12 +9665,13 @@ These change what the SDK does rather than what it logs. None of the 10 exist on
     "crowdy.net.receive.maxmessages": "How many inbound replication messages one frame may deliver; whatever is left waits for the next frame. Default 3072.",
     "crowdy.net.receive.maxdrainms": "How many milliseconds of one frame may be spent delivering inbound messages. Raise the message count first. Default 4.",
     "crowdy.net.send.bundle": "Pack one network pass's outbound messages into one datagram. Needs a replication server of v0.27.0 or later; against an older one every bundled message is dropped together. Default 1, read when a connection opens.",
+    "crowdy.net.recv.signedbundles": "Tell the replication server this client reads signed inbound bundles, so notifications arrive with one signature per datagram instead of one per member. A server older than v0.30.0 ignores it. Default 1, read when a connection opens.",
     "crowdy.replication.tracker.maxgatheredupdates": "How many actor updates for already-tracked actors may be gathered before the backlog is discarded; reached only when the world tick is not consuming them. Default 8192."
   }}
   notesLabel="Where the Help cell is empty"
 />
 
-The notes map above stands in for these four rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
+The notes map above stands in for these five rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
 
 :::warning[Leave `crowdy.rpc.allowObjectLoad` off in production.]
 While it is off, an untrusted peer cannot trigger an arbitrary asset load; an unresolved object or class

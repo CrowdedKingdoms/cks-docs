@@ -74,6 +74,10 @@ In C++ the result arrives on `UCrowdyApplyEffectAction`'s `Succeeded` delegate a
 
 `Succeeded` fires only on a committed apply: it reached the server and passed the effect's rules. `Failed` fires on a transport failure, a server rollback, a marshalling failure before anything was sent, or an apply that was still waiting in a coalescing window when the world tore down. Exactly one of the two always fires, carrying `bSuccess`, `Return Value Json`, and `Error Message`.
 
+A policy refusal is that same `Failed` pin. `Error Message` is overwritten to **You are not allowed to do that**; the require leaf is on `gameModelEvents`, Studio's Advanced event log, or `crowdy.gamemodel.trace`, not on the pin. [Functions and return values](./functions-and-return-values.md) and [Invoke policies](./invoke-policies.md).
+
+Do not apply until the target's bind has returned. Binding is what creates or attaches the row; applying beforehand is a race. Until the first pull, a getter is the Blueprint class default. [Ensured identity](./ensured-identity.md).
+
 :::warning[The typed Return Value cannot tell "no answer" from "answered zero".]
 An absent, malformed, or wrong-typed result decodes to the type's zero, so a server that returned nothing and a server that returned 0 read alike on the typed pin. When that distinction matters, read **Return Value Json**: it is empty in the first case and `0` in the second.
 :::
@@ -101,6 +105,7 @@ An effect whose asset has **Coalesce Repeated Applies** on may be merged with ot
 - `Target` defaults to self. On a Blueprint that is not itself a container, an unwired Target is a compile error naming the class (`is not a Game Model container`); tick **Game Model Class** on the Blueprint, or wire `Target`.
 - An actor whose container is a `LanternFuel` component must wire `Target` to **Get Model Component** with class `LanternFuel`; self does not compile there.
 - A wired `Target` that is not a registered entity fails at run time, before anything is sent: `Failed` on the latent node with `Target is not a registered entity`.
+- Do not apply until the target's bind has returned. Until the first pull, a getter is the class default.
 - The fire-and-forget node and the by-id node have no outcome pins by design. Use the latent one when the graph needs to know.
 - The raw `Overrides` map pin only appears on the degraded node. If you see it, the Effect pin is not a literal.
 - The nodes live in `CrowdyNodes`, an uncooked-only module (editor and uncooked standalone); nothing in a packaged build changes because of them.

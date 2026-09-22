@@ -66,7 +66,8 @@ Two checks answer "am I the host", at two trust levels. `UCrowdyHostSubsystem::I
 ## Gotchas
 
 - A field lives on one plane. Discovery rejects a property that is both a `CrowdyState` property and a Game Model attribute; decide which one it is before you mark it.
-- The client that made a request sees the confirmed result applied to its own cache first. That proves the server accepted the change, not that any peer received it.
+- Bind, then apply. Until the bind returns and the first pull lands, a getter is the class default.
+- The client that made a request sees the confirmed result applied to its own cache first. That proves the server accepted the change, not that any peer received it. An automation or Compute write has no acting Unreal client and no fallback ping; author a `NotificationCarrier` or pull.
 - `IsLocallyOwned()` fails closed for a host-owned entity while no host is elected yet. Bind `OnCrowdyOwnershipAssigned` instead of assuming an answer at `BeginPlay`.
 - `HostOverride` is authored configuration, identical on every client. It is not sent on the wire and it is not checked by the server.
 - A per-entity cost you cannot see in one PIE client is still there. Measure with the entity count you ship, not the one you test with; [Testing Locally](./testing-locally.md) covers the loopback switches for that.
