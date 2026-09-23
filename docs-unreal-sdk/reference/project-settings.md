@@ -24,8 +24,10 @@ to type by hand or gets overwritten the next time you sync.
 
 The **Written by** column tells you which: **Config Sync** properties are read-only in Project Settings and
 come from [Config Sync](../studio/config-sync.md); **you** properties are yours to edit directly.
-`Environment` is an `ECrowdyEnvironment`: **Dev (shared)**, **Production**, or **Custom**, which is when the
-Discovery URL is read.
+`Environment` is an `ECrowdyEnvironment`: **Dev (shared)**, **Test**, **Production**, or **Custom**, which is
+when the Discovery URL is read. Dev, Test, and Production each resolve to a built-in host
+(`ck.dev.crowdedkingdoms.com`, `ck.test.crowdedkingdoms.com`, `ck.prod.crowdedkingdoms.com`); Custom is the
+only value that reads `DiscoveryUrl` from the project.
 
 <SurfaceTable table="settings" filter="class=UCrowdySDKDeveloperSettings" group="category" />
 
@@ -56,6 +58,20 @@ empty until the log reports one; in practice they stay empty for almost every pr
 and the id to force: an `FCrowdyIDOverride` holds `Struct` and `Override ID` (0 to 65535) for
 `IDOverrides`; an `FCrowdyClassIDOverride` holds `Entity Class` and `Override ID` (1 or more) for
 `ClassIDOverrides`.
+
+### The default Backend
+
+A project that has never run Config Sync's Backend selector has no `Environment` written to its
+`DefaultGame.ini` yet, so it runs on whatever this SDK build defaults to: the tier the build was released
+for. A build off the `dev` branch defaults to Dev, a `test` build to Test, and the public release defaults
+to Production; the Discovery URL default follows the same tier. Read the active default from code with the
+static `UCrowdySDKDeveloperSettings::GetReleaseEnvironment()` (C++ only, not exposed to Blueprint). Once you
+pick a Backend on the Sign In page and sync, `DefaultGame.ini` holds that choice from then on and this
+default no longer applies.
+
+:::note[On the tagged v2.15.0 plugin, `Environment` offers only Dev, Production, and Custom, and always defaults to Production regardless of the build.]
+See [What's Changed](../guides/whats-changed.md) for this release.
+:::
 
 ### Setting endpoints at runtime
 
