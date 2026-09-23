@@ -65,7 +65,7 @@ let full = api::container_get(&id)?; // { container, properties }
 | `container_create_for(type_name, display_name, session_id, owner_user_id, properties)` | explicit trusted owner/display name | SDK 0.1.3+. Creates module-owned durable rows such as reward stacks. |
 | `container_get(container_id)` | | Returns `{ container, properties }` (up to 200 properties). `container` includes `bindingKey` and `sessionId`. |
 | `container_get_batch(container_ids)` | up to 32 ids | Batched form: `[{ container, properties }]` in a single call (one data-op charge). Requires SDK 0.1.2+. Each `container` includes `bindingKey` and `sessionId`, the same fields as `container_get`. |
-| `container_get_by_key(type_name, session_id, binding_key)` | `session_id` may be null | SDK 0.1.7+. One row by the binding-key unique index, returned in the `container_get` shape. Server only: player grids have no binding keys. |
+| `container_get_by_key(type_name, session_id, binding_key)` | `session_id` may be null | SDK 0.1.8+. One row by the binding-key unique index, returned in the `container_get` shape. Server only: player grids have no binding keys. |
 | `containers_list(type_name, session_id)` | both optional filters | Lists containers (≤ 200). |
 | `containers_list_where(type_name, session_id, where, limit, offset)` | `where`: up to 8 `Predicate { key, op, value }` | SDK 0.1.5+. Filtered/paged list: predicates evaluated host-side (requires `type_name`; type defaults honored), then offset/limit over the stable created-at ordering (limit clamps to 200). Charges 2 data ops with predicates (list + property batch), 1 without. |
 | `container_delete(container_id)` | | Deletes a container. |
