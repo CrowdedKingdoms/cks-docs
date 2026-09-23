@@ -161,6 +161,8 @@ Once it compiles, the SDK subsystems are available in both C++ and Blueprint.
 
 Open Crowdy Studio inside the editor, sign in, pick your app, and run Config Sync. It writes the connection settings into the project for you.
 
+Until you run Config Sync for the first time, the project has no Backend of its own, so it dials the tier the plugin release you downloaded was built for: Production for a tagged GitHub release. See [Project settings](./reference/project-settings.md#the-default-backend).
+
 :::warning[Do not type your app id and API URLs into Project Settings by hand.]
 The network settings on `UCrowdySDKDeveloperSettings` (`AppID`, `OrgId`, `Environment`, `DiscoveryUrl`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`, `HostPollIntervalSeconds`) are read-only in Project Settings on purpose (they live under **Project Settings, Plugins, Crowdy SDK**). Crowdy Studio owns them; a value you type elsewhere is overwritten by the next sync. See [Config Sync](./studio/config-sync.md).
 :::
@@ -9376,6 +9378,10 @@ The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, ea
 
 You built against the SDK in July, you are updating the plugin to 2.15 or later, and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), and, in 2.15.0, the array delegates.
 
+## 2026-09-23 (SDK v2.16.0)
+
+- **Backend gains a Test tier, and its default now follows the SDK build's own release tier.** `ECrowdyEnvironment` adds Test between Dev and Production, so the Backend selector on the Sign In page now offers Dev (shared), Test, Production, and Custom. The built-in hosts behind Dev and Production also moved, to `https://ck.dev.crowdedkingdoms.com` and `https://ck.prod.crowdedkingdoms.com`; the previous hosts, `api.dev.crowdedkingdoms.com` and `api.crowdedkingdoms.com`, no longer resolve, so a project left on Dev or Production with no Custom Discovery URL could not reach the backend. This release fixes that and adds `https://ck.test.crowdedkingdoms.com` for the new Test tier. Separately, a project's Backend used to default to Production until you ran Config Sync; it now defaults to the tier this SDK build was released for (Dev on a dev build, Test on a test build, Production on the public release), and the Discovery URL default follows the same tier instead of always pointing at Dev. Each tier also vendors its own CrowdyCPP build (0.42.1), so a connection opened with no origin configured at all dials that tier's host directly; a released build dials `ck.prod.crowdedkingdoms.com`. **What you do:** nothing if your `DefaultGame.ini` already names an `Environment`, which it does for any project that has used the Backend selector; that value is unaffected. A brand-new project now connects out of the box on whichever tier's build you are running, instead of defaulting to a Production host you may not have an app on. A new static C++ read, `UCrowdySDKDeveloperSettings::GetReleaseEnvironment()`, returns the tier a build defaults to; it is not exposed to Blueprint. See [Project settings](../reference/project-settings.md#the-default-backend) and [Installation](../installation.md#step-6-connect-your-app).
+
 ## 2026-09-22 (SDK v2.15.0)
 
 **Six changes.** One is a source break for C++ projects; two remove work you may have done; one moves the moment a player pawn gets its identity; one changes how inbound traffic is signed and needs nothing from you; one is a Crowdy Studio panel. The examples on this site are written for 2.15.0.
@@ -9764,8 +9770,10 @@ to type by hand or gets overwritten the next time you sync.
 
 The **Written by** column tells you which: **Config Sync** properties are read-only in Project Settings and
 come from [Config Sync](../studio/config-sync.md); **you** properties are yours to edit directly.
-`Environment` is an `ECrowdyEnvironment`: **Dev (shared)**, **Production**, or **Custom**, which is when the
-Discovery URL is read.
+`Environment` is an `ECrowdyEnvironment`: **Dev (shared)**, **Test**, **Production**, or **Custom**, which is
+when the Discovery URL is read. Dev, Test, and Production each resolve to a built-in host
+(`ck.dev.crowdedkingdoms.com`, `ck.test.crowdedkingdoms.com`, `ck.prod.crowdedkingdoms.com`); Custom is the
+only value that reads `DiscoveryUrl` from the project.
 
 <SurfaceTable table="settings" filter="class=UCrowdySDKDeveloperSettings" group="category" />
 
@@ -9796,6 +9804,16 @@ empty until the log reports one; in practice they stay empty for almost every pr
 and the id to force: an `FCrowdyIDOverride` holds `Struct` and `Override ID` (0 to 65535) for
 `IDOverrides`; an `FCrowdyClassIDOverride` holds `Entity Class` and `Override ID` (1 or more) for
 `ClassIDOverrides`.
+
+### The default Backend
+
+A project that has never run Config Sync's Backend selector has no `Environment` written to its
+`DefaultGame.ini` yet, so it runs on whatever this SDK build defaults to: the tier the build was released
+for. A build off the `dev` branch defaults to Dev, a `test` build to Test, and the public release defaults
+to Production; the Discovery URL default follows the same tier. Read the active default from code with the
+static `UCrowdySDKDeveloperSettings::GetReleaseEnvironment()` (C++ only, not exposed to Blueprint). Once you
+pick a Backend on the Sign In page and sync, `DefaultGame.ini` holds that choice from then on and this
+default no longer applies.
 
 ### Setting endpoints at runtime
 
