@@ -439,7 +439,10 @@ arrives (see [Shared environment](/management-api/shared-environment)):
 
 Messages are counted for your usage view but **not priced**: a message is paid
 for by its bytes. One compute unit is approximately one millisecond of
-reference CPU (`GREATEST(CEIL(cpu_us/1000), CEIL(fuel/22,000,000))`). If a
+reference CPU (`GREATEST(CEIL(cpu_us/1000), CEIL(fuel/22,000,000))`). A CPU-hour
+is one core busy for one hour; the price is the
+[pricing page](https://crowdedkingdoms.com/pricing.html) and the rate card in
+your account. If a
 spend cap or balance is hit, the budget gate pauses your modules until
 resolved.
 
