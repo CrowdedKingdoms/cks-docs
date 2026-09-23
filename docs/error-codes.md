@@ -193,6 +193,23 @@ In CrowdyJS, `playerFaultOf(errorOrResult)` reads both carriers and returns one
 }
 ```
 
+#### Retrying `PLATFORM_BUSY`
+
+`PLATFORM_BUSY` means we were busy. It says nothing about your request or your code,
+and the same call will usually succeed a moment later. Retry it:
+
+1. If `extensions.retryAfterMs` is present, wait that long.
+2. Otherwise wait about 100–200 ms, with random jitter so many clients do not retry
+   in step.
+3. Double the wait on each further `PLATFORM_BUSY`, and stop after three retries.
+   Show the player the message, or your own wording, only after that.
+4. Send the **same** request id on every attempt. A game that tags hits with a
+   request id and rejects duplicates, as a damage handler should, then applies a
+   retried hit at most once.
+
+Retry only when `retryable` is true. `RATE_LIMITED` is not this: it means the caller is
+sending too often, so slow down rather than retry sooner.
+
 `GmInvokeResult.errorMessage` still exists and is **deprecated**. It now carries a
 platform-authored sentence matching `fault` rather than the engine's text, so it is safe
 to show a player as-is — but prefer `fault` and your own wording. On a policy
