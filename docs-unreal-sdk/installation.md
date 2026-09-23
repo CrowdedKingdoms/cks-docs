@@ -20,9 +20,9 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 ## Step 1: Get the release
 
-Download the `v2.15.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+Download the `v2.16.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
 
-:::note[The release you install must match the version this guide describes (2.14).]
+:::note[The release you install must match the version this guide describes (2.16).]
 :::
 
 ## Step 2: Place the plugin at `Plugins/CrowdySDK`
