@@ -126,7 +126,7 @@ its own screen. **Blame attribution is the platform's job; presentation is yours
 | `extensions.blame` | Meaning | What a game should usually do |
 |---|---|---|
 | `PLATFORM` | Ours. The app's code may not have run at all. | Retry when `retryable`; otherwise say something went wrong on our side. |
-| `AUTHOR` | The app's own code or configuration. Repeating the identical call gets the same answer, except an open breaker (`TEMPORARILY_DISABLED` with `retryable: true`), which closes itself. | Do not retry unless `retryable` is true. Show your own wording for "that did not work". |
+| `AUTHOR` | The app's own code or configuration. Repeating the identical call gets the same answer, except an open breaker (`CIRCUIT_OPEN`, `retryable: true`), which closes itself. | Do not retry unless `retryable` is true. Show your own wording for "that did not work". |
 | `BUDGET` | A metered allowance for the app or the caller is spent. Nothing is broken. | Back off. `retryable` says whether the allowance returns on its own. |
 
 `retryable` is about the **caller's** options, not about how long a fix takes: an open
@@ -141,9 +141,10 @@ allowance is not, even though neither is a bug.
 | `INVALID_REQUEST` | `AUTHOR` | The arguments did not satisfy the function's declared contract. |
 | `NOT_ALLOWED` | `AUTHOR` | An invoke policy or permission refused this caller. Applies to app admins too: since 2026-09-08 a `manage_apps` holder is judged like a player unless the input sets `bypassPolicy: true`, and that flag itself answers `NOT_ALLOWED` for anyone without `manage_apps`. On `gameModelInvoke` a policy refusal arrives in band (`success: false`, `fault.code: NOT_ALLOWED`); a refused `bypassPolicy` is a GraphQL error. |
 | `NOT_FOUND` | `AUTHOR` | The named function, module or export does not exist for this app. |
-| `PLATFORM_BUSY` | `PLATFORM` | We could not start the work in time. The app's code never ran. Retry. |
-| `PLATFORM_ERROR` | `PLATFORM` | A platform failure. Retrying is reasonable. |
-| `TEMPORARILY_DISABLED` | either | A breaker is open, or an operator switch is off. `blame` distinguishes them, and so does the message. An open breaker is `AUTHOR` and `retryable`, and `extensions.retryAfterMs` is the remaining cooldown when the server knows it: the message says the action kept failing (usually by taking too long) and to shorten the call or raise its time limit. A switch or latch is `PLATFORM` and not retryable: the message says it is switched off and retrying will not turn it back on. |
+| `PLATFORM_BUSY` | `PLATFORM` | We could not **start** the work in time. The app's code never ran. The message is "The service is busy. Please try again in a moment." This is not a rate limit (`RATE_LIMITED` is `BUDGET` and says the caller is asking too often) and not an open circuit. Retry. |
+| `PLATFORM_ERROR` | `PLATFORM` | A platform failure. The message is "Something went wrong on our side. Please try again." Retrying is reasonable. |
+| `CIRCUIT_OPEN` | `AUTHOR` | The app's own circuit is open after repeated failures. `retryable` is true. `extensions.retryAfterMs` is the remaining cooldown when the server knows it. `extensions.cause` is `watchdog_timeout` when those failures were watchdog kills, so a game can wait out the cooldown and send the hit again. The message says the action kept failing, usually by taking too long. This is not `PLATFORM_BUSY` and not `TEMPORARILY_DISABLED`. |
+| `TEMPORARILY_DISABLED` | `PLATFORM` | An operator switch, a latch, or a platform hold. An open author circuit is `CIRCUIT_OPEN`, not this code. A switch is not retryable when the fault kind is present: the message says it is switched off and retrying will not turn it back on. |
 | `BUDGET_EXCEEDED` | `BUDGET` | A per-minute allowance is spent; it returns on the next window. |
 | `RATE_LIMITED` | `BUDGET` | This caller is asking too often. `extensions.retryAfterMs` when known. |
 | `QUOTA_EXHAUSTED` | `BUDGET` | A metered allowance is spent and does not return on its own. |
