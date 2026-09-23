@@ -74,6 +74,33 @@ every channel permission, including `send_messages`).
 - **`false` (announce / read-only):** joiners receive messages but cannot post.
   Grant a posting role explicitly to chosen members (see Roles below).
 
+## Grid channels
+
+A **grid channel** belongs to one grid. Its owner creates it, and that grid's
+[player code](player-code) may post into it with `emit_channel`; code on any
+other grid may not.
+
+```graphql
+mutation {
+  createGridChannel(input: { appId: "…", gridId: "…", name: "plot-42-chat" }) {
+    groupId
+    gridId
+  }
+}
+query {
+  gridChannels(appId: "…", gridId: "…") { groupId name }
+}
+```
+
+- Only the grid's current owner may create one, whatever the app's channel
+  creation policy says; a grid holds at most **8** active channels.
+- `membershipPolicy` defaults to `open`, so visitors can `joinChannel`, and
+  members get `send_messages` unless `membersCanSend: false`.
+- Messages a grid's modules post carry the sender uuid `grid:<gridId>` (ASCII,
+  zero-padded to 32 bytes), so a client can tell them from a player's.
+- A [grid-scoped token](grid-tokens) may join, leave and post only to its own
+  grid's channels.
+
 ## Joining and leaving
 
 ```graphql

@@ -30,6 +30,39 @@ supported path.
 
 :::
 
+## 2026-09-22 (grid-scoped parity: Game API, CrowdyJS 17.7.0, CrowdyCPP 0.43.0, crowdy-dsh 0.4.0)
+
+Player code inside a grid can now do everything app-scoped code can, confined
+to the grid. Additive, except that the crowdy-dsh bridge protocol moves to v4
+(CrowdyJS 17.7 pairs with crowdy-dsh 0.4).
+
+- **Player host parity.** `emit_channel` and `emit_event` no longer return
+  `denied_v1`. A module posts into its grid's
+  [grid channels](/game-api/channels#grid-channels) and publishes on the
+  grid event bus (other modules on the grid; studio modules that add a
+  `grid_event` trigger). `container_get_batch`, `edge_add` / `edge_delete`,
+  `sessions_list` and `avatar_state_get` answer on a grid. Every spatial kind
+  originates in the grid and reaches `min(distance, 8, spatialMaxDistance)`.
+  Details: [Player code](/game-api/player-code#host-boundary).
+- **Studio `emit_spatial`**: `server_event` is opcode 139 and `client_event`
+  138 for studio modules too (they were 140 / 139, which CrowdyJS never
+  decoded), and both require the `[u16 eventType]` prefix.
+- **New GraphQL**: `mintGridToken` ([grid-scoped tokens](/game-api/grid-tokens)),
+  `createGridChannel`, `gridChannels`, `gameModelSessions(gridId)`,
+  `CreateSessionInput.gridId`, `GmSession.gridId`, `Group.gridId`,
+  `PlayerComputeDeployInput.gridEvents`, and the `channelEgress` /
+  `spatialMaxDistance` / `gridEventEgress` player policy knobs.
+- **Compute SDK 0.1.6**: `api::emit_event_to(target, name, payload)`;
+  game kit `kit-core::grid` (publish, send_to, post, decode).
+- **CrowdyJS 17.7.0**: `client.grid(appId, gridId)`, `client.grids`,
+  `@crowdedkingdoms/crowdyjs/grid-program` (the full SDK in a sandboxed JS
+  program), `startGridMod` / `createGridHostCalls`, the broker allowlist from
+  the platform host catalog, the page-local grid event bus for CLIENT mods.
+  [Guide](/crowdyjs/grid-programs).
+- **CrowdyCPP 0.43.0**: `client.grids()` and `sessions(..., gridId)`.
+- **crowdy-dsh 0.4.0**: `grid_context`, `grid_program_run`,
+  `grid_program_status` agent tools.
+
 ## 2026-09-22 (Unreal SDK v2.15.0)
 
 Six changes. One is a source break for C++ projects and is the only one that asks anything of a
