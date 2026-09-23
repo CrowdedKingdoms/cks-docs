@@ -69,10 +69,6 @@ static `UCrowdySDKDeveloperSettings::GetReleaseEnvironment()` (C++ only, not exp
 pick a Backend on the Sign In page and sync, `DefaultGame.ini` holds that choice from then on and this
 default no longer applies.
 
-:::note[On the tagged v2.15.0 plugin, `Environment` offers only Dev, Production, and Custom, and always defaults to Production regardless of the build.]
-See [What's Changed](../guides/whats-changed.md) for this release.
-:::
-
 ### Setting endpoints at runtime
 
 Two runtime setters on `UCrowdySDKSubsystem` look like a way to configure these values in code, but they
