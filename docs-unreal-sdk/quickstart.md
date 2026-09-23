@@ -30,8 +30,6 @@ One fact shapes the order of the steps. The server knows a client by the actor u
 
 :::note[A map with no profile of its own runs on the SDK's shipped default.]
 Config Sync points the project at an app; a map profile decides what the SDK does on a map. With none assigned, the shipped default applies (networking on, the actor pool drawing remote entities with the shipped transform policy), so every step below works without authoring one. Author a profile when you need per-map settings; see [Map profiles](./runtime/map-profile.md).
-
-On the tagged v2.14.0 plugin the shipped default draws nothing: its Backend Config is empty, and that release renders remote entities only through a config that names a Replication Policy Class. On that release, author a profile for your test map with an **Actor Pool Backend Config** whose policy class is `UCrowdyTransformRepPolicy` before step 1. The fallback lands with the next release; see [What's Changed](./guides/whats-changed.md#unreleased-after-v2140).
 :::
 
 ## About the code on this page
@@ -80,8 +78,6 @@ The identity is derived once and nothing re-derives it later: at `BeginPlay` whe
 
 Where the account id becomes readable. The engine possesses a pawn spawned during play only after its `BeginPlay`, so the component waits and registers inside that first possession, after the pawn's own **Possessed** and **Controller Changed** events; the first controller of any kind completes it, and an AI-possessed pawn takes the random-id fallback with its warning. A respawn that leaves the old pawn standing hands the account id to the new one, and the old pawn's component stops replicating. Read the id from the component's **On Crowdy Ownership Assigned** (`OnCrowdyOwnershipAssigned`) or the entity subsystem's `OnEntityRegistered`, never from `BeginPlay` or **Possessed**; **Is Locally Owned** on the pawn reads false until that registration, so a pawn graph that gates on it at `BeginPlay` runs nothing.
 
-On the tagged v2.14.0 plugin the component derives the identity at `BeginPlay` with no controller in sight, logs `Identity Policy is Player Derived on ... but the pawn is not possessed by any controller yet, so it fell back to a random id`, and registers under a random id instead of your account's. Every step on this page still works there: the pawn registers and sends, you are present, the reflection draws, the spatial event reaches you, and two clients never conflate. What that release lacks is whatever is keyed on the local player id: the host lookup, ownership requests, and the drop of your own echoed events (with two real clients, a `SpatialMulticast` body runs twice on its sender, once locally and once from the server's echo). See [What's Changed](./guides/whats-changed.md#unreleased-after-v2140).
-
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
@@ -112,7 +108,7 @@ Three Blueprints, two of them settings only.
 **Success signal.** Press Play. The map sits still under a fixed camera until `Connected to the app`, then your character spawns at a Player Start and you can move it. With `crowdy.entity.trace 1` on, the log shows the pawn's entity registering on the wire right after the connection comes up.
 
 :::caution[A pawn that begins play before the sign-in has answered derives its identity from user id 0.]
-Nothing warns. Two such clients conflate into one player, and the host cannot be found by its avatar. Keep the pawn's spawn behind **On UDP Connection Success**, as the block does: the pawn then registers under your account's id inside the possession that `RestartPlayer` performs. On the tagged v2.14.0 plugin the same gate gives that pawn a random id and one warning, the lesser evil; see [What's Changed](./guides/whats-changed.md#unreleased-after-v2140).
+Nothing warns. Two such clients conflate into one player, and the host cannot be found by its avatar. Keep the pawn's spawn behind **On UDP Connection Success**, as the block does: the pawn then registers under your account's id inside the possession that `RestartPlayer` performs.
 :::
 
 ## 2. See yourself
@@ -125,7 +121,7 @@ What it means: the server received your updates, so you exist to it. The same up
 
 The other way to see the same thing is two real clients. Open two Play in Editor windows signed into two different accounts, as [Testing locally](./guides/testing-locally.md#two-pie-client-setup) describes; each window shows the other's pawn as a proxy, moving as its owner moves.
 
-**Success signal.** A second character follows you. If none appears, check in this order: the log shows `Connected to the app`; the pawn spawned after it, not on the first frame; the map's profile (or the shipped default) has its actor tracker on; `crowdy.entity.trace 1` shows the registration. On the tagged v2.14.0 plugin, the note under Before you start applies: with no policy class named, the pool draws nothing.
+**Success signal.** A second character follows you. If none appears, check in this order: the log shows `Connected to the app`; the pawn spawned after it, not on the first frame; the map's profile (or the shipped default) has its actor tracker on; `crowdy.entity.trace 1` shows the registration.
 
 ## 3. Light a lantern
 
@@ -268,7 +264,7 @@ The two lantern files after steps 3 to 6, for comparison with your own:
 
 - No login, no connection. Until `Get UDP Connection State` reads connected, every step looks dead.
 - No pawn, no presence. The server knows you by your pawn's updates; a client whose pawn is not sending is at no position and receives no spatial event, and its own spatial sends reach nobody. A `Multicast` event is the exception: it goes by session channel membership, which connecting joins.
-- Spawn the pawn after **On UDP Connection Success**. Before it, the identity derives from user id 0 and the first updates leave before the server is ready to take them; nothing is queued or replayed, the next interval's update is the recovery. A pawn spawned after it registers inside its first possession, so read its id from **On Crowdy Ownership Assigned**, not at `BeginPlay`. On the tagged v2.14.0 plugin that pawn registers under a random id with one warning (the engine possesses it after `BeginPlay`); the page works, the host lookup, ownership requests and the echo drop do not, until the release that derives identity on possession.
+- Spawn the pawn after **On UDP Connection Success**. Before it, the identity derives from user id 0 and the first updates leave before the server is ready to take them; nothing is queued or replayed, the next interval's update is the recovery. A pawn spawned after it registers inside its first possession, so read its id from **On Crowdy Ownership Assigned**, not at `BeginPlay`.
 - The Game Mode binds the event in its own `BeginPlay`. A map opened after the connection is already up never sees it; check **Get UDP Connection State** at `BeginPlay` first and restart the player at once when it reads connected, or bind in the Game Instance and spawn from there.
 - A map whose `MapProfiles` row or `DefaultProfile` names an asset that did not load is inactive; the warning names the asset. Check that before any code. A map with no row at all runs on the shipped default.
 - The loopback variables are test aids. Leave them off in a normal session; they change what a single client sees.

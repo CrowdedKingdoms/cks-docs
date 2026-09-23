@@ -275,6 +275,15 @@ replicas — your `tick` never overlaps or double-fires.
 `debounceMs` coalesces bursts. Event chains are bounded: a cascade of modules
 triggering each other via `emit_event` is cut off at a platform depth limit.
 
+An event run that dies because the watchdog killed it, or because the worker
+exited under it (`worker_exit` / `poisoned`), is delivered again, up to two
+more times. That is at-least-once: a handler that wrote before the kill can
+run again, so the write has to be idempotent (set the boss's health, don't
+add to it). Other failures are not retried. The Studio Compute trigger form
+sends the same filters as this API (`containerTypeName`, `propertyKey`,
+`functionName`, `eventName`); leave a filter blank to match every event of
+that kind.
+
 Automations can also drive modules directly: a
 [`compute_invoke` automation](autonomous-processes#authoring-an-automation-the-npc-table)
 binds a schedule/event/manual automation to one of your module's invoke
@@ -348,15 +357,21 @@ Modules are bounded by layered budgets so a bug degrades gracefully:
    entry call gets a budget (`fuelPerTick` / `fuelPerInvoke`); exhaustion stops
    the call immediately. An infinite loop cannot run away — it traps.
 2. **Watchdog** — a wall-clock deadline per call (`maxRunMs`). Breach
-   terminates the module instance and fails the run.
+   terminates that run. Calls that had not entered the worker yet run on a
+   fresh instance; they are not failed along with the one that was killed.
 3. **Per-call caps** — guest memory (`maxMemoryMb`), host data operations per
    call (`maxDbOpsPerTick`), replication payloads ≤ 1024 bytes.
 4. **Egress budget** — `maxEgressMsgsPerMin` / `maxEgressBytesPerMin` per
    module. Over-budget emits fail with a structured `egress_budget` error the
    module can handle; they are never silently dropped.
-5. **Failure circuit** — `failureThreshold` consecutive failures **open** the
-   module's circuit for `cooldownMs` (then a half-open probe; one successful
-   run closes it). Re-enable manually with `computeSetModuleEnabled`.
+5. **Failure circuit** — `failureThreshold` consecutive failures **open** a
+   circuit for `cooldownMs` (then a half-open probe; one successful run closes
+   it). Invoke failures open a circuit for **that export only**, so a slow
+   `request_damage` does not refuse score reads or event handlers. Ticks and
+   events still share the module circuit. The player-facing code is
+   `CIRCUIT_OPEN`, with `retryAfterMs` and, when the opening failures were
+   watchdog kills, `cause: watchdog_timeout`. Re-enable manually with
+   `computeSetModuleEnabled` to reset the module circuit.
 6. **Budget gate** — if your app is over its spend cap or denied, all modules
    pause automatically, exactly like automations.
 
@@ -424,7 +439,10 @@ arrives (see [Shared environment](/management-api/shared-environment)):
 
 Messages are counted for your usage view but **not priced**: a message is paid
 for by its bytes. One compute unit is approximately one millisecond of
-reference CPU (`GREATEST(CEIL(cpu_us/1000), CEIL(fuel/22,000,000))`). If a
+reference CPU (`GREATEST(CEIL(cpu_us/1000), CEIL(fuel/22,000,000))`). A CPU-hour
+is one core busy for one hour; the price is the
+[pricing page](https://crowdedkingdoms.com/pricing.html) and the rate card in
+your account. If a
 spend cap or balance is hit, the budget gate pauses your modules until
 resolved.
 

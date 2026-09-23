@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-21T14:43:18Z",
+  "generated": "2026-09-22T14:39:18Z",
   "sdk_version": "2.14.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
@@ -14715,6 +14715,16 @@
       "editor_module": false
     },
     {
+      "id": "crowdy.net.recv.signedbundles",
+      "name": "crowdy.net.recv.signedbundles",
+      "kind": "variable",
+      "trace": false,
+      "help": "",
+      "module": "CrowdyNet",
+      "file": "CrowdyNet/Private/Network/CrowdyCpp/CrowdyCppReplicationSubsystem.cpp",
+      "editor_module": false
+    },
+    {
       "id": "crowdy.net.routes",
       "name": "crowdy.net.routes",
       "kind": "command",
@@ -15221,6 +15231,30 @@
       "enumerators": [],
       "module": "CrowdyServices",
       "header": "CrowdyServices/Public/Core/UI/CrowdyHUDBase.h",
+      "editor_module": false
+    },
+    {
+      "id": "ACrowdyPlayerDerivedTestPawn",
+      "name": "ACrowdyPlayerDerivedTestPawn",
+      "kind": "class",
+      "scope": "",
+      "reflected": "UCLASS",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [
+        "APawn"
+      ],
+      "fields": [
+        {
+          "name": "Entity",
+          "type": "TObjectPtr<UCrowdyEntityComponent>",
+          "static": false,
+          "uproperty": true
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/State/CrowdyStateTestTarget.h",
       "editor_module": false
     },
     {
@@ -16824,6 +16858,8 @@
         "CHANNEL_MESSAGE_REQUEST",
         "CHANNEL_MESSAGE_NOTIFICATION",
         "CLIENT_ACTOR_HEARTBEAT",
+        "CLIENT_CAPABILITIES",
+        "MESSAGE_BUNDLE_SIGNED",
         "ACTOR_UPDATE_REQUEST",
         "ACTOR_UPDATE_RESPONSE",
         "ACTOR_UPDATE_NOTIFICATION",
@@ -22571,6 +22607,12 @@
           "type": "int32",
           "static": false,
           "uproperty": false
+        },
+        {
+          "name": "bAdvertiseCapabilities",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
         }
       ],
       "enumerators": [],
@@ -22672,6 +22714,12 @@
         },
         {
           "name": "Malformed",
+          "type": "int64",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "SignedBundlesReceived",
           "type": "int64",
           "static": false,
           "uproperty": false
@@ -36084,6 +36132,12 @@
         {
           "name": "LastHostOwnedAutoRegisterMessage",
           "type": "FString",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "IdentityResolutionCount",
+          "type": "int32",
           "static": false,
           "uproperty": false
         },
@@ -67805,6 +67859,52 @@
       "ufunction": true,
       "deprecated": false,
       "blueprint": true,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/Components/CrowdyEntityComponent.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyEntityComponent::SetCollaboratorsForTest",
+      "owner": "UCrowdyEntityComponent",
+      "owner_kind": "class",
+      "name": "SetCollaboratorsForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void SetCollaboratorsForTest(UCrowdyEntitySubsystem* InEntities, UCrowdyGameSession* InSession)",
+      "return_type": "void",
+      "params": "UCrowdyEntitySubsystem* InEntities, UCrowdyGameSession* InSession",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/Components/CrowdyEntityComponent.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyEntityComponent::ShouldDeferIdentityToPossession",
+      "owner": "UCrowdyEntityComponent",
+      "owner_kind": "class",
+      "name": "ShouldDeferIdentityToPossession",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool ShouldDeferIdentityToPossession(bool bInjected, ECrowdyIdentityPolicy Policy, bool bIsPawn, bool bHasController)",
+      "return_type": "bool",
+      "params": "bool bInjected, ECrowdyIdentityPolicy Policy, bool bIsPawn, bool bHasController",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
       "module": "CrowdyReplication",
       "header": "CrowdyReplication/Public/Replication/Components/CrowdyEntityComponent.h",
       "editor_module": false

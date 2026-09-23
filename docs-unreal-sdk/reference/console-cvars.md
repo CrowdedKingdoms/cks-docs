@@ -9,7 +9,7 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Console Variables
 
-The SDK exposes 33 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
+The SDK exposes 34 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
 logging for one area, behavior switches that change what the SDK does, and diagnostic commands that run
 once and hold no stored value. A row badged **Editor only** exists only in the editor process. Four of the
 diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`,
@@ -45,7 +45,7 @@ logging around Studio calls.
 
 ## Behavior switches
 
-These change what the SDK does rather than what it logs. None of the 10 exist only in the editor.
+These change what the SDK does rather than what it logs. None of the 11 exist only in the editor.
 
 <SurfaceTable
   table="cvars"
@@ -54,12 +54,13 @@ These change what the SDK does rather than what it logs. None of the 10 exist on
     "crowdy.net.receive.maxmessages": "How many inbound replication messages one frame may deliver; whatever is left waits for the next frame. Default 3072.",
     "crowdy.net.receive.maxdrainms": "How many milliseconds of one frame may be spent delivering inbound messages. Raise the message count first. Default 4.",
     "crowdy.net.send.bundle": "Pack one network pass's outbound messages into one datagram. Needs a replication server of v0.27.0 or later; against an older one every bundled message is dropped together. Default 1, read when a connection opens.",
+    "crowdy.net.recv.signedbundles": "Tell the replication server this client reads signed inbound bundles, so notifications arrive with one signature per datagram instead of one per member. A server older than v0.30.0 ignores it. Default 1, read when a connection opens.",
     "crowdy.replication.tracker.maxgatheredupdates": "How many actor updates for already-tracked actors may be gathered before the backlog is discarded; reached only when the world tick is not consuming them. Default 8192."
   }}
   notesLabel="Where the Help cell is empty"
 />
 
-The notes map above stands in for these four rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
+The notes map above stands in for these five rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
 
 :::warning[Leave `crowdy.rpc.allowObjectLoad` off in production.]
 While it is off, an untrusted peer cannot trigger an arbitrary asset load; an unresolved object or class
