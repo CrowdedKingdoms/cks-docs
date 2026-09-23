@@ -3,6 +3,16 @@
     "_comment": "Symbols from static/helpers/unreal-sdk/sdk-surface.json that check-unreal-surface.mjs must not report as undocumented. Each real entry is {\"id\": \"<surface id, e.g. UCrowdyTeams::GetMyTeamById or UCrowdySDKDeveloperSettings::AppId>\", \"reason\": \"internal|deprecated|mass|editor\", \"note\": \"<why a reader does not need it>\"}. A settings class id covers every property of that class. Entries without an id, like this one, are ignored."
   },
   {
+    "id": "ACrowdyPlayerDerivedTestPawn",
+    "reason": "internal",
+    "note": "Headless test fixture for the identity-on-possession path of the entity component; not shipped as API."
+  },
+  {
+    "id": "UCrowdyEntityComponent::ShouldDeferIdentityToPossession",
+    "reason": "internal",
+    "note": "The pure decision behind the possession wait, public so the headless tests can call it; the behaviour a reader needs is on the Entities, Identity, and Ownership page."
+  },
+  {
     "id": "ACrowdyStateApplyTestActor",
     "reason": "internal",
     "note": "Headless test fixture for the CrowdyState codec and replicator; not shipped as API."

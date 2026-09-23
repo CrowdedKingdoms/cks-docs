@@ -39,6 +39,10 @@ Three entry points, all in category **Crowdy SDK, Game Model, Advanced**:
 
 `Succeeded` fires only on a committed call: it reached the server and passed the function's rules. A transport failure and a server-side rollback both route to `Failed`, still carrying `bSuccess` and `ErrorMessage`, so a refused rule is distinguishable from a lost packet without `Succeeded` ever firing on a rejected write.
 
+:::warning[`ErrorMessage` on `Failed` is a player-safe sentence, not the require leaf.]
+A policy refusal arrives as `Failed` with `ErrorMessage` overwritten to **You are not allowed to do that.** The leaf the policy actually failed — owner, host, participant, a condition — is not on that pin. The Unreal outcome is `(bSuccess, ReturnValueJson, ErrorMessage)`; it does not carry `fault.code`. Read the leaf from `gameModelEvents`, Studio's Advanced event log, or `crowdy.gamemodel.trace`. Do not treat the sentence as the leaf name. [Error codes](/overview/error-codes).
+:::
+
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
@@ -104,12 +108,13 @@ Calling `fn:` and expecting the callee's writes, signals, or timers to happen is
 
 ## Notifications
 
-**Call Model Function** adds no notification of its own. When the function it names is an authored effect whose notification names the container through the server-injected `$self_container_id`, that notification still fires; otherwise peers refresh through the fallback ping. Either way the caller's own cache is updated from the response, which is why an echoed write on the calling client says nothing about what anyone else received. [Change pings and pull](./change-pings-and-pull.md).
+**Call Model Function** adds no notification of its own. When the function it names is an authored effect whose notification names the container through the server-injected `$self_container_id`, that notification still fires; otherwise peers refresh through the fallback ping **from this Unreal client**. A Compute or automation write of the same function has no acting Unreal client and no fallback ping. Either way the caller's own cache is updated from the response, which is why an echoed write on the calling client says nothing about what anyone else received. [Change pings and pull](./change-pings-and-pull.md).
 
 ## Gotchas
 
 - `Target` and `ContainerId` are exclusive. Empty `Target` plus a `ContainerId` is the free-container route; both set is the entity route.
-- `SessionId` empty means the active session, or the app when none is active. [Sessions](./sessions.md).
+- `SessionId` empty means the active session, or the app when none is active. [Sessions](./sessions.md). An invoke that needs `is_participant` and has neither an active session nor an explicit `SessionId` is refused.
+- Do not call a function until the target's bind has returned. Until the first pull, getters are the C++ / Blueprint class default, not the server row. [Ensured identity](./ensured-identity.md).
 - A `require` line on the function is evaluated before any assignment; a refusal rolls the whole call back and lands on `Failed`. [Invoke policies](./invoke-policies.md).
 - `Params` keys are the parameter names as declared on the asset, case included.
 - A function that only other functions call still needs a sync: it is schema like any other.

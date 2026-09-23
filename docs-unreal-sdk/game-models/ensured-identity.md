@@ -77,6 +77,7 @@ An entity that keeps sweeping and never binds is usually a type nobody may creat
 
 ## Gotchas
 
+- Wait for the bind (ensure) to return before applying an Effect. Until the first pull, getters are class defaults, so a "wrong" health or team id in that window is expected.
 - A moved placed actor keeps its key; a copied one gets a new placement guid and a new key.
 - A binding key that changes between runs is a new row every run. Keep the derivation pure.
 - The component key folds in the component's class, so two different container classes on one actor never collide, and two of the same class need distinct names or keys.

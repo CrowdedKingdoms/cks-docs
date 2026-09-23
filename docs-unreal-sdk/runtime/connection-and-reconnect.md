@@ -79,6 +79,12 @@ In the Game Instance Blueprint, from **Event Init**, a **Crowdy SDK Subsystem** 
 
 Outbound replication messages of one network pass are packed into bundle datagrams. `crowdy.net.send.bundle` (default 1) controls it; 0 sends one datagram per message, a diagnostic switch rather than a setting a shipping build needs. The variable is read when a connection opens, so flipping it takes effect on the next connect, not on the live socket.
 
+## Signed inbound bundles
+
+Once the connection is up, the transport tells the replication server what this client can read (a `CLIENT_CAPABILITIES` message), and repeats it every 15 seconds so a token refresh or a server-side move, both of which reset the server's record without saying so, never leaves it stale. A server at v0.30.0 or later then packs the notifications it sends you into `MESSAGE_BUNDLE_SIGNED` datagrams: the members inside carry no signature of their own, and one HMAC at the end covers the whole datagram. The transport checks that one signature, drops the datagram if it fails, and delivers the members exactly as it delivers any other notification. Your handlers see no difference; a datagram that used to cost one verification per member costs one. An older server ignores the message and keeps signing every member, which is also what the tagged 2.14.0 plugin receives, since it never announces itself.
+
+`crowdy.net.recv.signedbundles` (default 1) is the switch; 0 stops the announcement and keeps the per-member form, for a before-and-after comparison rather than for shipping. Like `crowdy.net.send.bundle` it is read when a connection opens.
+
 ## The receive budget
 
 Inbound messages are delivered on the game thread, per frame, under two budgets: `crowdy.net.receive.maxmessages` (default 3072) caps how many messages one frame may deliver, and `crowdy.net.receive.maxdrainms` (default 4.0) caps the milliseconds one frame may spend delivering them. Whichever binds first ends that frame's drain and the rest waits for the next frame. The budget covers every message the connection receives, channel notifications and video fragments included, not only actor updates.
@@ -98,7 +104,7 @@ Five functions on `UCrowdySDKSubsystem` are deprecated (the compiler warns on ea
 - `Reconnecting` needs nothing from you. Only `Disconnected` after a timeout does.
 - `GateKeep` is an answer, not a failure. Retrying against a full app asks a server with no room whether it has room.
 - Coming up joins the channels. A Multicast event sent before **On UDP Connection Success** is queued and flushed when the bootstrap finishes; see [Channels](./channels.md).
-- `crowdy.net.send.bundle` changes take effect on the next connect.
+- `crowdy.net.send.bundle` and `crowdy.net.recv.signedbundles` changes take effect on the next connect.
 
 ## Related
 

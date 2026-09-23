@@ -73,10 +73,11 @@ warnings:
 - "Replication Policy Class is not set on '...', so nothing would read the state arriving for these
   entities", when the config exists but names no policy.
 
-Fix: set **Backend Config** on the map profile to a Crowdy Actor Pool Backend Config asset, and set its
-**Replication Policy Class** to a `UCrowdyRepApplicationPolicy` subclass. From the release after 2.14.0 an
-empty config falls back to the built-in `UCrowdyTransformRepPolicy` and this state no longer occurs; see
-[Rendering backends](../runtime/rendering-backends.md) and [What's changed](./whats-changed.md).
+Fix: update to 2.15.0, where an empty config falls back to the built-in `UCrowdyTransformRepPolicy` and
+this state no longer occurs. On an older plugin, set **Backend Config** on the map profile to a Crowdy
+Actor Pool Backend Config asset and its **Replication Policy Class** to a `UCrowdyRepApplicationPolicy`
+subclass; see [Rendering backends](../runtime/rendering-backends.md) and
+[What's changed](./whats-changed.md).
 
 ## Events are not received
 
@@ -283,8 +284,8 @@ at your own network path, not the SDK. Check your route to the backend before fi
 
 - A map with nothing configured runs on the shipped default profile. The "resolved no map profile" warning
   means a configured profile asset did not load, and it is a warning, not an error.
-- On 2.14.0 an empty Backend Config, or one without a Replication Policy Class, tracks entities and draws
-  none; the warning names the field.
+- On 2.14.0 and earlier an empty Backend Config, or one without a Replication Policy Class, tracks entities
+  and draws none; the warning names the field. 2.15.0 falls back to the built-in policy.
 - Preloaded Entity Classes is empty by default. Add every entity class a client needs to see belonging to
   someone else, not just the ones it spawns itself.
 - A `CrowdyState` property needs no setup on a normal actor, but needs its own field registration on a

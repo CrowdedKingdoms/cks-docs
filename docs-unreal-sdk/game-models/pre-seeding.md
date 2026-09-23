@@ -122,6 +122,7 @@ Every cooked build before this version used a path-hash identity for placed obje
 
 ## Gotchas
 
+- Pre-seeding creates the row. The client still has to bind, then pull, before a getter is the server value. Do not apply an Effect until that bind has returned.
 - Scope is per type, in code. Mixing scopes by convenience lets one match's state leak into another.
 - Do not scan an unsaved map; the scan skips dirty actors because the key a build cooks is the saved placement.
 - The manifest is per map. Applying one map's manifest inside another creates rows nobody will find; the runtime warns but does not refuse.
