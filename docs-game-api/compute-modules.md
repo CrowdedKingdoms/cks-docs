@@ -349,6 +349,14 @@ returns bytes; `resultJson` is populated when they parse as JSON. Unlike
 fire-and-forget spatial sends, an invoke failure (trap, fuel exhaustion,
 policy denial) is returned to the caller as a GraphQL error.
 
+A module runs one call at a time. Up to four more calls wait behind the
+running one; a call that arrives when four are already waiting is refused with
+`PLATFORM_BUSY` without running, as is a call the server cannot give a database
+connection in time. That code is retryable and never counts against your
+module's circuit. See
+[Retrying `PLATFORM_BUSY`](/overview/error-codes#retrying-platform_busy) for
+the backoff to use.
+
 ## Limits and circuit breakers
 
 Modules are bounded by layered budgets so a bug degrades gracefully:
