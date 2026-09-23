@@ -30,6 +30,18 @@ supported path.
 
 :::
 
+## 2026-09-23 (Unreal SDK v2.16.0)
+
+One change, additive: the Backend selector gains a Test tier. Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed).
+
+- **Backend gains a Test tier, and its default now follows the SDK build's own release tier.** The
+  built-in hosts behind Dev and Production moved to `ck.dev.crowdedkingdoms.com` and
+  `ck.prod.crowdedkingdoms.com`; the old `api.dev.crowdedkingdoms.com` and `api.crowdedkingdoms.com`
+  hosts no longer resolve. The new Test tier resolves to `ck.test.crowdedkingdoms.com`. A project's
+  default Backend now follows the build's own release tier instead of always defaulting to
+  Production, so the public release still defaults to Production. Each tier vendors its own
+  CrowdyCPP (0.42.1). See [Project settings](/unreal-sdk/reference/project-settings#the-default-backend).
+
 ## 2026-09-22 (grid-scoped parity: Game API, CrowdyJS 17.7.0, CrowdyCPP 0.43.0, crowdy-dsh 0.4.0)
 
 Player code inside a grid can now do everything app-scoped code can, confined
