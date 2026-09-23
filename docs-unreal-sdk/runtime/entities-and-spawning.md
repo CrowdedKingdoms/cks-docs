@@ -22,7 +22,7 @@ Whenever an actor created at runtime must exist on other clients: a dropped item
 
 `InitialState` is an `FInstancedStruct` of your own type. It travels with the spawn and lands in the component's `OnCrowdySpawned` event on every client; pass an empty struct when there is nothing to send.
 
-The lantern world's runtime spawn is the player arriving with a lantern. `ALanternPlayer` is the player character: a pawn carrying a `UCrowdyEntityComponent` in Dynamic mode with PlayerDerived identity and LocalClient ownership, declared in full on [Continuous state](./continuous-state.md). Once the character knows it is locally owned, `ALanternPlayer::DropLantern` spawns an `ALantern` a short way in front of it, and the new lantern appears there on every client in range. The moment is `OnCrowdyOwnershipAssigned`, not `BeginPlay`: a player pawn spawned during play (`RestartPlayer`) is possessed after its `BeginPlay`, and its Player Derived identity resolves inside that first possession, so `IsLocallyOwned()` is still false at `BeginPlay`. The `AddDynamic` in the block sits in `ALanternPlayer::BeginPlay`, after `Super::BeginPlay()`; the handler fires on the tick after the entity registers, on the first-frame pawn and the runtime-spawned one alike. (On the tagged v2.14.0 plugin the pawn registers at `BeginPlay` under a random id, so a `BeginPlay` gate ran there; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).)
+The lantern world's runtime spawn is the player arriving with a lantern. `ALanternPlayer` is the player character: a pawn carrying a `UCrowdyEntityComponent` in Dynamic mode with PlayerDerived identity and LocalClient ownership, declared in full on [Continuous state](./continuous-state.md). Once the character knows it is locally owned, `ALanternPlayer::DropLantern` spawns an `ALantern` a short way in front of it, and the new lantern appears there on every client in range. The moment is `OnCrowdyOwnershipAssigned`, not `BeginPlay`: a player pawn spawned during play (`RestartPlayer`) is possessed after its `BeginPlay`, and its Player Derived identity resolves inside that first possession, so `IsLocallyOwned()` is still false at `BeginPlay`. The `AddDynamic` in the block sits in `ALanternPlayer::BeginPlay`, after `Super::BeginPlay()`; the handler fires on the tick after the entity registers, on the first-frame pawn and the runtime-spawned one alike.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -102,7 +102,7 @@ Inbound actor updates arrive at `UCrowdyActorTracker`, a world subsystem the act
 
 ![The map profile with Actor Management expanded and an Actor Pool Backend Config assigned: the tracker settings and the backend selection](/img/unreal-sdk/actor-config.png)
 
-The shipped default profile leaves **Backend Config** at None and runs on the built-in one (on the tagged v2.14.0 plugin it draws nothing in that state; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2140)); the [map profile page](./map-profile.md#create-the-asset) shows that state and when to assign your own.
+The shipped default profile leaves **Backend Config** at None and runs on the built-in one; the [map profile page](./map-profile.md#create-the-asset) shows that state and when to assign your own.
 
 | Field | Default | Effect |
 |---|---|---|

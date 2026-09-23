@@ -1,0 +1,39 @@
+---
+id: mint-grid-token
+title: mintGridToken
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Mint a grid-scoped token from the app token you hold (DN-10). The result can call only a short, fixed list of gameplay fields, and each is confined to the grid: world reads and replication sends must address a chunk inside it (a send's origin; its reach follows distance), channels must be the grid's own, sessions must be hosted in it, and player-model / player-compute calls must name it. refreshAppToken and logout are refused, so the token cannot widen or tear down its parent. Requires an app token (not a session token, not another grid token), and the caller must own the grid or hold run&#x005F;client&#x005F;code on it.
+
+
+```graphql
+mintGridToken(
+  input: MintGridTokenInput!
+): GridTokenResponse!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>mintGridToken.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>MintGridTokenInput!</b></code>](/reference/graphql/types/inputs/mint-grid-token-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, the grid, and an optional lifetime.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridTokenResponse</b></code>](/reference/graphql/types/objects/grid-token-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A grid-scoped token: an app token narrowed to one grid. Hand it to code that should act inside the grid and nowhere else (a JS grid program, a mod host adapter, an agent).

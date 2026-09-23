@@ -27,7 +27,7 @@ The screenshot is the SDK's shipped default profile, and its **Backend Config** 
 :::note[No Backend Config means the built-in one: the actor pool with the transform policy.]
 When `BackendConfig` is empty, `UCrowdyActorPoolBackend::InitializeBackend` creates a transient **Actor Pool Backend Config** and, since it names no policy, instantiates `UCrowdyTransformRepPolicy`: it reads the default executor's `FCrowdyActorState` and sets the pooled actor's location and rotation, interpolated across a ring of recent samples with bounded extrapolation. A `BackendConfig` of another backend's class is refused: the backend logs `Backend Config is a <class>, but this backend needs a CrowdyActorPoolBackendConfig` and returns false, the actor manager logs `could not initialize, so no remote entity will be drawn on this map`, and remote entities arriving as continuous-state updates are tracked with nothing on screen. Spawn-event proxies and Crowdy State are unaffected either way. See [Map profiles](./map-profile.md).
 
-The fallback is newer than the tagged v2.14.0 plugin. On that release an empty Backend Config, or one with no Replication Policy Class, tracks remote entities and draws nothing; set an **Actor Pool Backend Config** naming `UCrowdyTransformRepPolicy`. See [What's Changed](../guides/whats-changed.md#unreleased-after-v2140).
+The fallback arrived in 2.15.0. On 2.14.0 and earlier an empty Backend Config, or one with no Replication Policy Class, tracks remote entities and draws nothing, and the fix there is an **Actor Pool Backend Config** naming `UCrowdyTransformRepPolicy`. See [What's Changed](../guides/whats-changed.md#2026-09-22-sdk-v2150).
 :::
 
 ### Configure it

@@ -44,6 +44,10 @@ points a sandbox build at production.
 Drive gameplay rules through `client.gameModel` (and Compute when the
 workflow is larger than one effect). The browser presents confirmed
 state; it does not decide damage, captures, or team assignment locally.
+Ensure the container, then invoke; a getter after ensure is the type
+default until the first pull. A policy refusal resolves
+`success: false` with `fault.code` `NOT_ALLOWED` — it does not throw —
+and `errorMessage` is the sanitized sentence, not the require leaf.
 
 See [Game API best practices](/game-api/best-practices) and
 [Game model](/crowdyjs/game-model).

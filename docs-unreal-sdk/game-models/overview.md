@@ -70,8 +70,10 @@ Authoring the schema and pushing it to the server happens in Crowdy Studio; that
 ## Gotchas
 
 - A Game Model attribute exists on the server only after **Sync to Server** in Studio. Until then every read returns the default you pass.
-- "Session" means several things in this SDK. The Game Model session on these pages is a match: the group of players. The login session is your signed-in identity, held by `UCrowdyGameSession`, the client's own connection state (see [Authentication](../services/authentication.md)); the session channel is a transport every client of the app joins. [Sessions and Presence](../concepts/sessions-and-presence.md) keeps the three apart.
-- The elected host of the view plane is a convention. Nothing on this plane trusts it; a host-only function is gated by the server's `is_host` policy, not by who the clients elected. [The Host Is a Convention](../concepts/host-is-a-convention.md).
+- Do not apply an Effect until `gameModelEnsureContainer` / bind has **returned**. Binding is what creates the row. Until the first pull, a getter is the C++ / Blueprint class default, so a "wrong" health or team id in that window is expected. [Ensured identity](./ensured-identity.md).
+- "Session" means several things in this SDK. The Game Model session on these pages is a match: the group of players Create / Join record. The login session is your signed-in identity, held by `UCrowdyGameSession` (see [Authentication](../services/authentication.md)). The session channel is a transport every client of the app joins. A Crowdy Team is a persistent group with roles; joining one is not joining a session. [Sessions and Presence](../concepts/sessions-and-presence.md) keeps the four apart.
+- A cross-entity Effect with no `require` infers `is_participant`. An app that never creates a Game Model session always refuses those player calls. [Invoke policies](./invoke-policies.md).
+- The elected host of the view plane is a convention. `is_host` on a function is that elected host, not the Game Model session host. [The Host Is a Convention](../concepts/host-is-a-convention.md).
 - Trace everything on this plane with `crowdy.gamemodel.trace 1`; the log category is `LogCrowdyGameModel`.
 
 ## Related

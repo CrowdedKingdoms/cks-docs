@@ -37,6 +37,7 @@ type GmSession {
   endReason: String
   createdAt: DateTime!
   presence: String!
+  gridId: BigInt
   seededContainerCount: Int
 }
 ```
@@ -110,6 +111,10 @@ When the session was created.
 
 #### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>presence</b></code>](#presence)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#presence\} 
 How the roster is judged: 'actor' (default) expires a joined participant with no fresh Buddy actor in the app after the join grace window; 'none' never expires anybody -- for turn-based play that never replicates an actor -- so the roster's only exits are leave, end, and the empty timeout once everyone has left.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid this session is hosted in, when its creator hosted it inside a grid they own (a game within the game); null for an app-level session. Player modules on that grid see it through sessions&#x005F;list.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>GmSession.<b>seededContainerCount</b></code>](#seeded-container-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#seeded-container-count\} 

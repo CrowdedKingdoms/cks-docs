@@ -18,8 +18,8 @@ Two things follow from the server keeping it:
 - **Your client does not decide any of it.** Joining, leaving, changing the host, or taking a turn is a request; the server applies the rule and answers. A Blueprint check such as `Is Session Host` tells you what to show, and the server still refuses a host action from a client that is not the host.
 - **Game Model state belongs to a session.** A container created during a match belongs to that match's session; reads and Effects run inside the session your client is in (the "active session"). That is what ties this page to the [truth plane](./two-planes.md): the session is the scope a Game Model value lives in.
 
-:::note[One word, three things.]
-A **game session** (this page) is the group of players. The **login session** is your signed-in identity. The **session channel** is a transport every client of the app joins. Be precise about which one a sentence means.
+:::note[One word, four things.]
+A **Game Model session** (this page) is the group of players the server records when you Create or Join. The **login session** is your signed-in identity. The **session channel** is a transport every client of the app joins (`__crowdy_session_<appId>`). A **Crowdy Team** is a persistent group with membership and roles. Joining a team, riding the session channel, or being signed in does not make `is_participant` true; only a joined Game Model session does. [Invoke policies](../game-models/invoke-policies.md).
 :::
 
 ## Presence is the player's actor

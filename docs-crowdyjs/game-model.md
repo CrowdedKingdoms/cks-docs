@@ -156,12 +156,17 @@ const result = await client.gameModel.invoke({
 if (result.success) {
   console.log("enemy hp:", JSON.parse(result.returnValueJson!));
 } else {
-  console.warn("attack failed:", result.errorMessage);
+  console.warn("attack failed:", result.fault?.code, result.errorMessage);
 }
 ```
 
-If the caller is not authorized the call throws; if the logic errors the call
-returns `success: false` and rolls back.
+If the invoke policy refuses the caller, the promise **resolves** with
+`success: false` and `fault.code` `NOT_ALLOWED`; it does not throw. A logic
+error in the function also returns `success: false` and rolls back.
+`errorMessage` for a player fault is the sanitized sentence **You are not
+allowed to do that.** The require leaf is on `events(...)` /
+`gameModelEvents`, not on the invoke result. Branch on `fault.code`. See
+[Error codes](/overview/error-codes).
 
 ## Reading state
 
@@ -237,11 +242,15 @@ poll the event log with `events` (filter by session, container, function, or
 success), or re-read `containerState` after a change:
 
 ```ts
-const recent = await client.gameModel.events({ appId: "1", sessionId });
+const recent = await client.gameModel.events({ appId: "1" });
 for (const e of recent) {
-  console.log(e.functionName, e.success, JSON.parse(e.returnValueJson ?? "null"));
+  console.log(e.functionName, e.success, e.errorMessage, JSON.parse(e.returnValueJson ?? "null"));
 }
 ```
+
+Pass `sessionId` only when you are actually in a Game Model session. Filtering
+by `sessionId` hides events whose `session_id` is null, including failed
+invokes on rows that bound app-globally.
 
 To avoid blind polling, have the **acting** client send a lightweight
 "model changed" ping over the realtime path; peers then re-pull. Both carriers

@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Bulk-fetches actors by a list of 32-character ASCII uuids in one round-trip. Requires a valid game token. PUBLIC-STATE ONLY: `privateState` is stripped (null) for every result regardless of ownership. Unknown uuids are silently omitted. Use this to resolve many actors at once; use `actor` for a single owner-scoped fetch.
+Bulk-fetches actors by a list of 32-character ASCII uuids in one round-trip. Game-plane: requires an app token; only actors in that token’s app are returned (uuids in other apps are omitted, the same as unknown ids). A session token is answered NotFound. PUBLIC-STATE ONLY: `privateState` is stripped (null) for every result regardless of ownership. Use this to resolve many actors at once; use `actor` for a single owner-scoped fetch.
 
 
 ```graphql

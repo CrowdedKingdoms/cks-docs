@@ -57,7 +57,7 @@ Pressing **Sync to Server** opens a review sheet headed **Send ...?**; there is 
 An SDK update can change what an effect's invoke policy says, for example by adding an ownership or participation requirement to an effect that had none. The change is inert in your project until the next Sync to Server pushes the recomputed policy; a call that worked for months then starts returning "You are not allowed to do that". The review panel counts changes but does not single out an authority change from a cosmetic one. After updating the SDK, open each effect asset and read its **Deploy Payload** panel before you sync: it prints the exact function definition a sync would send, invoke policy included.
 :::
 
-Below the reconcile strip is a **Pre-seed containers** strip: scan the open map, preview, and apply the app-scoped rows that map's placed objects need. It belongs with sessions and scopes in the Game Models section.
+Below the reconcile strip is a **Pre-seed containers** strip: scan the open map, preview, and apply the app-scoped rows that map's placed objects need. It belongs with sessions and scopes in the Game Models section. It is authoring work, so the strip hides itself on the Live tab and gives that height to the live list and the values panel.
 
 :::note[Since 2.14]
 Pre-seeding and the app scope for containers are new in this version.
@@ -68,6 +68,10 @@ Pre-seeding and the app scope for containers are new in this version.
 **Models.** What is in this app's schema, where each piece came from, and what a sync would change. A search box, a source filter (**All**, **In code**, **Only on server**), the model list, and a detail panel with the selected model's Attributes, Functions, Automations, and Live sections. A **Mark for deletion** button under the list marks the selected row.
 
 **Live.** What is running right now, read straight from the server, so it is live even outside Play. Columns: **Name**, **Id**, **Owner**, **Session**, **Binding**. Filter by type name and session id. Actions: Refresh, Copy id, **Delete live model**, **Delete all of this model**, **Delete all in app**, and a Stop button while a purge runs.
+
+Select a live model and the panel under the list fills with what it holds, one row per attribute: the attribute's name, its value, what it holds, and the attribute's description where the model gives one. Numbers read as numbers, flags as yes or no, and a structure as its own JSON rather than as the word "object". An attribute the model declares that this live model has no value for is listed too, reading **not set**, so the panel is the model's vocabulary and not only the keys that happen to be stored. Drag the handle between the list and the panel to give either one more room.
+
+The search box above the panel matches attribute names and values, so typing a number finds whichever attribute holds it. **Copy value** puts the highlighted attribute's value on the clipboard whole, however long it is; **Copy values** puts every value on it as indented JSON. **Internal** adds the keys the runtime keeps for itself, such as the revision counter that drives collection change pings.
 
 :::note[Live deletes are immediate and have no undo.]
 **Delete all of this model** and **Delete all in app** page through the server until nothing is left. They are not limited to what the current filters show.
@@ -115,6 +119,8 @@ The server refuses nothing and cascades nothing for an attribute delete. Studio'
 - Sync never deletes. Deletes are the separate, staged flow above.
 - Lint and Sync are different checks. Lint finds what the server sees as broken; Preview finds what your project would change.
 - The Live tab's bulk deletes ignore the filters. Read the confirmation counts.
+- The values panel shows what your token may see. The server filters an attribute out by its visibility, and a filtered attribute reads as **not set** where the model declares it and is simply absent where it does not.
+- **not set** and **none** are different answers. The first is an attribute with no stored value; the second is a value the live model stores as null.
 
 ## Related
 

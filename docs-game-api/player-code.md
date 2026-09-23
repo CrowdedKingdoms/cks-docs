@@ -222,18 +222,43 @@ next runtime refresh. Admission never grants source access.
 
 ## Host boundary
 
-Player server modules receive a separate host binding:
+Player server modules receive a separate host binding. Since Game API DN-10
+(2026-09-22) it offers **every** host function a studio module has, each
+confined to the grid; the grid scope is the app scope intersected with grid
+confinement:
 
-- player-model containers are forced to `(app, grid, owner)`;
+- player-model containers are forced to `(app, grid, owner)`, including
+  `container_get_batch` (up to 32 owned ids) and `edge_add` / `edge_delete`
+  (both endpoints owned on this grid);
 - `model_invoke` uses the ordinary player path, so `is_automation` does not
-  pass;
-- user state is fixed to the grid owner;
-- grid state is fixed to the owned grid;
-- chunk, voxel, actor, voxel-write, and spatial-emit coordinates are clamped
-  to the grid AABB;
-- channel egress and unaddressed event egress are denied in v1;
+  pass (no `worldWrites` on the player path);
+- user state is fixed to the grid owner; grid state to the owned grid;
+  `avatar_state_get` answers only for an avatar whose live actor is in the grid;
+- chunk, voxel, actor, and voxel-write coordinates must be inside the grid box;
+- **spatial messages originate in the grid**: every `emit_spatial` kind
+  (`actor`, `client_event`, `server_event`, `text`) needs an origin chunk in
+  the box, and reaches `min(distance, 8, spatialMaxDistance)` chunks from it,
+  so a plot can be heard by passers-by;
+- **`emit_channel` posts into grid channels**: channels created for this grid
+  with [`createGridChannel`](channels#grid-channels) (default), or also channels
+  the grid owner may `send_messages` on when the app sets
+  `channelEgress: 'send_messages'`. Messages carry the sender uuid
+  `grid:<gridId>`;
+- **`emit_event(name, payload, target?)` publishes on the grid event bus**:
+  the other modules on the same grid that subscribe to `name` (deploy with
+  `gridEvents`), the module named by `target`, and studio modules with a
+  `grid_event` trigger. Never another grid, never a client;
+- **`sessions_list` lists the grid's sessions**: games hosted inside the grid
+  (`gameModelCreateSession({ gridId })`, grid owner only);
 - event delivery is fail-closed: only owner-container events, in-grid
-  actor/voxel events, and events addressed to the module enter the sandbox.
+  actor/voxel events, this grid's bus, and events addressed to the module enter
+  the sandbox;
+- draft modules are charged for egress but nothing is broadcast.
+
+The app controls the egress with three `setPlayerWasmPolicy` knobs:
+`channelEgress` (`grid` | `send_messages` | `none`), `spatialMaxDistance`
+(0–8, default 8) and `gridEventEgress` (default on). Studio exposes them on the
+app's Compute tab under **Grid code egress**.
 
 Out-of-grid and nonexistent resources return the same `unavailable` error so
 the API cannot be used as an existence oracle.
