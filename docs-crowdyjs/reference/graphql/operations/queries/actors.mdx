@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Lists actors owned by the authenticated user, optionally narrowed by `filter` (appId, avatarId, uuid, chunk). Requires a valid game token; only the caller’s own actors are returned (full state included). For other users’ actors use `actor` or `batchLookupActors`.
+Lists actors owned by the authenticated user, optionally narrowed by `filter` (appId, avatarId, uuid, chunk). Requires a valid game token; only the caller’s own actors are returned (full state included). Under an app token the list is confined to that token’s app (a `filter.appId` naming another app is refused). For other users’ actors use `actor` or `batchLookupActors`.
 
 
 ```graphql

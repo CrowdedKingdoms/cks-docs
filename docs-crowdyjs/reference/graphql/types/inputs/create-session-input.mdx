@@ -29,6 +29,7 @@ input CreateSessionInput {
   emptyTimeoutSec: Int
   presence: String
   seedFromApp: SessionSeedInput
+  gridId: BigInt
   idempotencyKey: String
 }
 ```
@@ -70,6 +71,10 @@ How the roster is judged: 'actor' (default) expires a joined participant with no
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>seedFromApp</b></code>](#seed-from-app)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SessionSeedInput</b></code>](/reference/graphql/types/inputs/session-seed-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#seed-from-app\} 
 Optional: copy the app's template rows of the listed container types into the new session at creation (see SessionSeedInput). At most 2,000 rows per session; above that the creation is refused with the count and no session exists. The count of rows stamped is on the session's `created` event (containersSeeded) and on GmSession.seededContainerCount of the create response.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Optional: host the session inside a grid (a game within the game). Only the grid's current owner may do this, and the app's session creation policy still applies. Player modules on that grid list it through sessions&#x005F;list; everyone else sees it as an ordinary session carrying gridId.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 

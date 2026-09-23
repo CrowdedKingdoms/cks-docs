@@ -28,6 +28,7 @@ input DeployPlayerComputeInput {
   description: String
   commitSha: String
   tickHz: Float
+  gridEvents: [String!]
   draft: Boolean
 }
 ```
@@ -65,6 +66,10 @@ GITHUB projects only: the full 40-hex commit to compile. Defaults to the project
 
 #### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>tickHz</b></code>](#tick-hz)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tick-hz\} 
 Optional server tick rate in Hz. Omit for invoke/event-only modules or CLIENT artifacts. Clamped by the effective player/app policy.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>gridEvents</b></code>](#grid-events)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-events\} 
+SERVER only (DN-10): grid event bus subscriptions. Each entry is an event name this module's on&#x005F;event receives when another module on the same grid calls emit&#x005F;event with it; '&#x002A;' subscribes to every name. Omit to keep the module's current subscriptions; pass [] to clear them. Addressed events (emit&#x005F;event with target = this module's name) arrive either way.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>DeployPlayerComputeInput.<b>draft</b></code>](#draft)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#draft\} 
