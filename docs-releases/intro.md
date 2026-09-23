@@ -30,6 +30,10 @@ supported path.
 
 :::
 
+## 2026-09-23 (CPU price)
+
+**The CPU rate is $0.20 per CPU-hour, one core.** It was $3.60. A CPU-hour is one core busy for one hour, not one machine. The same price covers GraphQL resolvers, automations, compute modules, and player-authored compute. The monthly allowance is unchanged: **20 CPU-hours** pooled per app. The price in effect is the rate card in your account and on the [pricing page](https://crowdedkingdoms.com/pricing.html). A price applies from the next settlement period for usage that has already been billed this month.
+
 ## 2026-09-23 (Unreal SDK v2.16.0)
 
 One change, additive: the Backend selector gains a Test tier. Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed).

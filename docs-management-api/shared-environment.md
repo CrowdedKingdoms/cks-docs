@@ -59,7 +59,9 @@ metered once, in either direction. A client-side byte counter will not match it.
 [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html).
 
 For compute modules, one `wasm_compute_unit` is approximately one millisecond
-of reference CPU. The platform takes the larger of measured CPU time and the
+of reference CPU. A CPU-hour on the rate card is one core busy for one hour.
+The price is the rate card in your account and on the
+[pricing page](https://crowdedkingdoms.com/pricing.html). The platform takes the larger of measured CPU time and the
 deterministic fuel equivalent (`GREATEST(CEIL(cpu_us/1000),
 CEIL(fuel/22,000,000))`), so neither a host stall nor unusually dense guest
 instructions under-report work. The 22M conversion, free allowance, and rate
