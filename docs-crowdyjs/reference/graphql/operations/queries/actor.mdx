@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Fetches a single actor by its 32-character ASCII `uuid`. Game-plane: requires an app token for the actor’s app (a session token or another app’s token is answered NotFound, the same as a missing id). Owner-aware: the owner receives full state; non-owners receive a public copy with `privateState` stripped (null).
+Fetches a single actor by its 32-character ASCII `uuid`. Requires a valid game token. Owner-aware: the owner receives full state; non-owners receive a public copy with `privateState` stripped (null). Throws NotFound if the uuid does not exist.
 
 
 ```graphql

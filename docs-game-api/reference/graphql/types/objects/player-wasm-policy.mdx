@@ -40,9 +40,6 @@ type PlayerWasmPolicy {
   maxCompilesPerHour: Int!
   maxContainerCreatesDay: Int!
   clientFuelPerDispatch: BigInt!
-  channelEgress: String!
-  spatialMaxDistance: Int!
-  gridEventEgress: Boolean!
 }
 ```
 
@@ -127,18 +124,6 @@ Player model containers created per player per day.
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>clientFuelPerDispatch</b></code>](#client-fuel-per-dispatch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-fuel-per-dispatch\} 
 Client-target fuel budget per browser dispatch (04 §3).
-
-
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>channelEgress</b></code>](#channel-egress)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#channel-egress\} 
-DN-10: which channels this scope's player modules may emit&#x005F;channel into: 'grid' (default, the grid's own channels), 'send&#x005F;messages' (also channels the grid owner may post to), or 'none'.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>spatialMaxDistance</b></code>](#spatial-max-distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#spatial-max-distance\} 
-DN-10: most chunks a player module's spatial message may reach from its in-grid origin (0-8, default 8). 0 keeps grid messages inside the origin chunk.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWasmPolicy.<b>gridEventEgress</b></code>](#grid-event-egress)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-event-egress\} 
-DN-10: whether player modules may publish on the grid event bus (emit&#x005F;event). Default true.
 
 
 

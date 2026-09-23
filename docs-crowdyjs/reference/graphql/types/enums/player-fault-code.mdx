@@ -30,7 +30,6 @@ enum PlayerFaultCode {
   QUOTA_EXHAUSTED
   WALLET_EMPTY
   SPEND_CAP_REACHED
-  CIRCUIT_OPEN
   TEMPORARILY_DISABLED
   INVALID_REQUEST
   NOT_ALLOWED
@@ -84,12 +83,8 @@ A metered allowance is spent and does not return on its own.
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>CIRCUIT&#x005F;OPEN</b></code>](#circuit-open) \{#circuit-open\} 
-The app's own circuit is open after repeated failures. Retry after extensions.retryAfterMs. extensions.cause is watchdog&#x005F;timeout when those failures were watchdog kills. This is not PLATFORM&#x005F;BUSY and not a rate limit.
-
-
 #### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>TEMPORARILY&#x005F;DISABLED</b></code>](#temporarily-disabled) \{#temporarily-disabled\} 
-An operator switch, a latch, or a platform hold. An open author circuit is CIRCUIT&#x005F;OPEN, not this code.
+A breaker is open or an operator switch is off for this subject.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>INVALID&#x005F;REQUEST</b></code>](#invalid-request) \{#invalid-request\} 

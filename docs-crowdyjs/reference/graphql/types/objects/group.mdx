@@ -28,7 +28,6 @@ type Group {
   ownerUserId: BigInt
   membershipPolicy: String!
   status: String!
-  gridId: BigInt
   defaultRoleId: BigInt
   createdAt: DateTime!
 }
@@ -69,10 +68,6 @@ How users may join: open (join immediately) | request (pending approval) | invit
 Lifecycle status, e.g. 'active'.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>Group.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
-Channels only: the grid this channel belongs to (a grid channel, DN-10). Player modules on that grid may emit&#x005F;channel into it; null for an ordinary channel.
-
-
 #### [<code style={{ fontWeight: 'normal' }}>Group.<b>defaultRoleId</b></code>](#default-role-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#default-role-id\} 
 Optional role auto-assigned to every new member (e.g. a channel "member" role granting send&#x005F;messages). Null means new members get no role by default.
 
@@ -85,7 +80,7 @@ When the group was created.
 
 ### Returned By
 
-[`channel`](/reference/graphql/operations/queries/channel.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`channels`](/reference/graphql/operations/queries/channels.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`createChannel`](/reference/graphql/operations/mutations/create-channel.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`createGridChannel`](/reference/graphql/operations/mutations/create-grid-channel.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`createTeam`](/reference/graphql/operations/mutations/create-team.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`gridChannels`](/reference/graphql/operations/queries/grid-channels.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`team`](/reference/graphql/operations/queries/team.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`teams`](/reference/graphql/operations/queries/teams.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`updateChannel`](/reference/graphql/operations/mutations/update-channel.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateTeam`](/reference/graphql/operations/mutations/update-team.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+[`channel`](/reference/graphql/operations/queries/channel.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`channels`](/reference/graphql/operations/queries/channels.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`createChannel`](/reference/graphql/operations/mutations/create-channel.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`createTeam`](/reference/graphql/operations/mutations/create-team.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`team`](/reference/graphql/operations/queries/team.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`teams`](/reference/graphql/operations/queries/teams.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`updateChannel`](/reference/graphql/operations/mutations/update-channel.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateTeam`](/reference/graphql/operations/mutations/update-team.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
 
 ### Member Of
 
