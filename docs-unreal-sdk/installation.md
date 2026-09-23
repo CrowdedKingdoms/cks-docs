@@ -20,9 +20,9 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 ## Step 1: Get the release
 
-Download the `v2.15.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+Download the `v2.16.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
 
-:::note[The release you install must match the version this guide describes (2.14).]
+:::note[The release you install must match the version this guide describes (2.16).]
 :::
 
 ## Step 2: Place the plugin at `Plugins/CrowdySDK`
@@ -113,6 +113,8 @@ Once it compiles, the SDK subsystems are available in both C++ and Blueprint.
 ## Step 6: Connect your app
 
 Open Crowdy Studio inside the editor, sign in, pick your app, and run Config Sync. It writes the connection settings into the project for you.
+
+Until you run Config Sync for the first time, the project has no Backend of its own, so it dials the tier the plugin release you downloaded was built for: Production for a tagged GitHub release. See [Project settings](./reference/project-settings.md#the-default-backend).
 
 :::warning[Do not type your app id and API URLs into Project Settings by hand.]
 The network settings on `UCrowdySDKDeveloperSettings` (`AppID`, `OrgId`, `Environment`, `DiscoveryUrl`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`, `HostPollIntervalSeconds`) are read-only in Project Settings on purpose (they live under **Project Settings, Plugins, Crowdy SDK**). Crowdy Studio owns them; a value you type elsewhere is overwritten by the next sync. See [Config Sync](./studio/config-sync.md).
