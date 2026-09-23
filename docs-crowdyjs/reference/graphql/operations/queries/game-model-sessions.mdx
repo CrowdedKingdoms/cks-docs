@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-List sessions in an app, newest first, optionally filtered by status, admission, host and/or grid. Requires a valid token.
+List sessions in an app, newest first, optionally filtered by status, admission and/or host. Requires a valid token.
 
 
 ```graphql
@@ -25,7 +25,6 @@ gameModelSessions(
   admission: String
   hostUserId: BigInt
   limit: Int
-  gridId: BigInt
 ): [GmSession!]!
 ```
 
@@ -50,10 +49,6 @@ Optional: only sessions hosted by this user.
 
 #### [<code style={{ fontWeight: 'normal' }}>gameModelSessions.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
 Most rows to return (default 200, max 1000).
-
-
-#### [<code style={{ fontWeight: 'normal' }}>gameModelSessions.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
-Optional: only sessions hosted inside this grid (a game within the game). A grid-scoped token must pass its own grid here.
 
 
 

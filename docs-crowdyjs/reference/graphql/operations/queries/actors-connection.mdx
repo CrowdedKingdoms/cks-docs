@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Relay-style cursor-paginated version of `actors`: lists actors owned by the authenticated user, optionally narrowed by `filter` (appId, avatarId, uuid, chunk). Page forward with `first` (default 50, max 200) and `after` (an opaque cursor from a previous page’s `pageInfo.endCursor`); `totalCount` is the full number of matching actors. Requires a valid game token; only the caller’s own actors are returned (full state included). Under an app token the list is confined to that token’s app.
+Relay-style cursor-paginated version of `actors`: lists actors owned by the authenticated user, optionally narrowed by `filter` (appId, avatarId, uuid, chunk). Page forward with `first` (default 50, max 200) and `after` (an opaque cursor from a previous page’s `pageInfo.endCursor`); `totalCount` is the full number of matching actors. Requires a valid game token; only the caller’s own actors are returned (full state included).
 
 
 ```graphql

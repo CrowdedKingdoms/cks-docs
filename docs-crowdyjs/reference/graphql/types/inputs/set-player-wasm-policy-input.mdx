@@ -39,9 +39,6 @@ input SetPlayerWasmPolicyInput {
   maxCompilesPerHour: Int
   maxContainerCreatesDay: Int
   clientFuelPerDispatch: BigInt
-  channelEgress: String
-  spatialMaxDistance: Int
-  gridEventEgress: Boolean
 }
 ```
 
@@ -122,18 +119,6 @@ Tier/grid/user id; required unless scope is app&#x005F;default.
 
 #### [<code style={{ fontWeight: 'normal' }}>SetPlayerWasmPolicyInput.<b>clientFuelPerDispatch</b></code>](#client-fuel-per-dispatch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-fuel-per-dispatch\} 
 
-
-
-#### [<code style={{ fontWeight: 'normal' }}>SetPlayerWasmPolicyInput.<b>channelEgress</b></code>](#channel-egress)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#channel-egress\} 
-DN-10 channel egress: 'none' | 'grid' | 'send&#x005F;messages'.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>SetPlayerWasmPolicyInput.<b>spatialMaxDistance</b></code>](#spatial-max-distance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#spatial-max-distance\} 
-DN-10 spatial reach cap in chunks (0-8).
-
-
-#### [<code style={{ fontWeight: 'normal' }}>SetPlayerWasmPolicyInput.<b>gridEventEgress</b></code>](#grid-event-egress)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-event-egress\} 
-DN-10 grid event bus on/off.
 
 
 
