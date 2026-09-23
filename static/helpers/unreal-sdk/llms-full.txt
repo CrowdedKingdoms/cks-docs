@@ -6787,8 +6787,9 @@ Two switches, in this order:
 
 1. `crowdy.gamemodel.trace 1` (log category `LogCrowdyGameModel`). Every bind, notification, pull, and apply logs. With `Log LogCrowdyGameModel Verbose` as well, a line prefixed `model-changed for unbound entity` marks a notification that arrived before the container bound; that one is not lost, the pull on bind reads current state. [Ensured identity](./ensured-identity.md) lists the bind lines.
 2. `crowdy.gamemodel.watchcontainers [TypeName]` opens the server's container-change feed over a WebSocket and logs every notification it delivers, narrowed to one type when you name one. `crowdy.gamemodel.unwatchcontainers` closes it. This is a diagnostic, not a carrier: nothing is re-pulled from it and no cache is written, so it proves the subscription path reaches a live server without changing how a change actually reaches a client. Both are stripped from Shipping builds.
+3. `crowdy.gamemodel.stats` logs a summary of how the Game Model has used the network since the last reset, for when the question is not one missed notification but whether the traffic shape is off: op calls, failures, and p50 / p95 / max latency per server operation; pull requests and how many pull applies were redundant (the pulled state matched what the cache already held) or overlapped an in-flight pull for the same target; self-echoes marked and dropped; resolve starts and re-resolves; invokes dispatched in the rate window next to the SDK's own governor count for the same window; request and response bytes; the top pulled containers; and invoke failures tallied by fault code. `crowdy.gamemodel.stats.reset` zeroes the counters, including the API client's per-operation and transport totals. Both are stripped from Shipping builds. On `UCrowdyGameModelSubsystem`, the same numbers are `GetNetStats`, `GetInvokesInWindow`, and `GetOpStats`; `DescribeNetStats` builds the exact lines the console command logs and `ResetNetStats` is what the reset command calls. Everything here is a counter, never read to make a decision, so treat it the same as the trace log: a place to look, not a value to branch on. Unreal Insights carries the same story as CPU trace scopes on the decode, apply, and API-poll path: `Crowdy_GM_DecodeResponse`, `Crowdy_GM_ApplyState`, `Crowdy_GM_ApplyMutations`, `Crowdy_GM_BuildParams`, `Crowdy_ApiPoll`.
 
-If the feed shows the change and the trace shows no pull, the client never recognised the notification: check the effect's `NotificationCarrier` against what the container can receive (a container with no position cannot be reached spatially). If the trace shows the pull and no OnRep, the key or the type did not match an attribute: compare the server key with the `CrowdyKey`.
+If the feed shows the change and the trace shows no pull, the client never recognised the notification: check the effect's `NotificationCarrier` against what the container can receive (a container with no position cannot be reached spatially). If the trace shows the pull and no OnRep, the key or the type did not match an attribute: compare the server key with the `CrowdyKey`. If nothing looks wrong for one container but the whole session feels slow, `crowdy.gamemodel.stats` is where to look for redundant pulls or a client that is hitting its own invoke rate window.
 
 ## Gotchas
 
@@ -6797,6 +6798,7 @@ If the feed shows the change and the trace shows no pull, the client never recog
 - The two-client PIE switches are test aids; leave `emitfallbackping` at its default in a normal session.
 - A read-only query effect authors no notification, on purpose. Asking never makes peers re-pull.
 - `watchcontainers` is a diagnostic: it logs the feed and does **not** re-pull.
+- `crowdy.gamemodel.stats` reports since the last reset (its own or the last `crowdy.gamemodel.stats.reset`), not since the process started; reset before a scenario you want an isolated reading for.
 - Session-scoped types can persist with `session_id` null. `gameModelEvents` / `containerChanged` filtered by `sessionId` hide those rows; omit `sessionId` unless you are actually in a Game Model session.
 - `GetLastModelErrorCode` is session-scoped despite the name; the session page owns its codes.
 
@@ -9378,6 +9380,10 @@ The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, ea
 
 You built against the SDK in July, you are updating the plugin to 2.15 or later, and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), and, in 2.15.0, the array delegates.
 
+## Unreleased (after v2.16.0)
+
+- **New network diagnostics for the Game Model path.** `crowdy.gamemodel.stats` logs op calls, failures, and latency per server operation; pull counts and how many were redundant or overlapping; self-echo counts; resolves and re-resolves; invokes in the rate window beside the SDK's own governor count; transport bytes; the top pulled containers; and invoke faults by code, since the last reset. `crowdy.gamemodel.stats.reset` zeroes it. Both are new console commands, stripped from Shipping builds like the existing watch commands. The same numbers are on `UCrowdyGameModelSubsystem` in C++: `GetNetStats`, `ResetNetStats`, `GetInvokesInWindow`, `GetOpStats`, `DescribeNetStats`. No behavior changed. **What you do:** nothing; it is read-only. See [Change pings and pull](../game-models/change-pings-and-pull.md#when-a-change-does-not-show-up) and [Console variables](../reference/console-cvars.md#diagnostic-commands).
+
 ## 2026-09-23 (SDK v2.16.0)
 
 - **Backend gains a Test tier, and its default now follows the SDK build's own release tier.** `ECrowdyEnvironment` adds Test between Dev and Production, so the Backend selector on the Sign In page now offers Dev (shared), Test, Production, and Custom. The built-in hosts behind Dev and Production also moved, to `https://ck.dev.crowdedkingdoms.com` and `https://ck.prod.crowdedkingdoms.com`; the previous hosts, `api.dev.crowdedkingdoms.com` and `api.crowdedkingdoms.com`, no longer resolve, so a project left on Dev or Production with no Custom Discovery URL could not reach the backend. This release fixes that and adds `https://ck.test.crowdedkingdoms.com` for the new Test tier. Separately, a project's Backend used to default to Production until you ran Config Sync; it now defaults to the tier this SDK build was released for (Dev on a dev build, Test on a test build, Production on the public release), and the Discovery URL default follows the same tier instead of always pointing at Dev. Each tier also vendors its own CrowdyCPP build (0.42.1), so a connection opened with no origin configured at all dials that tier's host directly; a released build dials `ck.prod.crowdedkingdoms.com`. **What you do:** nothing if your `DefaultGame.ini` already names an `Environment`, which it does for any project that has used the Backend selector; that value is unaffected. A brand-new project now connects out of the box on whichever tier's build you are running, instead of defaulting to a Production host you may not have an app on. A new static C++ read, `UCrowdySDKDeveloperSettings::GetReleaseEnvironment()`, returns the tier a build defaults to; it is not exposed to Blueprint. See [Project settings](../reference/project-settings.md#the-default-backend) and [Installation](../installation.md#step-6-connect-your-app).
@@ -9626,12 +9632,13 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/console-cvars
 
 # Console Variables
 
-The SDK exposes 34 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
+The SDK exposes 36 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
 logging for one area, behavior switches that change what the SDK does, and diagnostic commands that run
-once and hold no stored value. A row badged **Editor only** exists only in the editor process. Four of the
+once and hold no stored value. A row badged **Editor only** exists only in the editor process. Six of the
 diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`,
-`crowdy.gamemodel.watchcontainers`, `crowdy.gamemodel.unwatchcontainers`) are compiled out of a Shipping
-build and are absent there rather than silent; every other row ships in Development and Shipping.
+`crowdy.gamemodel.watchcontainers`, `crowdy.gamemodel.unwatchcontainers`, `crowdy.gamemodel.stats`,
+`crowdy.gamemodel.stats.reset`) are compiled out of a Shipping build and are absent there rather than
+silent; every other row ships in Development and Shipping.
 
 ## When you land here
 
@@ -9696,11 +9703,11 @@ measurement against the same build, not a fix for anything.
 
 ## Diagnostic commands
 
-Seven commands with no stored value. Only `crowdy.rpc.dumpfn` takes arguments and prints usage without
+Nine commands with no stored value. Only `crowdy.rpc.dumpfn` takes arguments and prints usage without
 them; every other command acts as soon as you run it, and `crowdy.schema.RetagAssets` starts resaving
-assets immediately. Four are compiled out of a Shipping build: `crowdy.rpc.dumpfn`,
-`crowdy.state.heartbeat.advisories`, `crowdy.gamemodel.watchcontainers` and
-`crowdy.gamemodel.unwatchcontainers`.
+assets immediately. Six are compiled out of a Shipping build: `crowdy.rpc.dumpfn`,
+`crowdy.state.heartbeat.advisories`, `crowdy.gamemodel.watchcontainers`,
+`crowdy.gamemodel.unwatchcontainers`, `crowdy.gamemodel.stats`, and `crowdy.gamemodel.stats.reset`.
 
 <SurfaceTable
   table="cvars"
@@ -9711,6 +9718,8 @@ assets immediately. Four are compiled out of a Shipping build: `crowdy.rpc.dumpf
     "crowdy.state.heartbeat.advisories": "Not in Shipping",
     "crowdy.gamemodel.watchcontainers": "Not in Shipping",
     "crowdy.gamemodel.unwatchcontainers": "Not in Shipping",
+    "crowdy.gamemodel.stats": "Not in Shipping",
+    "crowdy.gamemodel.stats.reset": "Not in Shipping",
     "crowdy.cpp.selftest": "Every build",
     "crowdy.net.routes": "Every build"
   }}
@@ -9726,7 +9735,9 @@ assets it touches; that noise is expected, not a sign something went wrong.
 :::
 
 `crowdy.cpp.selftest` and `crowdy.net.routes` carry no build guard, so they exist in every build including
-Shipping; the four diagnostics above do not, and a Shipping console answers them with an unknown command.
+Shipping; the six diagnostics above do not, and a Shipping console answers them with an unknown command.
+[Change pings and pull](../game-models/change-pings-and-pull.md#when-a-change-does-not-show-up) reads
+`crowdy.gamemodel.stats` for broader network diagnosis, not only a single missed notification.
 
 ## Gotchas
 
@@ -9747,8 +9758,8 @@ Shipping; the four diagnostics above do not, and a Shipping console answers them
 - [Log categories](./log-categories.md): the category each trace gate's lines print under.
 - [Project settings](./project-settings.md): the settings-class properties that sit beside these CVars.
 - [Testing locally](../guides/testing-locally.md): loopback and two-PIE workflows built on these switches.
-- [Change pings and pull](../game-models/change-pings-and-pull.md): where `crowdy.gamemodel.emitfallbackping`
-  and the watch commands fit in a Game Model debugging session.
+- [Change pings and pull](../game-models/change-pings-and-pull.md): where `crowdy.gamemodel.emitfallbackping`,
+  the watch commands, and `crowdy.gamemodel.stats` fit in a Game Model debugging session.
 
 # Project Settings
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/project-settings

@@ -7216,5 +7216,65 @@
     "id": "USubsystemInitializable",
     "reason": "internal",
     "note": "UInterface half of ISubsystemInitializable; unused."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats",
+    "reason": "internal",
+    "note": "Plain counters behind crowdy.gamemodel.stats / UCrowdyGameModelSubsystem::GetNetStats, never read to make a decision; the shape is described in prose on Change pings and pull, not field by field."
+  },
+  {
+    "id": "FCrowdyGameModelOpStatsRow",
+    "reason": "internal",
+    "note": "One server operation's call/fail/latency row behind UCrowdyGameModelSubsystem::GetOpStats; described in prose on Change pings and pull."
+  },
+  {
+    "id": "FCrowdyGameModelTransportTotals",
+    "reason": "internal",
+    "note": "Transport byte/response totals behind UCrowdyGameModelSubsystem::GetOpStats; described in prose on Change pings and pull."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::CountBounded",
+    "reason": "internal",
+    "note": "Private bookkeeping helper that caps a diagnostics map's distinct keys; not called by a game."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::MakeInvokeFaultKey",
+    "reason": "internal",
+    "note": "Private bookkeeping helper that builds the invoke-fault tally key; not called by a game."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::Percentile",
+    "reason": "internal",
+    "note": "Private nearest-rank percentile helper backing the p50/p95/max in DescribeNetStats; not called by a game."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::Reset",
+    "reason": "internal",
+    "note": "Zeroes the counters; a game reaches the same behavior through UCrowdyGameModelSubsystem::ResetNetStats, which is documented."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::TEXT",
+    "reason": "internal",
+    "note": "Not a member function: the surface exporter reads the TEXT() macro call inside MakeInvokeFaultKey as a method. No API to document."
+  },
+  {
+    "id": "FCrowdyCppOpStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge transport-level per-operation stats row behind FCrowdyCppClient::GetStats, one layer under UCrowdyGameModelSubsystem::GetOpStats; not a type a game touches directly."
+  },
+  {
+    "id": "FCrowdyCppTransportStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge transport totals behind FCrowdyCppClient::GetStats, one layer under UCrowdyGameModelSubsystem::GetOpStats; not a type a game touches directly."
+  },
+  {
+    "id": "FCrowdyCppClient::GetStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal plumbing that UCrowdyGameModelSubsystem::GetOpStats reads; a game calls the subsystem method, which is documented."
+  },
+  {
+    "id": "FCrowdyCppClient::ResetStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal plumbing that UCrowdyGameModelSubsystem::ResetNetStats calls; a game calls the subsystem method, which is documented."
   }
 ]

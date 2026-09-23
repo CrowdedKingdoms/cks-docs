@@ -9,12 +9,13 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Console Variables
 
-The SDK exposes 34 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
+The SDK exposes 36 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
 logging for one area, behavior switches that change what the SDK does, and diagnostic commands that run
-once and hold no stored value. A row badged **Editor only** exists only in the editor process. Four of the
+once and hold no stored value. A row badged **Editor only** exists only in the editor process. Six of the
 diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`,
-`crowdy.gamemodel.watchcontainers`, `crowdy.gamemodel.unwatchcontainers`) are compiled out of a Shipping
-build and are absent there rather than silent; every other row ships in Development and Shipping.
+`crowdy.gamemodel.watchcontainers`, `crowdy.gamemodel.unwatchcontainers`, `crowdy.gamemodel.stats`,
+`crowdy.gamemodel.stats.reset`) are compiled out of a Shipping build and are absent there rather than
+silent; every other row ships in Development and Shipping.
 
 ## When you land here
 
@@ -79,11 +80,11 @@ measurement against the same build, not a fix for anything.
 
 ## Diagnostic commands
 
-Seven commands with no stored value. Only `crowdy.rpc.dumpfn` takes arguments and prints usage without
+Nine commands with no stored value. Only `crowdy.rpc.dumpfn` takes arguments and prints usage without
 them; every other command acts as soon as you run it, and `crowdy.schema.RetagAssets` starts resaving
-assets immediately. Four are compiled out of a Shipping build: `crowdy.rpc.dumpfn`,
-`crowdy.state.heartbeat.advisories`, `crowdy.gamemodel.watchcontainers` and
-`crowdy.gamemodel.unwatchcontainers`.
+assets immediately. Six are compiled out of a Shipping build: `crowdy.rpc.dumpfn`,
+`crowdy.state.heartbeat.advisories`, `crowdy.gamemodel.watchcontainers`,
+`crowdy.gamemodel.unwatchcontainers`, `crowdy.gamemodel.stats`, and `crowdy.gamemodel.stats.reset`.
 
 <SurfaceTable
   table="cvars"
@@ -94,6 +95,8 @@ assets immediately. Four are compiled out of a Shipping build: `crowdy.rpc.dumpf
     "crowdy.state.heartbeat.advisories": "Not in Shipping",
     "crowdy.gamemodel.watchcontainers": "Not in Shipping",
     "crowdy.gamemodel.unwatchcontainers": "Not in Shipping",
+    "crowdy.gamemodel.stats": "Not in Shipping",
+    "crowdy.gamemodel.stats.reset": "Not in Shipping",
     "crowdy.cpp.selftest": "Every build",
     "crowdy.net.routes": "Every build"
   }}
@@ -109,7 +112,9 @@ assets it touches; that noise is expected, not a sign something went wrong.
 :::
 
 `crowdy.cpp.selftest` and `crowdy.net.routes` carry no build guard, so they exist in every build including
-Shipping; the four diagnostics above do not, and a Shipping console answers them with an unknown command.
+Shipping; the six diagnostics above do not, and a Shipping console answers them with an unknown command.
+[Change pings and pull](../game-models/change-pings-and-pull.md#when-a-change-does-not-show-up) reads
+`crowdy.gamemodel.stats` for broader network diagnosis, not only a single missed notification.
 
 ## Gotchas
 
@@ -130,5 +135,5 @@ Shipping; the four diagnostics above do not, and a Shipping console answers them
 - [Log categories](./log-categories.md): the category each trace gate's lines print under.
 - [Project settings](./project-settings.md): the settings-class properties that sit beside these CVars.
 - [Testing locally](../guides/testing-locally.md): loopback and two-PIE workflows built on these switches.
-- [Change pings and pull](../game-models/change-pings-and-pull.md): where `crowdy.gamemodel.emitfallbackping`
-  and the watch commands fit in a Game Model debugging session.
+- [Change pings and pull](../game-models/change-pings-and-pull.md): where `crowdy.gamemodel.emitfallbackping`,
+  the watch commands, and `crowdy.gamemodel.stats` fit in a Game Model debugging session.

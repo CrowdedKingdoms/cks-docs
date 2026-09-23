@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-09-22T14:39:18Z",
-  "sdk_version": "2.14.0",
+  "generated_from": "2026-09-23T21:10:49Z",
+  "sdk_version": "2.16.0",
   "table": "cvars",
   "columns": [
     {
@@ -340,6 +340,28 @@
       "trace": false,
       "help": "Link + exception-containment self test for the vendored CrowdyCPP library.",
       "module": "CrowdyCppBridge",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.gamemodel.stats",
+      "name": "crowdy.gamemodel.stats",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Log how the Game Model has used the network since the last reset: pulls, applies, self-echoes, resolves, invokes, per-operation latency and transport bytes.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.gamemodel.stats.reset",
+      "name": "crowdy.gamemodel.stats.reset",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Zero the counters crowdy.gamemodel.stats reports, including the API client's per-operation and transport totals.[GameModel] net stats reset.",
+      "module": "CrowdyReplication",
       "editor": false,
       "allowlist": ""
     },
