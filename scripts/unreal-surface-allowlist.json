@@ -7296,5 +7296,10 @@
     "id": "FCrowdyGameModelNetStats::RecordBound",
     "reason": "internal",
     "note": "Private bookkeeping that records a bound entity for the re-resolve count behind crowdy.gamemodel.stats; not called by a game."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::FormatFailureReasons",
+    "reason": "internal",
+    "note": "Formats the per-operation failure-reason breakdown into the crowdy.gamemodel.stats log line; the shape (\"CODE xN, CODE xM\") is described in prose on Change pings and pull, not as an API a game calls."
   }
 ]

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-24T19:06:25Z",
+  "generated": "2026-09-24T19:33:09Z",
   "sdk_version": "2.16.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
@@ -22453,6 +22453,12 @@
           "type": "TArray<double>",
           "static": false,
           "uproperty": false
+        },
+        {
+          "name": "FailureReasons",
+          "type": "TArray<TPair<FString, int32>>",
+          "static": false,
+          "uproperty": false
         }
       ],
       "enumerators": [],
@@ -26419,6 +26425,12 @@
         {
           "name": "HttpP95Ms",
           "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "FailureReasons",
+          "type": "TArray<TPair<FString, int32>>",
           "static": false,
           "uproperty": false
         }
@@ -55074,6 +55086,29 @@
       "signature": "void CountBounded(TMap<FString, int32>& Counts, const FString& Key, int32 MaxKeys)",
       "return_type": "void",
       "params": "TMap<FString, int32>& Counts, const FString& Key, int32 MaxKeys",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelNetStats.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyGameModelNetStats::FormatFailureReasons",
+      "owner": "FCrowdyGameModelNetStats",
+      "owner_kind": "struct",
+      "name": "FormatFailureReasons",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "FString FormatFailureReasons(const TArray<TPair<FString, int32>>& Reasons)",
+      "return_type": "FString",
+      "params": "const TArray<TPair<FString, int32>>& Reasons",
       "access": "public",
       "static": true,
       "virtual": false,
