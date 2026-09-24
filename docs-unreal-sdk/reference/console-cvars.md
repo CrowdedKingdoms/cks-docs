@@ -9,7 +9,7 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Console Variables
 
-The SDK exposes 36 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
+The SDK exposes 37 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
 logging for one area, behavior switches that change what the SDK does, and diagnostic commands that run
 once and hold no stored value. A row badged **Editor only** exists only in the editor process. Six of the
 diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`,
@@ -46,7 +46,7 @@ logging around Studio calls.
 
 ## Behavior switches
 
-These change what the SDK does rather than what it logs. None of the 11 exist only in the editor.
+These change what the SDK does rather than what it logs. None of the 12 exist only in the editor.
 
 <SurfaceTable
   table="cvars"
@@ -62,6 +62,10 @@ These change what the SDK does rather than what it logs. None of the 11 exist on
 />
 
 The notes map above stands in for these five rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
+
+:::warning[Turn `crowdy.net.http2` off if you ship, or collect logs from, a build with logging enabled.]
+On by default, it asks for HTTP/2 on the SDK's own requests (falling back to HTTP/1.1 when the server does not offer it); the game's other HTTP traffic and the engine's `http.CurlAllowHTTP2` are untouched. With HTTP/2, when a request fails at the network level (not a cancel or a timeout), the curl diagnostics the engine logs at `Warning` can include the request headers, bearer token included. A default Shipping build compiles logging out, so most projects never see this; if yours ships or collects logs from a build with logging enabled, set `crowdy.net.http2 0`. See [Change pings and pull](../game-models/change-pings-and-pull.md#when-a-change-does-not-show-up) for what it does to request timing.
+:::
 
 :::warning[Leave `crowdy.rpc.allowObjectLoad` off in production.]
 While it is off, an untrusted peer cannot trigger an arbitrary asset load; an unresolved object or class

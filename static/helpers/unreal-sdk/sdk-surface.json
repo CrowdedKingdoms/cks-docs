@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-24T19:33:09Z",
+  "generated": "2026-09-24T20:16:40Z",
   "sdk_version": "2.16.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
@@ -14702,6 +14702,16 @@
       "help": "When non-zero, logs CrowdyServices HUD activity: HUD base and widgets. Off by default.",
       "module": "CrowdyServices",
       "file": "CrowdyServices/Private/CrowdyServices.cpp",
+      "editor_module": false
+    },
+    {
+      "id": "crowdy.net.http2",
+      "name": "crowdy.net.http2",
+      "kind": "variable",
+      "trace": false,
+      "help": "Asks for HTTP/2 on the SDK's own requests, falling back to HTTP/1.1 when the server does not offer it; 0 leaves the engine's HTTP version. With HTTP/2 the curl diagnostics the engine logs for a failed request can include the request headers, bearer token included, so set 0 if you ship logs from builds with logging enabled.",
+      "module": "CrowdyCppBridge",
+      "file": "CrowdyCppBridge/Private/Platform/CrowdyCppHttpTransport.cpp",
       "editor_module": false
     },
     {

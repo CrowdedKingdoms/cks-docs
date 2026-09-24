@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-09-24T19:33:09Z",
+  "generated_from": "2026-09-24T20:16:40Z",
   "sdk_version": "2.16.0",
   "table": "cvars",
   "columns": [
@@ -230,6 +230,17 @@
       "trace": false,
       "help": "1 (default): acting client emits a fallback model-changed ping after a successful Game Model invoke so peers re-pull. 0: rely solely on the server-native model-driven notification (isolates that path in 2-client PIE).",
       "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.net.http2",
+      "name": "crowdy.net.http2",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Asks for HTTP/2 on the SDK's own requests, falling back to HTTP/1.1 when the server does not offer it; 0 leaves the engine's HTTP version. With HTTP/2 the curl diagnostics the engine logs for a failed request can include the request headers, bearer token included, so set 0 if you ship logs from builds with logging enabled.",
+      "module": "CrowdyCppBridge",
       "editor": false,
       "allowlist": ""
     },
