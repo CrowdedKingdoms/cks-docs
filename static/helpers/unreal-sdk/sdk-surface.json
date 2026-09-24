@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-23T21:10:49Z",
+  "generated": "2026-09-24T19:06:25Z",
   "sdk_version": "2.16.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
@@ -22441,6 +22441,18 @@
           "type": "TArray<double>",
           "static": false,
           "uproperty": false
+        },
+        {
+          "name": "RecentSdkMs",
+          "type": "TArray<double>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "RecentHttpMs",
+          "type": "TArray<double>",
+          "static": false,
+          "uproperty": false
         }
       ],
       "enumerators": [],
@@ -23242,6 +23254,18 @@
         },
         {
           "name": "Responses",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "InFlight",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "PeakInFlight",
           "type": "int32",
           "static": false,
           "uproperty": false
@@ -26189,6 +26213,12 @@
           "uproperty": false
         },
         {
+          "name": "InvokesDispatched",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
           "name": "PullsByContainer",
           "type": "TMap<FString, int32>",
           "static": false,
@@ -26219,6 +26249,12 @@
           "uproperty": false
         },
         {
+          "name": "MaxEverBound",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        },
+        {
           "name": "InFlightPulls",
           "type": "TMap<FString, int32>",
           "static": false,
@@ -26233,6 +26269,12 @@
         {
           "name": "EverBound",
           "type": "TSet<FGuid>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "bEverBoundFull",
+          "type": "bool",
           "static": false,
           "uproperty": false
         },
@@ -26352,6 +26394,30 @@
         },
         {
           "name": "MaxMs",
+          "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "SdkP50Ms",
+          "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "SdkP95Ms",
+          "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "HttpP50Ms",
+          "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "HttpP95Ms",
           "type": "double",
           "static": false,
           "uproperty": false
@@ -26806,6 +26872,18 @@
         },
         {
           "name": "Responses",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "InFlight",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "PeakInFlight",
           "type": "int32",
           "static": false,
           "uproperty": false
@@ -36833,6 +36911,18 @@
           "uproperty": false
         },
         {
+          "name": "BulkResolvePageSize",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        },
+        {
+          "name": "BulkResolveMaxPagesPerType",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        },
+        {
           "name": "UseKnownHostTerm",
           "type": "int32",
           "static": true,
@@ -46028,6 +46118,29 @@
       "editor_module": false
     },
     {
+      "id": "CrowdyPlayerFaultBlameToWord",
+      "owner": "",
+      "owner_kind": "namespace",
+      "name": "CrowdyPlayerFaultBlameToWord",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "const TCHAR* CrowdyPlayerFaultBlameToWord(ECrowdyPlayerFaultBlame Blame)",
+      "return_type": "const TCHAR*",
+      "params": "ECrowdyPlayerFaultBlame Blame",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Network/GraphQL/FCrowdyGameApiCodec.h",
+      "editor_module": false
+    },
+    {
       "id": "CrowdyPodCopyPlan::Apply",
       "owner": "CrowdyPodCopyPlan",
       "owner_kind": "namespace",
@@ -50812,6 +50925,29 @@
       "editor_module": false
     },
     {
+      "id": "FCrowdyCppClient::GetLastTestRequestBody",
+      "owner": "FCrowdyCppClient",
+      "owner_kind": "class",
+      "name": "GetLastTestRequestBody",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool GetLastTestRequestBody(FString& OutBody) const",
+      "return_type": "bool",
+      "params": "FString& OutBody",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
       "id": "FCrowdyCppClient::GetStats",
       "owner": "FCrowdyCppClient",
       "owner_kind": "class",
@@ -51465,6 +51601,29 @@
       "signature": "void SetTestResponseScript(TArray<TPair<int32, FString>> Responses)",
       "return_type": "void",
       "params": "TArray<TPair<int32, FString>> Responses",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyCppClient::SetTestStampsHandOff",
+      "owner": "FCrowdyCppClient",
+      "owner_kind": "class",
+      "name": "SetTestStampsHandOff",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void SetTestStampsHandOff(bool bStamp)",
+      "return_type": "void",
+      "params": "bool bStamp",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -54963,6 +55122,29 @@
       "params": "TArray<double> SamplesMs, double Fraction",
       "access": "public",
       "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelNetStats.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyGameModelNetStats::RecordBound",
+      "owner": "FCrowdyGameModelNetStats",
+      "owner_kind": "struct",
+      "name": "RecordBound",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void RecordBound(const FGuid& NetID)",
+      "return_type": "void",
+      "params": "const FGuid& NetID",
+      "access": "public",
+      "static": false,
       "virtual": false,
       "pure_virtual": false,
       "const": false,
@@ -65969,6 +66151,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyCppClientSubsystem::SetClientForTest",
+      "owner": "UCrowdyCppClientSubsystem",
+      "owner_kind": "class",
+      "name": "SetClientForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void SetClientForTest(TSharedPtr<FCrowdyCppClient> InClient, const FCrowdyCppClientConfig& InConfig)",
+      "return_type": "void",
+      "params": "TSharedPtr<FCrowdyCppClient> InClient, const FCrowdyCppClientConfig& InConfig",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Network/CrowdyCpp/CrowdyCppClientSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyCppClientSubsystem::SetGameToken",
       "owner": "UCrowdyCppClientSubsystem",
       "owner_kind": "class",
@@ -71305,6 +71510,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyGameModelSubsystem::FinishBulkResolveForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "FinishBulkResolveForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void FinishBulkResolveForTest(const FString& TypeName, const FString& Session, const TArray<FGuid>& NetIDs, const TArray<FCrowdyBulkResolveHit>& Hits)",
+      "return_type": "void",
+      "params": "const FString& TypeName, const FString& Session, const TArray<FGuid>& NetIDs, const TArray<FCrowdyBulkResolveHit>& Hits",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyGameModelSubsystem::ForceEndWorldSessionForTest",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
@@ -71995,13 +72223,13 @@
       "editor_module": false
     },
     {
-      "id": "UCrowdyGameModelSubsystem::GetRefreshPullWindowSecondsForTest",
+      "id": "UCrowdyGameModelSubsystem::GetRefreshPullTimerRateForTest",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
-      "name": "GetRefreshPullWindowSecondsForTest",
+      "name": "GetRefreshPullTimerRateForTest",
       "test_helper": true,
       "implementation": false,
-      "signature": "float GetRefreshPullWindowSecondsForTest() const",
+      "signature": "float GetRefreshPullTimerRateForTest() const",
       "return_type": "float",
       "params": "",
       "access": "public",
@@ -73614,6 +73842,29 @@
       "signature": "void SetApiContextForTest(const FString& Endpoint, const FString& Token, int64 AppId)",
       "return_type": "void",
       "params": "const FString& Endpoint, const FString& Token, int64 AppId",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyGameModelSubsystem::SetClientHostForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "SetClientHostForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void SetClientHostForTest(UCrowdyCppClientSubsystem* InHost)",
+      "return_type": "void",
+      "params": "UCrowdyCppClientSubsystem* InHost",
       "access": "public",
       "static": false,
       "virtual": false,

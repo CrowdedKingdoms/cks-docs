@@ -95,7 +95,7 @@ An automation's **Debounce** drops all but the first event in a window; this pag
 - A required tuning parameter still has to be supplied on every apply; the merge sums the supplied values.
 - An effect with a curve-bound parameter merges only among applies with the same `Level`.
 - The window is added latency on the first apply. Keep it short.
-- The SDK counts every Game Model call it makes, reads and ensures included, toward the same allowance it uses to widen merge windows and pace a manifest apply, so a load-time burst of pulls delays a coalesced effect too.
+- Only an invoke counts toward the allowance the merge window widens against. A pull, a list, a read, or an ensure costs the SDK nothing against it, so a burst of those does not stretch a coalesced effect's window.
 
 ## Related
 

@@ -98,7 +98,7 @@ Otherwise they bind app-scoped rows and the session is empty. The natural shape 
 A retryable failure is safe to apply again, and the rows already created stand, since the apply is not transactional across rows. A non-retryable one means the type's policy refused this caller: seed it from Studio, or give the caller the right. Retrying in a loop will not change the answer. `Unanswered` above zero with no failure means the world was torn down mid-apply; apply again next time.
 :::
 
-Pacing: at most 8 rows in flight, a row retried up to 4 times with a doubling wait, and the runner parks when the shared Game API allowance is nearly spent. Every row counts against that allowance: the SDK counts every Game Model call it makes, ensures and reads included, toward the same budget it uses to widen [coalescing](./coalescing.md) windows, so a large apply also delays a coalesced effect. A large apply mid-fight still competes with gameplay for round-trip time, so apply during a loading screen.
+Pacing: at most 8 rows in flight, a row retried up to 4 times with a doubling wait. A pre-seed row is created with an ensure, not an invoke, so it never spends the invoke allowance and is not paced by it; it also does not stretch a coalesced effect's [merge window](./coalescing.md), which only widens against invokes. A large apply mid-fight still competes with gameplay for round-trip time, so apply during a loading screen.
 
 The alternative for a session is to seed it at creation: Create Game Session's `SeedFromAppTypeNames` copies an app-scoped type's rows into the new session as it is created. That is a server request with two fields, described on [Sessions](./sessions.md) and [Seeding a session from the app](/game-api/game-models#seeding-a-session-from-the-app).
 

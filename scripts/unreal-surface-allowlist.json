@@ -7276,5 +7276,25 @@
     "id": "FCrowdyCppClient::ResetStats",
     "reason": "internal",
     "note": "CrowdyCppBridge internal plumbing that UCrowdyGameModelSubsystem::ResetNetStats calls; a game calls the subsystem method, which is documented."
+  },
+  {
+    "id": "FCrowdyCppClient::GetLastTestRequestBody",
+    "reason": "internal",
+    "note": "Test-only: reports the body of the last request a MakeForTest client sent, for a headless test to assert against. No real client ever returns true from it."
+  },
+  {
+    "id": "FCrowdyCppClient::SetTestStampsHandOff",
+    "reason": "internal",
+    "note": "Test-only: makes a MakeForTest client fill the sdk/http latency split as the real transport does, for a stats headless test. No-op on a real client."
+  },
+  {
+    "id": "CrowdyPlayerFaultBlameToWord",
+    "reason": "internal",
+    "note": "The canonical word for a fault blame value, used to build the crowdy.gamemodel.stats invoke-fault key; the documented surface is the stats output, not this formatter."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::RecordBound",
+    "reason": "internal",
+    "note": "Private bookkeeping that records a bound entity for the re-resolve count behind crowdy.gamemodel.stats; not called by a game."
   }
 ]
