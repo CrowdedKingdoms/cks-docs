@@ -77,9 +77,9 @@ The message is "the world was torn down before the coalesced effect apply was se
 
 A target whose container binding changed while a window was open drops the whole window: every merged apply in it fails, with a warning naming how many were waiting, rather than being sent against a container that is no longer the one the callers meant.
 
-Only a rate-limit refusal is ever retried, at most twice with a growing wait, because the server decides that refusal before running the function, so the refused call committed nothing and repeating it cannot write twice. No other failure is retried automatically, an unattributed transport failure least of all: it may have committed before the failure was reported.
+Two refusals are retried automatically, both decided before the function ever runs, so repeating them cannot write twice: a rate-limit refusal (`RATE_LIMITED`), at most twice with a growing wait, and a busy refusal (`PLATFORM_BUSY`, meaning the platform never started the work), at most three times, honoring the server's suggested wait when it names one. `crowdy.net.retry.busy` (default 1) turns the second off; the rate-limit retry has no switch. No other failure is retried automatically, an unattributed transport failure least of all: it may have committed before the failure was reported.
 
-The outcome the apply surfaces deliver is `bSuccess`, `ReturnValueJson`, and `ErrorMessage`, nothing that says whether a failure is worth repeating, so do not build your own retry loop on `Failed`: a fault in the effect's own logic fails identically however often it is repeated, and a transport failure may already have committed.
+The outcome the apply surfaces deliver is `bSuccess`, `ReturnValueJson`, and `ErrorMessage`, nothing that says whether a failure is worth repeating, so do not build your own retry loop on `Failed`: by the time `Failed` fires, a busy or rate-limit refusal has already used up its own retries, so trying again yourself buys nothing. A fault in the effect's own logic fails identically however often it is repeated, and a transport failure may already have committed.
 
 ## Validation
 

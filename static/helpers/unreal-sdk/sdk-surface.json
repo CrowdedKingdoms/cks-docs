@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-24T20:16:40Z",
+  "generated": "2026-09-24T21:41:31Z",
   "sdk_version": "2.16.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
@@ -14755,6 +14755,16 @@
       "editor_module": false
     },
     {
+      "id": "crowdy.net.retry.busy",
+      "name": "crowdy.net.retry.busy",
+      "kind": "variable",
+      "trace": false,
+      "help": "Sends an SDK query again, up to 3 times with backoff, when the platform refuses it and says to retry (blame PLATFORM, retryable); a container ensure or an invoke is sent again only when the platform says the work never started (PLATFORM_BUSY). 0 hands every refusal straight to the caller.",
+      "module": "CrowdyCppBridge",
+      "file": "CrowdyCppBridge/Private/CrowdyCppClient.cpp",
+      "editor_module": false
+    },
+    {
       "id": "crowdy.net.routes",
       "name": "crowdy.net.routes",
       "kind": "command",
@@ -22022,6 +22032,12 @@
           "type": "int32",
           "static": true,
           "uproperty": false
+        },
+        {
+          "name": "MaxParkedRetries",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
         }
       ],
       "enumerators": [],
@@ -22316,6 +22332,24 @@
           "type": "FString",
           "static": false,
           "uproperty": false
+        },
+        {
+          "name": "Blame",
+          "type": "FString",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "bRetryable",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "RetryAfterMs",
+          "type": "TOptional<int64>",
+          "static": false,
+          "uproperty": false
         }
       ],
       "enumerators": [],
@@ -22436,6 +22470,18 @@
         },
         {
           "name": "Failures",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Retries",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "RecoveredByRetry",
           "type": "int32",
           "static": false,
           "uproperty": false
@@ -26235,6 +26281,24 @@
           "uproperty": false
         },
         {
+          "name": "InvokeBusyRetries",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "InvokeBusyRecovered",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "InvokeBusyGaveUp",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
           "name": "PullsByContainer",
           "type": "TMap<FString, int32>",
           "static": false,
@@ -26392,6 +26456,18 @@
         },
         {
           "name": "Failures",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Retries",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "RecoveredByRetry",
           "type": "int32",
           "static": false,
           "uproperty": false
@@ -42552,6 +42628,52 @@
       "editor_module": true
     },
     {
+      "id": "CrowdyCppBusyRetryDelaySeconds",
+      "owner": "",
+      "owner_kind": "namespace",
+      "name": "CrowdyCppBusyRetryDelaySeconds",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "TOptional<double> CrowdyCppBusyRetryDelaySeconds(int32 RetryIndex, TOptional<int64> RetryAfterMs)",
+      "return_type": "TOptional<double>",
+      "params": "int32 RetryIndex, TOptional<int64> RetryAfterMs",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
+      "id": "CrowdyCppIsBusyRetryEnabled",
+      "owner": "",
+      "owner_kind": "namespace",
+      "name": "CrowdyCppIsBusyRetryEnabled",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool CrowdyCppIsBusyRetryEnabled()",
+      "return_type": "bool",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
       "id": "CrowdyCppIsModelRefusalCode",
       "owner": "",
       "owner_kind": "namespace",
@@ -50993,6 +51115,29 @@
       "editor_module": false
     },
     {
+      "id": "FCrowdyCppClient::GetTestNextRetryDueSeconds",
+      "owner": "FCrowdyCppClient",
+      "owner_kind": "class",
+      "name": "GetTestNextRetryDueSeconds",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "double GetTestNextRetryDueSeconds() const",
+      "return_type": "double",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
       "id": "FCrowdyCppClient::InvokeFunction",
       "owner": "FCrowdyCppClient",
       "owner_kind": "class",
@@ -51230,6 +51375,29 @@
       "test_helper": false,
       "implementation": false,
       "signature": "int32 NumPendingRequests() const",
+      "return_type": "int32",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyCppClient::NumTestWaitingRetries",
+      "owner": "FCrowdyCppClient",
+      "owner_kind": "class",
+      "name": "NumTestWaitingRetries",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "int32 NumTestWaitingRetries() const",
       "return_type": "int32",
       "params": "",
       "access": "public",
@@ -72650,6 +72818,29 @@
       "virtual": false,
       "pure_virtual": false,
       "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyGameModelSubsystem::IsBusyRefusal",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "IsBusyRefusal",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool IsBusyRefusal(const FCrowdyInvokeResult& Result)",
+      "return_type": "bool",
+      "params": "const FCrowdyInvokeResult& Result",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
       "template": false,
       "ufunction": false,
       "deprecated": false,

@@ -7301,5 +7301,25 @@
     "id": "FCrowdyGameModelNetStats::FormatFailureReasons",
     "reason": "internal",
     "note": "Formats the per-operation failure-reason breakdown into the crowdy.gamemodel.stats log line; the shape (\"CODE xN, CODE xM\") is described in prose on Change pings and pull, not as an API a game calls."
+  },
+  {
+    "id": "CrowdyCppBusyRetryDelaySeconds",
+    "reason": "internal",
+    "note": "The busy-retry backoff curve behind crowdy.net.retry.busy, pure and static so it is table-testable; the behavior (3 retries, the server's wait plus jitter, else doubling) is described in prose on What's Changed, not as an API a game calls."
+  },
+  {
+    "id": "CrowdyCppIsBusyRetryEnabled",
+    "reason": "internal",
+    "note": "Reads the crowdy.net.retry.busy console variable for the retry path; a game reads the documented cvar itself rather than this accessor."
+  },
+  {
+    "id": "FCrowdyCppClient::GetTestNextRetryDueSeconds",
+    "reason": "internal",
+    "note": "Test-only: when the soonest parked busy retry falls due, for a headless test to advance time onto it. No production caller."
+  },
+  {
+    "id": "FCrowdyCppClient::NumTestWaitingRetries",
+    "reason": "internal",
+    "note": "Test-only: how many requests are parked waiting out a busy-retry backoff, for a headless test to assert against. No production caller."
   }
 ]

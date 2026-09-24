@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-09-24T20:16:40Z",
+  "generated_from": "2026-09-24T21:41:31Z",
   "sdk_version": "2.16.0",
   "table": "cvars",
   "columns": [
@@ -285,6 +285,17 @@
       "trace": false,
       "help": "",
       "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.net.retry.busy",
+      "name": "crowdy.net.retry.busy",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Sends an SDK query again, up to 3 times with backoff, when the platform refuses it and says to retry (blame PLATFORM, retryable); a container ensure or an invoke is sent again only when the platform says the work never started (PLATFORM_BUSY). 0 hands every refusal straight to the caller.",
+      "module": "CrowdyCppBridge",
       "editor": false,
       "allowlist": ""
     },
