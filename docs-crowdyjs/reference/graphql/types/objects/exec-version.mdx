@@ -1,0 +1,58 @@
+---
+id: exec-version
+title: ExecVersion
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A deployed version of an app’s ck-exec topology.
+
+
+```graphql
+type ExecVersion {
+  version: Int!
+  createdBy: String
+  createdAt: DateTime!
+  types: Int!
+  active: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecVersion.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecVersion.<b>createdBy</b></code>](#created-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#created-by\} 
+Who deployed it, e.g. `user:<id>`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecVersion.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecVersion.<b>types</b></code>](#types)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#types\} 
+Node types in its manifest.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecVersion.<b>active</b></code>](#active)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#active\} 
+Whether it is the active version.
+
+
+
+
+### Returned By
+
+[`execVersions`](/reference/graphql/operations/queries/exec-versions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

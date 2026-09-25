@@ -1,0 +1,53 @@
+---
+id: exec-connection
+title: ExecConnection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Where and how a game client connects to ck-exec, the hub-and-spoke execution service (dev-tier preview). Open a WebSocket to `{gatewayUrl}/v1/connect?token={token}` before `expiresAt`.
+
+
+```graphql
+type ExecConnection {
+  gatewayUrl: String!
+  token: String!
+  host: String!
+  expiresAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecConnection.<b>gatewayUrl</b></code>](#gateway-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#gateway-url\} 
+The execution host’s gateway, e.g. wss://ckx-or-1.exec.dev.crowdedkingdoms.com.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecConnection.<b>token</b></code>](#token)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#token\} 
+Short-lived Ed25519 connect token for this player, this app and this host only.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecConnection.<b>host</b></code>](#host)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#host\} 
+The execution host id the token is bound to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecConnection.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+When the token stops being accepted; the open socket is not closed then.
+
+
+
+
+### Returned By
+
+[`execConnect`](/reference/graphql/operations/mutations/exec-connect.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`execConnectAsDeveloper`](/reference/graphql/operations/mutations/exec-connect-as-developer.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

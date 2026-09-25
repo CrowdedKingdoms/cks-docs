@@ -1,0 +1,53 @@
+---
+id: exec-starter
+title: ExecStarter
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A starter crate: a ckx-sdk hub to build with `execBuild` as it is, or to change first.
+
+
+```graphql
+type ExecStarter {
+  crate: String!
+  nodeType: String!
+  description: String!
+  files: [ExecStarterFile!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecStarter.<b>crate</b></code>](#crate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#crate\} 
+The crate’s name, which the pack’s manifest names it by.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecStarter.<b>nodeType</b></code>](#node-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#node-type\} 
+The node type the pack’s manifest deploys it as.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecStarter.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+What it does.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecStarter.<b>files</b></code>](#files)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ExecStarterFile!]!</b></code>](/reference/graphql/types/objects/exec-starter-file.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#files\} 
+Its Cargo.toml and sources.
+
+
+
+
+### Member Of
+
+[`ExecStarterPack`](/reference/graphql/types/objects/exec-starter-pack.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

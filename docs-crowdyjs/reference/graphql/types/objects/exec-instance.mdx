@@ -1,0 +1,78 @@
+---
+id: exec-instance
+title: ExecInstance
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An instance the execution manager has placed for an app (dev-tier preview).
+
+
+```graphql
+type ExecInstance {
+  instanceId: String!
+  nodeType: String!
+  key: String!
+  kind: String!
+  phase: String!
+  host: String
+  epoch: Int!
+  sinceMs: Float!
+  heldBack: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecInstance.<b>instanceId</b></code>](#instance-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#instance-id\} 
+The instance id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecInstance.<b>nodeType</b></code>](#node-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#node-type\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecInstance.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+The instance key; empty for the root hub.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecInstance.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#kind\} 
+`hub` or `spoke`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecInstance.<b>phase</b></code>](#phase)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#phase\} 
+`idle`, `starting`, `running` or `stopping`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecInstance.<b>host</b></code>](#host)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#host\} 
+The execution host it runs on; null while idle.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecInstance.<b>epoch</b></code>](#epoch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#epoch\} 
+Rises each time it is placed; snapshots from an older epoch are refused.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecInstance.<b>sinceMs</b></code>](#since-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#since-ms\} 
+Milliseconds since it entered this phase.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecInstance.<b>heldBack</b></code>](#held-back)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#held-back\} 
+Why the manager will not place it right now (a crash loop, a failed start), when it will not.
+
+
+
+
+### Returned By
+
+[`execInstances`](/reference/graphql/operations/queries/exec-instances.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

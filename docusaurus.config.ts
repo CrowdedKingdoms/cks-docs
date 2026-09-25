@@ -262,6 +262,15 @@ const config: Config = {
     [
       '@docusaurus/plugin-content-docs',
       {
+        id: 'exec',
+        path: 'docs-exec',
+        routeBasePath: '/exec',
+        sidebarPath: './sidebars/exec.ts',
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
         id: 'crowdyjs',
         path: 'docs-crowdyjs',
         routeBasePath: '/crowdyjs',
@@ -442,6 +451,12 @@ const config: Config = {
               docsPluginId: 'replication-api',
               sidebarId: 'sidebar',
               label: 'Replication API',
+            },
+            {
+              type: 'docSidebar',
+              docsPluginId: 'exec',
+              sidebarId: 'sidebar',
+              label: 'ck-exec (preview)',
             },
           ],
         },
