@@ -1,0 +1,49 @@
+---
+id: exec-set-enabled
+title: execSetEnabled
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The kill switch for an app's ck-exec code, or one node type of it (dev-tier preview). Switched off, nothing of it is placed, what runs is persisted and stopped, and calls are refused with `Denied`; switched on, instances start as they are called. Requires the org 'manage&#x005F;compute' permission.
+
+
+```graphql
+execSetEnabled(
+  appId: BigInt!
+  enabled: Boolean!
+  nodeType: String
+): ExecAppStatus!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>execSetEnabled.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app whose ck-exec code this is about.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execSetEnabled.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+false switches it off; true switches it on again.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execSetEnabled.<b>nodeType</b></code>](#node-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#node-type\} 
+Only this node type; the whole app when omitted.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ExecAppStatus</b></code>](/reference/graphql/types/objects/exec-app-status.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Whether an app’s ck-exec code may run: its active version and its switches (dev-tier preview).

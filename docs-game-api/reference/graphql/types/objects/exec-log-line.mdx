@@ -1,0 +1,68 @@
+---
+id: exec-log-line
+title: ExecLogLine
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One guest log line from an app’s ck-exec instances (`ctx.log`), kept for 24 hours (dev-tier preview).
+
+
+```graphql
+type ExecLogLine {
+  id: String!
+  nodeType: String!
+  key: String!
+  level: Int!
+  host: String!
+  at: DateTime!
+  text: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecLogLine.<b>id</b></code>](#id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#id\} 
+The line’s id, time-ordered: pass the oldest one you have as `before` to page back.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecLogLine.<b>nodeType</b></code>](#node-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#node-type\} 
+The node type that logged it; empty for a platform note (lines dropped over a rate).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecLogLine.<b>key</b></code>](#key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#key\} 
+The instance key.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecLogLine.<b>level</b></code>](#level)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#level\} 
+0 error, 1 warn, 2 info, 3 debug.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecLogLine.<b>host</b></code>](#host)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#host\} 
+The execution host it ran on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecLogLine.<b>at</b></code>](#at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#at\} 
+When the instance logged it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecLogLine.<b>text</b></code>](#text)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#text\} 
+The line, at most 1 KiB.
+
+
+
+
+### Returned By
+
+[`execLogs`](/reference/graphql/operations/queries/exec-logs.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

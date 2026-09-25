@@ -91,3 +91,5 @@ bytes, and the events dropped over the rate.
 | `emit_channel(channel_id, payload)` | `ctx.emit_channel(channel, sender, payload)`, with a sender you choose |
 | Game-model `notifications` effects | The handler calls `emit_*` where the effect was declared |
 | The per-module `maxEgressMsgsPerMin` budget | The per-app rate above |
+
+Next: [operations](operations).
