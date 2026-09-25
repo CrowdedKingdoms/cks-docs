@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-09-25T14:19:35Z",
+  "generated_from": "2026-09-25T20:42:06Z",
   "sdk_version": "2.16.0",
   "table": "cvars",
   "columns": [
@@ -217,7 +217,7 @@
       "kind": "variable",
       "role": "behaviour",
       "trace": false,
-      "help": "1: shared (Host-owned) entities bind their Game Model containers from one paged list per type; 0: one ensure per entity.",
+      "help": "1: shared (Host-owned) entities and remote copies of other players' entities bind their Game Model containers from one paged list per type; 0: one call per entity.",
       "module": "CrowdyReplication",
       "editor": false,
       "allowlist": ""
