@@ -1,0 +1,53 @@
+---
+id: exec-app-status
+title: ExecAppStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Whether an app’s ck-exec code may run: its active version and its switches (dev-tier preview).
+
+
+```graphql
+type ExecAppStatus {
+  activeVersion: Int
+  disabled: Boolean!
+  disabledTypes: [String!]!
+  budgetPaused: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>activeVersion</b></code>](#active-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#active-version\} 
+The active version; null before the first deploy.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>disabled</b></code>](#disabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#disabled\} 
+The whole app is switched off (`execSetEnabled` without a node type).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>disabledTypes</b></code>](#disabled-types)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#disabled-types\} 
+Node types switched off one by one.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>budgetPaused</b></code>](#budget-paused)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#budget-paused\} 
+Paused while the app is over its compute budget; it resumes by itself once a minute is back under it.
+
+
+
+
+### Returned By
+
+[`execActivateVersion`](/reference/graphql/operations/mutations/exec-activate-version.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`execAppStatus`](/reference/graphql/operations/queries/exec-app-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`execSetEnabled`](/reference/graphql/operations/mutations/exec-set-enabled.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
