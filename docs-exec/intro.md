@@ -121,8 +121,9 @@ mutation {
 
 ## Connecting players
 
-With the app-scoped token of the app as the Bearer token, `execConnect` returns a host and a
-connect token valid for 60 seconds:
+CrowdyJS and CrowdyCPP do all of this for you; see [connect from a game](connect-from-a-game).
+Underneath, with the app-scoped token of the app as the Bearer token, `execConnect` returns a
+host and a connect token valid for 60 seconds:
 
 ```graphql
 mutation {

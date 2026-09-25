@@ -127,3 +127,5 @@ second.
 | `gameModelActivePlayerCount` and its subscription | Publish the count from `on_presence`; clients subscribe |
 | `function_invoked`, `property_changed`, `container_created` | The hub knows when it changes; others `ctx.subscribe` to its topics |
 | `gameModelSeed` | The type's `seed_b64` in the manifest |
+
+Next: [connect from a game](connect-from-a-game).

@@ -1,0 +1,39 @@
+---
+id: exec-deploy
+title: execDeploy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Deploy a new version of an app's ck-exec topology (dev-tier preview): the manifest and any modules it names that were not uploaded before. The execution manager checks the manifest's tree and bounds and each module's digest, stores them, and makes the version active; running instances pick it up when they next start. Requires the org 'manage&#x005F;compute' permission.
+
+
+```graphql
+execDeploy(
+  input: ExecDeployInput!
+): ExecDeployResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>execDeploy.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ExecDeployInput!</b></code>](/reference/graphql/types/inputs/exec-deploy-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, its manifest and new modules.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ExecDeployResult</b></code>](/reference/graphql/types/objects/exec-deploy-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The result of a ck-exec deploy.
