@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-24T21:41:31Z",
+  "generated": "2026-09-25T20:42:06Z",
   "sdk_version": "2.16.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
@@ -14629,7 +14629,7 @@
       "name": "crowdy.gamemodel.bulkresolve",
       "kind": "variable",
       "trace": false,
-      "help": "1: shared (Host-owned) entities bind their Game Model containers from one paged list per type; 0: one ensure per entity.",
+      "help": "1: shared (Host-owned) entities and remote copies of other players' entities bind their Game Model containers from one paged list per type; 0: one call per entity.",
       "module": "CrowdyReplication",
       "file": "CrowdyReplication/Private/Replication/GameModel/CrowdyGameModelSubsystemBulkResolve.cpp",
       "editor_module": false
@@ -21447,6 +21447,58 @@
       "editor_module": true
     },
     {
+      "id": "FCrowdyContainerPull",
+      "name": "FCrowdyContainerPull",
+      "kind": "struct",
+      "scope": "UCrowdyGameModelSubsystem",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "KeysWrittenSince",
+          "type": "TMap<FGuid, TSet<FName>>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "HeldEntities",
+          "type": "TMap<FGuid, bool>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "DataWaiters",
+          "type": "TArray<TFunction<void(bool)>>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "IssuedSequence",
+          "type": "uint64",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "bDataPull",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "bDataOnceMore",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "FCrowdyContainerRef",
       "name": "FCrowdyContainerRef",
       "kind": "struct",
@@ -26245,6 +26297,24 @@
           "uproperty": false
         },
         {
+          "name": "PullsHeldBehindInFlight",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "FollowUpPulls",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "StaleKeysSkipped",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
           "name": "SelfInvokesMarked",
           "type": "int32",
           "static": false,
@@ -26263,6 +26333,18 @@
           "uproperty": false
         },
         {
+          "name": "SelfEchoMarksExpired",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "SelfEchoBackstopPulls",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
           "name": "ResolveStarts",
           "type": "int32",
           "static": false,
@@ -26270,6 +26352,12 @@
         },
         {
           "name": "ReResolves",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "BulkResolveListPages",
           "type": "int32",
           "static": false,
           "uproperty": false
@@ -27488,6 +27576,12 @@
           "uproperty": false
         },
         {
+          "name": "bMarkSelfEcho",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        },
+        {
           "name": "SelfNetID",
           "type": "FGuid",
           "static": false,
@@ -27612,6 +27706,12 @@
         {
           "name": "RetryAfterMs",
           "type": "TOptional<int64>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "DispatchSequence",
+          "type": "uint64",
           "static": false,
           "uproperty": false
         }
@@ -70947,9 +71047,9 @@
       "name": "ApplyDataContainerMutations",
       "test_helper": false,
       "implementation": false,
-      "signature": "void ApplyDataContainerMutations(const FString& ContainerId, const TArray<FCrowdyMutationApplied>& Mutations)",
+      "signature": "void ApplyDataContainerMutations(const FString& ContainerId, const TArray<FCrowdyMutationApplied>& Mutations, uint64 DispatchSequence = 0)",
       "return_type": "void",
-      "params": "const FString& ContainerId, const TArray<FCrowdyMutationApplied>& Mutations",
+      "params": "const FString& ContainerId, const TArray<FCrowdyMutationApplied>& Mutations, uint64 DispatchSequence = 0",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -70970,9 +71070,9 @@
       "name": "ApplyDataContainerState",
       "test_helper": false,
       "implementation": false,
-      "signature": "void ApplyDataContainerState(const FString& ContainerId, const TSharedPtr<FJsonObject>& NewState)",
-      "return_type": "void",
-      "params": "const FString& ContainerId, const TSharedPtr<FJsonObject>& NewState",
+      "signature": "bool ApplyDataContainerState(const FString& ContainerId, const TSharedPtr<FJsonObject>& NewState, const TSet<FName>* KeysToKeep = nullptr)",
+      "return_type": "bool",
+      "params": "const FString& ContainerId, const TSharedPtr<FJsonObject>& NewState, const TSet<FName>* KeysToKeep = nullptr",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -70993,9 +71093,9 @@
       "name": "ApplyInvokeMutations",
       "test_helper": false,
       "implementation": false,
-      "signature": "void ApplyInvokeMutations(const FGuid& SelfNetID, const FString& SelfContainerId, const TArray<FCrowdyMutationApplied>& Mutations)",
+      "signature": "void ApplyInvokeMutations(const FGuid& SelfNetID, const FString& SelfContainerId, const TArray<FCrowdyMutationApplied>& Mutations, uint64 DispatchSequence = 0)",
       "return_type": "void",
-      "params": "const FGuid& SelfNetID, const FString& SelfContainerId, const TArray<FCrowdyMutationApplied>& Mutations",
+      "params": "const FGuid& SelfNetID, const FString& SelfContainerId, const TArray<FCrowdyMutationApplied>& Mutations, uint64 DispatchSequence = 0",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -71016,9 +71116,9 @@
       "name": "ApplyMutationsToContainer",
       "test_helper": false,
       "implementation": false,
-      "signature": "void ApplyMutationsToContainer(const FGuid& NetID, UObject* Container, const TArray<FCrowdyMutationApplied>& Mutations)",
+      "signature": "void ApplyMutationsToContainer(const FGuid& NetID, UObject* Container, const TArray<FCrowdyMutationApplied>& Mutations, uint64 DispatchSequence = 0)",
       "return_type": "void",
-      "params": "const FGuid& NetID, UObject* Container, const TArray<FCrowdyMutationApplied>& Mutations",
+      "params": "const FGuid& NetID, UObject* Container, const TArray<FCrowdyMutationApplied>& Mutations, uint64 DispatchSequence = 0",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -71039,9 +71139,9 @@
       "name": "ApplyStateToContainer",
       "test_helper": false,
       "implementation": false,
-      "signature": "void ApplyStateToContainer(const FGuid& NetID, UObject* Container, const TSharedPtr<FJsonObject>& NewState)",
-      "return_type": "void",
-      "params": "const FGuid& NetID, UObject* Container, const TSharedPtr<FJsonObject>& NewState",
+      "signature": "bool ApplyStateToContainer(const FGuid& NetID, UObject* Container, const TSharedPtr<FJsonObject>& NewState, const TSet<FName>* KeysToKeep = nullptr)",
+      "return_type": "bool",
+      "params": "const FGuid& NetID, UObject* Container, const TSharedPtr<FJsonObject>& NewState, const TSet<FName>* KeysToKeep = nullptr",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -71729,9 +71829,9 @@
       "name": "FinishBulkResolveForTest",
       "test_helper": true,
       "implementation": false,
-      "signature": "void FinishBulkResolveForTest(const FString& TypeName, const FString& Session, const TArray<FGuid>& NetIDs, const TArray<FCrowdyBulkResolveHit>& Hits)",
+      "signature": "void FinishBulkResolveForTest(const FString& TypeName, const FString& Session, const TArray<FGuid>& NetIDs, const TArray<FCrowdyBulkResolveHit>& Hits, bool bReachedEnd = true)",
       "return_type": "void",
-      "params": "const FString& TypeName, const FString& Session, const TArray<FGuid>& NetIDs, const TArray<FCrowdyBulkResolveHit>& Hits",
+      "params": "const FString& TypeName, const FString& Session, const TArray<FGuid>& NetIDs, const TArray<FCrowdyBulkResolveHit>& Hits, bool bReachedEnd = true",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -72390,6 +72490,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyGameModelSubsystem::GetPendingSessionCountForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "GetPendingSessionCountForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "int32 GetPendingSessionCountForTest() const",
+      "return_type": "int32",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyGameModelSubsystem::GetPendingSweepCountForTest",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
@@ -72827,6 +72950,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyGameModelSubsystem::IsBulkResolveGroupCutForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "IsBulkResolveGroupCutForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "bool IsBulkResolveGroupCutForTest(const FString& TypeName, const FString& Session) const",
+      "return_type": "bool",
+      "params": "const FString& TypeName, const FString& Session",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyGameModelSubsystem::IsBusyRefusal",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
@@ -73247,8 +73393,8 @@
       "name": "MarkSelfActed",
       "test_helper": false,
       "implementation": false,
-      "signature": "void MarkSelfActed(const FString& ContainerId)",
-      "return_type": "void",
+      "signature": "double MarkSelfActed(const FString& ContainerId)",
+      "return_type": "double",
       "params": "const FString& ContainerId",
       "access": "public",
       "static": false,
@@ -74345,6 +74491,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyGameModelSubsystem::StampDispatchForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "StampDispatchForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "uint64 StampDispatchForTest()",
+      "return_type": "uint64",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyGameModelSubsystem::StretchCoalesceWindowSeconds",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
@@ -74471,6 +74640,29 @@
       "params": "const FCrowdyGameSessionSnapshotData& Data",
       "access": "public",
       "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyGameModelSubsystem::TouchCollectionParentForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "TouchCollectionParentForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void TouchCollectionParentForTest(const FString& ParentContainerId, const FString& ParentTypeName)",
+      "return_type": "void",
+      "params": "const FString& ParentContainerId, const FString& ParentTypeName",
+      "access": "public",
+      "static": false,
       "virtual": false,
       "pure_virtual": false,
       "const": false,

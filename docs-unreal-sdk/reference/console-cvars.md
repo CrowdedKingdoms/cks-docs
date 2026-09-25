@@ -131,8 +131,9 @@ Shipping; the six diagnostics above do not, and a Shipping console answers them 
 - `crowdy.net.receive.maxdrainms` (4 ms) and `crowdy.net.receive.maxmessages` (3072) bound one frame's
   receive drain. If drains keep ending on the time budget, delivery is costing more per message than the
   frame can afford, and raising the count is not the lever.
-- `crowdy.gamemodel.bulkresolve` (default `1`) makes Host-owned entities bind their Game Model containers
-  from one paged list per type instead of one ensure per entity. Leave it on unless you are isolating a
+- `crowdy.gamemodel.bulkresolve` (default `1`) makes Host-owned entities, and your copies of other players'
+  entities, bind their Game Model containers from one paged list per type instead of one ensure or keyed read
+  per entity. Leave it on unless you are isolating a
   regression against the old per-entity path.
 - The two Game Model watch commands, `crowdy.gamemodel.watchcontainers` and
   `crowdy.gamemodel.unwatchcontainers`, are diagnostics: they open or close a feed and log what arrives,

@@ -7321,5 +7321,10 @@
     "id": "FCrowdyCppClient::NumTestWaitingRetries",
     "reason": "internal",
     "note": "Test-only: how many requests are parked waiting out a busy-retry backoff, for a headless test to assert against. No production caller."
+  },
+  {
+    "id": "FCrowdyContainerPull",
+    "reason": "internal",
+    "note": "Private bookkeeping for one container's in-flight pull (held waiters, issued sequence, keys an invoke wrote since); the one-in-flight-pull behavior it backs is described in prose on Change pings and pull, not as a type a game touches."
   }
 ]
