@@ -153,6 +153,32 @@ mutation {
 
 A build belongs to its app: another app cannot deploy it.
 
+## From an SDK
+
+CrowdyJS does the whole flow for you:
+
+```ts
+const pack = await client.exec.starters(appId);
+const build = await client.exec.build(
+  appId,
+  pack.starters.map((s) => ({ name: s.crate, files: s.files })),
+);
+const done = await client.exec.waitForBuild(appId, build.buildId);
+if (done.status !== 'succeeded') throw new Error(done.log ?? 'build failed');
+await client.exec.deploy({ appId, buildId: build.buildId, ...pack.manifest });
+```
+
+| CrowdyJS `client.exec` | CrowdyCPP `client.exec()` |
+|---|---|
+| `starters(appId)` | `starters(appId)` |
+| `build(appId, crates)`, each crate's `files` a path map or a `{ path, content }` list | `build(appId, std::vector<ExecCrate>)` |
+| `buildStatus(appId, buildId)` | `buildStatus(appId, buildId)` |
+| `waitForBuild(appId, buildId, { intervalMs, timeoutMs })` | `waitForBuild(appId, buildId, intervalMs, timeoutMs)`, blocking; from an event loop, poll `buildStatusAsync` |
+| `deploy({ appId, root, types, buildId })`, a type naming its `crate` | `deploy(appId, root, types, buildId)`, an `ExecNodeType` with `crate` set |
+
+Every CrowdyCPP method but `waitForBuild` has an `…Async` twin. These need CrowdyJS
+`17.11.0-dev` or CrowdyCPP `0.46.0` on dev.
+
 ## Typed state
 
 The legacy game models kept containers with typed properties in the database. In ck-exec, a hub

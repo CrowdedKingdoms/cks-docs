@@ -1,0 +1,43 @@
+---
+id: exec-build-crate-input
+title: ExecBuildCrateInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One crate of a ck-exec build: a `ckx-sdk` library with `[lib] crate-type = ["cdylib"]`, built into one module.
+
+
+```graphql
+input ExecBuildCrateInput {
+  name: String!
+  files: [ExecBuildFileInput!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuildCrateInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+The crate’s name: lowercase letters, digits, `-` or `_`, at most 64 characters. The build reports each module under it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuildCrateInput.<b>files</b></code>](#files)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ExecBuildFileInput!]!</b></code>](/reference/graphql/types/inputs/exec-build-file-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#files\} 
+Its files, at most 64. `Cargo.toml` may have only [package], [lib] and [dependencies] from `ckx-sdk`, `serde` and `serde_json`.
+
+
+
+
+### Member Of
+
+[`ExecBuildInput`](/reference/graphql/types/inputs/exec-build-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>
