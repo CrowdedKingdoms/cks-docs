@@ -15102,7 +15102,7 @@ input ExecDeployInput {
   """The app to deploy."""
   appId: BigInt!
   """
-  The manifest as JSON: `{ "root": "<hub type>", "types": { "<name>": { "kind": "hub"|"spoke", "parent", "digest", "client", "calls", ... } } }`. See the ck-exec repo’s `ckx-control` crate for every field and its platform bounds.
+  The manifest as JSON: `{ "root": "<hub type>", "types": { "<name>": { "kind": "hub"|"spoke", "parent", "digest", "client", "calls", "scopes", ... } } }`. Every field and its platform bounds: https://docs.dev.crowdedkingdoms.com/exec/intro#the-manifest.
   """
   manifestJson: String!
   """
