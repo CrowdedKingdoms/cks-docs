@@ -1,0 +1,64 @@
+---
+id: exec-mod-logs
+title: execModLogs
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A mod of yours' guest log lines (`ctx.log`), newest first, kept for 24 hours (dev-tier preview).
+
+
+```graphql
+execModLogs(
+  appId: BigInt!
+  gridId: BigInt!
+  name: String!
+  maxLevel: Int
+  before: String
+  limit: Int
+): [ExecLogLine!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>execModLogs.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app the grid is in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModLogs.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid the mod runs on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModLogs.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+The mod: 1-48 lowercase letters, digits, `-` or `_`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModLogs.<b>maxLevel</b></code>](#max-level)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-level\} 
+The least severe level included: 0 errors only, 1 warnings too, 2 info, 3 everything (the default).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModLogs.<b>before</b></code>](#before)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#before\} 
+Only lines older than this line id, to page back.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModLogs.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+At most this many lines (default 100, at most 500).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ExecLogLine</b></code>](/reference/graphql/types/objects/exec-log-line.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One guest log line from an app’s ck-exec instances (`ctx.log`), kept for 24 hours (dev-tier preview).

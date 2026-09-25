@@ -1,0 +1,59 @@
+---
+id: exec-mod-publish
+title: execModPublish
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Publish a mod of yours, at its current version, for other grid owners in the app to install (dev-tier preview; no payments). Requires being the grid's current owner and 'write&#x005F;server&#x005F;code' on both the app tier and the grid.
+
+
+```graphql
+execModPublish(
+  appId: BigInt!
+  gridId: BigInt!
+  name: String!
+  title: String!
+  description: String
+): ExecModListing!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>execModPublish.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app the grid is in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModPublish.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid the mod runs on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModPublish.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+The mod: 1-48 lowercase letters, digits, `-` or `_`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModPublish.<b>title</b></code>](#title)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#title\} 
+1-80 characters.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModPublish.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+At most 2000 characters.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ExecModListing</b></code>](/reference/graphql/types/objects/exec-mod-listing.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A mod version its owner published, which any grid owner in the app may install as a mod of their own (dev-tier preview; no payments).

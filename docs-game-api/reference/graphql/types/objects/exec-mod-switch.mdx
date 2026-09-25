@@ -1,0 +1,58 @@
+---
+id: exec-mod-switch
+title: ExecModSwitch
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A rung of the mods kill ladder that is off (dev-tier preview).
+
+
+```graphql
+type ExecModSwitch {
+  scope: ExecModScope!
+  target: String!
+  reason: String
+  createdBy: String
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModSwitch.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ExecModScope!</b></code>](/reference/graphql/types/enums/exec-mod-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModSwitch.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#target\} 
+The id it names; empty for `ALL`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModSwitch.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModSwitch.<b>createdBy</b></code>](#created-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#created-by\} 
+Who switched it off, e.g. `user:<id>`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModSwitch.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+
+
+
+
+
+### Returned By
+
+[`execModSetSwitch`](/reference/graphql/operations/mutations/exec-mod-set-switch.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`execModSwitches`](/reference/graphql/operations/queries/exec-mod-switches.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

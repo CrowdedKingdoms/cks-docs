@@ -1,0 +1,88 @@
+---
+id: exec-mod
+title: ExecMod
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A mod: a player’s code on a grid they own, run by ck-exec as the hub `mod:<name>` keyed by the grid id, in its owner’s own sandbox (dev-tier preview).
+
+
+```graphql
+type ExecMod {
+  modId: String!
+  gridId: BigInt!
+  name: String!
+  ownerId: BigInt!
+  version: Int!
+  digest: String!
+  enabled: Boolean!
+  listingId: BigInt
+  blocked: String
+  running: Boolean!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>modId</b></code>](#mod-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#mod-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+1-48 lowercase letters, digits, `-` or `_`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>ownerId</b></code>](#owner-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#owner-id\} 
+The player it runs as: the grid’s owner when it was deployed, or when the grid last changed hands.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>digest</b></code>](#digest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#digest\} 
+SHA-256 of its module, hex.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+Its owner switched it on. It runs only while this holds and `blocked` is null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
+The marketplace listing it was installed from.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>blocked</b></code>](#blocked)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#blocked\} 
+Why an enabled mod will not run: a switch of the app’s kill ladder, or the app’s own switch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>running</b></code>](#running)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#running\} 
+Whether an instance of it runs now.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecMod.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+
+
+
+
+
+### Returned By
+
+[`execAppMods`](/reference/graphql/operations/queries/exec-app-mods.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`execModDeploy`](/reference/graphql/operations/mutations/exec-mod-deploy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`execModInstall`](/reference/graphql/operations/mutations/exec-mod-install.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`execMods`](/reference/graphql/operations/queries/exec-mods.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`execModSetEnabled`](/reference/graphql/operations/mutations/exec-mod-set-enabled.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`execMyMods`](/reference/graphql/operations/queries/exec-my-mods.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

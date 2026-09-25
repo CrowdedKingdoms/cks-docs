@@ -1,0 +1,39 @@
+---
+id: exec-mod-starter
+title: execModStarter
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The mod starter (dev-tier preview): a ckx-sdk crate that greets visitors and follows what happens in its grid (`Hub::on_world`), to pass to `execModBuild`. Requires access to the app.
+
+
+```graphql
+execModStarter(
+  appId: BigInt!
+): ExecStarter!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>execModStarter.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app the grid is in.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ExecStarter</b></code>](/reference/graphql/types/objects/exec-starter.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A starter crate: a ckx-sdk hub to build with `execBuild` as it is, or to change first.

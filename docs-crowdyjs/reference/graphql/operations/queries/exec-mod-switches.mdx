@@ -1,0 +1,39 @@
+---
+id: exec-mod-switches
+title: execModSwitches
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The app's mod switches that are off (dev-tier preview). Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
+
+
+```graphql
+execModSwitches(
+  appId: BigInt!
+): [ExecModSwitch!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>execModSwitches.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app the grid is in.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ExecModSwitch</b></code>](/reference/graphql/types/objects/exec-mod-switch.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A rung of the mods kill ladder that is off (dev-tier preview).
