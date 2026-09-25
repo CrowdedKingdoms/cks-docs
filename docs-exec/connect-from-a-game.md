@@ -141,3 +141,5 @@ const { version } = await client.exec.deploy({
 
 Any other [manifest field](intro#the-manifest) goes on the type as written. CrowdyCPP has the
 same call as `client.exec().deploy(appId, root, types)`, with a vector of `ExecNodeType`.
+
+Next: [world and platform data](world-and-platform-data).

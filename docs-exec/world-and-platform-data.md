@@ -102,3 +102,5 @@ do not cover.
 | Permission effects (grant and revoke as a function side effect) | `ctx.permissions()` |
 | `user_state_get` / `user_state_set`, `avatar_state_get` | `ctx.players().state`, `set_state` and `avatar_state` |
 | `grid_state_get` / `grid_state_set` | A hub keyed by the grid holds that state |
+
+Next: [realtime events](realtime-events).
