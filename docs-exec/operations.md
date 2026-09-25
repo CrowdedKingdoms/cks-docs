@@ -165,3 +165,5 @@ These need CrowdyJS `17.10.0-dev` or CrowdyCPP `0.45.0` on dev.
 | `computeResetBreaker` | Nothing to reset: a crash-looping instance is held back (`heldBack`) until its crashes are a minute old, then placed again |
 | `computeInvoke`, `gameModelInvoke` (manual runs) | `execConnectAsDeveloper`, then call the endpoint |
 | `appComputeBudget`, `setAppComputeBudget` | The same budget; an enforced one pauses ck-exec code too |
+
+Next: [builds and starter packs](builds).

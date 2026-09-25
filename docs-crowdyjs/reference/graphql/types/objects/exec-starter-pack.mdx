@@ -1,0 +1,43 @@
+---
+id: exec-starter-pack
+title: ExecStarterPack
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The starter packs (dev-tier preview): four crates and a manifest that deploys them as one app.
+
+
+```graphql
+type ExecStarterPack {
+  manifestJson: String!
+  starters: [ExecStarter!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecStarterPack.<b>manifestJson</b></code>](#manifest-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#manifest-json\} 
+The manifest for `execDeploy` with the build’s id: the root `world` hub, and `matchmaker`, `session` and `npcs` under it, each naming its crate.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecStarterPack.<b>starters</b></code>](#starters)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ExecStarter!]!</b></code>](/reference/graphql/types/objects/exec-starter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#starters\} 
+The crates.
+
+
+
+
+### Returned By
+
+[`execStarters`](/reference/graphql/operations/queries/exec-starters.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

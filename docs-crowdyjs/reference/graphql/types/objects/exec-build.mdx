@@ -1,0 +1,68 @@
+---
+id: exec-build
+title: ExecBuild
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A ck-exec build (dev-tier preview): queued, building, succeeded or failed, with the compiler’s log and, once it succeeds, one module per crate.
+
+
+```graphql
+type ExecBuild {
+  buildId: String!
+  status: String!
+  log: String
+  createdAt: DateTime!
+  startedAt: DateTime
+  finishedAt: DateTime
+  artifacts: [ExecBuildArtifact!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>buildId</b></code>](#build-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#build-id\} 
+The build’s id, for `execBuildStatus` and `execDeploy`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+`queued`, `building`, `succeeded` or `failed`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>log</b></code>](#log)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#log\} 
+The compiler’s output once the build finishes, at most 64 KB (the end is kept).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+When the build was requested.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>startedAt</b></code>](#started-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#started-at\} 
+When it started compiling.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>finishedAt</b></code>](#finished-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#finished-at\} 
+When it finished.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>artifacts</b></code>](#artifacts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ExecBuildArtifact!]!</b></code>](/reference/graphql/types/objects/exec-build-artifact.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#artifacts\} 
+The modules built so far, one per crate.
+
+
+
+
+### Returned By
+
+[`execBuild`](/reference/graphql/operations/mutations/exec-build.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`execBuildStatus`](/reference/graphql/operations/queries/exec-build-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

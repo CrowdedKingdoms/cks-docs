@@ -1,0 +1,39 @@
+---
+id: exec-build
+title: execBuild
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Build ck-exec modules from Rust source (dev-tier preview): each crate is compiled with the platform's pinned toolchain and `ckx-sdk`, for wasm32-unknown-unknown, and checked against the guest ABI. Returns at once with the build queued; poll `execBuildStatus`, then pass its id to `execDeploy`. Requires the org 'manage&#x005F;compute' permission.
+
+
+```graphql
+execBuild(
+  input: ExecBuildInput!
+): ExecBuild!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>execBuild.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ExecBuildInput!</b></code>](/reference/graphql/types/inputs/exec-build-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app and the crates to build.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ExecBuild</b></code>](/reference/graphql/types/objects/exec-build.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A ck-exec build (dev-tier preview): queued, building, succeeded or failed, with the compiler’s log and, once it succeeds, one module per crate.

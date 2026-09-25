@@ -104,13 +104,15 @@ other instances with `ctx.call(type, key, method, bytes)` and publishes to its s
 `ctx.publish(topic, bytes)`. Payloads are bytes; `encode` and `decode` use MessagePack with
 named fields, which game clients decode into plain objects.
 
-Build with `cargo build --release --target wasm32-unknown-unknown`.
+Build with `cargo build --release --target wasm32-unknown-unknown`, or have the platform build
+it: see [builds and starter packs](builds).
 
 ## Deploying
 
 `execDeploy` takes the manifest as JSON and each module the app has not uploaded before (base64
-with its digest), and makes the new version active. Running instances pick it up when they
-next start. It needs the organization's `manage_compute` permission.
+with its digest), or the id of a build whose modules the manifest names, and makes the new
+version active. Running instances pick it up when they next start. It needs the organization's
+`manage_compute` permission.
 
 ```graphql
 mutation {

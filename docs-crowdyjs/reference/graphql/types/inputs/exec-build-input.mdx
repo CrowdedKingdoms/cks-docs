@@ -1,0 +1,43 @@
+---
+id: exec-build-input
+title: ExecBuildInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Sources to build into ck-exec modules.
+
+
+```graphql
+input ExecBuildInput {
+  appId: BigInt!
+  crates: [ExecBuildCrateInput!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuildInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app to build for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuildInput.<b>crates</b></code>](#crates)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ExecBuildCrateInput!]!</b></code>](/reference/graphql/types/inputs/exec-build-crate-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#crates\} 
+The crates, at most 16, 2 MB of source in all; each becomes one module.
+
+
+
+
+### Member Of
+
+[`execBuild`](/reference/graphql/operations/mutations/exec-build.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
