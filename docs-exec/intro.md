@@ -60,6 +60,7 @@ A deploy is a manifest plus the modules it names:
 | `replicas`, `concurrency` | Spokes: replicas kept running, and calls each serves at once (default 16). |
 | `memory_mb`, `fuel_per_call`, `mailbox`, `deadline_ms` | Per-instance limits, within platform bounds (512 MB, 10 s per call). |
 | `seed_b64` | Bytes every new instance of the type is spawned with; the root hub's seed is its app's starting state. |
+| `scopes` | The platform data the type's instances may use: `players.read`, `players.write`, `world.read`, `world.write`, `grids.read`, `permissions.write`. None by default; see [world and platform data](world-and-platform-data). |
 
 ## A hub
 
