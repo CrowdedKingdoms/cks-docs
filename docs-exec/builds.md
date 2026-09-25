@@ -216,3 +216,4 @@ mobs and NPCs this way.
 | `computeDeployVersion` (compiled on the server) | `execBuild`, then `execDeploy` with the `buildId` |
 | Game-model schemas: container types, typed properties, `visibility` | `ckx_sdk::model` in a hub |
 | The Game Kit (`client.kit(appId).deploy`) | The starter packs |
+| `playerComputeDeploy` (players' server code) | [Mods](mods): `execModBuild`, then `execModDeploy` |

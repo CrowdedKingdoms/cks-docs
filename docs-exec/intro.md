@@ -105,7 +105,8 @@ other instances with `ctx.call(type, key, method, bytes)` and publishes to its s
 named fields, which game clients decode into plain objects.
 
 Build with `cargo build --release --target wasm32-unknown-unknown`, or have the platform build
-it: see [builds and starter packs](builds).
+it: see [builds and starter packs](builds). Players run their own code on grids they own the
+same way, as [mods](mods).
 
 ## Deploying
 

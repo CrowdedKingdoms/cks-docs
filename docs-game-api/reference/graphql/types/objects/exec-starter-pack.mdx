@@ -22,6 +22,7 @@ The starter packs (dev-tier preview): four crates and a manifest that deploys th
 type ExecStarterPack {
   manifestJson: String!
   starters: [ExecStarter!]!
+  mod: ExecStarter
 }
 ```
 
@@ -34,6 +35,10 @@ The manifest for `execDeploy` with the build’s id: the root `world` hub, and `
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecStarterPack.<b>starters</b></code>](#starters)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ExecStarter!]!</b></code>](/reference/graphql/types/objects/exec-starter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#starters\} 
 The crates.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecStarterPack.<b>mod</b></code>](#mod)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ExecStarter</b></code>](/reference/graphql/types/objects/exec-starter.mdx) <Badge class="badge badge--secondary " text="object"/> \{#mod\} 
+The mod starter: a player’s code on a grid they own, built with `execModBuild` and deployed with `execModDeploy` rather than in the manifest. Null on a toolchain without it.
 
 
 

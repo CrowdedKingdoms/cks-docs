@@ -1,0 +1,58 @@
+---
+id: exec-mod-scope
+title: ExecModScope
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A rung of the mods kill ladder: one mod (target: its mod id), a player’s mods (their user id), a grid’s mods (its grid id), the installs of a marketplace listing (its listing id), or every mod in the app (no target).
+
+
+```graphql
+enum ExecModScope {
+  MOD
+  PLAYER
+  GRID
+  LISTING
+  ALL
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModScope.<b>MOD</b></code>](#mod) \{#mod\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModScope.<b>PLAYER</b></code>](#player) \{#player\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModScope.<b>GRID</b></code>](#grid) \{#grid\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModScope.<b>LISTING</b></code>](#listing) \{#listing\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModScope.<b>ALL</b></code>](#all) \{#all\} 
+
+
+
+
+
+### Member Of
+
+[`execModSetSwitch`](/reference/graphql/operations/mutations/exec-mod-set-switch.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`ExecModSwitch`](/reference/graphql/types/objects/exec-mod-switch.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

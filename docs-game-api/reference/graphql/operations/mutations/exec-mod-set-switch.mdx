@@ -1,0 +1,59 @@
+---
+id: exec-mod-set-switch
+title: execModSetSwitch
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The mods kill ladder (dev-tier preview): switch off one mod, a player's mods, a grid's mods, a listing's installs or every mod in the app, or back on. Off stops what runs at once and refuses calls. Returns the switches that are off. Requires the org 'manage&#x005F;compute' permission.
+
+
+```graphql
+execModSetSwitch(
+  appId: BigInt!
+  scope: ExecModScope!
+  off: Boolean!
+  target: String
+  reason: String
+): [ExecModSwitch!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>execModSetSwitch.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app the grid is in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModSetSwitch.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ExecModScope!</b></code>](/reference/graphql/types/enums/exec-mod-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#scope\} 
+The rung of the ladder.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModSetSwitch.<b>off</b></code>](#off)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#off\} 
+Off (true) stops what it names; false switches it back on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModSetSwitch.<b>target</b></code>](#target)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#target\} 
+The id the scope names; none for ALL.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModSetSwitch.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Why, at most 200 characters; refused calls carry it to players.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ExecModSwitch</b></code>](/reference/graphql/types/objects/exec-mod-switch.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A rung of the mods kill ladder that is off (dev-tier preview).

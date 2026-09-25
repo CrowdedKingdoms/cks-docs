@@ -1,0 +1,83 @@
+---
+id: exec-mod-listing
+title: ExecModListing
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A mod version its owner published, which any grid owner in the app may install as a mod of their own (dev-tier preview; no payments).
+
+
+```graphql
+type ExecModListing {
+  listingId: BigInt!
+  title: String!
+  description: String
+  publisherId: BigInt!
+  sourceModId: String!
+  sourceVersion: Int!
+  digest: String!
+  installs: Int!
+  createdAt: DateTime!
+  delistedAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>title</b></code>](#title)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#title\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>publisherId</b></code>](#publisher-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#publisher-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>sourceModId</b></code>](#source-mod-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-mod-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>sourceVersion</b></code>](#source-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-version\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>digest</b></code>](#digest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#digest\} 
+SHA-256 of its module, hex.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>installs</b></code>](#installs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#installs\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>delistedAt</b></code>](#delisted-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#delisted-at\} 
+
+
+
+
+
+### Returned By
+
+[`execModListings`](/reference/graphql/operations/queries/exec-mod-listings.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`execModPublish`](/reference/graphql/operations/mutations/exec-mod-publish.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
