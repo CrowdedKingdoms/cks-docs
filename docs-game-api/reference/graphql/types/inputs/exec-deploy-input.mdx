@@ -34,7 +34,7 @@ The app to deploy.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecDeployInput.<b>manifestJson</b></code>](#manifest-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#manifest-json\} 
-The manifest as JSON: `{ "root": "<hub type>", "types": { "<name>": { "kind": "hub"|"spoke", "parent", "digest", "client", "calls", ... } } }`. See the ck-exec repo’s `ckx-control` crate for every field and its platform bounds.
+The manifest as JSON: `{ "root": "<hub type>", "types": { "<name>": { "kind": "hub"|"spoke", "parent", "digest", "client", "calls", "scopes", ... } } }`. Every field and its platform bounds: https://docs.dev.crowdedkingdoms.com/exec/intro#the-manifest.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecDeployInput.<b>artifacts</b></code>](#artifacts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ExecArtifactInput!]</b></code>](/reference/graphql/types/inputs/exec-artifact-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#artifacts\} 
