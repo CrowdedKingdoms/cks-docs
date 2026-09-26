@@ -5,6 +5,15 @@ title: Build mods with Crowdy Studio
 
 # Build mods with Crowdy Studio
 
+:::caution Legacy engine
+This page describes building mods on the game API's legacy player-code engine. On the **dev**
+environment that engine is switched off: Crowdy Studio's SERVER target deploys a [ck-exec
+mod](/exec/mods) instead (the default from CrowdyJS 17.13.0), and a new CLIENT-target deploy is
+refused with `ENGINE_SWITCHED_OFF` until client builds move to the ck-exec builder; client
+modules already built keep loading. [From the legacy
+engines](/exec/from-the-legacy-engines#player-code) maps the rest.
+:::
+
 Blocks with Friends (BWF) embeds Crowdy Studio for player-authored server and
 client Rust mods. This guide is for a mod developer using the game, not a
 studio operator deploying platform infrastructure.

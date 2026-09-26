@@ -6,6 +6,14 @@ title: Game Kit
 
 # Game Kit
 
+:::caution Legacy engine
+This page describes the Game Kit's engines and blueprints, part of the game API's legacy
+engines. On the **dev** environment those engines are switched off (their calls answer
+`ENGINE_SWITCHED_OFF`) and [ck-exec](/exec/intro) replaces them: [from the legacy
+engines](/exec/from-the-legacy-engines#running-your-logic) maps each feature here to its ck-exec
+equivalent. The page is removed once ck-exec reaches every environment.
+:::
+
 `crowdy::kit::makeKit(client, appId)` is the C++ Game Kit — the analog of
 CrowdyJS's [`client.kit(appId)`](/crowdyjs/game-kit). It packages the concept
 mappings from [Modeling game concepts](/game-api/modeling-game-concepts) as

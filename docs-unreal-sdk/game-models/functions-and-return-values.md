@@ -10,6 +10,13 @@ import TabItem from '@theme/TabItem';
 
 # Functions and Return Values
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A Game Model function is a named, transactional piece of logic on a container type. An effect asset declares one; **Call Model Function** runs one by name with whatever parameters you give it; and since a function can `return` a value, a call is also how a client asks the server a question. This page is the general call path and the return-value contract. The asset-driven apply is on [Applying an effect from C++](./effects-cpp.md) and [in Blueprint](./effects-blueprint.md).
 
 ## When you touch this

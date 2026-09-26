@@ -7,6 +7,13 @@ description: "Build a Crowdy Effect asset from an empty Details panel to a live 
 
 # Authoring Effects
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A Crowdy Effect is a data asset that compiles into exactly one server-side Game Model function: the container type it runs on, a short script in EffectScript, and the tuning parameters a caller may set. You author it in the asset's Details panel, watch it compile as you type, sync it to the server, and apply it from gameplay code. This page walks the panel top to bottom and builds the Lantern's refuel effect on the way; [EffectScript](./effect-script.md) is the language it is written in, and [Applying an effect from C++](./effects-cpp.md) and [from Blueprint](./effects-blueprint.md) are what happens next.
 
 ## Before you start

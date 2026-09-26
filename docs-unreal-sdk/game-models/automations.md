@@ -7,6 +7,13 @@ description: "Make a Game Model function run on its own, on a schedule, when a p
 
 # Automations
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 An automation is a server-driven process: a function that runs on a schedule or in reaction to model activity, with no client calling it. A timer is one delayed invocation an effect arms when it commits. Both are authored on the Crowdy Effect asset, in its **Automation** section and its **Timers** list; Unreal code never creates one, it only reacts to what one writes.
 
 ## When you touch this

@@ -151,6 +151,11 @@ don't count; they have the router's own limits.
 The limit is kept per host, so a player connected to hubs on two hosts has 120 on each. Refused
 calls show up as `busy` in the counters above.
 
+Neither SDK retries a `Busy` call for you. CrowdyJS marks this refusal on the error
+(`CrowdyExecError.rateLimited`, with the wait in `retryAfterMs`), and CrowdyCPP on the reply
+(`ExecReply::rateLimited()`, `retryAfterMs()`), so a game can tell it from a full mailbox and
+wait as long as the message says.
+
 ## Usage and budgets
 
 ck-exec code is metered per minute and billed in compute units, like the WASM engines it
@@ -202,13 +207,16 @@ it with the current SDK first.
 
 | CrowdyJS `client.exec` | CrowdyCPP `client.exec()` |
 |---|---|
-| `logs(appId, { nodeType, key, maxLevel, before, limit })` | `logs(appId, ExecLogsQuery)` |
+| `logs(appId, { nodeType, key, maxLevel, flow, before, limit })` | `logs(appId, ExecLogsQuery)` |
+| `endpointStats(appId, { nodeType, sinceMinutes })` | `endpointStats(appId, nodeType, sinceMinutes)` |
 | `instances(appId)`, `versions(appId)`, `status(appId)` | the same, each with an `…Async` twin |
+| each version's `manifestJson`, and `manifest` parsed | each version's `manifestJson` |
 | `activateVersion(appId, version)` | `activateVersion(appId, version)` |
 | `setEnabled(appId, enabled, nodeType?)` | `setEnabled(appId, enabled, nodeType)` |
 | `connectAsDeveloper(appId, { nodeType, key })` | `connectAsDeveloper(appId, ExecConnectOptions)` |
 
-These need CrowdyJS `17.10.0-dev` or CrowdyCPP `0.45.0` on dev.
+These need CrowdyJS `17.10.0-dev` or CrowdyCPP `0.45.0` on dev; flows, endpoint stats, version
+manifests and the rate-limit fields need `17.13.0-dev` or `0.48.0`.
 
 ## Coming from the legacy APIs
 

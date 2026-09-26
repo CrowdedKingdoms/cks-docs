@@ -10,6 +10,13 @@ import TabItem from '@theme/TabItem';
 
 # Applying an Effect from C++
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A Crowdy Effect is a data asset that declares one server function: the container type it runs on, an EffectScript body, and the tuning parameters a caller may override. [Authoring effects](./authoring-effects.md) builds one and [EffectScript](./effect-script.md) is the language; this page applies the finished asset from C++. One apply is one invoke: the server runs the body transactionally, confirms the result to the caller, and nudges everyone else to re-pull. There is no direct setter on a Game Model attribute; this is the write path.
 
 ## When you touch this

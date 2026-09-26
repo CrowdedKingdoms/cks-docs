@@ -9,6 +9,13 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Game Model Metadata Keys
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 This page lists the metadata that declares a Game Model container type and its attributes on the
 server-authoritative truth plane. A property lives in exactly one plane, so a variable is either
 `CrowdyState` or `CrowdyModel`, never both. See [Game Models overview](/unreal-sdk/game-models/overview) for

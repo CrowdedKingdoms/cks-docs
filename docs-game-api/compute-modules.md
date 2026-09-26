@@ -5,6 +5,14 @@ title: Compute Modules
 
 # Compute Modules
 
+:::caution Legacy engine
+This page describes compute modules, part of the game API's legacy engines. On the **dev**
+environment those engines are switched off (their calls answer `ENGINE_SWITCHED_OFF`) and
+[ck-exec](/exec/intro) replaces them: [from the legacy
+engines](/exec/from-the-legacy-engines#running-your-logic) maps each feature here to its ck-exec
+equivalent. The page is removed once ck-exec reaches every environment.
+:::
+
 [Game Models](/game-api/game-models) and [Autonomous Processes](/game-api/autonomous-processes)
 put your rules and NPCs on the server with a deliberately **loop-free** expression
 language — great for declarative rules, but you cannot write a pathfinder, a

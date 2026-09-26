@@ -10,6 +10,13 @@ import TabItem from '@theme/TabItem';
 
 # Sessions
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A Game Model session is a group of players playing together, as the server records it: your match, room, lobby, or table. The record holds a roster, an admission rule, a seat cap, a host, presence, a turn, and a revision counter, and Game Model state created during play belongs to it. Every Game Model call takes a `SessionId`, and the SDK remembers an active session so most of them can leave it empty. [Sessions and Presence](../concepts/sessions-and-presence.md) is the concept; this page is the Unreal surface, every callable of it.
 
 :::warning[UCrowdyGameSession is not a Game Model session.]

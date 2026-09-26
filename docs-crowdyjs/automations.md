@@ -5,6 +5,14 @@ title: Automations (NPCs)
 
 # Automations (autonomous processes / NPCs)
 
+:::caution Legacy engine
+This page describes automations, part of the game API's legacy engines. On the **dev**
+environment those engines are switched off (their calls answer `ENGINE_SWITCHED_OFF`) and
+[ck-exec](/exec/intro) replaces them: [from the legacy
+engines](/exec/from-the-legacy-engines#timers-and-triggers) maps each feature here to its
+ck-exec equivalent. The page is removed once ck-exec reaches every environment.
+:::
+
 [Game models](game-model) let you put your rules and state on the server, but a
 model function only runs when a client invokes it. **Automations** are
 server-driven processes that invoke your model functions *on their own* — on a

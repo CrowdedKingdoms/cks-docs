@@ -5,6 +5,14 @@ title: Best practices
 
 # Game API best practices
 
+:::caution Legacy engine
+This page describes practices for game models and compute modules, part of the game API's legacy
+engines. On the **dev** environment those engines are switched off (their calls answer
+`ENGINE_SWITCHED_OFF`) and [ck-exec](/exec/intro) replaces them: [from the legacy
+engines](/exec/from-the-legacy-engines) maps each feature here to its ck-exec equivalent. The
+page is removed once ck-exec reaches every environment.
+:::
+
 How to use the Game API so the server owns gameplay truth. This page is the
 contract between a game client (Unreal, CrowdyJS, CrowdyCPP, or a custom
 engine), **Game Models**, and **Compute**.

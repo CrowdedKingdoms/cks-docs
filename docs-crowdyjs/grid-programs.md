@@ -23,6 +23,10 @@ fill in the app and grid; `send` checks that each message **originates** in
 the grid and throws `GridScopeError` before any request if not. The server
 enforces the same rules.
 
+On the **dev** environment the legacy game-model and compute engines behind `model` and
+`compute` are switched off (their calls answer `ENGINE_SWITCHED_OFF`); code that runs on the
+server for a grid is a [ck-exec mod](/exec/mods) there.
+
 ## JS grid programs — the full SDK in a sandbox
 
 A grid program is player-authored JavaScript that runs in a network-less

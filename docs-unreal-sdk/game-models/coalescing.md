@@ -10,6 +10,13 @@ import TabItem from '@theme/TabItem';
 
 # Coalescing
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 Coalescing merges repeated applies of one effect to one target into a single server call, summing one numeric tuning parameter across a short window. It exists because the server admits a limited number of Game Model calls per player per app, about 120 per 10 seconds, and an autofire weapon or a held pour spends that allowance in seconds. It is off by default, it is authored on the effect asset, and it changes nothing about correctness when the effect's body is the right shape.
 
 ## When you touch this

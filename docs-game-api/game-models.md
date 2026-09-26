@@ -5,6 +5,14 @@ title: Game Models
 
 # Game Models
 
+:::caution Legacy engine
+This page describes game models, part of the game API's legacy engines. On the **dev**
+environment those engines are switched off (their calls answer `ENGINE_SWITCHED_OFF`) and
+[ck-exec](/exec/intro) replaces them: [from the legacy
+engines](/exec/from-the-legacy-engines#running-your-logic) maps each feature here to its ck-exec
+equivalent. The page is removed once ck-exec reaches every environment.
+:::
+
 Game Models let you put your game's **rules and state on the server**. Instead of
 every client agreeing on what happens, you describe your game once as data and
 the server owns the state, evaluates the logic, and records every change. It is

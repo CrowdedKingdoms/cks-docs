@@ -5,6 +5,14 @@ title: Game Model
 
 # Game Model
 
+:::caution Legacy engine
+This page describes the `gameModel` domain, part of the game API's legacy engines. On the
+**dev** environment those engines are switched off (their calls answer `ENGINE_SWITCHED_OFF`)
+and [ck-exec](/exec/intro) replaces them: [from the legacy
+engines](/exec/from-the-legacy-engines#calling-it-from-clients) maps each feature here to its
+ck-exec equivalent. The page is removed once ck-exec reaches every environment.
+:::
+
 `client.gameModel` is the SDK surface for [Game Models](/game-api/game-models) —
 server-authoritative containers, properties, and functions. It targets the Game
 API, so every call needs an **app-scoped token** for the target app — drive it

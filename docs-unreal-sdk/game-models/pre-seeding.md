@@ -10,6 +10,13 @@ import TabItem from '@theme/TabItem';
 
 # Pre-seeding Containers
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A level-placed object with a Game Model container binds a server row keyed from its identity. Without pre-seeding, the first client to reach that object creates the row; with it, the rows exist before anyone arrives. The editor scans the map into a manifest, and either Studio applies it at app scope or your game applies it at runtime into a session. Nothing about how a client binds changes; only who creates the row, and when.
 
 :::note[Since 2.14]

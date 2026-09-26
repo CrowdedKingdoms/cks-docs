@@ -69,6 +69,10 @@ were calibrated in the July 2026 hardening sweep; module-emitted bytes are a
 separate line item and are billed through the same monthly egress aggregate as
 every other byte your app sends.
 
+On the **dev** environment the legacy automations and compute modules are switched off, and an
+app's [ck-exec](/exec/intro) code is metered in the same compute units, minute by minute
+([usage and budgets](/exec/operations#usage-and-budgets)).
+
 Check your remaining free slots:
 
 ```graphql
@@ -238,7 +242,8 @@ connections for that `appId` with a reason-bearing error, so your client can
 prompt the studio to fund the wallet, raise a cap, or renew. Server-driven work
 pauses too: [autonomous processes](/game-api/autonomous-processes) and
 [compute modules](/game-api/compute-modules) are deactivated until the app is
-`active` again.
+`active` again. On the **dev** environment, where those are switched off, the app's
+[ck-exec](/exec/intro) code is paused the same way.
 
 ## Connecting clients
 

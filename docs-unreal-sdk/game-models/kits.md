@@ -10,6 +10,13 @@ import TabItem from '@theme/TabItem';
 
 # Game Kits
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A kit is a slice of Game Model schema, container types, attributes, policy-gated functions, and the automations that tick them, that an app deploys in one step instead of authoring by hand. Four ship as layer presets today: Combat, Living World, Leaderboards, and Guild. Inventory ships as schema only, with no runtime nodes yet. After a deploy your game calls the kit's functions through ordinary latent nodes, and everything you already know about containers, effects, and pings applies to what the kit created.
 
 ## When you touch this

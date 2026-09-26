@@ -113,11 +113,11 @@ worked example, see [port a compute module](port-a-compute-module).
 | Player client modules (browser WASM) | Unchanged; they can call hubs through the gateway. On dev, a new CLIENT-target deploy is refused with `ENGINE_SWITCHED_OFF` until client builds move to the ck-exec builder; client modules already built keep loading | [Mods](mods) |
 | Player models and player automations | A mod's own state and timers, and its grid's world events | [Mods](mods) |
 | `publishPlayerCode`, `acquirePlayerCode`, `installPlayerCode` | `execModPublish`, `execModListings`, `execModInstall` (no payments yet) | [Mods](mods) |
-| Crowdy Studio deploying a SERVER target | The SERVER target as a mod (`serverEngine: 'ck-exec'`) | [Mods](mods) |
+| Crowdy Studio deploying a SERVER target | The SERVER target as a mod (`serverEngine: 'ck-exec'`, the default from CrowdyJS 17.13.0) | [Mods](mods) |
 
 ## Tools
 
 | Legacy | ck-exec |
 |---|---|
-| CK Studio's Compute and Automations tabs | CK Studio's ck-exec tab on the app page: status, node types, versions and rollback, instances, logs |
+| CK Studio's Compute and Automations tabs | CK Studio's ck-exec tab on the app page: status, node types, versions and rollback, instances, calls per endpoint, logs (with a flow filter) |
 | The Unreal SDK's game-model authoring | Not ported yet; the Unreal SDK moves to ck-exec in a later release |
