@@ -93,7 +93,7 @@ from the cache.
 - `Cargo.toml` holds `[package]` (`name`, `version`, `edition`, `description`, `publish`,
   `license`, `authors`, `rust-version`), `[lib]` with `crate-type = ["cdylib"]`, and
   `[dependencies]` on `ckx-sdk`, `serde` and `serde_json` only. Each key is on one line, and there
-  is no workspace inheritance. The platform points `ckx-sdk` at its own copy (0.5.0 today) and
+  is no workspace inheritance. The platform points `ckx-sdk` at its own copy (0.6.0 today) and
   adds the release profile.
 
   ```toml
@@ -106,7 +106,7 @@ from the cache.
   crate-type = ["cdylib"]
 
   [dependencies]
-  ckx-sdk = "0.5.0"
+  ckx-sdk = "0.6.0"
   serde = { version = "1", features = ["derive"] }
   ```
 
