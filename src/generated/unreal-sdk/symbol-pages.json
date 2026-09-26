@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-09-26T13:28:16Z",
+  "generated_from": "2026-09-26T17:43:01Z",
   "sdk_version": "2.17.0",
   "route_base": "/unreal-sdk",
   "pages": {
@@ -330,7 +330,7 @@
     "UCrowdyEventRouter": "runtime/recipients-and-routing",
     "UCrowdyGameModelSubsystem": "guides/whats-changed",
     "UCrowdyGameModelSubsystem::OnCrowdySignal": "game-models/change-pings-and-pull",
-    "UCrowdyGameModelSubsystem::OnDataContainerChanged": "game-models/change-pings-and-pull",
+    "UCrowdyGameModelSubsystem::OnDataContainerChanged": "guides/whats-changed",
     "UCrowdyGameModelSubsystem::OnModelAttributeChanged": "game-models/change-pings-and-pull",
     "UCrowdyGameModelSubsystem::OnSessionChanged": "game-models/change-pings-and-pull",
     "UCrowdyGameSession": "services/authentication",

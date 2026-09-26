@@ -1773,6 +1773,11 @@
     "note": "Slot and pending-activation bookkeeping inside the actor manager."
   },
   {
+    "id": "FAppearedIds",
+    "reason": "internal",
+    "note": "Tracker internals: the class and payload type id recorded when an entity first appears."
+  },
+  {
     "id": "FPendingReliableSend",
     "reason": "internal",
     "note": "The connect-time channel bootstrap and reliable-RPC plumbing the SDK runs for itself; the game-facing pieces (AreReliableChannelsReady, GetSessionChannelId, RegisterReliableRpcChannel) are on channels."
@@ -2149,6 +2154,11 @@
   },
   {
     "id": "UCrowdyActorTracker::GetClassIDForUUID",
+    "reason": "internal",
+    "note": "Tracker internals the actor manager and the delivery path call."
+  },
+  {
+    "id": "UCrowdyActorTracker::GetPayloadTypeIDForUUID",
     "reason": "internal",
     "note": "Tracker internals the actor manager and the delivery path call."
   },

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-26T13:28:16Z",
+  "generated": "2026-09-26T17:43:01Z",
   "sdk_version": "2.17.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
@@ -17761,26 +17761,6 @@
       "id": "EKind",
       "name": "EKind",
       "kind": "enum",
-      "scope": "FCrowdySubscriptionKey",
-      "reflected": "",
-      "blueprint_type": false,
-      "template": false,
-      "bases": [],
-      "fields": [],
-      "enumerators": [
-        "Invalid",
-        "Payload",
-        "PayloadWildcard",
-        "Opcode"
-      ],
-      "module": "CrowdyNet",
-      "header": "CrowdyNet/Public/Internal/FCrowdyServiceRegistry.h",
-      "editor_module": false
-    },
-    {
-      "id": "EKind",
-      "name": "EKind",
-      "kind": "enum",
       "scope": "FCrowdyTrustedAuthority",
       "reflected": "",
       "blueprint_type": false,
@@ -17796,6 +17776,26 @@
       ],
       "module": "CrowdyReplication",
       "header": "CrowdyReplication/Public/Replication/GameModel/Kit/CrowdyKitPolicy.h",
+      "editor_module": false
+    },
+    {
+      "id": "EKind",
+      "name": "EKind",
+      "kind": "enum",
+      "scope": "FCrowdySubscriptionKey",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [],
+      "enumerators": [
+        "Invalid",
+        "Payload",
+        "PayloadWildcard",
+        "Opcode"
+      ],
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Internal/FCrowdyServiceRegistry.h",
       "editor_module": false
     },
     {
@@ -18633,6 +18633,34 @@
       "enumerators": [],
       "module": "CKSharedTypes",
       "header": "CKSharedTypes/Public/Shared/Types/Structures/Actors/FActorUpdateStruct.h",
+      "editor_module": false
+    },
+    {
+      "id": "FAppearedIds",
+      "name": "FAppearedIds",
+      "kind": "struct",
+      "scope": "UCrowdyActorTracker",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "ClassID",
+          "type": "FCrowdyClassID",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "PayloadTypeID",
+          "type": "FCrowdyTypeID",
+          "static": false,
+          "uproperty": false
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/Subsystems/CrowdyActorTracker.h",
       "editor_module": false
     },
     {
@@ -19689,6 +19717,12 @@
         {
           "name": "ClassID",
           "type": "int64",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "PayloadTypeID",
+          "type": "int32",
           "static": false,
           "uproperty": true
         }
@@ -27714,6 +27748,12 @@
           "type": "uint64",
           "static": false,
           "uproperty": false
+        },
+        {
+          "name": "Attempts",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
         }
       ],
       "enumerators": [],
@@ -32043,6 +32083,12 @@
         {
           "name": "InitialState",
           "type": "FInstancedStruct",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "PayloadTypeID",
+          "type": "FCrowdyTypeID",
           "static": false,
           "uproperty": false
         },
@@ -62578,6 +62624,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyActorTracker::GetPayloadTypeIDForUUID",
+      "owner": "UCrowdyActorTracker",
+      "owner_kind": "class",
+      "name": "GetPayloadTypeIDForUUID",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "FCrowdyTypeID GetPayloadTypeIDForUUID(const FGuid& UUID) const",
+      "return_type": "FCrowdyTypeID",
+      "params": "const FGuid& UUID",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/Subsystems/CrowdyActorTracker.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyActorTracker::HandleActorLeftDelivery",
       "owner": "UCrowdyActorTracker",
       "owner_kind": "class",
@@ -62610,6 +62679,29 @@
       "signature": "void MarkActorTrackedForTest(const FGuid& UUID)",
       "return_type": "void",
       "params": "const FGuid& UUID",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/Subsystems/CrowdyActorTracker.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyActorTracker::RecordAppearancesForTest",
+      "owner": "UCrowdyActorTracker",
+      "owner_kind": "class",
+      "name": "RecordAppearancesForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void RecordAppearancesForTest(const TArray<FCrowdyActorUpdate>& Appeared)",
+      "return_type": "void",
+      "params": "const TArray<FCrowdyActorUpdate>& Appeared",
       "access": "public",
       "static": false,
       "virtual": false,
