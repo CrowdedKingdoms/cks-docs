@@ -38,8 +38,11 @@ The fallback arrived in 2.15.0. On 2.14.0 and earlier an empty Backend Config, o
 |---|---|---|
 | `ReplicationPolicyClass` | none | Your `UCrowdyRepApplicationPolicy` subclass. Unset means `UCrowdyTransformRepPolicy`, which moves the proxy from `FCrowdyActorState`; set it when your executor sends more than the transform, and move the proxy yourself in it. |
 | `PoolPolicyClass` | none, optional | A `UCrowdyActorPoolPolicy` subclass. Unset means the concrete base, which already hides pooled actors, shows them on activation, and strips proxy movement. |
-| `DefaultPoolSizePerClass` | 8 | Pools are created lazily per entity class at this size. |
-| `PerClassPoolOverrides` | empty | A per-class pool size; a class listed here is also pre-warmed at map load. |
+| `DefaultPoolSizePerClass` | 8 | Pools are created lazily per entity class with this many actors made up front. |
+| `PerClassPoolOverrides` | empty | A per-class up-front size; a class listed here is also pre-warmed at map load. |
+| `MaxPoolSizePerClass` | 256 | How far a class's pool may grow. When every actor is in use, the pool spawns one more, up to this cap (never below the up-front size). |
+
+A pool that is full grows by one actor at a time, spawned during play with collision off until it is activated. At the cap, a new entity of that class waits: it is activated as soon as another entity of the class leaves, or, if its spawn event already made an actor for it, that actor is kept and drawn instead of being replaced. Nothing is dropped. The cap is there so a flood of made-up entity ids from a misbehaving peer cannot make your client spawn without limit; raise it if you legitimately expect more than 256 live remote entities of one class.
 
 :::caution[A custom executor needs a matching policy. The default policy reads FCrowdyActorState and refuses anything else.]
 `UCrowdyTransformRepPolicy` skips an update whose struct is not `FCrowdyActorState`, so a Dynamic entity whose executor sends its own struct stands still until its profile names a policy that reads it. `UCrowdyRepApplicationPolicy` has two pure virtuals and requires a subclass; `UCrowdyActorPoolPolicy` ships full bodies and is meant to be instantiated as is.
@@ -88,7 +91,7 @@ The reason a proxy built on it does not jitter is the render time itself: the ac
 
 `UCrowdyActorPoolPolicy` decides what a pooled actor does at three moments, each a `BlueprintNativeEvent` a Blueprint subclass can implement without C++: `OnActorPooled(Actor)` once per actor right after it is spawned into the pool, `OnActorActivated(Actor, InitialState)` when it is checked out (its `InitialState` is empty in the shipped pool, and the identity lands on the component right after it returns), and `OnActorDeactivated(Actor)` when it goes back. The base hides and shows the actor and disables proxy movement; subclass only to add per-actor behaviour at those moments.
 
-Pooled actors are genuinely spawned (`SpawnActorDeferred` and `FinishSpawning`), so their constructors and Blueprint-added components run. Before `BeginPlay` the pool marks any entity component on them dormant, so a pre-warmed actor registers no entity and no listener, Game Model containers included, acts on an actor that stands for nothing. `UCrowdyActorPoolSubsystem::RegisterPool(FCrowdyPoolConfig)` (`ActorClass`, `PoolPolicyClass`, `PoolSize`) is what the backend calls to create a pool, a no-op for a class that already has one; `AcquireActor` and `ReleaseActor` check actors out and in. `crowdy.pool.trace 1` logs spawn, release, and reuse.
+Pooled actors are genuinely spawned (`SpawnActorDeferred` and `FinishSpawning`), so their constructors and Blueprint-added components run. Before `BeginPlay` the pool marks any entity component on them dormant, so a pre-warmed actor registers no entity and no listener, Game Model containers included, acts on an actor that stands for nothing. `UCrowdyActorPoolSubsystem::RegisterPool(FCrowdyPoolConfig)` (`ActorClass`, `PoolPolicyClass`, `PoolSize`, `MaxPoolSize`) is what the backend calls to create a pool, a no-op for a class that already has one, and `HasPool(Class)` says whether one exists; `AcquireActor` checks an actor out, growing the pool up to `MaxPoolSize` when every actor is in use, and `ReleaseActor` checks it back in. `crowdy.pool.trace 1` logs spawn, release, reuse, and growth.
 
 ## What a pooled proxy does and does not do
 
@@ -108,7 +111,7 @@ The pool is fed only by inbound network state, so the owner ends up with the loc
 
 ## Writing a backend
 
-Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendConfig` subclass carrying whatever your backend needs (an instanced mesh, a pool size). Four overrides are required and two optional:
+Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendConfig` subclass carrying whatever your backend needs (an instanced mesh, a pool size). Four overrides are required and three optional:
 
 | Override | Required | Contract |
 |---|---|---|
@@ -118,6 +121,7 @@ Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendCo
 | `ApplyInterpolation(SlotId, RenderTimeMs)` | yes | Apply the interpolated state; `RenderTimeMs` is already offset by the interpolation delay. |
 | `InitializeBackend(World, Config)` | no | Acquire subsystems, read the config. Return false, after logging the reason and the remedy, when you cannot draw with what you were given; the manager refuses you rather than installing you. |
 | `DeinitializeBackend()` | no | Release what you held. |
+| `IsInstanceActive(SlotId)` | no | Whether `SlotId` holds something drawn. Return false when `ActivateInstance` could not acquire a resource (a full pool), and the actor manager calls `ActivateInstance` again once capacity may have freed or the entity registers. The default, true, never retries. |
 
 `DrawsEntitiesAsCrowdRows()` is one more, for a backend that represents entities without spawning an actor of the entity's class; the editor reads it off the class default object to decide whether to show authoring surfaces that only make sense on that representation. The default is false. A Mass Entity based backend exists as a separate, opt-in plugin and is the only current override; it is not part of the core SDK and is out of scope for this guide.
 
@@ -133,7 +137,7 @@ The actor manager is already the single caller of `ActivateInstance` and `Deacti
 - A policy built on `TInterpolatedField` is the smooth choice for anything that moves. Sample it at `RenderTimeMs`, never at the newest sample: the delay is what hides the network.
 - `bUseCrowdyActorTracker` off on the profile means no tracker, no manager, and no backend at all.
 - A pooled proxy's spawn-time look comes from class defaults or the state struct, never the spawn payload.
-- Pool exhaustion is a warning per entity, `Pool exhausted for <class>`, and the entity is not drawn until a slot frees. Raise `DefaultPoolSizePerClass` or add a `PerClassPoolOverrides` row.
+- A pool at its cap warns once per class, naming the class and `MaxPoolSizePerClass`; each entity it could not draw is a `crowdy.pool.trace` line, not a warning, since it is retried. Raise `MaxPoolSizePerClass` if you see the warning. On 2.16.0 and earlier, a pool never grew past `DefaultPoolSizePerClass` (8), every entity past that was dropped with a warning and never retried, and its spawn-event actor was destroyed first; see [What's Changed](../guides/whats-changed.md#2026-09-26-sdk-v2170).
 - A class that arrives over the wire before it is loaded cannot be drawn; see Preloaded Entity Classes on [Entities and spawning](./entities-and-spawning.md).
 
 ## Related

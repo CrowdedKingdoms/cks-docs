@@ -36,6 +36,12 @@ They log on every message encode and decode. Leave them off unless you are activ
 serialization.
 :::
 
+:::caution[`crowdy.net.trace` logs every routed send and every received spatial message.]
+Since 2.17.0 it also prints one line per spatial message received ("Received opcode ... for actor ... in chunk
+...") and the transport's totals (datagrams received, verification failures, drops) about once a second. That
+is what tells "the server never sent it" apart from "the client dropped it"; it is too chatty to leave on.
+:::
+
 :::note[`crowdy.serialize.scopes` and `crowdy.state.scopes` are nested CPU trace scopes.]
 Each nests inside a wider enclosing scope, so turning one on shifts the timing you read for that
 enclosing scope too. If you are taking a performance reading, say whether the flag was on.

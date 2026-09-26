@@ -5,7 +5,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/intro
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, server-owned gameplay state, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.14**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.17**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
 
 :::note[This guide is written for Unreal Engine 5.8 and a C++ project.]
 Gameplay can be driven entirely from Blueprint, but the plugin itself compiles as C++, so your project needs a C++ target. See [Installation](./installation.md).
@@ -67,9 +67,9 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 ## Step 1: Get the release
 
-Download the `v2.16.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+Download the `v2.17.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
 
-:::note[The release you install must match the version this guide describes (2.16).]
+:::note[The release you install must match the version this guide describes (2.17).]
 :::
 
 ## Step 2: Place the plugin at `Plugins/CrowdySDK`
@@ -3832,8 +3832,11 @@ The fallback arrived in 2.15.0. On 2.14.0 and earlier an empty Backend Config, o
 |---|---|---|
 | `ReplicationPolicyClass` | none | Your `UCrowdyRepApplicationPolicy` subclass. Unset means `UCrowdyTransformRepPolicy`, which moves the proxy from `FCrowdyActorState`; set it when your executor sends more than the transform, and move the proxy yourself in it. |
 | `PoolPolicyClass` | none, optional | A `UCrowdyActorPoolPolicy` subclass. Unset means the concrete base, which already hides pooled actors, shows them on activation, and strips proxy movement. |
-| `DefaultPoolSizePerClass` | 8 | Pools are created lazily per entity class at this size. |
-| `PerClassPoolOverrides` | empty | A per-class pool size; a class listed here is also pre-warmed at map load. |
+| `DefaultPoolSizePerClass` | 8 | Pools are created lazily per entity class with this many actors made up front. |
+| `PerClassPoolOverrides` | empty | A per-class up-front size; a class listed here is also pre-warmed at map load. |
+| `MaxPoolSizePerClass` | 256 | How far a class's pool may grow. When every actor is in use, the pool spawns one more, up to this cap (never below the up-front size). |
+
+A pool that is full grows by one actor at a time, spawned during play with collision off until it is activated. At the cap, a new entity of that class waits: it is activated as soon as another entity of the class leaves, or, if its spawn event already made an actor for it, that actor is kept and drawn instead of being replaced. Nothing is dropped. The cap is there so a flood of made-up entity ids from a misbehaving peer cannot make your client spawn without limit; raise it if you legitimately expect more than 256 live remote entities of one class.
 
 :::caution[A custom executor needs a matching policy. The default policy reads FCrowdyActorState and refuses anything else.]
 `UCrowdyTransformRepPolicy` skips an update whose struct is not `FCrowdyActorState`, so a Dynamic entity whose executor sends its own struct stands still until its profile names a policy that reads it. `UCrowdyRepApplicationPolicy` has two pure virtuals and requires a subclass; `UCrowdyActorPoolPolicy` ships full bodies and is meant to be instantiated as is.
@@ -3968,7 +3971,7 @@ void ULanternRepPolicy::OnInstanceDeactivated(int32 SlotId)
 
 `UCrowdyActorPoolPolicy` decides what a pooled actor does at three moments, each a `BlueprintNativeEvent` a Blueprint subclass can implement without C++: `OnActorPooled(Actor)` once per actor right after it is spawned into the pool, `OnActorActivated(Actor, InitialState)` when it is checked out (its `InitialState` is empty in the shipped pool, and the identity lands on the component right after it returns), and `OnActorDeactivated(Actor)` when it goes back. The base hides and shows the actor and disables proxy movement; subclass only to add per-actor behaviour at those moments.
 
-Pooled actors are genuinely spawned (`SpawnActorDeferred` and `FinishSpawning`), so their constructors and Blueprint-added components run. Before `BeginPlay` the pool marks any entity component on them dormant, so a pre-warmed actor registers no entity and no listener, Game Model containers included, acts on an actor that stands for nothing. `UCrowdyActorPoolSubsystem::RegisterPool(FCrowdyPoolConfig)` (`ActorClass`, `PoolPolicyClass`, `PoolSize`) is what the backend calls to create a pool, a no-op for a class that already has one; `AcquireActor` and `ReleaseActor` check actors out and in. `crowdy.pool.trace 1` logs spawn, release, and reuse.
+Pooled actors are genuinely spawned (`SpawnActorDeferred` and `FinishSpawning`), so their constructors and Blueprint-added components run. Before `BeginPlay` the pool marks any entity component on them dormant, so a pre-warmed actor registers no entity and no listener, Game Model containers included, acts on an actor that stands for nothing. `UCrowdyActorPoolSubsystem::RegisterPool(FCrowdyPoolConfig)` (`ActorClass`, `PoolPolicyClass`, `PoolSize`, `MaxPoolSize`) is what the backend calls to create a pool, a no-op for a class that already has one, and `HasPool(Class)` says whether one exists; `AcquireActor` checks an actor out, growing the pool up to `MaxPoolSize` when every actor is in use, and `ReleaseActor` checks it back in. `crowdy.pool.trace 1` logs spawn, release, reuse, and growth.
 
 ## What a pooled proxy does and does not do
 
@@ -3988,7 +3991,7 @@ The pool is fed only by inbound network state, so the owner ends up with the loc
 
 ## Writing a backend
 
-Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendConfig` subclass carrying whatever your backend needs (an instanced mesh, a pool size). Four overrides are required and two optional:
+Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendConfig` subclass carrying whatever your backend needs (an instanced mesh, a pool size). Four overrides are required and three optional:
 
 | Override | Required | Contract |
 |---|---|---|
@@ -3998,6 +4001,7 @@ Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendCo
 | `ApplyInterpolation(SlotId, RenderTimeMs)` | yes | Apply the interpolated state; `RenderTimeMs` is already offset by the interpolation delay. |
 | `InitializeBackend(World, Config)` | no | Acquire subsystems, read the config. Return false, after logging the reason and the remedy, when you cannot draw with what you were given; the manager refuses you rather than installing you. |
 | `DeinitializeBackend()` | no | Release what you held. |
+| `IsInstanceActive(SlotId)` | no | Whether `SlotId` holds something drawn. Return false when `ActivateInstance` could not acquire a resource (a full pool), and the actor manager calls `ActivateInstance` again once capacity may have freed or the entity registers. The default, true, never retries. |
 
 `DrawsEntitiesAsCrowdRows()` is one more, for a backend that represents entities without spawning an actor of the entity's class; the editor reads it off the class default object to decide whether to show authoring surfaces that only make sense on that representation. The default is false. A Mass Entity based backend exists as a separate, opt-in plugin and is the only current override; it is not part of the core SDK and is out of scope for this guide.
 
@@ -4013,7 +4017,7 @@ The actor manager is already the single caller of `ActivateInstance` and `Deacti
 - A policy built on `TInterpolatedField` is the smooth choice for anything that moves. Sample it at `RenderTimeMs`, never at the newest sample: the delay is what hides the network.
 - `bUseCrowdyActorTracker` off on the profile means no tracker, no manager, and no backend at all.
 - A pooled proxy's spawn-time look comes from class defaults or the state struct, never the spawn payload.
-- Pool exhaustion is a warning per entity, `Pool exhausted for <class>`, and the entity is not drawn until a slot frees. Raise `DefaultPoolSizePerClass` or add a `PerClassPoolOverrides` row.
+- A pool at its cap warns once per class, naming the class and `MaxPoolSizePerClass`; each entity it could not draw is a `crowdy.pool.trace` line, not a warning, since it is retried. Raise `MaxPoolSizePerClass` if you see the warning. On 2.16.0 and earlier, a pool never grew past `DefaultPoolSizePerClass` (8), every entity past that was dropped with a warning and never retried, and its spawn-event actor was destroyed first; see [What's Changed](../guides/whats-changed.md#2026-09-26-sdk-v2170).
 - A class that arrives over the wire before it is loaded cannot be drawn; see Preloaded Entity Classes on [Entities and spawning](./entities-and-spawning.md).
 
 ## Related
@@ -8881,6 +8885,8 @@ section with the full fix and the trace CVar that confirms it.
 | [Nothing replicates on a map](#nothing-replicates-at-all) | A `MapProfiles` row or `DefaultProfile` names an asset that did not load, or networking is off on the resolved profile | Fix the asset path the warning names, or tick Enable Networking | `crowdy.entity.trace` |
 | [Actors do not appear at all](#rendering-backend-not-set) | The map profile's Backend Class was cleared | Assign a `UCrowdyRenderingBackend` subclass | `crowdy.entity.trace` |
 | [Entities register but are never drawn](#entities-register-but-are-never-drawn) | Backend Config empty, or its Replication Policy Class unset (2.14.0 and earlier) | Set a Crowdy Actor Pool Backend Config with a policy class | `crowdy.entity.trace` |
+| [Only some remote entities of a class appear](#only-some-remote-entities-of-a-class-appear) | The actor pool never grew past 8 per class (2.16.0 and earlier), or it is at `MaxPoolSizePerClass` | Update to 2.17.0; raise the cap if it warns | `crowdy.pool.trace` |
+| [A player who just joined is invisible until they move](#a-player-who-just-joined-is-invisible-until-they-move) | A known server issue: the actor's first update is refused and later ones are not relayed to other players | Nothing on the client fixes it yet; moving recovers | `crowdy.net.trace` |
 | [An RPC never runs on other clients](#events-are-not-received) | Missing entity component, unregistered entity, recipient/distance settings, or a registry gap | Work through the four sub-causes in order | `crowdy.rpc.trace` |
 | [Effects on a remote entity are refused](#a-remote-entity-cannot-be-targeted) | The entity's class was never loaded on this client | Add the class to Preloaded Entity Classes | `crowdy.entity.trace` |
 | [A CrowdyState property does nothing on a crowd-rendered actor](#a-crowdystate-property-does-nothing-on-the-crowd) | Mass-rendered entities need their own field registration | See the rendering backend's own docs | n/a |
@@ -8944,6 +8950,33 @@ this state no longer occurs. On an older plugin, set **Backend Config** on the m
 Actor Pool Backend Config asset and its **Replication Policy Class** to a `UCrowdyRepApplicationPolicy`
 subclass; see [Rendering backends](../runtime/rendering-backends.md) and
 [What's changed](./whats-changed.md).
+
+## Only some remote entities of a class appear
+
+Another client spawns twenty entities of one class and this client shows eight. On 2.16.0 and earlier the
+actor pool held `DefaultPoolSizePerClass` actors (8) per class and never grew: every entity past that logged
+`Pool exhausted for <class>` and was never drawn, and one whose spawn event had already made an actor lost
+that actor too. A Game Model container bound to such an entity never bound either.
+
+Fix: update to 2.17.0, where the pool grows on demand up to `MaxPoolSizePerClass` (256) and an entity it
+cannot draw yet is retried instead of dropped. If the log says a pool "is at its cap", raise
+`MaxPoolSizePerClass` on the map profile's Actor Pool Backend Config. `crowdy.pool.trace` logs each
+activation, each growth step, and each entity waiting at the cap; see
+[Rendering backends](../runtime/rendering-backends.md#configure-it).
+
+## A player who just joined is invisible until they move
+
+A player spawns and stands still, and the other players do not see them until they take a step; this can last
+a minute or more. The client is sending correctly. The replication server refuses each actor's first update
+with `UNAUTHORIZED` while it loads the player's permissions, which is expected and logged once as "The server
+rejected a send: code 7 (Unauthorized) ... ACTOR_UPDATE_REQUEST". Every later update is accepted, but the server
+does not relay that actor to the other players, nor theirs to it, until the actor moves. This is a server issue
+and has been reported.
+
+Confirm it with `crowdy.net.trace 1` on both clients: each client's log shows its own actor coming back to it
+(`Received opcode 130 for actor <its own id>`) every few seconds, and no line for the other player's actor until
+one of them moves. "Transport totals" should show no verification failures and no drops. Until the server is
+fixed, the actor becomes visible to everyone as soon as it moves.
 
 ## Events are not received
 
@@ -9402,10 +9435,14 @@ The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, ea
 
 ## When you come here
 
-You built against the SDK in July, you are updating the plugin to 2.15 or later, and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), and, in 2.15.0, the array delegates.
+You built against the SDK in July, you are updating the plugin to 2.15 or later (2.17.0 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), and, in 2.15.0, the array delegates.
 
-## Unreleased (after v2.16.0)
+## 2026-09-26 (SDK v2.17.0)
 
+- **The actor pool grows instead of dropping entities.** Up to and including 2.16.0 a class's pool held `DefaultPoolSizePerClass` actors (8) and never grew, so a client with more than eight live remote entities of one class drew only eight: the rest logged "Pool exhausted" and were never retried, and one whose spawn event had already made an actor lost that actor too, destroyed before the pool was asked. A Game Model container bound to such an entity never bound. Now a full pool spawns one more actor, up to the new `MaxPoolSizePerClass` on the Actor Pool Backend Config (default 256); the up-front sizes stay as they were. The spawn event's actor is only replaced once a pool actor is secured, and at the cap it is kept and drawn instead. An entity the pool cannot draw yet is retried when another of its class leaves or when its spawn event registers it, and the cap warns once per class instead of once per entity (each waiting entity is now a `crowdy.pool.trace` line). In the sandbox's two-client test, the observing client went from 0 of 20 respawned entities alive and bound to all 20. A custom rendering backend can take part in the retry by overriding the new optional `UCrowdyRenderingBackend::IsInstanceActive`. **What you do:** nothing; raise `MaxPoolSizePerClass` if a pool warns it is at its cap. See [Rendering backends](../runtime/rendering-backends.md#configure-it).
+- **A remote destroy no longer hands a still-live pool actor to another entity.** When a destroy event with a destroy delay arrived and the entity then left the tracker inside that delay, the pool actor went back to the pool, was given to the next entity, and was destroyed under it when the delay ran out, leaving that entity invisible until it timed out. The actor now stays with the destroy until it is gone, and an entity that keeps sending after its actor was destroyed is activated again. An actor's `EndPlay` also no longer removes the entity record of an actor that replaced it under the same id. **What you do:** nothing.
+- **More trace lines for entities that do not appear.** `crowdy.entity.trace` now logs the success path too: "Spawn dispatched", "Spawn received" and "Entity registered", each with the id, class and location. `crowdy.pool.trace` logs each activation, each pool growth step, and each entity waiting at the cap. `crowdy.net.trace` logs every spatial message received (opcode, actor, chunk) and the transport's totals, so "the server never sent it" can be told apart from "the client dropped it". **What you do:** nothing; see [Troubleshooting](./troubleshooting.md#only-some-remote-entities-of-a-class-appear).
+- **Known server issue: a player who just joined can stay invisible until they move.** The replication server refuses an actor's first update while it loads permissions, then accepts every later one but does not relay the actor to other players, or theirs to it, until it moves. The SDK sends what it should; this has been reported. See [Troubleshooting](./troubleshooting.md#a-player-who-just-joined-is-invisible-until-they-move).
 - **A string value that changes only in letter case is now a change.** Unreal compares strings without regard to case by default, and the Game Model used that comparison to decide whether a value changed, so `alice` becoming `Alice` was never applied: the member kept the old spelling and no `CrowdyOnRep` or change delegate fired. It now applies like any other change, on pulls, confirmed invokes, and free containers. The same fix reaches the editor: Crowdy Studio's sync preview now shows a value, policy, or effect expression that changed only in case (it used to report nothing and never send it), the **Apply Effect** node keeps a string input you set to a different case of its default instead of dropping it, including after the Blueprint is reloaded, and the effect script editor keeps an edit that only changes case. **What you do:** nothing; the first sync after updating may upload a function whose stored text differs from your project only in case, once.
 - **Your own invokes no longer pull back what they just wrote.** The notification the server sends for your own invoke used to be dropped once per container, so several quick invokes on one container pulled it again for all but the first. The SDK now expects one notification per invoke, counted when the request is sent, and drops that many, each expiring three seconds after its invoke; an invoke that fails or writes nothing gives its count back, and pulls instead if its notification was already dropped. Since a dropped notification could have been another client's write, a container that had one dropped is pulled once more within about three seconds. In the sandbox, a client invoking its own row ten times a second for a minute went from 118 pulls of that row to 29 (20 of them the three-second catch-up), with the watching client still pulling every change. `crowdy.gamemodel.stats` gains `SelfEchoMarksExpired` and `SelfEchoBackstopPulls`, and `SelfInvokesMarked` now counts invoke attempts sent (a retried invoke counts each attempt). **What you do:** nothing; another client's write to a container you are writing yourself can take up to about three seconds to show, where before it usually came with the next pull. See [Change pings and pull](../game-models/change-pings-and-pull.md#your-own-invokes-notification).
 - **Your copies of other players' entities bind from one paged list per type, and first pulls after a bind are merged.** A remote proxy used to read its owner's row by key, one call each and again on every retry while the owner had not created it yet; it now joins the same paged list shared entities use, under the session active when it is listed, and one the list does not find yet waits for the next list instead of calling on its own. A copy never creates its owner's row. A copy-only list reads at most one page per copy it looks for; a type with more rows than that (an app-wide per-player type) is marked, and its copies read one key at a time from then on. The first pull after any container binds now waits the usual tenth of a second, so entities binding together read their state in one bulk call, and every entity bound to that container receives it; an invoke you send while that pull waits keeps its value when the pull lands. In the sandbox's two-client test, the observing client bound the same 40 copies with 10 list calls instead of 140 keyed reads, and the spawning client read the state of its 200 new containers in 10 calls instead of 200. `crowdy.gamemodel.bulkresolve`'s help now names remote copies, and `crowdy.gamemodel.stats` gains `BulkResolveListPages`. **What you do:** nothing; a newly bound entity may show its defaults up to a tenth of a second longer than before. See [Pre-seeding](../game-models/pre-seeding.md#what-a-client-does-at-load) and [Change pings and pull](../game-models/change-pings-and-pull.md).
@@ -9690,6 +9727,12 @@ regardless of the setting.
 :::caution[`crowdy.serialize.trace` and `crowdy.serialize.scopes` are high frequency.]
 They log on every message encode and decode. Leave them off unless you are actively debugging
 serialization.
+:::
+
+:::caution[`crowdy.net.trace` logs every routed send and every received spatial message.]
+Since 2.17.0 it also prints one line per spatial message received ("Received opcode ... for actor ... in chunk
+...") and the transport's totals (datagrams received, verification failures, drops) about once a second. That
+is what tells "the server never sent it" apart from "the client dropped it"; it is too chatty to leave on.
 :::
 
 :::note[`crowdy.serialize.scopes` and `crowdy.state.scopes` are nested CPU trace scopes.]
