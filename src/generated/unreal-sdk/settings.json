@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-09-22T14:39:18Z",
-  "sdk_version": "2.14.0",
+  "generated_from": "2026-09-25T20:42:06Z",
+  "sdk_version": "2.16.0",
   "table": "settings",
   "columns": [
     {
