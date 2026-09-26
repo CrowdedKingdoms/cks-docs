@@ -44,7 +44,7 @@ Above the tabs, visible from every tab, sit three readiness pills (**App**, **Se
 **Preview changes** is a dry run. It compares every Server Owned attribute on your container classes and every Crowdy Effect asset against the server and reports what a sync would do. Nothing is written.
 
 :::note[Preview compares structurally, not as text.]
-A default value, a policy, or a magnitude is compared as canonical JSON: object keys sorted, numbers normalised, arrays kept in order. Reordering the same properties, reformatting a JSON default, or a whitespace change never shows as a change, and a preview that reports one is reporting a real difference. Do not expect a cosmetic edit to produce a delta, and do not expect it to hide one either.
+A default value, a policy, or a magnitude is compared as canonical JSON: object keys sorted, numbers normalised, arrays kept in order. Reordering the same properties, reformatting a JSON default, or a whitespace change never shows as a change, and a preview that reports one is reporting a real difference. A change of letter case in a value, a policy, or an effect expression (`"alice"` to `"Alice"`, `$Target` to `$target`) is a real difference and does show; a change of case alone in a description does not. Do not expect a cosmetic edit to produce a delta, and do not expect it to hide one either.
 :::
 
 **Sync to Server** writes: container types, property definitions, functions, automations, and triggers. It never deletes server state. If an effect needs the app's session channel, the sync creates it for you.
