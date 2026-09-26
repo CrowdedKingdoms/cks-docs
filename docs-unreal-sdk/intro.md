@@ -9,7 +9,7 @@ description: What the Crowdy Unreal SDK is, the two planes of state it is built 
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, server-owned gameplay state, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.14**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.17**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
 
 :::note[This guide is written for Unreal Engine 5.8 and a C++ project.]
 Gameplay can be driven entirely from Blueprint, but the plugin itself compiles as C++, so your project needs a C++ target. See [Installation](./installation.md).

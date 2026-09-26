@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-09-22T14:39:18Z",
-  "sdk_version": "2.14.0",
+  "generated_from": "2026-09-26T17:43:01Z",
+  "sdk_version": "2.17.0",
   "table": "delegates",
   "columns": [
     {
@@ -603,7 +603,7 @@
       "type": "FCrowdyDataContainerChanged",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/change-pings-and-pull",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": ""
     },

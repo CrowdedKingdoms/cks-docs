@@ -2,7 +2,7 @@
 slug: troubleshooting
 sidebar_position: 4
 title: Troubleshooting
-description: "A symptom-to-cause-to-fix table for the SDK's most common failures, then one section per row: a map profile that did not load, no rendering backend, entities tracked but never drawn, events that never arrive, an entity you cannot target, a CrowdyState property that does nothing on the crowd, IPv4 versus IPv6, a refused connection flooding the log, Game Model calls with no session, and a container that already has values."
+description: "A symptom-to-cause-to-fix table for the SDK's most common failures, then one section per row: a map profile that did not load, no rendering backend, entities tracked but never drawn, only some entities of a class appearing, a new player invisible until they move, events that never arrive, an entity you cannot target, a CrowdyState property that does nothing on the crowd, IPv4 versus IPv6, a refused connection flooding the log, Game Model calls with no session, and a container that already has values."
 ---
 
 # Troubleshooting
@@ -15,6 +15,8 @@ section with the full fix and the trace CVar that confirms it.
 | [Nothing replicates on a map](#nothing-replicates-at-all) | A `MapProfiles` row or `DefaultProfile` names an asset that did not load, or networking is off on the resolved profile | Fix the asset path the warning names, or tick Enable Networking | `crowdy.entity.trace` |
 | [Actors do not appear at all](#rendering-backend-not-set) | The map profile's Backend Class was cleared | Assign a `UCrowdyRenderingBackend` subclass | `crowdy.entity.trace` |
 | [Entities register but are never drawn](#entities-register-but-are-never-drawn) | Backend Config empty, or its Replication Policy Class unset (2.14.0 and earlier) | Set a Crowdy Actor Pool Backend Config with a policy class | `crowdy.entity.trace` |
+| [Only some remote entities of a class appear](#only-some-remote-entities-of-a-class-appear) | The actor pool never grew past 8 per class (2.16.0 and earlier), or it is at `MaxPoolSizePerClass` | Update to 2.17.0; raise the cap if it warns | `crowdy.pool.trace` |
+| [A player who just joined is invisible until they move](#a-player-who-just-joined-is-invisible-until-they-move) | A known server issue: the actor's first update is refused and later ones are not relayed to other players | Nothing on the client fixes it yet; moving recovers | `crowdy.net.trace` |
 | [An RPC never runs on other clients](#events-are-not-received) | Missing entity component, unregistered entity, recipient/distance settings, or a registry gap | Work through the four sub-causes in order | `crowdy.rpc.trace` |
 | [Effects on a remote entity are refused](#a-remote-entity-cannot-be-targeted) | The entity's class was never loaded on this client | Add the class to Preloaded Entity Classes | `crowdy.entity.trace` |
 | [A CrowdyState property does nothing on a crowd-rendered actor](#a-crowdystate-property-does-nothing-on-the-crowd) | Mass-rendered entities need their own field registration | See the rendering backend's own docs | n/a |
@@ -78,6 +80,33 @@ this state no longer occurs. On an older plugin, set **Backend Config** on the m
 Actor Pool Backend Config asset and its **Replication Policy Class** to a `UCrowdyRepApplicationPolicy`
 subclass; see [Rendering backends](../runtime/rendering-backends.md) and
 [What's changed](./whats-changed.md).
+
+## Only some remote entities of a class appear
+
+Another client spawns twenty entities of one class and this client shows eight. On 2.16.0 and earlier the
+actor pool held `DefaultPoolSizePerClass` actors (8) per class and never grew: every entity past that logged
+`Pool exhausted for <class>` and was never drawn, and one whose spawn event had already made an actor lost
+that actor too. A Game Model container bound to such an entity never bound either.
+
+Fix: update to 2.17.0, where the pool grows on demand up to `MaxPoolSizePerClass` (256) and an entity it
+cannot draw yet is retried instead of dropped. If the log says a pool "is at its cap", raise
+`MaxPoolSizePerClass` on the map profile's Actor Pool Backend Config. `crowdy.pool.trace` logs each
+activation, each growth step, and each entity waiting at the cap; see
+[Rendering backends](../runtime/rendering-backends.md#configure-it).
+
+## A player who just joined is invisible until they move
+
+A player spawns and stands still, and the other players do not see them until they take a step; this can last
+a minute or more. The client is sending correctly. The replication server refuses each actor's first update
+with `UNAUTHORIZED` while it loads the player's permissions, which is expected and logged once as "The server
+rejected a send: code 7 (Unauthorized) ... ACTOR_UPDATE_REQUEST". Every later update is accepted, but the server
+does not relay that actor to the other players, nor theirs to it, until the actor moves. This is a server issue
+and has been reported.
+
+Confirm it with `crowdy.net.trace 1` on both clients: each client's log shows its own actor coming back to it
+(`Received opcode 130 for actor <its own id>`) every few seconds, and no line for the other player's actor until
+one of them moves. "Transport totals" should show no verification failures and no drops. Until the server is
+fixed, the actor becomes visible to everyone as soon as it moves.
 
 ## Events are not received
 

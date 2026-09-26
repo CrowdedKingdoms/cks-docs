@@ -98,7 +98,7 @@ Otherwise they bind app-scoped rows and the session is empty. The natural shape 
 A retryable failure is safe to apply again, and the rows already created stand, since the apply is not transactional across rows. A non-retryable one means the type's policy refused this caller: seed it from Studio, or give the caller the right. Retrying in a loop will not change the answer. `Unanswered` above zero with no failure means the world was torn down mid-apply; apply again next time.
 :::
 
-Pacing: at most 8 rows in flight, a row retried up to 4 times with a doubling wait, and the runner parks when the shared Game API allowance is nearly spent. Every row counts against that allowance: the SDK counts every Game Model call it makes, ensures and reads included, toward the same budget it uses to widen [coalescing](./coalescing.md) windows, so a large apply also delays a coalesced effect. A large apply mid-fight still competes with gameplay for round-trip time, so apply during a loading screen.
+Pacing: at most 8 rows in flight, a row retried up to 4 times with a doubling wait. A pre-seed row is created with an ensure, not an invoke, so it never spends the invoke allowance and is not paced by it; it also does not stretch a coalesced effect's [merge window](./coalescing.md), which only widens against invokes. A large apply mid-fight still competes with gameplay for round-trip time, so apply during a loading screen.
 
 The alternative for a session is to seed it at creation: Create Game Session's `SeedFromAppTypeNames` copies an app-scoped type's rows into the new session as it is created. That is a server request with two fields, described on [Sessions](./sessions.md) and [Seeding a session from the app](/game-api/game-models#seeding-a-session-from-the-app).
 
@@ -106,7 +106,9 @@ The alternative for a session is to seed it at creation: Create Game Session's `
 
 Every shared placed entity binds by bulk resolve: pending entities are grouped by type and session, each group reads the server's rows of that type page by page and binds every key it recognises, misses fall through to a single ensure (the only path that creates a row), and every container bound that way reads its state in one bulk call. A pre-seeded level reads `E ensured` = 0 in the trace.
 
-`crowdy.gamemodel.bulkresolve` (default 1) turns the list path off at 0 and restores one ensure per entity.
+Your copies of other players' entities (remote proxies) bind the same way, under the session active when they are listed. A copy never creates its owner's row, so one the list does not find yet makes no call of its own; it waits a moment and joins the next list, since its owner may not have created the row yet. Because the list pages oldest rows first, a copy-only group reads at most one page per copy it is looking for. A type whose rows run past that (an app-wide per-player type with a row for every player who ever played, say) is marked for the rest of the world's life, and its copies read their own rows one key at a time instead.
+
+`crowdy.gamemodel.bulkresolve` (default 1) turns the list path off at 0 and restores one ensure per shared entity and one keyed read per remote copy.
 
 :::caution[crowdy.gamemodel.bulkresolve 0 is a diagnostic switch, not a setting to ship.]
 If a bind never lands, the cause is almost always a type nobody may create, or a session activated after the level's entities already registered, not the bulk path.
