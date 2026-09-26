@@ -1793,11 +1793,13 @@ Above the tabs, visible from every tab, sit three readiness pills (**App**, **Se
 **Preview changes** is a dry run. It compares every Server Owned attribute on your container classes and every Crowdy Effect asset against the server and reports what a sync would do. Nothing is written.
 
 :::note[Preview compares structurally, not as text.]
-A default value, a policy, or a magnitude is compared as canonical JSON: object keys sorted, numbers normalised, arrays kept in order. Reordering the same properties, reformatting a JSON default, or a whitespace change never shows as a change, and a preview that reports one is reporting a real difference. A change of letter case in a value, a policy, or an effect expression (`"alice"` to `"Alice"`, `$Target` to `$target`) is a real difference and does show; a change of case alone in a description does not. Do not expect a cosmetic edit to produce a delta, and do not expect it to hide one either.
+A default value, a policy, or a magnitude is compared as canonical JSON: object keys sorted, numbers normalised, arrays kept in order. Reordering the same properties, reformatting a JSON default, or a whitespace change never shows as a change, and a preview that reports one is reporting a real difference. A change of letter case in a value, a policy, an effect expression, a description, or the attribute a function writes (`"alice"` to `"Alice"`, `$Target` to `$target`) is a real difference and does show, since the server stores all of them as written. Do not expect a cosmetic edit to produce a delta, and do not expect it to hide one either.
 :::
 
 :::warning[Two server properties that differ only in case are flagged, not merged.]
 The SDK lowercases every key it sends, so it never creates two properties on one container type whose names differ only in case. A console or API edit outside the SDK can, though: `hp` and `HP` on the same type. When Preview changes finds a pair like that, it lists a warning naming both instead of silently treating them as one property. A client reads a case-only pair as a single key, and whichever one the response happens to parse last wins, which is not something you control from the project. Rename or delete one of the two on the Models tab.
+
+A single server property spelled differently from the key your code declares (`HP` on the server, `hp` in the project) is flagged the same way. Functions the sync writes use the declared spelling, and the server keeps the two apart, so they would write a key the type does not declare while `HP` never changes. Rename it on the Models tab to the declared spelling.
 :::
 
 **Sync to Server** writes: container types, property definitions, functions, automations, and triggers. It never deletes server state. If an effect needs the app's session channel, the sync creates it for you.
@@ -3842,6 +3844,8 @@ The fallback arrived in 2.15.0. On 2.14.0 and earlier an empty Backend Config, o
 
 A pool that is full grows by one actor at a time, spawned during play with collision off until it is activated. At the cap, a new entity of that class waits: it is activated as soon as another entity of the class leaves, or, if its spawn event already made an actor for it, that actor is kept and drawn instead of being replaced. Nothing is dropped. The cap is there so a flood of made-up entity ids from a misbehaving peer cannot make your client spawn without limit; raise it if you legitimately expect more than 256 live remote entities of one class.
 
+A pool keeps every actor it grew to for the rest of the map. It does not shrink when the crowd leaves, so the next crowd of that size costs no spawns; budget memory for as many actors per class as the largest crowd you expect, up to the cap.
+
 :::caution[A custom executor needs a matching policy. The default policy reads FCrowdyActorState and refuses anything else.]
 `UCrowdyTransformRepPolicy` skips an update whose struct is not `FCrowdyActorState`, so a Dynamic entity whose executor sends its own struct stands still until its profile names a policy that reads it. `UCrowdyRepApplicationPolicy` has two pure virtuals and requires a subclass; `UCrowdyActorPoolPolicy` ships full bodies and is meant to be instantiated as is.
 :::
@@ -5555,7 +5559,7 @@ Three entry points, all in category **Crowdy SDK, Game Model, Advanced**:
 `Succeeded` fires only on a committed call: it reached the server and passed the function's rules. A transport failure and a server-side rollback both route to `Failed`, still carrying `bSuccess` and `ErrorMessage`, so a refused rule is distinguishable from a lost packet without `Succeeded` ever firing on a rejected write.
 
 :::warning[`ErrorMessage` on `Failed` is a player-safe sentence, not the require leaf.]
-A policy refusal arrives as `Failed` with `ErrorMessage` overwritten to **You are not allowed to do that.** The leaf the policy actually failed — owner, host, participant, a condition — is not on that pin. The Unreal outcome is `(bSuccess, ReturnValueJson, ErrorMessage)`; it does not carry `fault.code`. Read the leaf from `gameModelEvents`, Studio's Advanced event log, or `crowdy.gamemodel.trace`. Do not treat the sentence as the leaf name. [Error codes](/overview/error-codes).
+A policy refusal arrives as `Failed` with `ErrorMessage` overwritten to **You are not allowed to do that.** The leaf the policy actually failed (owner, host, participant, a condition) is not on that pin. The Unreal outcome is `(bSuccess, ReturnValueJson, ErrorMessage)`; it does not carry `fault.code`. Read the leaf from `gameModelEvents`, Studio's Advanced event log, or `crowdy.gamemodel.trace`. Do not treat the sentence as the leaf name. [Error codes](/overview/error-codes).
 :::
 
 <Tabs groupId="lang">
@@ -9449,6 +9453,7 @@ You built against the SDK in July, you are updating the plugin to 2.15 or later 
 - **Actor updates carry their payload type id.** `FCrowdyActorUpdate` gains `PayloadTypeID`, the payload type id the sender's state blob led with, kept even when no struct is registered for it on this client. The stranded and evicted pending-activation warnings, for an entity waiting on a spawn event that never resolves its class, now print that id when the state could not be decoded instead of saying the payload cannot be named. **What you do:** nothing; it is diagnostic. See [Entities and spawning](../runtime/entities-and-spawning.md).
 - **The CrowdySDK module no longer lists HTTP as a public dependency.** It never used it. A game module that only picked up Unreal's HTTP module because it came in through `CrowdySDK`'s public dependencies now needs `"HTTP"` in its own `Build.cs`. Separately, the `CrowdyCppBridge` module's build no longer prints a precompiled-header warning or the two `CS0618` obsolete-property warnings. **What you do:** add `"HTTP"` to your module's dependency list if your code calls it and relied on this. See [Installation](../installation.md#step-4-add-the-module-dependencies).
 - **Test-only accessors on `FCrowdyCppClient` are compiled only with automation tests.** `MakeForTest`, `GetLastTestRequest`, `GetLastTestRequestBody`, `SetTestStampsHandOff`, `SetTestResponseScript`, `SetTestOnRequest`, and the `Test*WebSocket*` helpers, and `FCrowdyCppLoopback::SetTimeForTests` / `ClearTimeForTests`, now exist only when `WITH_DEV_AUTOMATION_TESTS` is set, never in Shipping. **What you do:** guard any code that calls them behind the same `WITH_DEV_AUTOMATION_TESTS` check.
+- **Studio's schema sync also catches a server key spelled differently from yours, and case-only edits now sync.** A server property whose key matches a declared one except in case (`HP` against your `hp`) is now a warning in Preview changes: functions write the declared spelling, which the server keeps apart. A description, a parameter description, or the attribute a function writes that changed only in letter case now shows as a change and is sent; before, it was read as unchanged and never reached the server. **What you do:** rename a flagged property on the Models tab; expect a one-time update for any description you had edited only in case. See [Game Models Authoring](../studio/game-models-authoring.md#the-reconcile-strip).- **Updates for actors not yet on screen wait in a bounded queue.** They used to queue without limit while the worker threads that place them were stalled. Past `crowdy.replication.tracker.maxqueuedupdates` (default 8192), a further update is dropped, counted, and reported in a warning at most once a second; the actor appears on a later update. A working client never reaches it. **What you do:** nothing; if you see the warning, the worker pool is not keeping up. See [Console variables](../reference/console-cvars.md#behavior-switches).
 
 ## 2026-09-26 (SDK v2.17.0)
 
@@ -9758,7 +9763,7 @@ logging around Studio calls.
 
 ## Behavior switches
 
-These change what the SDK does rather than what it logs. None of the 13 exist only in the editor.
+These change what the SDK does rather than what it logs. None of the 14 exist only in the editor.
 
 <SurfaceTable
   table="cvars"
@@ -9768,12 +9773,13 @@ These change what the SDK does rather than what it logs. None of the 13 exist on
     "crowdy.net.receive.maxdrainms": "How many milliseconds of one frame may be spent delivering inbound messages. Raise the message count first. Default 4.",
     "crowdy.net.send.bundle": "Pack one network pass's outbound messages into one datagram. Needs a replication server of v0.27.0 or later; against an older one every bundled message is dropped together. Default 1, read when a connection opens.",
     "crowdy.net.recv.signedbundles": "Tell the replication server this client reads signed inbound bundles, so notifications arrive with one signature per datagram instead of one per member. A server older than v0.30.0 ignores it. Default 1, read when a connection opens.",
-    "crowdy.replication.tracker.maxgatheredupdates": "How many actor updates for already-tracked actors may be gathered before the backlog is discarded; reached only when the world tick is not consuming them. Default 8192."
+    "crowdy.replication.tracker.maxgatheredupdates": "How many actor updates for already-tracked actors may be gathered before the backlog is discarded; reached only when the world tick is not consuming them. Default 8192.",
+    "crowdy.replication.tracker.maxqueuedupdates": "How many updates for actors not yet on screen may wait for a worker thread before further ones are dropped, counted, and reported once a second; reached only when the worker pool is not draining them. A dropped actor appears on a later update. Default 8192."
   }}
   notesLabel="Where the Help cell is empty"
 />
 
-The notes map above stands in for these five rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
+The notes map above stands in for these six rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
 
 :::warning[Turn `crowdy.net.http2` off if you ship, or collect logs from, a build with logging enabled.]
 On by default, it asks for HTTP/2 on the SDK's own requests (falling back to HTTP/1.1 when the server does not offer it); the game's other HTTP traffic and the engine's `http.CurlAllowHTTP2` are untouched. With HTTP/2, when a request fails at the network level (not a cancel or a timeout), the curl diagnostics the engine logs at `Warning` can include the request headers, bearer token included. A default Shipping build compiles logging out, so most projects never see this; if yours ships or collects logs from a build with logging enabled, set `crowdy.net.http2 0`. See [Change pings and pull](../game-models/change-pings-and-pull.md#when-a-change-does-not-show-up) for what it does to request timing.

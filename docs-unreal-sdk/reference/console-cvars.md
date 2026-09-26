@@ -52,7 +52,7 @@ logging around Studio calls.
 
 ## Behavior switches
 
-These change what the SDK does rather than what it logs. None of the 13 exist only in the editor.
+These change what the SDK does rather than what it logs. None of the 14 exist only in the editor.
 
 <SurfaceTable
   table="cvars"
@@ -62,12 +62,13 @@ These change what the SDK does rather than what it logs. None of the 13 exist on
     "crowdy.net.receive.maxdrainms": "How many milliseconds of one frame may be spent delivering inbound messages. Raise the message count first. Default 4.",
     "crowdy.net.send.bundle": "Pack one network pass's outbound messages into one datagram. Needs a replication server of v0.27.0 or later; against an older one every bundled message is dropped together. Default 1, read when a connection opens.",
     "crowdy.net.recv.signedbundles": "Tell the replication server this client reads signed inbound bundles, so notifications arrive with one signature per datagram instead of one per member. A server older than v0.30.0 ignores it. Default 1, read when a connection opens.",
-    "crowdy.replication.tracker.maxgatheredupdates": "How many actor updates for already-tracked actors may be gathered before the backlog is discarded; reached only when the world tick is not consuming them. Default 8192."
+    "crowdy.replication.tracker.maxgatheredupdates": "How many actor updates for already-tracked actors may be gathered before the backlog is discarded; reached only when the world tick is not consuming them. Default 8192.",
+    "crowdy.replication.tracker.maxqueuedupdates": "How many updates for actors not yet on screen may wait for a worker thread before further ones are dropped, counted, and reported once a second; reached only when the worker pool is not draining them. A dropped actor appears on a later update. Default 8192."
   }}
   notesLabel="Where the Help cell is empty"
 />
 
-The notes map above stands in for these five rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
+The notes map above stands in for these six rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
 
 :::warning[Turn `crowdy.net.http2` off if you ship, or collect logs from, a build with logging enabled.]
 On by default, it asks for HTTP/2 on the SDK's own requests (falling back to HTTP/1.1 when the server does not offer it); the game's other HTTP traffic and the engine's `http.CurlAllowHTTP2` are untouched. With HTTP/2, when a request fails at the network level (not a cancel or a timeout), the curl diagnostics the engine logs at `Warning` can include the request headers, bearer token included. A default Shipping build compiles logging out, so most projects never see this; if yours ships or collects logs from a build with logging enabled, set `crowdy.net.http2 0`. See [Change pings and pull](../game-models/change-pings-and-pull.md#when-a-change-does-not-show-up) for what it does to request timing.
