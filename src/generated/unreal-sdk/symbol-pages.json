@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-09-22T14:39:18Z",
-  "sdk_version": "2.14.0",
+  "generated_from": "2026-09-26T13:28:16Z",
+  "sdk_version": "2.17.0",
   "route_base": "/unreal-sdk",
   "pages": {
     "__crowdy_netid": "game-models/containers-and-attributes",
@@ -328,7 +328,7 @@
     "UCrowdyEntitySubsystem::OnEntityUnregistered": "runtime/entities-and-spawning",
     "UCrowdyEntitySubsystem::OnOwnershipRequested": "runtime/ownership-transfer",
     "UCrowdyEventRouter": "runtime/recipients-and-routing",
-    "UCrowdyGameModelSubsystem": "game-models/sessions",
+    "UCrowdyGameModelSubsystem": "guides/whats-changed",
     "UCrowdyGameModelSubsystem::OnCrowdySignal": "game-models/change-pings-and-pull",
     "UCrowdyGameModelSubsystem::OnDataContainerChanged": "game-models/change-pings-and-pull",
     "UCrowdyGameModelSubsystem::OnModelAttributeChanged": "game-models/change-pings-and-pull",

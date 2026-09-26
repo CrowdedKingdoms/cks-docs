@@ -68,7 +68,7 @@ The type tag is not inherited from a tagged C++ parent, and a blank field defaul
 |---|---|---|
 | `GetInt`, `GetFloat`, `GetBool`, `GetString` | Get Model Attribute (Integer / Float / Boolean / String) | The cached confirmed value for `Key`, or `Default` when the entity is not bound, the key is not cached yet, or the type differs. |
 | `IsContainerBound(Entity)` | Is Game Model Ready | True once a container is bound to `Entity`. What a UI waits on before its first read. |
-| `PullNow(Entity)` | Refresh Game Model | Force a re-pull now; each changed attribute's `CrowdyOnRep` fires. Rare: the SDK pulls for you on every notification. |
+| `PullNow(Entity)` | Refresh Game Model | Force a re-pull now, or right after a read of this container already in flight lands; each changed attribute's `CrowdyOnRep` fires. Rare: the SDK pulls for you on every notification. |
 | `GetModelComponent(Actor, ContainerClass)` | Get Model Component | The actor's first component of that container class, to pass as `Entity` when the container is a component. |
 | `EnrollModelComponent(Component)` | Enroll Model Component | Bind a container component added after the actor registered; the automatic sweep runs only at registration. |
 | `UnenrollModelComponent(Component)` | Unenroll Model Component | The counterpart, for a runtime-removed component whose actor lives on. |

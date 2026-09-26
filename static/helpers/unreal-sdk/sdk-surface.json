@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-22T14:39:18Z",
-  "sdk_version": "2.14.0",
+  "generated": "2026-09-26T13:28:16Z",
+  "sdk_version": "2.17.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
     {
@@ -14629,7 +14629,7 @@
       "name": "crowdy.gamemodel.bulkresolve",
       "kind": "variable",
       "trace": false,
-      "help": "1: shared (Host-owned) entities bind their Game Model containers from one paged list per type; 0: one ensure per entity.",
+      "help": "1: shared (Host-owned) entities and remote copies of other players' entities bind their Game Model containers from one paged list per type; 0: one call per entity.",
       "module": "CrowdyReplication",
       "file": "CrowdyReplication/Private/Replication/GameModel/CrowdyGameModelSubsystemBulkResolve.cpp",
       "editor_module": false
@@ -14640,6 +14640,26 @@
       "kind": "variable",
       "trace": false,
       "help": "1 (default): acting client emits a fallback model-changed ping after a successful Game Model invoke so peers re-pull. 0: rely solely on the server-native model-driven notification (isolates that path in 2-client PIE).",
+      "module": "CrowdyReplication",
+      "file": "CrowdyReplication/Private/Replication/GameModel/CrowdyGameModelSubsystem.cpp",
+      "editor_module": false
+    },
+    {
+      "id": "crowdy.gamemodel.stats",
+      "name": "crowdy.gamemodel.stats",
+      "kind": "command",
+      "trace": false,
+      "help": "Log how the Game Model has used the network since the last reset: pulls, applies, self-echoes, resolves, invokes, per-operation latency and transport bytes.%s",
+      "module": "CrowdyReplication",
+      "file": "CrowdyReplication/Private/Replication/GameModel/CrowdyGameModelSubsystem.cpp",
+      "editor_module": false
+    },
+    {
+      "id": "crowdy.gamemodel.stats.reset",
+      "name": "crowdy.gamemodel.stats.reset",
+      "kind": "command",
+      "trace": false,
+      "help": "Zero the counters crowdy.gamemodel.stats reports, including the API client's per-operation and transport totals.[GameModel] net stats reset.",
       "module": "CrowdyReplication",
       "file": "CrowdyReplication/Private/Replication/GameModel/CrowdyGameModelSubsystem.cpp",
       "editor_module": false
@@ -14685,6 +14705,16 @@
       "editor_module": false
     },
     {
+      "id": "crowdy.net.http2",
+      "name": "crowdy.net.http2",
+      "kind": "variable",
+      "trace": false,
+      "help": "Asks for HTTP/2 on the SDK's own requests, falling back to HTTP/1.1 when the server does not offer it; 0 leaves the engine's HTTP version. With HTTP/2 the curl diagnostics the engine logs for a failed request can include the request headers, bearer token included, so set 0 if you ship logs from builds with logging enabled.",
+      "module": "CrowdyCppBridge",
+      "file": "CrowdyCppBridge/Private/Platform/CrowdyCppHttpTransport.cpp",
+      "editor_module": false
+    },
+    {
       "id": "crowdy.net.receive.maxdrainms",
       "name": "crowdy.net.receive.maxdrainms",
       "kind": "variable",
@@ -14722,6 +14752,16 @@
       "help": "",
       "module": "CrowdyNet",
       "file": "CrowdyNet/Private/Network/CrowdyCpp/CrowdyCppReplicationSubsystem.cpp",
+      "editor_module": false
+    },
+    {
+      "id": "crowdy.net.retry.busy",
+      "name": "crowdy.net.retry.busy",
+      "kind": "variable",
+      "trace": false,
+      "help": "Sends an SDK query again, up to 3 times with backoff, when the platform refuses it and says to retry (blame PLATFORM, retryable); a container ensure or an invoke is sent again only when the platform says the work never started (PLATFORM_BUSY). 0 hands every refusal straight to the caller.",
+      "module": "CrowdyCppBridge",
+      "file": "CrowdyCppBridge/Private/CrowdyCppClient.cpp",
       "editor_module": false
     },
     {
@@ -16517,6 +16557,7 @@
       "fields": [],
       "enumerators": [
         "Dev",
+        "Test",
         "Prod",
         "Custom"
       ],
@@ -17720,6 +17761,26 @@
       "id": "EKind",
       "name": "EKind",
       "kind": "enum",
+      "scope": "FCrowdySubscriptionKey",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [],
+      "enumerators": [
+        "Invalid",
+        "Payload",
+        "PayloadWildcard",
+        "Opcode"
+      ],
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Internal/FCrowdyServiceRegistry.h",
+      "editor_module": false
+    },
+    {
+      "id": "EKind",
+      "name": "EKind",
+      "kind": "enum",
       "scope": "FCrowdyTrustedAuthority",
       "reflected": "",
       "blueprint_type": false,
@@ -17735,26 +17796,6 @@
       ],
       "module": "CrowdyReplication",
       "header": "CrowdyReplication/Public/Replication/GameModel/Kit/CrowdyKitPolicy.h",
-      "editor_module": false
-    },
-    {
-      "id": "EKind",
-      "name": "EKind",
-      "kind": "enum",
-      "scope": "FCrowdySubscriptionKey",
-      "reflected": "",
-      "blueprint_type": false,
-      "template": false,
-      "bases": [],
-      "fields": [],
-      "enumerators": [
-        "Invalid",
-        "Payload",
-        "PayloadWildcard",
-        "Opcode"
-      ],
-      "module": "CrowdyNet",
-      "header": "CrowdyNet/Public/Internal/FCrowdyServiceRegistry.h",
       "editor_module": false
     },
     {
@@ -21406,6 +21447,58 @@
       "editor_module": true
     },
     {
+      "id": "FCrowdyContainerPull",
+      "name": "FCrowdyContainerPull",
+      "kind": "struct",
+      "scope": "UCrowdyGameModelSubsystem",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "KeysWrittenSince",
+          "type": "TMap<FGuid, TSet<FName>>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "HeldEntities",
+          "type": "TMap<FGuid, bool>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "DataWaiters",
+          "type": "TArray<TFunction<void(bool)>>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "IssuedSequence",
+          "type": "uint64",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "bDataPull",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "bDataOnceMore",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "FCrowdyContainerRef",
       "name": "FCrowdyContainerRef",
       "kind": "struct",
@@ -21985,7 +22078,20 @@
       "blueprint_type": false,
       "template": false,
       "bases": [],
-      "fields": [],
+      "fields": [
+        {
+          "name": "OpLatencySamples",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        },
+        {
+          "name": "MaxParkedRetries",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        }
+      ],
       "enumerators": [],
       "module": "CrowdyCppBridge",
       "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
@@ -22278,6 +22384,24 @@
           "type": "FString",
           "static": false,
           "uproperty": false
+        },
+        {
+          "name": "Blame",
+          "type": "FString",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "bRetryable",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "RetryAfterMs",
+          "type": "TOptional<int64>",
+          "static": false,
+          "uproperty": false
         }
       ],
       "enumerators": [],
@@ -22365,6 +22489,82 @@
         {
           "name": "NewValueJson",
           "type": "FString",
+          "static": false,
+          "uproperty": false
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyCppOpStats",
+      "name": "FCrowdyCppOpStats",
+      "kind": "struct",
+      "scope": "",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "Operation",
+          "type": "FString",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Calls",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Failures",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Retries",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "RecoveredByRetry",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "MaxMs",
+          "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "RecentLatenciesMs",
+          "type": "TArray<double>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "RecentSdkMs",
+          "type": "TArray<double>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "RecentHttpMs",
+          "type": "TArray<double>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "FailureReasons",
+          "type": "TArray<TPair<FString, int32>>",
           "static": false,
           "uproperty": false
         }
@@ -23135,6 +23335,52 @@
         {
           "name": "Id",
           "type": "uint64",
+          "static": false,
+          "uproperty": false
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyCppTransportStats",
+      "name": "FCrowdyCppTransportStats",
+      "kind": "struct",
+      "scope": "",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "RequestBytes",
+          "type": "int64",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "ResponseBytes",
+          "type": "int64",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Responses",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "InFlight",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "PeakInFlight",
+          "type": "int32",
           "static": false,
           "uproperty": false
         }
@@ -26005,6 +26251,214 @@
       "editor_module": false
     },
     {
+      "id": "FCrowdyGameModelNetStats",
+      "name": "FCrowdyGameModelNetStats",
+      "kind": "struct",
+      "scope": "",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "SinceSeconds",
+          "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "PullRequests",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "PulledRows",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "PullApplies",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "RedundantPullApplies",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "OverlappingPulls",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "PullsHeldBehindInFlight",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "FollowUpPulls",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "StaleKeysSkipped",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "SelfInvokesMarked",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "SelfEchoesDropped",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "HintsAfterSelfInvokeNotDropped",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "SelfEchoMarksExpired",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "SelfEchoBackstopPulls",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "ResolveStarts",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "ReResolves",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "BulkResolveListPages",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "InvokesDispatched",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "InvokeBusyRetries",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "InvokeBusyRecovered",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "InvokeBusyGaveUp",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "PullsByContainer",
+          "type": "TMap<FString, int32>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "InvokeFaults",
+          "type": "TMap<FString, int32>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "MaxInvokeFaultKeys",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        },
+        {
+          "name": "MaxPulledContainerKeys",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        },
+        {
+          "name": "MaxFaultKeyPartChars",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        },
+        {
+          "name": "MaxEverBound",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        },
+        {
+          "name": "InFlightPulls",
+          "type": "TMap<FString, int32>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "LastSelfInvokeSeconds",
+          "type": "TMap<FString, double>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "EverBound",
+          "type": "TSet<FGuid>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "bEverBoundFull",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "RecentInvokeSeconds",
+          "type": "TArray<double>",
+          "static": false,
+          "uproperty": false
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelNetStats.h",
+      "editor_module": false
+    },
+    {
       "id": "FCrowdyGameModelNotification",
       "name": "FCrowdyGameModelNotification",
       "kind": "struct",
@@ -26064,6 +26518,100 @@
       "enumerators": [],
       "module": "CrowdyReplication",
       "header": "CrowdyReplication/Public/Replication/GameModel/Effect/CrowdyGameModelFunctionInput.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyGameModelOpStatsRow",
+      "name": "FCrowdyGameModelOpStatsRow",
+      "kind": "struct",
+      "scope": "",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "Operation",
+          "type": "FString",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Calls",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Failures",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Retries",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "RecoveredByRetry",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "P50Ms",
+          "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "P95Ms",
+          "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "MaxMs",
+          "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "SdkP50Ms",
+          "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "SdkP95Ms",
+          "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "HttpP50Ms",
+          "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "HttpP95Ms",
+          "type": "double",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "FailureReasons",
+          "type": "TArray<TPair<FString, int32>>",
+          "static": false,
+          "uproperty": false
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelNetStats.h",
       "editor_module": false
     },
     {
@@ -26484,6 +27032,52 @@
       "enumerators": [],
       "module": "CrowdyReplication",
       "header": "CrowdyReplication/Public/Replication/GameModel/Effect/CrowdyGameModelFunctionInput.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyGameModelTransportTotals",
+      "name": "FCrowdyGameModelTransportTotals",
+      "kind": "struct",
+      "scope": "",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "RequestBytes",
+          "type": "int64",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "ResponseBytes",
+          "type": "int64",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "Responses",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "InFlight",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "PeakInFlight",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelNetStats.h",
       "editor_module": false
     },
     {
@@ -26982,6 +27576,12 @@
           "uproperty": false
         },
         {
+          "name": "bMarkSelfEcho",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        },
+        {
           "name": "SelfNetID",
           "type": "FGuid",
           "static": false,
@@ -27106,6 +27706,12 @@
         {
           "name": "RetryAfterMs",
           "type": "TOptional<int64>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "DispatchSequence",
+          "type": "uint64",
           "static": false,
           "uproperty": false
         }
@@ -28912,6 +29518,12 @@
         },
         {
           "name": "PoolSize",
+          "type": "int32",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "MaxPoolSize",
           "type": "int32",
           "static": false,
           "uproperty": true
@@ -31610,46 +32222,6 @@
       "id": "FPendingWrite",
       "name": "FPendingWrite",
       "kind": "struct",
-      "scope": "UCrowdySpawnCombatantAction",
-      "reflected": "",
-      "blueprint_type": false,
-      "template": false,
-      "bases": [],
-      "fields": [
-        {
-          "name": "Key",
-          "type": "FString",
-          "static": false,
-          "uproperty": false
-        },
-        {
-          "name": "ValueType",
-          "type": "FString",
-          "static": false,
-          "uproperty": false
-        },
-        {
-          "name": "ValueJson",
-          "type": "FString",
-          "static": false,
-          "uproperty": false
-        },
-        {
-          "name": "bFatal",
-          "type": "bool",
-          "static": false,
-          "uproperty": false
-        }
-      ],
-      "enumerators": [],
-      "module": "CrowdyReplication",
-      "header": "CrowdyReplication/Public/Replication/GameModel/Kit/CrowdyCombatKitActions.h",
-      "editor_module": false
-    },
-    {
-      "id": "FPendingWrite",
-      "name": "FPendingWrite",
-      "kind": "struct",
       "scope": "UCrowdyPlantCropAction",
       "reflected": "",
       "blueprint_type": false,
@@ -31684,6 +32256,46 @@
       "enumerators": [],
       "module": "CrowdyReplication",
       "header": "CrowdyReplication/Public/Replication/GameModel/Kit/CrowdyWorldsimKitActions.h",
+      "editor_module": false
+    },
+    {
+      "id": "FPendingWrite",
+      "name": "FPendingWrite",
+      "kind": "struct",
+      "scope": "UCrowdySpawnCombatantAction",
+      "reflected": "",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "Key",
+          "type": "FString",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "ValueType",
+          "type": "FString",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "ValueJson",
+          "type": "FString",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "bFatal",
+          "type": "bool",
+          "static": false,
+          "uproperty": false
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/Kit/CrowdyCombatKitActions.h",
       "editor_module": false
     },
     {
@@ -31861,6 +32473,18 @@
         {
           "name": "Slots",
           "type": "TArray<FSlot>",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "MaxSize",
+          "type": "int32",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "bWarnedAtCap",
+          "type": "bool",
           "static": false,
           "uproperty": false
         }
@@ -33646,6 +34270,12 @@
         {
           "name": "PerClassPoolOverrides",
           "type": "TMap<TSoftClassPtr<AActor>, int32>",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "MaxPoolSizePerClass",
+          "type": "int32",
           "static": false,
           "uproperty": true
         }
@@ -36503,6 +37133,18 @@
           "uproperty": false
         },
         {
+          "name": "BulkResolvePageSize",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        },
+        {
+          "name": "BulkResolveMaxPagesPerType",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        },
+        {
           "name": "UseKnownHostTerm",
           "type": "int32",
           "static": true,
@@ -38024,6 +38666,12 @@
         {
           "name": "Environment",
           "type": "ECrowdyEnvironment",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "DiscoveryUrl",
+          "type": "FString",
           "static": false,
           "uproperty": true
         },
@@ -42104,6 +42752,52 @@
       "editor_module": true
     },
     {
+      "id": "CrowdyCppBusyRetryDelaySeconds",
+      "owner": "",
+      "owner_kind": "namespace",
+      "name": "CrowdyCppBusyRetryDelaySeconds",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "TOptional<double> CrowdyCppBusyRetryDelaySeconds(int32 RetryIndex, TOptional<int64> RetryAfterMs)",
+      "return_type": "TOptional<double>",
+      "params": "int32 RetryIndex, TOptional<int64> RetryAfterMs",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
+      "id": "CrowdyCppIsBusyRetryEnabled",
+      "owner": "",
+      "owner_kind": "namespace",
+      "name": "CrowdyCppIsBusyRetryEnabled",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool CrowdyCppIsBusyRetryEnabled()",
+      "return_type": "bool",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
       "id": "CrowdyCppIsModelRefusalCode",
       "owner": "",
       "owner_kind": "namespace",
@@ -45678,6 +46372,29 @@
       "signature": "ECrowdyPlayerFaultBlame CrowdyPlayerFaultBlameFromWireString(const FString& Wire)",
       "return_type": "ECrowdyPlayerFaultBlame",
       "params": "const FString& Wire",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Network/GraphQL/FCrowdyGameApiCodec.h",
+      "editor_module": false
+    },
+    {
+      "id": "CrowdyPlayerFaultBlameToWord",
+      "owner": "",
+      "owner_kind": "namespace",
+      "name": "CrowdyPlayerFaultBlameToWord",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "const TCHAR* CrowdyPlayerFaultBlameToWord(ECrowdyPlayerFaultBlame Blame)",
+      "return_type": "const TCHAR*",
+      "params": "ECrowdyPlayerFaultBlame Blame",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -50476,6 +51193,75 @@
       "editor_module": false
     },
     {
+      "id": "FCrowdyCppClient::GetLastTestRequestBody",
+      "owner": "FCrowdyCppClient",
+      "owner_kind": "class",
+      "name": "GetLastTestRequestBody",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool GetLastTestRequestBody(FString& OutBody) const",
+      "return_type": "bool",
+      "params": "FString& OutBody",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyCppClient::GetStats",
+      "owner": "FCrowdyCppClient",
+      "owner_kind": "class",
+      "name": "GetStats",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void GetStats(TArray<FCrowdyCppOpStats>& OutOps, FCrowdyCppTransportStats& OutTransport) const",
+      "return_type": "void",
+      "params": "TArray<FCrowdyCppOpStats>& OutOps, FCrowdyCppTransportStats& OutTransport",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyCppClient::GetTestNextRetryDueSeconds",
+      "owner": "FCrowdyCppClient",
+      "owner_kind": "class",
+      "name": "GetTestNextRetryDueSeconds",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "double GetTestNextRetryDueSeconds() const",
+      "return_type": "double",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
       "id": "FCrowdyCppClient::InvokeFunction",
       "owner": "FCrowdyCppClient",
       "owner_kind": "class",
@@ -50729,6 +51515,29 @@
       "editor_module": false
     },
     {
+      "id": "FCrowdyCppClient::NumTestWaitingRetries",
+      "owner": "FCrowdyCppClient",
+      "owner_kind": "class",
+      "name": "NumTestWaitingRetries",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "int32 NumTestWaitingRetries() const",
+      "return_type": "int32",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
       "id": "FCrowdyCppClient::NumTestWebSocketConnections",
       "owner": "FCrowdyCppClient",
       "owner_kind": "class",
@@ -50876,6 +51685,29 @@
       "signature": "FCrowdyCppRequestHandle RequestLoginLink(const FString& Email, const FString& RedirectUri, TFunction<void(FCrowdyCppJsonValueResult)> OnDone)",
       "return_type": "FCrowdyCppRequestHandle",
       "params": "const FString& Email, const FString& RedirectUri, TFunction<void(FCrowdyCppJsonValueResult)> OnDone",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyCppClient::ResetStats",
+      "owner": "FCrowdyCppClient",
+      "owner_kind": "class",
+      "name": "ResetStats",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void ResetStats()",
+      "return_type": "void",
+      "params": "",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -51083,6 +51915,29 @@
       "signature": "void SetTestResponseScript(TArray<TPair<int32, FString>> Responses)",
       "return_type": "void",
       "params": "TArray<TPair<int32, FString>> Responses",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyCppBridge",
+      "header": "CrowdyCppBridge/Public/CrowdyCppClient.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyCppClient::SetTestStampsHandOff",
+      "owner": "FCrowdyCppClient",
+      "owner_kind": "class",
+      "name": "SetTestStampsHandOff",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void SetTestStampsHandOff(bool bStamp)",
+      "return_type": "void",
+      "params": "bool bStamp",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -54521,6 +55376,167 @@
       "blueprint": false,
       "module": "CrowdyReplication",
       "header": "CrowdyReplication/Public/Replication/GameModel/Effect/CrowdyGameModelFunctionInput.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyGameModelNetStats::CountBounded",
+      "owner": "FCrowdyGameModelNetStats",
+      "owner_kind": "struct",
+      "name": "CountBounded",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void CountBounded(TMap<FString, int32>& Counts, const FString& Key, int32 MaxKeys)",
+      "return_type": "void",
+      "params": "TMap<FString, int32>& Counts, const FString& Key, int32 MaxKeys",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelNetStats.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyGameModelNetStats::FormatFailureReasons",
+      "owner": "FCrowdyGameModelNetStats",
+      "owner_kind": "struct",
+      "name": "FormatFailureReasons",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "FString FormatFailureReasons(const TArray<TPair<FString, int32>>& Reasons)",
+      "return_type": "FString",
+      "params": "const TArray<TPair<FString, int32>>& Reasons",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelNetStats.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyGameModelNetStats::MakeInvokeFaultKey",
+      "owner": "FCrowdyGameModelNetStats",
+      "owner_kind": "struct",
+      "name": "MakeInvokeFaultKey",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "FString MakeInvokeFaultKey(const FString& FaultCode, const FString& BlameWord, bool bRetryable, bool bTransportOk)",
+      "return_type": "FString",
+      "params": "const FString& FaultCode, const FString& BlameWord, bool bRetryable, bool bTransportOk",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelNetStats.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyGameModelNetStats::Percentile",
+      "owner": "FCrowdyGameModelNetStats",
+      "owner_kind": "struct",
+      "name": "Percentile",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "double Percentile(TArray<double> SamplesMs, double Fraction)",
+      "return_type": "double",
+      "params": "TArray<double> SamplesMs, double Fraction",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelNetStats.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyGameModelNetStats::RecordBound",
+      "owner": "FCrowdyGameModelNetStats",
+      "owner_kind": "struct",
+      "name": "RecordBound",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void RecordBound(const FGuid& NetID)",
+      "return_type": "void",
+      "params": "const FGuid& NetID",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelNetStats.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyGameModelNetStats::Reset",
+      "owner": "FCrowdyGameModelNetStats",
+      "owner_kind": "struct",
+      "name": "Reset",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void Reset(double NowSeconds)",
+      "return_type": "void",
+      "params": "double NowSeconds",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelNetStats.h",
+      "editor_module": false
+    },
+    {
+      "id": "FCrowdyGameModelNetStats::TEXT",
+      "owner": "FCrowdyGameModelNetStats",
+      "owner_kind": "struct",
+      "name": "TEXT",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "const TCHAR* OverflowKey = TEXT(\"other\")",
+      "return_type": "const TCHAR* OverflowKey =",
+      "params": "\"other\"",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelNetStats.h",
       "editor_module": false
     },
     {
@@ -60918,6 +61934,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyActorManager::BindToEntitySubsystemForTest",
+      "owner": "UCrowdyActorManager",
+      "owner_kind": "class",
+      "name": "BindToEntitySubsystemForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void BindToEntitySubsystemForTest(UCrowdyEntitySubsystem* Entities)",
+      "return_type": "void",
+      "params": "UCrowdyEntitySubsystem* Entities",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/Subsystems/CrowdyActorManager.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyActorManager::BindToTrackerForTest",
       "owner": "UCrowdyActorManager",
       "owner_kind": "class",
@@ -60927,6 +61966,29 @@
       "signature": "void BindToTrackerForTest(UCrowdyActorTracker* Tracker)",
       "return_type": "void",
       "params": "UCrowdyActorTracker* Tracker",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/Subsystems/CrowdyActorManager.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyActorManager::CompletePendingActivationForTest",
+      "owner": "UCrowdyActorManager",
+      "owner_kind": "class",
+      "name": "CompletePendingActivationForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void CompletePendingActivationForTest(const FGuid& UUID)",
+      "return_type": "void",
+      "params": "const FGuid& UUID",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -61079,15 +62141,38 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyActorManager::NotifyEntityUnregisteredForTest",
+      "owner": "UCrowdyActorManager",
+      "owner_kind": "class",
+      "name": "NotifyEntityUnregisteredForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void NotifyEntityUnregisteredForTest(const FGuid& UUID)",
+      "return_type": "void",
+      "params": "const FGuid& UUID",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/Subsystems/CrowdyActorManager.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyActorManager::ParkActivationForTest",
       "owner": "UCrowdyActorManager",
       "owner_kind": "class",
       "name": "ParkActivationForTest",
       "test_helper": true,
       "implementation": false,
-      "signature": "void ParkActivationForTest(const FGuid& UUID)",
+      "signature": "void ParkActivationForTest(const FGuid& UUID, const FInstancedStruct& InitialState = FInstancedStruct())",
       "return_type": "void",
-      "params": "const FGuid& UUID",
+      "params": "const FGuid& UUID, const FInstancedStruct& InitialState = FInstancedStruct()",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -61191,6 +62276,52 @@
       "blueprint": false,
       "module": "CrowdyReplication",
       "header": "CrowdyReplication/Public/Replication/Subsystems/CrowdyActorManager.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyActorPoolBackend::GetSlotActorForTest",
+      "owner": "UCrowdyActorPoolBackend",
+      "owner_kind": "class",
+      "name": "GetSlotActorForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "AActor* GetSlotActorForTest(int32 SlotId) const",
+      "return_type": "AActor*",
+      "params": "int32 SlotId",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Data/CrowdyActorPoolBackend.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyActorPoolBackend::InitializeForTest",
+      "owner": "UCrowdyActorPoolBackend",
+      "owner_kind": "class",
+      "name": "InitializeForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void InitializeForTest(UCrowdyActorPoolSubsystem* InActorPool, UCrowdyEntitySubsystem* InEntitySubsystem, UCrowdyActorPoolBackendConfig* InConfig)",
+      "return_type": "void",
+      "params": "UCrowdyActorPoolSubsystem* InActorPool, UCrowdyEntitySubsystem* InEntitySubsystem, UCrowdyActorPoolBackendConfig* InConfig",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Data/CrowdyActorPoolBackend.h",
       "editor_module": false
     },
     {
@@ -61323,6 +62454,29 @@
       "virtual": false,
       "pure_virtual": false,
       "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/Subsystems/CrowdyActorPoolSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyActorPoolSubsystem::HasPool",
+      "owner": "UCrowdyActorPoolSubsystem",
+      "owner_kind": "class",
+      "name": "HasPool",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool HasPool(const UClass* ActorClass) const",
+      "return_type": "bool",
+      "params": "const UClass* ActorClass",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
       "template": false,
       "ufunction": false,
       "deprecated": false,
@@ -65463,6 +66617,29 @@
       "virtual": false,
       "pure_virtual": false,
       "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Network/CrowdyCpp/CrowdyCppClientSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyCppClientSubsystem::SetClientForTest",
+      "owner": "UCrowdyCppClientSubsystem",
+      "owner_kind": "class",
+      "name": "SetClientForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void SetClientForTest(TSharedPtr<FCrowdyCppClient> InClient, const FCrowdyCppClientConfig& InConfig)",
+      "return_type": "void",
+      "params": "TSharedPtr<FCrowdyCppClient> InClient, const FCrowdyCppClientConfig& InConfig",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
       "template": false,
       "ufunction": false,
       "deprecated": false,
@@ -70032,9 +71209,9 @@
       "name": "ApplyDataContainerMutations",
       "test_helper": false,
       "implementation": false,
-      "signature": "void ApplyDataContainerMutations(const FString& ContainerId, const TArray<FCrowdyMutationApplied>& Mutations)",
+      "signature": "void ApplyDataContainerMutations(const FString& ContainerId, const TArray<FCrowdyMutationApplied>& Mutations, uint64 DispatchSequence = 0)",
       "return_type": "void",
-      "params": "const FString& ContainerId, const TArray<FCrowdyMutationApplied>& Mutations",
+      "params": "const FString& ContainerId, const TArray<FCrowdyMutationApplied>& Mutations, uint64 DispatchSequence = 0",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -70055,9 +71232,9 @@
       "name": "ApplyDataContainerState",
       "test_helper": false,
       "implementation": false,
-      "signature": "void ApplyDataContainerState(const FString& ContainerId, const TSharedPtr<FJsonObject>& NewState)",
-      "return_type": "void",
-      "params": "const FString& ContainerId, const TSharedPtr<FJsonObject>& NewState",
+      "signature": "bool ApplyDataContainerState(const FString& ContainerId, const TSharedPtr<FJsonObject>& NewState, const TSet<FName>* KeysToKeep = nullptr)",
+      "return_type": "bool",
+      "params": "const FString& ContainerId, const TSharedPtr<FJsonObject>& NewState, const TSet<FName>* KeysToKeep = nullptr",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -70078,9 +71255,9 @@
       "name": "ApplyInvokeMutations",
       "test_helper": false,
       "implementation": false,
-      "signature": "void ApplyInvokeMutations(const FGuid& SelfNetID, const FString& SelfContainerId, const TArray<FCrowdyMutationApplied>& Mutations)",
+      "signature": "void ApplyInvokeMutations(const FGuid& SelfNetID, const FString& SelfContainerId, const TArray<FCrowdyMutationApplied>& Mutations, uint64 DispatchSequence = 0)",
       "return_type": "void",
-      "params": "const FGuid& SelfNetID, const FString& SelfContainerId, const TArray<FCrowdyMutationApplied>& Mutations",
+      "params": "const FGuid& SelfNetID, const FString& SelfContainerId, const TArray<FCrowdyMutationApplied>& Mutations, uint64 DispatchSequence = 0",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -70101,9 +71278,9 @@
       "name": "ApplyMutationsToContainer",
       "test_helper": false,
       "implementation": false,
-      "signature": "void ApplyMutationsToContainer(const FGuid& NetID, UObject* Container, const TArray<FCrowdyMutationApplied>& Mutations)",
+      "signature": "void ApplyMutationsToContainer(const FGuid& NetID, UObject* Container, const TArray<FCrowdyMutationApplied>& Mutations, uint64 DispatchSequence = 0)",
       "return_type": "void",
-      "params": "const FGuid& NetID, UObject* Container, const TArray<FCrowdyMutationApplied>& Mutations",
+      "params": "const FGuid& NetID, UObject* Container, const TArray<FCrowdyMutationApplied>& Mutations, uint64 DispatchSequence = 0",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -70124,9 +71301,9 @@
       "name": "ApplyStateToContainer",
       "test_helper": false,
       "implementation": false,
-      "signature": "void ApplyStateToContainer(const FGuid& NetID, UObject* Container, const TSharedPtr<FJsonObject>& NewState)",
-      "return_type": "void",
-      "params": "const FGuid& NetID, UObject* Container, const TSharedPtr<FJsonObject>& NewState",
+      "signature": "bool ApplyStateToContainer(const FGuid& NetID, UObject* Container, const TSharedPtr<FJsonObject>& NewState, const TSet<FName>* KeysToKeep = nullptr)",
+      "return_type": "bool",
+      "params": "const FGuid& NetID, UObject* Container, const TSharedPtr<FJsonObject>& NewState, const TSet<FName>* KeysToKeep = nullptr",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -70624,6 +71801,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyGameModelSubsystem::DescribeNetStats",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "DescribeNetStats",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void DescribeNetStats(TArray<FString>& OutLines) const",
+      "return_type": "void",
+      "params": "TArray<FString>& OutLines",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyGameModelSubsystem::DispatchSignal",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
@@ -70771,6 +71971,29 @@
       "signature": "void FailPendingWorkForTest()",
       "return_type": "void",
       "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyGameModelSubsystem::FinishBulkResolveForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "FinishBulkResolveForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void FinishBulkResolveForTest(const FString& TypeName, const FString& Session, const TArray<FGuid>& NetIDs, const TArray<FCrowdyBulkResolveHit>& Hits, bool bReachedEnd = true)",
+      "return_type": "void",
+      "params": "const FString& TypeName, const FString& Session, const TArray<FGuid>& NetIDs, const TArray<FCrowdyBulkResolveHit>& Hits, bool bReachedEnd = true",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -71153,6 +72376,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyGameModelSubsystem::GetInvokesInWindow",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "GetInvokesInWindow",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "int32 GetInvokesInWindow() const",
+      "return_type": "int32",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyGameModelSubsystem::GetKnownSessionHostTerm",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
@@ -71268,6 +72514,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyGameModelSubsystem::GetNetStats",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "GetNetStats",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "const FCrowdyGameModelNetStats& GetNetStats() const",
+      "return_type": "const FCrowdyGameModelNetStats&",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyGameModelSubsystem::GetOpenCoalesceWindowCountForTest",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
@@ -71277,6 +72546,29 @@
       "signature": "int32 GetOpenCoalesceWindowCountForTest() const",
       "return_type": "int32",
       "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyGameModelSubsystem::GetOpStats",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "GetOpStats",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void GetOpStats(TArray<FCrowdyGameModelOpStatsRow>& OutRows, FCrowdyGameModelTransportTotals& OutTotals) const",
+      "return_type": "void",
+      "params": "TArray<FCrowdyGameModelOpStatsRow>& OutRows, FCrowdyGameModelTransportTotals& OutTotals",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -71360,6 +72652,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyGameModelSubsystem::GetPendingSessionCountForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "GetPendingSessionCountForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "int32 GetPendingSessionCountForTest() const",
+      "return_type": "int32",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyGameModelSubsystem::GetPendingSweepCountForTest",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
@@ -71406,13 +72721,13 @@
       "editor_module": false
     },
     {
-      "id": "UCrowdyGameModelSubsystem::GetRefreshPullWindowSecondsForTest",
+      "id": "UCrowdyGameModelSubsystem::GetRefreshPullTimerRateForTest",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
-      "name": "GetRefreshPullWindowSecondsForTest",
+      "name": "GetRefreshPullTimerRateForTest",
       "test_helper": true,
       "implementation": false,
-      "signature": "float GetRefreshPullWindowSecondsForTest() const",
+      "signature": "float GetRefreshPullTimerRateForTest() const",
       "return_type": "float",
       "params": "",
       "access": "public",
@@ -71636,6 +72951,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyGameModelSubsystem::HandleModelChangeHintForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "HandleModelChangeHintForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void HandleModelChangeHintForTest(const FCrowdyModelChangeHint& Hint)",
+      "return_type": "void",
+      "params": "const FCrowdyModelChangeHint& Hint",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyGameModelSubsystem::Invoke",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
@@ -71765,6 +73103,52 @@
       "virtual": false,
       "pure_virtual": false,
       "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyGameModelSubsystem::IsBulkResolveGroupCutForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "IsBulkResolveGroupCutForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "bool IsBulkResolveGroupCutForTest(const FString& TypeName, const FString& Session) const",
+      "return_type": "bool",
+      "params": "const FString& TypeName, const FString& Session",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyGameModelSubsystem::IsBusyRefusal",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "IsBusyRefusal",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool IsBusyRefusal(const FCrowdyInvokeResult& Result)",
+      "return_type": "bool",
+      "params": "const FCrowdyInvokeResult& Result",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
       "template": false,
       "ufunction": false,
       "deprecated": false,
@@ -72171,8 +73555,8 @@
       "name": "MarkSelfActed",
       "test_helper": false,
       "implementation": false,
-      "signature": "void MarkSelfActed(const FString& ContainerId)",
-      "return_type": "void",
+      "signature": "double MarkSelfActed(const FString& ContainerId)",
+      "return_type": "double",
       "params": "const FString& ContainerId",
       "access": "public",
       "static": false,
@@ -72625,6 +74009,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyGameModelSubsystem::ResetNetStats",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "ResetNetStats",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void ResetNetStats()",
+      "return_type": "void",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyGameModelSubsystem::ResolveBudgetRetryDelaySeconds",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
@@ -72970,6 +74377,52 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyGameModelSubsystem::SetApiContextForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "SetApiContextForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void SetApiContextForTest(const FString& Endpoint, const FString& Token, int64 AppId)",
+      "return_type": "void",
+      "params": "const FString& Endpoint, const FString& Token, int64 AppId",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyGameModelSubsystem::SetClientHostForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "SetClientHostForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void SetClientHostForTest(UCrowdyCppClientSubsystem* InHost)",
+      "return_type": "void",
+      "params": "UCrowdyCppClientSubsystem* InHost",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyGameModelSubsystem::SetDataProperty",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
@@ -73200,6 +74653,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyGameModelSubsystem::StampDispatchForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "StampDispatchForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "uint64 StampDispatchForTest()",
+      "return_type": "uint64",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyGameModelSubsystem::StretchCoalesceWindowSeconds",
       "owner": "UCrowdyGameModelSubsystem",
       "owner_kind": "class",
@@ -73326,6 +74802,29 @@
       "params": "const FCrowdyGameSessionSnapshotData& Data",
       "access": "public",
       "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Replication/GameModel/CrowdyGameModelSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyGameModelSubsystem::TouchCollectionParentForTest",
+      "owner": "UCrowdyGameModelSubsystem",
+      "owner_kind": "class",
+      "name": "TouchCollectionParentForTest",
+      "test_helper": true,
+      "implementation": false,
+      "signature": "void TouchCollectionParentForTest(const FString& ParentContainerId, const FString& ParentTypeName)",
+      "return_type": "void",
+      "params": "const FString& ParentContainerId, const FString& ParentTypeName",
+      "access": "public",
+      "static": false,
       "virtual": false,
       "pure_virtual": false,
       "const": false,
@@ -76144,6 +77643,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyRenderingBackend::ActivateInstance",
+      "owner": "UCrowdyRenderingBackend",
+      "owner_kind": "class",
+      "name": "ActivateInstance",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void ActivateInstance(int32 SlotId, const FGuid& UUID, UClass* EntityClass, const FInstancedStruct& InitialState) const",
+      "return_type": "void",
+      "params": "int32 SlotId, const FGuid& UUID, UClass* EntityClass, const FInstancedStruct& InitialState",
+      "access": "public",
+      "static": false,
+      "virtual": true,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Data/CrowdyRenderingBackend.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyRenderingBackend::DeinitializeBackend",
       "owner": "UCrowdyRenderingBackend",
       "owner_kind": "class",
@@ -76627,6 +78149,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdySDKDeveloperSettings::GetReleaseEnvironment",
+      "owner": "UCrowdySDKDeveloperSettings",
+      "owner_kind": "class",
+      "name": "GetReleaseEnvironment",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "ECrowdyEnvironment GetReleaseEnvironment()",
+      "return_type": "ECrowdyEnvironment",
+      "params": "",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyReplication",
+      "header": "CrowdyReplication/Public/Utils/CrowdySDKDeveloperSettings.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdySDKDeveloperSettings::GetShippedDefaultProfilePath",
       "owner": "UCrowdySDKDeveloperSettings",
       "owner_kind": "class",
@@ -76730,29 +78275,6 @@
       "params": "FString& OutUnavailableReason",
       "access": "public",
       "static": true,
-      "virtual": false,
-      "pure_virtual": false,
-      "const": false,
-      "template": false,
-      "ufunction": false,
-      "deprecated": false,
-      "blueprint": false,
-      "module": "CrowdyReplication",
-      "header": "CrowdyReplication/Public/Utils/CrowdySDKDeveloperSettings.h",
-      "editor_module": false
-    },
-    {
-      "id": "UCrowdySDKDeveloperSettings::TEXT",
-      "owner": "UCrowdySDKDeveloperSettings",
-      "owner_kind": "class",
-      "name": "TEXT",
-      "test_helper": false,
-      "implementation": false,
-      "signature": "FString DiscoveryUrl = TEXT(\"https://api.dev.crowdedkingdoms.com\")",
-      "return_type": "FString DiscoveryUrl =",
-      "params": "\"https://api.dev.crowdedkingdoms.com\"",
-      "access": "public",
-      "static": false,
       "virtual": false,
       "pure_virtual": false,
       "const": false,

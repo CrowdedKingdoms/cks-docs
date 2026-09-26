@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-09-22T14:39:18Z",
-  "sdk_version": "2.14.0",
+  "generated_from": "2026-09-26T13:28:16Z",
+  "sdk_version": "2.17.0",
   "table": "cvars",
   "columns": [
     {
@@ -217,7 +217,7 @@
       "kind": "variable",
       "role": "behaviour",
       "trace": false,
-      "help": "1: shared (Host-owned) entities bind their Game Model containers from one paged list per type; 0: one ensure per entity.",
+      "help": "1: shared (Host-owned) entities and remote copies of other players' entities bind their Game Model containers from one paged list per type; 0: one call per entity.",
       "module": "CrowdyReplication",
       "editor": false,
       "allowlist": ""
@@ -230,6 +230,17 @@
       "trace": false,
       "help": "1 (default): acting client emits a fallback model-changed ping after a successful Game Model invoke so peers re-pull. 0: rely solely on the server-native model-driven notification (isolates that path in 2-client PIE).",
       "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.net.http2",
+      "name": "crowdy.net.http2",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Asks for HTTP/2 on the SDK's own requests, falling back to HTTP/1.1 when the server does not offer it; 0 leaves the engine's HTTP version. With HTTP/2 the curl diagnostics the engine logs for a failed request can include the request headers, bearer token included, so set 0 if you ship logs from builds with logging enabled.",
+      "module": "CrowdyCppBridge",
       "editor": false,
       "allowlist": ""
     },
@@ -274,6 +285,17 @@
       "trace": false,
       "help": "",
       "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.net.retry.busy",
+      "name": "crowdy.net.retry.busy",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Sends an SDK query again, up to 3 times with backoff, when the platform refuses it and says to retry (blame PLATFORM, retryable); a container ensure or an invoke is sent again only when the platform says the work never started (PLATFORM_BUSY). 0 hands every refusal straight to the caller.",
+      "module": "CrowdyCppBridge",
       "editor": false,
       "allowlist": ""
     },
@@ -340,6 +362,28 @@
       "trace": false,
       "help": "Link + exception-containment self test for the vendored CrowdyCPP library.",
       "module": "CrowdyCppBridge",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.gamemodel.stats",
+      "name": "crowdy.gamemodel.stats",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Log how the Game Model has used the network since the last reset: pulls, applies, self-echoes, resolves, invokes, per-operation latency and transport bytes.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.gamemodel.stats.reset",
+      "name": "crowdy.gamemodel.stats.reset",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Zero the counters crowdy.gamemodel.stats reports, including the API client's per-operation and transport totals.[GameModel] net stats reset.",
+      "module": "CrowdyReplication",
       "editor": false,
       "allowlist": ""
     },

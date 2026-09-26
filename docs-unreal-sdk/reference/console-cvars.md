@@ -9,12 +9,13 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Console Variables
 
-The SDK exposes 34 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
+The SDK exposes 38 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
 logging for one area, behavior switches that change what the SDK does, and diagnostic commands that run
-once and hold no stored value. A row badged **Editor only** exists only in the editor process. Four of the
+once and hold no stored value. A row badged **Editor only** exists only in the editor process. Six of the
 diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`,
-`crowdy.gamemodel.watchcontainers`, `crowdy.gamemodel.unwatchcontainers`) are compiled out of a Shipping
-build and are absent there rather than silent; every other row ships in Development and Shipping.
+`crowdy.gamemodel.watchcontainers`, `crowdy.gamemodel.unwatchcontainers`, `crowdy.gamemodel.stats`,
+`crowdy.gamemodel.stats.reset`) are compiled out of a Shipping build and are absent there rather than
+silent; every other row ships in Development and Shipping.
 
 ## When you land here
 
@@ -35,6 +36,12 @@ They log on every message encode and decode. Leave them off unless you are activ
 serialization.
 :::
 
+:::caution[`crowdy.net.trace` logs every routed send and every received spatial message.]
+Since 2.17.0 it also prints one line per spatial message received ("Received opcode ... for actor ... in chunk
+...") and the transport's totals (datagrams received, verification failures, drops) about once a second. That
+is what tells "the server never sent it" apart from "the client dropped it"; it is too chatty to leave on.
+:::
+
 :::note[`crowdy.serialize.scopes` and `crowdy.state.scopes` are nested CPU trace scopes.]
 Each nests inside a wider enclosing scope, so turning one on shifts the timing you read for that
 enclosing scope too. If you are taking a performance reading, say whether the flag was on.
@@ -45,7 +52,7 @@ logging around Studio calls.
 
 ## Behavior switches
 
-These change what the SDK does rather than what it logs. None of the 11 exist only in the editor.
+These change what the SDK does rather than what it logs. None of the 13 exist only in the editor.
 
 <SurfaceTable
   table="cvars"
@@ -61,6 +68,14 @@ These change what the SDK does rather than what it logs. None of the 11 exist on
 />
 
 The notes map above stands in for these five rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
+
+:::warning[Turn `crowdy.net.http2` off if you ship, or collect logs from, a build with logging enabled.]
+On by default, it asks for HTTP/2 on the SDK's own requests (falling back to HTTP/1.1 when the server does not offer it); the game's other HTTP traffic and the engine's `http.CurlAllowHTTP2` are untouched. With HTTP/2, when a request fails at the network level (not a cancel or a timeout), the curl diagnostics the engine logs at `Warning` can include the request headers, bearer token included. A default Shipping build compiles logging out, so most projects never see this; if yours ships or collects logs from a build with logging enabled, set `crowdy.net.http2 0`. See [Change pings and pull](../game-models/change-pings-and-pull.md#when-a-change-does-not-show-up) for what it does to request timing.
+:::
+
+:::note[`crowdy.net.retry.busy` resends a refusal the platform blames on itself before the caller ever sees `Failed`.]
+On by default. A query resends on any platform-blamed retryable refusal except `WRONG_DATACENTER` and `APP_UNAVAILABLE`; a container ensure or a `gameModelInvoke` resends only on `PLATFORM_BUSY`, since that is the one code that means the work never started. At most 3 retries, with the server's suggested wait when it names one or a doubling local wait otherwise. Turn it off (`0`) only to compare against the un-retried behavior; leave it on for a shipping build. See [Change pings and pull](../game-models/change-pings-and-pull.md#when-a-change-does-not-show-up) for what the retry counts look like in `crowdy.gamemodel.stats`.
+:::
 
 :::warning[Leave `crowdy.rpc.allowObjectLoad` off in production.]
 While it is off, an untrusted peer cannot trigger an arbitrary asset load; an unresolved object or class
@@ -79,11 +94,11 @@ measurement against the same build, not a fix for anything.
 
 ## Diagnostic commands
 
-Seven commands with no stored value. Only `crowdy.rpc.dumpfn` takes arguments and prints usage without
+Nine commands with no stored value. Only `crowdy.rpc.dumpfn` takes arguments and prints usage without
 them; every other command acts as soon as you run it, and `crowdy.schema.RetagAssets` starts resaving
-assets immediately. Four are compiled out of a Shipping build: `crowdy.rpc.dumpfn`,
-`crowdy.state.heartbeat.advisories`, `crowdy.gamemodel.watchcontainers` and
-`crowdy.gamemodel.unwatchcontainers`.
+assets immediately. Six are compiled out of a Shipping build: `crowdy.rpc.dumpfn`,
+`crowdy.state.heartbeat.advisories`, `crowdy.gamemodel.watchcontainers`,
+`crowdy.gamemodel.unwatchcontainers`, `crowdy.gamemodel.stats`, and `crowdy.gamemodel.stats.reset`.
 
 <SurfaceTable
   table="cvars"
@@ -94,6 +109,8 @@ assets immediately. Four are compiled out of a Shipping build: `crowdy.rpc.dumpf
     "crowdy.state.heartbeat.advisories": "Not in Shipping",
     "crowdy.gamemodel.watchcontainers": "Not in Shipping",
     "crowdy.gamemodel.unwatchcontainers": "Not in Shipping",
+    "crowdy.gamemodel.stats": "Not in Shipping",
+    "crowdy.gamemodel.stats.reset": "Not in Shipping",
     "crowdy.cpp.selftest": "Every build",
     "crowdy.net.routes": "Every build"
   }}
@@ -109,7 +126,9 @@ assets it touches; that noise is expected, not a sign something went wrong.
 :::
 
 `crowdy.cpp.selftest` and `crowdy.net.routes` carry no build guard, so they exist in every build including
-Shipping; the four diagnostics above do not, and a Shipping console answers them with an unknown command.
+Shipping; the six diagnostics above do not, and a Shipping console answers them with an unknown command.
+[Change pings and pull](../game-models/change-pings-and-pull.md#when-a-change-does-not-show-up) reads
+`crowdy.gamemodel.stats` for broader network diagnosis, not only a single missed notification.
 
 ## Gotchas
 
@@ -118,8 +137,9 @@ Shipping; the four diagnostics above do not, and a Shipping console answers them
 - `crowdy.net.receive.maxdrainms` (4 ms) and `crowdy.net.receive.maxmessages` (3072) bound one frame's
   receive drain. If drains keep ending on the time budget, delivery is costing more per message than the
   frame can afford, and raising the count is not the lever.
-- `crowdy.gamemodel.bulkresolve` (default `1`) makes Host-owned entities bind their Game Model containers
-  from one paged list per type instead of one ensure per entity. Leave it on unless you are isolating a
+- `crowdy.gamemodel.bulkresolve` (default `1`) makes Host-owned entities, and your copies of other players'
+  entities, bind their Game Model containers from one paged list per type instead of one ensure or keyed read
+  per entity. Leave it on unless you are isolating a
   regression against the old per-entity path.
 - The two Game Model watch commands, `crowdy.gamemodel.watchcontainers` and
   `crowdy.gamemodel.unwatchcontainers`, are diagnostics: they open or close a feed and log what arrives,
@@ -130,5 +150,5 @@ Shipping; the four diagnostics above do not, and a Shipping console answers them
 - [Log categories](./log-categories.md): the category each trace gate's lines print under.
 - [Project settings](./project-settings.md): the settings-class properties that sit beside these CVars.
 - [Testing locally](../guides/testing-locally.md): loopback and two-PIE workflows built on these switches.
-- [Change pings and pull](../game-models/change-pings-and-pull.md): where `crowdy.gamemodel.emitfallbackping`
-  and the watch commands fit in a Game Model debugging session.
+- [Change pings and pull](../game-models/change-pings-and-pull.md): where `crowdy.gamemodel.emitfallbackping`,
+  the watch commands, and `crowdy.gamemodel.stats` fit in a Game Model debugging session.

@@ -34,6 +34,24 @@ supported path.
 
 **The CPU rate is $0.20 per CPU-hour, one core.** It was $3.60. A CPU-hour is one core busy for one hour, not one machine. The same price covers GraphQL resolvers, automations, compute modules, and player-authored compute. The monthly allowance is unchanged: **20 CPU-hours** pooled per app. The price in effect is the rate card in your account and on the [pricing page](https://crowdedkingdoms.com/pricing.html). A price applies from the next settlement period for usage that has already been billed this month.
 
+## 2026-09-26 (Unreal SDK v2.17.0)
+
+Entities that went missing now appear, and the Game Model path makes fewer calls. Most projects change nothing;
+read the HTTP/2 logging caveat if you ship or collect logs from a build with logging on. Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-09-26-sdk-v2170).
+
+- **Remote entities no longer go missing past eight per class.** The actor pool grows on demand up to
+  `MaxPoolSizePerClass` (256), keeps a spawn event's actor until a pool actor is secured, and retries an entity
+  it cannot draw yet instead of dropping it. See [Rendering backends](/unreal-sdk/runtime/rendering-backends#configure-it).
+- **The Game Model path makes fewer, cheaper calls.** Only invokes count toward the invoke allowance; one
+  state-applying pull per container is in flight at a time; remote copies bind from one paged list per type;
+  your own invokes no longer pull back what they wrote; busy refusals are retried by the SDK; HTTP/2 by
+  default (`crowdy.net.http2 0` turns it off: a failed request's curl diagnostics can log its headers, bearer
+  token included, in a build with logging on); `ListContainers` reads every page; `crowdy.gamemodel.stats` for diagnostics. See
+  [Change pings and pull](/unreal-sdk/game-models/change-pings-and-pull).
+- **A value that changes only in letter case now applies**, in the runtime and in Crowdy Studio.
+- **Known server issue:** a player who just joined can stay invisible to others until they move. See
+  [Troubleshooting](/unreal-sdk/guides/troubleshooting#a-player-who-just-joined-is-invisible-until-they-move).
+
 ## 2026-09-23 (Unreal SDK v2.16.0)
 
 One change, additive: the Backend selector gains a Test tier. Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed).

@@ -77,9 +77,9 @@ The message is "the world was torn down before the coalesced effect apply was se
 
 A target whose container binding changed while a window was open drops the whole window: every merged apply in it fails, with a warning naming how many were waiting, rather than being sent against a container that is no longer the one the callers meant.
 
-Only a rate-limit refusal is ever retried, at most twice with a growing wait, because the server decides that refusal before running the function, so the refused call committed nothing and repeating it cannot write twice. No other failure is retried automatically, an unattributed transport failure least of all: it may have committed before the failure was reported.
+Two refusals are retried automatically, both decided before the function ever runs, so repeating them cannot write twice: a rate-limit refusal (`RATE_LIMITED`), at most twice with a growing wait, and a busy refusal (`PLATFORM_BUSY`, meaning the platform never started the work), at most three times, honoring the server's suggested wait when it names one. `crowdy.net.retry.busy` (default 1) turns the second off; the rate-limit retry has no switch. No other failure is retried automatically, an unattributed transport failure least of all: it may have committed before the failure was reported.
 
-The outcome the apply surfaces deliver is `bSuccess`, `ReturnValueJson`, and `ErrorMessage`, nothing that says whether a failure is worth repeating, so do not build your own retry loop on `Failed`: a fault in the effect's own logic fails identically however often it is repeated, and a transport failure may already have committed.
+The outcome the apply surfaces deliver is `bSuccess`, `ReturnValueJson`, and `ErrorMessage`, nothing that says whether a failure is worth repeating, so do not build your own retry loop on `Failed`: by the time `Failed` fires, a busy or rate-limit refusal has already used up its own retries, so trying again yourself buys nothing. A fault in the effect's own logic fails identically however often it is repeated, and a transport failure may already have committed.
 
 ## Validation
 
@@ -95,7 +95,7 @@ An automation's **Debounce** drops all but the first event in a window; this pag
 - A required tuning parameter still has to be supplied on every apply; the merge sums the supplied values.
 - An effect with a curve-bound parameter merges only among applies with the same `Level`.
 - The window is added latency on the first apply. Keep it short.
-- The SDK counts every Game Model call it makes, reads and ensures included, toward the same allowance it uses to widen merge windows and pace a manifest apply, so a load-time burst of pulls delays a coalesced effect too.
+- Only an invoke counts toward the allowance the merge window widens against. A pull, a list, a read, or an ensure costs the SDK nothing against it, so a burst of those does not stretch a coalesced effect's window.
 
 ## Related
 

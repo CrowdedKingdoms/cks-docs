@@ -7216,5 +7216,115 @@
     "id": "USubsystemInitializable",
     "reason": "internal",
     "note": "UInterface half of ISubsystemInitializable; unused."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats",
+    "reason": "internal",
+    "note": "Plain counters behind crowdy.gamemodel.stats / UCrowdyGameModelSubsystem::GetNetStats, never read to make a decision; the shape is described in prose on Change pings and pull, not field by field."
+  },
+  {
+    "id": "FCrowdyGameModelOpStatsRow",
+    "reason": "internal",
+    "note": "One server operation's call/fail/latency row behind UCrowdyGameModelSubsystem::GetOpStats; described in prose on Change pings and pull."
+  },
+  {
+    "id": "FCrowdyGameModelTransportTotals",
+    "reason": "internal",
+    "note": "Transport byte/response totals behind UCrowdyGameModelSubsystem::GetOpStats; described in prose on Change pings and pull."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::CountBounded",
+    "reason": "internal",
+    "note": "Private bookkeeping helper that caps a diagnostics map's distinct keys; not called by a game."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::MakeInvokeFaultKey",
+    "reason": "internal",
+    "note": "Private bookkeeping helper that builds the invoke-fault tally key; not called by a game."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::Percentile",
+    "reason": "internal",
+    "note": "Private nearest-rank percentile helper backing the p50/p95/max in DescribeNetStats; not called by a game."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::Reset",
+    "reason": "internal",
+    "note": "Zeroes the counters; a game reaches the same behavior through UCrowdyGameModelSubsystem::ResetNetStats, which is documented."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::TEXT",
+    "reason": "internal",
+    "note": "Not a member function: the surface exporter reads the TEXT() macro call inside MakeInvokeFaultKey as a method. No API to document."
+  },
+  {
+    "id": "FCrowdyCppOpStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge transport-level per-operation stats row behind FCrowdyCppClient::GetStats, one layer under UCrowdyGameModelSubsystem::GetOpStats; not a type a game touches directly."
+  },
+  {
+    "id": "FCrowdyCppTransportStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge transport totals behind FCrowdyCppClient::GetStats, one layer under UCrowdyGameModelSubsystem::GetOpStats; not a type a game touches directly."
+  },
+  {
+    "id": "FCrowdyCppClient::GetStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal plumbing that UCrowdyGameModelSubsystem::GetOpStats reads; a game calls the subsystem method, which is documented."
+  },
+  {
+    "id": "FCrowdyCppClient::ResetStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal plumbing that UCrowdyGameModelSubsystem::ResetNetStats calls; a game calls the subsystem method, which is documented."
+  },
+  {
+    "id": "FCrowdyCppClient::GetLastTestRequestBody",
+    "reason": "internal",
+    "note": "Test-only: reports the body of the last request a MakeForTest client sent, for a headless test to assert against. No real client ever returns true from it."
+  },
+  {
+    "id": "FCrowdyCppClient::SetTestStampsHandOff",
+    "reason": "internal",
+    "note": "Test-only: makes a MakeForTest client fill the sdk/http latency split as the real transport does, for a stats headless test. No-op on a real client."
+  },
+  {
+    "id": "CrowdyPlayerFaultBlameToWord",
+    "reason": "internal",
+    "note": "The canonical word for a fault blame value, used to build the crowdy.gamemodel.stats invoke-fault key; the documented surface is the stats output, not this formatter."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::RecordBound",
+    "reason": "internal",
+    "note": "Private bookkeeping that records a bound entity for the re-resolve count behind crowdy.gamemodel.stats; not called by a game."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::FormatFailureReasons",
+    "reason": "internal",
+    "note": "Formats the per-operation failure-reason breakdown into the crowdy.gamemodel.stats log line; the shape (\"CODE xN, CODE xM\") is described in prose on Change pings and pull, not as an API a game calls."
+  },
+  {
+    "id": "CrowdyCppBusyRetryDelaySeconds",
+    "reason": "internal",
+    "note": "The busy-retry backoff curve behind crowdy.net.retry.busy, pure and static so it is table-testable; the behavior (3 retries, the server's wait plus jitter, else doubling) is described in prose on What's Changed, not as an API a game calls."
+  },
+  {
+    "id": "CrowdyCppIsBusyRetryEnabled",
+    "reason": "internal",
+    "note": "Reads the crowdy.net.retry.busy console variable for the retry path; a game reads the documented cvar itself rather than this accessor."
+  },
+  {
+    "id": "FCrowdyCppClient::GetTestNextRetryDueSeconds",
+    "reason": "internal",
+    "note": "Test-only: when the soonest parked busy retry falls due, for a headless test to advance time onto it. No production caller."
+  },
+  {
+    "id": "FCrowdyCppClient::NumTestWaitingRetries",
+    "reason": "internal",
+    "note": "Test-only: how many requests are parked waiting out a busy-retry backoff, for a headless test to assert against. No production caller."
+  },
+  {
+    "id": "FCrowdyContainerPull",
+    "reason": "internal",
+    "note": "Private bookkeeping for one container's in-flight pull (held waiters, issued sequence, keys an invoke wrote since); the one-in-flight-pull behavior it backs is described in prose on Change pings and pull, not as a type a game touches."
   }
 ]
