@@ -71,7 +71,11 @@ When a host drops lines over its rate, the log gets one warning line saying how 
 
 `execVersions(appId)` lists every deploy, newest first, and marks the active one.
 `execActivateVersion(appId, version)` makes an earlier one active again, which is a rollback.
-Running instances pick it up when they next start, just as they do after a deploy.
+Running instances pick it up when they next start, just as they do after a deploy. A hub stops
+when it has been idle for its eviction window or the app has been empty that long, and one whose
+timer is pending doesn't go idle while players are in. To move such a hub now, switch its type
+off and on with the kill switch below: it persists, stops, and its next call starts it on the
+active version from its snapshot.
 
 ## The kill switch
 

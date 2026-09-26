@@ -112,8 +112,10 @@ same way, as [mods](mods).
 
 `execDeploy` takes the manifest as JSON and each module the app has not uploaded before (base64
 with its digest), or the id of a build whose modules the manifest names, and makes the new
-version active. Running instances pick it up when they next start. It needs the organization's
-`manage_compute` permission.
+version active. Running instances pick it up when they next start; a hub whose timer is pending
+doesn't go idle while players are in the app, so switch its type off and on to move it at once
+(see [operations](operations)). It needs the organization's `manage_compute` permission. Moving
+a game off the compute modules: [port a compute module](port-a-compute-module).
 
 ```graphql
 mutation {
