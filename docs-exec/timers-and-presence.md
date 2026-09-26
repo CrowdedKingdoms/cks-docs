@@ -51,6 +51,39 @@ fn on_timer(&mut self, ctx: &Ctx, name: &str) -> Result<()> {
   call's fuel and deadline.
 - An error returned from `on_timer` is logged; the timer stays as scheduled.
 
+### Cron schedules
+
+`ckx_sdk::cron` (`ckx-sdk` 0.7.0) reads the legacy automations' cron syntax. Parse the
+expression, arm its next run with `ctx.timer_cron`, and arm it again each time it fires:
+
+```rust
+const RESTOCK: &str = "0 */6 * * *"; // every six hours, on the hour (UTC)
+
+fn spawn(ctx: &Ctx, _seed: &[u8]) -> Result<Self> {
+    ctx.timer_cron("restock", &Cron::parse(RESTOCK)?)?;
+    Ok(Self::default())
+}
+
+fn on_timer(&mut self, ctx: &Ctx, name: &str) -> Result<()> {
+    if name == "restock" {
+        self.restock();
+        ctx.timer_cron("restock", &Cron::parse(RESTOCK)?)?;
+    }
+    Ok(())
+}
+```
+
+- Five fields (`minute hour day-of-month month day-of-week`), or six with seconds first. `*`,
+  `?`, lists, ranges and steps, month and day names, `L` (the month's last day), `5L` (its last
+  Friday), `1#2` (its second Monday), and `@yearly`, `@monthly`, `@weekly`, `@daily`, `@hourly`.
+- When both day fields are restricted, a day matches either one: `0 0 13 * 5` runs on the 13th
+  and on every Friday.
+- Times are UTC. `Cron::with_utc_offset(minutes)` shifts a schedule by a fixed offset; there are
+  no named time zones or daylight saving, and legacy had none either.
+- `Cron::next_after(ms)` is the next run after a time, for a hub that arms `timer_after` itself.
+- A run that came due while the hub was stopped fires once when it's back. The runs it missed are
+  skipped, not made up, as the legacy dispatcher skipped them.
+
 ## What keeps a hub running
 
 A hub runs while it is used, then persists and stops once it has been unused for its type's
@@ -122,6 +155,7 @@ second.
 |---|---|
 | Compute ticks (`tickHz`) | `ctx.timer_every` |
 | Automation schedules (`interval`) | `ctx.timer_every` |
+| Automation schedules (`cron`) | `ctx.timer_cron` with a `Cron` from `ckx_sdk::cron`, the same syntax |
 | `gameModelScheduleInvoke`, a function's `timers` effect | `ctx.timer_after` (the name is the dedupe key) |
 | `player_joined`, `player_left`, `player_count_changed` | `on_presence` on the root hub |
 | `gameModelActivePlayerCount` and its subscription | Publish the count from `on_presence`; clients subscribe |
