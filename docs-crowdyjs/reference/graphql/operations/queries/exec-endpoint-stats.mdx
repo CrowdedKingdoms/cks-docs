@@ -1,0 +1,49 @@
+---
+id: exec-endpoint-stats
+title: execEndpointStats
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Calls to each endpoint of an app's ck-exec code over the last minutes, by outcome, with their latency, most called first (dev-tier preview). Each execution host reports a minute once it ends; counters are kept 7 days. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
+
+
+```graphql
+execEndpointStats(
+  appId: BigInt!
+  nodeType: String
+  sinceMinutes: Int
+): [ExecEndpointStat!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>execEndpointStats.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app whose ck-exec code this is about.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execEndpointStats.<b>nodeType</b></code>](#node-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#node-type\} 
+Only this node type’s endpoints.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execEndpointStats.<b>sinceMinutes</b></code>](#since-minutes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#since-minutes\} 
+How far back the window reaches, in minutes: default 60, at most 10080 (the 7 days counters are kept).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ExecEndpointStat</b></code>](/reference/graphql/types/objects/exec-endpoint-stat.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Calls to one endpoint (a node type's method) of an app's ck-exec code over a window, by outcome (dev-tier preview). A client's or an instance's call is counted once, by the host it entered on, with the status its caller got; a platform event (`$timer`, `$topic`, `$presence`, `$session`, `$world`) is counted by the host that ran it. Counts are whole numbers.
