@@ -7,6 +7,13 @@ description: "The truth plane in one page: what a container, an attribute, a fun
 
 # Game Models Overview
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 Game Models hold the gameplay state the server is authoritative for: hit points, fuel, inventory, scores, anything a client must not be able to forge. A client never writes one. It reads the last value the server confirmed, asks the server to run a function that changes it, and re-reads when the server says something changed.
 
 ## When you reach for this section

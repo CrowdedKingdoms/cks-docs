@@ -7,6 +7,13 @@ description: What the Game Model page in Crowdy Studio does, in the order you us
 
 # Game Models Authoring
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 The Game Model page is where what you built in your project meets the server: it shows what the server currently holds for your app, what your project would change, and it is the one place a sync or a delete runs from. This page explains the Studio page; the building itself happens in your project, and the [Game Models section](../game-models/overview.md) teaches it.
 
 ## What the page is about, in two minutes

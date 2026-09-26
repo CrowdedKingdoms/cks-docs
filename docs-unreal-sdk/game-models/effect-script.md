@@ -7,6 +7,13 @@ description: "The language a Crowdy Effect's body is written in: what a script b
 
 # EffectScript
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 EffectScript is the small text language a Crowdy Effect's body is written in: a few `require` lines, assignments to the container's attributes, at most one `return`. The SDK parses and lowers it in the editor into the function definition the schema sync sends, and the server runs that function transactionally. This is the reference; [Authoring effects](./authoring-effects.md) is the walkthrough that uses it.
 
 ## What a script becomes

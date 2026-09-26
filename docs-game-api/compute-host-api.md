@@ -5,6 +5,14 @@ title: Compute host API
 
 # Compute host API
 
+:::caution Legacy engine
+This page describes the compute modules' host API, part of the game API's legacy engines. On the
+**dev** environment those engines are switched off (their calls answer `ENGINE_SWITCHED_OFF`)
+and [ck-exec](/exec/intro) replaces them: [from the legacy
+engines](/exec/from-the-legacy-engines#world-and-platform-data) maps each feature here to its
+ck-exec equivalent. The page is removed once ck-exec reaches every environment.
+:::
+
 This is the reference for everything a [Compute Module](/game-api/compute-modules)
 can call at runtime. The `crowdy-compute-sdk` crate exposes it in two layers:
 

@@ -10,6 +10,13 @@ import TabItem from '@theme/TabItem';
 
 # Ensured Identity
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A Game Model container is found, or created, by a key: the server's atomic get-or-create takes the key and every client that asks with the same key converges on one row. So the whole question of "which row is mine" is "which key do I derive", and the SDK answers it the same way on every client from the entity's identity. This page is where that identity comes from, when the engine cannot supply one and you author it, and how a component gets a row of its own.
 
 ## When you touch this

@@ -5,6 +5,14 @@ title: Player code and owned grids
 
 # Player code and owned grids
 
+:::caution Legacy engine
+This page describes server-side player code, part of the game API's legacy engines. On the
+**dev** environment those engines are switched off (their calls answer `ENGINE_SWITCHED_OFF`)
+and [ck-exec](/exec/intro) replaces them: [from the legacy
+engines](/exec/from-the-legacy-engines#player-code) maps each feature here to its ck-exec
+equivalent. The page is removed once ck-exec reaches every environment.
+:::
+
 Player code is the grid-confined counterpart to studio
 [Compute Modules](compute-modules). Studio modules are trusted by the app and
 run at **app scope**. Player server code can run **only inside a grid the player

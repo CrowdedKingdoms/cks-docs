@@ -5,6 +5,14 @@ title: Compute Engines
 
 # Compute Engines
 
+:::caution Legacy engine
+This page describes compute templates and engines, part of the game API's legacy engines. On the
+**dev** environment those engines are switched off (their calls answer `ENGINE_SWITCHED_OFF`)
+and [ck-exec](/exec/intro) replaces them: [from the legacy
+engines](/exec/from-the-legacy-engines#running-your-logic) maps each feature here to its ck-exec
+equivalent. The page is removed once ck-exec reaches every environment.
+:::
+
 Most games don't need to write a mob simulation from scratch. **Compute
 engines** are ready-made [Compute Modules](/game-api/compute-modules) built on
 the platform's `crowdy-game-kit` Rust crates — deploy one, seed a few model

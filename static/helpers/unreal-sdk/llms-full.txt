@@ -1756,6 +1756,13 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/studio/game-models-authoring
 
 # Game Models Authoring
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 The Game Model page is where what you built in your project meets the server: it shows what the server currently holds for your app, what your project would change, and it is the one place a sync or a delete runs from. This page explains the Studio page; the building itself happens in your project, and the [Game Models section](../game-models/overview.md) teaches it.
 
 ## What the page is about, in two minutes
@@ -4494,6 +4501,13 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/overview
 
 # Game Models Overview
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 Game Models hold the gameplay state the server is authoritative for: hit points, fuel, inventory, scores, anything a client must not be able to forge. A client never writes one. It reads the last value the server confirmed, asks the server to run a function that changes it, and re-reads when the server says something changed.
 
 ## When you reach for this section
@@ -4574,6 +4588,13 @@ Authoring the schema and pushing it to the server happens in Crowdy Studio; that
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/containers-and-attributes
 
 # Containers and Attributes
+
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
 
 A container is a class the server keeps a row of state for; an attribute is one property on it that the server owns. You declare both with metadata, the SDK binds the container to its entity when the entity registers, and from then on you read the last confirmed value and react to changes. This page goes deeper than the [Quickstart's](../quickstart.md) Game Model step, on the same `ULanternFuel` container.
 
@@ -4782,6 +4803,13 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/authoring-effect
 
 # Authoring Effects
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A Crowdy Effect is a data asset that compiles into exactly one server-side Game Model function: the container type it runs on, a short script in EffectScript, and the tuning parameters a caller may set. You author it in the asset's Details panel, watch it compile as you type, sync it to the server, and apply it from gameplay code. This page walks the panel top to bottom and builds the Lantern's refuel effect on the way; [EffectScript](./effect-script.md) is the language it is written in, and [Applying an effect from C++](./effects-cpp.md) and [from Blueprint](./effects-blueprint.md) are what happens next.
 
 ## Before you start
@@ -4895,6 +4923,13 @@ There is no test-invoke button. The tested route is: sync the effect, press Play
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/effect-script
 
 # EffectScript
+
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
 
 EffectScript is the small text language a Crowdy Effect's body is written in: a few `require` lines, assignments to the container's attributes, at most one `return`. The SDK parses and lowers it in the editor into the function definition the schema sync sends, and the server runs that function transactionally. This is the reference; [Authoring effects](./authoring-effects.md) is the walkthrough that uses it.
 
@@ -5161,6 +5196,13 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/effect-graph
 
 # Effect Graph
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A Crowdy Effect is a data asset that describes one server function: what it writes to a model's attributes, under which conditions, with which tuning parameters. The effect asset editor lets you author that function as a node graph, compile it locally, and sync it to the server.
 
 :::note[This is an asset editor, not a Crowdy Studio page.]
@@ -5243,6 +5285,13 @@ Compile, then read the **Deploy Payload** panel, then sync: the panel prints the
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/effects-cpp
 
 # Applying an Effect from C++
+
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
 
 A Crowdy Effect is a data asset that declares one server function: the container type it runs on, an EffectScript body, and the tuning parameters a caller may override. [Authoring effects](./authoring-effects.md) builds one and [EffectScript](./effect-script.md) is the language; this page applies the finished asset from C++. One apply is one invoke: the server runs the body transactionally, confirms the result to the caller, and nudges everyone else to re-pull. There is no direct setter on a Game Model attribute; this is the write path.
 
@@ -5405,6 +5454,13 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/effects-blueprin
 
 # Applying an Effect from Blueprint
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 Three nodes apply a Crowdy Effect from a graph. Each reads the effect asset you pick and reshapes itself around it: a typed pin per tuning parameter instead of a raw map, a Source pin only when the body reads `source.<attr>`, and, on the latent node, a typed Return Value pin decoded from the effect's declared return type. The asset comes from [Authoring effects](./authoring-effects.md); everything underneath the nodes is the same C++ surface [Applying an effect from C++](./effects-cpp.md) describes.
 
 ## When you touch this
@@ -5516,6 +5572,13 @@ An effect whose asset has **Coalesce Repeated Applies** on may be merged with ot
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/functions-and-return-values
 
 # Functions and Return Values
+
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
 
 A Game Model function is a named, transactional piece of logic on a container type. An effect asset declares one; **Call Model Function** runs one by name with whatever parameters you give it; and since a function can `return` a value, a call is also how a client asks the server a question. This page is the general call path and the return-value contract. The asset-driven apply is on [Applying an effect from C++](./effects-cpp.md) and [in Blueprint](./effects-blueprint.md).
 
@@ -5670,6 +5733,13 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/invoke-policies
 
 # Invoke Policies
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 Every Game Model function carries an invoke policy, a small boolean tree the server evaluates before the function runs. You author it on the effect asset as `require` lines, or as the equivalent gate on the graph front end; the compiler lowers it to JSON and the schema sync sends it. There is no runtime call that sets a policy, and there is no setting that turns enforcement off for a player, your own account included.
 
 ## When you touch this
@@ -5782,6 +5852,13 @@ A refused `require` rolls the whole invoke back before any assignment runs and l
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/automations
 
 # Automations
+
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
 
 An automation is a server-driven process: a function that runs on a schedule or in reaction to model activity, with no client calling it. A timer is one delayed invocation an effect arms when it commits. Both are authored on the Crowdy Effect asset, in its **Automation** section and its **Timers** list; Unreal code never creates one, it only reacts to what one writes.
 
@@ -5903,6 +5980,13 @@ A timer fires exactly once. A timer that re-arms itself is bounded one cascade l
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/coalescing
 
 # Coalescing
+
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
 
 Coalescing merges repeated applies of one effect to one target into a single server call, summing one numeric tuning parameter across a short window. It exists because the server admits a limited number of Game Model calls per player per app, about 120 per 10 seconds, and an autofire weapon or a held pour spends that allowance in seconds. It is off by default, it is authored on the effect asset, and it changes nothing about correctness when the effect's body is the right shape.
 
@@ -6053,6 +6137,13 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/collections
 
 # Collections and Free Containers
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A bound container belongs to an entity and resolves from the object you hold. A **free container** has no actor: an inventory, a quest, an item, a chest's contents. You create it, keep its id, and address it by that id ever after. A **collection** is a free container that owns other containers, as a set of edges of one relationship from the parent to its items, with the SDK keeping watchers informed when membership changes.
 
 ## When you touch this
@@ -6199,6 +6290,13 @@ A collection is one use of a general directed graph between containers, which th
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/pre-seeding
 
 # Pre-seeding Containers
+
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
 
 A level-placed object with a Game Model container binds a server row keyed from its identity. Without pre-seeding, the first client to reach that object creates the row; with it, the rows exist before anyone arrives. The editor scans the map into a manifest, and either Studio applies it at app scope or your game applies it at runtime into a session. Nothing about how a client binds changes; only who creates the row, and when.
 
@@ -6359,6 +6457,13 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/ensured-identity
 
 # Ensured Identity
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A Game Model container is found, or created, by a key: the server's atomic get-or-create takes the key and every client that asks with the same key converges on one row. So the whole question of "which row is mine" is "which key do I derive", and the SDK answers it the same way on every client from the entity's identity. This page is where that identity comes from, when the engine cannot supply one and you author it, and how a component gets a row of its own.
 
 ## When you touch this
@@ -6464,6 +6569,13 @@ An entity that keeps sweeping and never binds is usually a type nobody may creat
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/kits
 
 # Game Kits
+
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
 
 A kit is a slice of Game Model schema, container types, attributes, policy-gated functions, and the automations that tick them, that an app deploys in one step instead of authoring by hand. Four ship as layer presets today: Combat, Living World, Leaderboards, and Guild. Inventory ships as schema only, with no runtime nodes yet. After a deploy your game calls the kit's functions through ordinary latent nodes, and everything you already know about containers, effects, and pings applies to what the kit created.
 
@@ -6675,6 +6787,13 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/change-pings-and
 
 # Change Pings and Pull
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A Game Model change reaches a client in two steps: a notification that says "this container changed" and carries no value, then a pull of the container's confirmed state. Every carrier the notification can ride funnels into the same re-pull, so there is one apply path, and your code sees the result through a `CrowdyOnRep` or a change delegate. This page is the client side of [Reacting to changes](/game-api/game-models#reacting-to-changes) on the Game API.
 
 ## When you touch this
@@ -6812,6 +6931,13 @@ If the feed shows the change and the trace shows no pull, the client never recog
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/game-models/sessions
 
 # Sessions
+
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
 
 A Game Model session is a group of players playing together, as the server records it: your match, room, lobby, or table. The record holds a roster, an admission rule, a seat cap, a host, presence, a turn, and a revision counter, and Game Model state created during play belongs to it. Every Game Model call takes a `SessionId`, and the SDK remembers an active session so most of them can leave it empty. [Sessions and Presence](../concepts/sessions-and-presence.md) is the concept; this page is the Unreal surface, every callable of it.
 
@@ -10052,6 +10178,13 @@ enforces this in Blueprint; hand-written C++ metadata carrying both keys is reje
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/game-model-meta-keys
 
 # Game Model Metadata Keys
+
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
 
 This page lists the metadata that declares a Game Model container type and its attributes on the
 server-authoritative truth plane. A property lives in exactly one plane, so a variable is either

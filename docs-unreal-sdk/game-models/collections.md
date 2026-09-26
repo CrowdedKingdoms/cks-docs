@@ -10,6 +10,13 @@ import TabItem from '@theme/TabItem';
 
 # Collections and Free Containers
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A bound container belongs to an entity and resolves from the object you hold. A **free container** has no actor: an inventory, a quest, an item, a chest's contents. You create it, keep its id, and address it by that id ever after. A **collection** is a free container that owns other containers, as a set of edges of one relationship from the parent to its items, with the SDK keeping watchers informed when membership changes.
 
 ## When you touch this

@@ -7,6 +7,13 @@ description: "How a Game Model function decides who may call it: the require lin
 
 # Invoke Policies
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 Every Game Model function carries an invoke policy, a small boolean tree the server evaluates before the function runs. You author it on the effect asset as `require` lines, or as the equivalent gate on the graph front end; the compiler lowers it to JSON and the schema sync sends it. There is no runtime call that sets a policy, and there is no setting that turns enforcement off for a player, your own account included.
 
 ## When you touch this

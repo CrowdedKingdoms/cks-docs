@@ -5,6 +5,15 @@ title: "Compute tutorial: zero to a live module"
 
 # Compute tutorial: zero to a live module
 
+:::caution Legacy engine
+This page describes writing a compute module, part of the game API's legacy engines. On the
+**dev** environment those engines are switched off (their calls answer `ENGINE_SWITCHED_OFF`)
+and [ck-exec](/exec/intro) replaces them: [from the legacy
+engines](/exec/from-the-legacy-engines#running-your-logic) maps each feature here to its ck-exec
+equivalent. [Port a compute module](/exec/port-a-compute-module) walks through a real one moved
+to ck-exec. The page is removed once ck-exec reaches every environment.
+:::
+
 This is the fastest path from nothing to **server-side code running on your
 game's servers** — budget 30 minutes end to end, most of it reading. It uses
 [CrowdyJS](/crowdyjs/intro), the same package your game client already installs, and

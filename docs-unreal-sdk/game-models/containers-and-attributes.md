@@ -10,6 +10,13 @@ import TabItem from '@theme/TabItem';
 
 # Containers and Attributes
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A container is a class the server keeps a row of state for; an attribute is one property on it that the server owns. You declare both with metadata, the SDK binds the container to its entity when the entity registers, and from then on you read the last confirmed value and react to changes. This page goes deeper than the [Quickstart's](../quickstart.md) Game Model step, on the same `ULanternFuel` container.
 
 ## When you touch this

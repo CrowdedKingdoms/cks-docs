@@ -5,6 +5,14 @@ title: Model-driven notifications
 
 # Model-driven realtime notifications
 
+:::caution Legacy engine
+This page describes game-model notifications, part of the game API's legacy engines. On the
+**dev** environment those engines are switched off (their calls answer `ENGINE_SWITCHED_OFF`)
+and [ck-exec](/exec/intro) replaces them: [from the legacy
+engines](/exec/from-the-legacy-engines#realtime) maps each feature here to its ck-exec
+equivalent. The page is removed once ck-exec reaches every environment.
+:::
+
 [Game model functions](game-models) mutate server state when they are invoked —
 by a player (`gameModelInvoke`) or by an [automation / NPC](autonomous-processes).
 **Notification effects** let a function also **push a realtime notification to

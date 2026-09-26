@@ -7,6 +7,13 @@ description: Author a Crowdy Effect's server function as a node graph in the eff
 
 # Effect Graph
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A Crowdy Effect is a data asset that describes one server function: what it writes to a model's attributes, under which conditions, with which tuning parameters. The effect asset editor lets you author that function as a node graph, compile it locally, and sync it to the server.
 
 :::note[This is an asset editor, not a Crowdy Studio page.]

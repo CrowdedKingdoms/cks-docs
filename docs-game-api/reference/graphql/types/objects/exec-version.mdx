@@ -25,6 +25,7 @@ type ExecVersion {
   createdAt: DateTime!
   types: Int!
   active: Boolean!
+  manifestJson: String
 }
 ```
 
@@ -49,6 +50,10 @@ Node types in its manifest.
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecVersion.<b>active</b></code>](#active)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#active\} 
 Whether it is the active version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecVersion.<b>manifestJson</b></code>](#manifest-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#manifest-json\} 
+The deployed manifest as JSON: the root and each node type with its kind, parent, client access, calls, node API scopes and limits. A type’s spawn seed is replaced by its size in bytes (`seed_bytes`). Null if the version’s row is gone.
 
 
 

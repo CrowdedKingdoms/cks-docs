@@ -21,7 +21,9 @@ CrowdyJS wraps both as `client.host.get(appId)` and `client.host.amIHost(appId)`
 concurrency. For the app-wide gauge of active app-scoped gameplay sessions,
 use
 [`gameModelActivePlayerCount`](game-models#active-player-count-app-scoped-sessions);
-that gauge is neither a distinct-user count nor a host/actor count.
+that gauge is neither a distinct-user count nor a host/actor count. On ck-exec (dev), the app's
+root hub hears the same count in `on_presence` and publishes it on a topic players subscribe
+to; see [presence](/exec/timers-and-presence#presence).
 :::
 
 :::important[UI convenience vs authoritative gating]

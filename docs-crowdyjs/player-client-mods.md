@@ -5,6 +5,15 @@ title: Crowdy Studio & player client mods
 
 # Crowdy Studio and player client mods
 
+:::caution Legacy engine
+This page describes Crowdy Studio and player mods on the game API's legacy player-code engine.
+On the **dev** environment that engine is switched off: Crowdy Studio's SERVER target deploys a
+[ck-exec mod](/exec/mods) instead (the default from CrowdyJS 17.13.0), and a new CLIENT-target
+deploy is refused with `ENGINE_SWITCHED_OFF` until client builds move to the ck-exec builder;
+client modules already built keep loading. [From the legacy
+engines](/exec/from-the-legacy-engines#player-code) maps the rest.
+:::
+
 CrowdyJS hosts Crowdy Studio and the browser half of
 [player code](/game-api/player-code): client-target player mods run **as the
 actual player**, sandboxed in the page, and the mountable authoring panel

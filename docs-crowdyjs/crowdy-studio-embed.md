@@ -5,6 +5,15 @@ title: Embed Crowdy Studio in your game
 
 # Embed Crowdy Studio in your game
 
+:::caution Legacy engine
+This page describes embedding Crowdy Studio on the game API's legacy player-code engine. On the
+**dev** environment that engine is switched off: Crowdy Studio's SERVER target deploys a
+[ck-exec mod](/exec/mods) instead (the default from CrowdyJS 17.13.0), and a new CLIENT-target
+deploy is refused with `ENGINE_SWITCHED_OFF` until client builds move to the ck-exec builder;
+client modules already built keep loading. [From the legacy
+engines](/exec/from-the-legacy-engines#player-code) maps the rest.
+:::
+
 CrowdyJS ships the **Crowdy Studio embed kit**: the window chrome that
 proved out in Blocks with Friends, packaged as game-agnostic components. A game
 no longer hand-rolls a dock, fullscreen fallback, focus trap, context drawer,

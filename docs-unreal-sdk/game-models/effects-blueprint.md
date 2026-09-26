@@ -10,6 +10,13 @@ import TabItem from '@theme/TabItem';
 
 # Applying an Effect from Blueprint
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 Three nodes apply a Crowdy Effect from a graph. Each reads the effect asset you pick and reshapes itself around it: a typed pin per tuning parameter instead of a raw map, a Source pin only when the body reads `source.<attr>`, and, on the latent node, a typed Return Value pin decoded from the effect's declared return type. The asset comes from [Authoring effects](./authoring-effects.md); everything underneath the nodes is the same C++ surface [Applying an effect from C++](./effects-cpp.md) describes.
 
 ## When you touch this

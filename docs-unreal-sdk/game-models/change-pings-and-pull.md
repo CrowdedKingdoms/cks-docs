@@ -10,6 +10,13 @@ import TabItem from '@theme/TabItem';
 
 # Change Pings and Pull
 
+:::caution Legacy engine
+The Unreal SDK's game-model support runs on the game API's legacy game-model engine, which is
+switched off on the **dev** environment (its calls answer `ENGINE_SWITCHED_OFF`). The Unreal SDK
+moves to [ck-exec](/exec/intro) in a later release; until then, this page applies to the other
+environments only.
+:::
+
 A Game Model change reaches a client in two steps: a notification that says "this container changed" and carries no value, then a pull of the container's confirmed state. Every carrier the notification can ride funnels into the same re-pull, so there is one apply path, and your code sees the result through a `CrowdyOnRep` or a change delegate. This page is the client side of [Reacting to changes](/game-api/game-models#reacting-to-changes) on the Game API.
 
 ## When you touch this

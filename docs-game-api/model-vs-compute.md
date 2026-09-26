@@ -5,6 +5,14 @@ title: Choosing Game APIs
 
 # Choosing Game APIs
 
+:::caution Legacy engine
+This page describes the choice between game models and compute modules, part of the game API's
+legacy engines. On the **dev** environment those engines are switched off (their calls answer
+`ENGINE_SWITCHED_OFF`) and [ck-exec](/exec/intro) replaces them: [from the legacy
+engines](/exec/from-the-legacy-engines) maps each feature here to its ck-exec equivalent. The
+page is removed once ck-exec reaches every environment.
+:::
+
 Crowded Kingdoms has five complementary implementation tiers. Most
 production features use more than one:
 
