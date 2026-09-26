@@ -32,6 +32,7 @@ enum PlayerFaultCode {
   SPEND_CAP_REACHED
   CIRCUIT_OPEN
   TEMPORARILY_DISABLED
+  ENGINE_SWITCHED_OFF
   INVALID_REQUEST
   NOT_ALLOWED
   NOT_FOUND
@@ -90,6 +91,10 @@ The app's own circuit is open after repeated failures. Retry after extensions.re
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>TEMPORARILY&#x005F;DISABLED</b></code>](#temporarily-disabled) \{#temporarily-disabled\} 
 An operator switch, a latch, or a platform hold. An open author circuit is CIRCUIT&#x005F;OPEN, not this code.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>ENGINE&#x005F;SWITCHED&#x005F;OFF</b></code>](#engine-switched-off) \{#engine-switched-off\} 
+The engine this call needs is switched off on this tier, so the app's code does not run here. An operator's switch: retrying will not turn it back on, and the code's home is ck-exec.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerFaultCode.<b>INVALID&#x005F;REQUEST</b></code>](#invalid-request) \{#invalid-request\} 

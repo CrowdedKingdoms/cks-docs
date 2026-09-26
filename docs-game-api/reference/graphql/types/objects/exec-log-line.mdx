@@ -26,6 +26,7 @@ type ExecLogLine {
   level: Int!
   host: String!
   at: DateTime!
+  flow: String
   text: String!
 }
 ```
@@ -55,6 +56,10 @@ The execution host it ran on.
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecLogLine.<b>at</b></code>](#at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#at\} 
 When the instance logged it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecLogLine.<b>flow</b></code>](#flow)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#flow\} 
+The flow of the call the instance was handling, as 32 lowercase hex digits. A client’s call and everything it causes (the calls it makes to other hubs, on any host, and the lines they log) share one flow; pass it as `flow` to `execLogs` to follow the chain. Null for a line written outside a call (start, snapshot, stop).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecLogLine.<b>text</b></code>](#text)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#text\} 

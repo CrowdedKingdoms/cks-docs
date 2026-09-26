@@ -26,6 +26,7 @@ execLogs(
   maxLevel: Int
   before: String
   limit: Int
+  flow: String
 ): [ExecLogLine!]!
 ```
 
@@ -54,6 +55,10 @@ Only lines older than this line id, to page back.
 
 #### [<code style={{ fontWeight: 'normal' }}>execLogs.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
 At most this many lines (default 100, at most 500).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execLogs.<b>flow</b></code>](#flow)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#flow\} 
+Only lines of this flow: the 32 hex digits a line’s `flow` shows (any case). Follows one client call through every hub and host it reached.
 
 
 

@@ -1,0 +1,98 @@
+---
+id: exec-endpoint-stat
+title: ExecEndpointStat
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Calls to one endpoint (a node type's method) of an app's ck-exec code over a window, by outcome (dev-tier preview). A client's or an instance's call is counted once, by the host it entered on, with the status its caller got; a platform event (`$timer`, `$topic`, `$presence`, `$session`, `$world`) is counted by the host that ran it. Counts are whole numbers.
+
+
+```graphql
+type ExecEndpointStat {
+  nodeType: String!
+  method: String!
+  calls: Float!
+  appErrors: Float!
+  busy: Float!
+  denied: Float!
+  deadlineExceeded: Float!
+  otherErrors: Float!
+  timedCalls: Float!
+  latencyMsAvg: Float
+  latencyMsMax: Float
+  firstMinute: DateTime!
+  lastMinute: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecEndpointStat.<b>nodeType</b></code>](#node-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#node-type\} 
+The node type called; `(other)` for calls to endpoints past the 256 one host counts per app a minute.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecEndpointStat.<b>method</b></code>](#method)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#method\} 
+The method called; a `$` method is a platform event, and `(other)` as for `nodeType`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecEndpointStat.<b>calls</b></code>](#calls)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#calls\} 
+Calls in the window.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecEndpointStat.<b>appErrors</b></code>](#app-errors)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-errors\} 
+Calls the handler answered with an error (`AppError`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecEndpointStat.<b>busy</b></code>](#busy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#busy\} 
+Calls refused as busy: a full mailbox, the root hub’s call rate, or the caller’s call limit (120 calls per 10 seconds per player and app on a host, refused `Busy` with a message starting "rate limited").
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecEndpointStat.<b>denied</b></code>](#denied)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#denied\} 
+Calls refused as not allowed (`Denied`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecEndpointStat.<b>deadlineExceeded</b></code>](#deadline-exceeded)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#deadline-exceeded\} 
+Calls not answered before their deadline (`DeadlineExceeded`).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecEndpointStat.<b>otherErrors</b></code>](#other-errors)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#other-errors\} 
+Calls that failed otherwise: not found, unavailable, trapped, moved, internal or a bad request.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecEndpointStat.<b>timedCalls</b></code>](#timed-calls)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#timed-calls\} 
+Calls a handler answered (`Ok` or `AppError`); the latencies are over these.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecEndpointStat.<b>latencyMsAvg</b></code>](#latency-ms-avg)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#latency-ms-avg\} 
+The timed calls’ average latency in milliseconds. For a client’s or an instance’s call it runs from reaching the host the call entered on to its answer leaving that host: queueing, the handler, and any hop to the host that runs the target. For a platform event it is the time in the handler. Null when no call was timed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecEndpointStat.<b>latencyMsMax</b></code>](#latency-ms-max)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#latency-ms-max\} 
+The longest of those latencies in milliseconds; null when no call was timed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecEndpointStat.<b>firstMinute</b></code>](#first-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#first-minute\} 
+The first minute of the window with calls.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecEndpointStat.<b>lastMinute</b></code>](#last-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#last-minute\} 
+The last minute of the window with calls. Each host reports a minute once it ends.
+
+
+
+
+### Returned By
+
+[`execEndpointStats`](/reference/graphql/operations/queries/exec-endpoint-stats.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
