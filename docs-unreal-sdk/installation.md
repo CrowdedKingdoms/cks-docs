@@ -20,9 +20,9 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 ## Step 1: Get the release
 
-Download the `v2.16.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+Download the `v2.17.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
 
-:::note[The release you install must match the version this guide describes (2.16).]
+:::note[The release you install must match the version this guide describes (2.17).]
 :::
 
 ## Step 2: Place the plugin at `Plugins/CrowdySDK`
@@ -106,7 +106,7 @@ Or from a command line, which is what a build machine runs:
 "C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat" YourProjectEditor Win64 Development -Project="C:\Path\To\YourProject.uproject" -WaitMutex
 ```
 
-The first build compiles the whole plugin and takes a few minutes. The log ends with `Link [x64] UnrealEditor-CrowdyStudio.dll` and `Result: Succeeded`. Expect a few warnings from a third-party header inside the plugin (a `C4324` padding warning from the vendored client's `spsc.hpp`, and two `CS0618` obsolete-property warnings from its `Build.cs`); they are harmless and repeat on every build.
+The first build compiles the whole plugin and takes a few minutes. The log ends with `Link [x64] UnrealEditor-CrowdyStudio.dll` and `Result: Succeeded`. Expect a few warnings from a third-party header inside the plugin (a `C4324` padding warning from the vendored client's `spsc.hpp`, and, on the tagged v2.17.0 plugin, two `CS0618` obsolete-property warnings from its `Build.cs`); they are harmless and repeat on every build.
 
 Once it compiles, the SDK subsystems are available in both C++ and Blueprint.
 

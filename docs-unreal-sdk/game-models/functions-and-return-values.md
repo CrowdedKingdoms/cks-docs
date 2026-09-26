@@ -40,7 +40,7 @@ Three entry points, all in category **Crowdy SDK, Game Model, Advanced**:
 `Succeeded` fires only on a committed call: it reached the server and passed the function's rules. A transport failure and a server-side rollback both route to `Failed`, still carrying `bSuccess` and `ErrorMessage`, so a refused rule is distinguishable from a lost packet without `Succeeded` ever firing on a rejected write.
 
 :::warning[`ErrorMessage` on `Failed` is a player-safe sentence, not the require leaf.]
-A policy refusal arrives as `Failed` with `ErrorMessage` overwritten to **You are not allowed to do that.** The leaf the policy actually failed — owner, host, participant, a condition — is not on that pin. The Unreal outcome is `(bSuccess, ReturnValueJson, ErrorMessage)`; it does not carry `fault.code`. Read the leaf from `gameModelEvents`, Studio's Advanced event log, or `crowdy.gamemodel.trace`. Do not treat the sentence as the leaf name. [Error codes](/overview/error-codes).
+A policy refusal arrives as `Failed` with `ErrorMessage` overwritten to **You are not allowed to do that.** The leaf the policy actually failed (owner, host, participant, a condition) is not on that pin. The Unreal outcome is `(bSuccess, ReturnValueJson, ErrorMessage)`; it does not carry `fault.code`. Read the leaf from `gameModelEvents`, Studio's Advanced event log, or `crowdy.gamemodel.trace`. Do not treat the sentence as the leaf name. [Error codes](/overview/error-codes).
 :::
 
 <Tabs groupId="lang">
