@@ -110,10 +110,13 @@ worked example, see [port a compute module](port-a-compute-module).
 | Legacy | ck-exec | Page |
 |---|---|---|
 | Player server modules (`playerComputeDeploy`, run as the grid owner) | Mods: `execModBuild`, `execModDeploy`, in the owner's own sandbox, confined to the grid | [Mods](mods) |
-| Player client modules (browser WASM) | Unchanged; they can call hubs through the gateway. On dev, a new CLIENT-target deploy is refused with `ENGINE_SWITCHED_OFF` until client builds move to the ck-exec builder; client modules already built keep loading | [Mods](mods) |
+| Player client modules (browser WASM, `playerComputeDeploy` with the CLIENT target) | A mod's CLIENT half: one `crowdy-client-sdk` crate, built with `execModClientBuild` and attached with `execModClientDeploy`. On dev a new legacy CLIENT-target deploy is refused with `ENGINE_SWITCHED_OFF`; client modules already built keep loading until the legacy engines are removed | [CLIENT halves](client-halves) |
+| Grid-attached client mods (`gridClientMods`, `consentGridClientMod`, `trustGridAuthor`, `playerCodeClientArtifact`) | `execGridClientMods`, `execConsentClientMod`, `execTrustAuthor`, `execModClientArtifact`; CrowdyJS `ExecClientHalves` runs a grid's | [CLIENT halves](client-halves#serving-it-to-visitors) |
+| A server module that requires a client module (`playerComputeSetRequires`) | Nothing to pair: a CLIENT half belongs to its mod | [Mods](mods#client-halves) |
 | Player models and player automations | A mod's own state and timers, and its grid's world events | [Mods](mods) |
-| `publishPlayerCode`, `acquirePlayerCode`, `installPlayerCode` | `execModPublish`, `execModListings`, `execModInstall` (no payments yet) | [Mods](mods) |
+| `publishPlayerCode`, `acquirePlayerCode`, `installPlayerCode`, bundled listings | `execModPublish`, `execModListings`, `execModInstall` (no payments yet); a listing carries the mod's CLIENT half | [Mods](mods#the-marketplace-no-payments) |
 | Crowdy Studio deploying a SERVER target | The SERVER target as a mod (`serverEngine: 'ck-exec'`, the default from CrowdyJS 17.13.0) | [Mods](mods) |
+| Crowdy Studio deploying a CLIENT target | The CLIENT target as that mod's CLIENT half (CrowdyJS 17.14.0) | [CLIENT halves](client-halves#crowdy-studios-client-target) |
 
 ## Tools
 

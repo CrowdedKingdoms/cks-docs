@@ -118,6 +118,9 @@ from the cache.
 - The module may import only the ck-exec guest ABI, which is what `ckx-sdk` uses, and must
   export what `export_hub!` or `export_spoke!` generates.
 
+A mod's [CLIENT half](client-halves#the-crate) is built from one `crowdy-client-sdk` crate under
+the same rules, with its own dependency list, and runs in browsers rather than on ck-exec.
+
 ### Limits
 
 | | |
@@ -217,3 +220,4 @@ mobs and NPCs this way.
 | Game-model schemas: container types, typed properties, `visibility` | `ckx_sdk::model` in a hub |
 | The Game Kit (`client.kit(appId).deploy`) | The starter packs |
 | `playerComputeDeploy` (players' server code) | [Mods](mods): `execModBuild`, then `execModDeploy` |
+| `playerComputeDeploy` with the CLIENT target (players' browser code) | [CLIENT halves](client-halves): `execModClientBuild`, then `execModClientDeploy` |
