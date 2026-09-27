@@ -10,7 +10,7 @@ description: "A tour of crowdy-sdk-sample: the interact-switch pattern, the eigh
 `crowdy-sdk-sample` is a small, real Unreal project that demonstrates the SDK feature by feature. Each feature is a switch you walk into: the switch fires, the feature runs, and you watch the result replicate across two Play in Editor clients.
 
 :::note[This tour targets SDK 2.1.0, not the current SDK]
-The plugin copy bundled in the repo is 2.1.0 (`Plugins/CrowdySDK/CrowdySDK.uplugin`), the release that introduced the current `GetCrowdyHasAuthority` name. It predates the Game Models section and this site's own CrowdyState pages. The repo's README documents a few 2.1.0 additions, property replication on CrowdyState, replicated subsystems, host and ownership fields, as already present in the bundled plugin code, but none of the switches below exercise them, so this page does not either. For the current shapes, follow the Lantern in the [Quickstart](../quickstart.md).
+The plugin copy bundled in the repo is 2.1.0 (`Plugins/CrowdySDK/CrowdySDK.uplugin`), the release that introduced the current `GetCrowdyHasAuthority` name. It predates this site's own CrowdyState pages. The repo's README documents a few 2.1.0 additions, property replication on CrowdyState, replicated subsystems, host and ownership fields, as already present in the bundled plugin code, but none of the switches below exercise them, so this page does not either. For the current shapes, follow the Lantern in the [Quickstart](../quickstart.md).
 :::
 
 The code lives in the `CrowdySDKTest` module, under `Source/CrowdySDKTest/Public|Private/Sample`.

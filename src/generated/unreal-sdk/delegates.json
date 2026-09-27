@@ -229,9 +229,9 @@
       "type": "FCrowdyEdgeOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyAddEdgeAction::Succeeded",
@@ -240,9 +240,9 @@
       "type": "FCrowdyEdgeOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyAddToCollectionAction::Failed",
@@ -251,9 +251,9 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyAddToCollectionAction::Succeeded",
@@ -262,9 +262,9 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyApplyContainerManifestAction::Failed",
@@ -273,9 +273,9 @@
       "type": "FCrowdyApplyManifestOutcome",
       "category": "Crowdy SDK|Game Model|Containers",
       "module": "CrowdyReplication",
-      "page": "game-models/pre-seeding",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyApplyContainerManifestAction::Succeeded",
@@ -284,9 +284,9 @@
       "type": "FCrowdyApplyManifestOutcome",
       "category": "Crowdy SDK|Game Model|Containers",
       "module": "CrowdyReplication",
-      "page": "game-models/pre-seeding",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyApplyEffectAction::Failed",
@@ -295,9 +295,9 @@
       "type": "FCrowdyApplyEffectOutcome",
       "category": "Crowdy SDK|Game Model|Effects",
       "module": "CrowdyReplication",
-      "page": "game-models/effects-blueprint",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyApplyEffectAction::Succeeded",
@@ -306,9 +306,9 @@
       "type": "FCrowdyApplyEffectOutcome",
       "category": "Crowdy SDK|Game Model|Effects",
       "module": "CrowdyReplication",
-      "page": "game-models/effects-blueprint",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyApplyStatusEffectAction::Failed",
@@ -317,9 +317,9 @@
       "type": "FCrowdyApplyStatusEffectOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyApplyStatusEffectAction::Succeeded",
@@ -328,9 +328,9 @@
       "type": "FCrowdyApplyStatusEffectOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyCombatAttackAction::Failed",
@@ -339,9 +339,9 @@
       "type": "FCrowdyCombatAttackOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyCombatAttackAction::Succeeded",
@@ -350,9 +350,9 @@
       "type": "FCrowdyCombatAttackOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyCreateDataContainerAction::Failed",
@@ -361,9 +361,9 @@
       "type": "FCrowdyContainerIdOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyCreateDataContainerAction::Succeeded",
@@ -372,9 +372,9 @@
       "type": "FCrowdyContainerIdOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyCreateModelItemAction::Failed",
@@ -383,9 +383,9 @@
       "type": "FCrowdyContainerIdOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyCreateModelItemAction::Succeeded",
@@ -394,9 +394,9 @@
       "type": "FCrowdyContainerIdOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyCreateSessionAction::Failed",
@@ -405,9 +405,9 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyCreateSessionAction::Succeeded",
@@ -416,9 +416,9 @@
       "type": "FCrowdySessionOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyDeleteContainerAction::Failed",
@@ -427,9 +427,9 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyDeleteContainerAction::Succeeded",
@@ -438,9 +438,9 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyDeleteEdgeAction::Failed",
@@ -449,9 +449,9 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyDeleteEdgeAction::Succeeded",
@@ -460,9 +460,9 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyEndSessionAction::Failed",
@@ -471,9 +471,9 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyEndSessionAction::Succeeded",
@@ -482,9 +482,9 @@
       "type": "FCrowdySessionOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyEnsureLeaderboardEntryAction::Failed",
@@ -493,9 +493,9 @@
       "type": "FCrowdyEnsureLeaderboardEntryOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Leaderboards",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyEnsureLeaderboardEntryAction::Succeeded",
@@ -504,9 +504,9 @@
       "type": "FCrowdyEnsureLeaderboardEntryOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Leaderboards",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyEntityComponent::OnCrowdyDestroyed",
@@ -592,9 +592,9 @@
       "type": "FCrowdySignalReceived",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/change-pings-and-pull",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGameModelSubsystem::OnDataContainerChanged",
@@ -603,9 +603,9 @@
       "type": "FCrowdyDataContainerChanged",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/change-pings-and-pull",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGameModelSubsystem::OnModelAttributeChanged",
@@ -614,9 +614,9 @@
       "type": "FCrowdyModelAttributeChanged",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/change-pings-and-pull",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGameModelSubsystem::OnSessionChanged",
@@ -625,9 +625,9 @@
       "type": "FCrowdyOnSessionChanged",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/change-pings-and-pull",
+      "page": "guides/whats-changed",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGatherNodeAction::Failed",
@@ -636,9 +636,9 @@
       "type": "FCrowdyGatherNodeOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGatherNodeAction::Succeeded",
@@ -647,9 +647,9 @@
       "type": "FCrowdyGatherNodeOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetCollectionAction::Failed",
@@ -658,9 +658,9 @@
       "type": "FCrowdyContainerRefsOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetCollectionAction::Succeeded",
@@ -669,9 +669,9 @@
       "type": "FCrowdyContainerRefsOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetCollectionWithStateAction::Failed",
@@ -680,9 +680,9 @@
       "type": "FCrowdyCollectionItemsOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetCollectionWithStateAction::Succeeded",
@@ -691,9 +691,9 @@
       "type": "FCrowdyCollectionItemsOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetCombatantStateAction::Failed",
@@ -702,9 +702,9 @@
       "type": "FCrowdyGetCombatantStateOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetCombatantStateAction::Succeeded",
@@ -713,9 +713,9 @@
       "type": "FCrowdyGetCombatantStateOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetLeaderboardAction::Failed",
@@ -724,9 +724,9 @@
       "type": "FCrowdyGetLeaderboardOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Leaderboards",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetLeaderboardAction::Succeeded",
@@ -735,9 +735,9 @@
       "type": "FCrowdyGetLeaderboardOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Leaderboards",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetSessionAction::Failed",
@@ -746,9 +746,9 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetSessionAction::Succeeded",
@@ -757,9 +757,9 @@
       "type": "FCrowdySessionOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetSessionEventsAction::Failed",
@@ -768,9 +768,9 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetSessionEventsAction::Succeeded",
@@ -779,9 +779,9 @@
       "type": "FCrowdySessionEventsOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetSessionSnapshotAction::Failed",
@@ -790,9 +790,9 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetSessionSnapshotAction::Succeeded",
@@ -801,9 +801,9 @@
       "type": "FCrowdySessionSnapshotOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetWorldStateAction::Failed",
@@ -812,9 +812,9 @@
       "type": "FCrowdyGetWorldStateOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetWorldStateAction::Succeeded",
@@ -823,9 +823,9 @@
       "type": "FCrowdyGetWorldStateOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyHarvestCropAction::Failed",
@@ -834,9 +834,9 @@
       "type": "FCrowdyHarvestCropOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyHarvestCropAction::Succeeded",
@@ -845,9 +845,9 @@
       "type": "FCrowdyHarvestCropOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyInvokeModelFunctionAction::Failed",
@@ -856,9 +856,9 @@
       "type": "FCrowdyCallModelFunctionOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/functions-and-return-values",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyInvokeModelFunctionAction::Succeeded",
@@ -867,9 +867,9 @@
       "type": "FCrowdyCallModelFunctionOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/functions-and-return-values",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyInvokeOnContainerAction::Failed",
@@ -878,9 +878,9 @@
       "type": "FCrowdyInvokeOnContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/functions-and-return-values",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyInvokeOnContainerAction::Succeeded",
@@ -889,9 +889,9 @@
       "type": "FCrowdyInvokeOnContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyJoinSessionAction::Failed",
@@ -900,9 +900,9 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyJoinSessionAction::Succeeded",
@@ -911,9 +911,9 @@
       "type": "FCrowdySessionParticipantOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyLeaveSessionAction::Failed",
@@ -922,9 +922,9 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyLeaveSessionAction::Succeeded",
@@ -933,9 +933,9 @@
       "type": "FCrowdySessionParticipantOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListChildrenAction::Failed",
@@ -944,9 +944,9 @@
       "type": "FCrowdyContainerRefsOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListChildrenAction::Succeeded",
@@ -955,9 +955,9 @@
       "type": "FCrowdyContainerRefsOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListCropsAction::Failed",
@@ -966,9 +966,9 @@
       "type": "FCrowdyListCropsOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListCropsAction::Succeeded",
@@ -977,9 +977,9 @@
       "type": "FCrowdyListCropsOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListenForModelChangesAction::OnChanged",
@@ -988,9 +988,9 @@
       "type": "FCrowdyModelAttributeChanged",
       "category": "Crowdy SDK|Game Model|Attributes",
       "module": "CrowdyReplication",
-      "page": "game-models/change-pings-and-pull",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListResourceNodesAction::Failed",
@@ -999,9 +999,9 @@
       "type": "FCrowdyListResourceNodesOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListResourceNodesAction::Succeeded",
@@ -1010,9 +1010,9 @@
       "type": "FCrowdyListResourceNodesOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListSessionsAction::Failed",
@@ -1021,9 +1021,9 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListSessionsAction::Succeeded",
@@ -1032,9 +1032,9 @@
       "type": "FCrowdySessionsOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyPlantCropAction::Failed",
@@ -1043,9 +1043,9 @@
       "type": "FCrowdyPlantCropOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyPlantCropAction::Succeeded",
@@ -1054,9 +1054,9 @@
       "type": "FCrowdyPlantCropOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyPullDataContainerAction::Failed",
@@ -1065,9 +1065,9 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyPullDataContainerAction::Succeeded",
@@ -1076,9 +1076,9 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyRemoveFromCollectionAction::Failed",
@@ -1087,9 +1087,9 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyRemoveFromCollectionAction::Succeeded",
@@ -1098,9 +1098,9 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyRespawnCombatantAction::Failed",
@@ -1109,9 +1109,9 @@
       "type": "FCrowdyCombatantMutationOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyRespawnCombatantAction::Succeeded",
@@ -1120,9 +1120,9 @@
       "type": "FCrowdyCombatantMutationOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyReviveCombatantAction::Failed",
@@ -1131,9 +1131,9 @@
       "type": "FCrowdyCombatantMutationOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyReviveCombatantAction::Succeeded",
@@ -1142,9 +1142,9 @@
       "type": "FCrowdyCombatantMutationOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySetDataPropertyAction::Failed",
@@ -1153,9 +1153,9 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySetDataPropertyAction::Succeeded",
@@ -1164,9 +1164,9 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySetSessionAdmissionAction::Failed",
@@ -1175,9 +1175,9 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySetSessionAdmissionAction::Succeeded",
@@ -1186,9 +1186,9 @@
       "type": "FCrowdySessionOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySetSessionTurnAction::Failed",
@@ -1197,9 +1197,9 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySetSessionTurnAction::Succeeded",
@@ -1208,9 +1208,9 @@
       "type": "FCrowdySessionOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySpawnCombatantAction::Failed",
@@ -1219,9 +1219,9 @@
       "type": "FCrowdySpawnCombatantOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySpawnCombatantAction::Succeeded",
@@ -1230,9 +1230,9 @@
       "type": "FCrowdySpawnCombatantOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySubmitScoreAction::Failed",
@@ -1241,9 +1241,9 @@
       "type": "FCrowdySubmitScoreOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Leaderboards",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySubmitScoreAction::Succeeded",
@@ -1252,9 +1252,9 @@
       "type": "FCrowdySubmitScoreOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Leaderboards",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySyncCombatantAction::Failed",
@@ -1263,9 +1263,9 @@
       "type": "FCrowdyCombatantMutationOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySyncCombatantAction::Succeeded",
@@ -1274,9 +1274,9 @@
       "type": "FCrowdyCombatantMutationOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyTransferSessionHostAction::Failed",
@@ -1285,9 +1285,9 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyTransferSessionHostAction::Succeeded",
@@ -1296,9 +1296,9 @@
       "type": "FCrowdySessionOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyTraverseAction::Failed",
@@ -1307,9 +1307,9 @@
       "type": "FCrowdyTraverseOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "services/host-election",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyTraverseAction::Succeeded",
@@ -1318,9 +1318,9 @@
       "type": "FCrowdyTraverseOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "installation",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyVideoFrameReceiver::OnVideoFrameAssembled",

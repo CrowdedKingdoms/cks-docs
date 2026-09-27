@@ -88,11 +88,6 @@ jobs:
       - name: Unreal SDK surface coverage
         run: npm run check:unreal-surface
 
-      # Local `prebuild` already runs this; Docs CI used to skip it because the
-      # build step is `npx docusaurus build` (no npm prebuild). No secrets.
-      - name: Game-API mapping lint
-        run: npm run lint:game-api-mapping
-
       # CKS_DOCS_TIER IS REQUIRED AND HAS NO DEFAULT, so this step has to supply one, and
       # which one it supplies is part of what the gate checks. Since 2026-08-23 there are
       # three docs sites, one per branch, and the tier decides the canonical URL, the

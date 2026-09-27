@@ -5,20 +5,11 @@ title: Crowdy Studio & player client mods
 
 # Crowdy Studio and player client mods
 
-:::caution Legacy engine
-This page describes Crowdy Studio and player mods on the game API's legacy player-code engine.
-On the **dev** environment that engine is switched off: Crowdy Studio's SERVER target deploys a
-[ck-exec mod](/exec/mods) instead (the default from CrowdyJS 17.13.0), and a new CLIENT-target
-deploy is refused with `ENGINE_SWITCHED_OFF` until client builds move to the ck-exec builder;
-client modules already built keep loading. [From the legacy
-engines](/exec/from-the-legacy-engines#player-code) maps the rest.
-:::
-
-CrowdyJS hosts Crowdy Studio and the browser half of
-[player code](/game-api/player-code): client-target player mods run **as the
-actual player**, sandboxed in the page, and the mountable authoring panel
-drives the whole edit-deploy-observe loop for both server and client targets.
-(Server mods run in game-api; this page is the browser side.)
+CrowdyJS hosts Crowdy Studio and players' **client mods**: CLIENT-target
+modules that run **as the actual player**, sandboxed in the page. The
+mountable authoring panel drives the whole edit-deploy-observe loop for both
+of a project's targets. A project's SERVER target runs on the platform as the
+grid's [ck-exec mod](/exec/mods); this page is the browser side.
 
 CrowdyJS **15.x** can add the policy/permission-allowlisted model-assisted dock
 to the same project UI. Ask/Build/Play never changes the manual draft/live
@@ -35,7 +26,7 @@ const claim = await client.marketplace.claimGridChunk({
   chunk: { x: '12', y: '1', z: '-4' },
 });
 if (!claim.moddable) {
-  throw new Error('The player tier does not include all player-code authoring keys');
+  throw new Error('The player tier does not include all code authoring keys');
 }
 ```
 
@@ -58,10 +49,10 @@ your app:
    is the only thing that talks to the SDK and the session. It:
    - runs artifacts **only** when their content hash matches what the platform
      served (a side-loaded module is refused),
-   - crosses a **deny-by-default, capability-grouped allowlist** — model,
-     state, world reads, a grid-clamped world write, grid-clamped spatial
-     egress, and presentation; never auth, admin, authoring, grid mutation,
-     raw UDP pose, voice, or the network,
+   - crosses a **deny-by-default, capability-grouped allowlist** — state,
+     world reads, a grid-clamped world write, grid-clamped spatial egress, and
+     presentation; never auth, admin, authoring, grid mutation, raw UDP pose,
+     voice, or the network,
    - re-validates every bridge call and clamps reads and effects to the grid
      AABB,
    - applies per-call-family **rate caps**, and trips a **local circuit
@@ -75,7 +66,7 @@ by hand.
 
 Serve the app with a `connect-src` CSP that allows only your game-api and
 management-api origins, and host the glue worker as a same-origin asset. The
-player-code worker needs no third-party origins; the broker makes no
+glue worker needs no third-party origins; the broker makes no
 cross-origin requests. Crowdy Studio also loads its Rust-analysis module worker
 and parser/grammar WASM as local assets. It does not add an authoring origin to
 `connect-src`.
@@ -102,8 +93,10 @@ CrowdyJS 11 exposes a project-first `mountCrowdyStudio` surface for in-game
 authoring. This finalized greenfield surface has no compatibility aliases. A
 project is private cloud state owned by one player and can contain both a
 SERVER tree and a CLIENT tree. Each target has its own `Cargo.toml` and
-`src/*.rs` files; deployment still creates two independently compiled,
-immutable module versions.
+`src/*.rs` files, and deployment builds them independently: the SERVER target
+as a version of the grid's mod, the CLIENT target as an immutable client
+module version. A new project's SERVER target starts from the platform's mod
+starter (`client.exec.modStarter(appId)`, a `ckx-sdk` crate).
 
 CrowdyJS 11.1 fills and observes the mount host, relayouts Monaco when that
 element changes size, and collapses secondary panes from the host's container
@@ -127,15 +120,17 @@ aid, not rustc or rust-analyzer. In particular it does **not** provide:
 - full crate/dependency/build-target semantics.
 
 Treat every local diagnostic and completion as advisory. **Deploy** sends the
-source through the existing player-compute API, and the platform's server-side
-compiler remains the only authoritative compile decision.
+source to the platform, which builds it: the SERVER target as a mod
+(`client.exec.modBuild`), the CLIENT target through `client.playerCompute`.
+The platform's build remains the only authoritative compile decision.
 
 ```ts
 import { mountCrowdyStudio } from '@crowdedkingdoms/crowdyjs/crowdy-studio';
 import workerUrl from '@crowdedkingdoms/crowdyjs/player-glue-worker?worker&url';
 
 const handle = await mountCrowdyStudio(hostElement, {
-  playerCompute: client.playerCompute,
+  mods: client.exec,                   // the SERVER target, as the grid's mod
+  playerCompute: client.playerCompute, // the CLIENT target's builds
   projectProvider: client.crowdyStudio,
   playerWallet: client.playerWallet,
   appId,
@@ -154,10 +149,10 @@ const handle = await mountCrowdyStudio(hostElement, {
 
 Crowdy Studio offers cloud autosave, a target-aware project explorer, personal
 library files, app-provided common files, Monaco tabs, Problems, Build, Logs,
-Runs, Invoke, and quota/wallet status. Library and common files are copied by
+Invoke, and quota/wallet status. Library and common files are copied by
 value into a project: later catalog edits cannot silently change a deployed
 mod. The primary safe action is **Test draft**; **Deploy live** clears draft
-mode; **Stop project** disables the server module and terminates the client
+mode; **Stop project** switches the server mod off and terminates the client
 worker. Autosave never compiles or runs code by itself.
 
 Most games need no language-specific options. A custom asset pipeline may
@@ -167,7 +162,7 @@ supply `languageWorkerFactory`; advanced hosts may also supply
 
 ```ts
 await mountCrowdyStudio(hostElement, {
-  // ...the required projects, player-compute, grid, worker, and host options...
+  // ...the required projects, mods, player-compute, grid, worker, and host options...
   languageWorkerFactory: () =>
     new Worker(localRustWorkerUrl, { type: 'module' }),
   editorWorkerFactory: () => new Worker(localEditorWorkerUrl),
@@ -181,25 +176,6 @@ options. If Monaco, Worker, the local WASM assets, or platform-index validation
 fails, the same mount renders a target/file-aware textarea workspace backed by
 the cloud project API. There is deliberately no server language-service
 fallback. For a custom UI, drive `CrowdyStudioController` directly.
-
-## Server modules that require a client companion
-
-Requirements bind **immutable compiled versions**, not mutable module names.
-The UI can present names, but the server resolves each name to its current
-compiled version when this mutation succeeds:
-
-```ts
-await client.playerCompute.setRequires({
-  appId,
-  gridId,
-  serverName: 'plot-referee',
-  requiredClientName: 'plot-hud', // null clears the edge
-});
-```
-
-Both modules must be authored by the caller, compiled successfully, and live
-in the same owned grid. Publishing rejects a marketplace bundle that omits a
-required client version.
 
 ## Visitor discovery and per-author trust
 
@@ -232,17 +208,20 @@ grid workers on grid exit.
 
 ## The deploy loop
 
-- **Server:** `deploy -> compile poll -> enable`; the console then streams
-  `playerComputeRuns` / `playerComputeLogs`. Hot reload replaces the module on
-  the next scheduler pass and drops in-memory guest state.
+- **Server:** `modBuild -> build poll -> modDeploy -> modSetEnabled`; the grid
+  runs it as the mod `mod:<server module name>`. Logs shows its `ctx.log`
+  lines (`modLogs`), and Invoke calls one of its endpoints (`state` by
+  default) over an exec connection. Deploying a new version of a running mod
+  restarts it on that version. See [mods](/exec/mods) for what a mod may do.
 - **Client:** `deploy -> playerComputeArtifact -> broker respawn`; the hash is
   verified and the fuel budget forwarded to the glue worker.
 
-Compile-quota refusals (`maxCompilesPerHour`) surface in the panel as an
-error with a retry-after; running modules keep going. The meter shows the
-typed gate reason when a player is paused (`PLAYER_QUOTA_EXHAUSTED`,
-`PLAYER_WALLET_EMPTY`, `PLAYER_SPEND_CAP`, `PLAYER_COMPUTE_KILLED`).
+CLIENT compiles spend the player's compile quota: a refusal
+(`maxCompilesPerHour`) surfaces in the panel as an error with a retry-after,
+and running modules keep going. The meter shows the typed gate reason when a
+player is paused (`PLAYER_QUOTA_EXHAUSTED`, `PLAYER_WALLET_EMPTY`,
+`PLAYER_SPEND_CAP`, `PLAYER_COMPUTE_KILLED`).
 
 CrowdyCPP does not implement the browser sandbox (native clients have no
-Web Worker host); it wraps the server-side surfaces and the artifact fetch
-only.
+Web Worker host); it wraps mods (`client.exec()`) and the CLIENT module calls,
+including the artifact fetch, only.

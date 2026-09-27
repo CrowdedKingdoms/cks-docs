@@ -7,12 +7,12 @@ description: What Crowdy Studio is, when to use it, and the pages in its sidebar
 
 # Crowdy Studio Overview
 
-Crowdy Studio is the management console for your app, and it runs inside the Unreal Editor as a dockable tab. You use it to point your project at an app, and to author the server-side pieces your runtime reads: teams, channels, grids, and the Game Model schema.
+Crowdy Studio is the management console for your app, and it runs inside the Unreal Editor as a dockable tab. You use it to point your project at an app, and to author the server-side pieces your runtime reads: teams, channels, and grids.
 
 Use it when you:
 
 - Start a project: sign in, pick the app, and write its ids and endpoints into the project with Config Sync.
-- Author server-side data ahead of play: teams, channels, grids, the Game Model schema.
+- Author server-side data ahead of play: teams, channels, grids.
 - Debug: watch a running Play in Editor session in the Inspector, or check the baked registry.
 
 :::tip[Start here before you write any runtime code.]
@@ -58,16 +58,14 @@ The sidebar on the left lists the pages. A toggle at the top folds it to icons (
 | **Teams** | AUTHORING | Yes | Author teams, members, roles, and the team policy. See [Teams and Channels](./teams-and-channels.md). |
 | **Channels** | AUTHORING | Yes | Author named channels and the session channel. |
 | **Grid** | AUTHORING | Yes | Author spatial permission regions. See [Grids](./grids.md). |
-| **Game Model** | AUTHORING | Yes | Browse, sync, and clean up the server-owned schema. See [Game Models authoring](./game-models-authoring.md). |
+| **Game Model** | AUTHORING | Yes | The legacy Game Model schema. The game API no longer serves it; see [The Two Planes](../concepts/two-planes.md). |
 | **Inspector** | DEBUG | No | A read-only view of a running Play in Editor session. See [Inspector and Registry](./inspector-and-registry.md). |
 | **Registry** | DEBUG | No | The baked metadata that ships in packaged builds, and the button that rebuilds it. |
 | **Web Console** | | Yes | Pinned at the bottom: opens the browser console for admin surfaces. |
 
-Authoring the server-side behaviour itself (containers, attributes and Effects) happens in your project, not in Studio; the Game Model page here compares and pushes what you authored. That work is described in the [Game Models section](../game-models/overview.md), including the [Effect Graph](../game-models/effect-graph.md) editor that opens from a Crowdy Effect asset.
-
 ## Signing in
 
-Sign in with your account: email and password, a sign-in link sent by email, or a social provider. That gives you full authoring. An organization token gives management-only access: it can browse apps and run Config Sync, but not author teams, channels, grids or models. See [Signing In](./sign-in.md).
+Sign in with your account: email and password, a sign-in link sent by email, or a social provider. That gives you full authoring. An organization token gives management-only access: it can browse apps and run Config Sync, but not author teams, channels or grids. See [Signing In](./sign-in.md).
 
 :::caution[If an authoring page looks read-only, check which credential you signed in with.]
 Token sign-in is the usual cause.

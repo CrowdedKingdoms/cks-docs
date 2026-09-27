@@ -11,7 +11,7 @@ native client? [CrowdyCPP](/crowdycpp/intro) mirrors this API surface in
 portable C++ and replicates natively over UDP.)
 
 - **Management API** — authentication, profiles, app routing reads (`client.apps`), and public platform config (`client.platform`).
-- **Game API** — world synchronization, teleport, the GraphQL UDP proxy (browsers), [channels](/crowdyjs/channels) & [teams](/crowdyjs/teams), [game models](/crowdyjs/game-model), and Replication API server assignment.
+- **Game API** — world synchronization, teleport, the GraphQL UDP proxy (browsers), [channels](/crowdyjs/channels) & [teams](/crowdyjs/teams), connections to your server code on [ck-exec](/exec/connect-from-a-game) (`client.exec`), and Replication API server assignment.
 - **Agentic Crowdy Studio (allowlisted)** — the DeepSeek Harness agent running
   in the player's browser beside the Studio editor (`dsh` mount option,
   CrowdyJS **16**), metered per request through the Game API's model endpoint

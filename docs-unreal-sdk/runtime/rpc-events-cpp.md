@@ -11,7 +11,7 @@ A CrowdyEvent is a `UFUNCTION` you call like a normal method. The SDK marshals t
 
 ## When to use one
 
-For a moment, not a value: a flicker, a swing, a chat line, a one-shot trigger. Anything a late joiner must still see is a [Crowdy State](./crowdy-state.md) property; anything a client could gain by lying about is a [Game Model](../game-models/overview.md) attribute.
+For a moment, not a value: a flicker, a swing, a chat line, a one-shot trigger. Anything a late joiner must still see is a [Crowdy State](./crowdy-state.md) property; anything a client could gain by lying about belongs on the [truth plane](../concepts/two-planes.md), in your server code.
 
 ## The two halves
 

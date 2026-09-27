@@ -159,6 +159,19 @@ viewer function is ever detached.
   404 and must name `prod` or a tag. What deploys the site is a `prod/vX.Y.Z`
   tag; see the section at the top of this page, because knowing that fact and
   acting on it turned out to be different things.
+- **The legacy engines' pages are gone** (game models, automations, compute
+  modules, server-side player code, the Game Kit, and the Unreal SDK's
+  game-model section), removed with the engines at ck-exec P4.
+  `/exec/from-the-legacy-engines` maps every old API to its replacement, and
+  `scripts/legacy-engine-redirects.json` sends each deleted route to its section
+  there. That map feeds the plugin's static `redirects` option, not
+  `createRedirects`, because its targets carry an anchor; a renamed mapping page
+  therefore fails the build instead of dropping the redirects.
+- **The Unreal SDK still ships its Game Model API, and no page documents it.**
+  Its symbols are in `scripts/unreal-surface-allowlist.json` with reason
+  `deprecated` and the note "Legacy game-model engine removed; the Unreal SDK
+  moves to ck-exec later", which also hides them from the generated reference
+  tables. Remove those entries when the SDK drops or ports that API.
 
 ## Customer-facing content (hard rule)
 
@@ -192,6 +205,8 @@ descriptions may still mention operator fields.
   GraphQL fields are off the schema; `docs-game-api/grid-commerce.md` is
   `draft: true`. The dedicated-environments page was deleted — do not add
   links to `/management-api/dedicated-environments`.
+- Re-add a page for a legacy engine, or link one of their deleted routes. Point
+  at the ck-exec page, or at `/exec/from-the-legacy-engines#<section>`.
 - Hand-edit generated Markdown under `reference/graphql/` or committed SDL
   under `static/schema/` except via `sdl:gen` / `graphql:gen`. `check:generated`
   refuses this now, and it refuses in Docs CI rather than only on your box.

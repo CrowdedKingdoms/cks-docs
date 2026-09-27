@@ -42,9 +42,9 @@
       "symbol": "CrowdyGameModelMetaKeys::ReservedNetIdMetaKey",
       "header": "CrowdyGameModelMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "game-models/containers-and-attributes",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "__crowdy_touch_",
@@ -53,9 +53,9 @@
       "symbol": "CrowdyGameModelMetaKeys::CollectionTouchFunctionPrefix",
       "header": "CrowdyGameModelMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "crowdy_rev",
@@ -64,9 +64,9 @@
       "symbol": "CrowdyGameModelMetaKeys::CollectionRevKey",
       "header": "CrowdyGameModelMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "CrowdyContainer",
@@ -75,9 +75,9 @@
       "symbol": "CrowdyGameModelMetaKeys::Container",
       "header": "CrowdyGameModelMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "game-models/containers-and-attributes",
+      "page": "guides/whats-changed",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "CrowdyContainerTest",
@@ -88,7 +88,7 @@
       "module": "CrowdyReplication",
       "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "CrowdyContainerType",
@@ -97,9 +97,9 @@
       "symbol": "CrowdyGameModelMetaKeys::ContainerTypeAssetTag",
       "header": "CrowdyGameModelMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "game-models/containers-and-attributes",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "CrowdyInstantiableBy",
@@ -108,9 +108,9 @@
       "symbol": "CrowdyGameModelMetaKeys::InstantiableBy",
       "header": "CrowdyGameModelMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "game-models/pre-seeding",
+      "page": "guides/whats-changed",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "CrowdyKey",
@@ -119,9 +119,9 @@
       "symbol": "CrowdyGameModelMetaKeys::Key",
       "header": "CrowdyGameModelMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "game-models/containers-and-attributes",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "CrowdyModel",
@@ -130,9 +130,9 @@
       "symbol": "CrowdyGameModelMetaKeys::Model",
       "header": "CrowdyGameModelMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "concepts/two-planes",
+      "page": "runtime/crowdy-state",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "CrowdyPullOnStart",
@@ -141,9 +141,9 @@
       "symbol": "CrowdyGameModelMetaKeys::PullOnStart",
       "header": "CrowdyGameModelMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "game-models/containers-and-attributes",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "CrowdyScan",
@@ -152,9 +152,9 @@
       "symbol": "CrowdyGameModelMetaKeys::ScanAssetTag",
       "header": "CrowdyGameModelMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "game-models/containers-and-attributes",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "CrowdyScope",
@@ -163,9 +163,9 @@
       "symbol": "CrowdyGameModelMetaKeys::Scope",
       "header": "CrowdyGameModelMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "concepts/two-planes",
+      "page": "guides/whats-changed",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "CrowdyTestFixture",
@@ -176,7 +176,7 @@
       "module": "CrowdyReplication",
       "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "CrowdyVisibility",
@@ -185,9 +185,9 @@
       "symbol": "CrowdyGameModelMetaKeys::Visibility",
       "header": "CrowdyGameModelMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "game-models/containers-and-attributes",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "CrowdyEntity",
@@ -339,7 +339,7 @@
       "symbol": "CrowdyStateMetaKeys::OnRep",
       "header": "CrowdyStateMetaKeys.h",
       "module": "CrowdyReplication",
-      "page": "game-models/containers-and-attributes",
+      "page": "runtime/crowdy-state",
       "editor": false,
       "allowlist": ""
     },

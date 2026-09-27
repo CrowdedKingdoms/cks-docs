@@ -5,68 +5,53 @@ title: Best practices
 
 # Game API best practices
 
-:::caution Legacy engine
-This page describes practices for game models and compute modules, part of the game API's legacy
-engines. On the **dev** environment those engines are switched off (their calls answer
-`ENGINE_SWITCHED_OFF`) and [ck-exec](/exec/intro) replaces them: [from the legacy
-engines](/exec/from-the-legacy-engines) maps each feature here to its ck-exec equivalent. The
-page is removed once ck-exec reaches every environment.
-:::
-
 How to use the Game API so the server owns gameplay truth. This page is the
 contract between a game client (Unreal, CrowdyJS, CrowdyCPP, or a custom
-engine), **Game Models**, and **Compute**.
+engine) and the server code that decides outcomes, which runs on
+**[ck-exec](/exec/intro)**.
 
-For the five-tier decision table (platform primitives, models, automations,
-compute, client presentation) see
-**[Choosing Game APIs](/game-api/model-vs-compute)**.
+## Hubs are authoritative
 
-## Game Models are authoritative
+Put authoritative gameplay logic and the state it decides in ck-exec
+**hubs**. A hub keeps its state in memory, runs one handler at a time, and is
+snapshotted on an interval you choose (5 to 60 seconds), when it stops, and
+whenever it asks (`ctx.persist_now()`, for a purchase or a checkpoint that
+should not wait). Clients render and interpolate; they do not keep a second
+source of truth for competitive or persistent results.
 
-Put durable gameplay state on **[Game Models](/game-api/game-models)** —
-containers, properties, and functions. The server evaluates the logic and
-records every change. Clients render and interpolate; they do not keep a
-second source of truth for competitive or persistent results.
+A type's `seed_b64` in the [manifest](/exec/intro#the-manifest) is the state
+every new instance spawns with, and the root hub's seed is the app's starting
+state.
 
-Seed types and functions with `gameModelSeed` before players connect. A
-recreated app does not carry the model with it — re-seed, and
-`gameModelLint` before you ship.
+## Endpoints: direct, validated state changes
 
-## Effects: direct, validated state changes
+A hub's endpoints are the changes a client asks for by name. Clients call them
+through the SDKs' `exec` connection; see
+[connect from a game](/exec/connect-from-a-game).
 
-Game Model **functions** are the effects you invoke for a single, known
-target. Unreal and other clients can call them directly with
-`gameModelInvoke`.
-
-Use an effect when the caller already knows what to change:
+Use an endpoint when the caller already knows what to change:
 
 - Deal damage or heal
 - Capture a camp
 - Change ownership
 - Update a player's team assignment
 
-Write the owned property **and** any immediate dependent state in the
-**same function**, so they commit in one transaction. Example: a damage
-effect updates `health`, then sets `is_dead` from the new value. Later
-mutations in the same invoke see earlier writes.
+Prefer one intent-level endpoint (`deal_damage`, `capture_camp`,
+`assign_team`) over a client composing several writes. A hub runs one handler
+at a time, so an endpoint that updates `health` and then sets `is_dead` from
+the new value changes both before any other call reaches the hub.
 
-Gate who may call the effect with an **invoke policy**
-(`owner_of_self`, `is_current_turn`, `is_host`, `is_participant`, …). The
-policy applies to everyone, including studio admins testing the game.
-`is_participant` needs an active Game Model session and a `sessionId` on
-the invoke; Teams membership and the UDP session channel do not satisfy
-it.
+Check who may call it in the handler. The platform sets the caller, so a
+handler can trust `call.player()` for authorization, and `call.developer()`
+guards an endpoint meant for your own tools. Only types marked `client` in the
+manifest take calls from players at all. Platform rules such as tier
+features and grid permissions are read in the handler too; see
+[world and platform data](/exec/world-and-platform-data).
 
-Prefer one intent-level function (`deal_damage`, `capture_camp`,
-`assign_team`) over a client composing several property writes.
-
-**Ensure or bind the container, then invoke.** Invoking a type you have
-not bound yet is a race: the row may not exist, and a getter after bind
-still shows the type default until the first pull.
-
-**Automation and Compute writes do not ping Unreal peers.** Those writes
-have no acting Unreal client, so the SDK fallback ping never fires.
-Author a `NotificationCarrier` on the function, or have clients pull.
+**Publish what changed.** A hub publishes on its topics (`ctx.publish`) and
+clients subscribe to them. Topics are not a log: a push published while a
+client was disconnected is not replayed, so read the state you display again
+when the connection comes back.
 
 ## Clients request; they do not decide
 
@@ -76,37 +61,37 @@ the authoritative outcome — not from local prediction alone, not from an
 elected [host](/game-api/host-discovery), and not from a peer-supplied
 value.
 
-Prediction and animation are fine. Reconcile them to the Model or Compute
-result. If `gameModelInvoke` is denied, leave the world as the server left
-it.
+Prediction and animation are fine. Reconcile them to the hub's reply. If a
+call is refused, leave the world as the server left it.
 
-Host discovery (`gameHost` / `amIGameHost`) is informational. For
-host-only *rules*, put `is_host` on the effect's invoke policy.
+Host discovery (`gameHost` / `amIGameHost`) is informational. Host-only
+*rules* belong in a hub, which checks its caller itself; the `session`
+[starter pack](/exec/builds#starter-packs) keeps a host and a turn of its
+own.
 
-## Compute: workflow beyond one change
+## Spokes and calls between hubs: workflow beyond one change
 
-Use **[Compute](/game-api/compute-modules)** when the request needs
-server-side work that is not one direct state change:
+Some requests need server-side work that is not one direct state change:
 
 - Find or create a team
-- Search across containers
+- Search across many objects
 - Process many objects
 - Coordinate a match reset
 - Run dynamic fan-out
 
-Ticks simulate; invokes referee a caller's intent. Compute state is a
-rebuildable cache. Durable truth stays in the Model.
+Put that work in keyed hubs and **spokes**. A spoke holds nothing you cannot
+lose, its replicas run side by side, and it changes state only by calling the
+hub that owns it. Hubs call each other with `ctx.call` and hear each other
+through topics. The root hub is limited to 50 calls a second, so work that
+must scale does not live there.
 
-**Compute should invoke Game Model effects** (`model_invoke` /
-`model_invoke_with_world` on the [host API](/game-api/compute-host-api))
-rather than reimplementing validation and mutation as sequential property
-writes. When a referee action spans the voxel world and the Model ledger,
-use `model_invoke_with_world` so both commit in one transaction.
+Timers simulate (`ctx.timer_every`); endpoints referee a caller's intent. See
+[timers, subscriptions and presence](/exec/timers-and-presence).
 
 ## One sentence
 
-The client requests a direct change when it knows the target. Game Model
-effects validate and commit that change. Compute handles the wider
+The client requests a direct change when it knows the target. A hub validates
+and applies that change. Spokes and calls between hubs handle the wider
 workflow when the target or process must be discovered or coordinated.
 
 ## Calling the Game API
@@ -120,13 +105,13 @@ workflow when the target or process must be discovered or coordinated.
 - Browsers: [GraphQL UDP proxy](/game-api/graphql-udp-proxy-api).
 - Spatial permission keys live on access tiers and grids.
   [Permissions](/game-api/permissions).
-- Economy-sensitive Model or marketplace mutations should send an
+- Economy-sensitive mutations, such as the marketplace's, should send an
   `idempotencyKey`.
 
 ## Related
 
-- [Game Models](/game-api/game-models)
-- [Compute modules](/game-api/compute-modules)
-- [Compute host API](/game-api/compute-host-api)
+- [ck-exec overview](/exec/intro)
+- [Connect from a game](/exec/connect-from-a-game)
+- [From the legacy engines](/exec/from-the-legacy-engines)
 - [Unreal SDK best practices](/unreal-sdk/guides/best-practices)
 - [Overview best practices](/overview/best-practices)

@@ -47,15 +47,17 @@ To keep the common case effortless, a **new app is open by default**:
   grant app access is automatically granted those same legacy keys on that
   grid.
 
-Player-code permissions are deliberately excluded. Adding new runtime keys
-does not widen the default tier/grid automatically; server/client code remains
-opt-in.
+The four code keys (`write_server_code`, `run_server_code`,
+`write_client_code`, `run_client_code`) are deliberately excluded. Adding new
+runtime keys does not widen the default tier/grid automatically; server/client
+code remains opt-in.
 
 :::caution[Editing a tier does not reach players who already joined]
 The automatic grid grant above happens **once, when the player is first given app
 access**. It is a snapshot of the tier at that moment, not a live link to it.
 
-So adding a key to a tier later — `run_server_code`, say, to switch on automations —
+So adding a key to a tier later — `run_server_code`, say, so players can switch their
+[mods](/exec/mods) on —
 reaches every *new* player and **none of the existing ones**. They keep the keys they
 were granted on the way in. Nothing errors: enforcement needs the key at both the app
 and grid layers, so the tier now allows the action and the grid still refuses it.
@@ -164,7 +166,7 @@ a chunk) to see exactly what a player has where.
 - [Teams](teams) — teams, roles, delegation, and assigning teams to grids.
 - [Channels](channels) — app-wide message channels, the `send_messages` role,
   and publishing/receiving channel messages over the realtime UDP path.
-- [Player code and owned grids](player-code) — first-class grid title, the
-  four player-code keys, source privacy, and strict code admission.
+- [Mods](/exec/mods) — players' server code on grids they own, the code keys
+  it needs, and the app's code admission.
 - [Avatar state](avatar-state) and [Actor state](actor-state) — owner-exclusive
   write / public read for character data.

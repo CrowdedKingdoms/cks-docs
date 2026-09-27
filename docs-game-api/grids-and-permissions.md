@@ -26,7 +26,7 @@ app access is auto-granted the four legacy gameplay keys on it (see
 [Permissions overview → Open by default](permissions#open-by-default)). The grids
 and grants below are how you **layer restrictions or finer ownership** on top of
 that open baseline — e.g. carve out a safe zone, or hand one player their own
-plot. Player-code keys are never auto-granted.
+plot. The four code keys are never auto-granted.
 
 ## Permission keys
 
@@ -55,15 +55,16 @@ so you can give one player control of exactly one chunk.
 ### First-class ownership
 
 Permission grants answer "what may this user do here?" Ownership answers
-"whose grid is this, and whose identity/budget does its server code use?"
+"whose grid is this, and whose identity does its code run as?"
 They are separate. `gridOwnership` reads current title;
 `assignGridOwnership` is the P1 studio/bootstrap assignment path; and
-`transferGridOwnership` transfers title with safety actions (disable modules,
-wipe private module state, remove old direct grants) in the same transaction.
+`transferGridOwnership` transfers title and removes the old direct grants. The
+grid's [mods](/exec/mods#when-the-grid-changes-hands) stop and become the new
+owner's, switched off, without the state the old owner's runs kept.
 
 Owning a grid grants no permissions by itself. A player still needs the
-appropriate tier + grid keys. See
-[Player code and owned grids](player-code) for the runtime model.
+appropriate tier + grid keys. See [mods](/exec/mods) for the code a grid owner
+runs there.
 
 ```graphql
 mutation {
@@ -131,8 +132,8 @@ first:
 grid that still contains nested child grids. It only removes the grid definition
 and its permission rows (direct grants, group grants, limits, and the
 materialized effective ACL entries that cascade from them). It does **not**
-delete world content — chunks, voxels, actors, and game-model data in that
-region are untouched.
+delete world content — chunks, voxels, and actors in that region are
+untouched.
 
 **Overlap unblock workflow.** When `createGrid` returns `GRID_OVERLAPS_EXISTING`,
 identify the overlapping peer grid (for example via your studio map or by listing
@@ -145,11 +146,11 @@ There are two ways to give players permissions on a grid. Both contribute to a
 player's **effective** permissions, and both take effect immediately.
 
 :::tip[Grants driven by game logic]
-A [game model function](game-models) can also grant or revoke direct grid
-permissions itself, transactionally with its state mutations — buying land,
-earning access, banishment — via
-[permission effects](game-models#permission-effects-functions-that-write-grid-permissions).
-Those grants land in the same direct-grant layer as `grantGridPermissions`.
+Your app's [ck-exec](/exec/intro) code can also grant or revoke direct grid
+permissions itself — buying land, earning access, banishment — with
+`ctx.permissions()` and the `permissions.write` scope (see
+[world and platform data](/exec/world-and-platform-data)). Those grants land
+in the same direct-grant layer as `grantGridPermissions`.
 :::
 
 ### Direct grants (per player)

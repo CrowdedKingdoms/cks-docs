@@ -31,7 +31,7 @@ Regenerate your understanding from the file you have rather than patching around
 | `enums` | BlueprintType `UENUM`s. |
 | `settings` | Properties on the SDK's developer-settings classes, each marked as one you set or one Config Sync writes for you. |
 | `cvars` | Console variables, split into trace gates, behavior switches, and one-shot commands. |
-| `meta_keys` | The `UFUNCTION`/`UPROPERTY` metadata marker keys: `CrowdyEvent`, `CrowdyState`, `CrowdyContainer`, and the rest. |
+| `meta_keys` | The `UFUNCTION`/`UPROPERTY` metadata marker keys: `CrowdyEvent`, `CrowdyState`, and the rest. |
 | `log_categories` | Log categories with their module and header. The trace-variable pairing on the log categories page is derived from `cvars` by the site's table generator, not stored here. |
 | `cpp_types`, `cpp_functions`, `cpp_delegates`, `cpp_macros` | Plain C++ types, methods, delegates, and macros with no Blueprint exposure at all: internal to the plugin, not something a game calls directly. Most of what these four groups report belongs to the vendored networking bridge, the plugin's own wire and JSON helpers, or editor-only tooling. |
 
@@ -41,7 +41,7 @@ The first ten groups are Blueprint's own reflected surface, the one a game actua
 
 This documentation set's own completeness check reads every page under the Unreal SDK section and asks, for each symbol in the manifest, whether that symbol's name appears anywhere as a whole word. A row in one of this reference section's generated tables satisfies the check exactly like a paragraph of prose does; the check has no notion of "the one canonical page" for a symbol, only whether it is mentioned somewhere at all.
 
-That also means a name typed once, anywhere, technically counts, so treat the check as a floor, not a guarantee that every symbol got a real explanation. A small number of symbols the manifest reports are deliberately left off every table and every page: internal plumbing behind a documented subsystem, a class the SDK itself has deprecated, editor-only tooling, or a symbol that belongs to a different first-party module riding in the same plugin build rather than to this SDK's own contract. Those are tracked in an exceptions list (`scripts/unreal-surface-allowlist.json` in the documentation repository, not published beside the manifest) alongside the reason, so an absence from this site is either "here, just not in prose" or "excluded, and here is why," never a silent gap.
+That also means a name typed once, anywhere, technically counts, so treat the check as a floor, not a guarantee that every symbol got a real explanation. Some symbols the manifest reports are deliberately left off every table and every page: internal plumbing behind a documented subsystem, a class the SDK itself has deprecated, editor-only tooling, a symbol that belongs to a different first-party module riding in the same plugin build rather than to this SDK's own contract, or a part of the SDK's Game Model API that no page describes any more, because the game API no longer serves it (see [The Two Planes](../concepts/two-planes.md)). Those are tracked in an exceptions list (`scripts/unreal-surface-allowlist.json` in the documentation repository, not published beside the manifest) alongside the reason, so an absence from this site is either "here, just not in prose" or "excluded, and here is why," never a silent gap.
 
 ## Gotchas
 
@@ -52,6 +52,6 @@ That also means a name typed once, anywhere, technically counts, so treat the ch
 ## Related
 
 - [Subsystems](./subsystems.md), [Async actions](./async-actions.md), [Delegates](./delegates.md), [Console variables](./console-cvars.md), [Project settings](./project-settings.md): the generated tables built from this manifest.
-- [RPC metadata keys](./rpc-meta-keys.md), [Crowdy State metadata keys](./state-meta-keys.md), [Game Model metadata keys](./game-model-meta-keys.md): the `meta_keys` group, split by where each key is legal.
+- [RPC metadata keys](./rpc-meta-keys.md), [Crowdy State metadata keys](./state-meta-keys.md): the `meta_keys` group, split by where each key is legal.
 - [Log categories](./log-categories.md): the `log_categories` group.
 - [Enums](./enums.md): the `enums` group.

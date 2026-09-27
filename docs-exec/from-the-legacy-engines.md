@@ -9,12 +9,12 @@ title: From the legacy engines
 Available on the **dev** environment only; see the [overview](intro).
 :::
 
-ck-exec replaces four legacy engines of the game API: **game models** (containers, typed
+ck-exec replaced four legacy engines of the game API: **game models** (containers, typed
 properties and functions in an expression language), **automations** (schedules, triggers and
 timers over the same functions), **compute modules** (studio WASM run inside the game API) and
-**player code** (grid-scoped player modules, player models and automations). This page maps each
-thing you did with them to what you do on ck-exec, and links the page that explains it. For a
-worked example, see [port a compute module](port-a-compute-module).
+**player code** (grid-scoped player modules, player models and automations). This page maps
+what you used to what you use now, and links the page that explains it. For a worked example,
+see [port a compute module](port-a-compute-module).
 
 ## Running your logic
 
@@ -110,10 +110,10 @@ worked example, see [port a compute module](port-a-compute-module).
 | Legacy | ck-exec | Page |
 |---|---|---|
 | Player server modules (`playerComputeDeploy`, run as the grid owner) | Mods: `execModBuild`, `execModDeploy`, in the owner's own sandbox, confined to the grid | [Mods](mods) |
-| Player client modules (browser WASM) | Unchanged; they can call hubs through the gateway. On dev, a new CLIENT-target deploy is refused with `ENGINE_SWITCHED_OFF` until client builds move to the ck-exec builder; client modules already built keep loading | [Mods](mods) |
+| Player client modules (browser WASM) | Unchanged; they can call hubs through the gateway | [Mods](mods) |
 | Player models and player automations | A mod's own state and timers, and its grid's world events | [Mods](mods) |
 | `publishPlayerCode`, `acquirePlayerCode`, `installPlayerCode` | `execModPublish`, `execModListings`, `execModInstall` (no payments yet) | [Mods](mods) |
-| Crowdy Studio deploying a SERVER target | The SERVER target as a mod (`serverEngine: 'ck-exec'`, the default from CrowdyJS 17.13.0) | [Mods](mods) |
+| Crowdy Studio deploying a SERVER target | The SERVER target as a mod (the default from CrowdyJS 17.13.0, and the only SERVER engine from 18.0.0) | [Mods](mods) |
 
 ## Tools
 

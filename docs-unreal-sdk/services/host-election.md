@@ -37,7 +37,7 @@ Reading `IsHost` or the elected id for ordinary view-plane logic is the common c
 
 `CheckEntityIsHost` is server-validated in a specific sense: for the local player's own entity it asks the server's `amIGameHost` query directly; for any other actor it resolves that actor's server-side owner user id and compares it to the elected host user id. [Host discovery](/game-api/host-discovery#amigamehost) on the Game API covers the query itself; this page states only what the SDK does with the answer.
 
-That answer is still not enforcement by itself. `CheckEntityIsHost` tells the caller the current truth about who is host so the caller can gate something, most often a [Game Model](../game-models/overview.md) mutation behind an invoke policy; the check is not the gate.
+That answer is still not enforcement by itself. `CheckEntityIsHost` tells the caller the current truth about who is host so the caller can gate something; the check is not the gate. A change worth cheating for is decided by your server code, on the [truth plane](../concepts/two-planes.md).
 
 The lantern world uses it exactly there: a claim on a lantern post is only granted after a definite server yes.
 
@@ -78,11 +78,11 @@ The subsystem is world-scoped, but a Blueprint graph waiting on `CheckEntityIsHo
 - `GetHostID()` has no display name override; find it in Blueprint as **Get Host ID**.
 - `CheckEntityIsHost` needs the target actor to have sent at least one update. A freshly spawned, never-updated actor answers Failed, the same as an unresolved entity.
 - `IsHost` is documented safe from any thread; `GetHostUserID` is a single atomic read, so it is too. Nothing else on this subsystem carries that guarantee.
-- The check itself gates nothing. What you do with `bIsHost` still needs its own invoke policy on the Game Model side if the outcome is worth cheating for.
+- The check itself gates nothing. What you do with `bIsHost` still needs your server code to decide it if the outcome is worth cheating for.
 
 ## Related
 
 - [Host Authority](../runtime/host-authority.md): the local, unenforced view of who is host, and the same examples from the view-plane side.
 - [Ownership transfer](../runtime/ownership-transfer.md): the grant flow the server check feeds in the lantern world.
-- [Game Models overview](../game-models/overview.md): where a validated answer becomes an enforced invoke policy.
+- [The Two Planes](../concepts/two-planes.md): where a rule is actually enforced.
 - [Host discovery](/game-api/host-discovery#amigamehost) on the Game API: the `amIGameHost` and actor-owner queries underneath this subsystem.

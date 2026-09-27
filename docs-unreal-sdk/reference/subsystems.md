@@ -2,18 +2,18 @@
 slug: subsystems
 sidebar_position: 1
 title: Classes and Subsystems
-description: "The 21 subsystem classes a game fetches from GetGameInstance or GetWorld, one line of purpose each, grouped by module, with a link to where each one is explained in full."
+description: "The 20 subsystem classes a game fetches from GetGameInstance or GetWorld, one line of purpose each, grouped by module, with a link to where each one is explained in full."
 ---
 
 import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Classes and Subsystems
 
-The consumer-facing classes you fetch most, with the module they live in and where to read more. The manifest carries 28 classes tagged as subsystems; 7 are excluded here because they are internal plumbing or deprecated, listed at the bottom of this page for completeness.
+The consumer-facing classes you fetch most, with the module they live in and where to read more. The manifest carries 28 classes tagged as subsystems; 8 are excluded here because they are internal plumbing, deprecated, or part of the Game Model API the game API no longer serves, listed at the bottom of this page for completeness.
 
 ## When you come here
 
-You know the shape of what you need (send an event, read a team, watch a Game Model change) but not which class owns it, or you want the one-line reminder of what a class you already use is for.
+You know the shape of what you need (send an event, read a team, elect a host) but not which class owns it, or you want the one-line reminder of what a class you already use is for.
 
 :::note[Every subsystem here initializes automatically. You fetch it, you never create one.]
 :::
@@ -30,7 +30,6 @@ You know the shape of what you need (send an event, read a team, watch a Game Mo
   UCrowdyAutoReplicator: "Ticks the continuous-state plane: polls each Dynamic entity's executor on its owner, decides full update, heartbeat or nothing per interval, and sends the snapshot.",
   UCrowdyEntitySubsystem: "The entity registry and the spawn and destroy path. Also enrolls non-actor participants and drives ownership transfer; FindParticipant looks one up by entity id.",
   UCrowdyEventRouter: "Routes an incoming CrowdyEvent RPC to the receiving function once it is decoded.",
-  UCrowdyGameModelSubsystem: "The Game Model plane's subsystem: invoke, watch, and pull containers, and the change-ping and session delegates.",
   UCrowdyReplicatedGameInstanceSubsystem: "Optional base class that enrolls and unenrolls a game-instance-scoped subsystem for replication automatically.",
   UCrowdyReplicatedWorldSubsystem: "Optional base class that enrolls and unenrolls a world-scoped subsystem for replication automatically.",
   UCrowdyStateReplicator: "Ticks the Crowdy State plane: diffs owned entities, sends and receives property deltas; MarkAllStateDirty forces a full resend of every owned entity's state.",
@@ -63,22 +62,21 @@ Blueprint function libraries (`UCrowdyUtilities`, `UCrowdyStateBlueprintLibrary`
 
 ## Excluded from this table
 
-Seven of the manifest's 28 subsystem classes are internal or deprecated and do not appear in the table above:
+Eight of the manifest's 28 subsystem classes do not appear in the table above:
 
 - `UCrowdyCppClientSubsystem`, `UCrowdyCppReplicationSubsystem`, `UCrowdySDKBridgeSubsystem`, `UCrowdyWorkerThreadsSubsystem`: the vendored CrowdyCPP bridge and its worker threads. The game-facing surface is `UCrowdySDKSubsystem`; see [Connection and reconnect](../runtime/connection-and-reconnect.md).
-- `UCrowdyActiveSessionMemory`: game-instance memory that carries the active Game Model session across a map travel. Its behavior is documented on [Sessions](../game-models/sessions.md), not the class itself.
+- `UCrowdyGameModelSubsystem` and `UCrowdyActiveSessionMemory`: the SDK's Game Model API and the memory that carried its active session across a map travel. The game API no longer serves it; see [The Two Planes](../concepts/two-planes.md).
 - `UCrowdyConnectionMonitor`: the SDK reconnects on its own after a timeout, so starting the monitor adds a second retry loop. What it reports is covered on [Connection and reconnect](../runtime/connection-and-reconnect.md).
-- `UCrowdyPersistenceSubsystem`: superseded by Game Models; still present and working, and the plugin does not mark it deprecated. It reads the `CrowdyPersistent` and `CrowdySingleton` struct tags. See [What's Changed](../guides/whats-changed.md#persistence) for what still works and what does not get further development.
+- `UCrowdyPersistenceSubsystem`: superseded by server code on ck-exec; still present and working, and the plugin does not mark it deprecated. It reads the `CrowdyPersistent` and `CrowdySingleton` struct tags. See [What's Changed](../guides/whats-changed.md#persistence) for what still works and what does not get further development.
 
 ## Gotchas
 
 - A world subsystem needs a valid world; fetch it after `BeginPlay`, not in a constructor.
-- Read the Outer column for scope; the class name does not always say it (`UCrowdyGameSession` is a game instance subsystem, `UCrowdyGameModelSubsystem` a world one).
+- Read the Outer column for scope; the class name does not always say it (`UCrowdyGameSession` is a game instance subsystem, `UCrowdyHostSubsystem` a world one).
 - `UCrowdySDKDeveloperSettings` looks like it belongs here but is not a subsystem at all; it lives on [Project Settings](./project-settings.md).
 
 ## Related
 
-- [Game Models overview](../game-models/overview.md)
 - [Host authority](../runtime/host-authority.md)
 - [Connection and reconnect](../runtime/connection-and-reconnect.md)
 - [What's Changed](../guides/whats-changed.md#persistence)

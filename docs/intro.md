@@ -59,8 +59,8 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 
 - **[Brand guidelines](/overview/brand)** — colors, typography, wordmark, and UI tokens for Crowded Kingdoms surfaces.
 - **[Client Workflow](/overview/client-workflow)** — how the APIs and SDK fit together.
-- **[Best practices](/overview/best-practices)** — Game Models, effects, Compute, and tokens.
-- **[Before you ship](/overview/before-you-ship)** — hosts, SDK defaults, and the game-model seed a shipped client needs.
+- **[Best practices](/overview/best-practices)** — authority on ck-exec, tokens, and errors.
+- **[Before you ship](/overview/before-you-ship)** — the hosts and SDK defaults a shipped client needs.
 - **[Dev tier (client integration)](/management-ui/dev-tier)** — public sandbox URLs and shared-platform config for early client testing.
 - **[Create your first app](/management-ui/create-your-first-app)** — register on the shared platform.
 - **Management API** — authenticate, manage orgs, apps, billing, and shared environment.

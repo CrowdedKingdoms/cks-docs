@@ -53,8 +53,9 @@ running mod restarts it on that version. A mod's name is 1 to 48 lowercase lette
 `-` or `_`; a grid holds at most 8 mods and a player at most 64.
 
 From CrowdyJS, `client.exec` has the same calls (`modStarter`, `modBuild`, `waitForModBuild`,
-`modDeploy`, `modSetEnabled`, and the rest below). In Crowdy Studio, the embed's
-`serverEngine: 'ck-exec'` runs a project's SERVER target as a mod on the grid.
+`modDeploy`, `modSetEnabled`, and the rest below). In Crowdy Studio, a project's SERVER
+target runs as a mod on the grid; see [Crowdy Studio and player client
+mods](/crowdyjs/player-client-mods).
 
 ## Call a mod from your game
 

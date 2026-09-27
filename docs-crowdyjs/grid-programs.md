@@ -6,7 +6,8 @@ title: Grids and grid programs
 # Grids and grid programs
 
 Player code inside a grid can do what app-scoped code can, confined to that
-grid. CrowdyJS 17.7 gives it three shapes.
+grid. Code that runs on the server for a grid is a [ck-exec mod](/exec/mods)
+(`client.exec.mod*`). In the browser, CrowdyJS 17.7 gives it three shapes.
 
 ## `client.grid()` — one grid, bound
 
@@ -14,18 +15,12 @@ grid. CrowdyJS 17.7 gives it three shapes.
 const plot = client.grid(appId, gridId);
 await plot.mintToken();                  // learns the box
 await plot.channels.create('plot-chat'); // a grid channel (owner only)
-const race = await plot.sessions.create({ name: 'race', presence: 'none' });
 await plot.send.text({ chunk: { x: 4, y: 0, z: 0 }, uuid, text: 'go!', distance: 2 });
 ```
 
-`channels`, `sessions`, `model` (the player-tier Game Model) and `compute`
-fill in the app and grid; `send` checks that each message **originates** in
-the grid and throws `GridScopeError` before any request if not. The server
-enforces the same rules.
-
-On the **dev** environment the legacy game-model and compute engines behind `model` and
-`compute` are switched off (their calls answer `ENGINE_SWITCHED_OFF`); code that runs on the
-server for a grid is a [ck-exec mod](/exec/mods) there.
+`channels` fills in the app and grid; `send` checks that each message
+**originates** in the grid and throws `GridScopeError` before any request if
+not. The server enforces the same rules.
 
 ## JS grid programs — the full SDK in a sandbox
 
@@ -71,8 +66,10 @@ await startGridMod({ spec: { kind: 'wasm', moduleName, artifact, artifactHash, w
 await startGridMod({ spec: { kind: 'program', moduleName, port }, scope, client, graphqlUrl, graphqlWsUrl });
 ```
 
-A Rust CLIENT mod gets every CLIENT host call in the platform catalog through
+A Rust CLIENT mod gets the CLIENT host calls in the platform catalog through
 `createGridHostCalls` (world reads, `voxel_set`, `emit_spatial`,
-`emit_channel`, the player model, sessions, user state), plus the page-local
-grid event bus: `emit_event` reaches the other client mods on the same grid
-in this browser through `on_event`.
+`emit_channel`, user state), plus the page-local grid event bus: `emit_event`
+reaches the other client mods on the same grid in this browser through
+`on_event`. The model and session host calls (`container_*`,
+`containers_list`, `property_set`, `model_invoke`, `sessions_list`) went with
+the game model and are refused with `GridHostCallRefused`.

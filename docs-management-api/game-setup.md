@@ -73,10 +73,10 @@ Tier operations require the **`manage_access_tiers`** permission. Edit or retire
 
 > **Opting out of open‑by‑default:** if you do **not** want anonymous/auto access, remove (or never create) a tier that is both `isFree` **and** `isDefault`. Players then only get access through an explicit grant (below).
 
-The four player-code keys (`write_server_code`, `run_server_code`,
+The four code keys (`write_server_code`, `run_server_code`,
 `write_client_code`, `run_client_code`) are **not** in the generated default
 tier. Add them only to tiers intended for authors or mod users; see
-[Player code and owned grids](/game-api/player-code).
+[mods](/exec/mods).
 
 ### c.1 (Optional) Censor player code with strict admission
 
@@ -112,17 +112,11 @@ Use `appCodeAdmissions` to inspect active/history rows and
 grants source access — closed source remains author-only with no moderation
 override.
 
-**Admission at scale (P4a).** Once the app has a marketplace catalog, the
-moderation surface is `appCodeAdmissionQueue(appId)`: every listing joined
-with its allow-list standing (`ADMITTED` / `PENDING` / `REVOKED`) and which
-subject matched (the listing, its author, or its owning org). The wholesale
-pattern is admitting an **org** once (`subjectKind: ORG`) so every listing
-that org owns — current and future — is admitted; per-listing admission
-remains for precise control. De-admission drains running installs exactly
-like a run-key revocation. For a hostile listing, pair the catalog kill
-(`setPlayerCodeListingStatus(..., status: KILLED)`) with the game-side
-fleet-wide runtime kill
-(`playerComputeSetSwitch(scope: "listing", listingRef: ...)`).
+**Mods.** A player's [mod](/exec/mods) is admitted by its own id or its
+marketplace listing (`subjectKind: CODE`) or by its owner
+(`subjectKind: AUTHOR`); until then, switching it on is refused. For a hostile
+listing, switch off every install of it at once with `execModSetSwitch` and
+the listing's id (Game API, `manage_compute`).
 
 ### c.1a (Optional) Choose how claims confer grid ownership (P4a)
 
@@ -141,17 +135,12 @@ mutation {
 `MARKETPLACE_ONLY` while paid grid sales are off the public API. Changing
 policy never revokes existing ownership rows.
 
-### c.2 (Optional) Bound player compute cost and take a markup
+### c.2 (Optional) Take a markup on player usage
 
-Player compute bills the **player's own wallet**, never the org — see
-**[Player wallets & billing](/management-api/player-billing)**. Two knobs
-belong to the studio:
+Player usage bills the **player's own wallet**, never the org — see
+**[Player wallets & billing](/management-api/player-billing)**. One knob
+belongs to the studio:
 
-- **Player policy** (`setPlayerWasmPolicy`, `manage_compute`): per-player or
-  cohort clamps at `app_default` / `tier` / `grid` / `user` scope, including
-  `unitsPerHour`/`unitsPerDay` compute quotas, `maxCompilesPerHour`, and
-  runtime budgets. Quotas protect world health independent of anyone's
-  ability to pay.
 - **Rate-card markup** (`setPlayerRateMarkup`, `manage_billing`): basis
   points added on the platform's base player rates — the studio's usage
   revenue, always itemized separately in the player's spend history.
@@ -234,7 +223,7 @@ A player with an **active tier** on an app is authorized everywhere that matters
 
 The generated default tier carries the **first four**. Everything below the line is opt-in, per tier.
 
-**`run_server_code` is what automations need.** Enabling a player automation requires *effective* `run_server_code`, and so does invoking a server module export. A game whose damage, spawning or scoring runs as an automation will start, connect, replicate actors — and then quietly do nothing — if the tier its players land on omits that key. The symptom is not a permission error in the client; it is automations that never fire, game-model containers that never bind, and actor updates refused for actors nothing registered.
+**`run_server_code` is what mods need.** Switching a player's [mod](/exec/mods) on requires *effective* `run_server_code`: on the player's access tier and on the grid. A tier that carries `write_server_code` without it lets players build and deploy mods that are then refused when they switch them on.
 
 ## Two scopes, and the one that does not follow a tier edit
 
@@ -266,7 +255,7 @@ Two things about that call, both of which return a clear error rather than faili
 ## What a new app developer should check first
 
 1. **The default tier's keys.** `appAccessTiers(appId)` — is `isDefault` present, and does it carry what your game actually needs? Four keys is the generated default, not a recommendation.
-2. **`run_server_code` at both scopes**, if you use automations or player code at all.
+2. **`run_server_code` at both scopes**, if players run [mods](/exec/mods) at all.
 3. **The Studio agent policy**, if you use the agent: it is fail-closed on a rebuilt fleet and reports `AGENT_APP_KILLED` until an operator enables it for your app.
 4. **The org runtime wallet** — `app(appId){ runtimeStatus runtimeDenialReason }`. A denied wallet stops server code independently of every permission above, with its own message.
 

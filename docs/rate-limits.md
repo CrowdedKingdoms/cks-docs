@@ -24,19 +24,14 @@ back-pressure:
 - **Batch reads** with pagination (see [Pagination](/overview/pagination)) instead of
   many tiny requests.
 
-### The one GraphQL limit that is enforced: `gameModelInvoke`
+### Calls to your ck-exec code
 
-`gameModelInvoke` is bounded at **120 invocations per 10 seconds per (player, app)**,
-a fixed window shared across every API replica. It is sized so that a client that
-waits for each response can never reach it (a serial caller is held to about 4 per
-second by the per-call ceiling); hitting it means at least three invocations in
-flight at once, sustained — a loop, a retry storm, or a duplicate-delivery bug.
-The refusal is `RATE_LIMIT_EXCEEDED` and counts admitted and policy-denied
-invocations alike. Nothing else on the game-model surface is rate limited today:
-`gameModelEnsureContainer`, `gameModelSeed`, `gameModelContainers` and
-`gameModelContainerState` carry no per-call quota, so a bulk level load is bounded
-by page size (see [Game models](/game-api/game-models#reading-state-and-the-graph))
-rather than by a rate.
+Calls to your app's [ck-exec](/exec/intro) code do not go through GraphQL, and they are
+limited: a player may make **120 calls per 10 seconds** to an app on one execution host. A
+call over it is refused with `Busy`, and its message starts `rate limited` and says how
+long to wait. The limit is kept per host, so a player connected to hubs on two hosts has
+120 on each, and calls between instances don't count. See
+[call limits](/exec/operations#call-limits).
 
 ## Realtime (UDP) cost model
 

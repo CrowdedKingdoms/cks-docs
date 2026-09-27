@@ -38,8 +38,7 @@ confined as shown. Anything else returns `SCOPE_MISSING`.
 | Chunk inside the grid | `getChunk`, `getVoxelList`, `listVoxels`, `updateVoxel` |
 | **Origin** chunk inside the grid (reach follows `distance`) | `sendActorUpdate`, `sendVoxelUpdate`, `sendTextPacket`, `sendClientEvent`, `sendAudioPacket`, `sendVideoPacket`, `sendSingleActorMessage` |
 | The grid's own channels | `gridChannels`, `joinChannel`, `leaveChannel`, `sendChannelMessage` |
-| Sessions hosted in the grid | `gameModelSessions` (must pass `gridId`), `gameModelCreateSession` (must pass `gridId`), `gameModelSession`, `gameModelSessionSnapshot`, `gameModelSessionChanged`, `gameModelJoinSession`, `gameModelLeaveSession` |
-| The grid named | `playerModelContainers`, `playerModelContainer`, `playerModelCreateContainer`, `playerModelSetProperty`, `playerModelDeleteContainer`, `playerComputeInvoke`, `gridClientMods` |
+| The grid named | `gridClientMods` |
 
 `refreshAppToken`, `logout`, `mintGridToken` and `mintAppToken` are refused,
 so a grid token can neither widen into nor tear down its parent.
