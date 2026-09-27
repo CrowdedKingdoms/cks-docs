@@ -8,7 +8,8 @@ title: Player code and owned grids
 :::caution Legacy engine
 This page describes server-side player code, part of the game API's legacy engines. On the
 **dev** environment those engines are switched off (their calls answer `ENGINE_SWITCHED_OFF`)
-and [ck-exec](/exec/intro) replaces them: [from the legacy
+and [ck-exec](/exec/intro) replaces them: [mods](/exec/mods) for server code, and a mod's [CLIENT
+half](/exec/client-halves) for the client target and grid-attached client mods. [From the legacy
 engines](/exec/from-the-legacy-engines#player-code) maps each feature here to its ck-exec
 equivalent. The page is removed once ck-exec reaches every environment.
 :::
@@ -435,6 +436,11 @@ changes is provenance:
   versions (buyers keep their pinned versions).
 
 ## Client target status
+
+:::note[Superseded]
+On ck-exec the client target is a mod's [CLIENT half](/exec/client-halves), built from a
+`crowdy-client-sdk` crate and run by CrowdyJS's `ExecClientHalves` (17.14.0).
+:::
 
 The client target, artifact delivery, and CrowdyJS browser runtime are shipped
 for compatible host games such as Blocks with Friends. `PlayerCodeBroker`

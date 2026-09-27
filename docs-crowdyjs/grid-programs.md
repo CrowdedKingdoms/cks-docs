@@ -76,3 +76,10 @@ A Rust CLIENT mod gets every CLIENT host call in the platform catalog through
 `emit_channel`, the player model, sessions, user state), plus the page-local
 grid event bus: `emit_event` reaches the other client mods on the same grid
 in this browser through `on_event`.
+
+A ck-exec mod's [CLIENT half](/exec/client-halves) runs the same way, with
+`engine: 'ck-exec'` in the `wasm` spec and the digest, fuel budget, tick
+interval and host calls it was served with (`artifactHash`, `fuelPerDispatch`,
+`tickIntervalMs`, `consentedHostCalls`; CrowdyJS 17.14.0). It reaches only the
+host calls `crowdy-client-sdk` makes: no player model, sessions or grid state.
+`ExecClientHalves` runs every CLIENT half a grid serves.

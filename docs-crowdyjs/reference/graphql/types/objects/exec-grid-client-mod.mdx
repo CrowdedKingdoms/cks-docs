@@ -1,0 +1,108 @@
+---
+id: exec-grid-client-mod
+title: ExecGridClientMod
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A CLIENT half a grid serves (dev-tier preview): of a mod on it that is switched on, not stopped by the kill ladder and admitted, running as the grid’s owner. Carries the caller’s consent and trust in its author.
+
+
+```graphql
+type ExecGridClientMod {
+  modId: String!
+  name: String!
+  gridId: BigInt!
+  authorId: BigInt!
+  listingId: BigInt
+  clientVersion: Int!
+  digest: String!
+  capabilitySummaryJson: String!
+  capabilityHash: String!
+  tickIntervalMs: Int!
+  callerConsented: Boolean!
+  authorCapabilitySummaryJson: String!
+  authorCapabilityHash: String!
+  callerTrustsAuthor: Boolean!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>modId</b></code>](#mod-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#mod-id\} 
+The mod, for `execConsentClientMod` and `execModClientArtifact`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+The mod’s name: its name on the page’s grid event bus.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>authorId</b></code>](#author-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#author-id\} 
+Its author: the mod’s owner, who owns the grid. Pass it to `execTrustAuthor`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>listingId</b></code>](#listing-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#listing-id\} 
+The marketplace listing the mod was installed from.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>clientVersion</b></code>](#client-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-version\} 
+The CLIENT half’s version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>digest</b></code>](#digest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#digest\} 
+SHA-256 of the module, hex: cache the bytes by it, and stop a worker whose digest is no longer listed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>capabilitySummaryJson</b></code>](#capability-summary-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#capability-summary-json\} 
+Its capability summary as JSON.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>capabilityHash</b></code>](#capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#capability-hash\} 
+The hash `execConsentClientMod` takes: SHA-256 of the canonical capability summary.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>tickIntervalMs</b></code>](#tick-interval-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tick-interval-ms\} 
+How often, in milliseconds, to tick it (16-1000).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>callerConsented</b></code>](#caller-consented)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#caller-consented\} 
+The caller consented to it at its current capability hash.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>authorCapabilitySummaryJson</b></code>](#author-capability-summary-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#author-capability-summary-json\} 
+The union, as JSON, of the capability summaries of every CLIENT half this author has on the grid: the summary a one-per-author trust prompt shows.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>authorCapabilityHash</b></code>](#author-capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#author-capability-hash\} 
+The hash `execTrustAuthor` takes: SHA-256 of the canonical union. A new capability changes it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>callerTrustsAuthor</b></code>](#caller-trusts-author)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#caller-trusts-author\} 
+The caller trusts this author on this grid, at this hash or a union at least as wide.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecGridClientMod.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+When it was last attached.
+
+
+
+
+### Returned By
+
+[`execGridClientMods`](/reference/graphql/operations/queries/exec-grid-client-mods.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

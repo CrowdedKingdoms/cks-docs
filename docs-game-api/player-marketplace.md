@@ -142,6 +142,14 @@ keeps the acquisition.
 
 ## Bundles and grid-attached client mods
 
+:::note[Superseded]
+Grid-attached client mods (`gridClientMods`, `consentGridClientMod`, `playerCodeClientArtifact`)
+are superseded by ck-exec [CLIENT halves](/exec/client-halves): a mod's CLIENT half is recorded
+on its `execModPublish` listing and attached by `execModInstall`, and visitors list, consent to
+and fetch it with `execGridClientMods`, `execConsentClientMod` and `execModClientArtifact`. The
+calls here keep working until the legacy engines are removed.
+:::
+
 A bundled listing (server + client halves) installed into a grid also
 creates a **grid client attachment**: players present in that grid can
 discover it (`gridClientMods`), read its capability summary, and **consent

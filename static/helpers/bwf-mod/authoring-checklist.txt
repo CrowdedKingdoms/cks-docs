@@ -1,5 +1,12 @@
 BWF PLAYER-MOD AUTHORING CHECKLIST
 
+SUPERSEDED ON DEV
+- This is the legacy player-code flow. On the dev environment a SERVER target
+  is a ck-exec mod (/exec/mods), and from CrowdyJS 17.14.0 a CLIENT target is
+  that mod's CLIENT half (/exec/client-halves): execModClientBuild, then
+  execModClientDeploy onto the mod; visitors call execGridClientMods,
+  execTrustAuthor or execConsentClientMod, then execModClientArtifact.
+
 UNPUBLISHED LOCAL MIGRATION
 - Browser-local Rust tooling exists only in local development.
 - No CrowdyJS package version has been assigned or published for this change.

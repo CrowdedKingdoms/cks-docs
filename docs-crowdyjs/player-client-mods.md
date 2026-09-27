@@ -8,9 +8,12 @@ title: Crowdy Studio & player client mods
 :::caution Legacy engine
 This page describes Crowdy Studio and player mods on the game API's legacy player-code engine.
 On the **dev** environment that engine is switched off: Crowdy Studio's SERVER target deploys a
-[ck-exec mod](/exec/mods) instead (the default from CrowdyJS 17.13.0), and a new CLIENT-target
-deploy is refused with `ENGINE_SWITCHED_OFF` until client builds move to the ck-exec builder;
-client modules already built keep loading. [From the legacy
+[ck-exec mod](/exec/mods) instead (the default from CrowdyJS 17.13.0), and from CrowdyJS 17.14.0
+its CLIENT target builds that mod's [CLIENT half](/exec/client-halves). The grid-attached client
+mods below (`gridClientMods`, `consentGridClientMod`, `trustGridAuthor`,
+`playerCodeClientArtifact`) are **superseded** by CLIENT halves. A new legacy CLIENT-target
+deploy is refused with `ENGINE_SWITCHED_OFF` there; client modules already built keep loading
+until the legacy engines are removed. [From the legacy
 engines](/exec/from-the-legacy-engines#player-code) maps the rest.
 :::
 
@@ -184,6 +187,10 @@ fallback. For a custom UI, drive `CrowdyStudioController` directly.
 
 ## Server modules that require a client companion
 
+:::note[Superseded]
+A ck-exec mod needs no pairing: its [CLIENT half](/exec/client-halves) belongs to the mod.
+:::
+
 Requirements bind **immutable compiled versions**, not mutable module names.
 The UI can present names, but the server resolves each name to its current
 compiled version when this mutation succeeds:
@@ -202,6 +209,14 @@ in the same owned grid. Publishing rejects a marketplace bundle that omits a
 required client version.
 
 ## Visitor discovery and per-author trust
+
+:::note[Superseded]
+`marketplace.gridClientMods`, `consentGridClientMod`, `trustGridAuthor` and
+`clientArtifact(Bytes)` are deprecated in CrowdyJS 17.14.0. A ck-exec mod's CLIENT half is
+listed with `client.exec.gridClientMods`, agreed to with `consentClientMod` or `trustAuthor`,
+and run with `ExecClientHalves`: see [serving CLIENT halves to
+visitors](/exec/client-halves#serving-it-to-visitors).
+:::
 
 On grid entry, call `client.marketplace.gridClientMods({ appId, gridId })`.
 Rows include:

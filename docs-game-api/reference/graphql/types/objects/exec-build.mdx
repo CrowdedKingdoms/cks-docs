@@ -22,6 +22,7 @@ A ck-exec build (dev-tier preview): queued, building, succeeded or failed, with 
 type ExecBuild {
   buildId: String!
   status: String!
+  kind: String!
   log: String
   createdAt: DateTime!
   startedAt: DateTime
@@ -39,6 +40,10 @@ The build’s id, for `execBuildStatus` and `execDeploy`.
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
 `queued`, `building`, `succeeded` or `failed`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#kind\} 
+What it builds: `exec` for ck-exec modules, `client` for the CLIENT half of a mod (`execModClientBuild`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>log</b></code>](#log)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#log\} 
@@ -65,4 +70,4 @@ The modules built so far, one per crate.
 
 ### Returned By
 
-[`execBuild`](/reference/graphql/operations/mutations/exec-build.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`execBuildStatus`](/reference/graphql/operations/queries/exec-build-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`execModBuild`](/reference/graphql/operations/mutations/exec-mod-build.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`execModBuildStatus`](/reference/graphql/operations/queries/exec-mod-build-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+[`execBuild`](/reference/graphql/operations/mutations/exec-build.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`execBuildStatus`](/reference/graphql/operations/queries/exec-build-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`execModBuild`](/reference/graphql/operations/mutations/exec-mod-build.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`execModBuildStatus`](/reference/graphql/operations/queries/exec-mod-build-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`execModClientBuild`](/reference/graphql/operations/mutations/exec-mod-client-build.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

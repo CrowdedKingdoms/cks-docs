@@ -44,6 +44,10 @@ confined as shown. Anything else returns `SCOPE_MISSING`.
 `refreshAppToken`, `logout`, `mintGridToken` and `mintAppToken` are refused,
 so a grid token can neither widen into nor tear down its parent.
 
+`gridClientMods` is superseded by `execGridClientMods` ([CLIENT
+halves](/exec/client-halves)), which answers the player's app token and not a
+grid token.
+
 ## Realtime
 
 The binary relay (`crowdy-relay-v1`) refuses a grid token; CrowdyJS falls

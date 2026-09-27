@@ -8,9 +8,11 @@ title: Embed Crowdy Studio in your game
 :::caution Legacy engine
 This page describes embedding Crowdy Studio on the game API's legacy player-code engine. On the
 **dev** environment that engine is switched off: Crowdy Studio's SERVER target deploys a
-[ck-exec mod](/exec/mods) instead (the default from CrowdyJS 17.13.0), and a new CLIENT-target
-deploy is refused with `ENGINE_SWITCHED_OFF` until client builds move to the ck-exec builder;
-client modules already built keep loading. [From the legacy
+[ck-exec mod](/exec/mods) instead (the default from CrowdyJS 17.13.0), and from CrowdyJS 17.14.0
+its CLIENT target builds that mod's [CLIENT half](/exec/client-halves#crowdy-studios-client-target),
+which supersedes the legacy CLIENT modules and visitor trust flow below. A new legacy
+CLIENT-target deploy is refused with `ENGINE_SWITCHED_OFF` there; client modules already built
+keep loading until the legacy engines are removed. [From the legacy
 engines](/exec/from-the-legacy-engines#player-code) maps the rest.
 :::
 
