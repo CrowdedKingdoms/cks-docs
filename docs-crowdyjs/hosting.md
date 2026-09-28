@@ -25,7 +25,7 @@ this page is the SDK surface.
 | `setEnabled(slug, enabled)` | session + `manage_apps` | Your own on/off switch. |
 
 Listing a game in the lobby and taking one down are the platform operator's decisions; they
-are not in the SDK (CrowdyJS 18 carries no operator-only calls).
+are not in the SDK (since CrowdyJS 18.0.1 it carries no operator-only calls).
 
 Every mutation is **identity-session only**: a game's own app token is refused,
 so a bundle can never publish a replacement for itself. Sign in from Node with
