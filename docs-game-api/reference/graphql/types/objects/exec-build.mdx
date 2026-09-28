@@ -35,7 +35,7 @@ type ExecBuild {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>buildId</b></code>](#build-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#build-id\} 
-The build’s id, for `execBuildStatus` and `execDeploy`.
+The build’s id: for `execBuildStatus` and `execDeploy`, or for a player’s builds `execModBuildStatus` with `execModDeploy` (server) or `execModClientDeploy` (CLIENT half).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
