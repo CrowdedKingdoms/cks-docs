@@ -22,8 +22,11 @@ installer's world; a mod is a program, not a service.
 
 - An installed mod becomes **the installer's own mod**, switched off, and
   runs **as its owner**, in their grid.
-- A **client** mod runs **as the player running it**, in their browser
-  sandbox.
+- A mod's [CLIENT half](/exec/client-halves) runs **as the player running
+  it**, in their browser sandbox. A listing records the CLIENT half the mod
+  had when it was published, and an install attaches it to the installed mod,
+  as the installer; no consent carries over, so every visitor agrees to it
+  afresh.
 
 ## Claim a player-owned chunk grid
 
@@ -65,7 +68,8 @@ voxels in the region.
 
 ## Admission
 
-Under an allow list, a mod is switched on only once the app admits it. Studio
+Under an allow list, a mod is switched on only once the app admits it, and its
+CLIENT half is served only once the app admits it at its CLIENT version. Studio
 tooling on the Management API: `admitAppCode` / `revokeAppCodeAdmission`
 admit (or revoke) a mod, its marketplace listing, or its owner. An app in the
 implicit mode (`implicit_allow`) admits every mod.
@@ -75,7 +79,8 @@ implicit mode (`implicit_allow`) admits every mod.
 `execModSetSwitch` (Game API, `manage_compute`) is the kill ladder: switch off
 one mod, a player's mods, a grid's, **every install of a listing** (its id),
 or every mod in the app. Off stops what runs at once and refuses calls, with
-your reason; `execModSwitches` lists what is off. See
+your reason, and the mods' CLIENT halves are no longer served;
+`execModSwitches` lists what is off. See
 [for the app's developers](/exec/mods#for-the-apps-developers).
 
 ## Grid claim policies (how claims confer ownership)

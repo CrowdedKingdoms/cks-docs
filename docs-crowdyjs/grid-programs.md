@@ -22,6 +22,11 @@ await plot.send.text({ chunk: { x: 4, y: 0, z: 0 }, uuid, text: 'go!', distance:
 **originates** in the grid and throws `GridScopeError` before any request if
 not. The server enforces the same rules.
 
+The grid scope's `sessions`, `model` and `compute` call the game model's
+sessions, the player model and player compute, which the game API no longer
+has, so every call to them fails. A grid's server-side state and logic belong
+in its [mods](/exec/mods).
+
 ## JS grid programs — the full SDK in a sandbox
 
 A grid program is player-authored JavaScript that runs in a network-less
@@ -62,14 +67,29 @@ whatever the program's code does, it reaches exactly as far as a grid token.
 ```ts
 import { startGridMod } from '@crowdedkingdoms/crowdyjs';
 
-await startGridMod({ spec: { kind: 'wasm', moduleName, artifact, artifactHash, workerUrl }, scope, client });
+const a = await client.exec.modClientArtifactBytes(appId, modId); // a CLIENT half
+await startGridMod({
+  spec: {
+    kind: 'wasm', engine: 'ck-exec', moduleName: a.name, artifact: a.bytes,
+    artifactHash: a.digest, fuelPerDispatch: a.fuelPerDispatch, tickIntervalMs: a.tickIntervalMs,
+    consentedHostCalls: a.capabilitySummary.hostFunctions, workerUrl,
+  },
+  scope,
+  client,
+});
 await startGridMod({ spec: { kind: 'program', moduleName, port }, scope, client, graphqlUrl, graphqlWsUrl });
 ```
 
-A Rust CLIENT mod gets the CLIENT host calls in the platform catalog through
-`createGridHostCalls` (world reads, `voxel_set`, `emit_spatial`,
+The `wasm` spec runs a ck-exec mod's [CLIENT half](/exec/client-halves), with
+`engine: 'ck-exec'` and the digest, fuel budget, tick interval and host calls it
+was served with (`artifactHash`, `fuelPerDispatch`, `tickIntervalMs`,
+`consentedHostCalls`; CrowdyJS 17.14.0). `createGridHostCalls` answers the host
+calls `crowdy-client-sdk` makes (world reads, `voxel_set`, `emit_spatial`,
 `emit_channel`, user state), plus the page-local grid event bus: `emit_event`
-reaches the other client mods on the same grid in this browser through
-`on_event`. The model and session host calls (`container_*`,
-`containers_list`, `property_set`, `model_invoke`, `sessions_list`) went with
-the game model and are refused with `GridHostCallRefused`.
+reaches the other CLIENT halves on the same grid in this browser through
+`on_event`. `ExecClientHalves` runs every CLIENT half a grid serves.
+
+The spec's default engine, `'player-compute'`, ran legacy CLIENT modules, which
+the game API no longer serves. Their model and session host calls
+(`container_*`, `containers_list`, `property_set`, `model_invoke`,
+`sessions_list`) went with the game model.

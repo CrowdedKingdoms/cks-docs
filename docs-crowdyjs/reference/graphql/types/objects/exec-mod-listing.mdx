@@ -28,6 +28,10 @@ type ExecModListing {
   sourceVersion: Int!
   digest: String!
   installs: Int!
+  clientDigest: String
+  clientCapabilitySummaryJson: String
+  clientCapabilityHash: String
+  clientTickIntervalMs: Int
   createdAt: DateTime!
   delistedAt: DateTime
 }
@@ -66,6 +70,22 @@ SHA-256 of its module, hex.
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>installs</b></code>](#installs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#installs\} 
 
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>clientDigest</b></code>](#client-digest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-digest\} 
+SHA-256 of the CLIENT half the mod had when it was published, hex; null without one. An install attaches it to the installer’s mod, and visitors consent to it afresh.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>clientCapabilitySummaryJson</b></code>](#client-capability-summary-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-capability-summary-json\} 
+That CLIENT half’s capability summary as JSON, for an installer to review first.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>clientCapabilityHash</b></code>](#client-capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-capability-hash\} 
+SHA-256 of that capability summary, hex.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>clientTickIntervalMs</b></code>](#client-tick-interval-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#client-tick-interval-ms\} 
+How often, in milliseconds, browsers tick that CLIENT half.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecModListing.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 

@@ -4,8 +4,8 @@ INPUTS
 - appId: BWF app id
 - gridId: a grid currently owned by the author
 - name: lowercase crate-style module name, unique in the grid
-  (a server mod's name is 1-48 lowercase letters, digits, - or _)
-- target: SERVER (a ck-exec mod) or CLIENT (a browser module)
+  (a mod's name is 1-48 lowercase letters, digits, - or _)
+- target: SERVER (a ck-exec mod) or CLIENT (that mod's CLIENT half)
 
 REQUIRED SOURCE MAP (each target is one crate)
 {
@@ -22,27 +22,37 @@ SERVER TARGET: A CK-EXEC MOD
 5. Players in the grid call it as node type mod:<name>, keyed by the grid id.
 6. Read its log lines with execModLogs.
 
-CLIENT TARGET: A BROWSER MODULE
-1. Deploy CLIENT source with playerComputeDeploy.
-2. Poll playerComputeVersions until compileStatus is succeeded.
-3. Visitors query gridClientMods, display authorCapabilitySummaryJson, and
-   call trustGridAuthor with the exact authorCapabilityHash.
-4. Fetch client bytes with playerCodeClientArtifact(attachmentId: ...).
-5. Poll only gridClientMods metadata; stop on removal/hash change/grid exit.
+CLIENT TARGET: THE MOD'S CLIENT HALF (/exec/client-halves)
+1. Deploy and switch on the mod it rides first (SERVER TARGET above).
+2. Build the crate with execModClientBuild(appId, crate: { name, files }),
+   then poll execModBuildStatus until status is succeeded (kind: client).
+3. Attach it with execModClientDeploy(appId, gridId, name: <the mod>, buildId).
+4. Visitors list execGridClientMods(appId, gridId), show
+   authorCapabilitySummaryJson, and call execTrustAuthor with the exact
+   authorCapabilityHash (or execConsentClientMod with one capabilityHash).
+5. Fetch the module with execModClientArtifact(appId, modId); check it against
+   digest and load fuelPerDispatch before every call.
+6. List again every few seconds; stop on removal, digest, capability hash or
+   tick interval change, and on grid exit.
+7. Detach it with execModClientDelete(appId, gridId, name); the mod keeps
+   running.
 
 INVARIANTS
 - SERVER: Rust + ckx-sdk; dependencies are ckx-sdk, serde and serde_json only.
 - SERVER: runs as the current grid owner, in the owner's own sandbox, and can
   read and change only its own grid.
-- CLIENT: Rust + crowdy-compute-sdk = "0.1.5"; dependencies must be allow-listed.
-- CLIENT: runs in the browser worker with no DOM/token/network access.
+- CLIENT: Rust + crowdy-client-sdk = "0.1.0"; dependencies are
+  crowdy-client-sdk, serde and serde_json only; one crate per build.
+- CLIENT: [package.metadata.crowdy] may hold only tick_interval_ms (16-1000).
+- CLIENT: runs in the browser worker with no DOM/token/network access, as the
+  visiting player, inside the grid.
 - hud_set and overlay_draw are host-rendered presentation requests.
 - Local parser/index diagnostics are advisory; the platform build is authoritative.
 - Local tooling does not provide borrow checking, full trait/proc-macro
   resolution, Cargo build-script execution, or full build semantics.
 - There is no authoring endpoint/token or server language-service fallback.
 - Trust is scoped to visitor + app + grid + author + aggregate capability hash.
-- Any capability widening requires a new explicit trust action.
+- Any capability widening requires a new explicit consent or trust action.
 
 DOWNLOADS (CLIENT)
 - /helpers/bwf-mod/Cargo.toml

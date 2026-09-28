@@ -106,7 +106,8 @@ named fields, which game clients decode into plain objects.
 
 Build with `cargo build --release --target wasm32-unknown-unknown`, or have the platform build
 it: see [builds and starter packs](builds). Players run their own code on grids they own the
-same way, as [mods](mods).
+same way, as [mods](mods), and in their visitors' browsers as a mod's [CLIENT
+half](client-halves).
 
 ## Deploying
 

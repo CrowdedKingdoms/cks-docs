@@ -23,6 +23,9 @@ type ExecBuildArtifact {
   crate: String!
   digest: String!
   sizeBytes: Int!
+  capabilitySummaryJson: String
+  capabilityHash: String
+  tickIntervalMs: Int
 }
 ```
 
@@ -34,11 +37,23 @@ The crate it was built from.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecBuildArtifact.<b>digest</b></code>](#digest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#digest\} 
-SHA-256 of the WASM: the `digest` a manifest names it by.
+SHA-256 of the WASM, hex: the `digest` a manifest names a ck-exec module by, and a CLIENT half’s digest once attached (`execModClientDeploy`).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecBuildArtifact.<b>sizeBytes</b></code>](#size-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#size-bytes\} 
 The module’s size in bytes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuildArtifact.<b>capabilitySummaryJson</b></code>](#capability-summary-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#capability-summary-json\} 
+A CLIENT half’s capability summary as JSON, derived from the module: its imports, the client host calls it can reach, their groups, its presentation hooks and exports. Null for a ck-exec module.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuildArtifact.<b>capabilityHash</b></code>](#capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#capability-hash\} 
+SHA-256 of the canonical capability summary, hex: what visitors consent to. Null for a ck-exec module.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuildArtifact.<b>tickIntervalMs</b></code>](#tick-interval-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tick-interval-ms\} 
+How often, in milliseconds, browsers tick a CLIENT half: `[package.metadata.crowdy] tick_interval_ms`, 16-1000, 1000 by default. Null for a ck-exec module.
 
 
 

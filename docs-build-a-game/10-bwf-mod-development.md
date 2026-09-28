@@ -7,8 +7,9 @@ title: Build mods with Crowdy Studio
 
 Blocks with Friends (BWF) embeds Crowdy Studio for player-authored server and
 client Rust mods. A server mod is a [ck-exec mod](/exec/mods) on your grid; a
-client mod runs in each visitor's browser. This guide is for a mod developer
-using the game, not a studio operator deploying platform infrastructure.
+client mod is that mod's [CLIENT half](/exec/client-halves), which runs in each
+visitor's browser. This guide is for a mod developer using the game, not a
+studio operator deploying platform infrastructure.
 
 ## Open Crowdy Studio
 
@@ -34,7 +35,7 @@ then click the editor to code; the panes isolate their keyboard input. Narrow
 screens use the full-screen editor.
 
 Edits autosave to the cloud, but they do not change the running grid until you
-select **Test draft** or **Deploy live**. This keeps compile quota and
+select **Test draft** or **Deploy live**. This keeps builds and
 neighbor-visible effects explicit while still letting you observe the updated
 server mod or hot-swapped CLIENT worker without closing the studio.
 
@@ -62,13 +63,18 @@ src/lib.rs
 
 A server mod is a `ckx-sdk` crate whose dependencies are `ckx-sdk`, `serde`
 and `serde_json` only; see [what a crate may
-contain](/exec/builds#what-a-crate-may-contain). A client mod uses the
-platform SDK pin:
+contain](/exec/builds#what-a-crate-may-contain). A client mod is a
+`crowdy-client-sdk` crate whose dependencies are `crowdy-client-sdk`, `serde`
+and `serde_json` only; see [the crate](/exec/client-halves#the-crate):
 
 ```toml
 [dependencies]
-crowdy-compute-sdk = "0.1.5"
+crowdy-client-sdk = "0.1.0"
+serde_json = "1"
 ```
+
+A client crate still on the legacy `crowdy-compute-sdk` is refused before any
+build.
 
 The platform builds both offline, in a sandbox, against its pinned SDKs. The
 browser worker's embedded platform index helps with names, signatures, and
@@ -97,7 +103,7 @@ network, or unrestricted world access. Presentation crosses a host call and
 the game renders it in a mod-owned HUD region:
 
 ```rust
-use crowdy_compute_sdk::{api, host_call};
+use crowdy_client_sdk::{api, host_call};
 use serde_json::json;
 
 fn on_init() {}
@@ -122,7 +128,7 @@ fn on_tick(_dt: u32) {
 
 fn on_invoke(_payload: &[u8]) -> Vec<u8> { Vec::new() }
 
-crowdy_compute_sdk::register_module!(
+crowdy_client_sdk::register_module!(
     init: on_init,
     tick: on_tick,
     invoke: on_invoke
@@ -130,13 +136,15 @@ crowdy_compute_sdk::register_module!(
 ```
 
 The downloadable client helper uses compile-ready control flow without the
-abbreviations in this explanation.
+abbreviations in this explanation. [What it can
+call](/exec/client-halves#what-it-can-call) lists every host call.
 
-### Tick rate and mouse input (CLIENT, Game API v2.8.0 / CrowdyJS 17.6.0)
+### Tick rate and mouse input
 
 A CLIENT worker ticks once a second by default. Ask for a faster loop in the
 crate's `Cargo.toml` — it is the only key admitted under
-`[package.metadata.crowdy]`, and the deploy refuses anything outside 16–1000:
+`[package.metadata.crowdy]`, a whole number of milliseconds, clamped to
+16–1000:
 
 ```toml
 [package.metadata.crowdy]
@@ -170,17 +178,19 @@ fn on_tick(_dt: u32) {
 
 ## Bundle server and client halves
 
-In a full-stack project, set distinct server and client module names.
-**Deploy live** autosaves one coherent revision and builds CLIENT first and
-SERVER second, so a client failure never deploys a new server version. Only
-after both builds succeed does it switch the server mod on and hot-swap the
-exact client artifact. A mod has no client pairing: the client half calls it
-by name (`mod:<server module name>`).
+In a full-stack project the client target is the server mod's CLIENT half:
+the mod is named for the server module, and its CLIENT half rides it. **Deploy
+live** autosaves one coherent revision and builds CLIENT first and SERVER
+second, so a client failure never deploys a new server version. Only after
+both builds succeed does it deploy and switch the server mod on, attach the
+CLIENT half to it, and hot-swap your preview to the served module. There is
+no pairing to set: a CLIENT half belongs to its mod.
 
-Visitors entering the grid see one trust prompt for the author. It displays
-the aggregate capability summary of the author's client mods in the grid.
-Widening capabilities requires fresh trust; removing capabilities can retain
-trust only when the server can prove the new summary is strictly narrower.
+A visitor's browser runs your CLIENT half only once they have agreed to it:
+consented to it at its capability hash, or trusted you as its author on this
+grid. The capability summary they are shown is derived from the built
+module, and a version that can do something new is asked about again. See
+[what a visitor is asked](/exec/mods#what-a-visitor-is-asked).
 
 ## Debugging
 
@@ -190,13 +200,17 @@ trust only when the server can prove the new summary is strictly narrower.
   can load the same-origin module-worker and parser/grammar WASM assets, then
   reopen the panel. If local language startup fails, the editor deliberately
   falls back to the textarea, which is the only fallback.
-- **Deploy refused:** inspect the quota meter and typed gate reason.
-- **Client HUD does not appear:** confirm visitor trust, `run_client_code`,
-  current grid presence, and that the attachment remains active.
+- **Deploy refused:** read the message. You have one build at a time, server
+  or client (`RATE_LIMITED` while another runs); attaching needs you to own
+  the grid with `write_client_code` and the app's code admission; see [CLIENT
+  half errors](/exec/client-halves#errors).
+- **Client HUD does not appear:** confirm the visitor consented or trusts
+  you, holds `run_client_code` and stands in the grid, and that the mod is
+  switched on with its CLIENT half attached.
 - **Server mod does not answer:** check that it is switched on and that the
   app admits it. A mod that is switched on but not running starts when an
   actor arrives in its grid or a player calls it.
 
-See [Crowdy Studio and player client mods](/crowdyjs/player-client-mods) for
-host integration and sandbox details, and [mods](/exec/mods) for the
-server-side API.
+See [Crowdy Studio and mods in the browser](/crowdyjs/player-client-mods) for
+host integration and sandbox details, [mods](/exec/mods) for the server-side
+API, and [CLIENT halves](/exec/client-halves) for the client side.

@@ -6,17 +6,18 @@ title: Player wallets & billing
 
 # Player wallets & billing
 
-Players are first-class billing customers. Each player has **one
-platform-scoped wallet** that funds their usage across every org and app they
-play in. Player money is entirely **out-of-band from org billing**: a player's
-empty wallet or refund never appears on an org's bill and never trips the
-org's runtime gate.
+Players who own [mods](/exec/mods) are first-class billing customers. Each
+player has **one platform-scoped wallet** that funds their usage across every
+org and app they play in. Player money is entirely **out-of-band from org
+billing**: a player's runaway mod, empty wallet, or refund never appears on an
+org's bill and never trips the org's runtime gate.
 
-Player usage is metered per player: client-mod *compiles*, which consume
-platform CPU (client-side execution runs on the player's own hardware and is
-not billed), and the [Studio agent's](/game-api/agentic-crowdy-studio#who-pays)
-requests when the app bills the player. A player's [mods](/exec/mods) on
-ck-exec are recorded but not billed during the preview.
+A mod is metered per **owner**, never per caller or author: its compute counts
+as the owner's player compute, and what its realtime streams send as their
+egress. The app's organization is never billed for its players' mods. A mod's
+[CLIENT half](/exec/client-halves) runs on each visitor's own hardware and is
+not billed. The [Studio agent's](/game-api/agentic-crowdy-studio#who-pays)
+requests are player usage too when the app bills the player.
 
 ## The wallet
 
@@ -79,10 +80,15 @@ The effective limit on a player's spend is
   `denied` with a typed reason. An exhausted wallet past grace denies with
   `PLAYER_WALLET_EMPTY`.
 
-A non-active gate refuses **that player's own** metered work, such as a
-client-mod compile — their session and ordinary play are untouched, and no
-other player or the org is affected. Crowdy Studio shows the typed reason
-(`PLAYER_WALLET_EMPTY`, `PLAYER_SPEND_CAP`, …) on its usage meter.
+A non-active gate pauses **that player's mods only** — their session and
+ordinary play are untouched, and no other player or the org is affected.
+Billing switches the player's mods in that app off on the mod kill ladder:
+`execModSwitches` lists a `PLAYER` switch with `createdBy: billing` and the
+gate's reason (`PLAYER_WALLET_EMPTY` or `PLAYER_SPEND_CAP`), `execMyMods` shows
+the owner's mods blocked, and a call to one of the mods is refused with it.
+When the gate is active again (a top-up, or the cap resetting or being
+raised), billing lifts that switch within a few minutes. It never lifts a
+switch the app's developers set.
 
 Auto-recharge honours the threshold you set: with billable usage in the last
 two hours and a balance at or below `lowWaterThresholdCents`, the saved card is

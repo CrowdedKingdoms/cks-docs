@@ -21,8 +21,12 @@ it supplies only what is genuinely game-specific:
 
 Everything else — panel, splitter, styles, safety chrome, and the glue-worker
 packaging — comes from the SDK. A project's SERVER target runs as the grid's
-[ck-exec mod](/exec/mods), so the embed needs the client's `exec` domain;
-its CLIENT target builds through `playerCompute`.
+[ck-exec mod](/exec/mods) and its CLIENT target as that mod's [CLIENT
+half](/exec/client-halves#crowdy-studios-client-target) (CrowdyJS 17.14.0), so
+the embed needs the client's `exec` domain. With it, ck-exec is the embed's
+engine by default; the other `serverEngine`, `'player-compute'`, called the
+legacy player-code API, which the game API no longer has. CrowdyJS 17.14's
+services type still asks for `playerCompute`, which only that engine uses.
 
 ## What the kit provides
 
@@ -251,10 +255,9 @@ changed file as its own commit carrying the project's current commit SHA
 (`expectedCommitSha`), so a stale commit surfaces as the same
 `CrowdyStudioRevisionConflictError` the editor already recovers from. The
 project's `files` are the server's mirror of the repository, read exactly as
-before. The SERVER target's mod build sends the server crate's files from that
-mirror; a CLIENT deploy (`client.playerCompute.deploy`) takes `projectId`
-(+ `commitSha` for a bound project) and the server resolves the source. There
-are no Push / Pull buttons and no autosave toggle any more (removed in 17.0.0 with
+before. Both builds send their crate's files from that mirror: the SERVER
+target's mod build and the CLIENT target's CLIENT-half build. There are no
+Push / Pull buttons and no autosave toggle any more (removed in 17.0.0 with
 `pushToGitHub`, `pullFromGitHub`, `setAutosave` and the SDK-side `crowdy.json`
 helpers; `client.crowdyStudioGitHub.layout()` is the only layout grammar).
 **Refresh** brings the mirror to the branch head after a push made elsewhere.
