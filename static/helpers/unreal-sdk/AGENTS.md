@@ -8,8 +8,9 @@ Drop into a project root, or paste into CLAUDE.md / .cursorrules.
   voice, from C++ or Blueprint.
 - Two planes. Crowdy State is client-owned, fast, UDP, for what players see.
 - The truth plane is the app's server code on ck-exec, for anything a cheater would want
-  to lie about. The SDK does not wrap ck-exec yet, and the game API no longer serves the
-  SDK's own Game Model API: do not build on it.
+  to lie about. The SDK does not wrap ck-exec yet (C++ calls it through CrowdyCPP's
+  client.exec()), and the game API no longer serves the SDK's own Game Model API: do not
+  build on it.
 - Markers in UPROPERTY/UFUNCTION meta declare state and events; an entity is a
   UCrowdyEntityComponent.
 

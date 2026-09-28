@@ -39,7 +39,7 @@
 - [GraphQL UDP-proxy API (subscriptions + spatial sends)](https://docs.crowdedkingdoms.com/game-api/graphql-udp-proxy-api)
 - [Host discovery](https://docs.crowdedkingdoms.com/game-api/host-discovery) · [Permissions](https://docs.crowdedkingdoms.com/game-api/permissions) · [Grids & permissions](https://docs.crowdedkingdoms.com/game-api/grids-and-permissions)
 - [Teams](https://docs.crowdedkingdoms.com/game-api/teams) · [Channels](https://docs.crowdedkingdoms.com/game-api/channels) · [Avatar state](https://docs.crowdedkingdoms.com/game-api/avatar-state) · [Actor state](https://docs.crowdedkingdoms.com/game-api/actor-state)
-- [ck-exec (your server code: hubs, spokes and players' mods)](https://docs.crowdedkingdoms.com/exec/intro) · [From the legacy engines (game models, automations, compute modules, player code)](https://docs.crowdedkingdoms.com/exec/from-the-legacy-engines)
+- [ck-exec (your server code: hubs, spokes and players' mods)](https://docs.crowdedkingdoms.com/exec/intro) · [CLIENT halves (a mod's browser code)](https://docs.crowdedkingdoms.com/exec/client-halves) · [From the legacy engines (game models, automations, compute modules, player code)](https://docs.crowdedkingdoms.com/exec/from-the-legacy-engines)
 - [Agentic Crowdy Studio game integration (allowlisted development)](https://docs.crowdedkingdoms.com/game-api/agentic-crowdy-studio): durable sessions/events, bounded host tools, approvals, leases, takeover, and reconnect. Verify the published SDK with `npm view @crowdedkingdoms/crowdyjs dist-tags`. Allowlisted development only; no production or real-money autonomy claim.
 - [GraphQL reference (operations & types)](https://docs.crowdedkingdoms.com/game-api/reference/graphql-overview)
 

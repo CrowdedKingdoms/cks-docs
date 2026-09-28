@@ -17,7 +17,7 @@ Everything the SDK replicates lives on one of two planes, and the whole guide le
 
 1. **The view plane (CrowdyState).** Fast, client-owned state such as movement, animation, and transient effects. The client that owns an entity writes its state and everyone else sees it. Nothing here is checked by a server.
 2. **The elected host is a convention.** One client is elected host to coordinate the view plane. It is a helper for shared logic, not a rule enforcer.
-3. **The truth plane (your server code).** Server-owned gameplay state such as hit points, stats, and inventory, held by your app's code on [ck-exec](/exec/intro). Clients ask the server for it and ask the server to change it; the server decides. This is the only place a rule is enforced. The SDK does not wrap ck-exec yet.
+3. **The truth plane (your server code).** Server-owned gameplay state such as hit points, stats, and inventory, held by your app's code on [ck-exec](/exec/intro). Clients ask the server for it and ask the server to change it; the server decides. This is the only place a rule is enforced. The SDK does not wrap ck-exec yet; C++ reaches it through CrowdyCPP's `client.exec()` ([connect from a game](/exec/connect-from-a-game#crowdycpp)).
 4. **The planes touch in one way.** A client asks the server's code for a change and is told the result. No gameplay value ever flows from the view plane into the truth plane as trusted input.
 
 Read [The Two Planes](./concepts/two-planes.md) before you decide where a new piece of state belongs.
@@ -768,7 +768,7 @@ Three machine-readable files sit beside the docs. This page is where they are de
 
 ## Where does this state go
 
-Ask one question: can a malicious client benefit from lying about this value? If yes, it belongs on the truth plane, in your app's server code on [ck-exec](/exec/intro), which the SDK does not wrap yet. If no, it is view state. [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) owns the rule and every row but the door's; that one applies the same test.
+Ask one question: can a malicious client benefit from lying about this value? If yes, it belongs on the truth plane, in your app's server code on [ck-exec](/exec/intro), which the SDK does not wrap yet (C++ calls it through CrowdyCPP's `client.exec()`; see [connect from a game](/exec/connect-from-a-game#crowdycpp)). If no, it is view state. [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) owns the rule and every row but the door's; that one applies the same test.
 
 | State | Plane | Mechanism | Owning page |
 |---|---|---|---|
@@ -873,7 +873,7 @@ Every piece of networked state in the SDK lives on one of two planes. The view p
 **Plane B, the truth plane (your server code).** Gameplay state the game must be able to trust: hit points, stats, inventory, currency, anything a client could benefit from lying about. The server owns it: your app's code on [ck-exec](/exec/intro) holds it, and a client asks that code for a change, which it decides and confirms. This is the only place a rule is enforced.
 
 :::caution[The SDK does not wrap ck-exec yet.]
-The SDK's own truth-plane API (Game Model containers and attributes, `CrowdyModel` markers, Crowdy Effects, invoke policies and sessions) was built on the game API's legacy game-model engine, which ck-exec replaced. The game API no longer serves it, so do not build on it. The Unreal SDK moves to ck-exec in a later release; see [from the legacy engines](/exec/from-the-legacy-engines#tools).
+The SDK's own truth-plane API (Game Model containers and attributes, `CrowdyModel` markers, Crowdy Effects, invoke policies and sessions) was built on the game API's legacy game-model engine, which ck-exec replaced. The game API no longer serves it, so do not build on it. The Unreal SDK moves to ck-exec in a later release. Until then, C++ reaches your app's code on ck-exec through CrowdyCPP's `client.exec()` (CrowdyCPP 0.49.0 on dev): see [connect from a game](/exec/connect-from-a-game#crowdycpp) and [from the legacy engines](/exec/from-the-legacy-engines#tools).
 :::
 
 :::note[The elected host is a convention, not an enforcement point.]
@@ -1092,7 +1092,7 @@ The session channel is a shared transport, named `__crowdy_session_<appId>`, tha
 A match is state the game must be able to trust (its roster, its host, whose turn it is, the score), so it lives on the [truth plane](./two-planes.md), in your server code. On ck-exec that is a hub for the match: the `session` [starter pack](/exec/builds#starter-packs) keeps one game from lobby to result, with a host, ready checks, turns with a time limit, and a winner.
 
 :::caution[The SDK's Game Model sessions are gone.]
-The SDK's own session API (Create, Join, Leave and End on the Game Model subsystem, and the active session) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The Unreal SDK moves to ck-exec in a later release.
+The SDK's own session API (Create, Join, Leave and End on the Game Model subsystem, and the active session) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The Unreal SDK moves to ck-exec in a later release; until then, C++ reaches a match hub through CrowdyCPP's `client.exec()` ([connect from a game](/exec/connect-from-a-game#crowdycpp)).
 :::
 
 ## Gotchas
@@ -6439,7 +6439,7 @@ The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, ea
 You built against the SDK in July, you are updating the plugin to 2.15 or later, and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), and, in 2.15.0, the array delegates.
 
 :::caution[The Game Model entries below no longer reach a server.]
-The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The entries that describe it are kept as history. Do not adopt it: the Unreal SDK moves to ck-exec in a later release. See [from the legacy engines](/exec/from-the-legacy-engines#tools).
+The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The entries that describe it are kept as history. Do not adopt it: the Unreal SDK moves to ck-exec in a later release, and until then C++ reaches your app's code on ck-exec through CrowdyCPP's `client.exec()` (CrowdyCPP 0.49.0 on dev). See [from the legacy engines](/exec/from-the-legacy-engines#tools).
 :::
 
 ## 2026-09-23 (SDK v2.16.0)

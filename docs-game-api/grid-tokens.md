@@ -38,14 +38,14 @@ confined as shown. Anything else returns `SCOPE_MISSING`.
 | Chunk inside the grid | `getChunk`, `getVoxelList`, `listVoxels`, `updateVoxel` |
 | **Origin** chunk inside the grid (reach follows `distance`) | `sendActorUpdate`, `sendVoxelUpdate`, `sendTextPacket`, `sendClientEvent`, `sendAudioPacket`, `sendVideoPacket`, `sendSingleActorMessage` |
 | The grid's own channels | `gridChannels`, `joinChannel`, `leaveChannel`, `sendChannelMessage` |
-| The grid named | `gridClientMods` |
 
 `refreshAppToken`, `logout`, `mintGridToken` and `mintAppToken` are refused,
 so a grid token can neither widen into nor tear down its parent.
 
-`gridClientMods` is superseded by `execGridClientMods` ([CLIENT
-halves](/exec/client-halves)), which answers the player's app token and not a
-grid token.
+A grid's [CLIENT halves](/exec/client-halves) are listed, agreed to and
+fetched with the player's app token (`execGridClientMods`,
+`execConsentClientMod`, `execTrustAuthor`, `execModClientArtifact`), never
+with a grid token.
 
 ## Realtime
 

@@ -223,7 +223,7 @@ studio.open({
 ```
 
 The two-layer CLIENT sandbox, presentation hooks, and deploy loop are
-unchanged from [Crowdy Studio & player client mods](player-client-mods); the
+unchanged from [Crowdy Studio & mods in the browser](player-client-mods); the
 agent pane is described in [Agentic Crowdy Studio](agentic-crowdy-studio). The
 kit is chrome — it grants no authority. Deploys, drafts and invokes are
 authorized server-side exactly as before, and a live deploy the agent asks for

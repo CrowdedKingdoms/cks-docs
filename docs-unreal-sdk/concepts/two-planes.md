@@ -16,7 +16,7 @@ Every piece of networked state in the SDK lives on one of two planes. The view p
 **Plane B, the truth plane (your server code).** Gameplay state the game must be able to trust: hit points, stats, inventory, currency, anything a client could benefit from lying about. The server owns it: your app's code on [ck-exec](/exec/intro) holds it, and a client asks that code for a change, which it decides and confirms. This is the only place a rule is enforced.
 
 :::caution[The SDK does not wrap ck-exec yet.]
-The SDK's own truth-plane API (Game Model containers and attributes, `CrowdyModel` markers, Crowdy Effects, invoke policies and sessions) was built on the game API's legacy game-model engine, which ck-exec replaced. The game API no longer serves it, so do not build on it. The Unreal SDK moves to ck-exec in a later release; see [from the legacy engines](/exec/from-the-legacy-engines#tools).
+The SDK's own truth-plane API (Game Model containers and attributes, `CrowdyModel` markers, Crowdy Effects, invoke policies and sessions) was built on the game API's legacy game-model engine, which ck-exec replaced. The game API no longer serves it, so do not build on it. The Unreal SDK moves to ck-exec in a later release. Until then, C++ reaches your app's code on ck-exec through CrowdyCPP's `client.exec()` (CrowdyCPP 0.49.0 on dev): see [connect from a game](/exec/connect-from-a-game#crowdycpp) and [from the legacy engines](/exec/from-the-legacy-engines#tools).
 :::
 
 :::note[The elected host is a convention, not an enforcement point.]

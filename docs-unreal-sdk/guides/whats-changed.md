@@ -14,7 +14,7 @@ The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, ea
 You built against the SDK in July, you are updating the plugin to 2.15 or later, and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), and, in 2.15.0, the array delegates.
 
 :::caution[The Game Model entries below no longer reach a server.]
-The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The entries that describe it are kept as history. Do not adopt it: the Unreal SDK moves to ck-exec in a later release. See [from the legacy engines](/exec/from-the-legacy-engines#tools).
+The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The entries that describe it are kept as history. Do not adopt it: the Unreal SDK moves to ck-exec in a later release, and until then C++ reaches your app's code on ck-exec through CrowdyCPP's `client.exec()` (CrowdyCPP 0.49.0 on dev). See [from the legacy engines](/exec/from-the-legacy-engines#tools).
 :::
 
 ## 2026-09-23 (SDK v2.16.0)

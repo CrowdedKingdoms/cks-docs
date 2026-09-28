@@ -273,35 +273,12 @@ sends the SERVER crate's files from the project (for a `GITHUB` project, the
 mirror at `githubSha`) to `execModBuild`, then deploys the build with
 `execModDeploy`.
 
-A CLIENT deploy, `playerComputeDeploy`, takes the **project**, not file
-bodies. The server resolves the source itself: the project files at their
-saved revision for a `STUDIO` project, or the rust under the layout roots at a
-commit for a `GITHUB` project. What compiles is exactly what was saved or
-committed, and a client never uploads a source map.
-
-```graphql
-mutation Deploy {
-  playerComputeDeploy(input: {
-    appId: "1"
-    gridId: "42"
-    projectId: "7b1f7e2c-…"
-    target: CLIENT
-    # GITHUB projects only; defaults to the project githubSha. Refused for a STUDIO project.
-    # commitSha: "3f2a9c1e0d8b7a6f5e4d3c2b1a0f9e8d7c6b5a49"
-  }) {
-    versionId versionNo compileStatus
-    projectId sourceRevision githubCommitSha
-  }
-}
-```
-
-`PlayerWasmModuleVersion` records `projectId`, `sourceRevision` (STUDIO) or
-`githubCommitSha` (GITHUB). A version is pinned to the commit it was fetched
-at: a force-push of the bound branch never changes what a deployed version
-runs. A `commitSha` on a `STUDIO` project is refused with `GITHUB_NOT_BOUND`;
-the SDK/ABI pins are the project's own, not deploy input. See
-[the deploy loop](/crowdyjs/player-client-mods#the-deploy-loop) for the rest
-of it.
+Its CLIENT target is that mod's [CLIENT half](/exec/client-halves). Crowdy
+Studio sends the CLIENT crate's files the same way to `execModClientBuild`,
+then attaches the build to the mod with `execModClientDeploy`. A build holds
+the files it was sent, so a force-push of the bound branch never changes what
+a deployed version runs. See [the deploy
+loop](/crowdyjs/player-client-mods#the-deploy-loop) for the rest of it.
 
 ## Layout: `crowdy.json`
 

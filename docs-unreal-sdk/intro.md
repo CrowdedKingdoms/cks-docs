@@ -21,7 +21,7 @@ Everything the SDK replicates lives on one of two planes, and the whole guide le
 
 1. **The view plane (CrowdyState).** Fast, client-owned state such as movement, animation, and transient effects. The client that owns an entity writes its state and everyone else sees it. Nothing here is checked by a server.
 2. **The elected host is a convention.** One client is elected host to coordinate the view plane. It is a helper for shared logic, not a rule enforcer.
-3. **The truth plane (your server code).** Server-owned gameplay state such as hit points, stats, and inventory, held by your app's code on [ck-exec](/exec/intro). Clients ask the server for it and ask the server to change it; the server decides. This is the only place a rule is enforced. The SDK does not wrap ck-exec yet.
+3. **The truth plane (your server code).** Server-owned gameplay state such as hit points, stats, and inventory, held by your app's code on [ck-exec](/exec/intro). Clients ask the server for it and ask the server to change it; the server decides. This is the only place a rule is enforced. The SDK does not wrap ck-exec yet; C++ reaches it through CrowdyCPP's `client.exec()` ([connect from a game](/exec/connect-from-a-game#crowdycpp)).
 4. **The planes touch in one way.** A client asks the server's code for a change and is told the result. No gameplay value ever flows from the view plane into the truth plane as trusted input.
 
 Read [The Two Planes](./concepts/two-planes.md) before you decide where a new piece of state belongs.
