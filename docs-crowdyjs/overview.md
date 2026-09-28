@@ -79,7 +79,7 @@ The SDK never relaxes server-side authorization — exposing an operation just
 gives you a typed wrapper; the caller still needs the right token and permission.
 
 The SDK is for players, developers and org-admins, and is designed for production. Since
-CrowdyJS 18 it wraps no field that only a platform super-admin or operator can call (user
+CrowdyJS 18.0.1 (the first 18.x on the production channel) it wraps no field that only a platform super-admin or operator can call (user
 administration, platform-wide payment audits, org freezes, app visibility overrides, hosted-game
 listing and take-downs): those fields are in the [API reference](reference/graphql/graphql-overview.md), and
 platform tooling calls them directly.
