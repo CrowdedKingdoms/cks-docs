@@ -23,7 +23,9 @@ this page is the SDK surface.
 | `completePublish(slug, publishId)` | session + `manage_apps` | Verify, promote, record LIVE, invalidate. |
 | `abandonPublish(slug, publishId)` | session + `manage_apps` | Give up a staging publish. |
 | `setEnabled(slug, enabled)` | session + `manage_apps` | Your own on/off switch. |
-| `all()`, `setListing`, `takeDown` | operator | The operator's switches. |
+
+Listing a game in the lobby and taking one down are the platform operator's decisions; they
+are not in the SDK (CrowdyJS 18 carries no operator-only calls).
 
 Every mutation is **identity-session only**: a game's own app token is refused,
 so a bundle can never publish a replacement for itself. Sign in from Node with

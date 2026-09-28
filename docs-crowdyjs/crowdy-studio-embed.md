@@ -22,11 +22,9 @@ it supplies only what is genuinely game-specific:
 Everything else — panel, splitter, styles, safety chrome, and the glue-worker
 packaging — comes from the SDK. A project's SERVER target runs as the grid's
 [ck-exec mod](/exec/mods) and its CLIENT target as that mod's [CLIENT
-half](/exec/client-halves#crowdy-studios-client-target) (CrowdyJS 17.14.0), so
-the embed needs the client's `exec` domain. With it, ck-exec is the embed's
-engine by default; the other `serverEngine`, `'player-compute'`, called the
-legacy player-code API, which the game API no longer has. CrowdyJS 17.14's
-services type still asks for `playerCompute`, which only that engine uses.
+half](/exec/client-halves#crowdy-studios-client-target), so the embed needs the
+client's `exec` domain. Since CrowdyJS 18, ck-exec is its only engine: there is no
+`serverEngine` option and no `playerCompute` service.
 
 ## What the kit provides
 
@@ -94,7 +92,6 @@ const embed = createCrowdyStudioEmbed({
   client: {
     get crowdyStudio() { return network.sdk.crowdyStudio; },
     get exec() { return network.sdk.exec; },
-    get playerCompute() { return network.sdk.playerCompute; },
     get playerWallet() { return network.sdk.playerWallet; },
   },
   appId: () => network.currentAppId(),
@@ -190,7 +187,7 @@ import glueWorkerAssetUrl from '@crowdedkingdoms/crowdyjs/player-glue-worker?wor
 const hud = new CrowdyStudioTextHud();
 
 const studio = new CrowdyStudioEmbed({
-  client: game, // crowdyStudio, exec, playerCompute, playerWallet, crowdyStudioGitHub
+  client: game, // crowdyStudio, exec, playerWallet, crowdyStudioGitHub
   appId,
   gameName: 'Blocks with Friends',
   dsh: {
