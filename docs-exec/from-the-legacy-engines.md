@@ -9,12 +9,14 @@ title: From the legacy engines
 Available on the **dev** environment only; see the [overview](intro).
 :::
 
-ck-exec replaced four legacy engines of the game API: **game models** (containers, typed
-properties and functions in an expression language), **automations** (schedules, triggers and
-timers over the same functions), **compute modules** (studio WASM run inside the game API) and
-**player code** (grid-scoped player modules, player models and automations). This page maps
-what you used to what you use now, and links the page that explains it. For a worked example,
-see [port a compute module](port-a-compute-module).
+ck-exec replaced four legacy engines of the game API, which no longer serves them: **game
+models** (containers, typed properties and functions in an expression language),
+**automations** (schedules, triggers and timers over the same functions), **compute modules**
+(studio WASM run inside the game API) and **player code** (grid-scoped player modules and their
+browser client modules, player models and automations). Their pages are gone, and an old link to
+one of them lands on its section here. This page maps what you used to what you use now, and
+links the page that explains it. For a worked example, see [port a compute
+module](port-a-compute-module).
 
 ## Running your logic
 

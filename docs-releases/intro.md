@@ -153,7 +153,7 @@ Everything here is additive; a client that does nothing new sees nothing new.
   (16–1000; default 1000) in its `Cargo.toml` — the only key admitted in that table —
   and call `api::pointer_clicks()` (CLIENT only, `input` capability group, 400/s) to
   drain the host game's mouse clicks each tick. See
-  [Build mods — tick rate and mouse input](/build-a-game/bwf-mod-development#tick-rate-and-mouse-input-client-game-api-v280--crowdyjs-1760).
+  [Build mods — tick rate and mouse input](/build-a-game/bwf-mod-development#tick-rate-and-mouse-input).
 - **`emit_spatial("server_event", …)` is opcode 139** (`SERVER_EVENT_NOTIFICATION`)
   with the payload framed `[u16 eventType LE][state…]`, and `client_event` is 138
   (Game API v2.8.0). Before this a `server_event` went out as an untyped generic
@@ -1087,9 +1087,8 @@ real-money activity, wallet actions, or broad autonomous gameplay.
   `maxEgressMsgsPerMin`, `maxEgressBytesPerMin`). Patch semantics: omitted =
   unchanged, explicit `null` = clear the override (env/default bootstrap
   values apply), value > 0 = set. Requires `is_operator`; changes are
-  audited. Reference:
-  [`cpComputePlatformCeilings`](/management-api/reference/graphql/operations/queries/cp-compute-platform-ceilings),
-  [`cpSetComputePlatformCeilings`](/management-api/reference/graphql/operations/mutations/cp-set-compute-platform-ceilings).
+  audited. Both fields went with the legacy engines: see [policy and
+  ceilings](/exec/from-the-legacy-engines#operations).
 - Ceiling edits replica-sync to every game-api and take effect in the
   `computeSetPolicy` clamp within ~30 seconds — no game-api restart. The
   `COMPUTE_PLATFORM_MAX_*` environment variables remain bootstrap defaults.
