@@ -7566,7 +7566,9 @@ type ExecConnection {
 type ExecBuildArtifact {
   """The crate it was built from."""
   crate: String!
-  """SHA-256 of the WASM: the `digest` a manifest names it by."""
+  """
+  SHA-256 of the WASM, hex: the `digest` a manifest names a ck-exec module by, and a CLIENT half’s digest once attached (`execModClientDeploy`).
+  """
   digest: String!
   """The module’s size in bytes."""
   sizeBytes: Int!
@@ -7588,7 +7590,9 @@ type ExecBuildArtifact {
 A ck-exec build (dev-tier preview): queued, building, succeeded or failed, with the compiler’s log and, once it succeeds, one module per crate.
 """
 type ExecBuild {
-  """The build’s id, for `execBuildStatus` and `execDeploy`."""
+  """
+  The build’s id: for `execBuildStatus` and `execDeploy`, or for a player’s builds `execModBuildStatus` with `execModDeploy` (server) or `execModClientDeploy` (CLIENT half).
+  """
   buildId: String!
   """`queued`, `building`, `succeeded` or `failed`."""
   status: String!
@@ -10300,7 +10304,7 @@ type Query {
   execModBuildStatus(
     """The app the grid is in."""
     appId: BigInt!
-    """The id `execModBuild` returned."""
+    """The id `execModBuild` or `execModClientBuild` returned."""
     buildId: String!
   ): ExecBuild!
   """
@@ -15930,7 +15934,7 @@ input ExecBuildCrateInput {
   """
   name: String!
   """
-  Its files, at most 64. `Cargo.toml` may have only [package], [lib] and [dependencies] from `ckx-sdk`, `serde` and `serde_json`.
+  Its files, at most 64. `Cargo.toml` may have only [package], [lib] and [dependencies] from `ckx-sdk`, `serde` and `serde_json`; a CLIENT half (`execModClientBuild`) depends on `crowdy-client-sdk` instead of `ckx-sdk` and may add [package.metadata.crowdy] with `tick_interval_ms`.
   """
   files: [ExecBuildFileInput!]!
 }

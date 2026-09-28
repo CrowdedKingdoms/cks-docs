@@ -171,6 +171,10 @@ An app's code is **paused** (`budgetPaused`) in two cases:
 A paused app is switched off entirely, as above. It resumes by itself the minute after both
 conditions clear.
 
+Players' [mods](mods) are not in the app's usage or budget: each bills its owner's player
+wallet, and billing switches off only that owner's mods; see
+[who pays for a mod](mods#who-pays-for-a-mod).
+
 ## Developer connections
 
 `execConnectAsDeveloper` returns a gateway and a connect token for **you**, not a player:

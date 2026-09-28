@@ -6,8 +6,8 @@ title: Player wallets & billing
 
 # Player wallets & billing
 
-Players who run [player code](/game-api/player-code) are first-class billing
-customers. Each player has **one platform-scoped wallet** that funds their
+Players who run [player code](/game-api/player-code) or own
+[mods](/exec/mods) are first-class billing customers. Each player has **one platform-scoped wallet** that funds their
 grid compute across every org and app they play in. Player money is entirely
 **out-of-band from org billing**: a player's runaway ticker, empty wallet, or
 refund never appears on an org's bill and never trips the org's runtime gate.
@@ -16,6 +16,10 @@ Server-side player compute, player automations, and player compiles are
 metered per player — attributed to the **grid owner** the code executed as,
 never its author. Client-side execution runs on the player's own hardware and
 is not billed (client *compiles* are metered; they consume platform CPU).
+
+A [mod](/exec/mods) is metered the same way, per owner: its compute counts as
+the owner's player compute, and what its realtime streams send as their egress.
+The app's organization is never billed for its players' mods.
 
 ## The wallet
 
@@ -90,6 +94,14 @@ A non-active gate pauses **that player's mods only** — their session and
 ordinary play are untouched, and no other player or the org is affected. The
 gate state replica-syncs to the game runtime, where the scheduler drains the
 player's modules within one pass and resumes them when the gate clears.
+
+For [mods](/exec/mods), billing switches the player's mods in that app off on
+the mod kill ladder: `execModSwitches` lists a `PLAYER` switch with
+`createdBy: billing` and the gate's reason (`PLAYER_WALLET_EMPTY` or
+`PLAYER_SPEND_CAP`), and a call to one of the mods is refused with it. When
+the gate is active again (a top-up, or the cap resetting or being raised),
+billing lifts that switch within a few minutes. It never lifts a switch the
+app's developers set.
 
 While the gate is not active, `playerComputeInvoke` refuses with a typed fault
 the player can act on: `WALLET_EMPTY` (blame `BUDGET`, not retryable — top up
