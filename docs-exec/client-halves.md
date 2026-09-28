@@ -7,7 +7,7 @@ title: CLIENT halves
 
 :::caution Dev-tier preview
 Available on the **dev** environment only; see the [overview](intro). The SDK support is in
-CrowdyJS **17.14.0** (the `@dev` prerelease line, `17.14.0-dev.N`).
+CrowdyJS **17.14.0** (the `@dev` prerelease line, `17.14.0-dev.N`) and CrowdyCPP **0.49.0**.
 :::
 
 A [mod](mods) can carry one **CLIENT half**: Rust built on the platform for the browser, which
@@ -223,8 +223,17 @@ const half = await client.exec.modClientDeploy(appId, gridId, 'greeter', built.b
 
 `modClientArtifactBytes` recomputes the module's SHA-256 and refuses bytes that differ from
 `digest`, a CLIENT ABI other than 0 and a capability summary that does not parse, with a
-`CrowdyProtocolError`. These need CrowdyJS `17.14.0-dev` on dev; CrowdyCPP does not wrap them
-yet.
+`CrowdyProtocolError`. These need CrowdyJS `17.14.0-dev` or CrowdyCPP `0.49.0` on dev.
+
+### From CrowdyCPP
+
+`client.exec()` has the same calls with the same arguments (`modClientBuild`,
+`modClientDeploy`, `modClientDelete`, `gridClientMods`, `consentClientMod`, `trustAuthor`,
+`modClientArtifact`, `modClientArtifactBytes`), each with an `…Async` twin. Its
+`modClientArtifactBytes` makes the same checks in the same order and throws
+`graphql::CrowdyProtocolError`, or returns an empty result in a build without exceptions.
+CrowdyCPP has no browser runner: a native game runs the module it fetched in its own sandbox,
+and allows only the host calls in the summary the player agreed to.
 
 ## Serving it to visitors
 
