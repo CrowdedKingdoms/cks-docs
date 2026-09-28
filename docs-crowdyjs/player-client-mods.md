@@ -136,8 +136,7 @@ import { mountCrowdyStudio } from '@crowdedkingdoms/crowdyjs/crowdy-studio';
 import workerUrl from '@crowdedkingdoms/crowdyjs/player-glue-worker?worker&url';
 
 const handle = await mountCrowdyStudio(hostElement, {
-  mods: client.exec,                   // both targets: the grid's mod and its CLIENT half
-  playerCompute: client.playerCompute, // still required by CrowdyJS 17.14's types; unused on ck-exec
+  mods: client.exec,     // both targets: the grid's mod and its CLIENT half
   projectProvider: client.crowdyStudio,
   playerWallet: client.playerWallet,
   appId,
@@ -154,9 +153,8 @@ const handle = await mountCrowdyStudio(hostElement, {
 // handle.controller drives save/test/deploy/stop; handle.destroy() unmounts.
 ```
 
-With `mods`, Studio's engine is ck-exec (`serverEngine: 'ck-exec'`). The other
-engine, `'player-compute'`, called the legacy player-code API, which the game
-API no longer has.
+Studio runs on ck-exec only (CrowdyJS 18): `mods` is required, and there is no
+engine to choose.
 
 Crowdy Studio offers cloud autosave, a target-aware project explorer, personal
 library files, app-provided common files, Monaco tabs, Problems, Build, Logs,

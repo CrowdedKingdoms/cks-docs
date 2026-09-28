@@ -380,11 +380,11 @@ integration.
 
 ## Crowdy Studio's CLIENT target
 
-With `serverEngine: 'ck-exec'`, the default when the client has `exec`, Crowdy Studio's CLIENT
-target is the project's mod's CLIENT half (CrowdyJS 17.14.0):
+Crowdy Studio's CLIENT target is the project's mod's CLIENT half (since CrowdyJS 17.14.0; in
+CrowdyJS 18 Studio runs on ck-exec only and has no `serverEngine` option):
 
 - A new CLIENT target starts from a `crowdy-client-sdk` crate
-  (`createCrowdyStudioStarterProject({ engine: 'ck-exec' })`); the [entry points](#entry-points)
+  (`createCrowdyStudioStarterProject({ kind: 'CLIENT', ... })`); the [entry points](#entry-points)
   above are that starter, without its comments.
 - **Test draft** and **Deploy live** both build it with `modClientBuild`, attach it to the
   project's mod with `modClientDeploy`, consent to it as its author and preview the served module

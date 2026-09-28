@@ -62,8 +62,9 @@ API and delete the `managementUrl` line; use `client.graphql` where you used
 
 ### Full sub-client surface
 
-As of v6 (completed in v6.1), CrowdyJS wraps the **full** public API
-surface — every non-deprecated root field has a typed method, with Relay
+As of v6 (completed in v6.1), CrowdyJS wraps the public API surface a client
+uses — every non-deprecated root field outside platform administration has a
+typed method, with Relay
 `*Connection` cursor-pagination variants alongside the legacy offset lists. (v7
 then made gameplay require an app-scoped token — see [Authentication: session vs
 app-scoped tokens](#authentication-session-vs-app-scoped-tokens).) The surfaces
@@ -71,11 +72,17 @@ are namespaced by audience:
 
 | Audience | Sub-clients | Notes |
 |---|---|---|
-| **Game-client** (browser-safe) | `auth`, `users`, `udp`, `world(...)`, `chunks`, `voxels`, `actors`, `avatars`, `state`, `teleport`, `host`, `channels`, `teams`, `exec`, `serverStatus`, `playerCompute`, `crowdyStudio`, `crowdyStudioGitHub` | Safe to drive from an untrusted browser with the documented token and server policy. `auth`/`users` use the identity **session token**; world, Studio, and realtime surfaces require an **app-scoped token**. The Studio agent pane (`dsh` option) reaches the model through the metered REST endpoint with that token and separately requires `use_studio_agent`. |
+| **Game-client** (browser-safe) | `auth`, `users`, `udp`, `world(...)`, `chunks`, `voxels`, `actors`, `avatars`, `state`, `teleport`, `host`, `channels`, `teams`, `exec`, `serverStatus`, `crowdyStudio`, `crowdyStudioGitHub` | Safe to drive from an untrusted browser with the documented token and server policy. `auth`/`users` use the identity **session token**; world, Studio, and realtime surfaces require an **app-scoped token**. The Studio agent pane (`dsh` option) reaches the model through the metered REST endpoint with that token and separately requires `use_studio_agent`. |
 | **Studio-admin** (token whose user holds `manage_apps`) | `organizations`, `apps`, `appAccess`, `billing`, `payments`, `quotas`, `usage`, `sharedEnvironment`, `gameApps` ([grids](grids)) — also grouped under `client.admin.*` | Privileged org/app administration. Requires a user with the `manage_apps` permission (or an org token). Not end-user-safe — see the note below. Dedicated `environments` were removed in v13. |
 
 The SDK never relaxes server-side authorization — exposing an operation just
 gives you a typed wrapper; the caller still needs the right token and permission.
+
+The SDK is for players, developers and org-admins, and is designed for production. Since
+CrowdyJS 18 it wraps no field that only a platform super-admin or operator can call (user
+administration, platform-wide payment audits, org freezes, app visibility overrides, hosted-game
+listing and take-downs): those fields are in the [API reference](reference/graphql/graphql-overview.md), and
+platform tooling calls them directly.
 
 :::note[Studio-admin is about who you authenticate as, not where the code runs]
 The studio-admin surfaces have exactly one extra gate: the caller must be a
