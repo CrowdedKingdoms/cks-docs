@@ -6,7 +6,8 @@ title: Grids and grid programs
 # Grids and grid programs
 
 Player code inside a grid can do what app-scoped code can, confined to that
-grid. CrowdyJS 17.7 gives it three shapes.
+grid. Code that runs on the server for a grid is a [ck-exec mod](/exec/mods)
+(`client.exec.mod*`). In the browser, CrowdyJS 17.7 gives it three shapes.
 
 ## `client.grid()` — one grid, bound
 
@@ -14,18 +15,17 @@ grid. CrowdyJS 17.7 gives it three shapes.
 const plot = client.grid(appId, gridId);
 await plot.mintToken();                  // learns the box
 await plot.channels.create('plot-chat'); // a grid channel (owner only)
-const race = await plot.sessions.create({ name: 'race', presence: 'none' });
 await plot.send.text({ chunk: { x: 4, y: 0, z: 0 }, uuid, text: 'go!', distance: 2 });
 ```
 
-`channels`, `sessions`, `model` (the player-tier Game Model) and `compute`
-fill in the app and grid; `send` checks that each message **originates** in
-the grid and throws `GridScopeError` before any request if not. The server
-enforces the same rules.
+`channels` fills in the app and grid; `send` checks that each message
+**originates** in the grid and throws `GridScopeError` before any request if
+not. The server enforces the same rules.
 
-On the **dev** environment the legacy game-model and compute engines behind `model` and
-`compute` are switched off (their calls answer `ENGINE_SWITCHED_OFF`); code that runs on the
-server for a grid is a [ck-exec mod](/exec/mods) there.
+The grid scope's `sessions`, `model` and `compute` call the game model's
+sessions, the player model and player compute, which the game API no longer
+has, so every call to them fails. A grid's server-side state and logic belong
+in its [mods](/exec/mods).
 
 ## JS grid programs — the full SDK in a sandbox
 
@@ -67,19 +67,29 @@ whatever the program's code does, it reaches exactly as far as a grid token.
 ```ts
 import { startGridMod } from '@crowdedkingdoms/crowdyjs';
 
-await startGridMod({ spec: { kind: 'wasm', moduleName, artifact, artifactHash, workerUrl }, scope, client });
+const a = await client.exec.modClientArtifactBytes(appId, modId); // a CLIENT half
+await startGridMod({
+  spec: {
+    kind: 'wasm', engine: 'ck-exec', moduleName: a.name, artifact: a.bytes,
+    artifactHash: a.digest, fuelPerDispatch: a.fuelPerDispatch, tickIntervalMs: a.tickIntervalMs,
+    consentedHostCalls: a.capabilitySummary.hostFunctions, workerUrl,
+  },
+  scope,
+  client,
+});
 await startGridMod({ spec: { kind: 'program', moduleName, port }, scope, client, graphqlUrl, graphqlWsUrl });
 ```
 
-A Rust CLIENT mod gets every CLIENT host call in the platform catalog through
-`createGridHostCalls` (world reads, `voxel_set`, `emit_spatial`,
-`emit_channel`, the player model, sessions, user state), plus the page-local
-grid event bus: `emit_event` reaches the other client mods on the same grid
-in this browser through `on_event`.
+The `wasm` spec runs a ck-exec mod's [CLIENT half](/exec/client-halves), with
+`engine: 'ck-exec'` and the digest, fuel budget, tick interval and host calls it
+was served with (`artifactHash`, `fuelPerDispatch`, `tickIntervalMs`,
+`consentedHostCalls`; CrowdyJS 17.14.0). `createGridHostCalls` answers the host
+calls `crowdy-client-sdk` makes (world reads, `voxel_set`, `emit_spatial`,
+`emit_channel`, user state), plus the page-local grid event bus: `emit_event`
+reaches the other CLIENT halves on the same grid in this browser through
+`on_event`. `ExecClientHalves` runs every CLIENT half a grid serves.
 
-A ck-exec mod's [CLIENT half](/exec/client-halves) runs the same way, with
-`engine: 'ck-exec'` in the `wasm` spec and the digest, fuel budget, tick
-interval and host calls it was served with (`artifactHash`, `fuelPerDispatch`,
-`tickIntervalMs`, `consentedHostCalls`; CrowdyJS 17.14.0). It reaches only the
-host calls `crowdy-client-sdk` makes: no player model, sessions or grid state.
-`ExecClientHalves` runs every CLIENT half a grid serves.
+The spec's default engine, `'player-compute'`, ran legacy CLIENT modules, which
+the game API no longer serves. Their model and session host calls
+(`container_*`, `containers_list`, `property_set`, `model_invoke`,
+`sessions_list`) went with the game model.

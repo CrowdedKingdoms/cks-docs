@@ -59,8 +59,8 @@ if (removed.error !== 'NO_ERROR') {
 
 `deleteGrid` refuses to remove the open-by-default world grid or a grid that still
 has nested child grids (delete the children first). It removes only the grid
-definition and its permission rows — chunks, voxels, actors, and game-model data
-in that region are untouched. Requires `cks-game-api >= v0.12.3` (release
+definition and its permission rows — chunks, voxels, and actors in that region
+are untouched. Requires `cks-game-api >= v0.12.3` (release
 `v0.1.33+`).
 
 ## Grant and limit permissions

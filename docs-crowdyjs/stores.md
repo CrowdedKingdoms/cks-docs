@@ -212,22 +212,13 @@ The client-side source of truth for chunks and voxels:
 
 - **HostTracker**: heartbeats on the session ticker (default 3 s — also
   keeps you host-eligible), caches `hostUserId`/`isHost`, fires
-  `onHostChanged`. Election is informational — keep `is_host` invoke
-  policies on authoritative model functions.
+  `onHostChanged`. Election is informational — decide host-only rules in a
+  [ck-exec](/exec/intro) hub.
 - **SaveStateStore**: a typed cache over the per-user app save blob
   (`client.state`): `load()`, `set()`/`patch()`, `save()`, and debounced
   autosave (`autosaveMs`).
 - **AvatarStateStore**: typed, cached public / private / per-app avatar
   state, each with its own codec.
-
-### `model` — game-model mirror (ContainerMirror)
-
-The client half of the [notify-to-pull pattern](/crowdyjs/game-kit#notify-to-pull):
-`watch(containerId, parse)` keeps a typed snapshot of a game-model
-container; `bindToChannel(channelId)` re-pulls every watched container
-(coalesced) whenever the channel pings — pair it with model functions that
-declare channel notifications, e.g. the Game Kit's `match_changed` pings.
-`onChange` fires only when a refresh actually changed the visible state.
 
 ## Adopting it in an existing game
 
@@ -252,9 +243,10 @@ notification bus, the shared ticker, and send tracking, and every store's
 
 ## Relationship to other layers
 
-- The [Game Kit](/crowdyjs/game-kit) is the **server-side rules** layer
-  (blueprints + gated model functions); World Stores is the **client-side
-  state** layer. They meet in `model` (notify-to-pull) and compose freely.
+- Your app's [ck-exec](/exec/intro) hubs are the **server-side rules** layer;
+  World Stores is the **client-side state** layer. A hub's state reaches
+  clients on its topics, through `client.exec` subscriptions, rather than
+  through a store.
 - The Unreal SDK's [Crowdy State](/unreal-sdk/runtime/crowdy-state) solves an
   adjacent problem — diff-based *property replication* between clients on
   the view plane. World Stores manages what arrives over the platform's

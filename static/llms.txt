@@ -5,9 +5,9 @@
 ## Start here (for AI agents and integrators)
 
 - [For AI agents — quickstart & end-to-end workflows](https://docs.crowdedkingdoms.com/overview/for-ai-agents): get a sandbox key, the SDL/introspection URLs, and the most common flows (register → token → host discovery → spatial send; and the studio-backend economy flow).
-- [Best practices](https://docs.crowdedkingdoms.com/overview/best-practices): Game Models as authority, effects vs Compute, tokens and hosts.
+- [Best practices](https://docs.crowdedkingdoms.com/overview/best-practices): authority in your server code on ck-exec (hubs and spokes), tokens and hosts.
 - [Overview / client workflow](https://docs.crowdedkingdoms.com/overview/client-workflow): one endpoint, two token types, and how an app's datacenter endpoint is discovered.
-- [Before you ship](https://docs.crowdedkingdoms.com/overview/before-you-ship): public hosts and aliases, SDK default origins, and the game-model seed a shipped client needs.
+- [Before you ship](https://docs.crowdedkingdoms.com/overview/before-you-ship): public hosts and aliases, and the SDK default origins a shipped client needs.
 - [Discord community support](https://discord.gg/x7tMKGwHf): ask questions and get help from the Crowded Kingdoms community.
 
 ## Schema (downloadable SDL)
@@ -39,10 +39,8 @@
 - [GraphQL UDP-proxy API (subscriptions + spatial sends)](https://docs.crowdedkingdoms.com/game-api/graphql-udp-proxy-api)
 - [Host discovery](https://docs.crowdedkingdoms.com/game-api/host-discovery) · [Permissions](https://docs.crowdedkingdoms.com/game-api/permissions) · [Grids & permissions](https://docs.crowdedkingdoms.com/game-api/grids-and-permissions)
 - [Teams](https://docs.crowdedkingdoms.com/game-api/teams) · [Channels](https://docs.crowdedkingdoms.com/game-api/channels) · [Avatar state](https://docs.crowdedkingdoms.com/game-api/avatar-state) · [Actor state](https://docs.crowdedkingdoms.com/game-api/actor-state)
-- [Game models](https://docs.crowdedkingdoms.com/game-api/game-models) · [Autonomous processes (NPCs)](https://docs.crowdedkingdoms.com/game-api/autonomous-processes) · [Model-driven notifications](https://docs.crowdedkingdoms.com/game-api/model-driven-notifications)
+- [ck-exec (your server code: hubs, spokes and players' mods)](https://docs.crowdedkingdoms.com/exec/intro) · [CLIENT halves (a mod's browser code)](https://docs.crowdedkingdoms.com/exec/client-halves) · [From the legacy engines (game models, automations, compute modules, player code)](https://docs.crowdedkingdoms.com/exec/from-the-legacy-engines)
 - [Agentic Crowdy Studio game integration (allowlisted development)](https://docs.crowdedkingdoms.com/game-api/agentic-crowdy-studio): durable sessions/events, bounded host tools, approvals, leases, takeover, and reconnect. Verify the published SDK with `npm view @crowdedkingdoms/crowdyjs dist-tags`. Allowlisted development only; no production or real-money autonomy claim.
-- [Choosing Game APIs (five-tier decision flow + mechanic/genre mappings)](https://docs.crowdedkingdoms.com/game-api/model-vs-compute) · [Compute Modules (server-side Rust/WebAssembly logic)](https://docs.crowdedkingdoms.com/game-api/compute-modules) · [Compute host API reference](https://docs.crowdedkingdoms.com/game-api/compute-host-api) · [Compute tutorial (zero to a live module)](https://docs.crowdedkingdoms.com/game-api/compute-tutorial) · [Compute engines (the full template registry: NPC/mob/world/match/deck/instance/director/matchmaking/market/board/minigame/abilities/movement-warden/territory/racing/possession/liveops — deployable by name via computeDeployTemplate)](https://docs.crowdedkingdoms.com/game-api/compute-engines)
-- [Modeling game concepts (inventory, object permissions, NPCs)](https://docs.crowdedkingdoms.com/game-api/modeling-game-concepts)
 - [GraphQL reference (operations & types)](https://docs.crowdedkingdoms.com/game-api/reference/graphql-overview)
 
 ## Replication API / Buddy (binary UDP wire protocol)
@@ -62,19 +60,19 @@
 
 - [CrowdyJS (browser-first TypeScript SDK) overview](https://docs.crowdedkingdoms.com/crowdyjs/readme)
 - [CrowdyJS best practices](https://docs.crowdedkingdoms.com/crowdyjs/best-practices)
-- [Build player mods in Blocks with Friends](https://docs.crowdedkingdoms.com/build-a-game/bwf-mod-development): in-world Monaco/Rust workflow, server+client bundles, author trust, lifecycle, and troubleshooting.
-- [BWF mod authoring helper file](https://docs.crowdedkingdoms.com/helpers/bwf-mod/authoring-checklist.txt) · [Cargo.toml](https://docs.crowdedkingdoms.com/helpers/bwf-mod/Cargo.toml) · [server Rust starter](https://docs.crowdedkingdoms.com/helpers/bwf-mod/server-lib.rs) · [client HUD Rust starter](https://docs.crowdedkingdoms.com/helpers/bwf-mod/client-hud-lib.rs)
-- CrowdyJS guides: [Channels](https://docs.crowdedkingdoms.com/crowdyjs/channels) · [Teams](https://docs.crowdedkingdoms.com/crowdyjs/teams) · [Grids](https://docs.crowdedkingdoms.com/crowdyjs/grids) · [Game model](https://docs.crowdedkingdoms.com/crowdyjs/game-model) · [Automations (NPCs)](https://docs.crowdedkingdoms.com/crowdyjs/automations) · [Model-driven notifications](https://docs.crowdedkingdoms.com/crowdyjs/model-notifications) · [Game Kit (inventory, object permissions, NPCs, genre layers)](https://docs.crowdedkingdoms.com/crowdyjs/game-kit) · [World Stores (SDK-managed actor/chunk/message state)](https://docs.crowdedkingdoms.com/crowdyjs/stores)
+- [Build player mods in Blocks with Friends](https://docs.crowdedkingdoms.com/build-a-game/bwf-mod-development): in-world Monaco/Rust workflow, server mods on ck-exec and client mods in the browser, author trust, and troubleshooting.
+- [BWF mod authoring helper file](https://docs.crowdedkingdoms.com/helpers/bwf-mod/authoring-checklist.txt) · [Cargo.toml](https://docs.crowdedkingdoms.com/helpers/bwf-mod/Cargo.toml) · [client HUD Rust starter](https://docs.crowdedkingdoms.com/helpers/bwf-mod/client-hud-lib.rs)
+- CrowdyJS guides: [Channels](https://docs.crowdedkingdoms.com/crowdyjs/channels) · [Teams](https://docs.crowdedkingdoms.com/crowdyjs/teams) · [Grids](https://docs.crowdedkingdoms.com/crowdyjs/grids) · [World Stores (SDK-managed actor/chunk/message state)](https://docs.crowdedkingdoms.com/crowdyjs/stores)
 - [Agentic Crowdy Studio player + CrowdyJS quickstart](https://docs.crowdedkingdoms.com/crowdyjs/agentic-crowdy-studio)
 - [CrowdyCPP (portable C++ SDK with native UDP replication) overview](https://docs.crowdedkingdoms.com/crowdycpp/intro)
 - [CrowdyCPP best practices](https://docs.crowdedkingdoms.com/crowdycpp/best-practices)
-- CrowdyCPP guides: [Installation](https://docs.crowdedkingdoms.com/crowdycpp/installation) · [Quick start](https://docs.crowdedkingdoms.com/crowdycpp/quick-start) · [Replication client (native UDP)](https://docs.crowdedkingdoms.com/crowdycpp/replication-client) · [World session (SDK-managed game state)](https://docs.crowdedkingdoms.com/crowdycpp/world-session) · [Game Kit](https://docs.crowdedkingdoms.com/crowdycpp/game-kit) · [Engine integration (Unreal, Godot, Unity)](https://docs.crowdedkingdoms.com/crowdycpp/engine-integration) · [Compatibility & parity](https://docs.crowdedkingdoms.com/crowdycpp/compatibility)
+- CrowdyCPP guides: [Installation](https://docs.crowdedkingdoms.com/crowdycpp/installation) · [Quick start](https://docs.crowdedkingdoms.com/crowdycpp/quick-start) · [Replication client (native UDP)](https://docs.crowdedkingdoms.com/crowdycpp/replication-client) · [World session (SDK-managed game state)](https://docs.crowdedkingdoms.com/crowdycpp/world-session) · [Engine integration (Unreal, Godot, Unity)](https://docs.crowdedkingdoms.com/crowdycpp/engine-integration) · [Compatibility & parity](https://docs.crowdedkingdoms.com/crowdycpp/compatibility)
 - [Build a game (tutorial)](https://docs.crowdedkingdoms.com/build-a-game/intro)
 
 ## Unreal SDK
 
 - [Unreal SDK docs root](https://docs.crowdedkingdoms.com/unreal-sdk/intro): the Unreal Engine plugin, driven from C++ or Blueprint.
-- [Unreal SDK quickstart](https://docs.crowdedkingdoms.com/unreal-sdk/quickstart): sign in and sync your app, sign the player in at runtime, then build one lantern that shows an entity, an RPC event, a replicated property, and a server-owned value.
+- [Unreal SDK quickstart](https://docs.crowdedkingdoms.com/unreal-sdk/quickstart): sign in and sync your app, sign the player in at runtime, then build one lantern that shows an entity, an RPC event, and a replicated property.
 - [For AI agents (Unreal SDK)](https://docs.crowdedkingdoms.com/unreal-sdk/for-ai-agents): the fastest correct path for a coding agent working in an Unreal project on the plugin.
 - [Unreal SDK agent drop-in file](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/AGENTS.md): copy into a project's root, `CLAUDE.md`, or `.cursorrules`.
 - [Every Unreal SDK page in one file](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-full.txt): all pages in reading order, with each page's source URL. Blueprint graphs appear as pointers to their clipboard text under `/bp/unreal-sdk/`.

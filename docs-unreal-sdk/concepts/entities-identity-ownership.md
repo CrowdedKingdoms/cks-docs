@@ -86,7 +86,7 @@ A lantern post is a lantern that belongs to the level rather than to a player: t
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-All three settings are `EditAnywhere`, so a constructor (or the Details panel, or Class Defaults) is where they are set. `ALanternPost` inherits everything else from `ALantern`, so a post flickers and lights like any lantern, and its `IsLocallyOwned()` checks are true on the host alone. The second base class, `ICrowdyBindingKeyProvider`, is for a later page, [Ensured identity](../game-models/ensured-identity.md), which adds its one override and include; drop it here, or paste it with that override:
+All three settings are `EditAnywhere`, so a constructor (or the Details panel, or Class Defaults) is where they are set. `ALanternPost` inherits everything else from `ALantern`, so a post flickers and lights like any lantern, and its `IsLocallyOwned()` checks are true on the host alone:
 
 <CppSnippet id="identity-policies" />
 

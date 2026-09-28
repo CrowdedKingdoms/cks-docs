@@ -9,12 +9,14 @@ title: From the legacy engines
 Available on the **dev** environment only; see the [overview](intro).
 :::
 
-ck-exec replaces four legacy engines of the game API: **game models** (containers, typed
-properties and functions in an expression language), **automations** (schedules, triggers and
-timers over the same functions), **compute modules** (studio WASM run inside the game API) and
-**player code** (grid-scoped player modules, player models and automations). This page maps each
-thing you did with them to what you do on ck-exec, and links the page that explains it. For a
-worked example, see [port a compute module](port-a-compute-module).
+ck-exec replaced four legacy engines of the game API, which no longer serves them: **game
+models** (containers, typed properties and functions in an expression language),
+**automations** (schedules, triggers and timers over the same functions), **compute modules**
+(studio WASM run inside the game API) and **player code** (grid-scoped player modules and their
+browser client modules, player models and automations). Their pages are gone, and an old link to
+one of them lands on its section here. This page maps what you used to what you use now, and
+links the page that explains it. For a worked example, see [port a compute
+module](port-a-compute-module).
 
 ## Running your logic
 
@@ -110,12 +112,12 @@ worked example, see [port a compute module](port-a-compute-module).
 | Legacy | ck-exec | Page |
 |---|---|---|
 | Player server modules (`playerComputeDeploy`, run as the grid owner) | Mods: `execModBuild`, `execModDeploy`, in the owner's own sandbox, confined to the grid | [Mods](mods) |
-| Player client modules (browser WASM, `playerComputeDeploy` with the CLIENT target) | A mod's CLIENT half: one `crowdy-client-sdk` crate, built with `execModClientBuild` and attached with `execModClientDeploy`. On dev a new legacy CLIENT-target deploy is refused with `ENGINE_SWITCHED_OFF`; client modules already built keep loading until the legacy engines are removed | [CLIENT halves](client-halves) |
+| Player client modules (browser WASM, `playerComputeDeploy` with the CLIENT target) | A mod's CLIENT half: one `crowdy-client-sdk` crate, built with `execModClientBuild` and attached with `execModClientDeploy`. Legacy client modules are not migrated: build each one again as a CLIENT half | [CLIENT halves](client-halves) |
 | Grid-attached client mods (`gridClientMods`, `consentGridClientMod`, `trustGridAuthor`, `playerCodeClientArtifact`) | `execGridClientMods`, `execConsentClientMod`, `execTrustAuthor`, `execModClientArtifact`; CrowdyJS `ExecClientHalves` runs a grid's | [CLIENT halves](client-halves#serving-it-to-visitors) |
 | A server module that requires a client module (`playerComputeSetRequires`) | Nothing to pair: a CLIENT half belongs to its mod | [Mods](mods#client-halves) |
 | Player models and player automations | A mod's own state and timers, and its grid's world events | [Mods](mods) |
 | `publishPlayerCode`, `acquirePlayerCode`, `installPlayerCode`, bundled listings | `execModPublish`, `execModListings`, `execModInstall` (no payments yet); a listing carries the mod's CLIENT half | [Mods](mods#the-marketplace-no-payments) |
-| Crowdy Studio deploying a SERVER target | The SERVER target as a mod (`serverEngine: 'ck-exec'`, the default from CrowdyJS 17.13.0) | [Mods](mods) |
+| Crowdy Studio deploying a SERVER target | The SERVER target as a mod (ck-exec, Crowdy Studio's default engine from CrowdyJS 17.13.0) | [Mods](mods) |
 | Crowdy Studio deploying a CLIENT target | The CLIENT target as that mod's CLIENT half (CrowdyJS 17.14.0) | [CLIENT halves](client-halves#crowdy-studios-client-target) |
 
 ## Tools
@@ -123,4 +125,4 @@ worked example, see [port a compute module](port-a-compute-module).
 | Legacy | ck-exec |
 |---|---|
 | CK Studio's Compute and Automations tabs | CK Studio's ck-exec tab on the app page: status, node types, versions and rollback, instances, calls per endpoint, logs (with a flow filter) |
-| The Unreal SDK's game-model authoring | Not ported yet; the Unreal SDK moves to ck-exec in a later release |
+| The Unreal SDK's game models: containers and attributes, Effects, sessions, pre-seeding and their authoring in the editor | Not ported: the Unreal SDK does not wrap ck-exec yet. Call your app's ck-exec code from your game's C++ with CrowdyCPP's `client.exec()` (CrowdyCPP 0.49.0 on dev; see [connect from a game](connect-from-a-game#crowdycpp)); [engine integration](/crowdycpp/engine-integration) describes building CrowdyCPP into an Unreal plugin |

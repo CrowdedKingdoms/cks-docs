@@ -23,7 +23,7 @@ Options 2, 3, and 4 are all account sign-ins and end in the same place: a sessio
 
 ## What each credential grants
 
-**An account sign-in** (email and password, a sign-in link, or a provider) gives you full authoring: Config Sync, teams, channels, grids, the Game Model page, and the Web Console.
+**An account sign-in** (email and password, a sign-in link, or a provider) gives you full authoring: Config Sync, teams, channels, grids, and the Web Console.
 
 **An organization token** gives management-only access. It can browse apps, run Config Sync, and reach the Web Console, but it cannot author game-plane data.
 

@@ -6,10 +6,9 @@ title: Before you ship
 
 # Before you ship
 
-Three things a client gets right on the machine it was built on and wrong in the build
-you hand to players. None of them raises an error where the mistake is made: the wrong
-host answers, the wrong SDK build installs cleanly, and a missing game-model seed only
-shows up as containers that do nothing.
+Two things a client gets right on the machine it was built on and wrong in the build
+you hand to players. Neither raises an error where the mistake is made: the wrong host
+answers, and the wrong SDK build installs cleanly.
 
 ## 1. Use the host you were given — prefer the API's URL
 
@@ -47,31 +46,3 @@ npm view @crowdedkingdoms/crowdyjs dist-tags   # what each tag resolves to right
 
 The simpler protection is to pass `httpUrl` and `wsUrl` explicitly, as every
 example on this site does, so the default never decides anything.
-
-## 3. Define the container type before binding a container to it
-
-A game model does not travel with the app. `gameModelEnsureContainer` refuses a type the
-app has not declared, with `extensions.code` of
-[`CONTAINER_TYPE_UNDEFINED`](/overview/error-codes) — and `extensions.definedTypes`
-lists what the app does declare, so a typo is visible without a second call. An app that
-was recreated or moved between organizations comes back with that list empty: tokens
-mint, players connect, realtime works, and only the model is missing. Re-run
-`gameModelSeed`.
-
-Older client builds could create the container and bind nothing, silently. The only sign
-was in the game's own log:
-
-```
-[GameModel] InvokeAndApply: no container bound for entity F3B8B18E478BB6E95D9B1980C602CA47
-```
-
-Run the [`gameModelLint`](/game-api/game-models#linting-your-model) query against the app
-before players do. It answers the whole-app version of the question — does this model
-hang together — instead of surfacing one broken call at a time. The full treatment,
-including seeding and authority, is in [Game Models](/game-api/game-models).
-
-Ship with `clean: true`. Warnings are frequently fine — most are ordinary mid-edit states —
-but some error codes are **enforced**, and an object with an enforced finding against it is
-[quarantined](/game-api/game-models#an-error-can-stop-the-object-running): it refuses with
-`OBJECT_QUARANTINED` until you write the definition again. The enforced set can grow, so an
-error you decided to live with is the one that surprises you later.

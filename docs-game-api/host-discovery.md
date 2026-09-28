@@ -18,18 +18,15 @@ CrowdyJS wraps both as `client.host.get(appId)` and `client.host.amIHost(appId)`
 
 :::note[Actor count is not active player count]
 `gameHost.actorCount` counts actors owned by the elected host. It is not app
-concurrency. For the app-wide gauge of active app-scoped gameplay sessions,
-use
-[`gameModelActivePlayerCount`](game-models#active-player-count-app-scoped-sessions);
-that gauge is neither a distinct-user count nor a host/actor count. On ck-exec (dev), the app's
-root hub hears the same count in `on_presence` and publishes it on a topic players subscribe
-to; see [presence](/exec/timers-and-presence#presence).
+concurrency. For the number of players in the app, the app's root hub on
+[ck-exec](/exec/intro) hears the count in `on_presence` and can publish it on a topic
+players subscribe to; see [presence](/exec/timers-and-presence#presence).
 :::
 
 :::important[UI convenience vs authoritative gating]
 `gameHost` / `amIGameHost` (and CrowdyJS `client.host.*`) are **informational**. The Game API does not gate other operations on host status from these queries, and Buddy does not validate UDP messages against the host UUID.
 
-For **authoritative** host-only game logic, use a `gameModelInvoke` function with an **`is_host`** invoke policy — the server enforces that. See **[Game models → Authority](game-models#authority-deciding-who-may-invoke-a-function)**.
+For **authoritative** host-only game logic, decide it in a [ck-exec](/exec/intro) hub, which checks its caller itself (`call.player()`); the `session` [starter pack](/exec/builds#starter-packs) keeps a host of its own. See **[Game API best practices](/game-api/best-practices#clients-request-they-do-not-decide)**.
 :::
 
 ## When to use it
@@ -257,7 +254,7 @@ You do not need to implement reassignment yourself. When the current host stops 
 ## See also
 
 - **[GraphQL schema reference](/game-api/reference/graphql-overview)** — auto-generated reference for every Game API operation, including `gameHost`, `amIGameHost`, and the `GameHost` type.
-- **[Game models](game-models)** — authoritative `is_host` invoke policy on `gameModelInvoke`.
+- **[ck-exec](/exec/intro)** — where authoritative host-only rules run.
 - **[Actor state](actor-state)** — `actor(uuid)` / ownership (`userId`) when you start from a wire-id.
 - **[GraphQL UDP Proxy API](/game-api/graphql-udp-proxy-api)** — how a browser/JS client registers an actor so it becomes a host candidate.
 - **[Replication API](/replication-api/intro)** — the native UDP path; sending `ACTOR_UPDATE_REQUEST_2` is what registers a client as participating in the world, making them a host candidate.

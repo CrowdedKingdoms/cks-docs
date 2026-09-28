@@ -46,11 +46,44 @@ fn boss_roars(ctx: &Ctx, at: ChunkPos, pose: &[u8], raid_channel: u64) -> Result
 | `ctx.emit_channel(channel, sender, payload)` | The channel's members | `CHANNEL_MESSAGE_NOTIFICATION` (18) from `sender` |
 
 The message layouts are in the replication API's [wire formats](/replication-api/wire-formats).
-Server events use the reserved event types that CrowdyJS and CrowdyCPP already parse; see the
-[compute engines](/game-api/compute-engines#wire-format-what-clients-decode) table.
+Server events use the reserved event types that CrowdyJS and CrowdyCPP already parse; see
+[what clients already decode](#what-clients-already-decode).
 
 `actor_id("…")` makes a 32-byte actor id from a string. A player's actor is their 32-character
 UUID; a server-driven actor can use any 32 bytes, as long as it's stable.
+
+### What clients already decode
+
+Both SDKs ship codecs for one actor pose layout and a set of server event types, so a hub that
+sends these bytes needs no new client code. CrowdyJS exports `enginePoseCodec`, `engineLanes()`
+and the `EVENT_*` and `FLAG_*` constants from the package root; CrowdyCPP has them in
+`crowdy/kit/wire.hpp`.
+
+An actor's state is a 48-byte little-endian pose (position, yaw and pitch, velocity, `flags`
+`u8`, `held` `u8`, `updated_at` `f64` in milliseconds), optionally followed by a UTF-8 suffix.
+Flag bits 0 to 3 are reserved:
+
+| Bit | Meaning |
+|---|---|
+| `0b0001` (`FLAG_GROUNDED`) | grounded |
+| `0b0010` (`FLAG_MOB`) | mob lane |
+| `0b0100` (`FLAG_NPC`) | NPC or pet lane |
+| `0b1000` (`FLAG_RESERVED3`) | the reserved lanes `ghost:<courseId>` (racing replays) and `ball` (possession), named by the suffix |
+
+A server event's state is JSON, and these event types are reserved:
+
+| Type | Meaning |
+|---|---|
+| 77 | contact damage |
+| 90 | weather or season transition |
+| 91 | turn changed |
+| 92 | score or match summary |
+| 93 | match proposal (the matchmaking handoff) |
+| 94 | ability cast or impact |
+| 95 | movement violation |
+| 96 | control-point state |
+| 97 | race timing (checkpoint, lap, finish) |
+| 98 | zone change (shrinking circles, event areas) |
 
 ## Who receives what
 

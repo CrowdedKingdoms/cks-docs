@@ -365,8 +365,9 @@ await broker.start(a.bytes);
 With `engine: 'ck-exec'` the broker will not start without `artifactHash`, `fuelPerDispatch`
 and `consentedHostCalls`, the glue worker refuses a module that was not fuel-metered, and the
 allowlist is exactly the host calls above (`EXEC_CLIENT_HOST_CALLS`). The default engine,
-`'player-compute'`, is for legacy CLIENT modules. `startGridMod` takes `engine` and
-`consentedHostCalls` in its `wasm` spec too.
+`'player-compute'`, ran legacy CLIENT modules, which the game API no longer serves, so pass
+`engine: 'ck-exec'`. `startGridMod` takes `engine` and `consentedHostCalls` in its `wasm` spec
+too.
 
 ### What the page needs
 
@@ -468,6 +469,6 @@ In the browser, CrowdyJS's broker also bounds each CLIENT half:
 | CrowdyJS `marketplace.gridClientMods`, `consentGridClientMod`, `trustGridAuthor`, `clientArtifact(Bytes)` | `client.exec.gridClientMods`, `consentClientMod`, `trustAuthor`, `modClientArtifact(Bytes)`, and `ExecClientHalves` to run them |
 | `PlayerCodeBroker` for a legacy module | `PlayerCodeBroker({ engine: 'ck-exec', … })` |
 
-The legacy calls keep working, superseded, until the legacy engines are removed.
+The game API no longer serves the legacy calls: they went with the legacy engines.
 
 Next: [port a compute module](port-a-compute-module).

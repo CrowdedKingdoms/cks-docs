@@ -106,8 +106,6 @@ const outcome = await titanCall<{ success?: boolean; health?: number; killed?: b
 
 - **Keys are instances.** A client may call any key of a `client` type, and each key it names
   is a new instance. A hub that must be the only one refuses other keys in `spawn`.
-- **One engine at a time.** Switch the compute module off wherever the hub runs. Both emit the
-  same actor ids, so players would see every mob jump between two positions.
 - **Deploys and running hubs.** A running hub keeps the version it started with until it stops,
   and a hub whose timer is pending doesn't go idle while players are in the app. To move it at
   once, switch its type off and on (`execSetEnabled`, see [operations](operations)): it persists,

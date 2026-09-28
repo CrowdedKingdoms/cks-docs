@@ -149,7 +149,9 @@ viewer function is ever detached.
   17.0 made a bound GitHub repository the working tree; 17.1 bundles
   binary-relay sends; 17.4 exposes game-model sessions; 17.5 bulk containers;
   17.6 advertises signed downlink bundles. CrowdyCPP is **0.42.0** (it said
-  0.29.0 here through 0.36.0 and 0.37.0 through 0.41.0). The SDK is NOT passwordless; any page here still saying so
+  0.29.0 here through 0.36.0 and 0.37.0 through 0.41.0). `dev` has since moved
+  on (2026-09-28: CrowdyJS `@dev` 17.14.0-dev.1, CrowdyCPP `dev/v0.49.0`), and
+  `test` to CrowdyJS 17.8.0-test.1. The SDK is NOT passwordless; any page here still saying so
   is stale. **Verify rather than quoting this line — a version in prose is a
   version that will be wrong:** `npm view @crowdedkingdoms/crowdyjs version`
   and `git -C ../CrowdyCPP describe --tags`.
@@ -159,6 +161,31 @@ viewer function is ever detached.
   404 and must name `prod` or a tag. What deploys the site is a `prod/vX.Y.Z`
   tag; see the section at the top of this page, because knowing that fact and
   acting on it turned out to be different things.
+- **The legacy engines' pages are gone on `dev`** (game models, automations,
+  compute modules, player code with its legacy client modules, the Game Kit,
+  and the Unreal SDK's game-model section), removed on 2026-09-28 (#269) with
+  the engines themselves (cks-game-api #417, `dev/v2.27.0`). `test` and `prod`
+  still serve the engines and keep the pages until their migration (P4), so
+  **a `dev` → `test` promotion of this repo waits for P4** (HS-42: promotions
+  of the affected repos wait for the migration; cherry-pick anything that
+  cannot). `/exec/from-the-legacy-engines` maps every old API to its
+  replacement, a mod's CLIENT half (`/exec/client-halves`) included, and
+  `scripts/legacy-engine-redirects.json` sends each deleted route to its section
+  there. That map feeds the plugin's static `redirects` option, not
+  `createRedirects`, because its targets carry an anchor; a renamed mapping page
+  therefore fails the build instead of dropping the redirects. The five
+  management root fields the engines took with them are under `retired` in
+  `scripts/management-surface.json` (`legacy-compute-engines`).
+- **On `dev` the CrowdyJS reference still lists the legacy operations** — the
+  one-hop lag above: `static/schema/crowdyjs.graphql` is CrowdyJS `dev`'s own
+  copy, which syncs after #417 only with CrowdyJS 18 (#187). Pages describe the
+  SDK that is released on the tier (CrowdyJS 17.14, CrowdyCPP 0.49.0 on `dev`),
+  whose legacy domains still exist but call fields the API no longer has.
+- **The Unreal SDK still ships its Game Model API, and no page documents it.**
+  Its symbols are in `scripts/unreal-surface-allowlist.json` with reason
+  `deprecated` and the note "Legacy game-model engine removed; the Unreal SDK
+  moves to ck-exec later", which also hides them from the generated reference
+  tables. Remove those entries when the SDK drops or ports that API.
 
 ## Customer-facing content (hard rule)
 
@@ -192,6 +219,8 @@ descriptions may still mention operator fields.
   GraphQL fields are off the schema; `docs-game-api/grid-commerce.md` is
   `draft: true`. The dedicated-environments page was deleted — do not add
   links to `/management-api/dedicated-environments`.
+- Re-add a page for a legacy engine, or link one of their deleted routes. Point
+  at the ck-exec page, or at `/exec/from-the-legacy-engines#<section>`.
 - Hand-edit generated Markdown under `reference/graphql/` or committed SDL
   under `static/schema/` except via `sdl:gen` / `graphql:gen`. `check:generated`
   refuses this now, and it refuses in Docs CI rather than only on your box.

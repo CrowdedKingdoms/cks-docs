@@ -137,14 +137,7 @@ their own bytes):
   persists it to a file (the native analog of CrowdyJS's
   localStorage-backed store); implement `IUuidStore` for your own storage.
 
-## Game-model state: `ContainerMirror`
-
-Game-model changes are **pull-based** on this platform (there is no model
-subscription); functions declare notify effects and clients re-read. This is
-the **notify-to-pull** pattern (see
-[Model-driven notifications](/game-api/model-driven-notifications)).
-`ContainerMirror` is the client half: watch the containers you care about,
-bind the mirror to a notification channel, and every watched container
-re-pulls its snapshot when that channel pings — you render straight from the
-cache. `onChange` fires with the container id, revision, and parsed
-properties whenever a snapshot actually changed.
+Server-owned game state lives in your app's [ck-exec](/exec/intro) hubs. A
+client reads it by calling a hub and follows it by subscribing to the hub's
+topics through `client.exec()`; see
+[connect from a game](/exec/connect-from-a-game#crowdycpp).

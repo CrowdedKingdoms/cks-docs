@@ -34,8 +34,8 @@ query Users($after: String) {
 Connections exist for the largest collections — Management API: `usersConnection`,
 `appsConnection`, `myCheckoutsConnection`, `checkoutsConnection`, `paymentEventsConnection`,
 `walletTransactionsConnection`, `appUserAccessConnection`; Game API:
-`voxelUpdateHistoryConnection`, `actorsConnection`, `gameModelEventsConnection`. More are
-added over time; the SDL is authoritative.
+`voxelUpdateHistoryConnection`, `actorsConnection`. More are added over time; the SDL is
+authoritative.
 
 ## Legacy: offset/limit (deprecated args)
 

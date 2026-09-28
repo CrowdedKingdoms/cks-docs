@@ -77,8 +77,8 @@ every channel permission, including `send_messages`).
 ## Grid channels
 
 A **grid channel** belongs to one grid. Its owner creates it, and that grid's
-[player code](player-code) may post into it with `emit_channel`; code on any
-other grid may not.
+[client mods](/crowdyjs/grid-programs) may post into it with `emit_channel`;
+code on any other grid may not.
 
 ```graphql
 mutation {

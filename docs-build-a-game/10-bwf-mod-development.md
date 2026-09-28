@@ -5,24 +5,18 @@ title: Build mods with Crowdy Studio
 
 # Build mods with Crowdy Studio
 
-:::caution Legacy engine
-This page describes building mods on the game API's legacy player-code engine. On the **dev**
-environment that engine is switched off: Crowdy Studio's SERVER target deploys a [ck-exec
-mod](/exec/mods) instead (the default from CrowdyJS 17.13.0), and from CrowdyJS 17.14.0 its
-CLIENT target builds that mod's [CLIENT half](/exec/client-halves#crowdy-studios-client-target),
-which supersedes the client mods below. A new legacy CLIENT-target deploy is refused with
-`ENGINE_SWITCHED_OFF` there; client modules already built keep loading until the legacy engines
-are removed. [From the legacy engines](/exec/from-the-legacy-engines#player-code) maps the rest.
-:::
-
 Blocks with Friends (BWF) embeds Crowdy Studio for player-authored server and
-client Rust mods. This guide is for a mod developer using the game, not a
+client Rust mods. A server mod is a [ck-exec mod](/exec/mods) on your grid; a
+client mod is that mod's [CLIENT half](/exec/client-halves), which runs in each
+visitor's browser. This guide is for a mod developer using the game, not a
 studio operator deploying platform infrastructure.
 
 ## Open Crowdy Studio
 
 1. Enter BWF with an app-scoped game token.
-2. Stand inside a grid you own and that grants the player-code write/run keys.
+2. Stand inside a grid you own and that grants the code keys:
+   `write_server_code` and `run_server_code` for a server mod,
+   `write_client_code` and `run_client_code` for a client mod.
 3. Press **M**.
 4. Open or create a server, client, or full-stack project. You can copy an
    app-provided starter from **Common Files** into either target.
@@ -32,7 +26,7 @@ Rust syntax colors, parser diagnostics, workspace completion, hover, symbols,
 and workspace-local navigation run in a lazily loaded browser module worker.
 The worker loads local parser/grammar WASM; it has no authoring endpoint and
 receives no game token. Its feedback is advisory. **Test draft** and **Deploy
-live** invoke the authoritative platform compiler.
+live** run the authoritative platform build.
 
 On desktop, Crowdy Studio opens in a resizable right-hand dock so the running
 game remains visible. Drag the divider (or focus it and use the arrow keys) to
@@ -41,9 +35,9 @@ then click the editor to code; the panes isolate their keyboard input. Narrow
 screens use the full-screen editor.
 
 Edits autosave to the cloud, but they do not change the running grid until you
-select **Test draft** or **Deploy live**. This keeps compile quota and
+select **Test draft** or **Deploy live**. This keeps builds and
 neighbor-visible effects explicit while still letting you observe the updated
-SERVER module or hot-swapped CLIENT worker without closing the studio.
+server mod or hot-swapped CLIENT worker without closing the studio.
 
 The local worker is a parser and indexed-symbol service, not rustc or
 rust-analyzer. It cannot prove borrow/lifetime correctness, perform complete
@@ -51,62 +45,56 @@ trait resolution or type inference, expand procedural macros, run Cargo build
 scripts, or reproduce full crate/build-target semantics. A locally clean file
 can still fail deployment, and a local warning does not block deployment.
 
-Downloadable starter files:
+A new project's server target starts from the platform's mod starter. For a
+client mod, download:
 
 - [Cargo.toml](/helpers/bwf-mod/Cargo.toml)
-- [server-lib.rs](/helpers/bwf-mod/server-lib.rs)
 - [client-hud-lib.rs](/helpers/bwf-mod/client-hud-lib.rs)
 - [machine-readable authoring checklist](/helpers/bwf-mod/authoring-checklist.txt)
 
 ## Project shape
 
-Every deployment sends a JSON source map with this minimum shape:
+Each target is a crate, and every deployment sends it with this minimum shape:
 
 ```text
 Cargo.toml
 src/lib.rs
 ```
 
-Use the platform SDK pin:
+A server mod is a `ckx-sdk` crate whose dependencies are `ckx-sdk`, `serde`
+and `serde_json` only; see [what a crate may
+contain](/exec/builds#what-a-crate-may-contain). A client mod is a
+`crowdy-client-sdk` crate whose dependencies are `crowdy-client-sdk`, `serde`
+and `serde_json` only; see [the crate](/exec/client-halves#the-crate):
 
 ```toml
 [dependencies]
-crowdy-compute-sdk = "0.1.5"
+crowdy-client-sdk = "0.1.0"
+serde_json = "1"
 ```
 
-The server compiles offline against its pinned SDK and vendored dependency
-sources. The browser worker's embedded platform index helps with names,
-signatures, and hover text, but does not resolve arbitrary crates. Do not add
-arbitrary dependencies; only the platform allow-list is accepted by the
-authoritative server compile.
+A client crate still on the legacy `crowdy-compute-sdk` is refused before any
+build.
+
+The platform builds both offline, in a sandbox, against its pinned SDKs. The
+browser worker's embedded platform index helps with names, signatures, and
+hover text, but does not resolve arbitrary crates. Do not add arbitrary
+dependencies; the authoritative build refuses anything outside its allow-list.
 
 ## Server mod
 
-Server mods run in game-api **as the current grid owner**, never as a visitor
-or the original marketplace author. They are confined to that grid and may
-tick, receive events, or expose an invoke entry:
+A server mod is a [ck-exec mod](/exec/mods): a hub that runs **as the current
+grid owner**, never as a visitor or the original marketplace author, in the
+owner's own sandbox. The mod starter is a `ckx-sdk` crate that greets visitors
+and follows what happens in its grid. Players standing in the grid call the
+mod's endpoints by name. It reads the grid's chunks, voxels and actors, writes
+voxels inside the grid while its owner holds `update_voxel_data`, and hears
+the grid's world events; it calls no other node and sends no realtime events.
+See [what a mod can do](/exec/mods#what-a-mod-can-do).
 
-```rust
-fn on_init() {}
-
-fn on_tick(_dt: u32) {
-    // Read/write only inside the owned grid.
-}
-
-fn on_invoke(_payload: &[u8]) -> Vec<u8> {
-    Vec::new()
-}
-
-crowdy_compute_sdk::register_module!(
-    init: on_init,
-    tick: on_tick,
-    invoke: on_invoke
-);
-```
-
-Use **Test draft** while iterating when you want server spatial egress
-suppressed from other sessions. **Deploy live** compiles and enables the server
-module after admission and quota checks.
+**Test draft** and **Deploy live** both build the server crate, deploy it to
+the grid as the mod `mod:<server module name>`, and switch it on. Switching a
+mod on needs the app's code admission.
 
 ## Client HUD mod
 
@@ -115,7 +103,7 @@ network, or unrestricted world access. Presentation crosses a host call and
 the game renders it in a mod-owned HUD region:
 
 ```rust
-use crowdy_compute_sdk::{api, host_call};
+use crowdy_client_sdk::{api, host_call};
 use serde_json::json;
 
 fn on_init() {}
@@ -140,7 +128,7 @@ fn on_tick(_dt: u32) {
 
 fn on_invoke(_payload: &[u8]) -> Vec<u8> { Vec::new() }
 
-crowdy_compute_sdk::register_module!(
+crowdy_client_sdk::register_module!(
     init: on_init,
     tick: on_tick,
     invoke: on_invoke
@@ -148,13 +136,15 @@ crowdy_compute_sdk::register_module!(
 ```
 
 The downloadable client helper uses compile-ready control flow without the
-abbreviations in this explanation.
+abbreviations in this explanation. [What it can
+call](/exec/client-halves#what-it-can-call) lists every host call.
 
-### Tick rate and mouse input (CLIENT, Game API v2.8.0 / CrowdyJS 17.6.0)
+### Tick rate and mouse input
 
 A CLIENT worker ticks once a second by default. Ask for a faster loop in the
 crate's `Cargo.toml` — it is the only key admitted under
-`[package.metadata.crowdy]`, and the deploy refuses anything outside 16–1000:
+`[package.metadata.crowdy]`, a whole number of milliseconds, clamped to
+16–1000:
 
 ```toml
 [package.metadata.crowdy]
@@ -162,9 +152,8 @@ tick_interval_ms = 50   # 16..1000; default 1000
 ```
 
 Inside `on_tick`, `api::pointer_clicks()` drains the mouse clicks the host game
-(the holodeck canvas) collected since the previous call. It is CLIENT-only,
-lives in the `input` capability group (rate cap 400 calls/s), and is refused on a
-SERVER module. The value is
+(the holodeck canvas) collected since the previous call. It is CLIENT-only and
+lives in the `input` capability group (rate cap 400 calls/s). The value is
 `{ nowMs, buttons, holdingMs, clicks }`: `buttons` is the live `MouseEvent.buttons`
 bitfield (1 = left held), `holdingMs` maps a button index to how long it has been
 held (`"0"` = left), and `clicks` is the drained list of
@@ -189,32 +178,39 @@ fn on_tick(_dt: u32) {
 
 ## Bundle server and client halves
 
-In a full-stack project, set distinct server and client module names and keep
-the pairing requirement enabled. **Deploy live** autosaves one coherent
-revision, compiles CLIENT first and SERVER second, binds the requirement only
-after both compiles succeed, enables the server, and hot-swaps the exact client
-artifact. The edge pins immutable versions; a partial compile failure never
-writes a new requirement.
+In a full-stack project the client target is the server mod's CLIENT half:
+the mod is named for the server module, and its CLIENT half rides it. **Deploy
+live** autosaves one coherent revision and builds CLIENT first and SERVER
+second, so a client failure never deploys a new server version. Only after
+both builds succeed does it deploy and switch the server mod on, attach the
+CLIENT half to it, and hot-swap your preview to the served module. There is
+no pairing to set: a CLIENT half belongs to its mod.
 
-Visitors entering the grid see one trust prompt for the author. It displays
-the aggregate server+client capability summary. Widening capabilities requires
-fresh trust; removing capabilities can retain trust only when the server can
-prove the new summary is strictly narrower.
+A visitor's browser runs your CLIENT half only once they have agreed to it:
+consented to it at its capability hash, or trusted you as its author on this
+grid. The capability summary they are shown is derived from the built
+module, and a version that can do something new is asked about again. See
+[what a visitor is asked](/exec/mods#what-a-visitor-is-asked).
 
 ## Debugging
 
-- **Compile failed:** read the rustc log in the panel; server compilation is
+- **Build failed:** read the build log in the panel; the platform's build is
   authoritative even if the local parser showed no problem.
 - **No completion/diagnostics:** deployment still works. Check that the browser
   can load the same-origin module-worker and parser/grammar WASM assets, then
   reopen the panel. If local language startup fails, the editor deliberately
   falls back to the textarea, which is the only fallback.
-- **Deploy refused:** inspect the quota meter and typed gate reason.
-- **Client HUD does not appear:** confirm visitor trust, `run_client_code`,
-  current grid presence, and that the attachment remains active.
-- **Server does not tick:** the grid must contain a Buddy-confirmed live actor;
-  empty grids suspend tick modules.
+- **Deploy refused:** read the message. You have one build at a time, server
+  or client (`RATE_LIMITED` while another runs); attaching needs you to own
+  the grid with `write_client_code` and the app's code admission; see [CLIENT
+  half errors](/exec/client-halves#errors).
+- **Client HUD does not appear:** confirm the visitor consented or trusts
+  you, holds `run_client_code` and stands in the grid, and that the mod is
+  switched on with its CLIENT half attached.
+- **Server mod does not answer:** check that it is switched on and that the
+  app admits it. A mod that is switched on but not running starts when an
+  actor arrives in its grid or a player calls it.
 
-See [Crowdy Studio and player client mods](/crowdyjs/player-client-mods) for
-host integration and sandbox details, and
-[Player code](/game-api/player-code) for the server-side API model.
+See [Crowdy Studio and mods in the browser](/crowdyjs/player-client-mods) for
+host integration and sandbox details, [mods](/exec/mods) for the server-side
+API, and [CLIENT halves](/exec/client-halves) for the client side.

@@ -63,8 +63,8 @@ Work through it in order the first time:
    connection: assignment, signed sends, verified receives, lifecycle.
 4. [World session](/crowdycpp/world-session) — SDK-managed game state: your
    actor's send loop, the remote-actor registry, the chunk cache, inboxes.
-5. [Game Kit](/crowdycpp/game-kit) — blueprint builders and runtime kits for
-   inventory, economy, combat, and the other genre layers.
+5. [Connect from a game](/exec/connect-from-a-game#crowdycpp) — calling your
+   app's server code on ck-exec through `client.exec()`.
 6. [Engine integration](/crowdycpp/engine-integration) — wrapping CrowdyCPP
    in Unreal and other engines.
 7. [Compatibility and parity](/crowdycpp/compatibility) — server

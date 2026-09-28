@@ -12,7 +12,7 @@
 // check-unreal-surface.mjs computes coverage (the same corpus, the same whole-word test on
 // the same term per group), except that the list of matching pages is kept and one is
 // picked: the page mentioning the symbol most often, ties broken by folder (concepts,
-// runtime, game-models, services, studio, guides, then the root pages) and path. Pages
+// runtime, services, studio, guides, then the root pages) and path. Pages
 // under reference/ never count, since a symbol appearing in its own table is not further
 // reading. No match leaves the cell empty; symbol-pages.json holds the whole id-to-slug map.
 // PAGE_OVERRIDES pins an id to a page where the count picks a passing mention (a page whose
@@ -38,7 +38,7 @@ const SURFACE = 'static/helpers/unreal-sdk/sdk-surface.json';
 const ALLOWLIST = 'scripts/unreal-surface-allowlist.json';
 const DOCS = 'docs-unreal-sdk';
 const OUT_DIR = 'src/generated/unreal-sdk';
-const FOLDER_ORDER = ['concepts', 'runtime', 'game-models', 'services', 'studio', 'guides', ''];
+const FOLDER_ORDER = ['concepts', 'runtime', 'services', 'studio', 'guides', ''];
 const MODULE_ORDER = ['CrowdySDK', 'CrowdyNet', 'CrowdyReplication', 'CrowdyServices', 'CrowdyVoice'];
 // id -> page id under docs-unreal-sdk/, where the mention count would send a reader to a
 // page that only says the symbol is not covered there.

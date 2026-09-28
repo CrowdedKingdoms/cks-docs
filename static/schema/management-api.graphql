@@ -1804,66 +1804,6 @@ type AppPlayerUsageRow {
 }
 
 """
-One player-compute policy row (06 §3): developer-set per-player/cohort clamps evaluated most-specific-wins (user > grid > tier > app_default), every knob additionally clamped by the app's studio policy at runtime. Management is authoritative in P2; rows replica-sync to the game runtime.
-"""
-type PlayerWasmPolicy {
-  """Policy row UUID."""
-  policyId: String!
-  """The app."""
-  appId: BigInt!
-  """'app_default', 'tier', 'grid', or 'user'."""
-  scope: String!
-  """Tier/grid/user id; null for app_default."""
-  scopeRef: BigInt
-  """Whether this row is applied."""
-  enabled: Boolean!
-  """Max player modules per grid."""
-  maxModulesPerGrid: Int!
-  """Max player modules across all grids one player owns."""
-  maxModulesTotal: Int!
-  """Max tick rate in Hz."""
-  maxTickHz: Float!
-  """Fuel budget per tick."""
-  fuelPerTick: BigInt!
-  """Fuel budget per invoke/event."""
-  fuelPerInvoke: BigInt!
-  """Sandbox memory ceiling (MiB)."""
-  maxMemoryMb: Int!
-  """Watchdog wall-clock ceiling (ms)."""
-  maxRunMs: Int!
-  """Host data-API ops per tick."""
-  maxDbOpsPerTick: Int!
-  """Module replication messages per minute."""
-  maxEgressMsgsPerMin: Int!
-  """Module replication bytes per minute."""
-  maxEgressBytesPerMin: BigInt!
-  """
-  Hourly compute-unit quota (PLAYER_QUOTA_EXHAUSTED pause); null = uncapped.
-  """
-  unitsPerHour: BigInt
-  """Daily compute-unit quota; null = uncapped."""
-  unitsPerDay: BigInt
-  """Deploys (compiles) allowed per player per hour."""
-  maxCompilesPerHour: Int!
-  """Player model containers created per player per day."""
-  maxContainerCreatesDay: Int!
-  """Client-target fuel budget per browser dispatch (04 §3)."""
-  clientFuelPerDispatch: BigInt!
-  """
-  DN-10: which channels this scope's player modules may emit_channel into: 'grid' (default, the grid's own channels), 'send_messages' (also channels the grid owner may post to), or 'none'.
-  """
-  channelEgress: String!
-  """
-  DN-10: most chunks a player module's spatial message may reach from its in-grid origin (0-8, default 8). 0 keeps grid messages inside the origin chunk.
-  """
-  spatialMaxDistance: Int!
-  """
-  DN-10: whether player modules may publish on the grid event bus (emit_event). Default true.
-  """
-  gridEventEgress: Boolean!
-}
-
-"""
 A marketplace code listing as seen in-game (replica of the management catalog). Every listing is FREE in P4a; carrying both server and client artifact sets makes it a bundle.
 """
 type PlayerCodeListing {
@@ -2486,62 +2426,6 @@ type CrowdyStudioAgentUsagePage {
   since: DateTime!
   """Exclusive end of the usage window."""
   until: DateTime!
-}
-
-"""
-Operator-set platform ceilings for the per-app WASM compute policy. Each field caps the matching wasm_module_policy knob platform-wide: game-api rejects computeSetPolicy values above the ceiling. A null field means no operator override is stored — game-api falls back to its COMPUTE_PLATFORM_MAX_* env var (bootstrap default), then to the built-in code default. Edits propagate to game-api replicas via replica sync and apply within ~30 seconds, without a game-api restart.
-"""
-type CpComputePlatformCeilings {
-  """
-  Max compute modules per app (wasm_module_policy.max_modules ceiling). Null = no override (game-api bootstrap default 100).
-  """
-  maxModules: Int
-  """
-  Max tick trigger rate in Hz per module (max_tick_hz ceiling). Null = no override (game-api bootstrap default 60).
-  """
-  maxTickHz: Int
-  """
-  Max deterministic fuel budget per tick (fuel_per_tick ceiling; decimal string). Null = no override (game-api bootstrap default 10000000000).
-  """
-  fuelPerTick: BigInt
-  """
-  Max deterministic fuel budget per invoke (fuel_per_invoke ceiling; decimal string). Null = no override (game-api bootstrap default 50000000000).
-  """
-  fuelPerInvoke: BigInt
-  """
-  Max WASM linear memory per module instance in MiB (max_memory_mb ceiling). Null = no override (game-api bootstrap default 512).
-  """
-  maxMemoryMb: Int
-  """
-  Max wall-clock watchdog deadline per entry call in milliseconds (max_run_ms ceiling). Null = no override (game-api bootstrap default 5000).
-  """
-  maxRunMs: Int
-  """
-  Max host data-API operations per tick (max_db_ops_per_tick ceiling). Null = no override (game-api bootstrap default 500).
-  """
-  maxDbOpsPerTick: Int
-  """
-  Max module-emitted replication messages per minute (max_egress_msgs_per_min ceiling). Null = no override (game-api bootstrap default 60000).
-  """
-  maxEgressMsgsPerMin: Int
-  """
-  Max module-emitted replication bytes per minute (max_egress_bytes_per_min ceiling; decimal string). Null = no override (game-api bootstrap default 100000000).
-  """
-  maxEgressBytesPerMin: BigInt
-  """
-  Max module state saves per minute (max_state_writes_per_min ceiling). Null = no override (game-api bootstrap default 6000).
-  """
-  maxStateWritesPerMin: Int
-  """
-  Max module state bytes written per minute (max_state_bytes_per_min ceiling; decimal string). Null = no override (game-api bootstrap default 1073741824).
-  """
-  maxStateBytesPerMin: BigInt
-  """When the ceilings row was last updated (UTC)."""
-  updatedAt: DateTime!
-  """
-  users.user_id of the operator who last updated the ceilings. Null when never edited.
-  """
-  updatedByUserId: String
 }
 
 """Usage totals for a single GraphQL operation over the window."""
@@ -3340,13 +3224,6 @@ type Query {
   """
   playerRuntimeStates: [PlayerRuntimeState!]!
   """
-  List an app's player-compute policy rows (developer cost/rate clamps per player or cohort, 06 §3), most general first. Requires 'view_compute_diagnostics'. Management is authoritative; rows replica-sync to the game runtime on change.
-  """
-  playerWasmPolicies(
-    """App whose player policies to list."""
-    appId: BigInt!
-  ): [PlayerWasmPolicy!]! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
-  """
   The app's player rate-card markup in basis points on the platform base price (06 §4): the studio's usage-revenue stream, shown to players as a separate spend-history component. 0 = no markup (the BWF posture). Requires 'view_billing'.
   """
   playerRateMarkup(
@@ -3432,10 +3309,6 @@ type Query {
   Operator only (is_operator or is_super_admin). Read the platform Agentic Studio enablement, global emergency kill, model/tool/mode/risk allowlists, budget ceilings, retention/privacy policy, pilot funding seam, timestamps, and revision. No provider credential or request body is stored or returned.
   """
   cpCrowdyStudioAgentPlatformPolicy: CrowdyStudioAgentPolicy! @requiresPermission(scope: "operator", permission: "is_operator")
-  """
-  Operator only (is_operator). The stored platform ceilings for the per-app WASM compute policy (the knobs computeSetPolicy clamps against). Null fields mean no operator override: game-api uses its COMPUTE_PLATFORM_MAX_* env var, then the code default. Read-only.
-  """
-  cpComputePlatformCeilings: CpComputePlatformCeilings! @requiresPermission(scope: "operator", permission: "is_operator")
   """
   Org-level rollup of replication/GraphQL byte totals and GraphQL op counts across all apps in the organization for the time window. Read-only reporting. Requires the 'view_usage' org permission.
   """
@@ -4151,24 +4024,6 @@ type Mutation {
     lowWaterThresholdCents: BigInt
   ): PlayerAutoBilling!
   """
-  Create or update a player-compute policy row at app_default, tier, grid, or user scope. Omitted knobs keep their current value; unitsPerHour/unitsPerDay set the PLAYER_QUOTA_EXHAUSTED budgets (null = uncapped). Every knob is additionally clamped by the app's studio compute policy at runtime, so a player policy can only tighten. Requires 'manage_compute'.
-  """
-  setPlayerWasmPolicy(
-    """Scope + the knobs to set."""
-    input: SetPlayerWasmPolicyInput!
-  ): PlayerWasmPolicy! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "input.appId")
-  """
-  Delete a player-compute policy row; covered players fall back to the next most general scope. Returns false when no matching row exists. Requires 'manage_compute'.
-  """
-  deletePlayerWasmPolicy(
-    """App owning the policy row."""
-    appId: BigInt!
-    """'app_default', 'tier', 'grid', or 'user'."""
-    scope: String!
-    """Tier/grid/user id; omit for app_default."""
-    scopeRef: BigInt
-  ): Boolean! @requiresPermission(scope: "app", permission: "manage_compute", scopeArg: "appId")
-  """
   Set the app's player rate-card markup (0..10000 basis points on the platform base price). Markup income accrues per charge to the org's income line and is paid out via the P4b payout ledger. Requires 'manage_billing'.
   """
   setPlayerRateMarkup(
@@ -4185,7 +4040,7 @@ type Mutation {
     input: TransferPlayerCodeListingInput!
   ): PlayerCodeListing!
   """
-  Change a listing's catalog status. DELISTED/ACTIVE are owner actions (existing installs keep their pinned versions; delisting only stops new acquisitions). KILLED requires 'manage_compute' on the app (studio/operator) and is the catalog half of the listing kill — pair it with the game-api listing-scope kill switch (playerComputeSetSwitch) to disable running installs fleet-wide. SIDE EFFECTS: audit row + replica sync.
+  Change a listing's catalog status. DELISTED/ACTIVE are owner actions (existing installs keep their pinned versions; delisting only stops new acquisitions). KILLED requires 'manage_compute' on the app (studio/operator). SIDE EFFECTS: audit row + replica sync.
   """
   setPlayerCodeListingStatus(
     """Numeric app id that owns the listing."""
@@ -4233,15 +4088,6 @@ type Mutation {
     """
     input: SetCrowdyStudioAgentOperatorAppKillInput!
   ): CrowdyStudioAgentPolicy! @requiresPermission(scope: "operator", permission: "is_operator")
-  """
-  Operator only (is_operator). Patches the platform compute ceilings: omitted fields stay unchanged, an explicit null clears that override (game-api falls back to env/default), a value (> 0) sets it. SIDE EFFECTS: fans a replica notify out to every game-api so the new ceilings clamp computeSetPolicy within ~30 seconds without a restart, and writes an audit entry. Lowering a ceiling does not shrink already-stored per-app policies; it rejects future computeSetPolicy values above the new ceiling. Returns the updated ceilings row.
-  """
-  cpSetComputePlatformCeilings(
-    """
-    Ceiling patch: at least one field; omitted = unchanged, explicit null = clear override, value (> 0) = set.
-    """
-    input: CpSetComputePlatformCeilingsInput!
-  ): CpComputePlatformCeilings! @requiresPermission(scope: "operator", permission: "is_operator")
 }
 
 input UpdateGamertagInput {
@@ -4686,40 +4532,6 @@ input SetQuotaInput {
   idempotencyKey: String
 }
 
-"""
-Upsert one player policy row. Omitted knobs keep their current value (or the platform default on first insert). unitsPerHour/unitsPerDay accept null to clear the quota.
-"""
-input SetPlayerWasmPolicyInput {
-  """The app."""
-  appId: BigInt!
-  """'app_default', 'tier', 'grid', or 'user'."""
-  scope: String!
-  """Tier/grid/user id; required unless scope is app_default."""
-  scopeRef: BigInt
-  enabled: Boolean
-  maxModulesPerGrid: Int
-  maxModulesTotal: Int
-  maxTickHz: Float
-  fuelPerTick: BigInt
-  fuelPerInvoke: BigInt
-  maxMemoryMb: Int
-  maxRunMs: Int
-  maxDbOpsPerTick: Int
-  maxEgressMsgsPerMin: Int
-  maxEgressBytesPerMin: BigInt
-  unitsPerHour: BigInt
-  unitsPerDay: BigInt
-  maxCompilesPerHour: Int
-  maxContainerCreatesDay: Int
-  clientFuelPerDispatch: BigInt
-  """DN-10 channel egress: 'none' | 'grid' | 'send_messages'."""
-  channelEgress: String
-  """DN-10 spatial reach cap in chunks (0-8)."""
-  spatialMaxDistance: Int
-  """DN-10 grid event bus on/off."""
-  gridEventEgress: Boolean
-}
-
 input TransferPlayerCodeListingInput {
   """Numeric app id that owns the listing."""
   appId: BigInt!
@@ -4969,54 +4781,4 @@ input SetCrowdyStudioAgentOperatorAppKillInput {
   Required retry key (1-128 characters). Same key/arguments replay; different arguments fail IDEMPOTENCY_CONFLICT.
   """
   idempotencyKey: String!
-}
-
-"""
-Patch for cpSetComputePlatformCeilings. Omitted fields stay unchanged; a field set to an explicit null clears that override (game-api falls back to its COMPUTE_PLATFORM_MAX_* env var, then the code default); a value sets the ceiling. All values must be > 0. At least one field is required.
-"""
-input CpSetComputePlatformCeilingsInput {
-  """
-  Max compute modules per app. > 0; explicit null clears the override; omit to leave unchanged.
-  """
-  maxModules: Int
-  """
-  Max tick rate in Hz per module. > 0; explicit null clears the override; omit to leave unchanged.
-  """
-  maxTickHz: Int
-  """
-  Max fuel per tick (decimal string). > 0; explicit null clears the override; omit to leave unchanged.
-  """
-  fuelPerTick: BigInt
-  """
-  Max fuel per invoke (decimal string). > 0; explicit null clears the override; omit to leave unchanged.
-  """
-  fuelPerInvoke: BigInt
-  """
-  Max WASM memory per module instance in MiB. > 0; explicit null clears the override; omit to leave unchanged.
-  """
-  maxMemoryMb: Int
-  """
-  Max watchdog deadline per entry call in milliseconds. > 0; explicit null clears the override; omit to leave unchanged.
-  """
-  maxRunMs: Int
-  """
-  Max host data-API operations per tick. > 0; explicit null clears the override; omit to leave unchanged.
-  """
-  maxDbOpsPerTick: Int
-  """
-  Max module-emitted replication messages per minute. > 0; explicit null clears the override; omit to leave unchanged.
-  """
-  maxEgressMsgsPerMin: Int
-  """
-  Max module-emitted replication bytes per minute (decimal string). > 0; explicit null clears the override; omit to leave unchanged.
-  """
-  maxEgressBytesPerMin: BigInt
-  """
-  Max module state saves per minute. > 0; explicit null clears the override; omit to leave unchanged.
-  """
-  maxStateWritesPerMin: Int
-  """
-  Max module state bytes written per minute (decimal string). > 0; explicit null clears the override; omit to leave unchanged.
-  """
-  maxStateBytesPerMin: BigInt
 }

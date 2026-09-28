@@ -5,17 +5,6 @@ title: Embed Crowdy Studio in your game
 
 # Embed Crowdy Studio in your game
 
-:::caution Legacy engine
-This page describes embedding Crowdy Studio on the game API's legacy player-code engine. On the
-**dev** environment that engine is switched off: Crowdy Studio's SERVER target deploys a
-[ck-exec mod](/exec/mods) instead (the default from CrowdyJS 17.13.0), and from CrowdyJS 17.14.0
-its CLIENT target builds that mod's [CLIENT half](/exec/client-halves#crowdy-studios-client-target),
-which supersedes the legacy CLIENT modules and visitor trust flow below. A new legacy
-CLIENT-target deploy is refused with `ENGINE_SWITCHED_OFF` there; client modules already built
-keep loading until the legacy engines are removed. [From the legacy
-engines](/exec/from-the-legacy-engines#player-code) maps the rest.
-:::
-
 CrowdyJS ships the **Crowdy Studio embed kit**: the window chrome that
 proved out in Blocks with Friends, packaged as game-agnostic components. A game
 no longer hand-rolls a dock, fullscreen fallback, focus trap, context drawer,
@@ -31,7 +20,13 @@ it supplies only what is genuinely game-specific:
   adapter.
 
 Everything else — panel, splitter, styles, safety chrome, and the glue-worker
-packaging — comes from the SDK.
+packaging — comes from the SDK. A project's SERVER target runs as the grid's
+[ck-exec mod](/exec/mods) and its CLIENT target as that mod's [CLIENT
+half](/exec/client-halves#crowdy-studios-client-target) (CrowdyJS 17.14.0), so
+the embed needs the client's `exec` domain. With it, ck-exec is the embed's
+engine by default; the other `serverEngine`, `'player-compute'`, called the
+legacy player-code API, which the game API no longer has. CrowdyJS 17.14's
+services type still asks for `playerCompute`, which only that engine uses.
 
 ## What the kit provides
 
@@ -85,8 +80,9 @@ The smallest complete integration is one module: claim the chunk the player is
 standing on, then toggle the embed with SERVER-only permissions. This is the
 pattern piloted in reverse-tower-defense ("Tower Assault").
 
-Create the embed once at startup. Only the studio/compute/wallet services are
-exposed and there is no `dsh` option, so this game has no agent pane:
+Create the embed once at startup. Only the studio, mod, compile and wallet
+services are exposed and there is no `dsh` option, so this game has no agent
+pane:
 
 ```ts
 import {
@@ -97,6 +93,7 @@ import {
 const embed = createCrowdyStudioEmbed({
   client: {
     get crowdyStudio() { return network.sdk.crowdyStudio; },
+    get exec() { return network.sdk.exec; },
     get playerCompute() { return network.sdk.playerCompute; },
     get playerWallet() { return network.sdk.playerWallet; },
   },
@@ -135,10 +132,10 @@ embed.toggle(context);
 ```
 
 That is the whole loop: the panel handles create project → edit (Monaco with
-the local Rust language worker) → **Test draft** → **Deploy live** → Runs and
-Logs against the ordinary player-compute API. The server-code permission keys
-come from the player's app access tier, so the claim result is authoritative —
-no game-side permission logic.
+the local Rust language worker) → **Test draft** → **Deploy live** → Invoke
+and Logs against the grid's mod. The server-code permission keys come from
+the player's app access tier, so the claim result is authoritative — no
+game-side permission logic.
 
 ### Bundler note (Vite)
 
@@ -193,7 +190,7 @@ import glueWorkerAssetUrl from '@crowdedkingdoms/crowdyjs/player-glue-worker?wor
 const hud = new CrowdyStudioTextHud();
 
 const studio = new CrowdyStudioEmbed({
-  client: game, // crowdyStudio, crowdyStudioGitHub, playerWallet
+  client: game, // crowdyStudio, exec, playerCompute, playerWallet, crowdyStudioGitHub
   appId,
   gameName: 'Blocks with Friends',
   dsh: {
@@ -226,7 +223,7 @@ studio.open({
 ```
 
 The two-layer CLIENT sandbox, presentation hooks, and deploy loop are
-unchanged from [Crowdy Studio & player client mods](player-client-mods); the
+unchanged from [Crowdy Studio & mods in the browser](player-client-mods); the
 agent pane is described in [Agentic Crowdy Studio](agentic-crowdy-studio). The
 kit is chrome — it grants no authority. Deploys, drafts and invokes are
 authorized server-side exactly as before, and a live deploy the agent asks for
@@ -258,9 +255,9 @@ changed file as its own commit carrying the project's current commit SHA
 (`expectedCommitSha`), so a stale commit surfaces as the same
 `CrowdyStudioRevisionConflictError` the editor already recovers from. The
 project's `files` are the server's mirror of the repository, read exactly as
-before, and `client.playerCompute.deploy` takes `projectId` (+ `commitSha` for
-a bound project) — the server resolves the source. There are no Push / Pull
-buttons and no autosave toggle any more (removed in 17.0.0 with
+before. Both builds send their crate's files from that mirror: the SERVER
+target's mod build and the CLIENT target's CLIENT-half build. There are no
+Push / Pull buttons and no autosave toggle any more (removed in 17.0.0 with
 `pushToGitHub`, `pullFromGitHub`, `setAutosave` and the SDK-side `crowdy.json`
 helpers; `client.crowdyStudioGitHub.layout()` is the only layout grammar).
 **Refresh** brings the mirror to the branch head after a push made elsewhere.

@@ -55,9 +55,10 @@ running mod restarts it on that version. A mod's name is 1 to 48 lowercase lette
 `-` or `_`; a grid holds at most 8 mods and a player at most 64.
 
 From CrowdyJS, `client.exec` has the same calls (`modStarter`, `modBuild`, `waitForModBuild`,
-`modDeploy`, `modSetEnabled`, and the rest below). In Crowdy Studio, the embed's
-`serverEngine: 'ck-exec'` runs a project's SERVER target as a mod on the grid, and from CrowdyJS
-17.14.0 its CLIENT target as that mod's [CLIENT half](client-halves#crowdy-studios-client-target).
+`modDeploy`, `modSetEnabled`, and the rest below). In [Crowdy
+Studio](/crowdyjs/player-client-mods), a project's SERVER target runs as a mod on the grid, and
+from CrowdyJS 17.14.0 its CLIENT target as that mod's [CLIENT
+half](client-halves#crowdy-studios-client-target).
 
 ## Call a mod from your game
 
@@ -188,8 +189,8 @@ agrees to it afresh.
 
 A mod bills its **owner**, not the app. Its compute is metered per owner and charged to the
 owner's [player wallet](/management-api/player-billing) at the player rate card, once the
-owner's monthly trial is used (250,000 compute units in each app, shared with their
-automations). What its realtime streams send counts as the owner's player egress. The app's
+owner's monthly trial is used (250,000 compute units in each app). What its realtime streams
+send counts as the owner's player egress. The app's
 organization pays nothing for the mods its players run, and they don't count against the
 app's budget. A CLIENT half runs on the visitor's own hardware.
 

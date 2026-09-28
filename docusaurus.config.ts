@@ -30,6 +30,15 @@ const unrealSdkRedirects: {from: string; to: string}[] = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'scripts/unreal-sdk-redirects.json'), 'utf8'),
 );
 
+// The deleted pages of the legacy engines (game models, automations, compute modules, player
+// code), each sent to its section of the ck-exec mapping page. This map goes to the static
+// `redirects` option instead: its targets carry an anchor, which `createRedirects` cannot
+// express, and they all exist, so the plugin's refusal of a missing target is wanted here. A
+// renamed mapping page fails the build rather than silently dropping every entry.
+const legacyEngineRedirects: {from: string; to: string}[] = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'scripts/legacy-engine-redirects.json'), 'utf8'),
+);
+
 // ---------------------------------------------------------------------------------------
 // WHICH SITE THIS BUILD IS.
 //
@@ -323,13 +332,14 @@ const config: Config = {
       },
     ],
 
-    // -------- Client-side redirects for moved pages --------
-    // See the note on `unrealSdkRedirects` at the top: the map lists redirects whose
-    // targets may not exist yet, so it is applied per existing route instead of as a
-    // static list the plugin would validate and refuse.
+    // -------- Client-side redirects for moved and deleted pages --------
+    // See the notes on `unrealSdkRedirects` and `legacyEngineRedirects` at the top: the
+    // Unreal map lists redirects whose targets may not exist yet, so it is applied per
+    // existing route instead of as a static list the plugin would validate and refuse.
     [
       '@docusaurus/plugin-client-redirects',
       {
+        redirects: legacyEngineRedirects,
         createRedirects(existingPath: string) {
           const from = unrealSdkRedirects
             .filter((r) => r.to === existingPath)

@@ -8,16 +8,14 @@ title: ck-exec overview
 
 :::caution Dev-tier preview
 ck-exec runs on the **dev** environment only (`https://ck.dev.crowdedkingdoms.com`). Its
-interfaces may change before it reaches other environments. On dev the legacy game-model,
-automation and compute engines are switched off: their APIs answer `ENGINE_SWITCHED_OFF`, and
-[from the legacy engines](from-the-legacy-engines) maps each one to ck-exec. Everywhere else they
-remain the way to run server code until ck-exec reaches that environment.
+interfaces may change before it reaches other environments.
 :::
 
 ck-exec runs your game's server code. You write it in Rust against the `ckx-sdk` crate, build
 it to WebAssembly, and deploy it with the app. Players connect to an **execution host** and
 call your code over a WebSocket; the platform places, persists, moves and stops the running
-pieces for you.
+pieces for you. It replaced the game API's legacy engines: [from the legacy
+engines](from-the-legacy-engines) maps what you used to what you use now.
 
 ## Hubs and spokes
 

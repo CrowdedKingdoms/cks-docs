@@ -18,15 +18,18 @@ environment surface on [2026-07-27](#2026-07-27) and the dev sign-in bypass on
 [2026-08-20](#2026-08-20). Treat **the published SDL as the authority** on what exists
 today; this page is the record of how it got there.
 
-:::note[`crowdy-compute` is not publicly distributed]
+Older entries describe the game API's legacy engines (game models, automations, compute
+modules and player code), which ck-exec replaced. Their links lead to the matching section
+of [from the legacy engines](/exec/from-the-legacy-engines), which maps what you used to
+what you use now.
 
-Several entries below announce a `crowdy-compute` CLI. It is an internal
-convenience and **has never been published**, so do not go looking for it. The
-entries are left as written because this page is a historical record, and
-nothing they describe is unavailable to you: the CLI only ever called the
-documented `compute*` fields, and CrowdyJS exposes every one of them under
-`client.compute`. The [compute tutorial](/game-api/compute-tutorial) is the
-supported path.
+:::note[`crowdy-compute` was never publicly distributed]
+
+Several entries below announce a `crowdy-compute` CLI. It was an internal
+convenience and **was never published**. The entries are left as written because
+this page is a historical record. The compute modules it deployed were replaced by
+ck-exec, whose CLI is `ckx`; see
+[from the legacy engines](/exec/from-the-legacy-engines#build-and-deploy).
 
 :::
 
@@ -59,7 +62,7 @@ to the grid. Additive, except that the crowdy-dsh bridge protocol moves to v4
   `grid_event` trigger). `container_get_batch`, `edge_add` / `edge_delete`,
   `sessions_list` and `avatar_state_get` answer on a grid. Every spatial kind
   originates in the grid and reaches `min(distance, 8, spatialMaxDistance)`.
-  Details: [Player code](/game-api/player-code#host-boundary).
+  Details: [Player code](/exec/from-the-legacy-engines#player-code).
 - **Studio `emit_spatial`**: `server_event` is opcode 139 and `client_event`
   138 for studio modules too (they were 140 / 139, which CrowdyJS never
   decoded), and both require the `[u16 eventType]` prefix.
@@ -120,7 +123,7 @@ before-and-after of each: [What's Changed](/unreal-sdk/guides/whats-changed).
   value** and **Copy values**, and an **Internal** switch for the keys the runtime keeps for
   itself. The page's pre-seed strip hides itself while the Live tab is open, so the list and the
   panel get its height. See
-  [Game Models authoring](/unreal-sdk/studio/game-models-authoring#the-four-tabs).
+  [Game Models authoring](/exec/from-the-legacy-engines#tools).
 
 ## 2026-09-21 (Replication API v0.30.0 / v0.31.0, Game API v2.8, CrowdyJS 17.6, CrowdyCPP 0.42)
 
@@ -150,12 +153,12 @@ Everything here is additive; a client that does nothing new sees nothing new.
   (16–1000; default 1000) in its `Cargo.toml` — the only key admitted in that table —
   and call `api::pointer_clicks()` (CLIENT only, `input` capability group, 400/s) to
   drain the host game's mouse clicks each tick. See
-  [Build mods — tick rate and mouse input](/build-a-game/bwf-mod-development#tick-rate-and-mouse-input-client-game-api-v280--crowdyjs-1760).
+  [Build mods — tick rate and mouse input](/build-a-game/bwf-mod-development#tick-rate-and-mouse-input).
 - **`emit_spatial("server_event", …)` is opcode 139** (`SERVER_EVENT_NOTIFICATION`)
   with the payload framed `[u16 eventType LE][state…]`, and `client_event` is 138
   (Game API v2.8.0). Before this a `server_event` went out as an untyped generic
   spatial blob that typed decoders (CrowdyJS's event router, a CLIENT mod's scene
-  catalog) never saw. [Compute host API](/game-api/compute-host-api#replication-and-events).
+  catalog) never saw. [Compute host API](/exec/from-the-legacy-engines#realtime).
 
 ## 2026-09-19 (Game API v2.7.0, Replication API v0.29.x)
 
@@ -184,8 +187,8 @@ Everything here is additive; a client that does nothing new sees nothing new.
   session are dropped after the tier's retention window — **7 days on every tier**.
   CrowdyJS 17.5.0 wraps all of it (`containers()`, `containerStates()`, `seed`,
   `createSession({ seedFromApp })`, `kit.matches.create({ seedFromApp })`); CrowdyCPP
-  0.41.0 mirrors it. [Game models](/game-api/game-models),
-  [CrowdyJS game model](/crowdyjs/game-model).
+  0.41.0 mirrors it. [Game models](/exec/from-the-legacy-engines#running-your-logic),
+  [CrowdyJS game model](/exec/from-the-legacy-engines#calling-it-from-clients).
 
 ## 2026-09-15 (Replication API v0.28.0, Game API / Management API)
 
@@ -235,7 +238,7 @@ Nothing here changes a conforming client; each item says what would.
   `SESSION_FULL`, `SESSION_LOCKED`, `SESSION_CLOSED`, `SESSION_ENDED`,
   `SESSION_NOT_PARTICIPANT`, `SESSION_TARGET_NOT_PARTICIPANT`,
   `SESSION_INCARNATION_STALE`, `SESSION_HOST_TERM_STALE`.
-  [Roster, admission, host and presence](/crowdyjs/game-model#roster-admission-host-and-presence-1740).
+  [Roster, admission, host and presence](/exec/from-the-legacy-engines#running-your-logic).
 - **Third-party hosting on Crowdy Games** (Game API v2.1.0, CrowdyJS 17.2.0):
   `client.hosting` (claim a slug, publish a bundle, list), the Node subpath
   `@crowdedkingdoms/crowdyjs/hosting` (`publishDirectory`), and `EmbeddedHost` for
@@ -316,7 +319,7 @@ what was saved" true.
   helpers are gone. Bridge protocol v3; `@crowdedkingdoms/crowdy-dsh` 0.3.x
   writes a bound project the same way.
 - See [Connect your GitHub repo to a Studio project](/game-api/crowdy-studio-github)
-  and [Player code](/game-api/player-code#deploy-player-code).
+  and [Player code](/exec/from-the-legacy-engines#player-code).
 
 ## 2026-09-11 (Game API, CrowdyJS 16, CrowdyCPP 0.34)
 
@@ -419,7 +422,7 @@ override.** (ck-api v1.89.0)
   one call. Honoured only with `manage_apps` (`NOT_ALLOWED` otherwise); the result
   carries `GmInvokeResult.policyBypassed: true` and the call is audit-logged.
 - A stored `condition` leaf with no compiled `ast` now refuses rather than throws.
-- Clarified in [Game models](/game-api/game-models#authority-deciding-who-may-invoke-a-function):
+- Clarified in [Game models](/exec/from-the-legacy-engines#running-your-logic):
   `gameModelFunctions` strips the compiled `ast` from `invokePolicyJson` on read-back,
   and `self.owner_user_id` in a condition is a declared property, never the row owner
   (`$self_owner_id` / `owner_of_self`).
@@ -551,7 +554,7 @@ Three behaviour changes, one reprice, and the API Terms are published at last.
   **Write for it.** Advance the world by `now - lastRun` rather than one step per
   run, and store expiries as timestamps rather than remaining-tick counters. An
   automation that assumes a cadence will silently fall behind whenever nobody is
-  playing. See [Presence](/game-api/autonomous-processes#presence).
+  playing. See [Presence](/exec/from-the-legacy-engines#timers-and-triggers).
 
 - **Reservations split into two dimensions and mean something different.**
   `App.reservedEgressBytesPerSec` is `@deprecated` in favour of
@@ -595,7 +598,7 @@ Three behaviour changes, one reprice, and the API Terms are published at last.
 **ck-api v1.67.0 — a notification aimed at another app's channel is now caught**
 
 - **`channel_name`, and why you should switch to it.** A
-  [channel notification](/game-api/model-driven-notifications) now takes `payload`
+  [channel notification](/exec/from-the-legacy-engines#realtime) now takes `payload`
   plus **exactly one of** `channel_id` or `channel_name`. A name is resolved on every
   invocation against the app the function is running in; an id is resolved once, when
   you wrote it. That matters because channel membership is scoped to the app, so a
@@ -611,7 +614,7 @@ Three behaviour changes, one reprice, and the API Terms are published at last.
 - **Two new system params**, `$app_id` and `$session_channel_name`, so a model never
   has to write down which app it belongs to.
 - **Two new lint codes** on
-  [`gameModelLint`](/game-api/game-models#linting-your-model):
+  [`gameModelLint`](/exec/from-the-legacy-engines#running-your-logic):
   `notification_channel_foreign` (error — the channel belongs to another app) and
   `notification_channel_unknown` (warning — no such channel here). Only literal ids
   and names can be checked; a computed one cannot, which is a further reason to
@@ -815,8 +818,8 @@ See **[Sign in](/management-api/authentication)** and
   reads and `gameModel().activePlayerCountChanged(appId, callbacks)` over its
   GraphQL subscription client.
 
-See [Game Models → Active player count](/game-api/game-models#active-player-count-app-scoped-sessions)
-and [Autonomous processes → Player-count changes](/game-api/autonomous-processes#player-count-changes).
+See [Game Models → Active player count](/exec/from-the-legacy-engines#calling-it-from-clients)
+and [Autonomous processes → Player-count changes](/exec/from-the-legacy-engines#timers-and-triggers).
 
 ## 2026-07-24
 
@@ -830,14 +833,14 @@ Additive Game API release for game-model developers:
   container without client-side leader election. Returns the container plus a
   `created` flag; creation-only inputs (`displayName`, `properties`, …) are
   ignored when the container already exists. See
-  [Ensured containers](/game-api/game-models#ensured-containers-atomic-get-or-create).
+  [Ensured containers](/exec/from-the-legacy-engines#state).
 - `GmContainer` exposes the new nullable **`bindingKey`** field, and
   `gameModelContainers` accepts a `bindingKey` filter.
 - New **`$self_container_id`** system parameter available in model function
   bodies, policy `condition` expressions, and notification `args`
   expressions — it names the container the expression runs against and cannot
   be spoofed by caller-supplied params. See
-  [Model-driven notifications](/game-api/model-driven-notifications).
+  [Model-driven notifications](/exec/from-the-legacy-engines#realtime).
 
 Schema change is additive only (nullable column + partial unique index); no
 realtime wire or Replication API impact.
@@ -1084,9 +1087,8 @@ real-money activity, wallet actions, or broad autonomous gameplay.
   `maxEgressMsgsPerMin`, `maxEgressBytesPerMin`). Patch semantics: omitted =
   unchanged, explicit `null` = clear the override (env/default bootstrap
   values apply), value > 0 = set. Requires `is_operator`; changes are
-  audited. Reference:
-  [`cpComputePlatformCeilings`](/management-api/reference/graphql/operations/queries/cp-compute-platform-ceilings),
-  [`cpSetComputePlatformCeilings`](/management-api/reference/graphql/operations/mutations/cp-set-compute-platform-ceilings).
+  audited. Both fields went with the legacy engines: see [policy and
+  ceilings](/exec/from-the-legacy-engines#operations).
 - Ceiling edits replica-sync to every game-api and take effect in the
   `computeSetPolicy` clamp within ~30 seconds — no game-api restart. The
   `COMPUTE_PLATFORM_MAX_*` environment variables remain bootstrap defaults.
@@ -1107,7 +1109,7 @@ real-money activity, wallet actions, or broad autonomous gameplay.
   rows, `gameModelAutomationRuns` and `computeModuleRuns` sharing the
   `flowId` minted at the entry edge, each array ordered by time ascending. A
   diagnostics surface gated by app-admin `manage_apps`; see
-  [Tracing a flow](/game-api/game-models#tracing-a-flow). Partial indexes
+  [Tracing a flow](/exec/from-the-legacy-engines#operations). Partial indexes
   back the `flow_id` lookups on all three tables.
 - CrowdyJS **8.13** / CrowdyCPP **0.9**: the default event/run selections now
   include `flowId`, and `gameModel.flow({ appId, flowId })` /
@@ -1126,7 +1128,7 @@ real-money activity, wallet actions, or broad autonomous gameplay.
   and a non-lease instance's stale `state_set` is dropped with an observable
   module-log warning — keep referee-critical records in Model, not the blob
   (see the new state-contract warning in
-  [Compute Modules](/game-api/compute-modules)).
+  [Compute Modules](/exec/from-the-legacy-engines#running-your-logic)).
 - New `flowId` on `gameModelEvents`, `gameModelAutomationRuns` and
   `computeModuleRuns`: one correlation id per entry call, carried across
   `model_invoke`, event triggers and `emit_event` cascades — cross-engine
@@ -1184,11 +1186,11 @@ real-money activity, wallet actions, or broad autonomous gameplay.
   the earlier compensation/refund ordering and its bounded loss windows are
   retired (action receipts remain for client retry idempotency).
 - No GraphQL schema changes; see the
-  [Compute host API](/game-api/compute-host-api) reference.
+  [Compute host API](/exec/from-the-legacy-engines#world-and-platform-data) reference.
 
 **Docs: the "self-reported vitals" client-trust pattern**
 
-- [Choosing Game APIs](/game-api/model-vs-compute) now names the
+- [Choosing Game APIs](/exec/from-the-legacy-engines) now names the
   self-reported vitals pattern (client-committed survival stats under
   `owner_of_self`) with its four guardrails: clamp every write, gate
   restoration on consumed resources, never gate grants or competitive
@@ -1223,7 +1225,7 @@ Compute hardening for this release:
 - Runtime fixes: trigger upserts no longer stack duplicate rows; tick-rate
   edits reload a live module; failed compiles restore the prior succeeded
   version.
-- New [Model API vs Compute](/game-api/model-vs-compute) decision guide,
+- New [Model API vs Compute](/exec/from-the-legacy-engines) decision guide,
   measured engine policy-footprint table, and calibrated billing/limits
   prose.
 
@@ -1309,7 +1311,7 @@ Server-side game engines become a paved road (all additive):
   `world-engine` (weather + nodes + farming). The CLI scaffolds a copy with
   `crowdy-compute new <name> --engine <npc|mob|world>`; a `pets` example
   ships alongside the original five. New docs page:
-  [Compute engines](/game-api/compute-engines).
+  [Compute engines](/exec/from-the-legacy-engines#running-your-logic).
 - **CrowdyJS 8.7.0** — engine kit surfaces: the `kit/wire` pose/lane
   registry (`engineLanes()`, `enginePoseCodec`, type-77/90 event parsers),
   `kit.mobs`, `kit.pets`, `kit.combat.attackRouted`, `kit.worldsim.forecast`,
@@ -1340,12 +1342,12 @@ The compute developer experience grows a paved road (all additive):
   can `cargo test` off-platform.
 - **Five runnable examples** (tick-counter, scoreboard, npc-pathfinder,
   world-weather, mini-game) and a new
-  [Compute tutorial](/game-api/compute-tutorial) — zero to a live module in
+  [Compute tutorial](/exec/from-the-legacy-engines#running-your-logic) — zero to a live module in
   under 30 minutes.
 
 **Game API -- Compute Modules: server-side Rust/WebAssembly logic (additive)**
 
-The Game API gains **[Compute Modules](/game-api/compute-modules)** — studios
+The Game API gains **[Compute Modules](/exec/from-the-legacy-engines#running-your-logic)** — studios
 write Rust, deploy the source through GraphQL, and the platform compiles it to
 WebAssembly and runs it server-side, sandboxed and fuel-metered:
 
@@ -1363,7 +1365,7 @@ WebAssembly and runs it server-side, sandboxed and fuel-metered:
 - **Host API:** typed, app-scoped access to game-model data, app state blobs,
   chunks/voxels/actors, and replication emits that arrive on the existing
   `udpNotifications` stream — see the
-  [Compute host API reference](/game-api/compute-host-api). Clients need no
+  [Compute host API reference](/exec/from-the-legacy-engines#world-and-platform-data). Clients need no
   changes.
 - **Permissions:** two new org permission keys — `manage_compute` (authoring)
   and `view_compute_diagnostics` (monitoring). Org owners hold both by
@@ -1417,7 +1419,7 @@ new [CrowdyCPP](/crowdycpp/intro) docs tab:
 - **Full GraphQL surface parity with CrowdyJS** (same domains, two-token
   model, and error codes), a [WorldSession](/crowdycpp/world-session) layer
   mirroring World Stores, and the full 15-layer
-  [Game Kit](/crowdycpp/game-kit) with blueprint equivalence — worlds
+  [Game Kit](/exec/from-the-legacy-engines#running-your-logic) with blueprint equivalence — worlds
   deployed from either SDK are playable from both.
 - **Engine-wrappable by design**: pluggable HTTP/crypto/clock/log interfaces
   and a thread-free manual-pump mode for engine plugins. See
@@ -1540,8 +1542,8 @@ Cross-cutting: `blueprints.ts` split into per-concept modules (import paths
 unchanged), shared `KitTrustedAuthority` / `ownerIdKind` conventions, and a
 new pattern guide (simulation tiers, notify-to-pull, timers without a clock,
 hidden information, anti-cheat checklist). See
-[CrowdyJS → Game Kit](/crowdyjs/game-kit) and the expanded
-[genre map](/game-api/modeling-game-concepts#genre-map). Requires
+[CrowdyJS → Game Kit](/exec/from-the-legacy-engines#running-your-logic) and the expanded
+[genre map](/exec/from-the-legacy-engines#running-your-logic). Requires
 `cks-game-api` v0.13.12.1+.
 
 ## 2026-07-18
@@ -1568,8 +1570,8 @@ completing the read+write loop that permission effects opened:
   literals, and unknown permission keys.
 
 Read-only feature: no schema migration and no wire change. See
-[Game Models → Reading permissions from expressions](/game-api/game-models#reading-permissions-from-expressions)
-and [Autonomous processes → Permission predicates](/game-api/autonomous-processes#permission-predicates).
+[Game Models → Reading permissions from expressions](/exec/from-the-legacy-engines#running-your-logic)
+and [Autonomous processes → Permission predicates](/exec/from-the-legacy-engines#running-your-logic).
 CrowdyJS 8.2.0 ships the matching Game Kit surface (`plotBlueprint`,
 chunk-permission lock authority, typed selector predicates). Requires
 `cks-game-api` v0.13.12+.
@@ -1600,9 +1602,9 @@ Details:
 - New types: `FunctionPermissionEffectInput`, `GmFunctionPermissionEffect`
   (returned on `GmFunction.permissionEffects`).
 
-See [Game Models → Permission effects](/game-api/game-models#permission-effects-functions-that-write-grid-permissions)
+See [Game Models → Permission effects](/exec/from-the-legacy-engines#world-and-platform-data)
 and the worked land-purchase example in
-[Modeling game concepts](/game-api/modeling-game-concepts#custom-permissions-on-game-objects).
+[Modeling game concepts](/exec/from-the-legacy-engines#running-your-logic).
 Requires `cks-game-api` with the `2026-07-17-model-permission-effects` migration.
 
 ## 2026-07-10
@@ -1718,16 +1720,16 @@ supported side by side with the new methods.
 
 **Game model automations / NPCs (Game API, additive)**
 
-- **Server-driven automations** invoke your [game model functions](/game-api/game-models)
+- **Server-driven automations** invoke your [game model functions](/exec/from-the-legacy-engines#running-your-logic)
   on their own — on a schedule or in reaction to model activity — so you can build NPCs,
   spawners, and ticking world systems that run with no client connected. (**Superseded
 2026-09-01:** scheduled automations are now skipped while an app has no players —
-see [that entry](#2026-09-01) and [Presence](/game-api/autonomous-processes#presence).) New GraphQL:
+see [that entry](#2026-09-01) and [Presence](/exec/from-the-legacy-engines#timers-and-triggers).) New GraphQL:
   `gameModelUpsertAutomation`, `gameModelUpsertAutomationTrigger`, `gameModelRunAutomation`,
   `gameModelSetAutomationEnabled`/`Policy`, and the monitoring queries
   `gameModelAutomations`, `gameModelAutomationRuns`, `gameModelAutomationStats`, and
   `gameModelAppDiagnostics`. The entry-point function opts in with `autonomousInvocable`.
-  All require `manage_apps`. See [Autonomous processes (NPCs)](/game-api/autonomous-processes).
+  All require `manage_apps`. See [Autonomous processes (NPCs)](/exec/from-the-legacy-engines#timers-and-triggers).
 
 **Model-driven realtime notifications (Game API, additive)**
 
@@ -1737,7 +1739,7 @@ see [that entry](#2026-09-01) and [Presence](/game-api/autonomous-processes#pres
   expressions; the notification arrives on the existing `udpNotifications` stream as a
   `ServerEventNotification`, `ChannelMessageNotification`, or `SingleActorMessageNotification`.
   Player-invoked and automation-driven changes notify players identically.
-  See [Model-driven notifications](/game-api/model-driven-notifications).
+  See [Model-driven notifications](/exec/from-the-legacy-engines#realtime).
 
 **`deleteGrid` (Game API, additive)**
 
@@ -1761,7 +1763,7 @@ see [that entry](#2026-09-01) and [Presence](/game-api/autonomous-processes#pres
   game-model automation + `notifications` wrappers, the game-model studio reads, and Relay
   `*Connection` cursor-pagination variants alongside the offset lists. `deleteGrid` requires
   a server on release `v0.1.33+`. See the CrowdyJS guides:
-  [Automations](/crowdyjs/automations), [Model-driven notifications](/crowdyjs/model-notifications),
+  [Automations](/exec/from-the-legacy-engines#timers-and-triggers), [Model-driven notifications](/exec/from-the-legacy-engines#realtime),
   and [Grids](/crowdyjs/grids).
 
 ## 2026-06-13
