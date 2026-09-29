@@ -150,7 +150,7 @@ viewer function is ever detached.
   binary-relay sends; 17.4 exposes game-model sessions; 17.5 bulk containers;
   17.6 advertises signed downlink bundles. CrowdyCPP is **0.42.0** (it said
   0.29.0 here through 0.36.0 and 0.37.0 through 0.41.0). `dev` has since moved
-  on (2026-09-28: CrowdyJS `@dev` 17.14.0-dev.1, CrowdyCPP `dev/v0.49.0`), and
+  on (2026-09-29: CrowdyJS `@dev` 18.0.3-dev.1, CrowdyCPP `dev/v0.52.0`), and
   `test` to CrowdyJS 17.8.0-test.1. The SDK is NOT passwordless; any page here still saying so
   is stale. **Verify rather than quoting this line — a version in prose is a
   version that will be wrong:** `npm view @crowdedkingdoms/crowdyjs version`

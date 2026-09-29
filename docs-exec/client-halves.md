@@ -7,7 +7,8 @@ title: CLIENT halves
 
 :::caution Dev-tier preview
 Available on the **dev** environment only; see the [overview](intro). The SDK support is in
-CrowdyJS **17.14.0** (the `@dev` prerelease line, `17.14.0-dev.N`) and CrowdyCPP **0.49.0**.
+CrowdyJS **17.14.0** and later (the `@dev` prerelease line) and CrowdyCPP **0.49.0** and later;
+taking an agreement back needs CrowdyJS **18.0.3** or CrowdyCPP **0.52.0**.
 :::
 
 A [mod](mods) can carry one **CLIENT half**: Rust built on the platform for the browser, which
@@ -101,9 +102,9 @@ The SDK exports `ck_alloc` and `ck_free` itself, for the buffers the browser han
 
 | Call | What it does |
 |---|---|
-| `log(level, message)` | 0 debug, 1 info, 2 warn, 3 error. CrowdyJS 17.14.0 does not pass these lines to the page, so show what you need through `hud_set` while you debug. |
+| `log(level, message)` | 0 debug, 1 info, 2 warn, 3 error. Since CrowdyJS 18.0.0 the page receives them (at most 20 lines a second, 1,000 characters each); Crowdy Studio shows its preview's in Logs. |
 | `now_ms()` | Milliseconds since the Unix epoch, from the browser's clock. |
-| `state_get()`, `state_set(bytes)` | One blob for the life of the worker. Nothing persists it: a new page or a restart starts empty. |
+| `state_get()`, `state_set(bytes)` | One blob for the life of the worker, at most 1 MiB (a larger `state_set` returns false and keeps the old blob). Nothing persists it: a new page or a restart starts empty. |
 | `random_bytes(len)` | Bytes from the browser's `crypto.getRandomValues`. |
 | `host_call(name, args)` | Any host call by name, with JSON arguments. `api::*` wraps each of them. |
 
@@ -113,9 +114,9 @@ The host calls, grouped as a capability summary groups them (below):
 |---|---|---|
 | `state` | `user_state_get`, `user_state_set`, `avatar_state_get` | The visiting player's app state; an avatar's, for an avatar whose actor is in the grid. |
 | `world_read` | `chunk_get`, `voxels_list`, `actors_list`, `actors_list_radius` | Chunks inside the grid. `actors_list_radius` reads a box of chunks around one, at most 3 out sideways and 1 up or down, clipped to the grid. |
-| `world_write` | `voxel_set` | One voxel inside the grid, as the visiting player: it needs their `update_voxel_data`. |
-| `meta` | `grid_info`, `grid_permission_check` | The grid's box in chunk coordinates; whether the visitor holds a permission on this grid. |
-| `egress` | `emit_spatial`, `emit_channel`, `emit_event`, `emit_event_to` | A spatial message from a chunk inside the grid (distance at most 8), a post to one of the grid's channels, and an event on the page's grid event bus, which the other CLIENT halves of this grid on the same page receive. Nothing on the bus leaves the page. |
+| `world_write` | `voxel_set` | One voxel inside the grid (`voxel` 0-15 on each axis, a voxel type 0-255), as the visiting player: it needs their `update_voxel_data`. |
+| `meta` | `grid_info`, `grid_permission_check` | The grid's box in chunk coordinates; whether the visitor holds one of the four code-permission keys (`write_server_code`, `run_server_code`, `write_client_code`, `run_client_code`) on this grid. The page knows no other key for a grid, so any other key is refused (`denied`), never answered false. |
+| `egress` | `emit_spatial`, `emit_channel`, `emit_event`, `emit_event_to` | A spatial message from a chunk inside the grid (distance at most 8), a post to one of the grid's channels, and an event on the page's grid event bus, which the other CLIENT halves of this grid on the same page receive. Nothing on the bus leaves the page. A spatial message or a post goes out as an actor uuid the page derives for the grid from the `uuid_hex` the half names, never that uuid itself, so a CLIENT half cannot move the visitor's avatar or speak as another player. |
 | `present` | `hud_set`, `overlay_draw` | A payload for the game's HUD or overlay. The CLIENT half never touches the DOM, and a game that offers neither answers `{ delivered: false }`. |
 | `input` | `pointer_clicks` | The mouse clicks queued since the last call, in canvas coordinates from -1 to 1. Call it every tick. |
 
@@ -219,6 +220,7 @@ const half = await client.exec.modClientDeploy(appId, gridId, 'greeter', built.b
 | `execModClientDeploy`, `execModClientDelete` | `modClientDeploy(appId, gridId, name, buildId)`, `modClientDelete(appId, gridId, name)` |
 | `execGridClientMods` | `gridClientMods(appId, gridId)`, with `capabilitySummary` and `authorCapabilitySummary` parsed |
 | `execConsentClientMod`, `execTrustAuthor` | `consentClientMod(appId, modId, capabilityHash)`, `trustAuthor(appId, gridId, authorId, capabilityHash)` |
+| `execRevokeClientModConsent`, `execRevokeAuthorTrust` | `revokeClientModConsent(appId, modId)`, `revokeAuthorTrust(appId, gridId, authorId)` (CrowdyJS 18.0.3) |
 | `execModClientArtifact` | `modClientArtifact(appId, modId)`, and `modClientArtifactBytes(appId, modId)`, which decodes the module and checks it |
 
 `modClientArtifactBytes` recomputes the module's SHA-256 and refuses bytes that differ from
@@ -229,7 +231,8 @@ const half = await client.exec.modClientDeploy(appId, gridId, 'greeter', built.b
 
 `client.exec()` has the same calls with the same arguments (`modClientBuild`,
 `modClientDeploy`, `modClientDelete`, `gridClientMods`, `consentClientMod`, `trustAuthor`,
-`modClientArtifact`, `modClientArtifactBytes`), each with an `…Async` twin. Its
+`revokeClientModConsent`, `revokeAuthorTrust` (0.52.0), `modClientArtifact`,
+`modClientArtifactBytes`), each with an `…Async` twin. Its
 `modClientArtifactBytes` makes the same checks in the same order and throws
 `graphql::CrowdyProtocolError`, or returns an empty result in a build without exceptions.
 CrowdyCPP has no browser runner: a native game runs the module it fetched in its own sandbox,
@@ -284,6 +287,16 @@ query {
   cache it by `digest`, which never changes its bytes. Check the bytes against `digest`, and load
   `fuelPerDispatch` into its `ck_fuel` global before every call.
 - **Stop** every CLIENT half of a grid when the player leaves it.
+- **Take it back** when the player asks: `execRevokeClientModConsent` drops their consent to one
+  CLIENT half (whatever hash it was at; while they trust its author on the grid it is still served
+  to them), and `execRevokeAuthorTrust` drops their trust in an author on a grid with every
+  consent to that author's halves there. Both answer true when something was taken back, need
+  only the app-scoped token, and work from anywhere. Offer both beside each running CLIENT half.
+
+```graphql
+mutation { execRevokeClientModConsent(appId: "…", modId: "…") }
+mutation { execRevokeAuthorTrust(appId: "…", gridId: "…", authorId: "…") }
+```
 
 The grid's owner is asked about their own CLIENT halves like anyone else: the API serves a CLIENT
 half only to players who consented to it or trust its author, its author included.
@@ -323,9 +336,16 @@ setInterval(() => void halves.refresh().catch(console.warn), 10_000);
 - `NOT_FOUND` holds a CLIENT half back for 15 seconds and `RATE_LIMITED` for 60; bytes that do not
   match their digest, and a broker whose circuit breaker tripped, for 60.
 - `onStopped(mod, reason)` says why one stopped: `removed`, `changed`, `unconsented`,
-  `filtered`, `left-grid`, `stopped` or `circuit-open`. `onError` reports a consent, fetch or
-  start that failed, and `filter` leaves out CLIENT halves you run yourself, such as the one
-  Crowdy Studio previews.
+  `filtered`, `revoked`, `left-grid`, `stopped` or `circuit-open`. `onError` reports a consent,
+  fetch or start that failed, and `filter` leaves out CLIENT halves you run yourself, such as the
+  one Crowdy Studio previews.
+- `revoke(modId)` stops a running CLIENT half and takes back the player's agreement to it: the
+  consent, and when it ran because they trust its author, that trust too (the author's other
+  running halves are consented one by one, so they keep running). `forgetAuthor(authorId)` stops
+  all of the author's halves on the grid and takes the trust back. Both stop at once. What was
+  taken back is not run or asked about again while the player stays in the grid, unless it
+  changes; a revoke the API refuses rejects, and the half stays stopped until the player enters
+  the grid again, so tell them (CrowdyJS 18.0.3).
 
 ### Answering host calls
 
@@ -338,8 +358,20 @@ would the player's own. With it:
 - `emit_channel` reaches only the grid's own channels unless you pass `channelFilter`;
 - `pointer_clicks` needs your pointer source (`local: { drainPointerClicks }`), and a game can
   answer chunk and actor reads from its own stores the same way;
-- `avatar_state_get` and `grid_permission_check` are refused: the browser has no API for them
-  yet.
+- `avatar_state_get` needs to know where avatars are (`local: { avatarChunk }`), and answers only
+  for an avatar whose live actor is in the grid;
+- `grid_permission_check` needs the visiting player's id (`userId`) and the code-permission keys
+  your game holds for them on the grid (`local: { gridPermissionKeys }`), and answers only about
+  that player on this grid and only for the four keys (`GRID_PERMISSION_CHECK_KEYS`), refusing any
+  other;
+- `voxel_set` refuses a voxel outside its chunk or a type outside 0-255, and a spatial or channel
+  send goes out as `clientHalfActorUuid(gridId, name)`, where `name` is the uuid the half passed
+  (`uuid_hex`, decoded) or your `actorUuid` option when it passed none (CrowdyJS 18.0.2).
+
+Route on the fields the broker checks against the grid: `x`/`y`/`z` for reads and
+`chunkX`/`chunkY`/`chunkZ` for `voxel_set` and `emit_spatial`. The broker refuses a call that names
+its chunk a second way (`chunk`, `chunk_x`, …), because a router that read it could be steered
+outside the grid.
 
 ### One CLIENT half by hand
 
@@ -390,7 +422,8 @@ CrowdyJS 18 Studio runs on ck-exec only and has no `serverEngine` option):
   project's mod with `modClientDeploy`, consent to it as its author and preview the served module
   in the HUD layer. A full-stack project builds its CLIENT target first, then builds, deploys and
   switches on its SERVER mod, then attaches. There is no draft on ck-exec: an attached CLIENT half
-  is served to every visitor who agrees to it.
+  is served to every visitor who agrees to it. So since CrowdyJS 18.0.2 the page asks the player
+  before the in-browser agent runs a draft test, as it does before a live deploy.
 - The project's mod is named for its SERVER module. A CLIENT-only project's CLIENT half rides the
   mod named for its CLIENT module, which must therefore be a mod name. When you have no mod of
   that name on the grid, Studio deploys the mod starter under it first, says so in the build log,

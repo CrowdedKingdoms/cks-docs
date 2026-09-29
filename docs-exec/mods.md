@@ -117,8 +117,13 @@ exports). A visitor agrees in one of two ways:
   author's CLIENT halves there. Trusting needs you in the grid and consents to each current
   CLIENT half. It then covers the author's CLIENT halves there while their union asks for nothing
   new (no new import, host call, capability group or hook); one that does is asked about again.
+- **Take it back** at any time, from anywhere: `execRevokeClientModConsent` drops the consent to
+  one CLIENT half (a trusted author's halves are still served), and `execRevokeAuthorTrust`
+  stops trusting an author on a grid, with every consent to their CLIENT halves there.
 
-A game should ask once per author and show the union; CrowdyJS's `ExecClientHalves` does.
+A game should ask once per author and show the union, and offer both ways back beside each
+CLIENT half it runs; CrowdyJS's `ExecClientHalves` does the first and has `revoke` and
+`forgetAuthor` for the second.
 
 ### When it is served
 
