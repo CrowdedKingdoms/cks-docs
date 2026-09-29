@@ -10459,9 +10459,13 @@ input ChunkUpdateInput {
 
 """One per-voxel state entry to write to a chunk."""
 input VoxelStateInput {
-  """Local voxel position within the chunk (0-15 per axis)."""
+  """
+  Local voxel position within the chunk, 0-15 per axis; anything else is refused.
+  """
   voxelCoord: VoxelCoordinatesInput!
-  """Voxel type id to set at this position (0-255)."""
+  """
+  Voxel type id to set at this position, 0-255; anything else is refused.
+  """
   voxelType: Int!
   """
   BASE64-encoded binary state blob for this voxel; omit/null for no extra state.
@@ -10514,10 +10518,10 @@ input UpdateVoxelInput {
   """Address of the chunk that contains the voxel to edit."""
   coordinates: ChunkCoordinatesInput!
   """
-  Local voxel position within the chunk (0-15 per axis; validated to the signed 16-bit range).
+  Local voxel position within the chunk, 0-15 per axis; anything else is refused.
   """
   location: VoxelCoordinatesInput!
-  """Voxel type id to write (0-255)."""
+  """Voxel type id to write, 0-255; anything else is refused."""
   voxelType: Float!
   """
   Optional BASE64-encoded binary state blob for the voxel; omit for none.
@@ -11348,11 +11352,11 @@ input VoxelUpdateRequestInput {
   """
   uuid: String!
   """
-  The voxel coordinates within the chunk. Values must be between -32768 and 32767 (int16 range).
+  The voxel coordinates within the chunk, 0-15 on each axis; anything else is refused.
   """
   voxel: VoxelCoordinatesInput!
   """
-  The new voxel type ID. This determines the appearance and properties of the voxel.
+  The new voxel type ID, 0-255 (anything else is refused). This determines the appearance and properties of the voxel.
   """
   voxelType: Int!
   """
