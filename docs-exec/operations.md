@@ -144,12 +144,23 @@ query {
 ## Call limits
 
 A player may make **120 calls per 10 seconds** to an app on one execution host, the legacy
-invoke limit. A call over it is refused with `Busy`, and its message starts `rate limited` and
-says how long to wait. A developer connection shares its user's limit. Calls between instances
-don't count; they have the router's own limits.
+invoke limit. Subscribing and unsubscribing count against it too. A call (or subscription) over
+it is refused with `Busy`, and its message starts `rate limited` and says how long to wait. A
+developer connection shares its user's limit. Calls between instances don't count; they have the
+router's own limits.
 
 The limit is kept per host, so a player connected to hubs on two hosts has 120 on each. Refused
-calls show up as `busy` in the counters above.
+calls show up as `busy` in the counters above; refused subscriptions do not.
+
+Since ck-exec 0.10.0 the host also holds each connection to a few more limits:
+
+- `ping` has its own allowance, 60 per 10 seconds; a ping over it gets no answer.
+- A connection holds at most 256 subscriptions at once; the next is refused `Denied`.
+- A message larger than 4 MiB and 64 KiB (a payload as large as an instance may send, with its
+  address and method) closes the connection.
+- Before a token is checked, a host takes at most 60 connections per 10 seconds from one address
+  (an IPv4 address, or an IPv6 /64); more are closed as they arrive. A load test that opens more
+  connections than that from one machine needs hosts configured for it.
 
 Neither SDK retries a `Busy` call for you. CrowdyJS marks this refusal on the error
 (`CrowdyExecError.rateLimited`, with the wait in `retryAfterMs`), and CrowdyCPP on the reply
