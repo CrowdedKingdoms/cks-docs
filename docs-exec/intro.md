@@ -144,8 +144,11 @@ mutation {
 ```
 
 Passing `nodeType` and `key` puts the player on the host that runs that instance, starting it if
-needed. Then open a WebSocket to `{gatewayUrl}/v1/connect?token={token}`. A refused token closes
-the socket with code `4401`.
+needed. Then open a WebSocket to `{gatewayUrl}/v1/connect?token={token}`. The host checks the
+token before it accepts the WebSocket: a refused token is answered `HTTP 401`, with the reason as
+the body, and no socket opens. A browser reports only a failed connection, so the SDKs report it
+as `Unavailable`; ask `execConnect` for a fresh token and connect again. (Hosts before ck-exec
+0.10.0 opened the socket and then closed it with code `4401`, which the SDKs report as `Denied`.)
 
 ### The wire protocol
 

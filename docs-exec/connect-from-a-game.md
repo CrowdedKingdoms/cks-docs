@@ -114,8 +114,11 @@ unless reconnecting is turned off.
 - Pushes published while the connection was down are not replayed, because topics are not a
   log. Read the state you display again in `onReconnect`.
 
-A token is refused only when the socket opens (close code `4401`). A connection that is already
-open stays open after its token expires.
+A token is checked only when the socket opens: a refused one fails the connection (`HTTP 401`
+before the WebSocket opens, which the SDKs report as `Unavailable`; hosts before ck-exec 0.10.0
+closed the socket with code `4401` instead, reported as `Denied`). The connection's reconnect asks
+`execConnect` for a fresh token each time. A connection that is already open stays open after its
+token expires.
 
 ## Deploying from a script
 
