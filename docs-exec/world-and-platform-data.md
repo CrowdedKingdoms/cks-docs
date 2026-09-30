@@ -61,7 +61,7 @@ fn plant(ctx: &Ctx, at: ChunkPos, player: u64) -> Result<()> {
 |---|---|---|
 | `ctx.world().chunk(at)` | `world.read` | The chunk's dense voxel grid and metadata blob, or `None`. |
 | `ctx.world().voxels(at)` | `world.read` | Voxels written into the chunk, up to 2,048. |
-| `ctx.world().set_voxels(&writes)` | `world.write` | Up to 16 voxels in one transaction, written as the app and shown to nearby players; each voxel's state is at most 1 KiB. |
+| `ctx.world().set_voxels(&writes)` | `world.write` | Up to 16 voxels in one transaction, written as the app and shown to nearby players. Each `voxel` is 0-15 on each axis of its chunk, each `voxel_type` 0-255, and each voxel's state at most 1 KiB; a batch with anything else is refused whole. |
 | `ctx.world().actors(at)` | `world.read` | Actors in a chunk, from live presence (up to 200). |
 | `ctx.world().actors_near(at, xz, y)` | `world.read` | Actors within `xz` chunks across (at most 3) and `y` up and down (at most 1), up to 500. |
 | `ctx.grids().get(id)` | `grids.read` | One of the app's grids, with its low and high chunk; `Grid::contains(at)` tests a chunk. |
