@@ -19,6 +19,8 @@ in a specific 3D region of the world?).
 Grids do **not** replace tiers — they add a **spatial gate** on top of tier
 access. Both gates are **always enforced**: to act in a chunk a player needs the
 key from their tier **and** a grid (covering that chunk) where they hold the key.
+For building (`update_voxel_data`) that grid is not just any covering grid: it is
+the **most specific** one, see [which grid decides a voxel write](#which-grid-decides-a-voxel-write).
 
 You don't have to build this from scratch. A new app starts **open by default**:
 it gets a **default grid spanning the whole world**, and every player you grant
@@ -99,6 +101,7 @@ Two placement rules:
    is exactly how you carve a smaller, more-restricted area out of the world grid
    (e.g. a safe zone or one player's plot). It may **not** *partially* overlap a
    peer grid: give peers disjoint boxes, or nest one fully inside the other.
+   A nested grid takes over voxel writes in its chunks from the grid around it.
 
 ### Deleting a grid
 
@@ -211,6 +214,61 @@ A grant of `update_voxel_data` on a limited grid simply won't take effect until
 `update_voxel_data` is added to the limits. Pass an empty array to remove all
 limits (every key becomes allowed again).
 
+## Which grid decides a voxel write
+
+Where grids nest, the **most specific grid covering a chunk decides** who may
+edit voxels there: the covering grid with the smallest box (width × height ×
+depth, in chunks); of two equal boxes, the one with the lower `gridId`. A player
+may edit voxels in the chunk only when they hold `update_voxel_data` on that
+grid, and their tier carries it too. A grant on a broader grid does not reach
+into a grid nested inside it:
+
+- a **claimed chunk** or a **plot** decides its own chunks: its owner builds,
+  and a visitor is refused even where they may build all around it;
+- a **safe zone** that grants nobody `update_voxel_data` (spawn protection, say)
+  refuses building to everyone;
+- your app's **world grid** decides only the [wilderness](#wilderness), the chunks
+  no other grid covers;
+- a chunk no grid covers at all is refused.
+
+This holds for every voxel write: `updateVoxel`, `sendVoxelUpdate`, `updateChunk`
+(as a player), a [mod's](/exec/mods) `set_voxels`, and a client's own realtime
+voxel update, which the replication servers refuse with `UNAUTHORIZED`. Only
+building works this way. `access`, `teleport`, `use_voice_chat` and
+`use_video_chat` are still granted by **any** covering grid where the player holds
+them, so a player keeps moving and talking inside a plot they cannot build on.
+
+A grant or revoke reaches the Game API's voxel checks within 15 seconds.
+
+### Open grids
+
+A zone meant for **everyone**, like a public build area or an arena, must now
+grant everyone itself. Nesting it in the world grid is no longer enough. Open it:
+
+```graphql
+mutation {
+  setGridOpenPermissions(input: {
+    appId: "1", gridId: "10",
+    permissionKeys: ["access", "update_voxel_data", "use_voice_chat"]
+  }) { gridId permissionKeys }
+}
+```
+
+Every player with active access to the app then holds those keys on the grid,
+within its limits, and so does every player who gains access later. The call
+replaces the grid's open keys; pass an empty array to close it again.
+`gridOpenPermissions(appId, gridId)` reads them. The four code keys cannot be
+opened, the world grid is open already, and an app has at most 32 open grids.
+
+### Claims are made in the wilderness
+
+`claimGridChunk` claims only a wilderness chunk. A chunk inside another grid (a
+plot, a zone you created, someone else's claim) is refused, `FORBIDDEN` with
+`GRID_NOT_CLAIMABLE`, because the claim would become that chunk's most specific
+grid and take it from the grid's owner or grantees. A chunk that is already
+claimed answers `GRID_ALREADY_CLAIMED`. See
+[claims](player-marketplace#claim-a-player-owned-chunk-grid).
+
 ## Wilderness
 
 The **wilderness** is every chunk that no grid covers except your app's default
@@ -232,8 +290,9 @@ While it is closed, the Game API refuses **every** voxel and chunk write to a
 wilderness chunk, whoever makes it: `updateVoxel`, `sendVoxelUpdate`,
 `updateChunk` (org admins included) and your server code's
 `ctx.world().set_voxels`. Each is answered `FORBIDDEN` ("This app has closed its
-wilderness…"). A chunk that any other grid covers (a claimed plot, a zone you
-created) is unaffected, and its grants decide as before. `App.wildernessWritesOpen`
+wilderness…"). A client's own realtime voxel update there is refused with
+`UNAUTHORIZED`. A chunk that any other grid covers (a claimed plot, a zone you
+created) is unaffected: its most specific grid decides. `App.wildernessWritesOpen`
 reports the setting; each Game API instance applies a change within 15 seconds.
 
 ## Writing whole chunks
@@ -242,7 +301,7 @@ reports the setting; each Game API instance applies a change within 15 seconds.
 app and **either** `manage_apps` on the app (your studio tooling and seed scripts,
 like `updateChunkState` and `updateChunkLods`) **or** the same permission a single
 voxel edit needs in that chunk: app access, `update_voxel_data` from the tier, and
-`update_voxel_data` on a grid covering the chunk. The `ChunkStore` write-back in
+`update_voxel_data` on the most specific grid covering the chunk. The `ChunkStore` write-back in
 CrowdyJS and CrowdyCPP runs as the player, so a player's client persists only
 chunks that player may build in; the store sends a refused write-back once, drops
 it and reports it (`onWriteBackFailed`).
@@ -251,9 +310,10 @@ it and reports it (`onWriteBackFailed`).
 
 A player's effective permissions on a grid are:
 
-> (direct grants ∪ group/role grants) ∩ grid limits
+> (direct grants ∪ group/role grants ∪ the grid's open keys) ∩ grid limits
 
-Use `gridUserPermissions` for one grid, or `nearbyGridPermissions` to fetch every
+For a voxel write, only the effective permissions on the chunk's most specific
+grid count. Use `gridUserPermissions` for one grid, or `nearbyGridPermissions` to fetch every
 grid overlapping a chunk box together with the player's keys — handy for a studio
 map overlay.
 
@@ -261,7 +321,7 @@ map overlay.
 
 All grid operations (`createGrid`, `deleteGrid`, `grantGridPermissions`,
 `revokeGridPermissions`, `assignGroupToGrid`, `revokeGroupFromGrid`,
-`setGridPermissionLimits`) require the `manage_apps` permission on the app's
+`setGridPermissionLimits`, `setGridOpenPermissions`) require the `manage_apps` permission on the app's
 organization.
 
 ## Reference

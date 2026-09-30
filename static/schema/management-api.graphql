@@ -747,7 +747,7 @@ type App {
   """
   gridClaimApproverUserIds: [String!]!
   """
-  Whether players may write the app's wilderness: chunks that no grid but the app's world grid covers. True (the default) leaves those writes to the ordinary voxel permission; false refuses every voxel and chunk write there (updateVoxel, sendVoxelUpdate, updateChunk, ck-exec's world.set_voxels), whoever makes it. Set with updateApp (manage_apps).
+  Whether players may write the app's wilderness: chunks that no grid but the app's world grid covers. True (the default) leaves those writes to the ordinary voxel permission; false refuses every voxel and chunk write there (updateVoxel, sendVoxelUpdate, updateChunk, ck-exec's world.set_voxels, and a client's voxel updates sent straight to the realtime servers), whoever makes it. Set with updateApp (manage_apps).
   """
   wildernessWritesOpen: Boolean!
   """Timestamp when the app was created."""
@@ -4355,7 +4355,7 @@ input UpdateAppInput {
   """
   metadata: String
   """
-  Open (true) or close (false) the app's wilderness to voxel and chunk writes: chunks that no grid but the app's world grid covers. Closing refuses every write there, whoever makes it; each game API replica acts on the change within 15 seconds. Omit to leave unchanged.
+  Open (true) or close (false) the app's wilderness to voxel and chunk writes: chunks that no grid but the app's world grid covers. Closing refuses every write there, whoever makes it; each game API replica, and each realtime server for a client's direct voxel updates, acts on the change within about 15 seconds. Omit to leave unchanged.
   """
   wildernessWritesOpen: Boolean
 }

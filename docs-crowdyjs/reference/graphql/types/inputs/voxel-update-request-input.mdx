@@ -48,11 +48,11 @@ A unique identifier for this voxel update. Must be exactly 32 bytes when encoded
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>voxel</b></code>](#voxel)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinatesInput!</b></code>](/reference/graphql/types/inputs/voxel-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#voxel\} 
-The voxel coordinates within the chunk. Values must be between -32768 and 32767 (int16 range).
+The voxel coordinates within the chunk, 0-15 on each axis; anything else is refused.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>voxelType</b></code>](#voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-type\} 
-The new voxel type ID. This determines the appearance and properties of the voxel.
+The new voxel type ID, 0-255 (anything else is refused). This determines the appearance and properties of the voxel.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelUpdateRequestInput.<b>voxelState</b></code>](#voxel-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-state\} 

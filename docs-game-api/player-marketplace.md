@@ -48,6 +48,13 @@ mutation ClaimChunk($appId: BigInt!, $chunk: ChunkCoordinatesInput!) {
 }
 ```
 
+Only a **wilderness** chunk can be claimed, one no grid but the app's world grid
+covers. A chunk inside a plot, a zone or another player's claim is refused
+(`FORBIDDEN`, `GRID_NOT_CLAIMABLE`): the most specific grid over a chunk decides
+who builds there, so a claim nested in someone else's grid would take the chunk
+from them ([which grid decides](grids-and-permissions#which-grid-decides-a-voxel-write)).
+A chunk already claimed answers `GRID_ALREADY_CLAIMED`.
+
 The mutation is atomic: it checks the app policy and spatial overlap, creates
 the one-chunk grid, assigns the caller as its current owner, and materializes
 the caller's build plus tier-entitled code keys. A competing claim
