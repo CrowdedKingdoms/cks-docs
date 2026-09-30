@@ -76,8 +76,9 @@ A mod is a hub with the platform's mod limits: 32 MiB of memory, 20 million fuel
 a call, 20 calls a second, and a module of at most 4 MiB.
 
 - **Its grid, through the node API**: `world.chunk`, `world.voxels`, `world.actors` and
-  `world.actors_radius` inside the grid's bounds; `world.set_voxels` inside them while its
-  owner holds `update_voxel_data` on the grid; and `grids.get` and `grids.check_permission`
+  `world.actors_radius` inside the grid's bounds; `world.set_voxels` inside them, in each
+  chunk while its owner holds `update_voxel_data` on the most specific grid covering that
+  chunk (the mod's grid, or a smaller grid nested in it, which decides its own chunks); and `grids.get` and `grids.check_permission`
   for its own grid. It has no player data and no permission grants.
 - **What happens in its grid**: `Hub::on_world` receives the grid's world events in batches:
   actors moving into or out of a chunk (`actors`) and voxel changes (`voxels`), each with its

@@ -162,7 +162,7 @@ Player user ids allowed to approve grid claim requests in "approval" mode. When 
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>wildernessWritesOpen</b></code>](#wilderness-writes-open)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wilderness-writes-open\} 
-Whether players may write the app's wilderness: chunks that no grid but the app's world grid covers. True (the default) leaves those writes to the ordinary voxel permission; false refuses every voxel and chunk write there (updateVoxel, sendVoxelUpdate, updateChunk, ck-exec's world.set&#x005F;voxels), whoever makes it. Set with updateApp (manage&#x005F;apps).
+Whether players may write the app's wilderness: chunks that no grid but the app's world grid covers. True (the default) leaves those writes to the ordinary voxel permission; false refuses every voxel and chunk write there (updateVoxel, sendVoxelUpdate, updateChunk, ck-exec's world.set&#x005F;voxels, and a client's voxel updates sent straight to the realtime servers), whoever makes it. Set with updateApp (manage&#x005F;apps).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 

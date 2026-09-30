@@ -137,7 +137,9 @@ Teams use a separate set of **team-management** keys (`manage_group`,
    - **Per player** with `grantGridPermissions` (e.g. give a plot owner
      `update_voxel_data` on their chunk), or
    - **Per team/role** with `assignGroupToGrid` — grant a whole [team](teams)
-     (or just members holding a specific role) permissions across a region.
+     (or just members holding a specific role) permissions across a region, or
+   - **To every player** with `setGridOpenPermissions` — a public build area or
+     an arena ([open grids](grids-and-permissions#open-grids)).
 
 5. **Let players run their own teams (optional).** Use `setTeamPolicy` to choose
    who can create teams (`admin` / `member` / `anyone`) and the default join
@@ -150,13 +152,20 @@ spatial message — this is always on. A message is accepted only if the sender 
 active app access whose tier holds the needed key **and** the target chunk is
 inside a grid where the sender holds that key. A player without `access` to a
 region can't act there, building requires `update_voxel_data`, and voice requires
-`use_voice_chat`; anything else is rejected with `UNAUTHORIZED`. With the
-open-by-default setup above this is transparent — the default grid grants every
-entitled player every key everywhere — until you add narrower grids/limits. A
-player's effective keys on a grid are:
+`use_voice_chat`; anything else is rejected with `UNAUTHORIZED`. Building is
+checked against the chunk's **most specific** covering grid only (the smallest
+box; of equal boxes, the lowest `gridId`), and against the app's
+[wilderness](grids-and-permissions#wilderness) setting when that grid is the
+world grid; the other keys are granted by any covering grid. See
+[which grid decides a voxel write](grids-and-permissions#which-grid-decides-a-voxel-write).
+With the open-by-default setup above this is transparent — the default grid
+grants every entitled player every key everywhere — until you add narrower
+grids: a nested grid decides building in its chunks, so a zone everyone should
+build in must be [opened](grids-and-permissions#open-grids). A player's
+effective keys on a grid are:
 
-> (their tier baseline) plus (direct grants ∪ team/role grants) on that grid,
-> within the grid's limits.
+> (their tier baseline) plus (direct grants ∪ team/role grants ∪ the grid's
+> open keys) on that grid, within the grid's limits.
 
 Use `gridUserPermissions` (one grid) or `nearbyGridPermissions` (all grids around
 a chunk) to see exactly what a player has where.

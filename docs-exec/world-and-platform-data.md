@@ -47,8 +47,8 @@ The `ckx-sdk` crate wraps each operation:
 use ckx_sdk::prelude::*;
 
 fn plant(ctx: &Ctx, at: ChunkPos, player: u64) -> Result<()> {
-    // Only where the player may build.
-    let grid = ctx.grids().at(at, GridPick::First)?.ok_or_else(|| Error::new("no grid here"))?;
+    // Only where the player may build: the most specific grid over the chunk decides.
+    let grid = ctx.grids().at(at, GridPick::Smallest)?.ok_or_else(|| Error::new("no grid here"))?;
     if !ctx.grids().check_permission(grid.id, player, "update_voxel_data")? {
         return Err(Error::new("not your land"));
     }
@@ -65,7 +65,7 @@ fn plant(ctx: &Ctx, at: ChunkPos, player: u64) -> Result<()> {
 | `ctx.world().actors(at)` | `world.read` | Actors in a chunk, from live presence (up to 200). |
 | `ctx.world().actors_near(at, xz, y)` | `world.read` | Actors within `xz` chunks across (at most 3) and `y` up and down (at most 1), up to 500. |
 | `ctx.grids().get(id)` | `grids.read` | One of the app's grids, with its low and high chunk; `Grid::contains(at)` tests a chunk. |
-| `ctx.grids().at(at, pick)` | `grids.read` | The grid covering a chunk. Where grids overlap, `First` is the lowest id (what the realtime tier enforces); `Smallest` and `Largest` rank by size. |
+| `ctx.grids().at(at, pick)` | `grids.read` | The grid covering a chunk. Where grids nest, `Smallest` is the most specific one (the smallest box; of equal boxes, the lowest id), the grid that decides voxel writes there; `First` is the lowest id and `Largest` the biggest box. |
 | `ctx.grids().check_permission(grid, player, key)` | `grids.read` | Whether the player holds the key on the grid, directly or through a group, unexpired. |
 | `ctx.players().get(player)` | `players.read` | Gamertag and disambiguation, for players in the app now. |
 | `ctx.players().features(player)` | `players.read` | The feature keys the player's access tier grants. |
