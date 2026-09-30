@@ -84,6 +84,20 @@ the realtime stream:
   generated client-side (`seed` / `insertGenerated`) and persisted so the
   world stays identical for everyone — write-back is throttled (default one
   chunk per 700 ms) and `flush()` forces it.
+- **Refused write-backs**: the write-back is `updateChunk` as the player, so
+  it persists only chunks the player may build in (see
+  [Writing whole chunks](/game-api/grids-and-permissions#writing-whole-chunks)).
+  A refusal the server will not change (`FORBIDDEN`, `SCOPE_MISSING`, a
+  validation error, `NOT_FOUND`, `extensions.retryable: false`, HTTP 400, 403,
+  404, 413 or 422) is sent once and dropped. Any other failure (`PLATFORM_BUSY`,
+  `UNAUTHENTICATED`, network, a timeout, a 5xx) is tried again after 0.7, 1.4,
+  2.8 and 5.6 s, then dropped. A dropped chunk keeps its local voxels and is no
+  longer dirty, and neither kind holds up any other chunk. `onWriteBackFailed`
+  reports each drop as a `ChunkWriteBackFailure` (`coord`, `reason` `Refused` or
+  `Exhausted`, `attempts`, and the last attempt's `GraphQLOutcome` as `error`);
+  undo or flag the edit there. `flush()` returns a `ChunkFlushResult`:
+  `persisted`, and the write-backs it `dropped`. `pruneBeyond` evicts a refused
+  chunk and keeps one whose failure can still clear. (CrowdyCPP 0.53.0.)
 - `onChunkChanged` observes both realtime and local changes.
 
 ## Voice and video

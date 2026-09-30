@@ -242,9 +242,10 @@ reports the setting; each Game API instance applies a change within 15 seconds.
 app and **either** `manage_apps` on the app (your studio tooling and seed scripts,
 like `updateChunkState` and `updateChunkLods`) **or** the same permission a single
 voxel edit needs in that chunk: app access, `update_voxel_data` from the tier, and
-`update_voxel_data` on a grid covering the chunk. CrowdyJS's `ChunkStore`
-write-back runs as the player, so a player's client persists only chunks that
-player may build in.
+`update_voxel_data` on a grid covering the chunk. The `ChunkStore` write-back in
+CrowdyJS and CrowdyCPP runs as the player, so a player's client persists only
+chunks that player may build in; the store sends a refused write-back once, drops
+it and reports it (`onWriteBackFailed`).
 
 ## Effective permissions
 
