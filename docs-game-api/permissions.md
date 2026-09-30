@@ -129,7 +129,9 @@ Teams use a separate set of **team-management** keys (`manage_group`,
 
 3. **Cap what a region allows (optional).** Use `setGridPermissionLimits` to make
    safe zones — e.g. allow `access` and `use_voice_chat` but never building,
-   regardless of other grants.
+   regardless of other grants. To stop building on land nobody has claimed, close
+   the [wilderness](grids-and-permissions#wilderness) (`updateApp` with
+   `wildernessWritesOpen: false`).
 
 4. **Grant permissions in the region.** Either:
    - **Per player** with `grantGridPermissions` (e.g. give a plot owner

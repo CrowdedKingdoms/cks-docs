@@ -746,6 +746,10 @@ type App {
   Player user ids allowed to approve grid claim requests in "approval" mode. When empty, approval falls back to org staff holding manage_compute.
   """
   gridClaimApproverUserIds: [String!]!
+  """
+  Whether players may write the app's wilderness: chunks that no grid but the app's world grid covers. True (the default) leaves those writes to the ordinary voxel permission; false refuses every voxel and chunk write there (updateVoxel, sendVoxelUpdate, updateChunk, ck-exec's world.set_voxels), whoever makes it. Set with updateApp (manage_apps).
+  """
+  wildernessWritesOpen: Boolean!
   """Timestamp when the app was created."""
   createdAt: DateTime!
   """Timestamp when the app was last updated."""
@@ -3742,7 +3746,7 @@ type Mutation {
     input: CreateAppInput!
   ): App! @requiresPermission(scope: "org", permission: "manage_apps", scopeArg: "input.orgId")
   """
-  Update mutable fields of an existing app (name, description, visibility, status, metadata); only fields present in the input are changed. Requires the 'manage_apps' permission on the app (resolved via its org); super admins bypass. Use this to publish (status=LIVE), change visibility, or restore an archived app (status back to DRAFT/LIVE). Throws if the app id does not exist.
+  Update mutable fields of an existing app (name, description, visibility, status, metadata, wildernessWritesOpen); only fields present in the input are changed. Requires the 'manage_apps' permission on the app (resolved via its org); super admins bypass. Use this to publish (status=LIVE), change visibility, or restore an archived app (status back to DRAFT/LIVE). Throws if the app id does not exist.
   """
   updateApp(
     """Numeric id of the app to update."""
@@ -4350,6 +4354,10 @@ input UpdateAppInput {
   New JSON-encoded marketplace metadata string, replacing the existing value (see App.metadata). Omit to leave unchanged.
   """
   metadata: String
+  """
+  Open (true) or close (false) the app's wilderness to voxel and chunk writes: chunks that no grid but the app's world grid covers. Closing refuses every write there, whoever makes it; each game API replica acts on the change within 15 seconds. Omit to leave unchanged.
+  """
+  wildernessWritesOpen: Boolean
 }
 
 input AdmitAppCodeInput {

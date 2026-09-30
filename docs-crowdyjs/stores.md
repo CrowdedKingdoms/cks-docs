@@ -189,7 +189,10 @@ The client-side source of truth for chunks and voxels:
   are handed to your `onMissing(coord)` hook; returned grids are seeded
   locally and persisted through a throttled write-back queue (one chunk per
   `writeBackIntervalMs`, default 700 ms) — the proven shared-worldgen
-  pattern.
+  pattern. The write-back is `updateChunk` as the player, so it persists only
+  chunks the player may build in (see
+  [Writing whole chunks](/game-api/grids-and-permissions#writing-whole-chunks));
+  a refused chunk stays local and is retried on the next tick.
 - Typed reads everywhere: `voxelTypeAt`, `voxelStateAt`, `get(coord)` with
   `voxels` (4096-byte dense grid), `voxelStates: Map<index, T>`, typed
   `chunkState`, `loadState`, `revision`.
