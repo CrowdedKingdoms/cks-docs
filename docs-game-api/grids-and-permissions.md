@@ -211,6 +211,41 @@ A grant of `update_voxel_data` on a limited grid simply won't take effect until
 `update_voxel_data` is added to the limits. Pass an empty array to remove all
 limits (every key becomes allowed again).
 
+## Wilderness
+
+The **wilderness** is every chunk that no grid covers except your app's default
+world grid, i.e. land nobody has claimed and you have not zoned. By default it is
+**open**: a player whose tier and world-grid grant carry `update_voxel_data` may
+build there.
+
+An org admin (`manage_apps` on the app) can close it with `updateApp`:
+
+```graphql
+mutation {
+  updateApp(appId: "1", input: { wildernessWritesOpen: false }) {
+    wildernessWritesOpen
+  }
+}
+```
+
+While it is closed, the Game API refuses **every** voxel and chunk write to a
+wilderness chunk, whoever makes it: `updateVoxel`, `sendVoxelUpdate`,
+`updateChunk` (org admins included) and your server code's
+`ctx.world().set_voxels`. Each is answered `FORBIDDEN` ("This app has closed its
+wilderness…"). A chunk that any other grid covers (a claimed plot, a zone you
+created) is unaffected, and its grants decide as before. `App.wildernessWritesOpen`
+reports the setting; each Game API instance applies a change within 15 seconds.
+
+## Writing whole chunks
+
+`updateChunk` replaces a chunk's dense voxel grid. It takes an app token for the
+app and **either** `manage_apps` on the app (your studio tooling and seed scripts,
+like `updateChunkState` and `updateChunkLods`) **or** the same permission a single
+voxel edit needs in that chunk: app access, `update_voxel_data` from the tier, and
+`update_voxel_data` on a grid covering the chunk. CrowdyJS's `ChunkStore`
+write-back runs as the player, so a player's client persists only chunks that
+player may build in.
+
 ## Effective permissions
 
 A player's effective permissions on a grid are:
