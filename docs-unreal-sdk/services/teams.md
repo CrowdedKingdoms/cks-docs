@@ -45,10 +45,21 @@ when the request never reaches the server.
 
 ## Reading the cache first
 
-`GetCachedMyTeams` and its neighbors read a local snapshot of the player's own memberships, refreshed only
-by `GetMyTeams`; a join, leave or role change does not touch it, so call `GetMyTeams` again after a
-mutation you want the cache to reflect. Read it for the value to show now; treat a query's result and
-`OnMyTeamsCacheChanged` as the update that follows.
+`GetCachedMyTeams` and its neighbors read a local snapshot of the player's own memberships. The SDK keeps
+it current for you:
+
+- Signing in (log in, register, magic link, social, or a restored session) clears it and fills it again
+  with a `GetMyTeams`.
+- Signing out clears it: `HasCachedTeams()` is false, and `OnMyTeamsCacheChanged` fires with an empty
+  list if the cache held anything.
+- A successful `CreateTeam`, `JoinTeam`, `LeaveTeam`, `DeleteTeam`, `UpdateTeam`, `RemoveTeamMember`,
+  `SetTeamMemberRoles`, `UpdateTeamRole` or `DeleteTeamRole` refreshes it. `RequestToJoin` does not,
+  since the membership is still pending.
+- An answer to a `GetMyTeams` sent before a sign-out never fills the cache, and an older answer never
+  replaces a newer one.
+
+Read it for the value to show now; treat a query's result and `OnMyTeamsCacheChanged` as the update that
+follows. In C++, `ClearMyTeamsCache()` empties it by hand; it is not exposed to Blueprint.
 
 | Call | Returns |
 |---|---|
@@ -61,8 +72,8 @@ mutation you want the cache to reflect. Read it for the value to show now; treat
 | `HasPermissionInTeam(TeamId, Permission)` | Whether the cached membership grants an `ECrowdyTeamPermission`. |
 
 `OnMyTeamsCacheChanged` (`FOnMyTeamsCacheChanged`, `Memberships`) is a multicast, Blueprint-assignable
-delegate that fires after `GetMyTeams` answers, and only then. Bind it once and re-read the cache; do not
-poll.
+delegate that fires whenever the cache changes: after a `GetMyTeams` answers, after a mutation above
+refreshes it, and when a sign-out empties it. Bind it once and re-read the cache; do not poll.
 
 ## Queries
 
@@ -245,7 +256,7 @@ and calls **Join Team**; its `On Success` pin gets the `Torch` and sets its visi
 
 Reading the cache on spawn: **Event BeginPlay** gets the `Torch`, gets the **Crowdy Teams** subsystem and
 `VillageTeamId`, and feeds them into **Is Player in Team** (pure), whose return value drives the torch's
-visibility directly, no network call. The cache is empty until **Get My Teams** has answered once, so on
+visibility directly, no network call. The cache is empty until the sign-in refresh or a **Get My Teams** has answered, so on
 its own this graph hides the torch on spawn; the sync step below is what shows it. A **Has Cached Teams**
 (pure) check into **Branch** guards the read, so the visibility set only runs once the cache has answered.
 
@@ -263,8 +274,9 @@ same one.
 
 - The cache holds only the player's own memberships. `GetTeams` lists every team in the app; the cache
   never does.
-- Only `GetMyTeams` writes the cache and fires `OnMyTeamsCacheChanged`. After a join, leave or role change,
-  call `GetMyTeams` again or `IsPlayerInTeam` keeps answering from before the mutation.
+- A successful join, leave, create, delete or role change refreshes the cache, but a pending
+  `RequestToJoin` does not, since the player is not a member yet. Between a change and its refresh,
+  `IsPlayerInTeam` still answers from before it.
 - `GetPendingJoinRequests` filters the full member list on the client; it is not a dedicated server call.
 - `SetTeamMemberRoles` replaces the member's role set. Pass the full set every time.
 - `FCrowdyTeamError::Code` is pattern-matched from the server's message text, not a structured server

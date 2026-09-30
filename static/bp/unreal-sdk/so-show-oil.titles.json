@@ -1,0 +1,44 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event BeginPlay",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_ServerVariableChanged_0",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_ServerVariableChanged",
+		"title": "On Oil Changed (CSO_VillageBeacon)",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_ServerVariableChanged_1",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_ServerVariableChanged",
+		"title": "On bLit Changed (CSO_VillageBeacon)",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Print String",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get Light",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_1",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Set Visibility\nTarget is Scene Component",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_2",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "•",
+		"title_drawn": true
+	}
+]
