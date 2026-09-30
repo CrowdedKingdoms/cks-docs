@@ -192,7 +192,13 @@ The client-side source of truth for chunks and voxels:
   pattern. The write-back is `updateChunk` as the player, so it persists only
   chunks the player may build in (see
   [Writing whole chunks](/game-api/grids-and-permissions#writing-whole-chunks));
-  a refused chunk stays local and is retried on the next tick.
+  a refusal the server will not change (`FORBIDDEN`, `BAD_REQUEST`,
+  `retryable: false`, HTTP 400/403/404/413/422) is sent once and dropped, and
+  any other failure is retried after 0.7, 1.4, 2.8 and 5.6 s and then dropped.
+  A dropped chunk keeps its local voxels, is no longer dirty, holds up no other
+  chunk, and is reported to `onWriteBackFailed` with its `reason` (`refused` or
+  `exhausted`), `attempts` and the `error`; `flush()` returns the failures
+  (CrowdyJS 18.0.4).
 - Typed reads everywhere: `voxelTypeAt`, `voxelStateAt`, `get(coord)` with
   `voxels` (4096-byte dense grid), `voxelStates: Map<index, T>`, typed
   `chunkState`, `loadState`, `revision`.
