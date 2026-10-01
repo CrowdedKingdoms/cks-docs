@@ -33,6 +33,21 @@ ck-exec, whose CLI is `ckx`; see
 
 :::
 
+## 2026-10-01 (CrowdyPy 0.4.0, the Python SDK)
+
+**CrowdyPy is the new official Python SDK.** It covers CrowdyJS's whole surface with
+Python names, and its realtime path is CrowdyCPP's native UDP replication client,
+compiled into the wheel. See the [CrowdyPy docs](/crowdypy/intro).
+
+- One `cp312-abi3` wheel per platform for CPython 3.12 and later, plus free-threaded
+  3.14. Both an asyncio client (`crowdypy.AsyncCrowdyClient`) and a blocking one
+  (`crowdypy.sync.CrowdyClient`) are included.
+- Native UDP replication with batched sends and zero-copy notification batches, plus
+  the World Stores, the Game Kit, the ck-exec gateway, GraphQL subscriptions, the
+  headless Crowdy Studio and the player-host observation contract.
+- The [HMAC guide](/replication-api/hmac#python--sign-clientserver-and-verify-serverclient)
+  gains a Python example.
+
 ## 2026-09-23 (CPU price)
 
 **The CPU rate is $0.20 per CPU-hour, one core.** It was $3.60. A CPU-hour is one core busy for one hour, not one machine. The same price covers GraphQL resolvers, automations, compute modules, and player-authored compute. The monthly allowance is unchanged: **20 CPU-hours** pooled per app. The price in effect is the rate card in your account and on the [pricing page](https://crowdedkingdoms.com/pricing.html). A price applies from the next settlement period for usage that has already been billed this month.
