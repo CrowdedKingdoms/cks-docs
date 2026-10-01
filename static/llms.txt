@@ -67,6 +67,9 @@
 - [CrowdyCPP (portable C++ SDK with native UDP replication) overview](https://docs.crowdedkingdoms.com/crowdycpp/intro)
 - [CrowdyCPP best practices](https://docs.crowdedkingdoms.com/crowdycpp/best-practices)
 - CrowdyCPP guides: [Installation](https://docs.crowdedkingdoms.com/crowdycpp/installation) · [Quick start](https://docs.crowdedkingdoms.com/crowdycpp/quick-start) · [Replication client (native UDP)](https://docs.crowdedkingdoms.com/crowdycpp/replication-client) · [World session (SDK-managed game state)](https://docs.crowdedkingdoms.com/crowdycpp/world-session) · [Engine integration (Unreal, Godot, Unity)](https://docs.crowdedkingdoms.com/crowdycpp/engine-integration) · [Compatibility & parity](https://docs.crowdedkingdoms.com/crowdycpp/compatibility)
+- [CrowdyPy (Python SDK over the CrowdyCPP native core) overview](https://docs.crowdedkingdoms.com/crowdypy/intro)
+- [CrowdyPy best practices](https://docs.crowdedkingdoms.com/crowdypy/best-practices)
+- CrowdyPy guides: [Installation](https://docs.crowdedkingdoms.com/crowdypy/installation) · [Quick start](https://docs.crowdedkingdoms.com/crowdypy/quick-start) · [Replication (native UDP)](https://docs.crowdedkingdoms.com/crowdypy/replication) · [World Stores](https://docs.crowdedkingdoms.com/crowdypy/world-stores) · [Studio and player host](https://docs.crowdedkingdoms.com/crowdypy/studio) · [Compatibility & parity](https://docs.crowdedkingdoms.com/crowdypy/compatibility)
 - [Build a game (tutorial)](https://docs.crowdedkingdoms.com/build-a-game/intro)
 
 ## Unreal SDK
