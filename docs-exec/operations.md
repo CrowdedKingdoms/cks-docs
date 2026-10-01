@@ -154,13 +154,28 @@ calls show up as `busy` in the counters above; refused subscriptions do not.
 
 Since ck-exec 0.10.0 the host also holds each connection to a few more limits:
 
-- `ping` has its own allowance, 60 per 10 seconds; a ping over it gets no answer.
+- `ping` has its own allowance, 60 per 10 seconds; a ping over it gets no answer. A WebSocket
+  ping (the protocol's control frame, which the host answers itself) over that allowance closes
+  the connection instead.
 - A connection holds at most 256 subscriptions at once; the next is refused `Denied`.
 - A message larger than 4 MiB and 64 KiB (a payload as large as an instance may send, with its
-  address and method) closes the connection.
+  address and method) closes the connection, and so does a text message: the protocol is binary.
 - Before a token is checked, a host takes at most 60 connections per 10 seconds from one address
   (an IPv4 address, or an IPv6 /64); more are closed as they arrive. A load test that opens more
   connections than that from one machine needs hosts configured for it.
+
+Since ck-exec 0.11 two more limits keep one player from filling what everyone shares:
+
+- **Sessions.** A player (or a developer connection, under its user) holds at most 16
+  connections to one app through a host at once. The 17th is answered `HTTP 429` with the reason
+  before any socket opens, and so is a connection to a host that is full. A browser cannot read
+  that answer and reports `Unavailable`; CrowdyJS in Node (with the `ws` package) and CrowdyCPP
+  report `Unavailable` with the reason. Close the connections a game no longer uses.
+- **Instances.** At most 1,024 instances of one app run at once, mods included. Past that,
+  nothing new of the app is placed until some stop, whoever asks: a call to a hub key that is
+  not running is answered `Unavailable`, and `execConnect` with a `nodeType` and `key` that would
+  place one fails. An idle instance stops after its `evict_after_ms` (5 minutes by default), so
+  keep the keys a game creates bounded, for example one hub per match rather than per action.
 
 Neither SDK retries a `Busy` call for you. CrowdyJS marks this refusal on the error
 (`CrowdyExecError.rateLimited`, with the wait in `retryAfterMs`), and CrowdyCPP on the reply

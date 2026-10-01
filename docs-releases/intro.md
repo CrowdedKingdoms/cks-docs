@@ -33,6 +33,30 @@ ck-exec, whose CLI is `ckx`; see
 
 :::
 
+## 2026-10-01 (open grids in the SDKs, CrowdyJS 18.1.0, CrowdyCPP 0.55.0; ck-exec limits)
+
+The SDK side of the ck-exec preview's security review. On the dev environment.
+
+- **Open grids in the SDKs.** `client.gameApps.setOpenPermissions` / `openPermissions`
+  (CrowdyJS) and `gameApps().setOpenPermissions` / `openPermissions` (CrowdyCPP) wrap
+  `setGridOpenPermissions` / `gridOpenPermissions`: the keys a grid grants every player with
+  access. A zone everyone may build in has to grant `update_voxel_data` itself now, because the
+  most specific grid over a chunk decides who builds there. See
+  [open grids](/game-api/grids-and-permissions#open-grids).
+- **Where the connect token goes.** `exec.connect` dials a ck-exec gateway only when it is on the
+  platform's own domain, over `wss:` whenever the game API is `https:`; any other gateway is
+  refused without being dialed. See
+  [connect from a game](/exec/connect-from-a-game#where-the-connect-token-goes).
+- **A refused connect token is `Denied` again** in Node (CrowdyJS with the `ws` package) and in
+  CrowdyCPP, with the gateway's reason where the transport can read it. A browser cannot read
+  the refusal and still reports `Unavailable`. See
+  [when the gateway refuses](/exec/connect-from-a-game#when-the-gateway-refuses).
+- **ck-exec's limits are written down**: 16 connections per player and app through a host
+  (`HTTP 429` past them), what closes a connection (a text message, too many WebSocket pings), a
+  ceiling of 1,024 running instances per app, and what one handler call may send, return and
+  save. See [call limits](/exec/operations#call-limits) and
+  [what one call may send and return](/exec/intro#what-one-call-may-send-and-return).
+
 ## 2026-10-01 (CrowdyPy 0.4.0, the Python SDK)
 
 **CrowdyPy is the new official Python SDK.** It covers CrowdyJS's whole surface with
