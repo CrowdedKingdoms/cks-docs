@@ -102,6 +102,36 @@ exec->close();
 - The WebSocket is the transport you give the client. The bundled one needs libcurl 8.13 or
   later, built with WebSocket support; an engine can inject its own `IWebSocketTransport`.
 
+## CrowdyPy
+
+```python
+from crowdypy.domains.exec import CrowdyExecError
+
+# `game` holds the player's app-scoped token for `app_id`.
+exec_conn = await game.exec.connect(app_id, node_type="arena", key="m1")
+
+try:
+    reply = await exec_conn.call("arena", "m1", "hit", {"weapon": 2})
+    show_hp(reply["hp"])
+except CrowdyExecError as error:
+    if error.retryable:
+        ...  # Busy, Moved, Unavailable or RateLimited: try again with backoff.
+    else:
+        log_error(error.status, error.message)
+
+unsubscribe = await exec_conn.subscribe("arena", "m1", "hp", lambda push: render_hp(push.value))
+
+await unsubscribe()
+await exec_conn.close()
+```
+
+- `connect` returns once the connection is open. It redials with a fresh token whenever it
+  reconnects, and `on_reconnect` listeners get the new host.
+- Arguments and replies are MessagePack; `call` returns the decoded reply, and `push.value` is
+  the decoded push.
+- `crowdypy.sync.CrowdyClient` has the same `exec.connect` without `await`; its connection
+  reads on a thread of its own.
+
 ## When the host goes away
 
 A host can restart, and an instance can move to another host. Both SDKs recover the same way,
@@ -116,15 +146,16 @@ unless reconnecting is turned off.
 
 ## Where the connect token goes
 
-The connect token rides in the gateway URL that `execConnect` names, so both SDKs check that URL
-before they dial it (CrowdyJS 18.1.0, CrowdyCPP 0.55.0). They dial a gateway only when it is a
+The connect token rides in the gateway URL that `execConnect` names, so the SDKs check that URL
+before they dial it (CrowdyJS 18.1.0, CrowdyCPP 0.55.0, CrowdyPy 0.5.0). They dial a gateway only when it is a
 `ws:` or `wss:` URL with no credentials in it, `wss:` whenever the game API is `https:`, and on
 the platform's own domain: the game API's, or the one the SDK release was published for. A game
 API on `localhost` may also name a gateway on `localhost`, as a local development cluster does.
 Any other gateway is never dialed: the attempt fails `Unavailable` ("refusing the gateway …"),
 and the next reconnect asks `execConnect` again. `execGatewayRefusal(gameApiUrl, gatewayUrl)`
-(CrowdyJS) and `crowdy::domains::execGatewayRefusal` (CrowdyCPP) say why, for a tool that dials an
-endpoint itself; `ExecConnection.open(gatewayUrl, token)` dials the URL it is given.
+(CrowdyJS), `crowdy::domains::execGatewayRefusal` (CrowdyCPP) and
+`crowdypy.domains.exec.exec_gateway_refusal` (CrowdyPy) say why, for a tool that dials an endpoint
+itself; `ExecConnection.open(gatewayUrl, token)` dials the URL it is given.
 
 ## When the gateway refuses
 
@@ -132,15 +163,15 @@ A token is checked only when the socket opens, and a connection that is already 
 after its token expires. The connection's reconnect asks `execConnect` for a fresh token each
 time.
 
-| The gateway answers | Why | CrowdyJS in Node, with the `ws` package | CrowdyJS in a browser | CrowdyCPP |
-|---|---|---|---|---|
-| `HTTP 401` with the reason, no socket | the connect token is refused | `Denied`, with the reason | `Unavailable` | `Denied` (with the reason when the transport can read it; the bundled libcurl transport reports the status only) |
-| `HTTP 429` with the reason, no socket | the player already holds 16 sessions to the app through this gateway, or the gateway is full | `Unavailable`, with the reason | `Unavailable` | `Unavailable` |
-| socket opened, then closed `4401` | a host before ck-exec 0.10.0 refused the token | `Denied` | `Denied` | `Denied` |
+| The gateway answers | Why | CrowdyJS in Node, with the `ws` package | CrowdyJS in a browser | CrowdyCPP | CrowdyPy |
+|---|---|---|---|---|---|
+| `HTTP 401` with the reason, no socket | the connect token is refused | `Denied`, with the reason | `Unavailable` | `Denied` (with the reason when the transport can read it; the bundled libcurl transport reports the status only) | `Denied`, with the reason |
+| `HTTP 429` with the reason, no socket | the player already holds 16 sessions to the app through this gateway, or the gateway is full | `Unavailable`, with the reason | `Unavailable` | `Unavailable` | `Unavailable`, with the reason |
+| socket opened, then closed `4401` | a host before ck-exec 0.10.0 refused the token | `Denied` | `Denied` | `Denied` | `Denied` |
 
 A browser cannot read the status of a WebSocket upgrade it was refused, so there a refused
-token looks like any failed connection. Before CrowdyJS 18.1.0 and CrowdyCPP 0.55.0 the SDKs
-reported a `401` as `Unavailable` everywhere. In CrowdyCPP the first connection's `connect`
+token looks like any failed connection. Before CrowdyJS 18.1.0, CrowdyCPP 0.55.0 and CrowdyPy
+0.5.0 the SDKs reported a `401` as `Unavailable` everywhere. In CrowdyCPP the first connection's `connect`
 callback gets `Errc::Rejected` for `Denied`, and `ExecConnection::lastFailure()` holds the status
 and reason of the last attempt that failed.
 

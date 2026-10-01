@@ -57,6 +57,17 @@ The SDK side of the ck-exec preview's security review. On the dev environment.
   save. See [call limits](/exec/operations#call-limits) and
   [what one call may send and return](/exec/intro#what-one-call-may-send-and-return).
 
+## 2026-10-01 (CrowdyPy 0.5.0)
+
+CrowdyPy catches up with CrowdyJS 18.1.0 and CrowdyCPP 0.55.0.
+
+- **`client.exec.connect` sends the connect token only to a gateway on the platform's own
+  domain**, as CrowdyJS and CrowdyCPP do. See
+  [Where the connect token goes](/exec/connect-from-a-game#where-the-connect-token-goes). A
+  gateway that refuses the token is reported as `Denied`, with its reason.
+- **Open grids:** `game_apps.open_permissions` and `set_open_permissions`.
+- CrowdyPy is on PyPI: `pip install crowdypy`.
+
 ## 2026-10-01 (CrowdyPy 0.4.0, the Python SDK)
 
 **CrowdyPy is the new official Python SDK.** It covers CrowdyJS's whole surface with
