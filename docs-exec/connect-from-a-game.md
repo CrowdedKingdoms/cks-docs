@@ -114,11 +114,35 @@ unless reconnecting is turned off.
 - Pushes published while the connection was down are not replayed, because topics are not a
   log. Read the state you display again in `onReconnect`.
 
-A token is checked only when the socket opens: a refused one fails the connection (`HTTP 401`
-before the WebSocket opens, which the SDKs report as `Unavailable`; hosts before ck-exec 0.10.0
-closed the socket with code `4401` instead, reported as `Denied`). The connection's reconnect asks
-`execConnect` for a fresh token each time. A connection that is already open stays open after its
-token expires.
+## Where the connect token goes
+
+The connect token rides in the gateway URL that `execConnect` names, so both SDKs check that URL
+before they dial it (CrowdyJS 18.1.0, CrowdyCPP 0.55.0). They dial a gateway only when it is a
+`ws:` or `wss:` URL with no credentials in it, `wss:` whenever the game API is `https:`, and on
+the platform's own domain: the game API's, or the one the SDK release was published for. A game
+API on `localhost` may also name a gateway on `localhost`, as a local development cluster does.
+Any other gateway is never dialed: the attempt fails `Unavailable` ("refusing the gateway …"),
+and the next reconnect asks `execConnect` again. `execGatewayRefusal(gameApiUrl, gatewayUrl)`
+(CrowdyJS) and `crowdy::domains::execGatewayRefusal` (CrowdyCPP) say why, for a tool that dials an
+endpoint itself; `ExecConnection.open(gatewayUrl, token)` dials the URL it is given.
+
+## When the gateway refuses
+
+A token is checked only when the socket opens, and a connection that is already open stays open
+after its token expires. The connection's reconnect asks `execConnect` for a fresh token each
+time.
+
+| The gateway answers | Why | CrowdyJS in Node, with the `ws` package | CrowdyJS in a browser | CrowdyCPP |
+|---|---|---|---|---|
+| `HTTP 401` with the reason, no socket | the connect token is refused | `Denied`, with the reason | `Unavailable` | `Denied` (with the reason when the transport can read it; the bundled libcurl transport reports the status only) |
+| `HTTP 429` with the reason, no socket | the player already holds 16 sessions to the app through this gateway, or the gateway is full | `Unavailable`, with the reason | `Unavailable` | `Unavailable` |
+| socket opened, then closed `4401` | a host before ck-exec 0.10.0 refused the token | `Denied` | `Denied` | `Denied` |
+
+A browser cannot read the status of a WebSocket upgrade it was refused, so there a refused
+token looks like any failed connection. Before CrowdyJS 18.1.0 and CrowdyCPP 0.55.0 the SDKs
+reported a `401` as `Unavailable` everywhere. In CrowdyCPP the first connection's `connect`
+callback gets `Errc::Rejected` for `Denied`, and `ExecConnection::lastFailure()` holds the status
+and reason of the last attempt that failed.
 
 ## Deploying from a script
 

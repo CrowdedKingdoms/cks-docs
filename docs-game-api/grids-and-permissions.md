@@ -258,7 +258,10 @@ Every player with active access to the app then holds those keys on the grid,
 within its limits, and so does every player who gains access later. The call
 replaces the grid's open keys; pass an empty array to close it again.
 `gridOpenPermissions(appId, gridId)` reads them. The four code keys cannot be
-opened, the world grid is open already, and an app has at most 32 open grids.
+opened, the world grid is open already, and an app has at most 32 open grids;
+each is refused `BAD_REQUEST`. In the SDKs: `client.gameApps.setOpenPermissions` /
+`openPermissions` in [CrowdyJS](/crowdyjs/grids#open-a-grid-to-every-player) (18.1.0),
+`gameApps().setOpenPermissions` / `openPermissions` in CrowdyCPP (0.55.0).
 
 ### Claims are made in the wilderness
 

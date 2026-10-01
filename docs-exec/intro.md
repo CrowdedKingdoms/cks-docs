@@ -110,6 +110,24 @@ it: see [builds and starter packs](builds). Players run their own code on grids 
 same way, as [mods](mods), and in their visitors' browsers as a mod's [CLIENT
 half](client-halves).
 
+### What one call may send and return
+
+Each call into a handler gets a fuel budget and a deadline from the manifest, and these platform
+bounds besides:
+
+- **What it sends.** One call may send at most 16,384 messages and 32 MiB of payload in all,
+  counting `ctx.call`, sends, `ctx.publish`, realtime events, platform data requests and
+  subscribing or unsubscribing. Past that, or while the app's instances on the host have 128 MiB
+  of output the platform has not taken yet, a call, a platform data request or a subscription is
+  answered `Busy`, a send or an event returns `Busy`, and a publish is dropped.
+- **What it returns.** A reply, a result or an error, is at most 4 MiB; a larger one is answered
+  `Internal` instead.
+- **What it saves.** A snapshot is at most 8 MiB. A larger one fails to save and the last one
+  stands, so the hub restarts from it after a crash.
+- **What `spawn`, `load` and `persist` say when they fail.** Their error is cut to 4 KiB.
+
+These hold for [mods](mods) too, within a mod's own limits.
+
 ## Deploying
 
 `execDeploy` takes the manifest as JSON and each module the app has not uploaded before (base64
@@ -147,9 +165,11 @@ mutation {
 Passing `nodeType` and `key` puts the player on the host that runs that instance, starting it if
 needed. Then open a WebSocket to `{gatewayUrl}/v1/connect?token={token}`. The host checks the
 token before it accepts the WebSocket: a refused token is answered `HTTP 401`, with the reason as
-the body, and no socket opens. A browser reports only a failed connection, so the SDKs report it
-as `Unavailable`; ask `execConnect` for a fresh token and connect again. (Hosts before ck-exec
-0.10.0 opened the socket and then closed it with code `4401`, which the SDKs report as `Denied`.)
+the body, and no socket opens; ask `execConnect` for a fresh token and connect again. A player
+who already holds 16 sessions to the app through that host is answered `HTTP 429` the same way.
+A browser sees only a failed connection; what each SDK reports is in
+[connect from a game](connect-from-a-game#when-the-gateway-refuses). (Hosts before ck-exec 0.10.0
+opened the socket and then closed it with code `4401`, which the SDKs report as `Denied`.)
 
 ### The wire protocol
 
