@@ -58,6 +58,7 @@ A deploy is a manifest plus the modules it names:
 | `persist_every_ms` | Hubs: snapshot interval, 5,000 to 60,000 (default 30,000). |
 | `evict_after_ms` | How long an unused instance keeps running (default 5 minutes, at most 30). |
 | `replicas`, `concurrency` | Spokes: replicas kept running, and calls each serves at once (default 16). |
+| `max_replicas` | Spokes: scale between `replicas` and this many. The platform adds replicas once calls have waited at them for 2 seconds, and takes one away once they have been nearly idle for 30 seconds; calls go to the replica where the fewest wait. Without it, always `replicas`. |
 | `memory_mb`, `fuel_per_call`, `mailbox`, `deadline_ms` | Per-instance limits, within platform bounds (512 MB, 10 s per call). |
 | `seed_b64` | Bytes every new instance of the type is spawned with; the root hub's seed is its app's starting state. |
 | `scopes` | The platform data the type's instances may use: `players.read`, `players.write`, `world.read`, `world.write`, `grids.read`, `permissions.write`. None by default; see [world and platform data](world-and-platform-data). |
