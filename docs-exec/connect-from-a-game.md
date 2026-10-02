@@ -7,12 +7,12 @@ title: Connect from a game
 
 :::caution Dev-tier preview
 Available on the **dev** environment only; see the [overview](intro). The SDK support is in
-CrowdyJS 18 (`npm install @crowdedkingdoms/crowdyjs@dev`) and CrowdyCPP's `dev/v*` releases. Use
-CrowdyJS 18.1.0 and CrowdyCPP 0.55.0 or later: they check a gateway before they send it a connect
-token ([below](#where-the-connect-token-goes)).
+CrowdyJS 18 (`npm install @crowdedkingdoms/crowdyjs@dev`), CrowdyCPP's `dev/v*` releases and
+CrowdyPy. Use CrowdyJS 18.1.0, CrowdyCPP 0.55.0 and CrowdyPy 0.5.0 or later: they check a gateway
+before they send it a connect token ([below](#where-the-connect-token-goes)).
 :::
 
-Both SDKs wrap the same steps. First they ask the game API for a host (`execConnect`). Then
+The SDKs wrap the same steps. First they ask the game API for a host (`execConnect`). Then
 they open a WebSocket to that host's gateway, speak the [wire protocol](intro#the-wire-protocol),
 and encode payloads as MessagePack. The player's session must be the **app-scoped token** of the
 app you connect to, which is what hosted sign-in gives a game. See
