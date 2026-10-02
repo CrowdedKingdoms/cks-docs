@@ -472,11 +472,14 @@ await client.udp.sendSingleActorMessage({
 The realtime server always enforces permissions. A player can only act in your
 world if they have **app access** (an entitlement / access tier) and the target
 chunk is inside a **grid** where they hold the right key (`access`,
-`update_voxel_data`, `use_voice_chat`). New apps are **open by default** — a
-default tier and a world-spanning grant are created automatically, and giving a
-player app access grants them everything everywhere — so basic play and building
-work with no extra setup. Owners add restrictions (safe zones, plot ownership) via
-the Game API.
+`update_voxel_data`, `use_voice_chat`). Building is decided by the **most
+specific** grid covering the chunk: a plot or safe zone decides its own chunks, the
+world grid decides only the wilderness, and the app can close the wilderness to
+building ([which grid decides a voxel write](/game-api/grids-and-permissions#which-grid-decides-a-voxel-write)).
+New apps are **open by default** — a default tier and a world-spanning grant are
+created automatically, and giving a player app access grants them every key on
+the world grid — so basic play and building work with no extra setup. Owners add
+restrictions (safe zones, plot ownership) via the Game API.
 
 When a player lacks permission, the server replies with a `GenericErrorResponse`
 (an `UNAUTHORIZED` error code) rather than delivering the action; your

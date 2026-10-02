@@ -1,0 +1,48 @@
+---
+id: grid-open-permissions
+title: GridOpenPermissions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The permission keys a grid grants every player with active access to the app (the grid&#x005F;open&#x005F;permissions input table).
+
+
+```graphql
+type GridOpenPermissions {
+  appId: BigInt!
+  gridId: BigInt!
+  permissionKeys: [String!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GridOpenPermissions.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridOpenPermissions.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridOpenPermissions.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-keys\} 
+The keys every player with active access holds on this grid (its limits still cap them). Empty means the grid is not open.
+
+
+
+
+### Returned By
+
+[`gridOpenPermissions`](/reference/graphql/operations/queries/grid-open-permissions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setGridOpenPermissions`](/reference/graphql/operations/mutations/set-grid-open-permissions.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

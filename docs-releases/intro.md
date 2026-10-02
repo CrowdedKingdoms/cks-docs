@@ -12,11 +12,13 @@ Game API, Replication API) and SDKs. Newest first.
 The intent is that a breaking change ships with a deprecation window — the field keeps
 working and is marked `@deprecated` in the schema (visible in the
 [reference](/management-api/reference/graphql-overview) and the downloadable SDL) until
-a stated removal date. **Two removals did not get one**, and both are called out in
-their own entries rather than left to be discovered: the customer-provisioned
-environment surface on [2026-07-27](#2026-07-27) and the dev sign-in bypass on
-[2026-08-20](#2026-08-20). Treat **the published SDL as the authority** on what exists
-today; this page is the record of how it got there.
+a stated removal date. **Three removals did not get one**, and each is called out in
+its own entry rather than left to be discovered: the customer-provisioned
+environment surface on [2026-07-27](#2026-07-27), the dev sign-in bypass on
+[2026-08-20](#2026-08-20), and the game API's legacy engines on
+[2026-09-28](#2026-09-28-dev-the-legacy-engines-removed), so far on the dev environment
+only. Treat **the published SDL as the authority** on what exists today; this page is the
+record of how it got there.
 
 Older entries describe the game API's legacy engines (game models, automations, compute
 modules and player code), which ck-exec replaced. Their links lead to the matching section
@@ -28,7 +30,8 @@ what you use now.
 Several entries below announce a `crowdy-compute` CLI. It was an internal
 convenience and **was never published**. The entries are left as written because
 this page is a historical record. The compute modules it deployed were replaced by
-ck-exec, whose CLI is `ckx`; see
+ck-exec, which builds and deploys through the game API (`execBuild`, `execDeploy`); its
+own CLI is not published either. See
 [from the legacy engines](/exec/from-the-legacy-engines#build-and-deploy).
 
 :::
@@ -82,6 +85,83 @@ compiled into the wheel. See the [CrowdyPy docs](/crowdypy/intro).
   headless Crowdy Studio and the player-host observation contract.
 - The [HMAC guide](/replication-api/hmac#python--sign-clientserver-and-verify-serverclient)
   gains a Python example.
+
+## 2026-09-29 to 2026-09-30 (dev: who may build where, and the security review's fixes)
+
+The ck-exec preview's security review, on the dev environment. CrowdyJS 18.0.2 to 18.0.4 and
+CrowdyCPP 0.52.0 and 0.53.0 carry the SDK side.
+
+- **The most specific grid decides a voxel write.** Every app has a world grid that grants
+  every player, so a write used to pass wherever any grid covering the chunk granted it. Now
+  the smallest grid covering the chunk decides: the player needs `update_voxel_data` on that
+  grid, the world grid decides only the wilderness, and a chunk no grid covers is refused.
+  `updateVoxel`, `updateChunk`, `sendVoxelUpdate`, a mod's `world.set_voxels` and, from
+  replication server v0.34.0, a client's direct UDP voxel update all apply it. A zone everyone
+  should build in grants everyone itself (`setGridOpenPermissions`, at most 32 open grids per
+  app), and `claimGridChunk` claims only the wilderness (`GRID_NOT_CLAIMABLE` inside another
+  grid). See [which grid decides a voxel write](/game-api/grids-and-permissions#which-grid-decides-a-voxel-write).
+- **The wilderness setting.** `App.wildernessWritesOpen` (default true; `updateApp` sets it)
+  closes the wilderness to every voxel write when false. `updateChunk` now needs `manage_apps`
+  or the voxel permission for that chunk. See [wilderness](/game-api/grids-and-permissions#wilderness).
+- **Voxel writes are range-checked.** A voxel outside 0–15 on any axis of its chunk, or a type
+  outside 0–255, is refused on every write path: `updateVoxel`, `sendVoxelUpdate`,
+  `updateChunk`'s `voxelStates` and `world.set_voxels`.
+- **A player can take back an agreement to a CLIENT half**: `execRevokeClientModConsent` and
+  `execRevokeAuthorTrust` (CrowdyJS 18.0.3 `revokeClientModConsent`, `revokeAuthorTrust`,
+  `ExecClientHalves.revoke` and `forgetAuthor`; CrowdyCPP 0.52.0). See
+  [serving it to visitors](/exec/client-halves#serving-it-to-visitors).
+- **CLIENT halves hold to the page's rules** (CrowdyJS 18.0.2): a spatial or channel send goes
+  out as an actor uuid the page derives for the grid, never one the CLIENT half names, and the
+  page asks the player before the in-browser agent tests a draft.
+- **A refused chunk write-back is dropped** by `ChunkStore` instead of being retried (CrowdyJS
+  18.0.4, CrowdyCPP 0.53.0).
+- **ck-exec 0.10's gateway** checks the connect token before the WebSocket opens (a refusal is
+  `HTTP 401`, no longer a `4401` close) and limits pings, subscriptions, message size and new
+  connections from one address. See [call limits](/exec/operations#call-limits).
+
+## 2026-09-28 (dev: the legacy engines removed)
+
+**Breaking, with no deprecation window, and on the dev environment only so far.** The game API
+removed its four legacy developer-code engines: game models, automations, compute modules, and
+player code with its browser client modules and player models. That took 129 root fields, 140
+types and 11 error codes out of the schema. ck-exec replaces them, and
+[from the legacy engines](/exec/from-the-legacy-engines) maps every removed call to what
+replaces it; the engines' deleted pages redirect to their sections there. Test and production
+keep the engines until they move to ck-exec.
+
+- **CrowdyJS 18.0** removes their SDK surface (`client.gameModel`, `client.compute`,
+  `client.playerCompute`, `client.playerModel`, the Game Kit's engines and `client.operator`),
+  and Crowdy Studio runs on ck-exec only. 18.0.1 also drops what only platform staff can call.
+  See CrowdyJS's [migration notes](https://github.com/CrowdedKingdoms/CrowdyJS/blob/dev/MIGRATION.md).
+- **CrowdyCPP 0.50.0** removes the same, and 0.51.0 wraps only what players, developers and org
+  admins can call.
+
+## 2026-09-25 to 2026-09-27 (dev: the ck-exec preview)
+
+**ck-exec, the runtime for your game's server code, is in preview on the dev environment.** You
+write hubs (state, one instance per key) and spokes (stateless, scaled out) in Rust, build them
+to WebAssembly, and deploy them with the app; players call them over a WebSocket to an execution
+host. See the [ck-exec overview](/exec/intro). Each line below arrived in the CrowdyJS and
+CrowdyCPP versions it names, on their dev releases.
+
+- **Connecting players** (`execConnect`; CrowdyJS 17.9.0, CrowdyCPP 0.44.0):
+  [connect from a game](/exec/connect-from-a-game).
+- **Operating your code** (`execLogs`, `execInstances`, `execVersions`, `execActivateVersion`,
+  `execSetEnabled`, `execConnectAsDeveloper`; CrowdyJS 17.10.0, CrowdyCPP 0.45.0):
+  [operations](/exec/operations).
+- **Builds on the platform and starter packs** (`execBuild`, `execBuildStatus`, `execStarters`;
+  CrowdyJS 17.11.0, CrowdyCPP 0.46.0): [builds and starter packs](/exec/builds).
+- **Mods**, players' code on grids they own (`execModBuild`, `execModDeploy` and the rest;
+  CrowdyJS 17.12.0, CrowdyCPP 0.47.0): [mods](/exec/mods). Since 2026-09-27 a mod bills its
+  owner's player wallet once the owner's monthly trial (250,000 compute units in each app) is
+  used, and an empty wallet or a spend cap switches off only that owner's mods
+  (`PLAYER_WALLET_EMPTY`, `PLAYER_SPEND_CAP`): [who pays for a mod](/exec/mods#who-pays-for-a-mod).
+- **Following one call** and counters per endpoint (`execLogs(flow:)`, `execEndpointStats`;
+  CrowdyJS 17.13.0, CrowdyCPP 0.48.0). From CrowdyJS 17.13.0 Crowdy Studio deploys a SERVER
+  target as a mod.
+- **CLIENT halves**, a mod's browser code (`execModClientBuild`, `execModClientDeploy`,
+  `execGridClientMods`, `execConsentClientMod`, `execTrustAuthor`, `execModClientArtifact`;
+  CrowdyJS 17.14.0 with `ExecClientHalves`, CrowdyCPP 0.49.0): [CLIENT halves](/exec/client-halves).
 
 ## 2026-09-23 (CPU price)
 

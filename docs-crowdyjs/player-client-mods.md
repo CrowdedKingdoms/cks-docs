@@ -20,8 +20,10 @@ boundary, and Play uses a separate game-host lease rather than the client-mod
 worker. See [Agentic Crowdy Studio](agentic-crowdy-studio).
 
 Before mounting the panel, obtain an authoritative owned grid. In a
-`self_claim` app, an ordinary player can claim the unclaimed chunk they are
-standing in:
+`self_claim` app, an ordinary player can claim the unclaimed wilderness chunk
+they are standing in; a chunk inside another grid is refused
+`GRID_NOT_CLAIMABLE` ([claims are made in the
+wilderness](/game-api/grids-and-permissions#claims-are-made-in-the-wilderness)):
 
 ```ts
 const claim = await client.marketplace.claimGridChunk({
@@ -173,7 +175,7 @@ supply `languageWorkerFactory`; advanced hosts may also supply
 
 ```ts
 await mountCrowdyStudio(hostElement, {
-  // ...the required projects, mods, player-compute, grid, worker, and host options...
+  // ...the required projects, mods, grid, worker, and host options...
   languageWorkerFactory: () =>
     new Worker(localRustWorkerUrl, { type: 'module' }),
   editorWorkerFactory: () => new Worker(localEditorWorkerUrl),
@@ -210,8 +212,9 @@ of it. See [serving CLIENT halves to visitors](/exec/client-halves#serving-it-to
   to the glue worker. A full-stack project builds its CLIENT target first, so a
   CLIENT failure never deploys a new server version.
 
-A player has one build at a time, server or CLIENT: another is refused
-`RATE_LIMITED` until the first finishes. A mod bills its owner's [player
+A player has one build at a time, server or CLIENT, in this app and across
+every other (on each API instance): another is refused `RATE_LIMITED` until the
+first finishes. A mod bills its owner's [player
 wallet](/management-api/player-billing), and billing switches an owner's mods
 off when their wallet is empty or a spend cap is reached (see [who pays for a
 mod](/exec/mods#who-pays-for-a-mod)).

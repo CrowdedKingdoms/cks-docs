@@ -7,8 +7,9 @@ title: CLIENT halves
 
 :::caution Dev-tier preview
 Available on the **dev** environment only; see the [overview](intro). The SDK support is in
-CrowdyJS **17.14.0** and later (the `@dev` prerelease line) and CrowdyCPP **0.49.0** and later;
-taking an agreement back needs CrowdyJS **18.0.3** or CrowdyCPP **0.52.0**.
+CrowdyJS 18 (the `@dev` prerelease line) and CrowdyCPP's `dev/v*` releases. Use CrowdyJS 18.1.0
+and CrowdyCPP 0.55.0 or later, which carry every fix to running CLIENT halves and taking an
+agreement back.
 :::
 
 A [mod](mods) can carry one **CLIENT half**: Rust built on the platform for the browser, which
@@ -225,7 +226,7 @@ const half = await client.exec.modClientDeploy(appId, gridId, 'greeter', built.b
 
 `modClientArtifactBytes` recomputes the module's SHA-256 and refuses bytes that differ from
 `digest`, a CLIENT ABI other than 0 and a capability summary that does not parse, with a
-`CrowdyProtocolError`. These need CrowdyJS `17.14.0-dev` or CrowdyCPP `0.49.0` on dev.
+`CrowdyProtocolError`.
 
 ### From CrowdyCPP
 
@@ -396,19 +397,19 @@ await broker.start(a.bytes);
 
 With `engine: 'ck-exec'` the broker will not start without `artifactHash`, `fuelPerDispatch`
 and `consentedHostCalls`, the glue worker refuses a module that was not fuel-metered, and the
-allowlist is exactly the host calls above (`EXEC_CLIENT_HOST_CALLS`). The default engine,
-`'player-compute'`, ran legacy CLIENT modules, which the game API no longer serves, so pass
-`engine: 'ck-exec'`. `startGridMod` takes `engine` and `consentedHostCalls` in its `wasm` spec
-too.
+allowlist is exactly the host calls above (`EXEC_CLIENT_HOST_CALLS`). `'ck-exec'` is the only
+engine and the default, so `engine` may be left out. `startGridMod`'s `wasm` spec needs
+`artifactHash`, `fuelPerDispatch` and `consentedHostCalls` too.
 
 ### What the page needs
 
 A CLIENT half is untrusted code from another player, so the page that runs it needs what any
 CLIENT mod host needs: the platform glue worker served from your own origin, a host-call router
 that answers only what your game offers, a HUD that renders payloads as text and never as HTML,
-and the cross-origin-isolation headers the worker's synchronous host calls depend on. [The
-Construct](https://github.com/CrowdedKingdoms/the-construct) (`docs/MODDING.md`) implements that
-integration.
+and the cross-origin-isolation headers the worker's synchronous host calls depend on. The
+Construct implements that integration: see its
+[`docs/MODDING.md`](https://github.com/CrowdedKingdoms/the-construct/blob/dev/docs/MODDING.md) on
+the `dev` branch.
 
 ## Crowdy Studio's CLIENT target
 
@@ -444,7 +445,7 @@ CrowdyJS 18 Studio runs on ck-exec only and has no `serverEngine` option):
 |---|---|---|
 | `NOT_FOUND` | `execModClientArtifact`: every refusal, whatever the reason (no `run_client_code`, not standing in the grid, not served, no consent or trust that still holds). `execConsentClientMod`: the mod has no CLIENT half, or its author no longer owns the grid. `execTrustAuthor`: you are not standing in the grid, or the author has nothing served there. | List again, and ask again if the list says the player has not agreed. Wait before fetching again. |
 | `CONFLICT` | `execConsentClientMod`, `execTrustAuthor`: the hash is not the current one. The CLIENT half, or the author's union, changed after you listed it. | List again, show the new summary, and send its hash. |
-| `RATE_LIMITED` | `execModClientArtifact`: more than 12 fetches of one mod's module by one player in a minute, on one API instance. Refused fetches count too. | Cache by `digest`, and fetch again after a minute. |
+| `RATE_LIMITED` | `execModClientArtifact`: more than 12 fetches of one mod's module by one player in a minute, or modules of more than 64 mods, on one API instance. Refused fetches count too. | Cache by `digest`, and fetch again after a minute. |
 | `FORBIDDEN` | `execGridClientMods`, `execConsentClientMod`, `execTrustAuthor`: you have no access to the app. | Use the player's app-scoped token for this app. |
 | `BAD_REQUEST` | `modId` is not a mod id, or `capabilityHash` is not 64 lowercase hex digits. | Pass the values `execGridClientMods` returned. |
 
@@ -467,13 +468,13 @@ CrowdyJS the API's code is `CrowdyGraphQLError.code`.
 |---|---|
 | CLIENT halves | One per mod, so at most 8 on a grid |
 | A build | One crate: 64 files, 2 MB of source, 5 minutes |
-| At once | One build per player in the app, server or CLIENT |
+| At once | One build per player in the app, server or CLIENT, and one per person across every app, on each API instance |
 | Kept | Builds for 7 days |
 | Module size | 512 KiB, after metering and optimizing |
 | Memory | 32 MiB |
 | Fuel | `fuelPerDispatch` for each call (`init`, `tick`, `invoke`, an event), 100 million by default |
 | Tick interval | 16 to 1000 ms, 1000 by default |
-| Fetches | 12 a minute per player and mod, on each API instance |
+| Fetches | 12 a minute per player and mod, and modules of at most 64 mods a minute per player, on each API instance |
 
 In the browser, CrowdyJS's broker also bounds each CLIENT half:
 

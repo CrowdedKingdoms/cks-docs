@@ -74,7 +74,7 @@ mutation {
     appId: "1",
     corner1: { x: "0", y: "0", z: "0" },
     corner2: { x: "0", y: "0", z: "0" }   # single-chunk grid
-  }) { grid { gridId } error }
+  }) { grid { grid_id } error }
 }
 ```
 
@@ -240,6 +240,10 @@ them, so a player keeps moving and talking inside a plot they cannot build on.
 
 A grant or revoke reaches the Game API's voxel checks within 15 seconds.
 
+Every voxel write also names a voxel inside its chunk, 0–15 on each axis, and a voxel
+type from 0 to 255: `updateVoxel`, `sendVoxelUpdate`, `updateChunk`'s `voxelStates` and a
+mod's `set_voxels` refuse anything else as invalid input.
+
 ### Open grids
 
 A zone meant for **everyone**, like a public build area or an arena, must now
@@ -296,7 +300,9 @@ wilderness chunk, whoever makes it: `updateVoxel`, `sendVoxelUpdate`,
 wilderness…"). A client's own realtime voxel update there is refused with
 `UNAUTHORIZED`. A chunk that any other grid covers (a claimed plot, a zone you
 created) is unaffected: its most specific grid decides. `App.wildernessWritesOpen`
-reports the setting; each Game API instance applies a change within 15 seconds.
+reports the setting to the app's org admins. A game client cannot read it with the
+player's app-scoped token, so a player learns that the wilderness is closed from the
+refusal. Each Game API instance applies a change within 15 seconds.
 
 ## Writing whole chunks
 

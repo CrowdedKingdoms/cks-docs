@@ -88,8 +88,9 @@ grid owner**, never as a visitor or the original marketplace author, in the
 owner's own sandbox. The mod starter is a `ckx-sdk` crate that greets visitors
 and follows what happens in its grid. Players standing in the grid call the
 mod's endpoints by name. It reads the grid's chunks, voxels and actors, writes
-voxels inside the grid while its owner holds `update_voxel_data`, and hears
-the grid's world events; it calls no other node and sends no realtime events.
+voxels inside the grid, in each chunk while its owner holds `update_voxel_data`
+on the most specific grid covering that chunk, and hears the grid's world
+events; it calls no other node and sends no realtime events.
 See [what a mod can do](/exec/mods#what-a-mod-can-do).
 
 **Test draft** and **Deploy live** both build the server crate, deploy it to

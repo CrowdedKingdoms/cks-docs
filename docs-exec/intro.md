@@ -57,11 +57,25 @@ A deploy is a manifest plus the modules it names:
 | `calls` | Types this type may call and subscribe to; `*` for any. |
 | `persist_every_ms` | Hubs: snapshot interval, 5,000 to 60,000 (default 30,000). |
 | `evict_after_ms` | How long an unused instance keeps running (default 5 minutes, at most 30). |
-| `replicas`, `concurrency` | Spokes: replicas kept running, and calls each serves at once (default 16). |
-| `max_replicas` | Spokes: scale between `replicas` and this many. The platform adds replicas once calls have waited at them for 2 seconds, and takes one away once they have been nearly idle for 30 seconds; calls go to the replica where the fewest wait. Without it, always `replicas`. |
-| `memory_mb`, `fuel_per_call`, `mailbox`, `deadline_ms` | Per-instance limits, within platform bounds (512 MB, 10 s per call). |
+| `replicas`, `concurrency` | Spokes: replicas kept running (default 1, at most 64), and calls each serves at once (default 16, at most 256). |
+| `max_replicas` | Spokes: scale between `replicas` and this many, at most 64. The platform adds replicas once calls have waited at them for 2 seconds, and takes one away once they have been nearly idle for 30 seconds; calls go to the replica where the fewest wait. Without it, always `replicas`. |
+| `memory_mb` | Memory per instance in MB: default 64, at most 512. |
+| `fuel_per_call` | Fuel for one call: default 50,000,000, from 1,000,000 to 1,000,000,000. |
+| `mailbox` | Calls that may wait at one instance: default 1,024, at most 4,096. Past it, a call is answered `Busy`. |
+| `deadline_ms` | Time for one call in milliseconds: default 2,000, from 10 to 10,000. |
 | `seed_b64` | Bytes every new instance of the type is spawned with; the root hub's seed is its app's starting state. |
 | `scopes` | The platform data the type's instances may use: `players.read`, `players.write`, `world.read`, `world.write`, `grids.read`, `permissions.write`. None by default; see [world and platform data](world-and-platform-data). |
+
+A limit outside its range is brought into it, not refused. `execDeploy` refuses a manifest with
+`BAD_REQUEST`, naming every problem, when:
+
+- a type's name is not 1–64 letters, digits, `-` or `_`;
+- the root is missing, is not a hub, or has a parent; another type has no parent, or names a
+  parent or a `calls` entry that is not defined;
+- a `digest` is not 64 hex characters;
+- a hub sets `replicas`, `max_replicas` or `concurrency`, or a spoke's `max_replicas` is outside
+  `replicas` to 64;
+- a scope is not one of those above.
 
 ## A hub
 
@@ -105,8 +119,10 @@ other instances with `ctx.call(type, key, method, bytes)` and publishes to its s
 `ctx.publish(topic, bytes)`. Payloads are bytes; `encode` and `decode` use MessagePack with
 named fields, which game clients decode into plain objects.
 
-Build with `cargo build --release --target wasm32-unknown-unknown`, or have the platform build
-it: see [builds and starter packs](builds). Players run their own code on grids they own the
+Have the platform build it: `execBuild` compiles your crates' sources, with no Rust toolchain
+on your machine; see [builds and starter packs](builds). Building on your own machine (`cargo
+build --release --target wasm32-unknown-unknown`) needs the `ckx-sdk` crate, which is not
+published yet. Players run their own code on grids they own the
 same way, as [mods](mods), and in their visitors' browsers as a mod's [CLIENT
 half](client-halves).
 
