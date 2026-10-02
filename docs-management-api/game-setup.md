@@ -33,13 +33,13 @@ Creating an app **automatically provisions a free, default access tier** holding
 
 ```graphql
 mutation {
-  createApp(input: { orgId: "ACME_ORG_ID", name: "My World", slug: "my-world", status: LIVE, visibility: PUBLIC }) {
+  createApp(input: { orgId: "ACME_ORG_ID", name: "My World", slug: "my-world", datacenter: "or", status: LIVE, visibility: PUBLIC }) {
     appId
   }
 }
 ```
 
-`createApp` requires the **`manage_apps`** permission on the org (org owners have it by default). `status` is one of `DRAFT`, `LIVE`, `ARCHIVED`; `visibility` is `PUBLIC`, `UNLISTED`, or `PRIVATE` (only `PUBLIC` + `LIVE` apps surface in the marketplace).
+`createApp` requires the **`manage_apps`** permission on the org (org owners have it by default). `datacenter` is required and permanent, because all of an app's data lives in one datacenter: pass a `code` that `placeableDatacenters` lists with `placeable: true`. `status` is one of `DRAFT`, `LIVE`, `ARCHIVED`; `visibility` is `PUBLIC`, `UNLISTED`, or `PRIVATE` (only `PUBLIC` + `LIVE` apps surface in the marketplace).
 
 **Manage the app over its lifecycle** (also `manage_apps`):
 
@@ -150,7 +150,7 @@ belongs to the studio:
 
 ### d. Choose where the app runs
 
-Your app needs a **Game API** to serve runtime traffic, and there is one way to get it: the **shared platform**. Publish with `publishAppToShared` and the app is immediately served by that tier's shared Game API fleet, scoped by your `appId`. You do not provision VMs, choose a datacenter, or wait for a stack.
+Your app needs a **Game API** to serve runtime traffic, and there is one way to get it: the **shared platform**. Publish with `publishAppToShared` and the app is immediately served by that tier's shared Game API fleet, scoped by your `appId`, in the datacenter you chose when you created it. You do not provision VMs or wait for a stack.
 
 > **Availability:** **shared platform hosting** is the only hosting model. Customer-provisioned environments — the developer sandbox (`environmentClass: "dev_single"`) and multi‑VM dedicated stacks — were **retired without replacement**, and their mutations are no longer in the published SDL. If you are following an older guide that starts with `createEnvironment`, stop: see **[Shared environment & billing](/management-api/shared-environment)** instead.
 

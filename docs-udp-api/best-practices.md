@@ -45,9 +45,9 @@ Full sequence: [Authenticate and assign](/replication-api/authenticate-and-assig
 ## Gameplay authority
 
 UDP carries **poses and events**. It is not the place to decide damage,
-captures, ownership, or team assignment. Those are
-[Game Model effects](/game-api/best-practices) (or Compute that invokes
-them). The client sends input and presents confirmed Model/Compute results.
+captures, ownership, or team assignment. Those are decided by your server code's
+endpoints on [ck-exec](/exec/intro) hubs (see [best practices](/overview/best-practices)).
+The client sends input and presents the hub's confirmed result.
 
 ## Load testing your integration
 

@@ -366,6 +366,11 @@ const config: Config = {
     // `tsc` (it is not strict-clean). See vendor/klee/VENDORED.md.
     './src/plugins/klee-vendor',
 
+    // -------- The served text files link this build's own site --------
+    // static/llms.txt and the Unreal SDK helpers are committed with prod's origin; on dev and
+    // test the copies in the build link that tier's site instead.
+    ['./src/plugins/tier-origin', {prodUrl: DOCS_TIERS.prod.url}],
+
     // -------- GraphQL schema reference generators (nested into host instance) --------
     // Each call generates Markdown into the host docs instance's `reference/graphql/` folder
     // at build time. We commit the generated output, so it shows up in `git status` after

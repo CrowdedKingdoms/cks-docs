@@ -27,7 +27,7 @@ These are the same checks as for server-side player code:
 | To | You need |
 |---|---|
 | Build a mod (`execModBuild`) | `write_server_code` in the app (your access tier) |
-| Deploy, install, publish or delete a mod | to own the grid, and `write_server_code` on both your access tier and the grid |
+| Deploy, install, publish or delete a mod (`execModDelete`) | to own the grid, and `write_server_code` on both your access tier and the grid |
 | Switch a mod on or off | to own the grid, and `run_server_code` on both your access tier and the grid |
 
 Switching a mod on also needs the app's code admission: under an allow list, the developers
@@ -54,8 +54,12 @@ time, and only you can read it. A new mod starts switched off. Deploying a new v
 running mod restarts it on that version. A mod's name is 1 to 48 lowercase letters, digits,
 `-` or `_`; a grid holds at most 8 mods and a player at most 64.
 
+`execMods(appId, gridId)` lists a grid's mods to anyone with access to the app, and
+`execMyMods(appId)` lists yours on every grid. `execModDelete(appId, gridId, name)` stops a mod
+and removes it, with its state and its versions.
+
 From CrowdyJS, `client.exec` has the same calls (`modStarter`, `modBuild`, `waitForModBuild`,
-`modDeploy`, `modSetEnabled`, and the rest below). In [Crowdy
+`modDeploy`, `modSetEnabled`, `mods`, `myMods`, `modDelete`, and the rest below). In [Crowdy
 Studio](/crowdyjs/player-client-mods), a project's SERVER target runs as a mod on the grid, and
 from CrowdyJS 17.14.0 its CLIENT target as that mod's [CLIENT
 half](client-halves#crowdy-studios-client-target).
@@ -68,7 +72,7 @@ const hello = await exec.call(execModType('greeter'), gridId, 'visit');
 ```
 
 A mod runs as its owner. It answers `Denied` while it is off or switched off, and `NotFound`
-once it is deleted.
+once it is deleted (`execModDelete`).
 
 ## What a mod can do
 

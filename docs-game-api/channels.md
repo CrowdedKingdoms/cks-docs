@@ -76,9 +76,9 @@ every channel permission, including `send_messages`).
 
 ## Grid channels
 
-A **grid channel** belongs to one grid. Its owner creates it, and that grid's
-[client mods](/crowdyjs/grid-programs) may post into it with `emit_channel`;
-code on any other grid may not.
+A **grid channel** belongs to one grid. Its owner creates it, and the
+[CLIENT halves](/exec/client-halves) of that grid's mods may post into it with
+`emit_channel`; code on any other grid may not.
 
 ```graphql
 mutation {
@@ -96,8 +96,12 @@ query {
   creation policy says; a grid holds at most **8** active channels.
 - `membershipPolicy` defaults to `open`, so visitors can `joinChannel`, and
   members get `send_messages` unless `membersCanSend: false`.
-- Messages a grid's modules post carry the sender uuid `grid:<gridId>` (ASCII,
-  zero-padded to 32 bytes), so a client can tell them from a player's.
+- A CLIENT half posts as an actor uuid the visitor's page derives for the grid and
+  the name the CLIENT half gives, never as the visitor: in CrowdyJS,
+  `clientHalfActorUuid(gridId, name)`, the first 16 bytes of SHA-256 over
+  `crowdy/client-half-actor/v1`, the grid id and the name (each separated by a zero
+  byte), as 32 hex characters. The server does not check that uuid, so treat it as a
+  label for display, not as proof of which mod sent a message.
 - A [grid-scoped token](grid-tokens) may join, leave and post only to its own
   grid's channels.
 

@@ -130,7 +130,7 @@ the same rules, with its own dependency list, and runs in browsers rather than o
 | Source in a build | 2 MB |
 | Build time | 5 minutes |
 | Module size | 16 MB |
-| At once | One build per app on each API instance; eight waiting per instance |
+| At once | One build per app, and one per person across every app, on each API instance; eight waiting per instance |
 | Kept | 7 days, with their modules |
 
 The requests are billed like any other; the compile itself is not, as the compute compile it
@@ -179,8 +179,8 @@ await client.exec.deploy({ appId, buildId: build.buildId, ...pack.manifest });
 | `waitForBuild(appId, buildId, { intervalMs, timeoutMs })` | `waitForBuild(appId, buildId, intervalMs, timeoutMs)`, blocking; from an event loop, poll `buildStatusAsync` |
 | `deploy({ appId, root, types, buildId })`, a type naming its `crate` | `deploy(appId, root, types, buildId)`, an `ExecNodeType` with `crate` set |
 
-Every CrowdyCPP method but `waitForBuild` has an `…Async` twin. These need CrowdyJS
-`17.11.0-dev` or CrowdyCPP `0.46.0` on dev.
+Every CrowdyCPP method but `waitForBuild` has an `…Async` twin. Use CrowdyJS 18.1.0 or
+CrowdyCPP 0.55.0 or later on dev.
 
 ## Typed state
 

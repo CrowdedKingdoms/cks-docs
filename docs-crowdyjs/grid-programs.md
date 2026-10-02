@@ -22,10 +22,10 @@ await plot.send.text({ chunk: { x: 4, y: 0, z: 0 }, uuid, text: 'go!', distance:
 **originates** in the grid and throws `GridScopeError` before any request if
 not. The server enforces the same rules.
 
-The grid scope's `sessions`, `model` and `compute` call the game model's
-sessions, the player model and player compute, which the game API no longer
-has, so every call to them fails. A grid's server-side state and logic belong
-in its [mods](/exec/mods).
+CrowdyJS 18 removed the grid scope's `sessions`, `model` and `compute`, which
+called the game model's sessions, the player model and player compute; the
+scope has `channels` and `send`. A grid's server-side state and logic belong in
+its [mods](/exec/mods).
 
 ## JS grid programs — the full SDK in a sandbox
 
@@ -89,7 +89,8 @@ calls `crowdy-client-sdk` makes (world reads, `voxel_set`, `emit_spatial`,
 reaches the other CLIENT halves on the same grid in this browser through
 `on_event`. `ExecClientHalves` runs every CLIENT half a grid serves.
 
-The spec's default engine, `'player-compute'`, ran legacy CLIENT modules, which
-the game API no longer serves. Their model and session host calls
+`'ck-exec'` is the spec's only engine and its default, and `artifactHash`,
+`fuelPerDispatch` and `consentedHostCalls` are required: a spec without them
+does not start. The legacy CLIENT modules' model and session host calls
 (`container_*`, `containers_list`, `property_set`, `model_invoke`,
-`sessions_list`) went with the game model.
+`sessions_list`) went with the game model, and the broker refuses them.

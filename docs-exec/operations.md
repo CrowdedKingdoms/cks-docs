@@ -245,8 +245,7 @@ it with the current SDK first.
 | `setEnabled(appId, enabled, nodeType?)` | `setEnabled(appId, enabled, nodeType)` |
 | `connectAsDeveloper(appId, { nodeType, key })` | `connectAsDeveloper(appId, ExecConnectOptions)` |
 
-These need CrowdyJS `17.10.0-dev` or CrowdyCPP `0.45.0` on dev; flows, endpoint stats, version
-manifests and the rate-limit fields need `17.13.0-dev` or `0.48.0`.
+Use CrowdyJS 18.1.0 or CrowdyCPP 0.55.0 or later on dev.
 
 ## Coming from the legacy APIs
 

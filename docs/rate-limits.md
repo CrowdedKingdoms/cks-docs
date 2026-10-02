@@ -30,7 +30,12 @@ Calls to your app's [ck-exec](/exec/intro) code do not go through GraphQL, and t
 limited: a player may make **120 calls per 10 seconds** to an app on one execution host. A
 call over it is refused with `Busy`, and its message starts `rate limited` and says how
 long to wait. The limit is kept per host, so a player connected to hubs on two hosts has
-120 on each, and calls between instances don't count. See
+120 on each, and calls between instances don't count.
+
+A player also holds at most **16 connections** to one app through a host; the 17th is
+answered `HTTP 429` before any socket opens. An app runs at most **1,024 instances** at
+once, mods included, and a call that would start another is answered `Unavailable`. A text
+message closes the connection, because the protocol is binary. See
 [call limits](/exec/operations#call-limits).
 
 ## Realtime (UDP) cost model

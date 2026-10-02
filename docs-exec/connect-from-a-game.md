@@ -7,7 +7,9 @@ title: Connect from a game
 
 :::caution Dev-tier preview
 Available on the **dev** environment only; see the [overview](intro). The SDK support is in
-CrowdyJS **17.9.0** (the `@dev` prerelease line, `17.9.0-dev.N`) and CrowdyCPP **0.44.0**.
+CrowdyJS 18 (`npm install @crowdedkingdoms/crowdyjs@dev`) and CrowdyCPP's `dev/v*` releases. Use
+CrowdyJS 18.1.0 and CrowdyCPP 0.55.0 or later: they check a gateway before they send it a connect
+token ([below](#where-the-connect-token-goes)).
 :::
 
 Both SDKs wrap the same steps. First they ask the game API for a host (`execConnect`). Then
@@ -144,6 +146,35 @@ unless reconnecting is turned off.
 - Pushes published while the connection was down are not replayed, because topics are not a
   log. Read the state you display again in `onReconnect`.
 
+## When the platform's manager fails over
+
+The service that places instances on hosts (the execution manager) runs as a leader with a
+standby. When the leader stops, the standby takes over, usually within a few seconds and up to
+about 15. A game can see it:
+
+- `execConnect` waits for the new leader within its 15-second budget, so it can be slow, and it
+  may then fail with "no execution manager leader reachable"
+  ([below](#when-execconnect-refuses)). Retry it with backoff, as a connection's reconnect does.
+- Connections that are open stay open, and the instances running keep running. A call that
+  needs an instance started (a hub key that is not running) can be answered `Unavailable` until
+  a leader is back.
+- A takeover longer than about 10 seconds stops what the hosts run. Each hub starts again from
+  its last snapshot when it is next called, so up to one snapshot interval (`persist_every_ms`)
+  of its state is lost, and connections recover as when a host goes away.
+
+## When `execConnect` refuses
+
+`execConnect` answers these errors before any gateway is involved. The code is in
+`extensions.code`, and `extensions.httpStatus` carries the HTTP status.
+
+| `extensions.code` | Why | What to do |
+|---|---|---|
+| `FORBIDDEN` | The session is not the app-scoped token of the app named, or the app is switched off or paused for its budget | Connect with the app's own token. A switched-off or paused app stays refused until its developer turns it on or funds it |
+| `BAD_REQUEST` | `nodeType` is not 1–64 letters, digits, `-` or `_`, or `key` is longer than 256 characters | Fix the arguments |
+| `NOT_FOUND` | With `nodeType`: the app has no deployed version, or its active version has no node type of that name | Deploy it, or fix the name |
+| `CONFLICT` | The app lives in another datacenter than this game API's | Call the endpoint `mintAppToken` and `gameClientBootstrap` return for the app |
+| `INTERNAL_SERVER_ERROR`, `httpStatus` 503 | ck-exec is not available on this environment, no host is live, or no manager answered within 15 seconds ("no execution manager leader reachable"); or the app already runs 1,024 instances and the call would start another ([instances](operations#call-limits)) | Retry with backoff. At the instance ceiling, wait for idle instances to stop |
+
 ## Where the connect token goes
 
 The connect token rides in the gateway URL that `execConnect` names, so the SDKs check that URL
@@ -199,5 +230,9 @@ const { version } = await client.exec.deploy({
 
 Any other [manifest field](intro#the-manifest) goes on the type as written. CrowdyCPP has the
 same call as `client.exec().deploy(appId, root, types)`, with a vector of `ExecNodeType`.
+
+The modules above come from a build on your machine, which needs the `ckx-sdk` crate, not
+published yet. A platform build deploys the same way: pass its `buildId`, and give each type
+its `crate` instead of `wasm` ([builds from an SDK](builds#from-an-sdk)).
 
 Next: [world and platform data](world-and-platform-data).

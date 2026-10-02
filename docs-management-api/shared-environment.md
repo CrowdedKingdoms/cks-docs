@@ -82,7 +82,7 @@ query {
 
 ## Creating an app (shared by default)
 
-New apps created through the Management UI **Get started** wizard or `createApp` with shared deployment go live on the shared Game API immediately:
+New apps created through the Management UI **Get started** wizard or `createApp` go live on the shared Game API immediately. `datacenter` is required: a `code` that `placeableDatacenters` lists as `placeable`.
 
 ```graphql
 mutation {
@@ -90,7 +90,7 @@ mutation {
     orgId: "123"
     name: "My Game"
     slug: "my-game"
-    deploymentTarget: "shared"
+    datacenter: "or"
   }) {
     appId
     deploymentTarget
