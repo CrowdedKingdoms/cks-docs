@@ -41,11 +41,11 @@ Player compute units used.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppPlayerUsageRow.<b>automationUnits</b></code>](#automation-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-units\} 
-Player automation units used.
+Legacy: the removed engines' player automation units. Always 0 for usage since the legacy engines were removed; kept for the API shape until the migration.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppPlayerUsageRow.<b>compileCount</b></code>](#compile-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compile-count\} 
-Compile submissions.
+Legacy: compile submissions of the removed player-compute engine (mod builds are not counted). Always 0 for usage since the legacy engines were removed; kept for the API shape until the migration.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppPlayerUsageRow.<b>chargedMicrousd</b></code>](#charged-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#charged-microusd\} 
