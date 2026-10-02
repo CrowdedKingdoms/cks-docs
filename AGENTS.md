@@ -141,20 +141,12 @@ viewer function is ever detached.
   design. If you find the CrowdyJS reference naming an older error code than the
   game-api reference beside it, the chain is working; do not "fix" it by editing
   either generated tree, and do not add a check that demands they agree.
-- **CrowdyJS** is **17.6.0** on every tier as of 2026-09-21 (this line said
-  17.1.0 from 2026-09-13 until then, 15.4.0 before that, and 15.1.0 before
-  2026-09-01 — three times stale, which is the point of the next sentence).
-  15.0.0 was the breaking major that **removed `devLogin`** and added
-  **`auth.login` / `auth.register`**; 16 retired the server-side Studio agent;
-  17.0 made a bound GitHub repository the working tree; 17.1 bundles
-  binary-relay sends; 17.4 exposes game-model sessions; 17.5 bulk containers;
-  17.6 advertises signed downlink bundles. CrowdyCPP is **0.42.0** (it said
-  0.29.0 here through 0.36.0 and 0.37.0 through 0.41.0). `dev` has since moved
-  on (2026-10-01: CrowdyJS `@dev` 18.1.0-dev.1, CrowdyCPP `dev/v0.55.0`), and
-  `test` to CrowdyJS 17.8.0-test.1. The SDK is NOT passwordless; any page here still saying so
-  is stale. **Verify rather than quoting this line — a version in prose is a
-  version that will be wrong:** `npm view @crowdedkingdoms/crowdyjs version`
-  and `git -C ../CrowdyCPP describe --tags`.
+- **SDK versions differ by tier and change often, so this page names none.**
+  Read them where they are published: `npm view @crowdedkingdoms/crowdyjs
+  dist-tags` (`latest` is prod, `test`, `dev`) and `git -C ../CrowdyCPP tag
+  --list 'dev/v*' --sort=-v:refname | head -1` (likewise `test/v*`, `prod/v*`).
+  A page describes the SDK released on the tier its branch publishes to. The
+  SDK is NOT passwordless; any page here still saying so is stale.
 - GitHub default is **`prod`**. Trunks: `dev` / `test` / `prod` — and only those
   three. **`main` was deleted across the project on 2026-08-21**, so a
   `github.com/CrowdedKingdoms/<repo>/blob/main/...` link in any page here is a
@@ -176,11 +168,12 @@ viewer function is ever detached.
   therefore fails the build instead of dropping the redirects. The five
   management root fields the engines took with them are under `retired` in
   `scripts/management-surface.json` (`legacy-compute-engines`).
-- **On `dev` the CrowdyJS reference still lists the legacy operations** — the
-  one-hop lag above: `static/schema/crowdyjs.graphql` is CrowdyJS `dev`'s own
-  copy, which syncs after #417 only with CrowdyJS 18 (#187). Pages describe the
-  SDK that is released on the tier (CrowdyJS 17.14, CrowdyCPP 0.49.0 on `dev`),
-  whose legacy domains still exist but call fields the API no longer has.
+- **Some links name the tier's branch, so a promotion re-points them.** Pages on
+  `dev` link The Construct's `blob/dev/...` and tell readers to
+  `git clone -b dev`, because what they describe exists only there. When this
+  repo is promoted, change those to the target branch (`grep -rn "blob/dev\|-b dev"`).
+  Site-internal links and `llms.txt` need nothing: the `tier-origin` plugin
+  rewrites the prod origin in built text files to the tier's own.
 - **The Unreal SDK still ships its Game Model API, and no page documents it.**
   Its symbols are in `scripts/unreal-surface-allowlist.json` with reason
   `deprecated` and the note "Legacy game-model engine removed; the Unreal SDK
