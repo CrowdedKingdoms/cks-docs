@@ -75,7 +75,15 @@ the realtime stream:
 
 - **Hydrate**: `ensureAround(center, distance)` bulk-loads every stored chunk
   in range in one GraphQL round trip; `pruneBeyond` evicts far chunks
-  (persisting dirty ones first).
+  (persisting dirty ones first). The load selects each chunk's `voxelStates`
+  and puts every entry over the stored grid: its type at its voxel, and its
+  state. Since ck-api v2.33.0 those entries carry every voxel edit recorded
+  for the chunk (a hub's or mod's `world.set_voxels`, `updateVoxel`, realtime
+  voxel updates), which its stored `voxels` never hold, so a block a hub
+  placed is there after a reload (CrowdyCPP 0.56.0; earlier releases lost
+  it). An `IChunkSource` of your own reports them in
+  `StoredChunk::voxelStates`. A chunk the server has never stored comes back
+  with none, even when edits were recorded for it.
 - **Realtime merge**: inbound voxel notifications are applied to the cache
   automatically.
 - **Optimistic edits**: `setVoxel` applies locally, replicates over UDP, and
