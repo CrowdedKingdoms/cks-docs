@@ -36,4 +36,4 @@ listVoxels(
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Voxel</b></code>](/reference/graphql/types/objects/voxel.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A recorded edit to a single voxel (one row of the voxel&#x005F;updates log): the app/chunk/local-position that changed, the new voxel type, an optional state blob, and who/when. Returned by listVoxels, getVoxelList and listVoxelUpdatesByDistance; created by updateVoxel. A background maintenance job later folds these edits into the chunk grid.
+A recorded edit to a single voxel (one row of the voxel&#x005F;updates log): the app/chunk/local-position that changed, the new voxel type, an optional state blob, and who/when. Returned by listVoxels, getVoxelList and listVoxelUpdatesByDistance; created by updateVoxel, sendVoxelUpdate, updateChunk (for each voxel state it stores) and world.set&#x005F;voxels on the node API. getChunk applies these edits to the chunk it returns, as entries of its voxelStates.
