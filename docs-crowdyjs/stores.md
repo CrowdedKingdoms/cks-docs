@@ -179,8 +179,18 @@ is best-effort by design — sequence numbers are uint8 correlation ids.
 The client-side source of truth for chunks and voxels:
 
 - `ensureAround(center, radius)` bulk-loads via `getChunksByDistance`
-  (in-flight deduped), then **hydrates sparse `voxelStates` per chunk** —
-  the bulk query omits them, a platform trap the store encapsulates.
+  (in-flight deduped), then **hydrates each newly loaded chunk** with
+  `getChunk`. Its `voxelStates` carry every voxel edit recorded for the
+  chunk, each with its type: a hub's or mod's `world.set_voxels`,
+  `updateVoxel`, other players' realtime voxel updates (ck-api v2.33.0). The
+  store puts them over the dense grid; the bulk load's `voxels` hold none of
+  them. It hydrates when you configure a `voxelStateCodec` or set
+  `hydrateVoxelStates: true`; without either, a reload shows none of those
+  edits. A chunk the store has already loaded keeps its cache when a later
+  bulk load returns it again (CrowdyJS 18.2.0; earlier releases put the
+  stored grid back over the hydrated edits as the player moved). A chunk the
+  server has never stored comes back from neither read, even when edits were
+  recorded for it.
 - Realtime `voxelUpdate` notifications merge into the cache automatically:
   dense grid write, typed state decode, revision bump, `onChunkChanged`.
 - `setVoxel(...)` applies locally first (optimistic) and replicates over the

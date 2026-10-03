@@ -4840,7 +4840,7 @@ type CrowdyStudioGitHubLayout {
 }
 
 """
-A single voxel's state override stored on a chunk: its local position, its voxel type, and an opaque base64-encoded state blob.
+A single voxel's override on a chunk, stored with it or recorded as a voxel edit: its local position, its voxel type, and an opaque base64-encoded state blob.
 """
 type VoxelState {
   """Local voxel position within the chunk (0-15 per axis)."""
@@ -4876,7 +4876,7 @@ type Chunk {
   """
   voxels: String
   """
-  Sparse list of per-voxel state overrides (e.g. rotation, atlas, flags) for voxels that need more than a plain type byte. Empty when no voxel carries extra state.
+  Sparse list of per-voxel overrides: the states stored with the chunk (e.g. rotation, atlas, flags) and every voxel edit recorded for it since (the voxel_updates log), each with its voxel type, which takes precedence over the type byte in `voxels`. Empty when the chunk has neither.
   """
   voxelStates: [VoxelState!]!
   """
@@ -4902,7 +4902,7 @@ type Chunk {
 }
 
 """
-A recorded edit to a single voxel (one row of the voxel_updates log): the app/chunk/local-position that changed, the new voxel type, an optional state blob, and who/when. Returned by listVoxels, getVoxelList and listVoxelUpdatesByDistance; created by updateVoxel. A background maintenance job later folds these edits into the chunk grid.
+A recorded edit to a single voxel (one row of the voxel_updates log): the app/chunk/local-position that changed, the new voxel type, an optional state blob, and who/when. Returned by listVoxels, getVoxelList and listVoxelUpdatesByDistance; created by updateVoxel, sendVoxelUpdate, updateChunk (for each voxel state it stores) and world.set_voxels on the node API. getChunk applies these edits to the chunk it returns, as entries of its voxelStates.
 """
 type Voxel {
   """Unique id of this voxel-update row (decimal string)."""
@@ -6958,7 +6958,7 @@ type Query {
     appId: BigInt!
   ): Boolean!
   """
-  Fetches one chunk (its base64 voxel grid, per-voxel states, chunk state and LODs) by app id and chunk coordinates. Returns null if the chunk does not exist. Use the input's LOD options to limit which LODs come back. Requires a valid bearer token in the Authorization header; a token scoped to an app may only read that app's chunks. Read-only (no world state is changed).
+  Fetches one chunk (its base64 voxel grid, per-voxel states, chunk state and LODs) by app id and chunk coordinates. `voxelStates` holds the states stored with the chunk and every voxel edit recorded for it (the voxel_updates log: updateVoxel, sendVoxelUpdate and a hub's or mod's world.set_voxels), each with its voxel type; `voxels` is the grid as last written by updateChunk, so apply each entry's voxelType over it. Returns null if the chunk does not exist. Use the input's LOD options to limit which LODs come back. Requires a valid bearer token in the Authorization header; a token scoped to an app may only read that app's chunks. Read-only (no world state is changed).
   """
   getChunk(input: GetChunkInput!): Chunk
   """
@@ -6970,7 +6970,7 @@ type Query {
   """
   getVoxelList(input: GetVoxelListInput!): ChunkVoxelResponse!
   """
-  Returns all chunks for an app within a cubic (Chebyshev-distance) radius of a center chunk, paginated. The cube spans center +/- maxDistance chunks on each axis. Use this for bulk region loads; use getChunk for a single chunk. Requires a valid bearer token; app-scoped tokens are limited to their own app. Read-only.
+  Returns all chunks for an app within a cubic (Chebyshev-distance) radius of a center chunk, paginated. The cube spans center +/- maxDistance chunks on each axis. Each chunk's `voxelStates`, when selected, include its recorded voxel edits as in getChunk (selecting them costs one more read). Use this for bulk region loads; use getChunk for a single chunk. Requires a valid bearer token; app-scoped tokens are limited to their own app. Read-only.
   """
   getChunksByDistance(input: GetChunksByDistanceInput!): ChunksByDistanceResponse!
   """
@@ -8672,7 +8672,7 @@ type Mutation {
   """
   updateChunkLods(input: UpdateChunkLodsInput!): Chunk @requiresPermission(scope: "app", permission: "manage_apps", scopeArg: "input.appId")
   """
-  Records (upserts) a single voxel edit in the voxel_updates log for one chunk and returns the resulting Voxel. WRITES world state; a background maintenance job later folds these edits into the chunk's packed grid. Requires a valid bearer token AND voxel-edit permission for the target region: the user must have active app access, the `update_voxel_data` tier permission, and `update_voxel_data` on the most specific grid covering the chunk (the smallest by volume; of equal ones the lowest grid id), so a claim, a plot or a safe zone decides its chunks and the app's world grid decides only the wilderness. A chunk no grid covers is refused, and so is a chunk only the app's world grid covers while the app's wilderness is closed (App.wildernessWritesOpen false).
+  Records (upserts) a single voxel edit in the voxel_updates log for one chunk and returns the resulting Voxel. WRITES world state; getChunk returns the edit in the chunk's voxelStates (the packed grid itself is written only by updateChunk). Requires a valid bearer token AND voxel-edit permission for the target region: the user must have active app access, the `update_voxel_data` tier permission, and `update_voxel_data` on the most specific grid covering the chunk (the smallest by volume; of equal ones the lowest grid id), so a claim, a plot or a safe zone decides its chunks and the app's world grid decides only the wilderness. A chunk no grid covers is refused, and so is a chunk only the app's world grid covers while the app's wilderness is closed (App.wildernessWritesOpen false).
   """
   updateVoxel(input: UpdateVoxelInput!): Voxel! @requiresPermission(scope: "runtime", permission: "update_voxel_data", scopeArg: "input.appId")
   """
@@ -10506,7 +10506,7 @@ input ChunkUpdateInput {
   """
   voxels: String
   """
-  Optional per-voxel state overrides to write; each entry is also recorded as an individual voxel update. Omit to leave existing states unchanged.
+  Optional per-voxel state overrides to write, at most 4096 (one per voxel); each entry is also recorded as an individual voxel update. Omit to leave existing states unchanged.
   """
   voxelStates: [VoxelStateInput!]
 }
@@ -10522,7 +10522,7 @@ input VoxelStateInput {
   """
   voxelType: Int!
   """
-  BASE64-encoded binary state blob for this voxel; omit/null for no extra state.
+  BASE64-encoded binary state blob for this voxel, at most 1 KiB decoded; omit/null for no extra state.
   """
   state: String
 }
