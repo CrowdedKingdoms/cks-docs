@@ -36,6 +36,25 @@ own CLI is not published either. See
 
 :::
 
+## 2026-10-03 (dev: chunk loads show recorded voxel edits; CrowdyJS 18.2.0, CrowdyCPP 0.56.0)
+
+Every voxel write except a chunk write-back lands only in the chunk's edit log: a hub's or
+mod's `world.set_voxels`, `updateVoxel`, and realtime voxel updates. Since Game API v2.33.0 on
+the dev environment, `getChunk` and `getChunksByDistance` return each recorded edit as a
+`voxelStates` entry with its voxel type (`getChunksByDistance` only when `voxelStates` is
+selected). The stored `voxels` hold none of them, so a client that reads only `voxels` loses a
+hub's block on reload.
+
+- **CrowdyCPP 0.56.0**: `ChunkStore::ensureAround`'s one bulk load selects `voxelStates` and puts
+  each entry over the stored grid. An `IChunkSource` of your own reports them in
+  `StoredChunk::voxelStates`. See [WorldSession](/crowdycpp/world-session).
+- **CrowdyJS 18.2.0**: `ChunkStore` keeps a chunk it has already loaded when a later bulk load
+  returns it again; before, moving put the stored grid back over the hydrated edits. Hydration
+  also puts the edits on a chunk stored with `voxels: null`. A store hydrates when it has a
+  `voxelStateCodec` or `hydrateVoxelStates: true`. See [World Stores](/crowdyjs/stores).
+- A chunk that has never been stored comes back from neither read, even when edits were
+  recorded for it.
+
 ## 2026-10-01 (CrowdyPy 0.5.0)
 
 CrowdyPy catches up with CrowdyJS 18.1.0 and CrowdyCPP 0.55.0.
