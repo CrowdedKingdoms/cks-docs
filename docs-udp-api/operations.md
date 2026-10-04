@@ -41,13 +41,20 @@ move/send events, `update_voxel_data` to edit voxels, `use_voice_chat` for audio
 key. A message failing either check is dropped and answered with
 `GENERIC_ERROR_MESSAGE` / `UNAUTHORIZED` (code 7).
 
+A **voxel update** is held to a stricter rule (replication server v0.34.0): the
+grid that decides is the **most specific** one covering the chunk, so a plot or a
+safe zone nested in the world grid decides its own chunks, the world grid decides
+only the wilderness, and a chunk no grid covers is refused. While the app has closed
+its wilderness to building, every voxel update there is refused too. See
+**[Which grid decides a voxel write](/game-api/grids-and-permissions#which-grid-decides-a-voxel-write)**.
+
 New apps are **open by default** — they ship with a default tier granting the
 baseline permissions (`access`, `teleport`, `update_voxel_data`, `use_voice_chat`;
 **not** `use_video_chat`, which an owner grants on a tier deliberately because
 every receiver pays the egress) and a world-spanning default grid, and granting a player app access
-automatically grants them all grid permissions — so out of the box any entitled
-player can act anywhere. App owners opt into restrictions (safe zones, plot
-ownership) via the Game API. See
+automatically grants them all of its permissions — so out of the box any entitled
+player can move, talk and build anywhere no narrower grid covers. App owners opt
+into restrictions (safe zones, plot ownership) via the Game API. See
 **[Game API → Permissions overview](/game-api/permissions)** and
 **[Grids and permissions](/game-api/grids-and-permissions)**.
 

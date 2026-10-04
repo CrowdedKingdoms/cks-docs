@@ -25,12 +25,16 @@ repository and this tutorial's working companion. It contains everything the cha
 built the way a real game is built: an engine-agnostic platform layer over CrowdyJS (two tokens,
 datacenter routing, token rotation), World Stores for presence and chunks, a three.js hub and a
 pixi.js **paint program** — the same shared canvas this tutorial builds — driven by one session,
-a kit-seeded game model, Crowdy Studio embedded with server and client mods, proximity chat,
-webcam (`B`) and voice (`V`), and `npm run setup` in a shell that creates your org and app
-(hosted sign-in only in the browser — the page never collects a password).
+a server-authoritative world hub on [ck-exec](/exec/intro), Crowdy Studio embedded so players
+write mods (a SERVER half on ck-exec and a CLIENT half in the browser), proximity chat, webcam
+(`B`) and voice (`V`), and `npm run setup` in a shell that creates your org and app (hosted
+sign-in only in the browser — the page never collects a password).
+
+This site describes the dev environment, so clone The Construct's `dev` branch, which matches
+it. The repository's default branch, `prod`, follows production.
 
 ```bash
-git clone https://github.com/CrowdedKingdoms/the-construct.git
+git clone -b dev https://github.com/CrowdedKingdoms/the-construct.git
 cd the-construct
 npm install
 npm run dev

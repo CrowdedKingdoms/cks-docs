@@ -14,7 +14,7 @@ Nothing replicates until a player is signed in. Once sign-in succeeds the SDK op
 
 ## When you touch this
 
-Once per project, at startup, before any entity, event, property, or Game Model read.
+Once per project, at startup, before any entity, event, or property.
 
 ## Sign in with a password
 

@@ -7216,5 +7216,1905 @@
     "id": "USubsystemInitializable",
     "reason": "internal",
     "note": "UInterface half of ISubsystemInitializable; unused."
+  },
+  {
+    "id": "ICrowdyBindingKeyProvider::GetCrowdyBindingKey",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyAddToCollectionAction::AddToCollection",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyApplyContainerManifestAction::ApplyContainerManifest",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyApplyStatusEffectAction::ApplyStatusEffect",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCombatAttackAction::CombatAttack",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCreateDataContainerAction::CreateDataContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCreateModelItemAction::CreateModelItem",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyDeleteContainerAction::DeleteContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyDeleteEdgeAction::DeleteEdge",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffects::ApplyToContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffects::GetContainerIdFor",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffects::JsonFromBool",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffects::JsonFromFloat",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffects::JsonFromInt",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffects::JsonFromString",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffects::JsonToBool",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffects::JsonToFloat",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffects::JsonToInt",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffects::JsonToString",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEnsureLeaderboardEntryAction::EnsureLeaderboardEntry",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetContainerBool",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetContainerFloat",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetContainerInt",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetContainerString",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetGameModelSubsystem",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetItemBool",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetItemFieldBool",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetItemFieldFloat",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetItemFieldInt",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetItemFieldString",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetItemFloat",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetItemInt",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetItemString",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetLastSessionFailure",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::GetLocalUserId",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::IsMyTurn",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::IsSessionHost",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::IsSessionJoinable",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::UnwatchDataContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::UnwatchSession",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel::WatchDataContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetActiveSession",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetKnownSessionHostTerm",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetLastFailure",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetRememberedSessionIncarnation",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::UnwatchSession",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGatherNodeAction::GatherNode",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetCombatantStateAction::GetCombatantState",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetLeaderboardAction::GetLeaderboard",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetSessionAction::GetSession",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetSessionEventsAction::GetSessionEvents",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetSessionSnapshotAction::GetSessionSnapshot",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetWorldStateAction::GetWorldState",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyHarvestCropAction::HarvestCrop",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyInvokeModelFunctionAction::CallModelFunction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyInvokeOnContainerAction::InvokeOnContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListChildrenAction::ListChildren",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListCropsAction::ListCrops",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListenForModelChangesAction::ListenForModelChanges",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListResourceNodesAction::ListResourceNodes",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListSessionsAction::ListSessions",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModel::EnrollModelComponent",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModel::GetBool",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModel::GetInt",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModel::GetModelComponent",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModel::GetString",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModel::Invoke",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModel::IsContainerBound",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModel::PullNow",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModel::UnenrollModelComponent",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModelValue::AsBool",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModelValue::AsFloat",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModelValue::AsInt",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModelValue::AsString",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyPlantCropAction::PlantCrop",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyPullDataContainerAction::PullDataContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyRemoveFromCollectionAction::RemoveFromCollection",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyRespawnCombatantAction::RespawnCombatant",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyReviveCombatantAction::ReviveCombatant",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySetDataPropertyAction::SetDataProperty",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySetSessionTurnAction::SetSessionTurn",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySpawnCombatantAction::SpawnCombatant",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySubmitScoreAction::SubmitScore",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySyncCombatantAction::SyncCombatant",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyTraverseAction::Traverse",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyApplyManifestResult",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyCollectionItem",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyCombatantState",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyContainerEdge",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyContainerManifestRow",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyContainerRef",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyCrop",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyEffectMagnitude",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyEffectRequireSpec",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyEffectSignal",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyEffectTimer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyEffectTimerParam",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyGameModelSessionEvent",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyGameModelSessionParticipant",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyGameModelSessionSnapshot",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyLeaderboardEntry",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyManifestRowFailure",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyModelFailure",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyModelRef",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyResourceNode",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyWorldState",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "__crowdy_netid",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "__crowdy_touch_",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "crowdy_rev",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "CrowdyContainerTest",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "CrowdyContainerType",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "CrowdyKey",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "CrowdyPullOnStart",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "CrowdyScan",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "CrowdyTestFixture",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "CrowdyVisibility",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdyEffectAutomationTargetMode",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdyEffectAutomationTrigger",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdyEffectCallableFrom",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdyEffectNotificationCarrier",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdyEffectPolicyKeyword",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdyEffectPropertyWriteSource",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdyEffectRequireKind",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdyEffectReturnType",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdyEffectSource",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdyEffectValueType",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdyKitAuthority",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdyKitCreator",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdyKitOwnerId",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdySessionError",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdySessionEventKind",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdySessionParticipantState",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyContainerManifestKeys",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyGameModelFunctionInput",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyGameModelFunctionParam",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyModelChangedPing",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyModelIdentity",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ICrowdyBindingKeyProvider",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyAddToCollectionAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyApplyContainerManifestAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyApplyEffectAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyApplyStatusEffectAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyBindingKeyProvider",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCombatAttackAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCombatPreset",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyContainerManifest",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCreateDataContainerAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCreateModelItemAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCreateSessionAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyDeleteContainerAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyDeleteEdgeAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffect",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffects",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEndSessionAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEnsureLeaderboardEntryAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameKitConfig",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModel",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGatherNodeAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetCollectionAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetCollectionWithStateAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetCombatantStateAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetLeaderboardAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetSessionAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetSessionEventsAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetSessionSnapshotAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetWorldStateAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGuildPreset",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyHarvestCropAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyInvokeModelFunctionAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyInvokeOnContainerAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyJoinSessionAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyKitLayerPreset",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyLeaderboardsPreset",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyLeaveSessionAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListChildrenAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListCropsAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListenForModelChangesAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListResourceNodesAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListSessionsAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyLivingWorldPreset",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModel",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyModelValue",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyPlantCropAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyPullDataContainerAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyRemoveFromCollectionAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyRespawnCombatantAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyReviveCombatantAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySetDataPropertyAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySetSessionAdmissionAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySetSessionTurnAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySpawnCombatantAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySubmitScoreAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySyncCombatantAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyTransferSessionHostAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyTraverseAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySchemaScanSettings",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyApplyEffectOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyApplyManifestOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyApplyStatusEffectOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyCallModelFunctionOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyCombatantMutationOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyCombatAttackOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyContainerIdOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyDataContainerChanged",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyEdgeOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyEnsureLeaderboardEntryOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyGatherNodeOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyGetCombatantStateOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyGetLeaderboardOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyGetWorldStateOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyHarvestCropOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyInvokeOnContainerOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyListCropsOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyListResourceNodesOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyModelAttributeChanged",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyOnSessionChanged",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyPlantCropOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyPullDataContainerOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdySessionFailureOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdySessionOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdySessionParticipantOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdySessionSnapshotOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdySignalReceived",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdySpawnCombatantOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdySubmitScoreOutcome",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyContainerManifestKeys::ActorNetID",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyContainerManifestKeys::ComponentKey",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyContainerManifestKeys::KeyForNetID",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyModelIdentity::ContainerKeyToNetID",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyModelIdentity::NetIDFromBindingKey",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyModelIdentity::NetIDToContainerKey",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyModelIdentity::StableNetIDFromActorPath",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyModelIdentity::TryLocalUserIDForOwner",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffect::GetContainerTypeName",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffect::GetEffectiveFunctionName",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::AddEdge",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::AddToCollection",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ApplyContainerManifest",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::CreateDataContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::DeleteContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::DeleteEdge",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::EnrollModelComponent",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetCollectionWithState",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetLocalUserId",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetSession",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetSessionEvents",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::GetSessionSnapshot",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::HandleModelChanged",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::Invoke",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::InvokeOnContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ListChildren",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ListContainers",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ListSessions",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::PullDataContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::RemoveFromCollection",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::ResolveSessionId",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::SetDataProperty",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::SetSessionTurn",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::Traverse",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::UnenrollModelComponent",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::UnwatchDataContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::WatchDataContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyInvokeModelFunctionAction::BuildParamsJson",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEffectSyncSettings",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyAddEdgeAction",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "crowdy.gamemodel.trace",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "crowdy.gamemodel.bulkresolve",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "crowdy.gamemodel.emitfallbackping",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "crowdy.gamemodel.unwatchcontainers",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "crowdy.gamemodel.watchcontainers",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyAddEdgeAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyAddEdgeAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyAddToCollectionAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyAddToCollectionAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyApplyContainerManifestAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyApplyContainerManifestAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyApplyEffectAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyApplyEffectAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyApplyStatusEffectAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyApplyStatusEffectAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCombatAttackAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCombatAttackAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCreateDataContainerAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCreateDataContainerAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCreateModelItemAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCreateModelItemAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCreateSessionAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyCreateSessionAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyDeleteContainerAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyDeleteContainerAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyDeleteEdgeAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyDeleteEdgeAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEndSessionAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEndSessionAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEnsureLeaderboardEntryAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyEnsureLeaderboardEntryAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::OnCrowdySignal",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::OnDataContainerChanged",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::OnModelAttributeChanged",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem::OnSessionChanged",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGatherNodeAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGatherNodeAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetCollectionAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetCollectionAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetCollectionWithStateAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetCollectionWithStateAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetCombatantStateAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetCombatantStateAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetLeaderboardAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetLeaderboardAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetSessionAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetSessionAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetSessionEventsAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetSessionEventsAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetSessionSnapshotAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetSessionSnapshotAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetWorldStateAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGetWorldStateAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyHarvestCropAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyHarvestCropAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyInvokeModelFunctionAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyInvokeModelFunctionAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyInvokeOnContainerAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyInvokeOnContainerAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyJoinSessionAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyJoinSessionAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyLeaveSessionAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyLeaveSessionAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListChildrenAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListChildrenAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListCropsAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListCropsAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListenForModelChangesAction::OnChanged",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListResourceNodesAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListResourceNodesAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListSessionsAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyListSessionsAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyPlantCropAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyPlantCropAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyPullDataContainerAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyPullDataContainerAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyRemoveFromCollectionAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyRemoveFromCollectionAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyRespawnCombatantAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyRespawnCombatantAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyReviveCombatantAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyReviveCombatantAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySetDataPropertyAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySetDataPropertyAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySetSessionAdmissionAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySetSessionAdmissionAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySetSessionTurnAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySetSessionTurnAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySpawnCombatantAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySpawnCombatantAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySubmitScoreAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySubmitScoreAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySyncCombatantAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySyncCombatantAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyTransferSessionHostAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyTransferSessionHostAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyTraverseAction::Failed",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyTraverseAction::Succeeded",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdySessionAdmission",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdySessionAdmissionFilter",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdySessionEndReason",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdySessionLeftReason",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdySessionPresence",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdySessionSeedState",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdySessionStatus",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "ECrowdySessionStatusFilter",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "LogCrowdyGameModel",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "CrowdyContainer",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "CrowdyInstantiableBy",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "CrowdyModel",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "CrowdyScope",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyGameModelCreateSessionOptions",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FCrowdyGameModelSession",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdyGameModelSubsystem",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "UCrowdySDKDeveloperSettings::DefaultModelNotificationCarrier",
+    "reason": "deprecated",
+    "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
   }
 ]

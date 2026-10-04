@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Convenience for UI: returns true when the authenticated caller is the currently elected host for the given app (same election as gameHost), otherwise false (including when no host is elected). Not authoritative for server-side mutations — use gameModelInvoke's is&#x005F;host policy for that. Requires a valid bearer game token (same auth as gameHost).
+Convenience for UI: returns true when the authenticated caller is the currently elected host for the given app (same election as gameHost), otherwise false (including when no host is elected). Not authoritative for server-side decisions. Requires a valid bearer game token (same auth as gameHost).
 
 
 ```graphql

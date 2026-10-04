@@ -40,7 +40,7 @@ To change teams, channels, or entity state, use the runtime APIs in your game: [
 
 ## Registry
 
-Every marker you write (`CrowdyEvent` and its routing keys, `CrowdyState` and its keys, the Game Model markers) is Unreal metadata, and a cooked build strips metadata. The SDK therefore bakes what it needs into an asset, `UCrowdyBakedRegistry` at `/Game/CrowdySDK/CrowdyBakedRegistry`, and a packaged build reads that instead. The editor and Play in Editor read live metadata, so the page can look stale until you rebuild.
+Every marker you write (`CrowdyEvent` and its routing keys, `CrowdyState` and its keys) is Unreal metadata, and a cooked build strips metadata. The SDK therefore bakes what it needs into an asset, `UCrowdyBakedRegistry` at `/Game/CrowdySDK/CrowdyBakedRegistry`, and a packaged build reads that instead. The editor and Play in Editor read live metadata, so the page can look stale until you rebuild.
 
 ![The Registry page: Rebuild (Deep Scan), Refresh View, the summary pills, and one card per class](/img/unreal-sdk/registry-panel.png)
 

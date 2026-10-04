@@ -50,7 +50,7 @@
         "crowdy.gamemodel.trace"
       ],
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "LogCrowdyReplication",

@@ -1,0 +1,218 @@
+---
+slug: intro
+sidebar_position: 1
+title: ck-exec overview
+---
+
+# ck-exec
+
+ck-exec runs your game's server code. You write it in Rust against the `ckx-sdk` crate, build
+it to WebAssembly, and deploy it with the app. Players connect to an **execution host** and
+call your code over a WebSocket; the platform places, persists, moves and stops the running
+pieces for you. It replaced the game API's legacy engines: [from the legacy
+engines](from-the-legacy-engines) maps what you used to what you use now.
+
+## Hubs and spokes
+
+Your code is a set of **node types**. Each is one of two kinds.
+
+- A **hub** holds state. There is one instance per key (`arena/m1`, `arena/m2`, …), it runs one
+  handler at a time, and it is snapshotted: on an interval you choose (5 to 60 seconds), when it
+  stops, and whenever it asks. After a crash or a lost host it starts again from its last
+  snapshot, so at most one interval of changes can be lost.
+- A **spoke** holds nothing you cannot lose. Its replicas run side by side and scale out; it
+  changes state only by calling a hub.
+
+Every app has one **root hub**, keyed by the app itself. The other types hang under a parent,
+forming one tree. The root hub is limited to 50 calls per second, so work that must scale lives
+in keyed hubs and spokes.
+
+## The manifest
+
+A deploy is a manifest plus the modules it names:
+
+```json
+{
+  "root": "lobby",
+  "types": {
+    "lobby": { "kind": "hub", "digest": "<sha256 of lobby.wasm>", "client": true },
+    "arena": { "kind": "hub", "parent": "lobby", "digest": "…", "client": true, "persist_every_ms": 5000 },
+    "mobs": { "kind": "hub", "parent": "arena", "digest": "…", "client": true, "calls": ["arena"] },
+    "combat": { "kind": "spoke", "parent": "arena", "digest": "…", "client": true, "calls": ["arena"], "replicas": 2 }
+  }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `kind` | `hub` or `spoke`. |
+| `parent` | The type that owns this one. Every type but the root has one. |
+| `digest` | SHA-256 of the module, hex. |
+| `client` | Players may call this type and subscribe to its topics. |
+| `calls` | Types this type may call and subscribe to; `*` for any. |
+| `persist_every_ms` | Hubs: snapshot interval, 5,000 to 60,000 (default 30,000). |
+| `evict_after_ms` | How long an unused instance keeps running (default 5 minutes, at most 30). |
+| `replicas`, `concurrency` | Spokes: replicas kept running (default 1, at most 64), and calls each serves at once (default 16, at most 256). |
+| `max_replicas` | Spokes: scale between `replicas` and this many, at most 64. The platform adds replicas once calls have waited at them for 2 seconds, and takes one away once they have been nearly idle for 30 seconds; calls go to the replica where the fewest wait. Without it, always `replicas`. |
+| `memory_mb` | Memory per instance in MB: default 64, at most 512. |
+| `fuel_per_call` | Fuel for one call: default 50,000,000, from 1,000,000 to 1,000,000,000. |
+| `mailbox` | Calls that may wait at one instance: default 1,024, at most 4,096. Past it, a call is answered `Busy`. |
+| `deadline_ms` | Time for one call in milliseconds: default 2,000, from 10 to 10,000. |
+| `seed_b64` | Bytes every new instance of the type is spawned with; the root hub's seed is its app's starting state. |
+| `scopes` | The platform data the type's instances may use: `players.read`, `players.write`, `world.read`, `world.write`, `grids.read`, `permissions.write`. None by default; see [world and platform data](world-and-platform-data). |
+
+A limit outside its range is brought into it, not refused. `execDeploy` refuses a manifest with
+`BAD_REQUEST`, naming every problem, when:
+
+- a type's name is not 1–64 letters, digits, `-` or `_`;
+- the root is missing, is not a hub, or has a parent; another type has no parent, or names a
+  parent or a `calls` entry that is not defined;
+- a `digest` is not 64 hex characters;
+- a hub sets `replicas`, `max_replicas` or `concurrency`, or a spoke's `max_replicas` is outside
+  `replicas` to 64;
+- a scope is not one of those above.
+
+## A hub
+
+```rust
+use ckx_sdk::prelude::*;
+
+#[derive(Default, Serialize, Deserialize)]
+struct Counter {
+    total: i64,
+}
+
+impl Hub for Counter {
+    fn spawn(_ctx: &Ctx, _seed: &[u8]) -> Result<Self> {
+        Ok(Self::default())
+    }
+    fn load(_ctx: &Ctx, snapshot: &[u8], _from_version: u64) -> Result<Self> {
+        decode(snapshot)
+    }
+    fn persist(&mut self, _ctx: &Ctx) -> Result<Vec<u8>> {
+        encode(self)
+    }
+    fn handle(&mut self, ctx: &Ctx, call: Call<'_>) -> Result<Vec<u8>> {
+        match call.method {
+            "add" => {
+                self.total += call.decode::<i64>()?;
+                ctx.publish("total", &encode(&self.total)?);
+                encode(&self.total)
+            }
+            "get" => encode(&self.total),
+            other => Err(Error::unknown_method(other)),
+        }
+    }
+}
+
+ckx_sdk::export_hub!(Counter);
+```
+
+`call.caller` says who is calling: a player (`Caller::Player(user_id)`), another instance, or
+the platform. The platform sets it; a handler can trust it for authorization. A hub calls
+other instances with `ctx.call(type, key, method, bytes)` and publishes to its subscribers with
+`ctx.publish(topic, bytes)`. Payloads are bytes; `encode` and `decode` use MessagePack with
+named fields, which game clients decode into plain objects.
+
+Have the platform build it: `execBuild` compiles your crates' sources, with no Rust toolchain
+on your machine; see [builds and starter packs](builds). Building on your own machine (`cargo
+build --release --target wasm32-unknown-unknown`) needs the `ckx-sdk` crate, which is not
+published yet. Players run their own code on grids they own the
+same way, as [mods](mods), and in their visitors' browsers as a mod's [CLIENT
+half](client-halves).
+
+### What one call may send and return
+
+Each call into a handler gets a fuel budget and a deadline from the manifest, and these platform
+bounds besides:
+
+- **What it sends.** One call may send at most 16,384 messages and 32 MiB of payload in all,
+  counting `ctx.call`, sends, `ctx.publish`, realtime events, platform data requests and
+  subscribing or unsubscribing. Past that, or while the app's instances on the host have 128 MiB
+  of output the platform has not taken yet, a call, a platform data request or a subscription is
+  answered `Busy`, a send or an event returns `Busy`, and a publish is dropped.
+- **What it returns.** A reply, a result or an error, is at most 4 MiB; a larger one is answered
+  `Internal` instead.
+- **What it saves.** A snapshot is at most 8 MiB. A larger one fails to save and the last one
+  stands, so the hub restarts from it after a crash.
+- **What `spawn`, `load` and `persist` say when they fail.** Their error is cut to 4 KiB.
+
+These hold for [mods](mods) too, within a mod's own limits.
+
+## Deploying
+
+`execDeploy` takes the manifest as JSON and each module the app has not uploaded before (base64
+with its digest), or the id of a build whose modules the manifest names, and makes the new
+version active. Running instances pick it up when they next start; a hub whose timer is pending
+doesn't go idle while players are in the app, so switch its type off and on to move it at once
+(see [operations](operations)). It needs the organization's `manage_compute` permission. Moving
+a game off the compute modules: [port a compute module](port-a-compute-module).
+
+```graphql
+mutation {
+  execDeploy(input: { appId: "…", manifestJson: "{…}", artifacts: [{ digest: "…", wasmBase64: "…" }] }) {
+    version
+  }
+}
+```
+
+## Connecting players
+
+CrowdyJS and CrowdyCPP do all of this for you; see [connect from a game](connect-from-a-game).
+Underneath, with the app-scoped token of the app as the Bearer token, `execConnect` returns a
+host and a connect token valid for 60 seconds:
+
+```graphql
+mutation {
+  execConnect(appId: "…", nodeType: "arena", key: "m1") {
+    gatewayUrl
+    token
+    host
+    expiresAt
+  }
+}
+```
+
+Passing `nodeType` and `key` puts the player on the host that runs that instance, starting it if
+needed. Then open a WebSocket to `{gatewayUrl}/v1/connect?token={token}`. The host checks the
+token before it accepts the WebSocket: a refused token is answered `HTTP 401`, with the reason as
+the body, and no socket opens; ask `execConnect` for a fresh token and connect again. A player
+who already holds 16 sessions to the app through that host is answered `HTTP 429` the same way.
+A browser sees only a failed connection; what each SDK reports is in
+[connect from a game](connect-from-a-game#when-the-gateway-refuses). (Hosts before ck-exec 0.10.0
+opened the socket and then closed it with code `4401`, which the SDKs report as `Denied`.)
+
+### The wire protocol
+
+One binary WebSocket message per frame, little endian. `str8` is a one-byte length and UTF-8
+bytes, `str16` a two-byte length and UTF-8 bytes. Payloads are MessagePack.
+
+| Frame | Direction | Layout |
+|---|---|---|
+| call | client → host | `0x01` rid `u32`, type `str8`, key `str16`, method `str8`, payload |
+| subscribe | client → host | `0x02` rid `u32`, type `str8`, key `str16`, topic `str8` |
+| unsubscribe | client → host | `0x03` rid `u32`, type `str8`, key `str16`, topic `str8` |
+| ping | client → host | `0x04` nonce `u32` |
+| reply | host → client | `0x81` rid `u32`, status `u8`, payload |
+| push | host → client | `0x82` type `str8`, key `str16`, topic `str8`, payload |
+| pong | host → client | `0x84` nonce `u32` |
+
+A subscribe is answered with a reply carrying its rid. The root hub's key is empty, and so is a
+spoke's: the host picks a replica.
+
+| Status | Value | Meaning |
+|---|---|---|
+| `Ok` | 0 | The payload is the handler's reply. |
+| `AppError` | 1 | The handler returned an error; the payload is its message. |
+| `Busy` | 2 | The instance's mailbox is full. Retry with backoff. |
+| `Moved` | 3 | The instance moved. Retry; a fresh `execConnect` may pick a closer host. |
+| `NotFound` | 4 | No such type in the app's active version. |
+| `DeadlineExceeded` | 5 | No reply in time. |
+| `Denied` | 6 | Players may not call that type, or the method is reserved. |
+| `RateLimited` | 7 | The root hub's rate limit. |
+| `Unavailable` | 8 | The platform could not reach the instance; safe to retry. |
+| `Internal` | 9 | A platform fault. |
+| `Trapped` | 10 | The handler crashed; the instance restarts from its last snapshot. |
+| `BadRequest` | 11 | A malformed frame or request. |
+
+Next: [timers, subscriptions and presence](timers-and-presence).

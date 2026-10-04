@@ -49,7 +49,21 @@ Open **`/orgs/:orgSlug`** for studio operations:
 
 **Get started** at `/orgs/:orgSlug/get-started` is the primary path for new apps on the shared platform. Tab URLs support `?tab=` deep links (for example `?tab=wallet` after a top-up redirect).
 
-Per-app dashboards live at `/orgs/:orgSlug/apps/:appSlug` (connection URLs, access tiers, granted users, app settings).
+Per-app dashboards live at `/orgs/:orgSlug/apps/:appSlug` (connection URLs, access tiers, granted users, app settings, and the **ck-exec** tab).
+
+### The ck-exec tab
+
+The app page has a **ck-exec** tab for the app's [server code](/exec/intro). It shows:
+
+- whether the app's code may run and what stops it: the kill switch for the app or one node type, or a budget pause;
+- the node types of the active version, or of any version you pick, as a tree with each type's kind, client access, calls, scopes and limits;
+- the versions, with a rollback;
+- the running instances;
+- the guest logs, filtered by node type, key, level and time, where a line's flow follows one call across hubs;
+- calls per endpoint, by outcome and latency, over an hour, a day or a week;
+- the players' mods in the app, read-only.
+
+You see the tab with the organization's `manage_compute` or `view_compute_diagnostics` permission. The kill switches and a rollback need `manage_compute`, and each asks you to confirm. [Operations](/exec/operations) explains each of these.
 
 ## Integrating with APIs
 

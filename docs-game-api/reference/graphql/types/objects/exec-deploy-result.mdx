@@ -1,0 +1,38 @@
+---
+id: exec-deploy-result
+title: ExecDeployResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The result of a ck-exec deploy.
+
+
+```graphql
+type ExecDeployResult {
+  version: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecDeployResult.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#version\} 
+The version now active for the app.
+
+
+
+
+### Returned By
+
+[`execDeploy`](/reference/graphql/operations/mutations/exec-deploy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

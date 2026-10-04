@@ -9,12 +9,14 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Console Variables
 
-The SDK exposes 34 `crowdy.*` console entries, in three kinds: trace gates that turn on informational
-logging for one area, behavior switches that change what the SDK does, and diagnostic commands that run
-once and hold no stored value. A row badged **Editor only** exists only in the editor process. Four of the
-diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`,
-`crowdy.gamemodel.watchcontainers`, `crowdy.gamemodel.unwatchcontainers`) are compiled out of a Shipping
-build and are absent there rather than silent; every other row ships in Development and Shipping.
+The SDK exposes 34 `crowdy.*` console entries. Five of them, the `crowdy.gamemodel.*` entries, belong to
+its Game Model API, which the game API no longer serves, and are not listed here (see
+[The Two Planes](../concepts/two-planes.md)). The other 29 come in three kinds: trace gates that turn on
+informational logging for one area, behavior switches that change what the SDK does, and diagnostic
+commands that run once and hold no stored value. A row badged **Editor only** exists only in the editor
+process. Two of the diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`) are
+compiled out of a Shipping build and are absent there rather than silent; every other row ships in
+Development and Shipping.
 
 ## When you land here
 
@@ -24,7 +26,7 @@ turns on a specific area's logging. For the workflow around them (loopback testi
 
 ## Trace gates
 
-All 16 are off by default. Fourteen turn on that area's informational lines when set to `1`; the two
+All 15 are off by default. Thirteen turn on that area's informational lines when set to `1`; the two
 `.scopes` entries add Unreal Insights CPU scopes instead and log nothing. Warnings and errors print
 regardless of the setting.
 
@@ -45,7 +47,7 @@ logging around Studio calls.
 
 ## Behavior switches
 
-These change what the SDK does rather than what it logs. None of the 11 exist only in the editor.
+These change what the SDK does rather than what it logs. None of the 9 exist only in the editor.
 
 <SurfaceTable
   table="cvars"
@@ -79,11 +81,10 @@ measurement against the same build, not a fix for anything.
 
 ## Diagnostic commands
 
-Seven commands with no stored value. Only `crowdy.rpc.dumpfn` takes arguments and prints usage without
+Five commands with no stored value. Only `crowdy.rpc.dumpfn` takes arguments and prints usage without
 them; every other command acts as soon as you run it, and `crowdy.schema.RetagAssets` starts resaving
-assets immediately. Four are compiled out of a Shipping build: `crowdy.rpc.dumpfn`,
-`crowdy.state.heartbeat.advisories`, `crowdy.gamemodel.watchcontainers` and
-`crowdy.gamemodel.unwatchcontainers`.
+assets immediately. Two are compiled out of a Shipping build: `crowdy.rpc.dumpfn` and
+`crowdy.state.heartbeat.advisories`.
 
 <SurfaceTable
   table="cvars"
@@ -92,8 +93,6 @@ assets immediately. Four are compiled out of a Shipping build: `crowdy.rpc.dumpf
   notes={{
     "crowdy.rpc.dumpfn": "Not in Shipping",
     "crowdy.state.heartbeat.advisories": "Not in Shipping",
-    "crowdy.gamemodel.watchcontainers": "Not in Shipping",
-    "crowdy.gamemodel.unwatchcontainers": "Not in Shipping",
     "crowdy.cpp.selftest": "Every build",
     "crowdy.net.routes": "Every build"
   }}
@@ -109,7 +108,7 @@ assets it touches; that noise is expected, not a sign something went wrong.
 :::
 
 `crowdy.cpp.selftest` and `crowdy.net.routes` carry no build guard, so they exist in every build including
-Shipping; the four diagnostics above do not, and a Shipping console answers them with an unknown command.
+Shipping; the two diagnostics above do not, and a Shipping console answers them with an unknown command.
 
 ## Gotchas
 
@@ -118,17 +117,9 @@ Shipping; the four diagnostics above do not, and a Shipping console answers them
 - `crowdy.net.receive.maxdrainms` (4 ms) and `crowdy.net.receive.maxmessages` (3072) bound one frame's
   receive drain. If drains keep ending on the time budget, delivery is costing more per message than the
   frame can afford, and raising the count is not the lever.
-- `crowdy.gamemodel.bulkresolve` (default `1`) makes Host-owned entities bind their Game Model containers
-  from one paged list per type instead of one ensure per entity. Leave it on unless you are isolating a
-  regression against the old per-entity path.
-- The two Game Model watch commands, `crowdy.gamemodel.watchcontainers` and
-  `crowdy.gamemodel.unwatchcontainers`, are diagnostics: they open or close a feed and log what arrives,
-  but nothing is re-pulled and no cache is written from them.
 
 ## Related
 
 - [Log categories](./log-categories.md): the category each trace gate's lines print under.
 - [Project settings](./project-settings.md): the settings-class properties that sit beside these CVars.
 - [Testing locally](../guides/testing-locally.md): loopback and two-PIE workflows built on these switches.
-- [Change pings and pull](../game-models/change-pings-and-pull.md): where `crowdy.gamemodel.emitfallbackping`
-  and the watch commands fit in a Game Model debugging session.

@@ -9,11 +9,9 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Project Settings
 
-The SDK's settings live on `UCrowdySDKDeveloperSettings`, under **Project Settings, Plugins, Crowdy SDK**,
-plus two smaller editor-only classes for Game Model authoring. The two editor classes appear as their own
-sections, **Plugins, Crowdy SDK Editor** and **Plugins, Crowdy Game Model Schema Scan**, and save to
-`Config/DefaultEditor.ini`. `UCrowdySDKDeveloperSettings` is written to `Config/DefaultGame.ini` under
-`[/Script/CrowdyReplication.CrowdySDKDeveloperSettings]`. None of it is secret; commit both files as usual.
+The SDK's settings live on `UCrowdySDKDeveloperSettings`, under **Project Settings, Plugins, Crowdy SDK**.
+It is written to `Config/DefaultGame.ini` under `[/Script/CrowdyReplication.CrowdySDKDeveloperSettings]`.
+None of it is secret; commit the file as usual.
 
 ## When you land here
 
@@ -77,27 +75,6 @@ the current session and is only read when `Environment` is Custom, and `SetGameA
 HTTP endpoint for the session. `ReloadEndpointsFromSettings` is kept for old call sites and does nothing;
 the API client already re-reads both endpoints from the settings on every call.
 
-## Game Model authoring settings
-
-Two small editor-only classes add settings for the Game Model schema scan and its authoring workflow.
-Both are badged **Editor only** below: they exist in the editor process and not in a packaged game.
-
-<SurfaceTable table="settings" filter="class=UCrowdySchemaScanSettings" includeEditor />
-
-`ScannedContentRoots` empty is the default: your project's content plus every plugin that could declare
-Crowdy metadata. Add a path to `ExcludedContentRoots` only for a third-party content library that cannot
-hold a container.
-
-:::caution[A container under an excluded root disappears from the schema.]
-Only add to `ExcludedContentRoots` for content you are certain never declares a `CrowdyContainer`. See
-[Containers and attributes](../game-models/containers-and-attributes.md).
-:::
-
-<SurfaceTable table="settings" filter="class=UCrowdyEffectSyncSettings" includeEditor />
-
-`UCrowdyEffectSyncSettings` adds one Game Model authoring toggle, `bCheckEffectDriftBeforePlay`, editable
-only in the editor.
-
 ## Gotchas
 
 - The class is `Config=Game`. A property you change in code at runtime through the settings object itself
@@ -110,7 +87,5 @@ only in the editor.
 ## Related
 
 - [Config Sync](../studio/config-sync.md): the authoring source for the Network category split.
-- [Containers and attributes](../game-models/containers-and-attributes.md): what the schema scan settings
-  affect.
 - [Map profile](../runtime/map-profile.md): the other half of "make replication work".
 - [Console variables](./console-cvars.md): the CVar surface alongside these settings.

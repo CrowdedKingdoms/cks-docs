@@ -196,9 +196,9 @@
       "base": "UWorldSubsystem",
       "outer": "World",
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "guides/whats-changed",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyReplicatedGameInstanceSubsystem",

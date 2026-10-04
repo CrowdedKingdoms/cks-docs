@@ -19,7 +19,7 @@ One difference from a host-owned world actor, whose Crowdy State moves only on e
 For a world-level value that belongs to nobody in particular and every client should agree on: a village clock, a weather phase, a match state on the view plane. A subsystem is host-owned, a singleton every client resolves by class path with no handshake, so it is the natural home for "the one of these".
 
 :::danger[Host-owned only, on the view plane. A replicated subsystem is not where a score lives.]
-Host precedence is a convention here as everywhere on this plane. A match score, a winner, anything a client could gain by lying about, is a [Game Model](../game-models/overview.md); a subsystem is for the shared cosmetic state around it.
+Host precedence is a convention here as everywhere on this plane. A match score, a winner, anything a client could gain by lying about, belongs on the [truth plane](../concepts/two-planes.md); a subsystem is for the shared cosmetic state around it.
 :::
 
 ## Inherit a base
@@ -91,7 +91,7 @@ Underneath both is the two-call pattern on `UCrowdyEntitySubsystem`, `RegisterPa
 - A subsystem's NetID is the hash of its class path. Rename the class and every client agrees on the new id at the same time, because they all run one build.
 - The world base is created only in PIE and game worlds. In an editor world it does not exist, and that is correct.
 - The game-instance base ignores worlds owned by another game instance, so two PIE clients in one process each enroll their own.
-- A subsystem's traffic shares the session channel with Game Model change pings and the two ownership-transfer events. Its reliable sends have the same 1024-byte payload cap as any [Multicast call](./rpc-events-cpp.md#containers-and-their-bounds).
+- A subsystem's traffic shares the session channel with the two ownership-transfer events. Its reliable sends have the same 1024-byte payload cap as any [Multicast call](./rpc-events-cpp.md#containers-and-their-bounds).
 
 ## Related
 

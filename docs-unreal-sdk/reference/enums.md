@@ -129,7 +129,7 @@ Header: `Customizations/CrowdyReplicationMode.h`.
 | --- | --- |
 | `None` | Not networked by Crowdy. Selecting it scrubs every Crowdy key off the variable. |
 | `Replicated` | Crowdy State: the fast, client-authoritative view plane. Stamps the Crowdy State metadata so the variable flows through the same discovery and bake as a C++ `meta=(CrowdyState)` property. |
-| `ServerOwned` | "Server Owned" in the dropdown: Game Models, the server-authoritative truth plane. Writes `CrowdyModel`, shows the RepNotify field (the shared `CrowdyOnRep`), the Min/Max clamp and the Visibility dropdown. Greyed out for a variable type the plane does not support. See [Game Model metadata keys](./game-model-meta-keys.md). |
+| `ServerOwned` | "Server Owned" in the dropdown: the legacy Game Model marker, which the game API no longer serves. Writes `CrowdyModel`, shows the RepNotify field (the shared `CrowdyOnRep`), the Min/Max clamp and the Visibility dropdown. Greyed out for a variable type the plane does not support. See [The Two Planes](../concepts/two-planes.md). |
 
 :::note[A variable lives in exactly one plane, so switching the dropdown scrubs the other plane's keys. For how to author a replicated variable, see [Crowdy State](/unreal-sdk/runtime/crowdy-state).]
 :::
@@ -140,7 +140,7 @@ The ten above are the ones this page explains in prose. The table below is gener
 
 <SurfaceTable table="enums" group="module" />
 
-Eighteen enums the manifest reports are excluded from the table above: five are an internal detail of the effect graph compiler with nothing for a game to construct, two are deprecated (the persistence pull result and the connection monitor's reconnect state), one is a transport protocol enumeration nothing game-facing selects, and ten belong to another first-party module that rides in the same plugin build and are outside this SDK's own contract. None of them is part of the surface a game calls.
+Forty-two enums the manifest reports are excluded from the table above: twenty-four belong to the SDK's Game Model API, which the game API no longer serves, five are an internal detail of the effect graph compiler with nothing for a game to construct, two are deprecated (the persistence pull result and the connection monitor's reconnect state), one is a transport protocol enumeration nothing game-facing selects, and ten belong to another first-party module that rides in the same plugin build and are outside this SDK's own contract. None of them is part of the surface a game calls.
 
 ## Gotchas
 

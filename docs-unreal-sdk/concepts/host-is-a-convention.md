@@ -16,7 +16,7 @@ Host election happens server-side, per user, and the SDK tracks the result local
 What election does not do is protect anything. Nothing on the view plane is server-checked, so any client can lie about its own view state, host or not. A host check answers "who is this app's coordinator right now", never "is this write allowed".
 
 :::danger[Never gate anything cheat-sensitive on a host check.]
-Neither the client-derived check nor the server-validated one below is an enforcement point. Real enforcement is an invoke policy on a Game Model Effect, on the truth plane. Use host checks to decide who runs shared view-plane logic, and nothing else.
+Neither the client-derived check nor the server-validated one below is an enforcement point. Real enforcement is your server code checking who is asking, on the truth plane. Use host checks to decide who runs shared view-plane logic, and nothing else.
 :::
 
 ## Two checks, two costs
@@ -39,11 +39,11 @@ A client-owned entity (`Ownership = LocalClient`) has a `HostOverride` policy: `
 
 - Host changes. Bind `OnHostElected` rather than caching the answer at BeginPlay.
 - A host-owned entity is written by explicit pushes. Changing a property and waiting does nothing on it.
-- `HostOverride` is a view-plane tie-breaker. If the value matters, it is a Game Model attribute and the question does not arise.
+- `HostOverride` is a view-plane tie-breaker. If the value matters, it belongs in your server code and the question does not arise.
 
 ## Related
 
 - [Host authority](../runtime/host-authority.md): the calls and nodes, with examples.
 - [Entities, Identity, and Ownership](./entities-identity-ownership.md): owner, proxy, and host-owned roles.
-- [Sessions and Presence](./sessions-and-presence.md): the session host, a different, server-enforced thing.
+- [Sessions and Presence](./sessions-and-presence.md): a match's host, a different thing your server code keeps.
 - [The Two Planes](./two-planes.md): where enforcement actually lives.

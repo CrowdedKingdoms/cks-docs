@@ -17,7 +17,7 @@ An entity spawned at runtime belongs to its spawner and a level-placed one to wh
 A player picks up a lantern post that belonged to the level, a vehicle changes driver, a world creature becomes a player's pet. Anything where "who simulates this" should change hands without destroying and respawning.
 
 :::warning[Ownership is a coordination convention on the view plane, not enforcement, and a transfer is transient.]
-No server checks who may request or grant. And a client that first observes the entity after a grant sees the spawn-time owner, or re-baselines from proxy defaults, not necessarily the transferred one. Cheat-sensitive ownership belongs in a [Game Model](../game-models/overview.md).
+No server checks who may request or grant. And a client that first observes the entity after a grant sees the spawn-time owner, or re-baselines from proxy defaults, not necessarily the transferred one. Cheat-sensitive ownership belongs on the [truth plane](../concepts/two-planes.md), in your server code.
 :::
 
 ## The flow
@@ -97,7 +97,7 @@ A grant carries the previous owner's id, and `ReassignOwnership` compares and sw
 - Silence is the rejection. If you want the requester to know, send them an `OwningClient` event yourself.
 - The request short-circuits on the component's `IsLocallyOwned()`, so the host of a host-owned entity cannot accidentally request its own world entity into personal ownership.
 - Granting to a player id with no local presence orphans the entity until it is granted again. Check the requester is still in the session before you grant.
-- A new owner that never observed the entity re-baselines from proxy defaults. The durable truth is a Game Model, not the view plane.
+- A new owner that never observed the entity re-baselines from proxy defaults. The durable truth lives in your server code, not on the view plane.
 - Two Multicast events on the component carry all of this. Never give them a `CrowdyChannel`; see [Entity component](./entity-component.md).
 
 ## Related
