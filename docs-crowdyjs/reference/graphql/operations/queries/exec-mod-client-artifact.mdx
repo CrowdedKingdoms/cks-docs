@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A served CLIENT half's module, for the browser broker (dev-tier preview). Served only to a player holding 'run&#x005F;client&#x005F;code' in the app, standing in the mod's grid now, who consented to it at its current hash or trusts its author at a union no wider; every refusal answers NOT&#x005F;FOUND. At most 12 fetches a minute per player and mod on each API instance (RATE&#x005F;LIMITED); the module never changes for its digest, so cache it.
+A served CLIENT half's module, for the browser broker. Served only to a player holding 'run&#x005F;client&#x005F;code' in the app, standing in the mod's grid now, who consented to it at its current hash or trusts its author at a union no wider; every refusal answers NOT&#x005F;FOUND. At most 12 fetches a minute per player and mod on each API instance (RATE&#x005F;LIMITED); the module never changes for its digest, so cache it.
 
 
 ```graphql
@@ -41,4 +41,4 @@ The mod’s id (`modId` of `execGridClientMods`).
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>ExecModClientArtifact</b></code>](/reference/graphql/types/objects/exec-mod-client-artifact.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A CLIENT half’s module and what the browser broker needs to run it (dev-tier preview): the fuel-metered wasm32-unknown-unknown module, its digest to check the bytes against, and the per-dispatch fuel budget to load into its `ck_fuel` global.
+A CLIENT half’s module and what the browser broker needs to run it: the fuel-metered wasm32-unknown-unknown module, its digest to check the bytes against, and the per-dispatch fuel budget to load into its `ck_fuel` global.

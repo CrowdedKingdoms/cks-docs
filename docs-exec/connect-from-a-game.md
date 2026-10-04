@@ -5,11 +5,10 @@ title: Connect from a game
 
 # Connect from a game
 
-:::caution Dev-tier preview
-Available on the **dev** environment only; see the [overview](intro). The SDK support is in
-CrowdyJS 18 (`npm install @crowdedkingdoms/crowdyjs@dev`), CrowdyCPP's `dev/v*` releases and
-CrowdyPy. Use CrowdyJS 18.1.0, CrowdyCPP 0.55.0 and CrowdyPy 0.5.0 or later: they check a gateway
-before they send it a connect token ([below](#where-the-connect-token-goes)).
+:::note
+The SDK support is in CrowdyJS 18, CrowdyCPP and CrowdyPy. Use CrowdyJS 18.1.0, CrowdyCPP 0.55.0
+and CrowdyPy 0.5.0 or later: they check a gateway before they send it a connect token
+([below](#where-the-connect-token-goes)).
 :::
 
 The SDKs wrap the same steps. First they ask the game API for a host (`execConnect`). Then

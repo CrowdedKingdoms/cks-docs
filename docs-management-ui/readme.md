@@ -49,11 +49,11 @@ Open **`/orgs/:orgSlug`** for studio operations:
 
 **Get started** at `/orgs/:orgSlug/get-started` is the primary path for new apps on the shared platform. Tab URLs support `?tab=` deep links (for example `?tab=wallet` after a top-up redirect).
 
-Per-app dashboards live at `/orgs/:orgSlug/apps/:appSlug` (connection URLs, access tiers, granted users, app settings, and on the dev environment the **ck-exec** tab).
+Per-app dashboards live at `/orgs/:orgSlug/apps/:appSlug` (connection URLs, access tiers, granted users, app settings, and the **ck-exec** tab).
 
-### The ck-exec tab (dev-tier preview)
+### The ck-exec tab
 
-On the dev environment the app page has a **ck-exec** tab for the app's [server code](/exec/intro). It shows:
+The app page has a **ck-exec** tab for the app's [server code](/exec/intro). It shows:
 
 - whether the app's code may run and what stops it: the kill switch for the app or one node type, or a budget pause;
 - the node types of the active version, or of any version you pick, as a tree with each type's kind, client access, calls, scopes and limits;

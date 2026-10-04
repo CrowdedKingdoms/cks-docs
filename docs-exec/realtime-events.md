@@ -5,10 +5,6 @@ title: Realtime events
 
 # Realtime events
 
-:::caution Dev-tier preview
-Available on the **dev** environment only; see the [overview](intro).
-:::
-
 A hub or spoke can show something to the players **around a place in the world**, or to the
 members of a **channel**, at once. Players' clients receive these events from the replication
 servers they're already connected to, as the same messages other players' actions produce. So a

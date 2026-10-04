@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Connect to an app's ck-exec code as one of its developers, for studio tools, manual runs and admin endpoints (dev-tier preview). The session's calls arrive as `Caller::Developer` with your user id and may reach any node type, not only `client` ones, but never the platform's `$` methods. Requires the org 'manage&#x005F;compute' permission and your own session, not an app token.
+Connect to an app's ck-exec code as one of its developers, for studio tools, manual runs and admin endpoints. The session's calls arrive as `Caller::Developer` with your user id and may reach any node type, not only `client` ones, but never the platform's `$` methods. Requires the org 'manage&#x005F;compute' permission and your own session, not an app token.
 
 
 ```graphql
@@ -46,4 +46,4 @@ The instance key within `nodeType`.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>ExecConnection</b></code>](/reference/graphql/types/objects/exec-connection.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Where and how a game client connects to ck-exec, the hub-and-spoke execution service (dev-tier preview). Open a WebSocket to `{gatewayUrl}/v1/connect?token={token}` before `expiresAt`.
+Where and how a game client connects to ck-exec, the hub-and-spoke execution service. Open a WebSocket to `{gatewayUrl}/v1/connect?token={token}` before `expiresAt`.

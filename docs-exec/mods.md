@@ -5,10 +5,6 @@ title: Mods (players' code)
 
 # Mods: players' code on their grids
 
-:::caution Dev-tier preview
-Available on the **dev** environment only; see the [overview](intro).
-:::
-
 A mod is a player's code on a grid they own. It runs as a hub like any other, addressed by the
 node type `mod:<name>` and keyed by the grid's id, so each grid has one instance of each of its
 mods. Players standing in the grid call it by name. Mods replace server-side player code

@@ -5,11 +5,9 @@ title: CLIENT halves
 
 # CLIENT halves: a mod's browser code
 
-:::caution Dev-tier preview
-Available on the **dev** environment only; see the [overview](intro). The SDK support is in
-CrowdyJS 18 (the `@dev` prerelease line) and CrowdyCPP's `dev/v*` releases. Use CrowdyJS 18.1.0
-and CrowdyCPP 0.55.0 or later, which carry every fix to running CLIENT halves and taking an
-agreement back.
+:::note
+The SDK support is in CrowdyJS 18 and CrowdyCPP. Use CrowdyJS 18.1.0 and CrowdyCPP 0.55.0 or
+later, which carry every fix to running CLIENT halves and taking an agreement back.
 :::
 
 A [mod](mods) can carry one **CLIENT half**: Rust built on the platform for the browser, which

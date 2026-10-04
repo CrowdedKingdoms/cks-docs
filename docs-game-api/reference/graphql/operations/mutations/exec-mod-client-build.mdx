@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Build the CLIENT half of a mod from one crowdy-client-sdk crate (dev-tier preview): compiled for wasm32-unknown-unknown in the build sandbox, fuel-metered and optimized there, checked against the client ABI and at most 512 KiB, with its capability summary derived from the module. Returns at once with the build queued (`kind` `client`); poll `execModBuildStatus`, then attach it with `execModClientDeploy`. One build, server or CLIENT, at a time per player. Requires the 'write&#x005F;client&#x005F;code' permission in the app.
+Build the CLIENT half of a mod from one crowdy-client-sdk crate: compiled for wasm32-unknown-unknown in the build sandbox, fuel-metered and optimized there, checked against the client ABI and at most 512 KiB, with its capability summary derived from the module. Returns at once with the build queued (`kind` `client`); poll `execModBuildStatus`, then attach it with `execModClientDeploy`. One build, server or CLIENT, at a time per player. Requires the 'write&#x005F;client&#x005F;code' permission in the app.
 
 
 ```graphql
@@ -41,4 +41,4 @@ The CLIENT half’s one crate. Its `Cargo.toml` may have only [package], [lib] a
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>ExecBuild</b></code>](/reference/graphql/types/objects/exec-build.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A ck-exec build (dev-tier preview): queued, building, succeeded or failed, with the compiler’s log and, once it succeeds, one module per crate.
+A ck-exec build: queued, building, succeeded or failed, with the compiler’s log and, once it succeeds, one module per crate.

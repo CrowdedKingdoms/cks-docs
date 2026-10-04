@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Make an earlier ck-exec version active again, a rollback (dev-tier preview). Running instances pick it up when they next start, as after a deploy. Requires the org 'manage&#x005F;compute' permission.
+Make an earlier ck-exec version active again, a rollback. Running instances pick it up when they next start, as after a deploy. Requires the org 'manage&#x005F;compute' permission.
 
 
 ```graphql
@@ -41,4 +41,4 @@ A version `execVersions` lists; it becomes the active one.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>ExecAppStatus</b></code>](/reference/graphql/types/objects/exec-app-status.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Whether an app’s ck-exec code may run: its active version and its switches (dev-tier preview).
+Whether an app’s ck-exec code may run: its active version and its switches.

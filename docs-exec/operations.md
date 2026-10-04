@@ -5,10 +5,6 @@ title: Operations
 
 # Operations
 
-:::caution Dev-tier preview
-Available on the **dev** environment only; see the [overview](intro).
-:::
-
 Everything you need to run an app's ck-exec code: its logs, what is running and where, its
 versions and a rollback, a kill switch, calls per endpoint, the call limit, what it costs, and
 a developer connection for tools and admin endpoints.
