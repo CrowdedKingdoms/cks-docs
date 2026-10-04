@@ -8,39 +8,33 @@ title: Best practices
 These rules apply across the Management API, Game API, Replication API, and
 the SDKs. Per-surface detail lives with each API.
 
-## Authority: Models, effects, and Compute
+## Authority: hubs, endpoints, and spokes
 
-- **Game Models** are the authoritative source of gameplay state.
-- Use **Game Model functions (effects)** for direct, validated state changes.
-  A game client — including Unreal — can invoke these effects directly. Typical
-  cases: dealing damage, healing, capturing a camp, changing ownership, or
-  updating a player's team assignment.
-- An effect should update the state it owns **and** any immediate dependent
-  state in the **same transaction**. For example, dealing damage updates
-  `health` and then determines `is_dead`.
+- Authoritative gameplay logic and its state live in your app's
+  **[ck-exec](/exec/intro) hubs**.
+- A hub's **endpoints** are the direct, validated state changes a client asks
+  for by name. Typical cases: dealing damage, healing, capturing a camp,
+  changing ownership, or updating a player's team assignment.
+- A hub runs one handler at a time, so an endpoint that updates `health` and
+  then determines `is_dead` changes both before any other call reaches it.
 - The client **requests** a change and **presents** the confirmed result. It
   must not independently decide the authoritative outcome.
-- Use **Compute** when a request needs server-side workflow beyond one direct
-  state change: finding or creating a team, searching across containers,
+- Check the caller in the handler. The platform sets it, so a handler can
+  trust `call.player()` for authorization.
+- Use keyed hubs and **spokes** when a request needs server-side workflow
+  beyond one direct state change: finding or creating a team, searching,
   processing many objects, coordinating a match reset, or running dynamic
-  fan-out work.
-- Compute should **invoke Game Model effects** rather than duplicate their
-  validation and mutation rules.
-- **Bind / ensure, then invoke.** A getter after bind is the class or type
-  default until the first pull.
-- An invoke-policy refusal is `success: false` with `fault.code`
-  `NOT_ALLOWED`. The player `errorMessage` is **You are not allowed to do
-  that**; the require leaf is on `gameModelEvents`.
-- Automation and Compute writes reach other Unreal clients only when the
-  function authored a notification, or a client pulls. The Unreal fallback
-  ping is sent only by the client that invoked.
+  fan-out work. A spoke changes state only by calling the hub that owns it.
+- Clients learn of changes from a hub's topics. A push published while a
+  client was disconnected is not replayed, so read the state again on
+  reconnect.
 
-In short: the client requests a direct change when it knows the target; Game
-Model effects validate and commit that change; Compute handles the wider
-workflow when the target or process must be discovered or coordinated.
+In short: the client requests a direct change when it knows the target; a hub
+validates and applies that change; spokes and calls between hubs handle the
+wider workflow when the target or process must be discovered or coordinated.
 
 See **[Game API best practices](/game-api/best-practices)** and
-**[Choosing Game APIs](/game-api/model-vs-compute)**.
+**[from the legacy engines](/exec/from-the-legacy-engines)**.
 
 ## Tokens and hosts
 
@@ -63,7 +57,7 @@ See **[Game API best practices](/game-api/best-practices)** and
 
 | Surface | Page |
 | --- | --- |
-| Game API, models, effects, Compute | [Game API best practices](/game-api/best-practices) |
+| Game API, hubs and spokes | [Game API best practices](/game-api/best-practices) |
 | Management API, sign-in, entitlements | [Management API best practices](/management-api/best-practices) |
 | Native UDP / Buddy | [Replication API best practices](/replication-api/best-practices) |
 | Unreal | [Unreal SDK best practices](/unreal-sdk/guides/best-practices) |

@@ -1,0 +1,53 @@
+---
+id: exec-deploy-input
+title: ExecDeployInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A new version of an app’s ck-exec topology.
+
+
+```graphql
+input ExecDeployInput {
+  appId: BigInt!
+  manifestJson: String!
+  artifacts: [ExecArtifactInput!]
+  buildId: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecDeployInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app to deploy.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecDeployInput.<b>manifestJson</b></code>](#manifest-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#manifest-json\} 
+The manifest as JSON: `{ "root": "<hub type>", "types": { "<name>": { "kind": "hub"|"spoke", "parent", "digest", "client", "calls", "scopes", ... } } }`; with `buildId`, a type may give `"crate": "<name>"` instead of `digest`. Every field and its platform bounds: https://docs.dev.crowdedkingdoms.com/exec/intro#the-manifest.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecDeployInput.<b>artifacts</b></code>](#artifacts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ExecArtifactInput!]</b></code>](/reference/graphql/types/inputs/exec-artifact-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#artifacts\} 
+Modules the manifest names that this app has not uploaded before (at most 64). A request body is limited to 10 MB, so about 7 MB of modules per call.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecDeployInput.<b>buildId</b></code>](#build-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#build-id\} 
+A succeeded `execBuild` of this app whose modules to include, so a manifest can name them by digest without uploading them.
+
+
+
+
+### Member Of
+
+[`execDeploy`](/reference/graphql/operations/mutations/exec-deploy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

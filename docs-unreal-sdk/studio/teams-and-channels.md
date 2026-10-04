@@ -49,7 +49,7 @@ It is the value of the `CrowdyChannel` meta on a Multicast `CrowdyEvent`, and th
 
 ### The session channel
 
-Every client of the app joins one reliable channel on connect, named `__crowdy_session_<appId>`. Multicast events with no channel named, the Game Model change ping, and the session cue all ride it. The runtime creates it on demand, so you never have to.
+Every client of the app joins one reliable channel on connect, named `__crowdy_session_<appId>`. Multicast events with no channel named ride it. The runtime creates it on demand, so you never have to.
 
 The Channels page has a **Create session channel** button that creates it ahead of time with the settings it wants: creation by members, open membership, members can send. The policy card repeats those three settings as a hint.
 

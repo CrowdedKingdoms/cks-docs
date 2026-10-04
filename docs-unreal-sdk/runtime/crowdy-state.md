@@ -17,7 +17,7 @@ Mark a `UPROPERTY` with `meta=(CrowdyState)` and the client that owns the entity
 For view state that has to be the same on every client, late joiners included: a lantern's lit flag, an animation stance, a cosmetic colour. It works in either entity mode, Static or Dynamic, and on a [replicated subsystem](./replicated-subsystems.md).
 
 :::danger[Authoritative or cheat-sensitive state never belongs in Crowdy State.]
-This is the view plane. The owner writes a value and every other client believes it; the host's precedence below is a convention the receiver honours, not a check. Hit points, currency, inventory: a [Game Model](../game-models/overview.md) attribute, always. See [The Two Planes](../concepts/two-planes.md).
+This is the view plane. The owner writes a value and every other client believes it; the host's precedence below is a convention the receiver honours, not a check. Hit points, currency, inventory: your server code, always. See [The Two Planes](../concepts/two-planes.md).
 :::
 
 ## Prerequisites
@@ -113,8 +113,8 @@ You marked a property `CrowdyState` and nothing arrives, or you are about to mar
 
 ### Rejected
 
-:::warning[Containers and object references are rejected at discovery, in any position, including inside a struct. Use a CrowdyEvent or a Game Model.]
-The error names the escape hatch: `CrowdyState: property 'Players' on '/Script/MyGame.Lantern' is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Game Model container. Omitting it.` A list of who lit the lantern is a `TArray` parameter on a [CrowdyEvent](./rpc-events-cpp.md) if it is a moment, or a [Game Model](../game-models/overview.md) container if it is truth. Never re-attempt it here.
+:::warning[Containers and object references are rejected at discovery, in any position, including inside a struct. Use a CrowdyEvent, or your server code.]
+The error names the escape hatch: `CrowdyState: property 'Players' on '/Script/MyGame.Lantern' is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Game Model container. Omitting it.` The Game Model container it names is legacy, and no server serves it. A list of who lit the lantern is a `TArray` parameter on a [CrowdyEvent](./rpc-events-cpp.md) if it is a moment, or state your server code on ck-exec holds if it is [truth](../concepts/two-planes.md). Never re-attempt it here.
 :::
 
 | Rejected | The reason discovery logs |
@@ -154,10 +154,10 @@ Changing one field of a five-field struct re-sends all five. Five scalar propert
 
 | You wanted | Put it on |
 |---|---|
-| The names of the players who lit the lantern this match | A Game Model container, if it is truth the server should hold; otherwise a `TArray<FString>` parameter on a `Multicast` CrowdyEvent when it changes. |
+| The names of the players who lit the lantern this match | Your server code, if it is truth the server should hold; otherwise a `TArray<FString>` parameter on a `Multicast` CrowdyEvent when it changes. |
 | A ring buffer of recent positions | The [continuous state](./continuous-state.md) snapshot, as fixed fields, or nothing: the proxy interpolates for you. |
 | A reference to another actor | Its NetID as an `FGuid`, resolved with `FindEntity` on the receiver. |
-| A list of active effects | A Game Model collection. |
+| A list of active effects | Your server code. |
 
 ## Marking state from outside the actor
 
@@ -217,7 +217,7 @@ A modified client can stamp its own pushes host-sourced. This orders who wins on
 
 ## A field that silently does nothing
 
-The first thing to check. Discovery logs an unconditional error for every marked property it cannot carry, of the shape `CrowdyState: property 'X' on '/Script/MyGame.Lantern' is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Game Model container. Omitting it.` The reasons are a container, a struct that buries a container, a fixed-size array, an object or interface or delegate reference, or an otherwise unsupported type such as `FText`; [Rejected](#rejected) lists them. Two more lines to know: a property marked both `CrowdyState` and `CrowdyModel` is dropped with `is marked both CrowdyState and CrowdyModel; a field lives in exactly one plane`, and a property whose name and type also appear in the actor's continuous-state executor struct is dropped with `also lives in its executor state struct ... Dropping it from the CrowdyState layout`, so a field lives on exactly one channel.
+The first thing to check. Discovery logs an unconditional error for every marked property it cannot carry, of the shape `CrowdyState: property 'X' on '/Script/MyGame.Lantern' is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Game Model container. Omitting it.` (The Game Model container is legacy; keep that state in your server code on ck-exec.) The reasons are a container, a struct that buries a container, a fixed-size array, an object or interface or delegate reference, or an otherwise unsupported type such as `FText`; [Rejected](#rejected) lists them. Two more lines to know: a property marked both `CrowdyState` and `CrowdyModel` is dropped with `is marked both CrowdyState and CrowdyModel; a field lives in exactly one plane`, and a property whose name and type also appear in the actor's continuous-state executor struct is dropped with `also lives in its executor state struct ... Dropping it from the CrowdyState layout`, so a field lives on exactly one channel.
 
 These fire at class registration and are not gated by the trace variable. Grep the log for `CrowdyState: property`, which all three lines share, before turning anything on. When the property is in the layout but the change is not arriving, that is the other question:
 
@@ -233,7 +233,7 @@ Two read-only diagnostics on `UCrowdyStateReplicator` answer the same questions 
 When the local client is the elected host, every delta it sends is stamped host-sourced. A receiver that owns the entity adopts a host-sourced value into its own baseline instead of reverting it on the next diff, provided the entity's `HostOverride` is `Allow` (the default); `OwnerOnly` drops even a host correction. A host-owned world entity is driven by the host alone, and only by explicit pushes: its manual-dirty marks and its keyframe, never a background diff. See [Host authority](./host-authority.md).
 
 :::warning[Host precedence is a convention with no server-side check. A forged host-sourced flag is honoured as real.]
-It orders who wins on the view plane; it does not make either value trustworthy. If the value matters, it is a Game Model attribute and the question does not arise.
+It orders who wins on the view plane; it does not make either value trustworthy. If the value matters, it belongs in your server code and the question does not arise.
 :::
 
 ## Gotchas
@@ -258,6 +258,6 @@ It orders who wins on the view plane; it does not make either value trustworthy.
 - [Map profiles](./map-profile.md): the cadence, the relevance distance, and the keyframe interval.
 - [State meta keys](../reference/state-meta-keys.md).
 - [RPC events in C++](./rpc-events-cpp.md): containers and object references as event parameters.
-- [The Two Planes](../concepts/two-planes.md): what belongs on a Game Model instead.
+- [The Two Planes](../concepts/two-planes.md): what belongs on the truth plane instead.
 - [Host authority](./host-authority.md): host-owned entities and the host override.
 - [Ownership transfer](./ownership-transfer.md): making another client the owner instead of pushing over it.

@@ -19,19 +19,17 @@ Three machine-readable files sit beside the docs. This page is where they are de
 
 ## Where does this state go
 
-Ask one question: can a malicious client benefit from lying about this value? If yes, it is a Game Model attribute on the truth plane. If no, it is view state. [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) owns the rule and every row but the door's; that one applies the same test.
+Ask one question: can a malicious client benefit from lying about this value? If yes, it belongs on the truth plane, in your app's server code on [ck-exec](/exec/intro), which the SDK does not wrap yet (C++ calls it through CrowdyCPP's `client.exec()`; see [connect from a game](/exec/connect-from-a-game#crowdycpp)). If no, it is view state. [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) owns the rule and every row but the door's; that one applies the same test.
 
 | State | Plane | Mechanism | Owning page |
 |---|---|---|---|
 | Movement | View | Dynamic entity mode, continuous state channel | [Continuous state](./runtime/continuous-state.md) |
 | Animation blend state | View | `meta=(CrowdyState)` property, diffed on change | [Crowdy State](./runtime/crowdy-state.md) |
 | A one-shot trigger (muzzle flash, impact) | View | `meta=(CrowdyEvent)` RPC, not a state field | [RPC events](./runtime/rpc-events-cpp.md) |
-| Hit points | Truth | `meta=(CrowdyModel)` attribute, "Server Owned" in Blueprint | [Game Models overview](./game-models/overview.md) |
-| Inventory | Truth | Game Model container with items linked as a collection | [Collections](./game-models/collections.md) |
-| Currency | Truth | Attribute on a container scoped `CrowdyScope="App"` | [Game Model meta keys](./reference/game-model-meta-keys.md) |
-| Match score | Truth | Attribute on a container scoped to the session (the default) | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) |
+| Hit points, inventory, currency | Truth | Your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) |
+| Match score | Truth | A hub for the match in your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) |
 | A chat line | View | `CrowdyEvent` with the `Multicast` recipient, session channel | [Channels](./runtime/channels.md) |
-| A door's open flag | View | `CrowdyState` boolean: a lie is a visual glitch. A placed door is host-owned, so the flag is also `CrowdyManualDirty` and the host calls `MarkStateDirty` after each write. If the door gates progress (a lock), the lock state is a Game Model attribute | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes), [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) |
+| A door's open flag | View | `CrowdyState` boolean: a lie is a visual glitch. A placed door is host-owned, so the flag is also `CrowdyManualDirty` and the host calls `MarkStateDirty` after each write. If the door gates progress (a lock), the lock state belongs in your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes), [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) |
 | A player's display name | View | `CrowdyState` property; route it through the avatars service if it must persist | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes), [Avatars](./services/avatars.md) |
 
 :::danger[Authoritative or cheat-sensitive state never belongs in Crowdy State.]
@@ -40,18 +38,15 @@ Crowdy State is written by the owning client and believed by everyone else. Low 
 
 ## The marker vocabulary
 
-Four of the six are `meta=(...)` keys; the entity is a component and the effect is an asset. One canonical example each, all from the same lantern the [Quickstart](./quickstart.md) builds; the snippet id names the file the docs render.
+Two of the three are `meta=(...)` keys; the entity is a component. One canonical example each, all from the same lantern the [Quickstart](./quickstart.md) builds; the snippet id names the file the docs render.
 
 | Marker | Goes on | Canonical example | Owning page |
 |---|---|---|---|
 | `CrowdyEntity` | A `UCrowdyEntityComponent` on an `AActor` (the component is the marker; set `Ownership`) | `qs-entity` | [Entities, identity, ownership](./concepts/entities-identity-ownership.md) |
 | `CrowdyState` (+ `CrowdyOnRep`) | A `UPROPERTY` on an entity actor. On a client-owned entity (`Ownership` = Local Client, the lantern) the owner assigns and calls the notify itself; on a host-owned entity (`Ownership` = Host, the default a placed actor keeps) a plain assignment never ships: add `CrowdyManualDirty` and call `MarkStateDirty` after each write, or add `CrowdyHeartbeat` | `qs-state` | [Crowdy State](./runtime/crowdy-state.md#mark-a-property), [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) |
 | `CrowdyEvent` + `CrowdyRecipient` | A `UFUNCTION` named `X_Implementation`, plus `CROWDY_EVENT(X)`; recipient is one of `SpatialMulticast`, `Multicast`, `OwningClient`, `Host` | `qs-event` | [RPC events](./runtime/rpc-events-cpp.md#routing-keys) |
-| `CrowdyContainer="Name"` | A `UCLASS`: an actor, an actor component (the example, bound to the entity it is attached to), or a subsystem | `gm-container` | [Containers and attributes](./game-models/containers-and-attributes.md#declaring-a-container) |
-| `CrowdyModel` + `CrowdyKey` + `CrowdyOnRep` | A `UPROPERTY` on a container class; the server owns the value, the notify is parameterless | `gm-container` | [Containers and attributes](./game-models/containers-and-attributes.md#reacting-to-a-change) |
-| `CrowdyEffect` | Not a meta key: a `UCrowdyEffect` asset authored in Studio or Effect Script, referenced from C++ as `TObjectPtr<UCrowdyEffect>` | `fx-declare` | [Effects from C++](./game-models/effects-cpp.md#declaring-the-reference), [Effect Script](./game-models/effect-script.md) |
 
-Four rules the examples assume: the first thing a client needs is its own pawn as a `Dynamic`, `PlayerDerived`, `LocalClient` entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; that pawn registers inside its first possession, since the engine possesses a runtime spawn after its `BeginPlay`, so read its id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned`, not at `BeginPlay`; a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); a `CrowdyOnRep` function takes no parameters, read the property for the new value ([The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code)); and the lantern's assign-and-stop is the client-owned pattern, because the Quickstart sets its `Ownership` to Local Client: a host-owned entity (`Ownership` = Host, the default a placed actor keeps: Static, Stable, level-placed) never ships a plain `CrowdyState` write, so mark the property `CrowdyManualDirty` and call `MarkStateDirty` after each write, or give it `CrowdyHeartbeat` ([the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push)).
+Four rules the examples assume: the first thing a client needs is its own pawn as a `Dynamic`, `PlayerDerived`, `LocalClient` entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; that pawn registers inside its first possession, since the engine possesses a runtime spawn after its `BeginPlay`, so read its id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned`, not at `BeginPlay`; a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); a `CrowdyOnRep` function takes no parameters, read the property for the new value ([Crowdy State](./runtime/crowdy-state.md)); and the lantern's assign-and-stop is the client-owned pattern, because the Quickstart sets its `Ownership` to Local Client: a host-owned entity (`Ownership` = Host, the default a placed actor keeps: Static, Stable, level-placed) never ships a plain `CrowdyState` write, so mark the property `CrowdyManualDirty` and call `MarkStateDirty` after each write, or give it `CrowdyHeartbeat` ([the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push)).
 
 ## Three things that break silently in a cooked build
 
@@ -59,8 +54,8 @@ Editor and Play in Editor hide all three. Only a packaged build shows them.
 
 | Break | Why it is silent | Fix | Owning page |
 |---|---|---|---|
-| Reading `HasMetaData` at runtime | Cooked and Shipping builds strip UObject metadata; the check answers `false` and marker-driven code goes dark with no error | Read `UCrowdyBakedRegistry`; the SDK already does this for RPC, Crowdy State, and Game Model metadata | [Packaging](./guides/packaging.md#1-rebuild-the-baked-registry) |
-| A marker added after the last cook | The baked registry is a snapshot taken at cook time; a new marker is invisible until it is rebaked | Cook again: the cook rebakes the registry at its start, so the break is a package cooked before the marker existed. **Tools > Rebuild Crowdy Registry** or Studio's **Rebuild (Deep Scan)** only refresh the in-editor view of the bake | [Cooked builds](./game-models/containers-and-attributes.md#cooked-builds), [Packaging](./guides/packaging.md#1-rebuild-the-baked-registry), [Inspector and Registry](./studio/inspector-and-registry.md) |
+| Reading `HasMetaData` at runtime | Cooked and Shipping builds strip UObject metadata; the check answers `false` and marker-driven code goes dark with no error | Read `UCrowdyBakedRegistry`; the SDK already does this for RPC and Crowdy State metadata | [Packaging](./guides/packaging.md#1-rebuild-the-baked-registry) |
+| A marker added after the last cook | The baked registry is a snapshot taken at cook time; a new marker is invisible until it is rebaked | Cook again: the cook rebakes the registry at its start, so the break is a package cooked before the marker existed. **Tools > Rebuild Crowdy Registry** or Studio's **Rebuild (Deep Scan)** only refresh the in-editor view of the bake | [Packaging](./guides/packaging.md#1-rebuild-the-baked-registry), [Inspector and Registry](./studio/inspector-and-registry.md) |
 | A placement guid read at `BeginPlay` | The engine releases the per-placement guid before `BeginPlay` in a cooked build; the editor keeps it alive | Read placement data at `OnRegister`, never at `BeginPlay` | [Stable identity in a packaged build](./concepts/entities-identity-ownership.md#stable-identity-in-a-packaged-build) |
 
 A fourth hazard is loud, not silent: Shipping sets `WITH_DEV_AUTOMATION_TESTS` to 0, and a target that forces dev tests back on can then fail to compile a test file through a `!UE_BUILD_SHIPPING` region it reaches via a header. [What Shipping strips](./guides/packaging.md#5-what-shipping-strips).
@@ -71,7 +66,7 @@ Config Sync in Crowdy Studio writes the Network category of `UCrowdySDKDeveloper
 
 | Never hand-type | Owned by you (fine to edit) | Owning page |
 |---|---|---|
-| `Environment`, `DiscoveryUrl`, `AppID`, `OrgId`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`, `HostPollIntervalSeconds` | `MapProfiles`, `DefaultProfile`, `BakedRegistry`, `DefaultModelNotificationCarrier`, `PreloadedEntityClasses`, `IDOverrides`, `ClassIDOverrides` | [Config Sync](./studio/config-sync.md#what-config-sync-writes-and-what-you-own), [Project settings](./reference/project-settings.md) |
+| `Environment`, `DiscoveryUrl`, `AppID`, `OrgId`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`, `HostPollIntervalSeconds` | `MapProfiles`, `DefaultProfile`, `BakedRegistry`, `PreloadedEntityClasses`, `IDOverrides`, `ClassIDOverrides` | [Config Sync](./studio/config-sync.md#what-config-sync-writes-and-what-you-own), [Project settings](./reference/project-settings.md) |
 
 Do not copy the plugin's `[CoreRedirects]` into the project's `DefaultEngine.ini` either; `Plugins/CrowdySDK/Config/DefaultCrowdySDK.ini` already carries them. [Packaging](./guides/packaging.md#6-coreredirects-ship-with-the-plugin).
 
@@ -102,12 +97,11 @@ The full table, including behavior switches and diagnostic commands, is on [Cons
 
 | Rule | Owning page |
 |---|---|
-| Every id is `int64`; the app id travels as a JSON string and the SDK encodes it, never you | [Ids are 64-bit](./game-models/overview.md#ids-are-64-bit-and-the-sdk-does-the-json) |
+| Every id is `int64`; the app id travels as a JSON string and the SDK encodes it, never you | [The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code) |
 | The host is a convention, not enforcement; never gate cheat-sensitive state on it | [Host is a convention](./concepts/host-is-a-convention.md), [Host authority](./runtime/host-authority.md) |
-| An empty invoke policy is sent as an explicit null that clears the server's gate; deleting `require` lines on a player-callable function does not clear it, the inferred gate applies | [An empty policy clears the server's policy](./game-models/invoke-policies.md#an-empty-policy-clears-the-servers-policy) |
-| Presence is the player's actor: a participant with no fresh actor for 60 seconds is marked left; an empty session ends after five minutes | [Sessions and presence](./concepts/sessions-and-presence.md#presence-is-the-players-actor) |
+| Presence is the player's actor: a client with no fresh actor is at no position and receives no spatial event | [Sessions and presence](./concepts/sessions-and-presence.md#presence-is-the-players-actor) |
 | A world subsystem null-checks `GetGameInstance()` in `Initialize()`; it is null in the transient world at engine start | [Host authority](./runtime/host-authority.md#the-host-subsystem), [Replicated subsystems](./runtime/replicated-subsystems.md) |
-| An array parameter on a delegate handler is `const TArray<T>&`; a by-value parameter does not match and `AddDynamic` will not compile | [Collections](./game-models/collections.md#collections) |
+| An array parameter on a delegate handler is `const TArray<T>&`; a by-value parameter does not match and `AddDynamic` will not compile | [Teams](./services/teams.md) |
 | A `Multicast` call has a 1024-byte payload budget and is dropped loudly, never truncated; large payloads go on `SpatialMulticast` | [RPC events](./runtime/rpc-events-cpp.md#containers-and-their-bounds) |
 
 ## Related

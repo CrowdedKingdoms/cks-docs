@@ -356,9 +356,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyContainerManifestApply.h",
-      "page": "game-models/pre-seeding",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyCollectionItem",
@@ -366,9 +366,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyGameModelSessionTypes.h",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyCombatantState",
@@ -376,9 +376,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyCombatKitActions.h",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyContainerEdge",
@@ -386,9 +386,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyGameModelSessionTypes.h",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyContainerManifestRow",
@@ -396,9 +396,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyContainerManifest.h",
-      "page": "game-models/pre-seeding",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyContainerRef",
@@ -406,9 +406,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyGameModelSessionTypes.h",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyCrop",
@@ -416,9 +416,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyWorldsimKitActions.h",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyEffectAssignmentSpec",
@@ -456,9 +456,9 @@
       "display_name": "Tuning Parameter",
       "module": "CrowdyReplication",
       "header": "CrowdyEffect.h",
-      "page": "game-models/effects-cpp",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyEffectOperand",
@@ -476,9 +476,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyEffectSpec.h",
-      "page": "game-models/invoke-policies",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyEffectSignal",
@@ -486,9 +486,9 @@
       "display_name": "Signal",
       "module": "CrowdyReplication",
       "header": "CrowdyEffect.h",
-      "page": "game-models/effects-cpp",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyEffectSpec",
@@ -516,9 +516,9 @@
       "display_name": "Timer",
       "module": "CrowdyReplication",
       "header": "CrowdyEffect.h",
-      "page": "game-models/automations",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyEffectTimerParam",
@@ -526,9 +526,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyEffect.h",
-      "page": "game-models/automations",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyEntityRecord",
@@ -546,9 +546,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyGameModelSessionTypes.h",
-      "page": "game-models/sessions",
+      "page": "guides/whats-changed",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyGameModelSession",
@@ -556,9 +556,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyGameModelSessionTypes.h",
-      "page": "game-models/sessions",
+      "page": "guides/whats-changed",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyGameModelSessionEvent",
@@ -566,9 +566,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyGameModelSessionTypes.h",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyGameModelSessionParticipant",
@@ -576,9 +576,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyGameModelSessionTypes.h",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyGameModelSessionSnapshot",
@@ -586,9 +586,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyGameModelSessionTypes.h",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyLeaderboardEntry",
@@ -596,9 +596,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyLeaderboardsKitActions.h",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyManifestRowFailure",
@@ -606,9 +606,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyContainerManifestApply.h",
-      "page": "game-models/pre-seeding",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyModelFailure",
@@ -616,9 +616,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyGameModelSessionTypes.h",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyModelRef",
@@ -626,9 +626,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyModelRef.h",
-      "page": "game-models/containers-and-attributes",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyPoolConfig",
@@ -646,9 +646,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyWorldsimKitActions.h",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyVideoFrame",
@@ -666,9 +666,9 @@
       "display_name": "",
       "module": "CrowdyReplication",
       "header": "CrowdyWorldsimKitActions.h",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "FCrowdyAppAvatarStateList",

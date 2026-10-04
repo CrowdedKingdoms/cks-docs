@@ -1,0 +1,260 @@
+---
+sidebar_position: 6
+title: Operations
+---
+
+# Operations
+
+Everything you need to run an app's ck-exec code: its logs, what is running and where, its
+versions and a rollback, a kill switch, calls per endpoint, the call limit, what it costs, and
+a developer connection for tools and admin endpoints.
+
+Reads need the org's `view_compute_diagnostics` permission. Changes and developer connections
+need `manage_compute`. None of them take an app token: use your own session.
+
+## Logs
+
+A hub or spoke logs with `ctx.log`:
+
+```rust
+ctx.log(Level::Warn, &format!("wave {} took {} ms", self.wave, took));
+```
+
+`execLogs` returns the app's lines, newest first:
+
+```graphql
+query {
+  execLogs(appId: "…", nodeType: "arena", maxLevel: 1, limit: 50) {
+    id
+    nodeType
+    key
+    level
+    host
+    at
+    flow
+    text
+  }
+}
+```
+
+| Argument | Meaning |
+|---|---|
+| `nodeType`, `key` | Only one type, or one instance. |
+| `maxLevel` | The least severe level included: 0 errors only, 1 warnings too, 2 info, 3 everything (the default). |
+| `before` | A line `id`: only older lines. Pass the oldest `id` you have to page back. |
+| `limit` | At most this many lines, default 100 and at most 500. |
+| `flow` | Only the lines of one flow (below). |
+
+### Following one call
+
+Every line logged while a handler runs carries the **flow** of the call it was handling, as 32
+hex digits. A player's call and everything it causes share one flow: the calls it makes to
+other hubs, on any host, and the lines those log. So `execLogs(appId: "…", flow: "…")` shows
+what one call did across the whole tree, in place of the legacy `gameModelFlow`. Lines written
+outside a call (start, snapshot, stop) have no flow.
+
+Lines are kept for 24 hours, within these limits:
+
+- **Per call:** a handler call logs at most 32 lines, and each line is cut to 1 KiB.
+- **Per host:** each execution host keeps 50 lines a second per app, in bursts of up to 200.
+- **Per app:** at most 200 lines a second and 100,000 a day, across hosts.
+
+When a host drops lines over its rate, the log gets one warning line saying how many.
+
+## Instances and versions
+
+`execInstances(appId)` lists what the platform has placed for the app:
+
+| Field | Meaning |
+|---|---|
+| `nodeType`, `key` | Which instance it is. |
+| `kind` | `hub` or `spoke`. |
+| `phase` | `idle`, `starting`, `running` or `stopping`. |
+| `host` | The host it runs on. |
+| `epoch` | Rises each time it's placed. |
+| `sinceMs` | How long it has been in this phase. |
+| `heldBack` | Why it isn't being placed right now, when it isn't. Either it crashed five times within a minute, and is placed again as those crashes age out, or its last start failed, and it's retried after 5 seconds. |
+
+`execVersions(appId)` lists every deploy, newest first, and marks the active one. Its
+`manifestJson` is that version's manifest: each node type's kind, parent, client access, calls,
+scopes and limits, with a spawn seed shown as its size (`seed_bytes`).
+`execActivateVersion(appId, version)` makes an earlier one active again, which is a rollback.
+Running instances pick it up when they next start, just as they do after a deploy. A hub stops
+when it has been idle for its eviction window or the app has been empty that long, and one whose
+timer is pending doesn't go idle while players are in. To move such a hub now, switch its type
+off and on with the kill switch below: it persists, stops, and its next call starts it on the
+active version from its snapshot.
+
+## The kill switch
+
+```graphql
+mutation {
+  execSetEnabled(appId: "…", nodeType: "mobs", enabled: false) {
+    activeVersion
+    disabled
+    disabledTypes
+    budgetPaused
+  }
+}
+```
+
+Without `nodeType`, the whole app is switched off. While a type is off:
+
+- nothing of it is placed;
+- running instances are persisted and stopped;
+- calls to it are refused with `Denied`.
+
+With the whole app off, players aren't given a host at all. Switch it on again and instances
+start as they're called. `execAppStatus(appId)` shows the switches.
+
+## Calls per endpoint
+
+`execEndpointStats` counts the calls to each endpoint (a node type's method) over the last
+minutes, most called first:
+
+```graphql
+query {
+  execEndpointStats(appId: "…", nodeType: "arena", sinceMinutes: 60) {
+    nodeType
+    method
+    calls
+    appErrors
+    busy
+    denied
+    deadlineExceeded
+    otherErrors
+    latencyMsAvg
+    latencyMsMax
+  }
+}
+```
+
+- A player's or an instance's call is counted once, by the host it entered on, with the status
+  its caller got. Its latency runs from reaching that host to the answer leaving it: queueing, the
+  handler, and any hop to the host that runs the target.
+- Platform events (`$timer`, `$topic`, `$presence`, `$session`, `$world`) are counted by the host
+  that ran them, with the time in the handler.
+- Each host reports a minute once it ends, and counters are kept 7 days (`sinceMinutes` at most
+  10,080). A host counts at most 256 endpoints per app a minute; the rest share one `(other)` row.
+
+## Call limits
+
+A player may make **120 calls per 10 seconds** to an app on one execution host, the legacy
+invoke limit. Subscribing and unsubscribing count against it too. A call (or subscription) over
+it is refused with `Busy`, and its message starts `rate limited` and says how long to wait. A
+developer connection shares its user's limit. Calls between instances don't count; they have the
+router's own limits.
+
+The limit is kept per host, so a player connected to hubs on two hosts has 120 on each. Refused
+calls show up as `busy` in the counters above; refused subscriptions do not.
+
+Since ck-exec 0.10.0 the host also holds each connection to a few more limits:
+
+- `ping` has its own allowance, 60 per 10 seconds; a ping over it gets no answer. A WebSocket
+  ping (the protocol's control frame, which the host answers itself) over that allowance closes
+  the connection instead.
+- A connection holds at most 256 subscriptions at once; the next is refused `Denied`.
+- A message larger than 4 MiB and 64 KiB (a payload as large as an instance may send, with its
+  address and method) closes the connection, and so does a text message: the protocol is binary.
+- Before a token is checked, a host takes at most 60 connections per 10 seconds from one address
+  (an IPv4 address, or an IPv6 /64); more are closed as they arrive. A load test that opens more
+  connections than that from one machine needs hosts configured for it.
+
+Since ck-exec 0.11 two more limits keep one player from filling what everyone shares:
+
+- **Sessions.** A player (or a developer connection, under its user) holds at most 16
+  connections to one app through a host at once. The 17th is answered `HTTP 429` with the reason
+  before any socket opens, and so is a connection to a host that is full. A browser cannot read
+  that answer and reports `Unavailable`; CrowdyJS in Node (with the `ws` package) and CrowdyCPP
+  report `Unavailable` with the reason. Close the connections a game no longer uses.
+- **Instances.** At most 1,024 instances of one app run at once, mods included. Past that,
+  nothing new of the app is placed until some stop, whoever asks: a call to a hub key that is
+  not running is answered `Unavailable`, and `execConnect` with a `nodeType` and `key` that would
+  place one fails. An idle instance stops after its `evict_after_ms` (5 minutes by default), so
+  keep the keys a game creates bounded, for example one hub per match rather than per action.
+
+Neither SDK retries a `Busy` call for you. CrowdyJS marks this refusal on the error
+(`CrowdyExecError.rateLimited`, with the wait in `retryAfterMs`), and CrowdyCPP on the reply
+(`ExecReply::rateLimited()`, `retryAfterMs()`), so a game can tell it from a full mailbox and
+wait as long as the message says.
+
+## Usage and budgets
+
+ck-exec code is metered per minute and billed in compute units, like the WASM engines it
+replaces: the greater of the CPU time and the fuel a minute used. Realtime events count as
+replication egress.
+
+An app's code is **paused** (`budgetPaused`) in two cases:
+
+- its last settled minute was over an enforced per-minute compute budget (`setAppComputeBudget`
+  with `enforce: true`);
+- the app's runtime status is not active, for example because the account ran out of funds.
+
+A paused app is switched off entirely, as above. It resumes by itself the minute after both
+conditions clear.
+
+Players' [mods](mods) are not in the app's usage or budget: each bills its owner's player
+wallet, and billing switches off only that owner's mods; see
+[who pays for a mod](mods#who-pays-for-a-mod).
+
+## Developer connections
+
+`execConnectAsDeveloper` returns a gateway and a connect token for **you**, not a player:
+
+```graphql
+mutation {
+  execConnectAsDeveloper(appId: "…", nodeType: "arena", key: "m1") {
+    gatewayUrl
+    token
+    host
+    expiresAt
+  }
+}
+```
+
+Calls on that connection arrive as `Caller::Developer(your user id)`. They may reach any node
+type, not only `client` ones, so a tool can call admin endpoints, run a job by hand, or inspect
+a hub. They can never reach the platform's `$` methods, and subscribing doesn't count as a
+player session. Guard an admin endpoint with `call.developer()`:
+
+```rust
+"reset_wave" => {
+    let by = call.developer()?; // refuses players and other instances
+    ctx.log(Level::Info, &format!("wave reset by developer {by}"));
+    self.wave = 0;
+    encode(&true)
+}
+```
+
+A module built with an older `ckx-sdk` (guest ABI 3 or earlier) refuses developer calls. Rebuild
+it with the current SDK first.
+
+## From an SDK
+
+| CrowdyJS `client.exec` | CrowdyCPP `client.exec()` |
+|---|---|
+| `logs(appId, { nodeType, key, maxLevel, flow, before, limit })` | `logs(appId, ExecLogsQuery)` |
+| `endpointStats(appId, { nodeType, sinceMinutes })` | `endpointStats(appId, nodeType, sinceMinutes)` |
+| `instances(appId)`, `versions(appId)`, `status(appId)` | the same, each with an `…Async` twin |
+| each version's `manifestJson`, and `manifest` parsed | each version's `manifestJson` |
+| `activateVersion(appId, version)` | `activateVersion(appId, version)` |
+| `setEnabled(appId, enabled, nodeType?)` | `setEnabled(appId, enabled, nodeType)` |
+| `connectAsDeveloper(appId, { nodeType, key })` | `connectAsDeveloper(appId, ExecConnectOptions)` |
+
+Use CrowdyJS 18.1.0 or CrowdyCPP 0.55.0 or later on dev.
+
+## Coming from the legacy APIs
+
+| Legacy | ck-exec |
+|---|---|
+| `computeModuleLogs`, `playerComputeLogs` | `execLogs` |
+| `computeModuleRuns`, `computeModuleStats`, `computeAppDiagnostics`, `gameModelAppDiagnostics`, automation runs and stats | `execInstances` for what runs where, `execEndpointStats` for calls and latency per endpoint, and `execLogs` for what it said |
+| `gameModelFlow`, a function's `flowId` | `execLogs(flow:)`: every line one call chain logged, on any hub and host |
+| The invoke rate limit (120 per 10 s per player and app) | The same numbers per execution host, refused `Busy` ("rate limited") |
+| `computeModuleVersions`, `computeDeployVersion` | `execVersions`, and `execDeploy` then `execActivateVersion` to go back |
+| `computeSetModuleEnabled`, `playerComputeSetEnabled` | `execSetEnabled` |
+| `computeResetBreaker` | Nothing to reset: a crash-looping instance is held back (`heldBack`) until its crashes are a minute old, then placed again |
+| `computeInvoke`, `gameModelInvoke` (manual runs) | `execConnectAsDeveloper`, then call the endpoint |
+| `appComputeBudget`, `setAppComputeBudget` | The same budget; an enforced one pauses ck-exec code too |
+
+Next: [builds and starter packs](builds).

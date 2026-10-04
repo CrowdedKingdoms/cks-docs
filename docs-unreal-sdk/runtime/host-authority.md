@@ -34,7 +34,7 @@ In the post's Blueprint, at **Event BeginPlay** the pure **Crowdy Has Authority*
 </Tabs>
 
 :::danger[Host is a convention, not enforcement. Never gate cheat-sensitive state on it.]
-Nothing on the wire is rejected for not coming from the host, and a modified client can claim to be it. Use the check to pick who runs shared logic; anything a player could gain by winning that check is a [Game Model](../game-models/overview.md) effect with an invoke policy.
+Nothing on the wire is rejected for not coming from the host, and a modified client can claim to be it. Use the check to pick who runs shared logic; anything a player could gain by winning that check is decided by your server code, on the [truth plane](../concepts/two-planes.md).
 :::
 
 **Success signal.** With two clients, the post is bright on exactly one of them, the host. The effect is local by design: a post the whole village must see bright makes the intensity a [Crowdy State](./crowdy-state.md) property the host pushes. `crowdy.entity.trace 1` shows the election result on both clients.
@@ -64,7 +64,7 @@ The server-validated check is still not enforcement. It tells you the current tr
 - `IsHostSet()` before `IsHost()`. Until an election result arrives, every client reads false.
 - `GetHostID()` and `GetHostUserID()` are different ids. Compare `GetOwnerID()` with the first only for an entity a player spawned; a host-owned entity carries no owner id at all, so ask `GetRole() == ECrowdyRole::HostOwned`, `IsLocallyOwned()`, or `DoesCrowdyEntityOwn` instead.
 - A host-owned entity is written by explicit pushes. Assigning a property on it and waiting does nothing. A [replicated subsystem](./replicated-subsystems.md) the host owns is the exception: it is auto-diffed.
-- `HostOverride` is a view-plane tie-breaker. If the value matters, it belongs in a Game Model.
+- `HostOverride` is a view-plane tie-breaker. If the value matters, it belongs in your server code.
 - The server check needs the target to exist on the server. A freshly spawned, never-updated entity answers Failed.
 
 ## Related

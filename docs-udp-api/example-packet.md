@@ -78,6 +78,7 @@ mutation { sendActorUpdate(input: {
   appId: "1",
   chunk: { x: "0", y: "0", z: "0" },
   uuid: "0123456789abcdef0123456789abcdef",
+  state: "",  # base64; empty, like the payload above
   distance: 8, decayRate: 1, sequenceNumber: 1
 }) }
 ```

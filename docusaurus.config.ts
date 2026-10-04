@@ -30,6 +30,15 @@ const unrealSdkRedirects: {from: string; to: string}[] = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'scripts/unreal-sdk-redirects.json'), 'utf8'),
 );
 
+// The deleted pages of the legacy engines (game models, automations, compute modules, player
+// code), each sent to its section of the ck-exec mapping page. This map goes to the static
+// `redirects` option instead: its targets carry an anchor, which `createRedirects` cannot
+// express, and they all exist, so the plugin's refusal of a missing target is wanted here. A
+// renamed mapping page fails the build rather than silently dropping every entry.
+const legacyEngineRedirects: {from: string; to: string}[] = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'scripts/legacy-engine-redirects.json'), 'utf8'),
+);
+
 // ---------------------------------------------------------------------------------------
 // WHICH SITE THIS BUILD IS.
 //
@@ -209,6 +218,7 @@ const config: Config = {
           '/replication-api',
           '/crowdyjs',
           '/crowdycpp',
+          '/crowdypy',
           '/unreal-sdk',
           '/management-ui',
           '/build-a-game',
@@ -221,6 +231,7 @@ const config: Config = {
           'docs-udp-api',
           'docs-crowdyjs',
           'docs-crowdycpp',
+          'docs-crowdypy',
           'docs-unreal-sdk',
           'docs-management-ui',
           'docs-build-a-game',
@@ -262,6 +273,15 @@ const config: Config = {
     [
       '@docusaurus/plugin-content-docs',
       {
+        id: 'exec',
+        path: 'docs-exec',
+        routeBasePath: '/exec',
+        sidebarPath: './sidebars/exec.ts',
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
         id: 'crowdyjs',
         path: 'docs-crowdyjs',
         routeBasePath: '/crowdyjs',
@@ -275,6 +295,15 @@ const config: Config = {
         path: 'docs-crowdycpp',
         routeBasePath: '/crowdycpp',
         sidebarPath: './sidebars/crowdycpp.ts',
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'crowdypy',
+        path: 'docs-crowdypy',
+        routeBasePath: '/crowdypy',
+        sidebarPath: './sidebars/crowdypy.ts',
       },
     ],
     [
@@ -314,13 +343,14 @@ const config: Config = {
       },
     ],
 
-    // -------- Client-side redirects for moved pages --------
-    // See the note on `unrealSdkRedirects` at the top: the map lists redirects whose
-    // targets may not exist yet, so it is applied per existing route instead of as a
-    // static list the plugin would validate and refuse.
+    // -------- Client-side redirects for moved and deleted pages --------
+    // See the notes on `unrealSdkRedirects` and `legacyEngineRedirects` at the top: the
+    // Unreal map lists redirects whose targets may not exist yet, so it is applied per
+    // existing route instead of as a static list the plugin would validate and refuse.
     [
       '@docusaurus/plugin-client-redirects',
       {
+        redirects: legacyEngineRedirects,
         createRedirects(existingPath: string) {
           const from = unrealSdkRedirects
             .filter((r) => r.to === existingPath)
@@ -335,6 +365,11 @@ const config: Config = {
     // blocks, so the TypeScript source is compiled by this site's bundler and never by
     // `tsc` (it is not strict-clean). See vendor/klee/VENDORED.md.
     './src/plugins/klee-vendor',
+
+    // -------- The served text files link this build's own site --------
+    // static/llms.txt and the Unreal SDK helpers are committed with prod's origin; on dev and
+    // test the copies in the build link that tier's site instead.
+    ['./src/plugins/tier-origin', {prodUrl: DOCS_TIERS.prod.url}],
 
     // -------- GraphQL schema reference generators (nested into host instance) --------
     // Each call generates Markdown into the host docs instance's `reference/graphql/` folder
@@ -443,6 +478,12 @@ const config: Config = {
               sidebarId: 'sidebar',
               label: 'Replication API',
             },
+            {
+              type: 'docSidebar',
+              docsPluginId: 'exec',
+              sidebarId: 'sidebar',
+              label: 'ck-exec (preview)',
+            },
           ],
         },
         {
@@ -468,6 +509,12 @@ const config: Config = {
               docsPluginId: 'crowdycpp',
               sidebarId: 'sidebar',
               label: 'CrowdyCPP',
+            },
+            {
+              type: 'docSidebar',
+              docsPluginId: 'crowdypy',
+              sidebarId: 'sidebar',
+              label: 'CrowdyPy',
             },
             {
               type: 'docSidebar',
@@ -512,6 +559,7 @@ const config: Config = {
           items: [
             {label: 'CrowdyJS', to: '/crowdyjs/intro'},
             {label: 'CrowdyCPP', to: '/crowdycpp/intro'},
+            {label: 'CrowdyPy', to: '/crowdypy/intro'},
             {label: 'Build a game', to: '/build-a-game/intro'},
             {label: 'Unreal SDK', to: '/unreal-sdk/intro'},
           ],

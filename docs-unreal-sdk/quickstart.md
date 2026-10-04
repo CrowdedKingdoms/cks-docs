@@ -2,7 +2,7 @@
 slug: quickstart
 sidebar_position: 3
 title: Quickstart
-description: Sign in and sync your app, sign the player in at runtime, make your player pawn an entity the server can see, watch your own reflection, then build one lantern that shows an entity, an RPC event, a replicated property, and a server-owned value.
+description: Sign in and sync your app, sign the player in at runtime, make your player pawn an entity the server can see, watch your own reflection, then build one lantern that shows an entity, an RPC event, and a replicated property.
 ---
 
 import Tabs from '@theme/Tabs';
@@ -10,7 +10,7 @@ import TabItem from '@theme/TabItem';
 
 # Quickstart
 
-This page puts you on the wire, then builds one small thing, a lantern, with one of each SDK idea on it: an entity, an RPC event, a Crowdy State property, and a Game Model attribute. Each step is a few lines of C++ or a few Blueprint nodes, and each ends with something you can see. A single Play in Editor client is enough for all of it.
+This page puts you on the wire, then builds one small thing, a lantern, with one of each SDK idea on it: an entity, an RPC event, and a Crowdy State property. Each step is a few lines of C++ or a few Blueprint nodes, and each ends with something you can see. A single Play in Editor client is enough for all of it.
 
 Two words you will meet on every step. An **entity** is an actor other players can see: an actor with a Crowdy Entity Component, which gives it a shared identity and one **owner**, the client that simulates it; every other client holds a **proxy** that plays back what the owner sends. A **map profile** is a small data asset (`UCrowdyMapProfile`) that switches the SDK on for one map; it is assigned per map under **Project Settings, Plugins, Crowdy SDK, Map Profiles**.
 
@@ -34,13 +34,13 @@ Config Sync points the project at an app; a map profile decides what the SDK doe
 
 ## About the code on this page
 
-The C++ steps build three small things. Step 0 is the Game Instance, `LanternGameInstance.h` and `LanternGameInstance.cpp`. Step 1 is your player, `LanternPlayer.h` and `LanternPlayer.cpp`, with a Game Mode, `LanternGameMode.h` and `LanternGameMode.cpp`, that spawns it at the right moment. Steps 3 to 6 build one actor, `ALantern`, in `Lantern.h` and `Lantern.cpp`: step 3 gives you both files, each later step is what you add to them, and the finished actor is at the end of the page. The first comment line of each block names the file it goes in. The usual boilerplate is left out so the SDK parts stand out: add `#pragma once`, `#include "CoreMinimal.h"`, and the base class include (`GameFramework/Actor.h`, `GameFramework/Character.h`, `GameFramework/GameModeBase.h`, `Components/ActorComponent.h`, or `Engine/GameInstance.h`) at the top of each header yourself. Everything else, including the `.generated.h` line, is in the block.
+The C++ steps build three small things. Step 0 is the Game Instance, `LanternGameInstance.h` and `LanternGameInstance.cpp`. Step 1 is your player, `LanternPlayer.h` and `LanternPlayer.cpp`, with a Game Mode, `LanternGameMode.h` and `LanternGameMode.cpp`, that spawns it at the right moment. Steps 3 to 5 build one actor, `ALantern`, in `Lantern.h` and `Lantern.cpp`: step 3 gives you both files, each later step is what you add to them, and the finished actor is at the end of the page. The first comment line of each block names the file it goes in. The usual boilerplate is left out so the SDK parts stand out: add `#pragma once`, `#include "CoreMinimal.h"`, and the base class include (`GameFramework/Actor.h`, `GameFramework/Character.h`, `GameFramework/GameModeBase.h`, `Components/ActorComponent.h`, or `Engine/GameInstance.h`) at the top of each header yourself. Everything else, including the `.generated.h` line, is in the block.
 
 The Blueprint steps build the same three things: a Game Instance Blueprint, a Character Blueprint with a Game Mode Blueprint, and one Actor Blueprint for the lantern. The lantern needs two components before you start: a **Sphere Collision** (the trigger a player walks into) and a **Point Light** named `Light`, the thing every lantern graph drives. Every Blueprint figure can be panned with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
 
 ## 0. Sign the player in
 
-Nothing connects by itself. The SDK requests its realtime connection only after a player signs in, so the game signs the player in once, at startup, from its Game Instance: call `Login` (or `Register` for a new account) on the Crowdy SDK subsystem and wait for two events: **On Login** (the account is signed in) and then **On UDP Connection Success** (the realtime connection is up). Every entity, event, property, and Game Model read below depends on that connection.
+Nothing connects by itself. The SDK requests its realtime connection only after a player signs in, so the game signs the player in once, at startup, from its Game Instance: call `Login` (or `Register` for a new account) on the Crowdy SDK subsystem and wait for two events: **On Login** (the account is signed in) and then **On UDP Connection Success** (the realtime connection is up). Every entity, event, and property below depends on that connection.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -217,46 +217,9 @@ crowdy.state.trace 1
 
 The trace logs each delta and its size, and `OnRep_Lit` runs on the mirror. Turn both off afterwards.
 
-## 6. Read one server-owned value
+## 6. The finished lantern
 
-A Game Model attribute lives on the server. You declare it on a container class, attach the container to an entity, sync the schema from Crowdy Studio, and read the confirmed value; a change goes through an Effect on the server, never through a client write.
-
-The lantern's server-owned value is its fuel. The light's intensity follows it: when the confirmed value lands, the light dims to the fuel level (100 by default), and it follows every later change the server confirms.
-
-<Tabs groupId="lang">
-<TabItem value="cpp" label="C++">
-
-The container, in its own two files, `LanternFuel.h` and `LanternFuel.cpp`:
-
-<CppSnippet id="qs-model-read" />
-
-The `CrowdyContainer` value is the model's name on the server; the `CrowdyKey` is the attribute's name there, lowercase. Then the lantern carries it, created in the constructor next to the entity component so it binds when the entity registers:
-
-<CppSnippet id="qs-model-attach" />
-
-</TabItem>
-<TabItem value="bp" label="Blueprint">
-
-1. In the Blueprint editor toolbar, open the **Crowdy SDK** menu and tick **Game Model Class**. The Blueprint is now a container.
-2. Add a Float variable named `Fuel`, default 100, select it, and set its **Crowdy Replication** dropdown to **Server Owned**.
-3. Compile, then listen for the confirmed values. **Listen for Model Changes** fires **On Game Model Changed** each time a confirmed value lands on the actor it targets, the first pull included; **Get Model Attribute (Float)** reads the cached server value by key.
-
-<Blueprint src="qs-model-read" title="BeginPlay, Listen for Model Changes, Get Model Attribute (Float) by key, Set Intensity on Light" />
-
-</TabItem>
-</Tabs>
-
-Then open Crowdy Studio, go to the **Game Model** page, and press **Sync to Server** so the server learns about the new model and attribute. Relaunch Play afterwards. See [Game Models authoring](./studio/game-models-authoring.md).
-
-:::caution[Never write an attribute from the client.]
-A client assignment to `Fuel` changes a local copy that the next server pull overwrites. To change the value, apply an Effect; the server runs it, confirms the result, and every bound client re-pulls. See the [Game Models overview](./game-models/overview.md).
-:::
-
-**Success signal.** Shortly after the connection is up, the light dims to the fuel level: `OnRep_Fuel` (or **On Game Model Changed**) ran with the confirmed value. `Is Game Model Ready` (`UCrowdyModel::IsContainerBound` in C++) turns true at the same moment, once the container is bound and the first values have landed. For the full story, including identity resolution and the pull, turn on `crowdy.gamemodel.trace 1`.
-
-## 7. The finished lantern
-
-The two lantern files after steps 3 to 6, for comparison with your own:
+The two lantern files after steps 3 to 5, for comparison with your own:
 
 <CppSnippet id="qs-lantern-complete" />
 
@@ -269,7 +232,6 @@ The two lantern files after steps 3 to 6, for comparison with your own:
 - A map whose `MapProfiles` row or `DefaultProfile` names an asset that did not load is inactive; the warning names the asset. Check that before any code. A map with no row at all runs on the shipped default.
 - The loopback variables are test aids. Leave them off in a normal session; they change what a single client sees.
 - An RPC receiver must be a real `UFUNCTION` you declare yourself; the `CROWDY_EVENT` macro only generates the call site.
-- A Game Model attribute exists on the server only after a sync. A read before that returns the default you pass.
 
 ## Next steps
 
@@ -280,4 +242,3 @@ The two lantern files after steps 3 to 6, for comparison with your own:
 - [Entities and spawning](./runtime/entities-and-spawning.md): spawn entities at runtime and receive them on remote clients.
 - [RPC events in C++](./runtime/rpc-events-cpp.md) and [in Blueprint](./runtime/rpc-events-blueprint.md).
 - [Crowdy State](./runtime/crowdy-state.md): the five metadata keys and what each does.
-- [Game Models](./game-models/overview.md): effects, policies, and sessions.

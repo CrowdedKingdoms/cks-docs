@@ -60,17 +60,10 @@ GraphQL responses carry errors in the top-level `errors` array. Each entry has a
 | `HOSTED_MANIFEST_INVALID` | The publish manifest was refused: a path escapes the bundle, a refused file type, over the file-count or size caps, or no `index.html` at the root. 400. | The message lists every problem; fix the build output and publish again. |
 | `HOSTED_PUBLISH_INCOMPLETE` | `completeGamePublish` found staged objects missing or differing from the manifest. 409. | Upload every presigned URL (the message names the paths) and complete again, or `abandonGamePublish` and start over. |
 | `HOSTED_GAME_TAKEN_DOWN` | An operator took this hosted game down; publishing and re-enabling are refused. 403. | Contact hello@crowdedkingdoms.com. |
-| `CONTAINER_TYPE_APP_SCOPED` | `gameModelEnsureContainer` or `gameModelCreateContainer` named a `sessionId` on a container type declared `scope: "app"`, whose rows are one per key for the whole app and shared by every session. | Omit `sessionId` to bind the app-wide row, and pass the session on `gameModelInvoke` instead (`is_participant` / `is_current_turn` are judged against the call's session). If the rows should be per match, change the type's `scope` to `session`. See [Game models](/game-api/game-models#per-type-scope-session-or-app). |
-| `CONTAINER_TYPE_UNDEFINED` | A container was created against a game-model container type the app has not defined. | `extensions.definedTypes` lists what the app does declare, so a typo is visible without a second call. An **empty** list means the app has no game model at all — the shape an app takes when it is recreated or moved between orgs — so re-run your `gameModelSeed`. `gameModelLint` returns every such problem in one query. |
-| `OBJECT_QUARANTINED` | One game-model function or automation is refusing to run because an **enforced** [`gameModelLint`](/game-api/game-models#an-error-can-stop-the-object-running) error stands against it. Scoped to that object — the rest of the app is unaffected. **On `gameModelInvoke` you get `USER_CODE_ERROR` instead** (see the player boundary below), with `blame: AUTHOR` and the quarantine fields intact. | `extensions.quarantineReason` names the finding, and `quarantinedKind` / `quarantinedName` name the object — on both codes. Fix the definition and write it again: quarantine **never blocks a write** and clears itself once the finding is gone, so there is nothing to ask us to reset. `gameModelLint` lists everything currently wrong with the app. |
-| `SESSION_FULL` | `gameModelJoinSession`: every seat (`maxParticipants`) is taken. 409. | Pick another session from `gameModelSessions`, or ask the host to raise the cap. A participant who already joined is never refused for capacity when reconnecting. |
-| `SESSION_LOCKED` | `gameModelJoinSession`: admission is `locked` — new participants are refused, existing ones may reconnect. 409. | Wait for `gameModelSessionChanged` to report `admission_changed`, or pick another session. |
-| `SESSION_CLOSED` | `gameModelJoinSession`: admission is `closed` — nobody gets in, not even by reconnection. 409. | This is the state a session is in while it ends; read `gameModelSessionSnapshot` for the final roster. |
-| `SESSION_ENDED` | The session has `status` `completed` or `abandoned` and no longer accepts joins or host actions. 409. A leave for a row that already left is a no-op, not this code. | Create or find another session. |
-| `SESSION_NOT_PARTICIPANT` | The operation requires the **caller** to be a joined participant. 403. | `gameModelJoinSession` first (while admission allows), then retry. |
-| `SESSION_TARGET_NOT_PARTICIPANT` | `gameModelTransferSessionHost`: the user you named as the new host is not a joined participant. 409. About the target, not your permission. | Refetch `gameModelSessionSnapshot` and pick one of its participants. |
-| `SESSION_INCARNATION_STALE` | The `incarnation` you sent is not this participant's current one: another client rejoined as the same user after you. 409. | Stop acting on the session from this client, or rejoin to take over again (which supersedes the other client). |
-| `SESSION_HOST_TERM_STALE` | `expectedHostTerm` does not match the session's `hostTerm`: the host changed since you last read it. 409. | Refetch `gameModelSessionSnapshot`, confirm you are still the host, retry with the current term — or omit `expectedHostTerm` to skip the check. |
+| `WRONG_DATACENTER` | This app is served from another datacenter. `extensions.gameApiUrl` names where. | Reconnect to `extensions.gameApiUrl` and retry. See [Datacenter routing](/game-api/datacenter-routing). |
+| `APP_UNAVAILABLE` | The app's datacenter has no instance able to serve. **No endpoint is named, on purpose** — do not fall back to a cached one, it is in the datacenter that is down. | Retry. See [Datacenter routing](/game-api/datacenter-routing). |
+| `NO_LOCAL_BUDDY` | You are **on** the app's own datacenter and it has no healthy UDP server. **No endpoint is named, because there is nowhere else to go** — a Buddy elsewhere would make every gameplay write cross a WAN, invisibly, because each write still succeeds. If you called `serverWithLeastClients` on the *wrong* datacenter you get `WRONG_DATACENTER` instead, with an endpoint to move to. | Retry, and report it: this one needs an operator. |
+| `PLATFORM_BUSY` | We could not **start** the work in time. 503, with `blame: PLATFORM` and `retryable: true`. Your request did not run. | Retry with backoff; see [below](#platform_busy-we-could-not-start-the-work). |
 | `INTERNAL_SERVER_ERROR` | Unexpected server error. | Safe to retry idempotent reads; do **not** blind-retry non-idempotent mutations (send an `idempotencyKey` instead). |
 
 :::caution[Codes changed in ck-api v1.60.0 — check the tier before you branch]
@@ -107,80 +100,19 @@ payload under the same key returns `IDEMPOTENCY_CONFLICT`. Keys expire after 24h
 nullable field may resolve to `null` with a corresponding `errors` entry while the rest
 of `data` is populated. Always inspect `errors` even when `data` is present.
 
-### When code you wrote fails: `blame`, `retryable` and the fault codes
+### `PLATFORM_BUSY`: we could not start the work
 
-Three entry points run code the platform did not write — `gameModelInvoke`,
-`computeInvoke` and `playerComputeInvoke`. A failure on one of them is answered with a
-fault: a stable `code`, a **`blame`**, and a **`retryable`** flag. Nothing else comes
-back. The engine's own error text, the sandbox's fault kind, the failing expression and
-any internal identifiers stay on the server, where the app's developer reads them in
-`gameModelEvents` and `computeModuleRuns`.
-
-That is deliberate, and the reason is worth stating: the caller of these operations is
-usually a **player**, not the developer. A player shown `Evaluation timed out` learns
-nothing they can act on, and the game that displayed it has put the platform's words on
-its own screen. **Blame attribution is the platform's job; presentation is yours.**
-
-`blame` answers the one question a client cannot answer for itself:
-
-| `extensions.blame` | Meaning | What a game should usually do |
-|---|---|---|
-| `PLATFORM` | Ours. The app's code may not have run at all. | Retry when `retryable`; otherwise say something went wrong on our side. |
-| `AUTHOR` | The app's own code or configuration. Repeating the identical call gets the same answer, except an open breaker (`CIRCUIT_OPEN`, `retryable: true`), which closes itself. | Do not retry unless `retryable` is true. Show your own wording for "that did not work". |
-| `BUDGET` | A metered allowance for the app or the caller is spent. Nothing is broken. | Back off. `retryable` says whether the allowance returns on its own. |
-
-`retryable` is about the **caller's** options, not about how long a fix takes: an open
-breaker is retryable because it closes itself after a cooldown, while a spent plan
-allowance is not, even though neither is a bug.
-
-| `extensions.code` | `blame` | Meaning |
-|---|---|---|
-| `USER_CODE_ERROR` | `AUTHOR` | The app's own code failed while running. |
-| `USER_CODE_TOO_SLOW` | `AUTHOR` | It ran past the time it is allowed. The message says the action took too long. For a game-model function, reduce the work or raise `run_timeout_ms`. For a compute export, reduce the work or raise the app compute policy `maxRunMs`. Repeated timeouts open the circuit. |
-| `USER_CODE_LIMIT_EXCEEDED` | `AUTHOR` | It exceeded a per-call ceiling (gas, fuel, memory, depth, database operations, response size). |
-| `INVALID_REQUEST` | `AUTHOR` | The arguments did not satisfy the function's declared contract. |
-| `NOT_ALLOWED` | `AUTHOR` | An invoke policy or permission refused this caller. Applies to app admins too: since 2026-09-08 a `manage_apps` holder is judged like a player unless the input sets `bypassPolicy: true`, and that flag itself answers `NOT_ALLOWED` for anyone without `manage_apps`. On `gameModelInvoke` a policy refusal arrives in band (`success: false`, `fault.code: NOT_ALLOWED`); a refused `bypassPolicy` is a GraphQL error. |
-| `NOT_FOUND` | `AUTHOR` | The named function, module or export does not exist for this app. |
-| `PLATFORM_BUSY` | `PLATFORM` | We could not **start** the work in time. The app's code never ran. The message is "The service is busy. Please try again in a moment." This is not a rate limit (`RATE_LIMITED` is `BUDGET` and says the caller is asking too often) and not an open circuit. A full database pool on `computeInvoke` or `gameModelInvoke` is this code, including when the timeout happens while looking up the caller's token. That is not `UNAUTHENTICATED`: the token was not rejected. Retry. |
-| `PLATFORM_ERROR` | `PLATFORM` | A platform failure. The message is "Something went wrong on our side. Please try again." Retrying is reasonable. |
-| `CIRCUIT_OPEN` | `AUTHOR` | The app's own circuit is open after repeated failures. `retryable` is true. `extensions.retryAfterMs` is the remaining cooldown when the server knows it. `extensions.cause` is `watchdog_timeout` when those failures were watchdog kills, so a game can wait out the cooldown and send the hit again. The message says the action kept failing, usually by taking too long. This is not `PLATFORM_BUSY` and not `TEMPORARILY_DISABLED`. |
-| `TEMPORARILY_DISABLED` | `PLATFORM` | An operator switch, a latch, or a platform hold. An open author circuit is `CIRCUIT_OPEN`, not this code. A switch is not retryable when the fault kind is present: the message says it is switched off and retrying will not turn it back on. |
-| `BUDGET_EXCEEDED` | `BUDGET` | A per-minute allowance is spent; it returns on the next window. |
-| `RATE_LIMITED` | `BUDGET` | This caller is asking too often. `extensions.retryAfterMs` when known. |
-| `QUOTA_EXHAUSTED` | `BUDGET` | A metered allowance is spent and does not return on its own. |
-| `WALLET_EMPTY` | `BUDGET` | The calling **player's own** wallet is at or below zero, so their grid code is paused. Top up (`createCheckout` with `PLAYER_WALLET_TOPUP`) or enable `setPlayerAutoBilling`; not retryable until funded. |
-| `SPEND_CAP_REACHED` | `BUDGET` | A spend cap the player set on themselves (`setPlayerSpendCap`) is reached for the current period. Raise or clear it, or wait for the period boundary. |
-| `WRONG_DATACENTER` | `PLATFORM` | This app is served elsewhere. `extensions.gameApiUrl` names where; move and retry. |
-| `APP_UNAVAILABLE` | `PLATFORM` | The app's datacenter has no instance able to serve. **No endpoint is named, on purpose** — do not fall back to a cached one, it is in the datacenter that is down. |
-| `NO_LOCAL_BUDDY` | `PLATFORM` | You are **on** the app's own datacenter and it has no healthy UDP server. **No endpoint is named, because there is nowhere else to go** — a Buddy elsewhere would make every gameplay write cross a WAN, invisibly, because each write still succeeds. Retry, and report it: this one needs an operator. If you called `serverWithLeastClients` on the *wrong* datacenter you get `WRONG_DATACENTER` instead, with an endpoint to move to. |
-
-**`gameModelInvoke` reports a gameplay verdict in band, not as an error.** An authority
-denial or an evaluation failure is a verdict, so the mutation succeeds and the result
-carries `success: false` with a `fault { code blame retryable }` object. It also carries
-the event id and any writes that did apply, which is why it is not thrown. `computeInvoke`
-and `playerComputeInvoke` have no result to return on failure and therefore throw, with
-the same three values in `extensions`.
-
-**A `PLATFORM`-blamed refusal is the exception, and `gameModelInvoke` throws it.** When
-the platform declines to *start* the work — no connection available, or a
-[contended property](/game-api/game-models#concurrency-two-players-writing-the-same-property)
-whose lock could not be taken in time — there is no result to report in band: the whole
-transaction rolled back and no event row was written, deliberately, so that a refusal we
-issued cannot trip the app's own circuit breaker. So handle both carriers on this field:
-`success: false` with a `fault`, and a thrown error whose `extensions` carry the same
-`blame` and `retryable`. Branching on those two is what stays correct; they are the
-contract, and a refusal that is ours is always `blame: PLATFORM` with `retryable: true`.
-
-In CrowdyJS, `playerFaultOf(errorOrResult)` reads both carriers and returns one
-`{ code, blame, retryable }`, and a thrown fault arrives as `CrowdyUserCodeFaultError`
-(a subclass of `CrowdyGraphQLError`, so existing handlers keep working).
+Any operation can be refused with `PLATFORM_BUSY` when the API could not get a database
+connection in time. The error carries **`blame: PLATFORM`** and **`retryable: true`**, the
+HTTP status is 503, and the message is "The service is busy. Please try again in a
+moment." It says nothing about your request or your code: the operation did not run.
 
 ```json
 {
   "errors": [
     {
       "message": "The service is busy. Please try again in a moment.",
-      "path": ["computeInvoke"],
+      "path": ["gameClientBootstrap"],
       "extensions": {
         "code": "PLATFORM_BUSY",
         "blame": "PLATFORM",
@@ -192,6 +124,13 @@ In CrowdyJS, `playerFaultOf(errorOrResult)` reads both carriers and returns one
   "data": null
 }
 ```
+
+A pool timeout while the API looks up the caller's token is this code too. That is not
+`UNAUTHENTICATED`: the token was not rejected, so do not sign the player out.
+
+In CrowdyJS, an error that carries `blame` arrives as `CrowdyUserCodeFaultError` (a
+subclass of `CrowdyGraphQLError`, so existing handlers keep working), and
+`playerFaultOf(error)` returns its `{ code, blame, retryable }`.
 
 #### Retrying `PLATFORM_BUSY`
 
@@ -210,13 +149,12 @@ and the same call will usually succeed a moment later. Retry it:
 Retry only when `retryable` is true. `RATE_LIMITED` is not this: it means the caller is
 sending too often, so slow down rather than retry sooner.
 
-`GmInvokeResult.errorMessage` still exists and is **deprecated**. It now carries a
-platform-authored sentence matching `fault` rather than the engine's text, so it is safe
-to show a player as-is — but prefer `fault` and your own wording. On a policy
-refusal (`fault.code` `NOT_ALLOWED`) that sentence is **You are not allowed to do
-that.** The require leaf (owner, host, participant, a condition) is not in
-`errorMessage`; it is on `gameModelEvents.errorMessage` and in Studio's Advanced
-event log.
+### Code on ck-exec
+
+Code your app runs on [ck-exec](/exec/intro) does not answer through GraphQL errors: a call
+to a hub or spoke gets a status in the gateway's reply (`AppError`, `Busy`, `Denied`, …).
+See [the wire protocol](/exec/intro#the-wire-protocol) for the statuses and which of them
+are safe to retry.
 
 ### Agentic Crowdy Studio stable errors
 

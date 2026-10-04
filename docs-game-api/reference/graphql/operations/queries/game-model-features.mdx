@@ -36,4 +36,4 @@ The app (tenant) whose features to list.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>GmAppFeature</b></code>](/reference/graphql/types/objects/gm-app-feature.mdx) <Badge class="badge badge--secondary " text="object"/> 
-An app feature key that functions can gate on and tiers can grant.
+An app feature key that access tiers can grant. ck-exec code reads the keys a player's tier grants with `ctx.players().features(player)`.

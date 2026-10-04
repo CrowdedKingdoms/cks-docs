@@ -141,24 +141,44 @@ viewer function is ever detached.
   design. If you find the CrowdyJS reference naming an older error code than the
   game-api reference beside it, the chain is working; do not "fix" it by editing
   either generated tree, and do not add a check that demands they agree.
-- **CrowdyJS** is **17.6.0** on every tier as of 2026-09-21 (this line said
-  17.1.0 from 2026-09-13 until then, 15.4.0 before that, and 15.1.0 before
-  2026-09-01 — three times stale, which is the point of the next sentence).
-  15.0.0 was the breaking major that **removed `devLogin`** and added
-  **`auth.login` / `auth.register`**; 16 retired the server-side Studio agent;
-  17.0 made a bound GitHub repository the working tree; 17.1 bundles
-  binary-relay sends; 17.4 exposes game-model sessions; 17.5 bulk containers;
-  17.6 advertises signed downlink bundles. CrowdyCPP is **0.42.0** (it said
-  0.29.0 here through 0.36.0 and 0.37.0 through 0.41.0). The SDK is NOT passwordless; any page here still saying so
-  is stale. **Verify rather than quoting this line — a version in prose is a
-  version that will be wrong:** `npm view @crowdedkingdoms/crowdyjs version`
-  and `git -C ../CrowdyCPP describe --tags`.
+- **SDK versions differ by tier and change often, so this page names none.**
+  Read them where they are published: `npm view @crowdedkingdoms/crowdyjs
+  dist-tags` (`latest` is prod, `test`, `dev`) and `git -C ../CrowdyCPP tag
+  --list 'dev/v*' --sort=-v:refname | head -1` (likewise `test/v*`, `prod/v*`).
+  A page describes the SDK released on the tier its branch publishes to. The
+  SDK is NOT passwordless; any page here still saying so is stale.
 - GitHub default is **`prod`**. Trunks: `dev` / `test` / `prod` — and only those
   three. **`main` was deleted across the project on 2026-08-21**, so a
   `github.com/CrowdedKingdoms/<repo>/blob/main/...` link in any page here is a
   404 and must name `prod` or a tag. What deploys the site is a `prod/vX.Y.Z`
   tag; see the section at the top of this page, because knowing that fact and
   acting on it turned out to be different things.
+- **The legacy engines' pages are gone on `dev`** (game models, automations,
+  compute modules, player code with its legacy client modules, the Game Kit,
+  and the Unreal SDK's game-model section), removed on 2026-09-28 (#269) with
+  the engines themselves (cks-game-api #417, `dev/v2.27.0`). `test` and `prod`
+  still serve the engines and keep the pages until their migration (P4), so
+  **a `dev` → `test` promotion of this repo waits for P4** (HS-42: promotions
+  of the affected repos wait for the migration; cherry-pick anything that
+  cannot). `/exec/from-the-legacy-engines` maps every old API to its
+  replacement, a mod's CLIENT half (`/exec/client-halves`) included, and
+  `scripts/legacy-engine-redirects.json` sends each deleted route to its section
+  there. That map feeds the plugin's static `redirects` option, not
+  `createRedirects`, because its targets carry an anchor; a renamed mapping page
+  therefore fails the build instead of dropping the redirects. The five
+  management root fields the engines took with them are under `retired` in
+  `scripts/management-surface.json` (`legacy-compute-engines`).
+- **Some links name the tier's branch, so a promotion re-points them.** Pages on
+  `dev` link The Construct's `blob/dev/...` and tell readers to
+  `git clone -b dev`, because what they describe exists only there. When this
+  repo is promoted, change those to the target branch (`grep -rn "blob/dev\|-b dev"`).
+  Site-internal links and `llms.txt` need nothing: the `tier-origin` plugin
+  rewrites the prod origin in built text files to the tier's own.
+- **The Unreal SDK still ships its Game Model API, and no page documents it.**
+  Its symbols are in `scripts/unreal-surface-allowlist.json` with reason
+  `deprecated` and the note "Legacy game-model engine removed; the Unreal SDK
+  moves to ck-exec later", which also hides them from the generated reference
+  tables. Remove those entries when the SDK drops or ports that API.
 
 ## Customer-facing content (hard rule)
 
@@ -192,6 +212,8 @@ descriptions may still mention operator fields.
   GraphQL fields are off the schema; `docs-game-api/grid-commerce.md` is
   `draft: true`. The dedicated-environments page was deleted — do not add
   links to `/management-api/dedicated-environments`.
+- Re-add a page for a legacy engine, or link one of their deleted routes. Point
+  at the ck-exec page, or at `/exec/from-the-legacy-engines#<section>`.
 - Hand-edit generated Markdown under `reference/graphql/` or committed SDL
   under `static/schema/` except via `sdl:gen` / `graphql:gen`. `check:generated`
   refuses this now, and it refuses in Docs CI rather than only on your box.

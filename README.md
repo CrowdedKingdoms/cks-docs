@@ -1,6 +1,6 @@
 # Crowded Kingdoms documentation site
 
-Public [Docusaurus v3](https://docusaurus.io/) site at [docs.crowdedkingdoms.com](https://docs.crowdedkingdoms.com). Each product (Management API, Game API, Replication API, CrowdyJS, Management UI, Unreal SDK) has its own navbar tab and sidebar.
+Public [Docusaurus v3](https://docusaurus.io/) site at [docs.crowdedkingdoms.com](https://docs.crowdedkingdoms.com). Each docs instance has its own navbar tab and sidebar: Overview (`docs/`), Management API, Game API, Replication API, ck-exec (`docs-exec/`), CrowdyJS, CrowdyCPP, CrowdyPy, Unreal SDK, Management UI, Build a game and Releases — twelve, one per `docs*/` folder, each registered in `docusaurus.config.ts`. Each tier has its own site (`DOCS_TIERS` in `docusaurus.config.ts`); `CKS_DOCS_TIER` picks it at build time.
 
 ## Local preview
 
@@ -26,8 +26,8 @@ runs them in that order.
 | CrowdyJS | `static/schema/crowdyjs.graphql` | `../CrowdyJS/schema.gql` |
 
 There is no `cks-management-api` **checkout** to keep, and it is not a
-running service or a schema source. The GitHub repo still exists (not
-archived; default branch `dev`). The management plane was absorbed into
+running service or a schema source. The GitHub repo still exists, archived
+(read-only). The management plane was absorbed into
 `cks-game-api` on 2026-08-06. The management tab is a filtered view of the
 unified schema so that surface stays readable on its own.
 
@@ -79,7 +79,7 @@ Do not hand-edit generated Markdown under `reference/graphql/`.
 The site is held to an agent-readiness standard so external AI agents / integrators can use the APIs from the schema alone:
 
 - **Published SDL.** `npm run sdl:gen` (chained from `prebuild`) copies each sibling `schema.gql` to `static/schema/<product>.graphql`, served at `/schema/management-api.graphql`, `/schema/game-api.graphql`, `/schema/crowdyjs.graphql`. Committed so it ships even though CI builds with `docusaurus build` (which skips `prebuild`).
-- **`static/llms.txt`** is the agent index — keep its links current when SDL URLs or the cross-cutting guides change.
+- **`static/llms.txt`** is the agent index — keep its links current when SDL URLs or the cross-cutting guides change. Write its links with the prod origin (`https://docs.crowdedkingdoms.com`); the `tier-origin` plugin (`src/plugins/tier-origin/`) rewrites that origin to the tier's own in every built `.txt` and `.md` file, so the dev site's `llms.txt` points at the dev site.
 - **Cross-cutting agent guides** live in the Overview tab: `docs/for-ai-agents.md`, `docs/error-codes.md`, `docs/pagination.md`, `docs/rate-limits.md`. The consumer changelog is `docs-releases/intro.md`.
 - **CI guard.** `npm run lint:schema` (in [`.github/workflows/docs-ci.yml`](.github/workflows/docs-ci.yml)) fails a PR if any public root field / non-`input` argument in the Management or Game SDL lacks a description (CrowdyJS is warn-only). The PR build also enforces `onBrokenLinks: 'throw'`. Live example smoke (`npm run test:examples`) is **not** a Docs CI gate — run it on the builder with `CKS_DOCS_GRAPHQL_URL` / `CKS_DOCS_TOKEN` (and optionally `CKS_DOCS_APP_TOKEN` / `CKS_DOCS_APP_ID`) if you want to hit a live GraphQL endpoint.
 
@@ -140,4 +140,4 @@ The test skips when the OVH datacenter catalog is empty (local dev without catal
 
 ## Versioning
 
-See [Docusaurus versioning](https://docusaurus.io/docs/versioning). The navbar version dropdown applies to the Overview instance only unless additional dropdowns are added in `docusaurus.config.ts`.
+The site does not use Docusaurus versioning. Each tier (`dev`, `test`, `prod`) is its own site built from its own branch, so a page describes what that tier serves; the changelog is `docs-releases/intro.md`.
