@@ -5,10 +5,6 @@ title: Builds and starter packs
 
 # Builds and starter packs
 
-:::caution Dev-tier preview
-Available on the **dev** environment only; see the [overview](intro).
-:::
-
 You can build your hubs and spokes on the platform instead of on your machine: send your
 crates' sources to `execBuild`, poll `execBuildStatus`, and deploy the build with
 `execDeploy`. You need no Rust toolchain. The starter packs, which replace the compute

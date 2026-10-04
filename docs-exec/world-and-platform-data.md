@@ -5,10 +5,6 @@ title: World and platform data
 
 # World and platform data
 
-:::caution Dev-tier preview
-Available on the **dev** environment only; see the [overview](intro).
-:::
-
 A hub or spoke reads and writes the platform's own data through the **node API**. This covers
 the world's chunks and voxels, who is standing where, grids and their permissions, and players'
 tier features, group permissions and app state. Every operation works inside the instance's own

@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Calls to each endpoint of an app's ck-exec code over the last minutes, by outcome, with their latency, most called first (dev-tier preview). Each execution host reports a minute once it ends; counters are kept 7 days. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
+Calls to each endpoint of an app's ck-exec code over the last minutes, by outcome, with their latency, most called first. Each execution host reports a minute once it ends; counters are kept 7 days. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
 
 
 ```graphql
@@ -46,4 +46,4 @@ How far back the window reaches, in minutes: default 60, at most 10080 (the 7 da
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>ExecEndpointStat</b></code>](/reference/graphql/types/objects/exec-endpoint-stat.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Calls to one endpoint (a node type's method) of an app's ck-exec code over a window, by outcome (dev-tier preview). A client's or an instance's call is counted once, by the host it entered on, with the status its caller got; a platform event (`$timer`, `$topic`, `$presence`, `$session`, `$world`) is counted by the host that ran it. Counts are whole numbers.
+Calls to one endpoint (a node type's method) of an app's ck-exec code over a window, by outcome. A client's or an instance's call is counted once, by the host it entered on, with the status its caller got; a platform event (`$timer`, `$topic`, `$presence`, `$session`, `$world`) is counted by the host that ran it. Counts are whole numbers.

@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A ck-exec build's status, compiler log and modules (dev-tier preview); null when this app has no such build, or it is a player's (a mod's builds are read with `execModBuildStatus`, by the player alone). Builds are kept for 7 days. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
+A ck-exec build's status, compiler log and modules; null when this app has no such build, or it is a player's (a mod's builds are read with `execModBuildStatus`, by the player alone). Builds are kept for 7 days. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
 
 
 ```graphql
@@ -41,4 +41,4 @@ The id `execBuild` returned.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>ExecBuild</b></code>](/reference/graphql/types/objects/exec-build.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A ck-exec build (dev-tier preview): queued, building, succeeded or failed, with the compiler’s log and, once it succeeds, one module per crate.
+A ck-exec build: queued, building, succeeded or failed, with the compiler’s log and, once it succeeds, one module per crate.

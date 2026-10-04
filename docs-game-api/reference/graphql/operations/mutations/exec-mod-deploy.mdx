@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Deploy a mod build of yours to a grid you own (dev-tier preview): a new mod starts switched off; a running one restarts on the new version. Requires being the grid's current owner and 'write&#x005F;server&#x005F;code' on both the app tier and the grid.
+Deploy a mod build of yours to a grid you own: a new mod starts switched off; a running one restarts on the new version. Requires being the grid's current owner and 'write&#x005F;server&#x005F;code' on both the app tier and the grid.
 
 
 ```graphql
@@ -51,4 +51,4 @@ A succeeded `execModBuild` of yours.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>ExecMod</b></code>](/reference/graphql/types/objects/exec-mod.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A mod: a player’s code on a grid they own, run by ck-exec as the hub `mod:<name>` keyed by the grid id, in its owner’s own sandbox (dev-tier preview).
+A mod: a player’s code on a grid they own, run by ck-exec as the hub `mod:<name>` keyed by the grid id, in its owner’s own sandbox.

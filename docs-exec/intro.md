@@ -4,12 +4,7 @@ sidebar_position: 1
 title: ck-exec overview
 ---
 
-# ck-exec (preview)
-
-:::caution Dev-tier preview
-ck-exec runs on the **dev** environment only (`https://ck.dev.crowdedkingdoms.com`). Its
-interfaces may change before it reaches other environments.
-:::
+# ck-exec
 
 ck-exec runs your game's server code. You write it in Rust against the `ckx-sdk` crate, build
 it to WebAssembly, and deploy it with the app. Players connect to an **execution host** and

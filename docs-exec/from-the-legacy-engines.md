@@ -5,10 +5,6 @@ title: From the legacy engines
 
 # From the legacy engines to ck-exec
 
-:::caution Dev-tier preview
-Available on the **dev** environment only; see the [overview](intro).
-:::
-
 ck-exec replaced four legacy engines of the game API, which no longer serves them: **game
 models** (containers, typed properties and functions in an expression language),
 **automations** (schedules, triggers and timers over the same functions), **compute modules**

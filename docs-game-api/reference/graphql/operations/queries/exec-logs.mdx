@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Guest log lines from an app's ck-exec instances (`ctx.log`), newest first, kept for 24 hours (dev-tier preview). Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
+Guest log lines from an app's ck-exec instances (`ctx.log`), newest first, kept for 24 hours. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
 
 
 ```graphql
@@ -66,4 +66,4 @@ Only lines of this flow: the 32 hex digits a line’s `flow` shows (any case). F
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>ExecLogLine</b></code>](/reference/graphql/types/objects/exec-log-line.mdx) <Badge class="badge badge--secondary " text="object"/> 
-One guest log line from an app’s ck-exec instances (`ctx.log`), kept for 24 hours (dev-tier preview).
+One guest log line from an app’s ck-exec instances (`ctx.log`), kept for 24 hours.

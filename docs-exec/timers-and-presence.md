@@ -5,10 +5,6 @@ title: Timers, subscriptions and presence
 
 # Timers, subscriptions and presence
 
-:::caution Dev-tier preview
-Available on the **dev** environment only; see the [overview](intro).
-:::
-
 A hub hears about more than calls. Each of these is a method on `Hub` with a default that
 does nothing, so a hub implements only what it uses.
 

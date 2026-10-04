@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A grid's mods (dev-tier preview), which players in the grid call by name as the node type `mod:<name>` with the grid id as key. Requires access to the app.
+A grid's mods, which players in the grid call by name as the node type `mod:<name>` with the grid id as key. Requires access to the app.
 
 
 ```graphql
@@ -41,4 +41,4 @@ The grid the mod runs on.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>ExecMod</b></code>](/reference/graphql/types/objects/exec-mod.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A mod: a player’s code on a grid they own, run by ck-exec as the hub `mod:<name>` keyed by the grid id, in its owner’s own sandbox (dev-tier preview).
+A mod: a player’s code on a grid they own, run by ck-exec as the hub `mod:<name>` keyed by the grid id, in its owner’s own sandbox.

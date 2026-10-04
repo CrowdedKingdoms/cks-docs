@@ -5,10 +5,6 @@ title: Port a compute module
 
 # Port a compute module
 
-:::caution Dev-tier preview
-Available on the **dev** environment only; see the [overview](intro).
-:::
-
 This page walks through a real port: Titan Assault's two compute modules, `ta-mobs` (an
 always-on module ticking at 4 Hz: mobs wander and chase, hostiles hit nearby players, chests
 reset at dawn) and `ta-actions` (invoke exports that referee hits, loot and chests), moved to

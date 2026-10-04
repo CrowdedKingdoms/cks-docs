@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-The kill switch for an app's ck-exec code, or one node type of it (dev-tier preview). Switched off, nothing of it is placed, what runs is persisted and stopped, and calls are refused with `Denied`; switched on, instances start as they are called. Requires the org 'manage&#x005F;compute' permission.
+The kill switch for an app's ck-exec code, or one node type of it. Switched off, nothing of it is placed, what runs is persisted and stopped, and calls are refused with `Denied`; switched on, instances start as they are called. Requires the org 'manage&#x005F;compute' permission.
 
 
 ```graphql
@@ -46,4 +46,4 @@ Only this node type; the whole app when omitted.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>ExecAppStatus</b></code>](/reference/graphql/types/objects/exec-app-status.mdx) <Badge class="badge badge--secondary " text="object"/> 
-Whether an app’s ck-exec code may run: its active version and its switches (dev-tier preview).
+Whether an app’s ck-exec code may run: its active version and its switches.
