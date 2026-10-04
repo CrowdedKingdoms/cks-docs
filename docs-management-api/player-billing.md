@@ -6,16 +6,18 @@ title: Player wallets & billing
 
 # Player wallets & billing
 
-Players who run [player code](/game-api/player-code) are first-class billing
-customers. Each player has **one platform-scoped wallet** that funds their
-grid compute across every org and app they play in. Player money is entirely
-**out-of-band from org billing**: a player's runaway ticker, empty wallet, or
-refund never appears on an org's bill and never trips the org's runtime gate.
+Players who own [mods](/exec/mods) are first-class billing customers. Each
+player has **one platform-scoped wallet** that funds their usage across every
+org and app they play in. Player money is entirely **out-of-band from org
+billing**: a player's runaway mod, empty wallet, or refund never appears on an
+org's bill and never trips the org's runtime gate.
 
-Server-side player compute, player automations, and player compiles are
-metered per player — attributed to the **grid owner** the code executed as,
-never its author. Client-side execution runs on the player's own hardware and
-is not billed (client *compiles* are metered; they consume platform CPU).
+A mod is metered per **owner**, never per caller or author: its compute counts
+as the owner's player compute, and what its realtime streams send as their
+egress. The app's organization is never billed for its players' mods. A mod's
+[CLIENT half](/exec/client-halves) runs on each visitor's own hardware and is
+not billed. The [Studio agent's](/game-api/agentic-crowdy-studio#who-pays)
+requests are player usage too when the app bills the player.
 
 ## The wallet
 
@@ -29,7 +31,7 @@ wallet, with no org permission involved:
   the public API.
 - `createCheckout` with purpose `PLAYER_WALLET_TOPUP` — fund the wallet
   through the ordinary hosted checkout (Stripe/PayPal). Only `amountCents`
-  is required. The wallet pays **player compute**, not store listings.
+  is required. The wallet pays for **usage**, not store listings.
 - `beginPlayerCardSetup` — vault a card on the wallet (a Stripe SetupIntent
   the browser confirms), enabling auto-recharge.
 - `playerAutoBilling` / `setPlayerAutoBilling` — off-session auto-recharge
@@ -47,28 +49,20 @@ idempotent.
 Each posted charge (`playerUsageCharges`) splits two components the player
 always sees separately:
 
-- `platformCents` — the platform base price (same compute-unit formula and
-  fuel-divisor lineage as studio modules).
+- `platformCents` — the platform base price at the player rate card.
 - `markupCents` — the studio's configured markup for that app, if any.
 
 The per-metric snapshot on the charge records used/free/billable quantities
-for compute units, automation units, egress, storage and compile dimensions.
+for each metered dimension.
 
 ## The free trial
 
 Every player gets a **monthly trial budget of 250,000 compute units in each
-app** — a pooled allowance covering module compute and automation together,
-reset on the first of each UTC month. Trying player code never requires
-funding a wallet first: usage inside the trial charges nothing and keeps an
-empty wallet fully active.
+app**, reset on the first of each UTC month. Usage inside the trial charges
+nothing and keeps an empty wallet fully active.
 
-There is **no hourly free allowance**. Any recurring hourly figure would make a
-small mod free forever, which is not what a trial is for; a monthly budget lets
-a player experiment freely and asks sustained play to pay. As a rough guide,
-250,000 units is about 14 hours of a light mod running at the default 5 Hz tick,
-or about an hour of a database-heavy one. Those are hours of **play**, not
-wall-clock hours: a mod only ticks while the player's app has somebody in it, so
-a trial is not consumed while nobody is playing.
+There is **no hourly free allowance**: a monthly budget lets a player
+experiment freely and asks sustained use to pay.
 
 Charges below one cent are **carried forward** rather than rounded up, so a
 player running something tiny is billed what they actually used over the month
@@ -87,18 +81,14 @@ The effective limit on a player's spend is
   `PLAYER_WALLET_EMPTY`.
 
 A non-active gate pauses **that player's mods only** — their session and
-ordinary play are untouched, and no other player or the org is affected. The
-gate state replica-syncs to the game runtime, where the scheduler drains the
-player's modules within one pass and resumes them when the gate clears.
-
-While the gate is not active, `playerComputeInvoke` refuses with a typed fault
-the player can act on: `WALLET_EMPTY` (blame `BUDGET`, not retryable — top up
-or enable auto-recharge) or `SPEND_CAP_REACHED` (raise or clear the cap). A
-refusal for a module that is disabled, not compiled, or not the caller's own
-grid is `NOT_ALLOWED`; a per-hour or per-day compute quota is `BUDGET_EXCEEDED`
-and returns on the next window. Only a failure that is ours — a module that
-would not load — is reported as `PLATFORM_ERROR`. See
-[Error codes](/overview/error-codes) for the full table.
+ordinary play are untouched, and no other player or the org is affected.
+Billing switches the player's mods in that app off on the mod kill ladder:
+`execModSwitches` lists a `PLAYER` switch with `createdBy: billing` and the
+gate's reason (`PLAYER_WALLET_EMPTY` or `PLAYER_SPEND_CAP`), `execMyMods` shows
+the owner's mods blocked, and a call to one of the mods is refused with it.
+When the gate is active again (a top-up, or the cap resetting or being
+raised), billing lifts that switch within a few minutes. It never lifts a
+switch the app's developers set.
 
 Auto-recharge honours the threshold you set: with billable usage in the last
 two hours and a balance at or below `lowWaterThresholdCents`, the saved card is
@@ -113,12 +103,7 @@ Studio-facing controls (org permissions in parentheses):
 
 | Surface | Purpose |
 |---|---|
-| `playerWasmPolicies` / `setPlayerWasmPolicy` / `deletePlayerWasmPolicy` (`manage_compute`) | Per-player/cohort clamps at `app_default`, `tier`, `grid`, or `user` scope: module counts, tick/fuel/memory/egress budgets, `unitsPerHour`/`unitsPerDay` quotas, `maxCompilesPerHour`, container-create caps |
 | `playerRateMarkup` / `setPlayerRateMarkup` (`view_billing` / `manage_billing`) | Markup in basis points on the platform base price — the studio's usage-revenue stream, always shown to players as a separate component |
 | `appPlayerUsage` (`view_compute_diagnostics`) | Per-player usage aggregate: top spenders, quota utilization, compiles, cents charged |
 | `appPlayerMarkupAccrued` (`view_billing`) | Total markup income earned. Each charge's markup is **credited to the organization wallet in the same transaction as the player's debit**, and appears in the org ledger as `markup_payout` — so this total and the money in the wallet cannot drift apart |
-| `playerComputeSetSwitch` / `playerComputeSwitches` (Game API) | The kill ladder: immediate stop at player/grid/app scope, quota state retained |
-
-Management is authoritative for the player policy table; changes
-replica-sync to the game runtime, where every knob is additionally clamped
-by the app's studio compute policy — a player policy can only tighten.
+| `execModSetSwitch` / `execModSwitches` (Game API, `manage_compute`) | The kill ladder for players' [mods](/exec/mods#for-the-apps-developers): one mod, a player's, a grid's, a listing's installs, or every mod in the app |

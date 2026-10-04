@@ -155,6 +155,30 @@ HMAC(EVP_sha256(), key /*64 bytes*/, 64, msg.data(), msg.size(), tag, &len);
 // compare to the 32-byte HMAC field with CRYPTO_memcmp(tag, field, 32) == 0
 ```
 
+### Python — sign (client→server) and verify (server→client)
+
+```python
+import hashlib
+import hmac
+
+
+# token is the 64-character app-scoped token (mint_app_token), used as 64 octets.
+def spatial_hmac(prefix: bytes, token: str) -> bytes:
+    key = token.encode("latin-1")  # 64 bytes: each character is one octet
+    return hmac.new(key, prefix + key, hashlib.sha256).digest()  # prefix || token
+
+
+# Verify an inbound server→client long-spatial notification (containsAuth = 1).
+def verify_server_message(payload: bytes, token: str) -> bool:
+    if len(payload) < 109 or payload[35] != 1:
+        return False  # not signed, or too short
+    prefix, tag = payload[:-41], payload[-41:-9]
+    return hmac.compare_digest(spatial_hmac(prefix, token), tag)
+```
+
+[CrowdyPy](/crowdypy/replication) signs and verifies natively, so you need this
+only if you implement the protocol yourself.
+
 See **[Send and receive](/replication-api/send-and-receive)** for the first message
 to send after assignment, and **[Wire formats](/replication-api/wire-formats)** for
 the full Long Form Spatial layout.

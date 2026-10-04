@@ -39,18 +39,17 @@ Use `gameApiUrl` / `gameApiWsUrl` from `mintAppToken` or
 Pass `httpUrl` and `wsUrl` explicitly so an SDK default never silently
 points a sandbox build at production.
 
-## Models, effects, Compute
+## Server code on ck-exec
 
-Drive gameplay rules through `client.gameModel` (and Compute when the
-workflow is larger than one effect). The browser presents confirmed
-state; it does not decide damage, captures, or team assignment locally.
-Ensure the container, then invoke; a getter after ensure is the type
-default until the first pull. A policy refusal resolves
-`success: false` with `fault.code` `NOT_ALLOWED` — it does not throw —
-and `errorMessage` is the sanitized sentence, not the require leaf.
+Drive gameplay rules through your app's [ck-exec](/exec/intro) hubs, which a
+game calls through `client.exec`. The browser presents confirmed state; it
+does not decide damage, captures, or team assignment locally. A call that is
+refused throws a `CrowdyExecError` whose `status` names why (`AppError`,
+`Denied`, …); `retryable` is true for the statuses worth trying again with
+backoff.
 
 See [Game API best practices](/game-api/best-practices) and
-[Game model](/crowdyjs/game-model).
+[connect from a game](/exec/connect-from-a-game).
 
 ## Credentials
 

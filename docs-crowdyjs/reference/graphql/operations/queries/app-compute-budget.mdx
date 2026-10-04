@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-An app's stored compute allowance, or null when none has been set — in which case the app is measured against the platform reference allowance and is never refused. Requires app-admin ('manage&#x005F;apps').
+An app's stored compute allowance, or null when none has been set — in which case its ck-exec code is never paused for its budget. Requires app-admin ('manage&#x005F;apps').
 
 
 ```graphql
@@ -36,4 +36,4 @@ The app (tenant) whose allowance to read.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>AppComputeBudgetInfo</b></code>](/reference/graphql/types/objects/app-compute-budget-info.mdx) <Badge class="badge badge--secondary " text="object"/> 
-An app's compute allowance in units per minute, spanning the expression engine and both WASM tiers. Absent when no allowance has been set for the app, in which case the app is measured against the platform reference allowance and is never refused.
+An app's compute allowance in units per minute. Absent when no allowance has been set for the app, in which case its ck-exec code is never paused for its budget.

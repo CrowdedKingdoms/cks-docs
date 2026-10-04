@@ -9,7 +9,7 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Blueprint Async Actions
 
-A Blueprint async action is a latent node: it keeps running after the graph moves on and fires one of its own exec pins when it finishes. The SDK ships 102 of them, one C++ class each, and every one is fully covered by the pages below, so this table is a lookup, not a gap list.
+A Blueprint async action is a latent node: it keeps running after the graph moves on and fires one of its own exec pins when it finishes. The SDK ships 102 of them, one C++ class each. 45 belong to its Game Model API, which the game API no longer serves, and are left out (see [The Two Planes](../concepts/two-planes.md)); every one of the other 57 is covered by the pages below, so this table is a lookup, not a gap list.
 
 ## When you come here
 
@@ -20,7 +20,7 @@ The **Blueprint node** column is the title you see in the Blueprint editor, take
 <SurfaceTable table="async-actions" group="page" />
 
 :::note[Every row above links forward. There is nothing left uncovered in this table.]
-Coverage for this group is 102 of 102: every async action class is mentioned on the page its row links to. A class that later stops matching any page (a rename, a page deleted) reopens as a coverage gap, not a silent removal from this table.
+Coverage for the 57 listed is complete: every one is mentioned on the page its row links to. A class that later stops matching any page (a rename, a page deleted) reopens as a coverage gap, not a silent removal from this table.
 :::
 
 ## Gotchas
@@ -34,4 +34,3 @@ Coverage for this group is 102 of 102: every async action class is mentioned on 
 - [Subsystems](./subsystems.md)
 - [Delegates](./delegates.md)
 - [RPC Events in Blueprint](../runtime/rpc-events-blueprint.md)
-- [Game Models overview](../game-models/overview.md)

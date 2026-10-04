@@ -1,0 +1,39 @@
+---
+id: set-grid-open-permissions
+title: setGridOpenPermissions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Open a grid to every player: replace the permission keys it grants each player with active access to the app (writes the `grid_open_permissions` input table), then recompute the grid's materialized effective ACL for all of them. The most specific grid covering a chunk decides a voxel write there, so a zone inside the world grid that everyone may build in must grant `update_voxel_data` itself. The grid's limits still cap these keys; players who get access later receive them when they connect. Pass an empty array to close the grid. Refuses the app's world grid (already open), the four player-code keys, and a 33rd open grid in one app. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+setGridOpenPermissions(
+  input: SetGridOpenPermissionsInput!
+): GridOpenPermissions!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setGridOpenPermissions.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetGridOpenPermissionsInput!</b></code>](/reference/graphql/types/inputs/set-grid-open-permissions-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, grid, and the keys it grants every player (empty array = close it).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GridOpenPermissions</b></code>](/reference/graphql/types/objects/grid-open-permissions.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The permission keys a grid grants every player with active access to the app (the grid&#x005F;open&#x005F;permissions input table).

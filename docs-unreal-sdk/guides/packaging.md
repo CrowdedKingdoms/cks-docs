@@ -15,10 +15,10 @@ Come here before a cook, and again if a symptom only shows up in a packaged buil
 
 `UCrowdyBakedRegistry` is a `UDataAsset` stored at the fixed path `/Game/CrowdySDK/CrowdyBakedRegistry`. It is a cooked snapshot of the metadata the SDK's markers declare.
 
-UObject metadata (`HasMetaData` and friends) is stripped from cooked and Shipping builds, so at runtime the SDK reads this snapshot instead of the live metadata. The registry covers more than RPC routing and CrowdyState property flags: it also carries every Game Model attribute definition (value type, clamp, its `CrowdyOnRep` name) and every Game Model container class (its type name, whether it pulls on start, its scope).
+UObject metadata (`HasMetaData` and friends) is stripped from cooked and Shipping builds, so at runtime the SDK reads this snapshot instead of the live metadata: RPC routing and CrowdyState property flags among it.
 
 :::warning[Never call `HasMetaData` at runtime in shipped code.]
-That metadata is gone in a cooked build. The SDK already reads the baked registry for you, for RPC, CrowdyState, and Game Model metadata alike.
+That metadata is gone in a cooked build. The SDK already reads the baked registry for you, for RPC and CrowdyState metadata alike.
 :::
 
 The cook rebakes the asset automatically, and the editor also bakes it once at startup if the asset is missing. Run **Tools > Rebuild Crowdy Registry** yourself to guard against inspecting a stale snapshot while you are still in the editor, or use the Registry page's **Rebuild (Deep Scan)** button in [Crowdy Studio](../studio/inspector-and-registry.md), which streams tagged assets in instead of freezing the editor on a force-load.

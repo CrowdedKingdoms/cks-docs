@@ -74,7 +74,7 @@ What the checkbox generates is a call to `UCrowdyReplicatedEventLibrary::CrowdyD
 - A red status line is the fastest signal that a pin type is rejected. Read it before compiling.
 - The Channel field is join-only. Create the channel in Crowdy Studio or at runtime first.
 - The Blueprint event body runs on the caller for Spatial Multicast and Multicast, and only where the recipient says for Owning Client and Host. Do not add a second local call.
-- Cheat-sensitive data never rides a CrowdyEvent; it goes through a [Game Model](../game-models/overview.md).
+- Cheat-sensitive data never rides a CrowdyEvent; it belongs on the [truth plane](../concepts/two-planes.md), in your server code.
 
 ## Related
 

@@ -2,7 +2,7 @@
 slug: troubleshooting
 sidebar_position: 4
 title: Troubleshooting
-description: "A symptom-to-cause-to-fix table for the SDK's most common failures, then one section per row: a map profile that did not load, no rendering backend, entities tracked but never drawn, events that never arrive, an entity you cannot target, a CrowdyState property that does nothing on the crowd, IPv4 versus IPv6, a refused connection flooding the log, Game Model calls with no session, and a container that already has values."
+description: "A symptom-to-cause-to-fix table for the SDK's most common failures, then one section per row: a map profile that did not load, no rendering backend, entities tracked but never drawn, events that never arrive, a remote entity shown as the wrong class, a CrowdyState property that does nothing on the crowd, IPv4 versus IPv6, and a refused connection flooding the log."
 ---
 
 # Troubleshooting
@@ -16,12 +16,10 @@ section with the full fix and the trace CVar that confirms it.
 | [Actors do not appear at all](#rendering-backend-not-set) | The map profile's Backend Class was cleared | Assign a `UCrowdyRenderingBackend` subclass | `crowdy.entity.trace` |
 | [Entities register but are never drawn](#entities-register-but-are-never-drawn) | Backend Config empty, or its Replication Policy Class unset (2.14.0 and earlier) | Set a Crowdy Actor Pool Backend Config with a policy class | `crowdy.entity.trace` |
 | [An RPC never runs on other clients](#events-are-not-received) | Missing entity component, unregistered entity, recipient/distance settings, or a registry gap | Work through the four sub-causes in order | `crowdy.rpc.trace` |
-| [Effects on a remote entity are refused](#a-remote-entity-cannot-be-targeted) | The entity's class was never loaded on this client | Add the class to Preloaded Entity Classes | `crowdy.entity.trace` |
+| [A remote entity shows as the wrong class](#a-remote-entity-cannot-be-targeted) | The entity's class was never loaded on this client | Add the class to Preloaded Entity Classes | `crowdy.entity.trace` |
 | [A CrowdyState property does nothing on a crowd-rendered actor](#a-crowdystate-property-does-nothing-on-the-crowd) | Mass-rendered entities need their own field registration | See the rendering backend's own docs | n/a |
 | [Client cannot connect, or connects on one machine and not another](#connection-fails-ipv4-versus-ipv6) | Address-family mismatch, or the realtime connection never came up | Match the family, check the UDP path | `crowdy.net.trace` |
 | [Thousands of warnings a second, frame rate drops](#a-refused-connection-floods-the-log) | The realtime connection was refused or never came up; every send after that logs | Confirm the connection came up before chasing anything else | `crowdy.net.trace` |
-| [A Game Model call fails immediately](#game-model-calls-fail-with-no-session) | No signed-in session yet | Wait for sign-in before the first call | `crowdy.gamemodel.trace` |
-| [A fresh container already has values](#a-freshly-created-container-already-has-values) | Not a bug: a pull always returns class defaults | Use a value your defaults never produce to confirm a write | `crowdy.gamemodel.trace` |
 | [Code will not compile against the SDK](#module-dependency-or-include-errors) | Missing module dependency or missing include | Add the module, include the header | n/a |
 
 ## Nothing replicates at all
@@ -145,14 +143,14 @@ Turn on `crowdy.rpc.trace` to follow send, route, and recipient decisions for ea
 
 ## A remote entity cannot be targeted
 
-An effect or a call aimed at a specific entity is refused, or a client falls back to guessing the entity's
-type from its state struct and gets it wrong when two classes share one struct.
+A client falls back to guessing a remote entity's type from its state struct, and gets it wrong when two
+classes share one struct.
 
 The receiver resolves an incoming entity update by a class id, and it only resolves that id among classes
 already loaded in memory; it never loads a package to do so. A Blueprint entity class this client has never
-spawned itself is not loaded, so the id cannot be named, its own declaration cannot be read, and effects
-aimed at it are refused. The same gap makes the actor manager fall back to the state struct, which cannot
-tell two classes sharing one struct apart.
+spawned itself is not loaded, so the id cannot be named and its own declaration cannot be read. The same
+gap makes the actor manager fall back to the state struct, which cannot tell two classes sharing one struct
+apart.
 
 `Preloaded Entity Classes` is empty by default in a new project. This is the default state, not an edge
 case you are unlikely to hit.
@@ -215,27 +213,6 @@ a few hundred Warning lines in it is not a clean reading; the flood is the cause
 Fix: confirm the connection actually came up. Look earlier in the log for a server assignment or a connect
 failure, and fix that first before treating any other symptom recorded alongside the flood as real.
 
-## Game Model calls fail with no session
-
-A Game Model call fails immediately instead of returning data.
-
-`UCrowdyGameModelSubsystem` needs a `UCrowdyGameSession` to resolve the Game API bearer token. Calling
-before sign-in completes logs "No UCrowdyGameSession, cannot resolve the Game API bearer token" and the
-call fails.
-
-:::note[Make sure sign-in has completed before the first Game Model call.]
-See [Authentication](../services/authentication.md) for the sign-in event to gate on.
-:::
-
-## A freshly created container already has values
-
-This is not a bug. A pull of a Game Model container always returns the class's baked defaults for every
-attribute; it never returns an empty set. A key nobody has written still reads back with a value, so a
-stored value by itself is not evidence that a pull, an invoke, or a sync ever ran.
-
-:::tip[A stored value proves nothing on its own. Use a value your class defaults never produce when you need to confirm a write actually happened.]
-:::
-
 ## Module dependency or include errors
 
 Code does not compile after you call into the SDK, usually a missing module dependency or a missing
@@ -292,13 +269,11 @@ at your own network path, not the SDK. Check your route to the backend before fi
   crowd-rendered one.
 - A refused connection can flood the log by itself; rule that out before trusting any other measurement
   from the same run.
-- A Game Model container's pull always carries class defaults. A stored value alone is not proof anything
-  was written or synced.
 
 ## Related
 
 - [Testing locally](./testing-locally.md): the loopback CVars for reproducing a symptom with one client.
 - [Log categories](../reference/log-categories.md): every `LogCrowdy<X>` category and its trace CVar.
 - [Rendering backends](../runtime/rendering-backends.md): field registration for crowd-rendered entities.
-- [Authentication](../services/authentication.md): the sign-in event to gate Game Model calls on.
+- [Authentication](../services/authentication.md): the sign-in events to gate your first calls on.
 - [What's changed](./whats-changed.md): renamed or removed nodes that can look like a new bug.

@@ -1,0 +1,93 @@
+---
+id: exec-mod-client-artifact
+title: ExecModClientArtifact
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A CLIENT half’s module and what the browser broker needs to run it: the fuel-metered wasm32-unknown-unknown module, its digest to check the bytes against, and the per-dispatch fuel budget to load into its `ck_fuel` global.
+
+
+```graphql
+type ExecModClientArtifact {
+  modId: String!
+  name: String!
+  gridId: BigInt!
+  clientVersion: Int!
+  digest: String!
+  wasmBase64: String!
+  sizeBytes: Int!
+  capabilitySummaryJson: String!
+  capabilityHash: String!
+  tickIntervalMs: Int!
+  fuelPerDispatch: BigInt!
+  abiVersion: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClientArtifact.<b>modId</b></code>](#mod-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#mod-id\} 
+The mod.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClientArtifact.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+The mod’s name: its name on the page’s grid event bus.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClientArtifact.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The mod’s grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClientArtifact.<b>clientVersion</b></code>](#client-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#client-version\} 
+The CLIENT half’s version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClientArtifact.<b>digest</b></code>](#digest)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#digest\} 
+SHA-256 of the module, hex. The broker recomputes it and refuses bytes that differ.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClientArtifact.<b>wasmBase64</b></code>](#wasm-base-64)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wasm-base-64\} 
+The module, base64.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClientArtifact.<b>sizeBytes</b></code>](#size-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#size-bytes\} 
+Its size in bytes, at most 512 KiB.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClientArtifact.<b>capabilitySummaryJson</b></code>](#capability-summary-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#capability-summary-json\} 
+Its capability summary as JSON.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClientArtifact.<b>capabilityHash</b></code>](#capability-hash)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#capability-hash\} 
+SHA-256 of the canonical capability summary.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClientArtifact.<b>tickIntervalMs</b></code>](#tick-interval-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#tick-interval-ms\} 
+How often, in milliseconds, to tick it (16-1000).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClientArtifact.<b>fuelPerDispatch</b></code>](#fuel-per-dispatch)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-per-dispatch\} 
+Fuel for each dispatch (init, tick, invoke, event): the broker sets `ck_fuel` to it before every call, and the module traps when it runs out.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecModClientArtifact.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\} 
+The client ABI version it was built for (0).
+
+
+
+
+### Returned By
+
+[`execModClientArtifact`](/reference/graphql/operations/queries/exec-mod-client-artifact.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

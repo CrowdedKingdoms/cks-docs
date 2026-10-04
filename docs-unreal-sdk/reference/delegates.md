@@ -9,13 +9,13 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Blueprint Delegates
 
-A dynamic multicast delegate is what you bind with **Bind Event to** or **Assign** in Blueprint, or `AddDynamic` in C++. The SDK exposes 249 of them; 2 belong to a private actor a game cannot reference and are dropped from this table, and 1 more, `UCrowdyConnectionMonitor::OnConnectionStateChanged`, is left out because the SDK reconnects on its own, so 246 rows render below, every one linked to a page.
+A dynamic multicast delegate is what you bind with **Bind Event to** or **Assign** in Blueprint, or `AddDynamic` in C++. The SDK exposes 249 of them; 2 belong to a private actor a game cannot reference and are dropped from this table, 1 more, `UCrowdyConnectionMonitor::OnConnectionStateChanged`, is left out because the SDK reconnects on its own, and 93 belong to the SDK's Game Model API, which the game API no longer serves (see [The Two Planes](../concepts/two-planes.md)). So 153 rows render below, every one linked to a page.
 
 ## When you come here
 
 You have a delegate bound and want to know what its parameters mean, or you know roughly what you want to react to and want the class that fires it.
 
-All 246 delegates below fire on the game thread. This is a constant fact about every dynamic multicast delegate the SDK broadcasts, never a per-delegate choice, so it is stated once here instead of as a column that would read the same value 246 times: your handler runs like any other Blueprint event or `UFUNCTION`, with no thread-safety code of your own to write.
+All 153 delegates below fire on the game thread. This is a constant fact about every dynamic multicast delegate the SDK broadcasts, never a per-delegate choice, so it is stated once here instead of as a column that would read the same value 153 times: your handler runs like any other Blueprint event or `UFUNCTION`, with no thread-safety code of your own to write.
 
 <SurfaceTable table="delegates" group="owner" />
 
@@ -33,5 +33,4 @@ All 246 delegates below fire on the game thread. This is a constant fact about e
 
 - [Subsystems](./subsystems.md)
 - [Async actions](./async-actions.md)
-- [Change pings and pull](../game-models/change-pings-and-pull.md)
 - [Connection and reconnect](../runtime/connection-and-reconnect.md)

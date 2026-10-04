@@ -4,37 +4,36 @@ Drop into a project root, or paste into CLAUDE.md / .cursorrules.
 
 ## WHAT THE SDK IS
 
-- A multiplayer plugin for UE5: entities, realtime view state, RPC events, server-owned
-  Game Models, sessions, channels and voice, from C++ or Blueprint.
+- A multiplayer plugin for UE5: entities, realtime view state, RPC events, channels and
+  voice, from C++ or Blueprint.
 - Two planes. Crowdy State is client-owned, fast, UDP, for what players see.
-- Game Models are server-owned truth for anything a cheater would want to lie about.
-- Markers in UPROPERTY/UFUNCTION/UCLASS meta declare state, events and models; an entity
-  is a UCrowdyEntityComponent.
+- The truth plane is the app's server code on ck-exec, for anything a cheater would want
+  to lie about. The SDK does not wrap ck-exec yet (C++ calls it through CrowdyCPP's
+  client.exec()), and the game API no longer serves the SDK's own Game Model API: do not
+  build on it.
+- Markers in UPROPERTY/UFUNCTION meta declare state and events; an entity is a
+  UCrowdyEntityComponent.
 
 ## LOCKED RULES (never trade these away)
 
 - Two planes, never collapsed. View state (movement, animation, visual flags, one-shot
   effects) goes on the view plane: a CrowdyState property, the continuous channel for
   movement, or a CrowdyEvent for a moment. Truth (HP, inventory, currency, score: anything
-  a lying client could profit from) goes in a Game Model attribute; a persisted cosmetic
+  a lying client could profit from) goes in the app's server code; a persisted cosmetic
   goes through the avatars service.
   https://docs.crowdedkingdoms.com/unreal-sdk/concepts/two-planes
 - Authoritative or cheat-sensitive state never goes on a CrowdyState property.
   https://docs.crowdedkingdoms.com/unreal-sdk/runtime/crowdy-state
-- An authored empty invoke policy is sent as an explicit null that CLEARS the server's gate.
-  A function with no policy keeps its inferred gate: "no require lines" means
-  owner_of_self or is_participant, never open.
-  https://docs.crowdedkingdoms.com/unreal-sdk/game-models/invoke-policies
 - Every server id is 64-bit: store it in int64, never int32. appId travels as a JSON
   string; the SDK does the encoding, you never format it.
-  https://docs.crowdedkingdoms.com/unreal-sdk/game-models/overview
+  https://docs.crowdedkingdoms.com/unreal-sdk/concepts/two-planes
 - The host is a convention, not enforcement. Never gate cheat-sensitive state on "am I
   host". https://docs.crowdedkingdoms.com/unreal-sdk/concepts/host-is-a-convention
-- Presence is the player's actor and it expires: the first thing a client needs is its own
-  pawn as a Dynamic, PlayerDerived, LocalClient entity spawned after On UDP Connection
-  Success (snippet qs-player; its id lands on possession: read it in
-  OnCrowdyOwnershipAssigned, not BeginPlay). No fresh actor for 60 seconds marks the
-  participant left; an empty session times out after 5 minutes.
+- Presence is the player's actor: the first thing a client needs is its own pawn as a
+  Dynamic, PlayerDerived, LocalClient entity spawned after On UDP Connection Success
+  (snippet qs-player; its id lands on possession: read it in OnCrowdyOwnershipAssigned,
+  not BeginPlay). A client with no fresh actor is at no position and receives no
+  spatial event.
   https://docs.crowdedkingdoms.com/unreal-sdk/concepts/sessions-and-presence
 - Never hand-type the app id, org id, environment or API URLs into Project Settings or
   DefaultGame.ini. Config Sync writes them and silently overwrites what you typed.
@@ -46,7 +45,7 @@ Drop into a project root, or paste into CLAUDE.md / .cursorrules.
   false with no error. https://docs.crowdedkingdoms.com/unreal-sdk/guides/packaging
 - A handler bound to an array delegate takes const TArray<T>&. A by-value parameter does
   not match and AddDynamic fails to compile.
-  https://docs.crowdedkingdoms.com/unreal-sdk/game-models/collections
+  https://docs.crowdedkingdoms.com/unreal-sdk/services/teams
 
 ## MARKER PATTERNS (snippet excerpts; copy, never retype)
 
@@ -88,39 +87,12 @@ void Flicker_Implementation();
 CROWDY_EVENT(Flicker)
 ```
 
-CrowdyContainer on a class, CrowdyModel + CrowdyKey + CrowdyOnRep on its attributes
-(snippet gm-container). The OnRep is a parameterless UFUNCTION.
-https://docs.crowdedkingdoms.com/unreal-sdk/game-models/containers-and-attributes
-
-```cpp
-// A Game Model container: the server owns every CrowdyModel attribute on it, and it binds to the entity it is attached to.
-UCLASS(ClassGroup = (Crowdy), meta = (BlueprintSpawnableComponent, CrowdyContainer = "LanternFuel"))
-class ULanternFuel : public UActorComponent
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game Model", meta = (CrowdyModel, CrowdyKey = "fuel", CrowdyOnRep = "OnRep_Fuel", ClampMin = "0", ClampMax = "100"))
-	float Fuel = 100.f;
-```
-
-CrowdyEffect is an asset authored in Effect Script; C++ only holds a reference and
-applies it (snippet fx-declare).
-https://docs.crowdedkingdoms.com/unreal-sdk/game-models/effects-cpp
-
-```cpp
-#include "Replication/GameModel/CrowdyEffects.h"
-
-// The authored effect this lantern applies; pick the asset in the Details panel, the server owns what it does.
-UPROPERTY(EditAnywhere, Category = "Crowdy")
-TObjectPtr<UCrowdyEffect> RefuelEffect;
-```
-
 ## DO NOT
 
 - Do not put HP, inventory, currency or score on a CrowdyState property.
-- Do not write a Game Model attribute from the client; mutate through an effect or a
-  server function and let CrowdyOnRep deliver the result.
+- Do not decide a trusted value on the client; the app's server code decides it.
+- Do not build on the SDK's Game Model API (containers, CrowdyModel attributes,
+  CrowdyEffect assets, sessions); the game API no longer serves it.
 - Do not read HasMetaData, or any marker, at runtime; the baked registry is the source.
 - Do not test a new marker in a package cooked before it existed: the registry is baked
   at cook, so cook again. Tools > Rebuild Crowdy Registry only refreshes the editor view.

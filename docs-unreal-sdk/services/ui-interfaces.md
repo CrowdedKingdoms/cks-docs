@@ -19,7 +19,7 @@ project needs to receive game events or actor updates without binding a delegate
 code needs an entity's id, owner, or host state and you would rather call a library function than reach
 into the entity component yourself.
 
-Nothing else in the SDK requires any of this. CrowdyState, RPC, and Game Models work with none of
+Nothing else in the SDK requires any of this. CrowdyState and RPC work with none of
 `ICrowdyHUD`, `ICrowdyUIRootWidget`, `ICrowdyPlayer`, `ICrowdyMinigame`, or `ACrowdyHUDBase` implemented.
 
 ## HUD hooks
@@ -135,9 +135,7 @@ means before relying on either.
   no widget system and `OnCrowdyHUDReady` never fires.
 - The reception layer's `SupportedEvents` is a claim list, not a filter: empty plus the event opcode in
   `SupportedResponseTypes` widens the layer to every unclaimed event; empty alone receives nothing.
-- The reception layer forwards transport-level notifications to Blueprint. It is not the Game Model
-  change-ping and pull mechanism on [Change pings and pull](../game-models/change-pings-and-pull.md);
-  the two do not replace each other.
+- The reception layer forwards transport-level notifications to Blueprint.
 - Everything on this page logs under `LogCrowdyServices`, gated by two trace CVars:
   `crowdy.services.trace` (`CrowdyServicesTrace::Services`) for the utilities library and reception
   layer, and `crowdy.hud.trace` (`CrowdyServicesTrace::Hud`) for HUD-side calls.
@@ -147,5 +145,3 @@ means before relying on either.
 - [Host election](./host-election.md) and [Host authority](../runtime/host-authority.md): what
   `IsCrowdyEntityHost` and `IsCrowdyEntityLocallyControlled` fold in.
 - [Channels](../runtime/channels.md): the message plane the reception layer's subscriptions ride.
-- [Change pings and pull](../game-models/change-pings-and-pull.md): the Game Model notification and pull
-  path, a different mechanism from the reception layer above.

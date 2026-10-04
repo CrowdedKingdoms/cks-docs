@@ -16,11 +16,11 @@ A channel is a named message group within one app: create it, join it, publish t
 
 ## When to use one
 
-Guild chat, a party's coordination, a village-wide announcement, trade broadcasts: anything that must reach a group regardless of distance. For a moment that only nearby players need, a `SpatialMulticast` event is cheaper; for a value, [Crowdy State](./crowdy-state.md) or a [Game Model](../game-models/overview.md).
+Guild chat, a party's coordination, a village-wide announcement, trade broadcasts: anything that must reach a group regardless of distance. For a moment that only nearby players need, a `SpatialMulticast` event is cheaper; for a value, [Crowdy State](./crowdy-state.md), or your server code if it is [truth](../concepts/two-planes.md).
 
 ## The session channel
 
-Every app has one channel every client joins on connect, named `__crowdy_session_<appId>`, created on demand when it does not exist and the app's creation policy lets a member create one (otherwise create it once in Crowdy Studio, or the log warns that Game Model signals and default-channel events will drop). It is an SDK-owned transport, not a place for your own messages. It carries every `Multicast` CrowdyEvent with no `CrowdyChannel` of its own, every replicated subsystem's Crowdy State delta, and the Game Model plane's signals (the model-changed ping that triggers a re-pull, an effect signal, and a session-changed cue).
+Every app has one channel every client joins on connect, named `__crowdy_session_<appId>`, created on demand when it does not exist and the app's creation policy lets a member create one (otherwise create it once in Crowdy Studio, or the log warns that default-channel events will drop). It is an SDK-owned transport, not a place for your own messages. It carries every `Multicast` CrowdyEvent with no `CrowdyChannel` of its own and every replicated subsystem's Crowdy State delta.
 
 :::warning[A message you publish on the session channel, or on any channel a Multicast event names, never reaches OnChannelMessageReceived.]
 Every channel the connect-time bootstrap joins (the session channel and each channel a Multicast event names) and every channel you hand to `RegisterReliableRpcChannel` is an RPC transport: a payload arriving on it goes to the RPC decoder and is never broadcast to the game. Publish your own notices on a channel of your own, one channel per purpose.
@@ -62,7 +62,7 @@ Every connecting client running this asks the server to create the channel. A re
 `PublishChannelMessage(ChannelId, Payload)` sends raw bytes to every active member except the sender. The caller must already be a member holding `send_messages`; an open channel's default member role grants it. The server caps a channel message payload at 1024 bytes.
 
 :::warning[Publishing is unacknowledged UDP: no ordering, no delivery guarantee, and the caller is never told if it was dropped.]
-It is the right tool for a notice, not for a value. Put anything that must be right on every client in a state property or a Game Model.
+It is the right tool for a notice, not for a value. Put anything that must be right on every client in a state property, or in your server code if it is truth.
 :::
 
 The lantern's `PublishLit`, called from the owner-gated overlap, publishes a one-byte notice, its lit flag, on the village channel, reading the id from the game instance's `GetVillageChannelId`:
@@ -98,7 +98,7 @@ There is no Blueprint figure for the receive side: `OnChannelMessageReceived` ca
 </Tabs>
 
 :::caution[A channel message is not signed on the way down. Validate the payload before acting on it.]
-The server does not sign the delivery, and any member with `send_messages` could have sent it. Treat the bytes as untrusted input: bound every length, clamp every value, and never let one decide an outcome that must hold against a modified client. Three payload prefixes are reserved on every channel and dropped before you see them: text beginning `cmc:`, `csg:`, or `gms|` is the Game Model plane's, so a notice that happens to start that way never arrives.
+The server does not sign the delivery, and any member with `send_messages` could have sent it. Treat the bytes as untrusted input: bound every length, clamp every value, and never let one decide an outcome that must hold against a modified client. Three payload prefixes are reserved on every channel and dropped before you see them: text beginning `cmc:`, `csg:`, or `gms|` is reserved by the SDK, so a notice that happens to start that way never arrives.
 :::
 
 ## The full surface
@@ -133,7 +133,7 @@ A `Multicast` CrowdyEvent is encoded into a channel payload and published over t
 
 ## Gotchas
 
-- The session channel is always joined, even in a project with no Multicast event. It is where the Game Model pings arrive.
+- The session channel is always joined, even in a project with no Multicast event.
 - A named channel is join-only from the SDK's side. Create it in Crowdy Studio or at runtime, then `RegisterReliableRpcChannel` if you created it after connecting.
 - `send_messages` gates publishing, not membership. An announce-only channel is a channel whose joiners lack it.
 - The sender never receives an echo of its own message.

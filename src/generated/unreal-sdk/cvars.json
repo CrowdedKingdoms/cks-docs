@@ -55,7 +55,7 @@
       "help": "When non-zero, logs CrowdyReplication Game Model activity: identity resolution, invoke client, container cache/diffing, and effect lowering. Off by default.",
       "module": "CrowdyReplication",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "crowdy.hud.trace",
@@ -220,7 +220,7 @@
       "help": "1: shared (Host-owned) entities bind their Game Model containers from one paged list per type; 0: one ensure per entity.",
       "module": "CrowdyReplication",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "crowdy.gamemodel.emitfallbackping",
@@ -231,7 +231,7 @@
       "help": "1 (default): acting client emits a fallback model-changed ping after a successful Game Model invoke so peers re-pull. 0: rely solely on the server-native model-driven notification (isolates that path in 2-client PIE).",
       "module": "CrowdyReplication",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "crowdy.net.receive.maxdrainms",
@@ -352,7 +352,7 @@
       "help": "Close the container-change feed opened by crowdy.gamemodel.watchcontainers.",
       "module": "CrowdyReplication",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "crowdy.gamemodel.watchcontainers",
@@ -363,7 +363,7 @@
       "help": "Open the server's container-change feed over a WebSocket and log every notification. Optional argument narrows it to one container type. Diagnostic only: nothing is re-pulled from it. Run with no argument again, or crowdy.gamemodel.unwatchcontainers, to close it.",
       "module": "CrowdyReplication",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "crowdy.net.routes",

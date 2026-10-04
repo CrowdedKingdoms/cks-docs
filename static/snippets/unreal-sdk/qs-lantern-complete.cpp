@@ -3,7 +3,6 @@
 #include "Components/SphereComponent.h"
 #include "Replication/Components/CrowdyEntityComponent.h"
 #include "Replication/RPC/CrowdyEvent.h"
-#include "LanternFuel.h"
 #include "Lantern.generated.h"
 
 UCLASS()
@@ -41,10 +40,6 @@ public:
 
 	UFUNCTION()
 	void OnRep_Lit();
-
-	// The container binds to the entity by itself; the server owns every attribute on it.
-	UPROPERTY(VisibleAnywhere, Category = "Crowdy")
-	TObjectPtr<ULanternFuel> Fuel;
 };
 
 // Lantern.cpp
@@ -62,7 +57,6 @@ ALantern::ALantern()
 	// The client that places the lantern owns it at once; a host-owned entity waits for the host election.
 	CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
 	CrowdyEntity->Ownership = ECrowdyOwnership::LocalClient;
-	Fuel = CreateDefaultSubobject<ULanternFuel>(TEXT("Fuel"));
 }
 
 void ALantern::BeginPlay()

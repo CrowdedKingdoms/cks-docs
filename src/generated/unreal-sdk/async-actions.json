@@ -49,9 +49,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyAddToCollectionAction",
@@ -67,9 +67,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyApplyContainerManifestAction",
@@ -85,9 +85,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/pre-seeding",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyApplyEffectAction",
@@ -103,9 +103,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/effects-blueprint",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyApplyStatusEffectAction",
@@ -121,9 +121,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyCombatAttackAction",
@@ -139,9 +139,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyCreateDataContainerAction",
@@ -157,9 +157,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyCreateModelItemAction",
@@ -175,9 +175,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyCreateSessionAction",
@@ -193,9 +193,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyDeleteContainerAction",
@@ -211,9 +211,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyDeleteEdgeAction",
@@ -229,9 +229,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyEndSessionAction",
@@ -247,9 +247,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyEnsureLeaderboardEntryAction",
@@ -265,9 +265,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGatherNodeAction",
@@ -283,9 +283,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetCollectionAction",
@@ -301,9 +301,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetCollectionWithStateAction",
@@ -319,9 +319,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetCombatantStateAction",
@@ -337,9 +337,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetLeaderboardAction",
@@ -355,9 +355,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetSessionAction",
@@ -373,9 +373,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetSessionEventsAction",
@@ -391,9 +391,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetSessionSnapshotAction",
@@ -409,9 +409,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyGetWorldStateAction",
@@ -427,9 +427,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyHarvestCropAction",
@@ -445,9 +445,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyInvokeModelFunctionAction",
@@ -463,9 +463,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/functions-and-return-values",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyInvokeOnContainerAction",
@@ -481,9 +481,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyJoinSessionAction",
@@ -499,9 +499,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyLeaveSessionAction",
@@ -517,9 +517,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListChildrenAction",
@@ -535,9 +535,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListCropsAction",
@@ -553,9 +553,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListenForModelChangesAction",
@@ -570,9 +570,9 @@
         "OnChanged"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/change-pings-and-pull",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListResourceNodesAction",
@@ -588,9 +588,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyListSessionsAction",
@@ -606,9 +606,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyPlantCropAction",
@@ -624,9 +624,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyPullDataContainerAction",
@@ -642,9 +642,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyRemoveFromCollectionAction",
@@ -660,9 +660,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyRespawnCombatantAction",
@@ -678,9 +678,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyReviveCombatantAction",
@@ -696,9 +696,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySetDataPropertyAction",
@@ -714,9 +714,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySetSessionAdmissionAction",
@@ -732,9 +732,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySetSessionTurnAction",
@@ -750,9 +750,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySpawnCombatantAction",
@@ -768,9 +768,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySubmitScoreAction",
@@ -786,9 +786,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdySyncCombatantAction",
@@ -804,9 +804,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/kits",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyTransferSessionHostAction",
@@ -822,9 +822,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/sessions",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyTraverseAction",
@@ -840,9 +840,9 @@
         "Failed"
       ],
       "module": "CrowdyReplication",
-      "page": "game-models/collections",
+      "page": "",
       "editor": false,
-      "allowlist": ""
+      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyAuth_BeginMagicLinkSignIn",

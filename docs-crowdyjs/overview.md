@@ -43,7 +43,7 @@ realtime). What separates the surfaces is the token, not the host:
 | Sub-client | Token | Use |
 |---|---|---|
 | `client.auth`, `client.users`, `client.apps`, `client.platform` | identity session | Identity (`login`/`register`, `requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`, `availableLoginProviders`, `myIdentities`/`linkIdentity`/`unlinkIdentity`, `logout`, `me`, `updateGamertag`), app routing reads (`apps.routeFor`), and public platform config (`platform.config`). |
-| `client.chunks`, `client.voxels`, `client.actors`, `client.avatars`, `client.teleport`, `client.state`, `client.host`, `client.serverStatus`, `client.channels`, `client.teams`, `client.gameModel`, `client.udp` | app-scoped | World data, avatars, channels & teams, game models (incl. [automations](automations) and [model-driven notifications](model-notifications)), the GraphQL UDP proxy subscription, and game-client bootstrap. `client.host` covers host election (`get` / `amIHost`) and `heartbeat` — see [Host discovery](/game-api/host-discovery). |
+| `client.chunks`, `client.voxels`, `client.actors`, `client.avatars`, `client.teleport`, `client.state`, `client.host`, `client.serverStatus`, `client.channels`, `client.teams`, `client.udp` | app-scoped | World data, avatars, channels & teams, the GraphQL UDP proxy subscription, and game-client bootstrap. `client.host` covers host election (`get` / `amIHost`) and `heartbeat` — see [Host discovery](/game-api/host-discovery). |
 
 Each client has one `AuthState`, so you still build **two clients**: an identity client
 holding the session token, and a per-game client holding that app's app-scoped token —
@@ -62,8 +62,9 @@ API and delete the `managementUrl` line; use `client.graphql` where you used
 
 ### Full sub-client surface
 
-As of v6 (completed in v6.1), CrowdyJS wraps the **full** public API
-surface — every non-deprecated root field has a typed method, with Relay
+As of v6 (completed in v6.1), CrowdyJS wraps the public API surface a client
+uses — every non-deprecated root field outside platform administration has a
+typed method, with Relay
 `*Connection` cursor-pagination variants alongside the legacy offset lists. (v7
 then made gameplay require an app-scoped token — see [Authentication: session vs
 app-scoped tokens](#authentication-session-vs-app-scoped-tokens).) The surfaces
@@ -71,11 +72,17 @@ are namespaced by audience:
 
 | Audience | Sub-clients | Notes |
 |---|---|---|
-| **Game-client** (browser-safe) | `auth`, `users`, `udp`, `world(...)`, `chunks`, `voxels`, `actors`, `avatars`, `state`, `teleport`, `host`, `channels`, `teams`, `gameModel`, `serverStatus`, `playerCompute`, `crowdyStudio`, `crowdyStudioGitHub` | Safe to drive from an untrusted browser with the documented token and server policy. `auth`/`users` use the identity **session token**; world, Studio, and realtime surfaces require an **app-scoped token**. The Studio agent pane (`dsh` option) reaches the model through the metered REST endpoint with that token and separately requires `use_studio_agent`. |
+| **Game-client** (browser-safe) | `auth`, `users`, `udp`, `world(...)`, `chunks`, `voxels`, `actors`, `avatars`, `state`, `teleport`, `host`, `channels`, `teams`, `exec`, `serverStatus`, `crowdyStudio`, `crowdyStudioGitHub` | Safe to drive from an untrusted browser with the documented token and server policy. `auth`/`users` use the identity **session token**; world, Studio, and realtime surfaces require an **app-scoped token**. The Studio agent pane (`dsh` option) reaches the model through the metered REST endpoint with that token and separately requires `use_studio_agent`. |
 | **Studio-admin** (token whose user holds `manage_apps`) | `organizations`, `apps`, `appAccess`, `billing`, `payments`, `quotas`, `usage`, `sharedEnvironment`, `gameApps` ([grids](grids)) — also grouped under `client.admin.*` | Privileged org/app administration. Requires a user with the `manage_apps` permission (or an org token). Not end-user-safe — see the note below. Dedicated `environments` were removed in v13. |
 
 The SDK never relaxes server-side authorization — exposing an operation just
 gives you a typed wrapper; the caller still needs the right token and permission.
+
+The SDK is for players, developers and org-admins, and is designed for production. Since
+CrowdyJS 18.0.1 (the first 18.x on the production channel) it wraps no field that only a platform super-admin or operator can call (user
+administration, platform-wide payment audits, org freezes, app visibility overrides, hosted-game
+listing and take-downs): those fields are in the [API reference](reference/graphql/graphql-overview.md), and
+platform tooling calls them directly.
 
 :::note[Studio-admin is about who you authenticate as, not where the code runs]
 The studio-admin surfaces have exactly one extra gate: the caller must be a
@@ -465,11 +472,14 @@ await client.udp.sendSingleActorMessage({
 The realtime server always enforces permissions. A player can only act in your
 world if they have **app access** (an entitlement / access tier) and the target
 chunk is inside a **grid** where they hold the right key (`access`,
-`update_voxel_data`, `use_voice_chat`). New apps are **open by default** — a
-default tier and a world-spanning grant are created automatically, and giving a
-player app access grants them everything everywhere — so basic play and building
-work with no extra setup. Owners add restrictions (safe zones, plot ownership) via
-the Game API.
+`update_voxel_data`, `use_voice_chat`). Building is decided by the **most
+specific** grid covering the chunk: a plot or safe zone decides its own chunks, the
+world grid decides only the wilderness, and the app can close the wilderness to
+building ([which grid decides a voxel write](/game-api/grids-and-permissions#which-grid-decides-a-voxel-write)).
+New apps are **open by default** — a default tier and a world-spanning grant are
+created automatically, and giving a player app access grants them every key on
+the world grid — so basic play and building work with no extra setup. Owners add
+restrictions (safe zones, plot ownership) via the Game API.
 
 When a player lacks permission, the server replies with a `GenericErrorResponse`
 (an `UNAUTHORIZED` error code) rather than delivering the action; your
