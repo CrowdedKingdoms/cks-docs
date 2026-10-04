@@ -1,0 +1,69 @@
+---
+id: game-model-containers
+title: gameModelContainers
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List containers in an app, optionally filtered by container type and/or session, by bindingKey (get-by-key read of an ensured container), by property predicates (`where`, requires typeName; the same predicate shape automation selectors use — missing properties fall back to the type default), and paged with offset/limit over the stable (createdAt, containerId) ordering. Pages: an omitted limit returns 200 rows; the maximum is 1000 (BAD&#x005F;REQUEST above it). Without `where` the page is read in SQL; with `where` the predicates are evaluated after reading up to 10000 rows of the type, and a larger type is refused (narrow with sessionId / bindingKey, or page without where). Requires a valid token.
+
+
+```graphql
+gameModelContainers(
+  appId: BigInt!
+  typeName: String
+  sessionId: String
+  bindingKey: String
+  where: [GmPropertyPredicateInput!]
+  limit: Int
+  offset: Int
+): [GmContainer!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose containers to list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>typeName</b></code>](#type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#type-name\} 
+Optional: only containers of this type. Omit for all types.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+Optional: only containers in this session. Omit for all (including app-global).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>bindingKey</b></code>](#binding-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#binding-key\} 
+Optional: only containers ensured under this binding key (see gameModelEnsureContainer). Combine with typeName and sessionId for a get-by-key read of the single shared row.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>where</b></code>](#where)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmPropertyPredicateInput!]</b></code>](/reference/graphql/types/inputs/gm-property-predicate-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#where\} 
+Optional property predicates (max 8, AND-combined). Requires typeName. Ops: '==', '!=', '&#x003C;', '&#x003E;', '&#x003C;=', '&#x003E;='. Values are JSON-encoded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Page size. Default 200, maximum 1000 (BAD&#x005F;REQUEST above). Applied in SQL without `where`; after `where` filtering otherwise.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelContainers.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+Page offset (default 0) over the stable (createdAt, containerId) ordering. Applied in SQL without `where`; after `where` filtering otherwise.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmContainer</b></code>](/reference/graphql/types/objects/gm-container.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A container: a runtime instance of a container type (optionally scoped to a session).

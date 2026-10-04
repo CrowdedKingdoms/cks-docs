@@ -1,0 +1,39 @@
+---
+id: player-automation-create
+title: playerAutomationCreate
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a disabled player automation confined to the caller and one currently owned grid. Strict trigger/action validation rejects selectors, supplied identities, and app-wide shapes.
+
+
+```graphql
+playerAutomationCreate(
+  input: CreatePlayerAutomationInput!
+): PlayerAutomation!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerAutomationCreate.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreatePlayerAutomationInput!</b></code>](/reference/graphql/types/inputs/create-player-automation-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+App/grid scope, name, strict trigger/action JSON, and optional circuit limits.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerAutomation</b></code>](/reference/graphql/types/objects/player-automation.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A player-owned automation confined to one app and grid. Trigger/action JSON has been structurally validated.

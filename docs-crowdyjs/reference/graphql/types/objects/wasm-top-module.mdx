@@ -1,0 +1,48 @@
+---
+id: wasm-top-module
+title: WasmTopModule
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A module and its recent run counts (diagnostics).
+
+
+```graphql
+type WasmTopModule {
+  moduleName: String!
+  runs: Int!
+  failures: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmTopModule.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
+The module name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmTopModule.<b>runs</b></code>](#runs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#runs\} 
+Runs in the window.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>WasmTopModule.<b>failures</b></code>](#failures)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#failures\} 
+Failed runs in the window.
+
+
+
+
+### Member Of
+
+[`WasmAppDiagnostics`](/reference/graphql/types/objects/wasm-app-diagnostics.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

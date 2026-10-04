@@ -1,0 +1,49 @@
+---
+id: compute-reset-breaker
+title: computeResetBreaker
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Restart a module that was stopped for exceeding a resource limit, without deploying a new version. Deploying a fix clears the stop on its own and is the normal path; use this when the limit itself was wrong or the load is being accepted deliberately. The reason is recorded. Requires the org 'manage&#x005F;compute' permission.
+
+
+```graphql
+computeResetBreaker(
+  appId: BigInt!
+  name: String!
+  reason: String!
+): WasmModule!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>computeResetBreaker.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the module.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeResetBreaker.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+The module name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeResetBreaker.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Why the module is being restarted despite exceeding its limit. At least 8 characters; kept with the module history.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>WasmModule</b></code>](/reference/graphql/types/objects/wasm-module.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A WASM compute module: developer-authored Rust compiled to sandboxed WASM on game-api instances. Holds metadata, the deployed version pointer, and circuit-breaker state; source lives in versions.

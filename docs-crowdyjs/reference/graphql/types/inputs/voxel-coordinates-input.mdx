@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Input form of a voxel position LOCAL to its chunk (see VoxelCoordinates). Each coordinate is 0-15 on a 16x16x16 chunk, and the voxel writes (updateVoxel, sendVoxelUpdate, updateChunk's voxelStates) refuse any other value. Teleport's voxelAddress, which is not a write, takes any signed 16-bit value.
+Input form of a voxel position LOCAL to its chunk (see VoxelCoordinates). Signed 16-bit integers; in-bounds positions are 0-15 on each axis for a 16x16x16 chunk.
 
 
 ```graphql
@@ -30,15 +30,15 @@ input VoxelCoordinatesInput {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelCoordinatesInput.<b>x</b></code>](#x)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#x\} 
-Local voxel X within the chunk, 0-15; voxel writes refuse other values.
+Local voxel X within the chunk (0-15 for in-bounds voxels).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelCoordinatesInput.<b>y</b></code>](#y)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#y\} 
-Local voxel Y within the chunk, 0-15; voxel writes refuse other values.
+Local voxel Y within the chunk (0-15 for in-bounds voxels).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelCoordinatesInput.<b>z</b></code>](#z)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#z\} 
-Local voxel Z within the chunk, 0-15; voxel writes refuse other values.
+Local voxel Z within the chunk (0-15 for in-bounds voxels).
 
 
 

@@ -1,0 +1,44 @@
+---
+id: game-model-session-snapshot
+title: gameModelSessionSnapshot
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The authoritative state of one session at one revision: the session row and every joined participant. Pull it when you subscribe, after a reconnect, or when gameModelSessionChanged shows a revision gap; then apply only events with a higher revision. Requires a valid token.
+
+
+```graphql
+gameModelSessionSnapshot(
+  appId: BigInt!
+  sessionId: String!
+): GmSessionSnapshot!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessionSnapshot.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessionSnapshot.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+The session id.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmSessionSnapshot</b></code>](/reference/graphql/types/objects/gm-session-snapshot.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The authoritative state of one session at one revision: the session and every joined participant. The catch-up read after a subscription gap or a reconnect.

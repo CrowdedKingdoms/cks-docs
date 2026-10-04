@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Define an app feature key that access tiers can be granted. ck-exec code reads the keys a player's tier grants with `ctx.players().features(player)` (scope `players.read`) and gates on them itself. The `gameModel` prefix is a legacy name. Idempotent on (app, featureKey). Requires app-admin ('manage&#x005F;apps').
+Define an app feature key that functions can gate on (via a tier&#x005F;feature authority rule) and that access tiers can be granted. Idempotent on (app, featureKey). Requires app-admin ('manage&#x005F;apps').
 
 
 ```graphql
@@ -36,4 +36,4 @@ The app, the feature key, and an optional description.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>GmAppFeature</b></code>](/reference/graphql/types/objects/gm-app-feature.mdx) <Badge class="badge badge--secondary " text="object"/> 
-An app feature key that access tiers can grant. ck-exec code reads the keys a player's tier grants with `ctx.players().features(player)`.
+An app feature key that functions can gate on and tiers can grant.

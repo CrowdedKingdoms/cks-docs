@@ -1,0 +1,68 @@
+---
+id: gm-lint-finding-type
+title: GmLintFindingType
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One problem with one object in the game model, recomputed at read time rather than remembered from a write.
+
+
+```graphql
+type GmLintFindingType {
+  code: GmLintCode!
+  severity: GmLintSeverity!
+  subjectKind: GmLintSubjectKind!
+  subject: String!
+  message: String!
+  remedy: String
+  count: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintFindingType.<b>code</b></code>](#code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GmLintCode!</b></code>](/reference/graphql/types/enums/gm-lint-code.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#code\} 
+What is wrong.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintFindingType.<b>severity</b></code>](#severity)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GmLintSeverity!</b></code>](/reference/graphql/types/enums/gm-lint-severity.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#severity\} 
+ERROR is provably broken and gate-eligible; WARNING is reported only.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintFindingType.<b>subjectKind</b></code>](#subject-kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GmLintSubjectKind!</b></code>](/reference/graphql/types/enums/gm-lint-subject-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#subject-kind\} 
+What kind of object this is about.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintFindingType.<b>subject</b></code>](#subject)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#subject\} 
+The object's own name — a function name, a container type name — not a rendered label. Group and deduplicate on (code, subject).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintFindingType.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
+What is wrong, in a sentence.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintFindingType.<b>remedy</b></code>](#remedy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#remedy\} 
+What to do about it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintFindingType.<b>count</b></code>](#count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#count\} 
+How many objects this row stands for, when one finding summarises many (for example a type missing under 40 containers).
+
+
+
+
+### Member Of
+
+[`GmLintResult`](/reference/graphql/types/objects/gm-lint-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

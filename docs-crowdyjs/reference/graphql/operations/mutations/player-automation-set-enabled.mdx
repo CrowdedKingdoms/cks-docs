@@ -1,0 +1,39 @@
+---
+id: player-automation-set-enabled
+title: playerAutomationSetEnabled
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Enable or disable one caller-owned player automation. Enabling requires effective run&#x005F;server&#x005F;code and, in strict mode, author admission. Interval/cron triggers compute the first due time; the P1 dispatcher executes scheduled studio-model actions while event delivery and player-compute actions remain typed pending paths.
+
+
+```graphql
+playerAutomationSetEnabled(
+  input: SetPlayerAutomationEnabledInput!
+): PlayerAutomation!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerAutomationSetEnabled.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetPlayerAutomationEnabledInput!</b></code>](/reference/graphql/types/inputs/set-player-automation-enabled-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+App/grid/automation scope and desired enabled state.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerAutomation</b></code>](/reference/graphql/types/objects/player-automation.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A player-owned automation confined to one app and grid. Trigger/action JSON has been structurally validated.

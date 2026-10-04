@@ -1,0 +1,54 @@
+---
+id: player-compute-set-enabled
+title: playerComputeSetEnabled
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Enable or disable a player module. Enabling requires current grid ownership, the target's run permission, a successful compile, and admission when the app uses strict ALLOW&#x005F;LIST mode. Write permission is not sufficient to run code.
+
+
+```graphql
+playerComputeSetEnabled(
+  appId: BigInt!
+  gridId: BigInt!
+  name: String!
+  enabled: Boolean!
+): PlayerWasmModule!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetEnabled.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App containing the module.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetEnabled.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Owned grid containing the module.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetEnabled.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Module name within the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetEnabled.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+True to request activation; false to stop execution.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerWasmModule</b></code>](/reference/graphql/types/objects/player-wasm-module.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A grid-bound player compute module. Runtime identity is never stored here; it resolves from the grid current owner at activation.

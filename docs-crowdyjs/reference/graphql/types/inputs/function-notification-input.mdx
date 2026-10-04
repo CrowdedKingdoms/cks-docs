@@ -1,0 +1,48 @@
+---
+id: function-notification-input
+title: FunctionNotificationInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A declarative realtime notification the function emits via Buddy AFTER its transaction commits. Players and automations (NPCs) emit identically. Fenced by delivery mode (proximity / channel membership / target).
+
+
+```graphql
+input FunctionNotificationInput {
+  kind: String!
+  emitAs: String
+  args: [NotificationArgInput!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>FunctionNotificationInput.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#kind\} 
+Delivery mode: 'spatial' (nearby clients) | 'channel' (channel members) | 'actor' (one target).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FunctionNotificationInput.<b>emitAs</b></code>](#emit-as)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#emit-as\} 
+For kind 'spatial': which client downlink Buddy emits — 'server&#x005F;event' (default) | 'generic&#x005F;spatial' | 'actor&#x005F;update'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FunctionNotificationInput.<b>args</b></code>](#args)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[NotificationArgInput!]!</b></code>](/reference/graphql/types/inputs/notification-arg-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#args\} 
+Named argument expressions. spatial: chunk&#x005F;x/chunk&#x005F;y/chunk&#x005F;z required (+ event&#x005F;type/state/distance/decay/source&#x005F;uuid); channel: channel&#x005F;id/payload required (+ sender&#x005F;uuid); actor: target&#x005F;uuid/payload required (+ chunk&#x005F;x/y/z/source&#x005F;uuid).
+
+
+
+
+### Member Of
+
+[`SeedFunctionInput`](/reference/graphql/types/inputs/seed-function-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`UpsertFunctionInput`](/reference/graphql/types/inputs/upsert-function-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

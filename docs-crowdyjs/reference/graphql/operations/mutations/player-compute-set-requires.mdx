@@ -1,0 +1,54 @@
+---
+id: player-compute-set-requires
+title: playerComputeSetRequires
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set or clear the required CLIENT companion for the current immutable SERVER module version. Both modules must be caller-authored, successfully compiled, and in the same owned grid. Enabling the server exposes the aggregate server+client capability summary to visitors; pass null to clear the requirement.
+
+
+```graphql
+playerComputeSetRequires(
+  appId: BigInt!
+  gridId: BigInt!
+  serverName: String!
+  requiredClientName: String
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetRequires.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App containing both player modules.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetRequires.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Owned grid containing both player modules.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetRequires.<b>serverName</b></code>](#server-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#server-name\} 
+Name of the SERVER-target module in the grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetRequires.<b>requiredClientName</b></code>](#required-client-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#required-client-name\} 
+Name of the required CLIENT-target module, or null to clear the current server version requirement.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

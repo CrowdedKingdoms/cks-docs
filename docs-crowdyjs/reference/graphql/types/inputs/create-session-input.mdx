@@ -1,0 +1,88 @@
+---
+id: create-session-input
+title: CreateSessionInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a runtime session.
+
+
+```graphql
+input CreateSessionInput {
+  appId: BigInt!
+  name: String
+  metadataJson: String
+  participantUserIds: [BigInt!]
+  maxParticipants: Int
+  admission: String
+  emptyTimeoutSec: Int
+  presence: String
+  seedFromApp: SessionSeedInput
+  gridId: BigInt
+  idempotencyKey: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) the session belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Optional session name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>metadataJson</b></code>](#metadata-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata-json\} 
+JSON object of session metadata.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>participantUserIds</b></code>](#participant-user-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#participant-user-ids\} 
+Initial participants besides the creator.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>maxParticipants</b></code>](#max-participants)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-participants\} 
+Seat cap: the most participants that may be joined at once. Omit for unbounded. Initial participants count against it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>admission</b></code>](#admission)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#admission\} 
+Initial admission: 'open' (default) or 'locked' (only the initial participants may join/reconnect until the host unlocks).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>emptyTimeoutSec</b></code>](#empty-timeout-sec)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#empty-timeout-sec\} 
+Seconds a session may sit with nobody joined before the server ends it as abandoned. Omit for the platform default; 0 disables the timeout for this session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>presence</b></code>](#presence)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#presence\} 
+How the roster is judged: 'actor' (default) expires a joined participant with no fresh Buddy actor in the app after the join grace window; 'none' never expires anybody. Use 'none' for turn-based play that talks GraphQL and channel pings and never replicates an actor (kit.matches does), where the roster's only exits are leave and end.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>seedFromApp</b></code>](#seed-from-app)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SessionSeedInput</b></code>](/reference/graphql/types/inputs/session-seed-input.mdx) <Badge class="badge badge--secondary " text="input"/> \{#seed-from-app\} 
+Optional: copy the app's template rows of the listed container types into the new session at creation (see SessionSeedInput). At most 2,000 rows per session; above that the creation is refused with the count and no session exists. The count of rows stamped is on the session's `created` event (containersSeeded) and on GmSession.seededContainerCount of the create response.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Optional: host the session inside a grid (a game within the game). Only the grid's current owner may do this, and the app's session creation policy still applies. Player modules on that grid list it through sessions&#x005F;list; everyone else sees it as an ordinary session carrying gridId.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateSessionInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key. Replaying with the same key and identical input returns the first session instead of creating a second; the same key with different input returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
+
+
+
+
+### Member Of
+
+[`gameModelCreateSession`](/reference/graphql/operations/mutations/game-model-create-session.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

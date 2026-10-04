@@ -1,0 +1,64 @@
+---
+id: player-compute-runs
+title: playerComputeRuns
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List executions of player modules on a grid the caller currently owns, newest first. Every run is attributed to the grid owner it executed as; author identity never appears here.
+
+
+```graphql
+playerComputeRuns(
+  appId: BigInt!
+  gridId: BigInt!
+  moduleName: String
+  success: Boolean
+  limit: Int
+  offset: Int
+): [PlayerWasmModuleRun!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeRuns.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App containing the owned grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeRuns.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Owned grid whose runs to list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeRuns.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
+Optional: only runs of this module. Omit for all.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeRuns.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#success\} 
+Optional: filter by outcome (true = succeeded, false = failed).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeRuns.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Max runs to return (default 50, max 200).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeRuns.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+Number of runs to skip (pagination).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerWasmModuleRun</b></code>](/reference/graphql/types/objects/player-wasm-module-run.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One execution of a player module (init/tick/invoke/event), attributed to the grid owner it ran as. The per-run twin of the studio WasmModuleRun, scoped to grids the caller currently owns.

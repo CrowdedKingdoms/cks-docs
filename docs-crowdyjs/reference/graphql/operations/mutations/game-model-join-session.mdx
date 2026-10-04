@@ -1,0 +1,39 @@
+---
+id: game-model-join-session
+title: gameModelJoinSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Join a session, or reconnect to one you are already in. Refused with SESSION&#x005F;ENDED, SESSION&#x005F;CLOSED, SESSION&#x005F;LOCKED (unless you already joined) or SESSION&#x005F;FULL. A rejoin returns the same row with incarnation + 1 and supersedes any older client of yours. Pass actorUuid to bind the participant's presence to that Buddy actor. Requires a valid token.
+
+
+```graphql
+gameModelJoinSession(
+  input: JoinSessionInput!
+): GmSessionParticipant!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelJoinSession.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>JoinSessionInput!</b></code>](/reference/graphql/types/inputs/join-session-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, the session id to join, an optional participant role, and an optional actor uuid.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmSessionParticipant</b></code>](/reference/graphql/types/objects/gm-session-participant.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's participation in a session.

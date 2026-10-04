@@ -1,0 +1,43 @@
+---
+id: timer-param-input
+title: TimerParamInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One named parameter expression bound into a timer invocation.
+
+
+```graphql
+input TimerParamInput {
+  name: String!
+  expression: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>TimerParamInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Parameter name on the timer's target function.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TimerParamInput.<b>expression</b></code>](#expression)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expression\} 
+Expression evaluated when the timer is armed (not when it fires), in the arming invocation context.
+
+
+
+
+### Member Of
+
+[`FunctionTimerInput`](/reference/graphql/types/inputs/function-timer-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

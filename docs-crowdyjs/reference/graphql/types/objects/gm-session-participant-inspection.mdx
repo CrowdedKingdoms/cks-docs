@@ -1,0 +1,48 @@
+---
+id: gm-session-participant-inspection
+title: GmSessionParticipantInspection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A joined participant with the platform's current presence verdict, for operators.
+
+
+```graphql
+type GmSessionParticipantInspection {
+  participant: GmSessionParticipant!
+  presence: String!
+  presenceFrom: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionParticipantInspection.<b>participant</b></code>](#participant)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GmSessionParticipant!</b></code>](/reference/graphql/types/objects/gm-session-participant.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#participant\} 
+The roster row.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionParticipantInspection.<b>presence</b></code>](#presence)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#presence\} 
+'fresh' (a qualifying actor is present), 'grace' (inside the join grace window, not yet judged), 'stale' (no qualifying actor; the next presence sweep will expire this participant), 'none' (the session's presence mode is 'none'; never expired), 'legacy' (row predates presence tracking; never expired), 'left' (not joined).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmSessionParticipantInspection.<b>presenceFrom</b></code>](#presence-from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#presence-from\} 
+When the presence rule starts applying to this participant (join + grace), or null for a row the rule never applies to (a legacy row, or a session whose presence mode is 'none').
+
+
+
+
+### Member Of
+
+[`GmSessionInspection`](/reference/graphql/types/objects/gm-session-inspection.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

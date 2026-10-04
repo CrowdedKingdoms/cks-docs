@@ -1,0 +1,58 @@
+---
+id: gm-lint-result
+title: GmLintResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Whether an app's game model hangs together. Every check is recomputed on demand: a stored warning goes stale the moment an unrelated object changes, which is the failure this replaces.
+
+
+```graphql
+type GmLintResult {
+  appId: BigInt!
+  findings: [GmLintFindingType!]!
+  errorCount: Int!
+  warningCount: Int!
+  clean: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintResult.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app that was linted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintResult.<b>findings</b></code>](#findings)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmLintFindingType!]!</b></code>](/reference/graphql/types/objects/gm-lint-finding-type.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#findings\} 
+Findings, errors first, then by code and subject.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintResult.<b>errorCount</b></code>](#error-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#error-count\} 
+How many findings have severity ERROR.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintResult.<b>warningCount</b></code>](#warning-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#warning-count\} 
+How many findings have severity WARNING.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintResult.<b>clean</b></code>](#clean)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#clean\} 
+True when there are no ERROR findings. WARNING findings do not make an app unclean, because most of them are a normal mid-edit state.
+
+
+
+
+### Returned By
+
+[`gameModelLint`](/reference/graphql/operations/queries/game-model-lint.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

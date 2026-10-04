@@ -1,0 +1,44 @@
+---
+id: compute-module-stats
+title: computeModuleStats
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Aggregate compute activity for an app over a recent window: run/failure counts, fuel, egress, and a per-module breakdown. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
+
+
+```graphql
+computeModuleStats(
+  appId: BigInt!
+  windowMinutes: Int = 60
+): WasmComputeStats!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>computeModuleStats.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose compute activity to summarize.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>computeModuleStats.<b>windowMinutes</b></code>](#window-minutes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#window-minutes\} 
+Look-back window in minutes (default 60, max 1440).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>WasmComputeStats</b></code>](/reference/graphql/types/objects/wasm-compute-stats.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Aggregate compute activity for an app over a recent window: throughput, failure rate, fuel, egress, and a per-module breakdown.

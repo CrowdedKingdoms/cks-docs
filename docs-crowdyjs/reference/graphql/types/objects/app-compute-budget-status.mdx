@@ -1,0 +1,73 @@
+---
+id: app-compute-budget-status
+title: AppComputeBudgetStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Whether an app is inside its per-minute compute allowance right now, and what would happen if it were not. Reading this does not charge anything.
+
+
+```graphql
+type AppComputeBudgetStatus {
+  appId: BigInt!
+  unitsUsed: BigInt!
+  allowance: BigInt!
+  allowanceIsAppOwn: Boolean!
+  overBudget: Boolean!
+  enforced: Boolean!
+  byEngine: [EngineComputeUnits!]!
+  retryAfterMs: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetStatus.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetStatus.<b>unitsUsed</b></code>](#units-used)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#units-used\} 
+Compute units accrued in the current minute, across every engine. Between reconciles this is the serving instance's own view, so it can read low on a multi-instance fleet; it converges within seconds.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetStatus.<b>allowance</b></code>](#allowance)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#allowance\} 
+The allowance the decision was made against.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetStatus.<b>allowanceIsAppOwn</b></code>](#allowance-is-app-own)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#allowance-is-app-own\} 
+True when the allowance is the app's own stored one, false when it is the platform reference allowance. The reference allowance can never refuse — it exists so shadow-mode observations have a denominator.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetStatus.<b>overBudget</b></code>](#over-budget)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#over-budget\} 
+Whether the app is over the allowance this minute.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetStatus.<b>enforced</b></code>](#enforced)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enforced\} 
+Whether being over the allowance is currently refusing invokes. False while in shadow mode, which is the ship default.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetStatus.<b>byEngine</b></code>](#by-engine)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[EngineComputeUnits!]!</b></code>](/reference/graphql/types/objects/engine-compute-units.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#by-engine\} 
+Which engines the units came from. Carried on every decision because a single allowance spans the engines, so a player invoke can be refused for compute modules the developer forgot were ticking — and that is only explainable with the breakdown.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetStatus.<b>retryAfterMs</b></code>](#retry-after-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#retry-after-ms\} 
+Milliseconds until the minute rolls and the allowance resets.
+
+
+
+
+### Returned By
+
+[`appComputeBudgetStatus`](/reference/graphql/operations/queries/app-compute-budget-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

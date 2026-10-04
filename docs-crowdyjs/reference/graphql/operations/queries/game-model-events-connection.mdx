@@ -1,0 +1,69 @@
+---
+id: game-model-events-connection
+title: gameModelEventsConnection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Relay-style cursor-paginated version of `gameModelEvents`: query the function-invocation event log (audit trail) with optional filters. Page forward with `first` (default 50, max 200) and `after` (an opaque cursor from a previous page’s `pageInfo.endCursor`), which replace the legacy `limit`/`offset`. Useful for debugging functions or showing recent activity. Requires a valid token.
+
+
+```graphql
+gameModelEventsConnection(
+  appId: BigInt!
+  first: Int
+  after: String
+  sessionId: String
+  selfContainerId: String
+  functionName: String
+  success: Boolean
+): GameModelEventsConnection!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEventsConnection.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose events to query.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEventsConnection.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\} 
+Return the first N edges after `after`. Default 50; clamped to 1..200.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEventsConnection.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\} 
+Opaque cursor: return edges after this one. Pass a previous page's `pageInfo.endCursor`. Omit for the first page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEventsConnection.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+Optional: only events in this session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEventsConnection.<b>selfContainerId</b></code>](#self-container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#self-container-id\} 
+Optional: only events whose self container was this UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEventsConnection.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+Optional: only events for this function name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelEventsConnection.<b>success</b></code>](#success)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#success\} 
+Optional: filter by outcome (true = succeeded, false = failed).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GameModelEventsConnection</b></code>](/reference/graphql/types/objects/game-model-events-connection.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Relay-style cursor-paginated connection over the function-invocation event log (GmEvent). Page with `first`/`after`; cursors are opaque.

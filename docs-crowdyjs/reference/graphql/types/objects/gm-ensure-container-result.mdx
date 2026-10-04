@@ -1,0 +1,43 @@
+---
+id: gm-ensure-container-result
+title: GmEnsureContainerResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Result of gameModelEnsureContainer: the resolved container plus whether this call inserted it.
+
+
+```graphql
+type GmEnsureContainerResult {
+  container: GmContainer!
+  created: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEnsureContainerResult.<b>container</b></code>](#container)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>GmContainer!</b></code>](/reference/graphql/types/objects/gm-container.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#container\} 
+The container all ensures of this key converge on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmEnsureContainerResult.<b>created</b></code>](#created)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created\} 
+True when THIS call created the row; false when it resolved an existing one (creation-only input fields were ignored).
+
+
+
+
+### Returned By
+
+[`gameModelEnsureContainer`](/reference/graphql/operations/mutations/game-model-ensure-container.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

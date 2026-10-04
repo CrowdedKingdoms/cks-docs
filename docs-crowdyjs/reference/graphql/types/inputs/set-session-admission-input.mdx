@@ -1,0 +1,58 @@
+---
+id: set-session-admission-input
+title: SetSessionAdmissionInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Change who may still join a session. Host or app admin ('manage&#x005F;apps').
+
+
+```graphql
+input SetSessionAdmissionInput {
+  appId: BigInt!
+  sessionId: String!
+  admission: String!
+  expectedHostTerm: Int
+  idempotencyKey: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetSessionAdmissionInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetSessionAdmissionInput.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+The session id to update.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetSessionAdmissionInput.<b>admission</b></code>](#admission)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#admission\} 
+'open' (anyone the app admits), 'locked' (only participants who already joined may reconnect), 'closed' (nobody, not even by reconnection).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetSessionAdmissionInput.<b>expectedHostTerm</b></code>](#expected-host-term)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expected-host-term\} 
+Optional: the hostTerm you last read. Refused with SESSION&#x005F;HOST&#x005F;TERM&#x005F;STALE if the host has changed since.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetSessionAdmissionInput.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#idempotency-key\} 
+Optional idempotency key (24h).
+
+
+
+
+### Member Of
+
+[`gameModelSetSessionAdmission`](/reference/graphql/operations/mutations/game-model-set-session-admission.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

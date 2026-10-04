@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-An app's compute allowance in units per minute. Absent when no allowance has been set for the app, in which case its ck-exec code is never paused for its budget.
+An app's compute allowance in units per minute, spanning the expression engine and both WASM tiers. Absent when no allowance has been set for the app, in which case the app is measured against the platform reference allowance and is never refused.
 
 
 ```graphql
@@ -40,7 +40,7 @@ Compute units this app may consume per minute.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>enforce</b></code>](#enforce)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enforce\} 
-When false the allowance is recorded and nothing is paused (the default). When true, ck-exec pauses the app's code while its last settled minute is over the allowance, and resumes it once a minute is back inside.
+When false the allowance is observed and recorded and nothing is refused (the ship default). When true, exceeding it refuses further model invokes until the minute rolls. Enforcement additionally requires the fleet kill switch to be in its default position, so a true here can still be observing.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>note</b></code>](#note)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#note\} 

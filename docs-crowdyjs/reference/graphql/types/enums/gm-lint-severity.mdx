@@ -1,0 +1,43 @@
+---
+id: gm-lint-severity
+title: GmLintSeverity
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+How much a finding is worth doing something about. Only ERROR is ever eligible to gate anything; WARNING is reported and never enforced, because ordinary authoring is transiently inconsistent and a gate that fought it would be worse than the problem.
+
+
+```graphql
+enum GmLintSeverity {
+  ERROR
+  WARNING
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintSeverity.<b>ERROR</b></code>](#error) \{#error\} 
+Provably broken. No reading of the app makes this fine, and the platform can say so without knowing your intent.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmLintSeverity.<b>WARNING</b></code>](#warning) \{#warning\} 
+Suspicious and frequently correct anyway — most often because you are mid-edit and the other half is not written yet.
+
+
+
+
+### Member Of
+
+[`GmLintFindingType`](/reference/graphql/types/objects/gm-lint-finding-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

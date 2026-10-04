@@ -1,0 +1,44 @@
+---
+id: user-code-fault-summary
+title: userCodeFaultSummary
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Faults grouped by engine, kind, blame and subject over a window, most frequent first. This is the health question: a count per shape answers 'what is failing and how often', which a single overwritten last&#x005F;error slot never could — five prod modules read last&#x005F;error = NULL while holding 4,767 lifetime watchdog terminations between them. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
+
+
+```graphql
+userCodeFaultSummary(
+  appId: BigInt!
+  windowMinutes: Int = 60
+): [UserCodeFaultSummaryEntry!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>userCodeFaultSummary.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) to summarize.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>userCodeFaultSummary.<b>windowMinutes</b></code>](#window-minutes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#window-minutes\} 
+Look-back window in minutes (default 60, max 1440).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UserCodeFaultSummaryEntry</b></code>](/reference/graphql/types/objects/user-code-fault-summary-entry.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Faults grouped by engine, kind and blame over a window — the shape to alert on, and the answer to "is this us or them".

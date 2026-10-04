@@ -1,0 +1,49 @@
+---
+id: game-model-function-circuits
+title: gameModelFunctionCircuits
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+State of the per-function circuit breaker on the player-invoke path (gameModelInvoke) for one app, plus the mode and thresholds the answering instance is running. In the default 'shadow' mode nothing is refused and shadowRefusals counts what enforcement would have refused, so an open circuit means the function has been failing rather than that players are being blocked. A function that has never failed has no row and is absent. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
+
+
+```graphql
+gameModelFunctionCircuits(
+  appId: BigInt!
+  name: String
+  limit: Int
+): GmFunctionBreakerStatus!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelFunctionCircuits.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app whose function circuits to read.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelFunctionCircuits.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Only the circuit for this exact function name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelFunctionCircuits.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Max circuits to return (default 100, max 200).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmFunctionBreakerStatus</b></code>](/reference/graphql/types/objects/gm-function-breaker-status.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The player-invoke breaker's mode and thresholds on the answering instance, with this app's circuits. The mode decides whether any of it refuses anything.

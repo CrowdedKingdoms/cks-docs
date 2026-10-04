@@ -1,0 +1,39 @@
+---
+id: game-model-set-policy
+title: gameModelSetPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set the app's game-model runtime policy: who may create sessions (admin | member | anyone) and the default participant role. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelSetPolicy(
+  input: SetGameModelPolicyInput!
+): GmAppPolicy!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSetPolicy.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetGameModelPolicyInput!</b></code>](/reference/graphql/types/inputs/set-game-model-policy-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app plus the session creation policy and/or default participant role to set.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmAppPolicy</b></code>](/reference/graphql/types/objects/gm-app-policy.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The app's game-model runtime policy.

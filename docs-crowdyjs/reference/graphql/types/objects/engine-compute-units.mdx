@@ -1,0 +1,43 @@
+---
+id: engine-compute-units
+title: EngineComputeUnits
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Compute units attributed to one engine over the query window.
+
+
+```graphql
+type EngineComputeUnits {
+  engine: MeteredComputeEngine!
+  units: BigInt!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>EngineComputeUnits.<b>engine</b></code>](#engine)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>MeteredComputeEngine!</b></code>](/reference/graphql/types/enums/metered-compute-engine.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#engine\} 
+The engine whose meter produced these units.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>EngineComputeUnits.<b>units</b></code>](#units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#units\} 
+Compute units, where one unit is one millisecond of measured execution time. Comparable across engines by construction: both engines measure the same quantity with the same clock (process.hrtime around the app's code), and a WASM engine additionally floors its answer by fuel/22,000,000 to charge work done inside the sandbox between two host calls. Zero when the engine ran nothing.
+
+
+
+
+### Member Of
+
+[`AppComputeBudgetStatus`](/reference/graphql/types/objects/app-compute-budget-status.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AppComputeUsage`](/reference/graphql/types/objects/app-compute-usage.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

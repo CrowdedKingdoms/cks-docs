@@ -1,0 +1,128 @@
+---
+id: user-code-fault-record
+title: UserCodeFaultRecord
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One failure of code a user wrote, from any of the three engines. Replaces three disagreeing surfaces: a bare error string on the invoke path, a run table that recorded failures and not successes, and a last&#x005F;error slot the next success cleared.
+
+
+```graphql
+type UserCodeFaultRecord {
+  faultId: String!
+  appId: BigInt!
+  engine: UserCodeFaultEngine!
+  kind: UserCodeFaultKind!
+  blame: UserCodeFaultBlame!
+  retryable: Boolean!
+  subject: String!
+  entryPoint: String
+  flowId: String
+  gridId: BigInt
+  actingUserId: BigInt
+  durationUs: String
+  budgetUs: String
+  unitsUsed: String
+  unitsLimit: String
+  stepsCompleted: Int
+  detail: String
+  instanceId: String
+  occurredAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>faultId</b></code>](#fault-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#fault-id\} 
+Unique fault id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) the fault occurred in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>engine</b></code>](#engine)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UserCodeFaultEngine!</b></code>](/reference/graphql/types/enums/user-code-fault-engine.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#engine\} 
+Which engine ran the code.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UserCodeFaultKind!</b></code>](/reference/graphql/types/enums/user-code-fault-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#kind\} 
+What went wrong.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>blame</b></code>](#blame)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UserCodeFaultBlame!</b></code>](/reference/graphql/types/enums/user-code-fault-blame.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#blame\} 
+Whose problem this is. Stored rather than derived from kind, because the same kind can have a different owner given context — which is what platform saturation reported as an author timeout cost us.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>retryable</b></code>](#retryable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#retryable\} 
+Whether repeating the identical call could succeed with nothing else changing. This is what a game reads to choose between retrying and telling the player it is broken.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>subject</b></code>](#subject)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#subject\} 
+What ran: the function name for the expression engine, the module name for either WASM engine.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>entryPoint</b></code>](#entry-point)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#entry-point\} 
+The entry point that started the work: player&#x005F;invoke, automation, system, tick, invoke, event, init.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>flowId</b></code>](#flow-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#flow-id\} 
+Correlation id shared with gm&#x005F;event&#x005F;log, gm&#x005F;automation&#x005F;runs and wasm&#x005F;module&#x005F;runs; pass it to gameModelFlow for the whole timeline.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid, when the faulting code belonged to one (player WASM).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>actingUserId</b></code>](#acting-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#acting-user-id\} 
+The user the work ran on behalf of, when there was one.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>durationUs</b></code>](#duration-us)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#duration-us\} 
+Wall-clock microseconds the work consumed before it faulted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>budgetUs</b></code>](#budget-us)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#budget-us\} 
+The wall-clock budget it was given, in microseconds. Stored beside durationUs rather than as a ratio: 249ms against a 250ms budget and 249ms against a 2000ms budget are different bugs.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>unitsUsed</b></code>](#units-used)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#units-used\} 
+Budget units consumed — expression-engine gas or WASM fuel. Named neutrally so a developer using both engines can compare them.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>unitsLimit</b></code>](#units-limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#units-limit\} 
+Budget units granted, in the same units as unitsUsed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>stepsCompleted</b></code>](#steps-completed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#steps-completed\} 
+Mutation steps or host calls completed before the fault. This is what distinguishes "never started" from "died on step nine".
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>detail</b></code>](#detail)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#detail\} 
+Operator-facing detail, for the developer who owns the app. Never shown to a player.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>instanceId</b></code>](#instance-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#instance-id\} 
+Which ck-api instance observed the fault. A fault that only ever appears on one instance is a different bug from one the fleet shares.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultRecord.<b>occurredAt</b></code>](#occurred-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#occurred-at\} 
+When the fault was recorded.
+
+
+
+
+### Returned By
+
+[`userCodeFaults`](/reference/graphql/operations/queries/user-code-faults.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

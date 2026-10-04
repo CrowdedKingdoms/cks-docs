@@ -1,0 +1,48 @@
+---
+id: gm-app-policy
+title: GmAppPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The app's game-model runtime policy.
+
+
+```graphql
+type GmAppPolicy {
+  appId: BigInt!
+  sessionCreationPolicy: String!
+  defaultParticipantRole: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAppPolicy.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) the policy applies to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAppPolicy.<b>sessionCreationPolicy</b></code>](#session-creation-policy)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-creation-policy\} 
+Who may create sessions: admin | member | anyone.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAppPolicy.<b>defaultParticipantRole</b></code>](#default-participant-role)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#default-participant-role\} 
+Default role assigned to new session participants.
+
+
+
+
+### Returned By
+
+[`gameModelPolicy`](/reference/graphql/operations/queries/game-model-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`gameModelSetPolicy`](/reference/graphql/operations/mutations/game-model-set-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

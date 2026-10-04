@@ -1,0 +1,73 @@
+---
+id: upsert-automation-trigger-input
+title: UpsertAutomationTriggerInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create an event trigger that fires an automation on model activity or a complete app-scoped active-player-count transition.
+
+
+```graphql
+input UpsertAutomationTriggerInput {
+  appId: BigInt!
+  automationName: String!
+  onEvent: String!
+  functionName: String
+  containerTypeName: String
+  propertyKey: String
+  writeSource: String
+  debounceMs: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationTriggerInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationTriggerInput.<b>automationName</b></code>](#automation-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-name\} 
+The automation (by name) this trigger fires.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationTriggerInput.<b>onEvent</b></code>](#on-event)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#on-event\} 
+Event to observe: function&#x005F;invoked | property&#x005F;changed | container&#x005F;created | player&#x005F;count&#x005F;changed | player&#x005F;left | player&#x005F;joined. player&#x005F;count&#x005F;changed fires only after complete fleet counts change, and injects reserved previous/current/delta/revision params. player&#x005F;left fires once per actor that stops being present (about five seconds after its last update), the LAST player included, and injects actor&#x005F;uuid, user&#x005F;id, chunk&#x005F;x/y/z, last&#x005F;seen&#x005F;at, left&#x005F;reason (presence&#x005F;removed | lease&#x005F;expired) and remaining&#x005F;player&#x005F;count. player&#x005F;joined (v1.93.0) fires once per actor the roster newly inserted (ON CONFLICT no-op is not a join), and injects actor&#x005F;uuid, user&#x005F;id, chunk&#x005F;x/y/z, first&#x005F;seen&#x005F;at and current&#x005F;player&#x005F;count. A Redis flush can emit leave then join on later ticks.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationTriggerInput.<b>functionName</b></code>](#function-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#function-name\} 
+Filter: only this function name. Applies to function&#x005F;invoked; rejected for property&#x005F;changed, container&#x005F;created, player&#x005F;count&#x005F;changed, player&#x005F;left and player&#x005F;joined.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationTriggerInput.<b>containerTypeName</b></code>](#container-type-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#container-type-name\} 
+Filter: only this container type. For function&#x005F;invoked this is the type of the invocation's "self" container, so you can watch "this function, on this type". Rejected for player&#x005F;count&#x005F;changed, player&#x005F;left and player&#x005F;joined.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationTriggerInput.<b>propertyKey</b></code>](#property-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#property-key\} 
+Filter: only this property key. Applies to property&#x005F;changed; rejected for function&#x005F;invoked, container&#x005F;created, player&#x005F;count&#x005F;changed, player&#x005F;left and player&#x005F;joined.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationTriggerInput.<b>writeSource</b></code>](#write-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#write-source\} 
+property&#x005F;changed only: which writes to observe — "direct" (gameModelSetProperty), "function" (a mutation applied inside a gameModelInvoke, automation run, or timer fire), or "any" (default). Rejected for other events.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpsertAutomationTriggerInput.<b>debounceMs</b></code>](#debounce-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#debounce-ms\} 
+Debounce window in ms. player&#x005F;count&#x005F;changed uses trailing-edge coalescing (first previous count plus latest current count/revision); existing model events retain leading-edge suppression.
+
+
+
+
+### Member Of
+
+[`gameModelUpsertAutomationTrigger`](/reference/graphql/operations/mutations/game-model-upsert-automation-trigger.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

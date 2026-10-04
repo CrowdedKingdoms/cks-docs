@@ -1,0 +1,58 @@
+---
+id: set-player-model-property-input
+title: SetPlayerModelPropertyInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set one arbitrary JSON property on a player-owned container. The caller must currently own the specified grid and container.
+
+
+```graphql
+input SetPlayerModelPropertyInput {
+  appId: BigInt!
+  gridId: BigInt!
+  containerId: String!
+  propertyKey: String!
+  valueJson: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetPlayerModelPropertyInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App containing the owned grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetPlayerModelPropertyInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Grid that confines the container.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetPlayerModelPropertyInput.<b>containerId</b></code>](#container-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#container-id\} 
+Player container UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetPlayerModelPropertyInput.<b>propertyKey</b></code>](#property-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#property-key\} 
+Property key, upserted within the container.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetPlayerModelPropertyInput.<b>valueJson</b></code>](#value-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#value-json\} 
+JSON-encoded property value. Any valid JSON value is accepted.
+
+
+
+
+### Member Of
+
+[`playerModelSetProperty`](/reference/graphql/operations/mutations/player-model-set-property.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

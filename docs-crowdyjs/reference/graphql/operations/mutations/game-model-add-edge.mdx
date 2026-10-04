@@ -1,0 +1,39 @@
+---
+id: game-model-add-edge
+title: gameModelAddEdge
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a directed relationship edge between two containers (the game model is a graph), with a relationship type and optional weight. Requires a valid token.
+
+
+```graphql
+gameModelAddEdge(
+  input: AddEdgeInput!
+): GmEdge!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelAddEdge.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AddEdgeInput!</b></code>](/reference/graphql/types/inputs/add-edge-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, the from/to container ids, the relationship type, and an optional weight and metadata.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmEdge</b></code>](/reference/graphql/types/objects/gm-edge.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A directed relationship edge between two containers.

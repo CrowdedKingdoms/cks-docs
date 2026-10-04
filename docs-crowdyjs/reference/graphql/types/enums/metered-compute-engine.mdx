@@ -1,0 +1,48 @@
+---
+id: metered-compute-engine
+title: MeteredComputeEngine
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Which engine's meter produced a quantity of compute units. "expression" is the model expression engine (player invokes, automations and timers); "studio&#x005F;wasm" is developer-authored compute modules; "player&#x005F;wasm" is the player compute tier, which has its own tables and its own billed metric.
+
+
+```graphql
+enum MeteredComputeEngine {
+  EXPRESSION
+  STUDIO_WASM
+  PLAYER_WASM
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>MeteredComputeEngine.<b>EXPRESSION</b></code>](#expression) \{#expression\} 
+The model expression engine: gameModelInvoke, automation runs and timer fires.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>MeteredComputeEngine.<b>STUDIO&#x005F;WASM</b></code>](#studio-wasm) \{#studio-wasm\} 
+Developer-authored WASM compute modules.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>MeteredComputeEngine.<b>PLAYER&#x005F;WASM</b></code>](#player-wasm) \{#player-wasm\} 
+Player-authored WASM compute.
+
+
+
+
+### Member Of
+
+[`EngineComputeUnits`](/reference/graphql/types/objects/engine-compute-units.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

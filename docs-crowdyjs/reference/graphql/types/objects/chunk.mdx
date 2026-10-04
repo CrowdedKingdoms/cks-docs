@@ -54,7 +54,7 @@ BASE64-encoded binary blob of the dense voxel-type grid. When present, the DECOD
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>voxelStates</b></code>](#voxel-states)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[VoxelState!]!</b></code>](/reference/graphql/types/objects/voxel-state.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#voxel-states\} 
-Sparse list of per-voxel overrides: the states stored with the chunk (e.g. rotation, atlas, flags) and every voxel edit recorded for it since (the voxel&#x005F;updates log), each with its voxel type, which takes precedence over the type byte in `voxels`. Empty when the chunk has neither.
+Sparse list of per-voxel state overrides (e.g. rotation, atlas, flags) for voxels that need more than a plain type byte. Empty when no voxel carries extra state.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>owner</b></code>](#owner)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#owner\} 

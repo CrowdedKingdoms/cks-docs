@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Release a one-chunk grid previously created through claimGridChunk. Requires an ordinary app-scoped player token and the caller must still be its current user owner. Refuses foreign grids, studio/marketplace grids, and grids assigned through legacy claimGridOwnership. Atomically removes pending claim requests and invites, self-claim ownership, direct/effective ACL rows, and the grid so its chunk can be claimed again.
+Release a one-chunk grid previously created through claimGridChunk. Requires an ordinary app-scoped player token and the caller must still be its current user owner. Refuses foreign grids, studio/marketplace grids, and grids assigned through legacy claimGridOwnership. Atomically removes active install attachments, self-claim ownership, direct/effective ACL rows, and the grid so its chunk can be claimed again. Player modules on the grid are deleted by the grid cascade.
 
 
 ```graphql

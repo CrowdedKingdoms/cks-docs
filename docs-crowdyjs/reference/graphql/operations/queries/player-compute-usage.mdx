@@ -1,0 +1,39 @@
+---
+id: player-compute-usage
+title: playerComputeUsage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The caller's player-compute spend and quota view for one app (P2): compute units used in the current clock hour/day vs the effective units&#x005F;per&#x005F;hour/units&#x005F;per&#x005F;day policy caps, compile-quota utilization, and the wallet/spend-cap gate state with its typed reason. This is the remaining-budget source the live-coding panel consumes.
+
+
+```graphql
+playerComputeUsage(
+  appId: BigInt!
+): PlayerComputeUsage!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeUsage.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App whose player usage to report.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerComputeUsage</b></code>](/reference/graphql/types/objects/player-compute-usage.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The caller's player-compute spend and quota view for one app (P2): unit usage in the current clock hour/day, the effective policy limits, compile-quota utilization, and the replica-synced wallet/spend-cap gate state. Units follow the platform formula GREATEST(cpu ms, fuel/22M); player automation units are included.

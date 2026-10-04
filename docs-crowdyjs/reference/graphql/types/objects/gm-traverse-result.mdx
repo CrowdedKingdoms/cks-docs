@@ -1,0 +1,48 @@
+---
+id: gm-traverse-result
+title: GmTraverseResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The result of a graph traversal: the reachable container nodes and the edges between them.
+
+
+```graphql
+type GmTraverseResult {
+  rootId: String!
+  nodes: [GmContainer!]!
+  edges: [GmEdge!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTraverseResult.<b>rootId</b></code>](#root-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#root-id\} 
+The root container the traversal started from.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTraverseResult.<b>nodes</b></code>](#nodes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmContainer!]!</b></code>](/reference/graphql/types/objects/gm-container.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#nodes\} 
+Containers reached within the requested depth.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmTraverseResult.<b>edges</b></code>](#edges)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmEdge!]!</b></code>](/reference/graphql/types/objects/gm-edge.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#edges\} 
+Edges traversed, of the requested relationship type.
+
+
+
+
+### Returned By
+
+[`gameModelTraverse`](/reference/graphql/operations/queries/game-model-traverse.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -1,0 +1,53 @@
+---
+id: set-player-automation-enabled-input
+title: SetPlayerAutomationEnabledInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Enable or disable one player automation. Enabling a schedule computes its next due time.
+
+
+```graphql
+input SetPlayerAutomationEnabledInput {
+  appId: BigInt!
+  gridId: BigInt!
+  automationId: String!
+  enabled: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetPlayerAutomationEnabledInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App containing the owned grid.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetPlayerAutomationEnabledInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Grid that confines the automation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetPlayerAutomationEnabledInput.<b>automationId</b></code>](#automation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-id\} 
+Player automation UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetPlayerAutomationEnabledInput.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+Whether the automation may dispatch.
+
+
+
+
+### Member Of
+
+[`playerAutomationSetEnabled`](/reference/graphql/operations/mutations/player-automation-set-enabled.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

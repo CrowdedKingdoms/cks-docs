@@ -1,0 +1,49 @@
+---
+id: game-model-timers
+title: gameModelTimers
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Pending one-shot timers for the app, soonest first. A timer leaves this list the moment it is claimed for execution, so an empty list means nothing is scheduled (not that nothing ran). Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelTimers(
+  appId: BigInt!
+  sessionId: String
+  limit: Int
+): [GmTimer!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelTimers.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose pending timers to list.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelTimers.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+Only timers scoped to this session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelTimers.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Max rows to return (1-200, default 50).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmTimer</b></code>](/reference/graphql/types/objects/gm-timer.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A pending one-shot timer: a delayed invocation that has been armed but has not fired yet. Timers are removed from this list the moment they are claimed for execution.

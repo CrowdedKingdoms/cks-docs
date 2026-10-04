@@ -1,0 +1,64 @@
+---
+id: player-compute-set-switch
+title: playerComputeSetSwitch
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Throw or release a player-compute kill switch at player, grid, app, or listing scope (the 03 §7 kill ladder). Throwing a switch stops the covered modules on the next scheduler pass; quota state is retained, and releasing resumes normally. LISTING scope (P4a) disables every install of a marketplace listing fleet-wide — pass the listing UUID in listingRef; pair it with the management-side catalog kill to also stop new acquisitions. Module-level disable is playerComputeSetEnabled. Requires the org 'manage&#x005F;compute' permission.
+
+
+```graphql
+playerComputeSetSwitch(
+  appId: BigInt!
+  scope: String!
+  disabled: Boolean!
+  scopeRef: BigInt
+  reason: String
+  listingRef: String
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetSwitch.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App the switch applies to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetSwitch.<b>scope</b></code>](#scope)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#scope\} 
+Switch scope: 'player', 'grid', 'app', or 'listing'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetSwitch.<b>disabled</b></code>](#disabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#disabled\} 
+True to stop execution at this scope; false to release.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetSwitch.<b>scopeRef</b></code>](#scope-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#scope-ref\} 
+The player user id (player scope) or grid id (grid scope); omit for app and listing scopes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetSwitch.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Operator note recorded on the switch row.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerComputeSetSwitch.<b>listingRef</b></code>](#listing-ref)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#listing-ref\} 
+The marketplace listing UUID (listing scope only); omit otherwise.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

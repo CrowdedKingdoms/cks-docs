@@ -1,0 +1,48 @@
+---
+id: game-model-events-connection
+title: GameModelEventsConnection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Relay-style cursor-paginated connection over the function-invocation event log (GmEvent). Page with `first`/`after`; cursors are opaque.
+
+
+```graphql
+type GameModelEventsConnection {
+  edges: [GmEventEdge!]!
+  pageInfo: ConnectionPageInfo!
+  totalCount: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelEventsConnection.<b>edges</b></code>](#edges)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[GmEventEdge!]!</b></code>](/reference/graphql/types/objects/gm-event-edge.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#edges\} 
+Edges on this page.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelEventsConnection.<b>pageInfo</b></code>](#page-info)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ConnectionPageInfo!</b></code>](/reference/graphql/types/objects/connection-page-info.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#page-info\} 
+Pagination metadata.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameModelEventsConnection.<b>totalCount</b></code>](#total-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#total-count\} 
+Total matching records across all pages, when known (null for sources that do not compute a total).
+
+
+
+
+### Returned By
+
+[`gameModelEventsConnection`](/reference/graphql/operations/queries/game-model-events-connection.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

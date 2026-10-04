@@ -1,0 +1,133 @@
+---
+id: player-automation
+title: PlayerAutomation
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A player-owned automation confined to one app and grid. Trigger/action JSON has been structurally validated.
+
+
+```graphql
+type PlayerAutomation {
+  automationId: String!
+  appId: BigInt!
+  gridId: BigInt!
+  ownerUserId: BigInt!
+  name: String!
+  description: String
+  enabled: Boolean!
+  triggerJson: String!
+  actionJson: String!
+  maxRunsPerMinute: Int!
+  failureThreshold: Int!
+  cooldownMs: Int!
+  circuitState: String!
+  consecutiveFailures: Int!
+  pausedUntil: DateTime
+  lastError: String
+  lastRunAt: DateTime
+  nextRunAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>automationId</b></code>](#automation-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-id\} 
+Player automation UUID.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App containing the automation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Grid confining the automation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>ownerUserId</b></code>](#owner-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#owner-user-id\} 
+Owning user. Forced from current grid ownership at creation.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+Owner-local automation name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+Optional description.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enabled\} 
+Whether the automation may dispatch.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>triggerJson</b></code>](#trigger-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#trigger-json\} 
+Validated trigger as canonical JSON.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>actionJson</b></code>](#action-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#action-json\} 
+Validated action as canonical JSON.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>maxRunsPerMinute</b></code>](#max-runs-per-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-runs-per-minute\} 
+Maximum runs per rolling minute.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>failureThreshold</b></code>](#failure-threshold)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#failure-threshold\} 
+Failures required to open the circuit.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>cooldownMs</b></code>](#cooldown-ms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#cooldown-ms\} 
+Open-circuit cooldown in milliseconds.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>circuitState</b></code>](#circuit-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#circuit-state\} 
+Circuit state: closed, open, or half&#x005F;open.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>consecutiveFailures</b></code>](#consecutive-failures)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#consecutive-failures\} 
+Current consecutive failure count.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>pausedUntil</b></code>](#paused-until)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#paused-until\} 
+Time at which an open circuit may retry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>lastError</b></code>](#last-error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-error\} 
+Most recent dispatch error.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>lastRunAt</b></code>](#last-run-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-run-at\} 
+Most recent dispatch time.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>nextRunAt</b></code>](#next-run-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#next-run-at\} 
+Next scheduled dispatch time.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+Automation creation time.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerAutomation.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+Most recent automation update time.
+
+
+
+
+### Returned By
+
+[`playerAutomationCreate`](/reference/graphql/operations/mutations/player-automation-create.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`playerAutomations`](/reference/graphql/operations/queries/player-automations.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`playerAutomationSetEnabled`](/reference/graphql/operations/mutations/player-automation-set-enabled.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

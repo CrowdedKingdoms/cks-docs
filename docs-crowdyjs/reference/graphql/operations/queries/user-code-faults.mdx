@@ -1,0 +1,74 @@
+---
+id: user-code-faults
+title: userCodeFaults
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Failures of code this app's users wrote, newest first, across all three engines (model expressions, studio WASM, player WASM). Each row carries what ran, what went wrong, whose problem it is, whether retrying could help, and what the run cost against what it was allowed. Requires the org 'view&#x005F;compute&#x005F;diagnostics' permission.
+
+
+```graphql
+userCodeFaults(
+  appId: BigInt!
+  engine: UserCodeFaultEngine
+  kind: UserCodeFaultKind
+  blame: UserCodeFaultBlame
+  subject: String
+  windowMinutes: Int
+  limit: Int
+  offset: Int
+): [UserCodeFaultRecord!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>userCodeFaults.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) whose faults to read.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>userCodeFaults.<b>engine</b></code>](#engine)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UserCodeFaultEngine</b></code>](/reference/graphql/types/enums/user-code-fault-engine.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#engine\} 
+Only faults from this engine.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>userCodeFaults.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UserCodeFaultKind</b></code>](/reference/graphql/types/enums/user-code-fault-kind.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#kind\} 
+Only faults of this kind.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>userCodeFaults.<b>blame</b></code>](#blame)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UserCodeFaultBlame</b></code>](/reference/graphql/types/enums/user-code-fault-blame.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#blame\} 
+Only faults with this owner. 'platform' is the filter to reach for before reporting a problem to us.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>userCodeFaults.<b>subject</b></code>](#subject)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#subject\} 
+Only faults from this function name (expression engine) or module name (either WASM engine).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>userCodeFaults.<b>windowMinutes</b></code>](#window-minutes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#window-minutes\} 
+Look-back window in minutes (max 1440). Omit for all retained faults.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>userCodeFaults.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Max faults to return (default 50, max 200).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>userCodeFaults.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+Number of faults to skip (pagination).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UserCodeFaultRecord</b></code>](/reference/graphql/types/objects/user-code-fault-record.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One failure of code a user wrote, from any of the three engines. Replaces three disagreeing surfaces: a bare error string on the invoke path, a run table that recorded failures and not successes, and a last&#x005F;error slot the next success cleared.

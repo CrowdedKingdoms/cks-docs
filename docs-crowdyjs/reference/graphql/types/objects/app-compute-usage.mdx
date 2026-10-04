@@ -1,0 +1,58 @@
+---
+id: app-compute-usage
+title: AppComputeUsage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What an app consumed, per engine, in ONE unit — the number a developer uses to compare the model engine against compute modules, and the number an operator's per-minute allowance is checked against. Derived from the existing per-minute ledgers (wasm&#x005F;compute&#x005F;usage, player&#x005F;wasm&#x005F;compute&#x005F;usage, gm&#x005F;automation&#x005F;runs, gm&#x005F;event&#x005F;log); there is deliberately no separate rollup table for it.
+
+
+```graphql
+type AppComputeUsage {
+  windowMinutes: Int!
+  totalUnits: BigInt!
+  byEngine: [EngineComputeUnits!]!
+  peakMinuteUnits: BigInt!
+  meanUnitsPerMinute: Float!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeUsage.<b>windowMinutes</b></code>](#window-minutes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#window-minutes\} 
+Length of the window in minutes, as clamped (1 to 1440).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeUsage.<b>totalUnits</b></code>](#total-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total-units\} 
+Compute units across every engine in the window.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeUsage.<b>byEngine</b></code>](#by-engine)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[EngineComputeUnits!]!</b></code>](/reference/graphql/types/objects/engine-compute-units.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#by-engine\} 
+Units per engine, always including engines that contributed nothing, so a zero is distinguishable from an engine the query forgot.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeUsage.<b>peakMinuteUnits</b></code>](#peak-minute-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#peak-minute-units\} 
+The highest single minute in the window, summed across engines. This is the number a per-minute allowance refuses on: a mean over an hour hides the minute that would have been refused.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeUsage.<b>meanUnitsPerMinute</b></code>](#mean-units-per-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#mean-units-per-minute\} 
+Units divided by the window length. Useful for cost, misleading for safety — compare peakMinuteUnits against an allowance, not this.
+
+
+
+
+### Returned By
+
+[`appComputeUsage`](/reference/graphql/operations/queries/app-compute-usage.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

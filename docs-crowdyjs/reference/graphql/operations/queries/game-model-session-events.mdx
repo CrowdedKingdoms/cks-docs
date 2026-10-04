@@ -1,0 +1,54 @@
+---
+id: game-model-session-events
+title: gameModelSessionEvents
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The session events with a revision greater than afterRevision, oldest first: the gap-fill read behind gameModelSessionChanged. Events of ended sessions are retained for a bounded period, then purged. Requires a valid token.
+
+
+```graphql
+gameModelSessionEvents(
+  appId: BigInt!
+  sessionId: String!
+  afterRevision: String!
+  limit: Int
+): [GmSessionEvent!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessionEvents.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessionEvents.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+The session id.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessionEvents.<b>afterRevision</b></code>](#after-revision)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#after-revision\} 
+Return events with a revision strictly greater than this (0 for everything retained).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessionEvents.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Most events to return (default 200, max 1000).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmSessionEvent</b></code>](/reference/graphql/types/objects/gm-session-event.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One session revision: what changed, in order. The payload names the subject (user id, host, admission, ...) as a JSON object.

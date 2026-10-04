@@ -1,0 +1,58 @@
+---
+id: deploy-compute-version-input
+title: DeployComputeVersionInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Upload a new immutable source version of a module. The source is validated (size caps, crate allowlist, no build-time code) and parked as compile&#x005F;status=pending until an instance compiles it.
+
+
+```graphql
+input DeployComputeVersionInput {
+  appId: BigInt!
+  moduleName: String!
+  sourceFilesJson: String!
+  sdkVersion: String!
+  abiVersion: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the module.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>moduleName</b></code>](#module-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#module-name\} 
+The module (by name) this version belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>sourceFilesJson</b></code>](#source-files-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#source-files-json\} 
+JSON object mapping relative paths to file contents. Must include Cargo.toml and src/lib.rs; only .rs files under src/ plus Cargo.toml are allowed. Dependencies are restricted to the platform crate allowlist; build.rs and [build-dependencies] are rejected.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>sdkVersion</b></code>](#sdk-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sdk-version\} 
+The crowdy-compute-sdk version the source targets (must be a platform-supported version, e.g. '0.0.1').
+
+
+#### [<code style={{ fontWeight: 'normal' }}>DeployComputeVersionInput.<b>abiVersion</b></code>](#abi-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#abi-version\} 
+The guest ABI version the source targets (must be platform-supported; currently 0).
+
+
+
+
+### Member Of
+
+[`computeDeployVersion`](/reference/graphql/operations/mutations/compute-deploy-version.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

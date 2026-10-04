@@ -1,0 +1,44 @@
+---
+id: player-model-containers
+title: playerModelContainers
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+List flexible player-model containers owned by the caller in one currently owned grid. Requires an app-scoped token and current grid ownership; never returns app-wide or foreign-owner rows.
+
+
+```graphql
+playerModelContainers(
+  appId: BigInt!
+  gridId: BigInt!
+): [PlayerModelContainer!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerModelContainers.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+App containing the grid; must match the app-scoped token.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>playerModelContainers.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+Grid currently owned by the caller.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerModelContainer</b></code>](/reference/graphql/types/objects/player-model-container.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A flexible player-owned model container confined to exactly one app, grid, and current owner.

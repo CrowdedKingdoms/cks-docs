@@ -1,0 +1,68 @@
+---
+id: gm-automation-stat
+title: GmAutomationStat
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Per-automation rollup within a stats window.
+
+
+```graphql
+type GmAutomationStat {
+  automationName: String!
+  runs: Int!
+  failures: Int!
+  invocations: Int!
+  computeUnits: Int!
+  avgDurationUs: Int!
+  circuitState: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationStat.<b>automationName</b></code>](#automation-name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-name\} 
+The automation name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationStat.<b>runs</b></code>](#runs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#runs\} 
+Runs in the window.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationStat.<b>failures</b></code>](#failures)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#failures\} 
+Failed runs in the window.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationStat.<b>invocations</b></code>](#invocations)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#invocations\} 
+Total invocations across runs.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationStat.<b>computeUnits</b></code>](#compute-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#compute-units\} 
+Total compute units consumed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationStat.<b>avgDurationUs</b></code>](#avg-duration-us)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#avg-duration-us\} 
+Average run duration (microseconds).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GmAutomationStat.<b>circuitState</b></code>](#circuit-state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#circuit-state\} 
+Current circuit-breaker state: closed | open | half&#x005F;open.
+
+
+
+
+### Member Of
+
+[`GmAutomationStats`](/reference/graphql/types/objects/gm-automation-stats.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

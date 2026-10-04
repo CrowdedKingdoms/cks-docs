@@ -1,0 +1,44 @@
+---
+id: game-model-session-inspect
+title: gameModelSessionInspect
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Operator view of one session: the full roster including departed participants (with left reason and incarnation), each joined participant's live presence verdict, and the most recent events. Requires app-admin ('manage&#x005F;apps').
+
+
+```graphql
+gameModelSessionInspect(
+  appId: BigInt!
+  sessionId: String!
+): GmSessionInspection!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessionInspect.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app (tenant) that owns the session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>gameModelSessionInspect.<b>sessionId</b></code>](#session-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#session-id\} 
+The session id to inspect.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GmSessionInspection</b></code>](/reference/graphql/types/objects/gm-session-inspection.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An operator's view of one session: the full roster including departed participants, each joined participant's live presence verdict, and the most recent events.

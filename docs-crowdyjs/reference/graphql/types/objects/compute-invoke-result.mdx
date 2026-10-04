@@ -1,0 +1,53 @@
+---
+id: compute-invoke-result
+title: ComputeInvokeResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The synchronous result of a computeInvoke call. Unlike the spatial send surface (dual-success), this is direct RPC: the module ran and this is its output.
+
+
+```graphql
+type ComputeInvokeResult {
+  resultBase64: String!
+  resultJson: String
+  fuelUsed: BigInt!
+  durationUs: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ComputeInvokeResult.<b>resultBase64</b></code>](#result-base-64)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#result-base-64\} 
+The module's raw response bytes, base64-encoded.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ComputeInvokeResult.<b>resultJson</b></code>](#result-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#result-json\} 
+The response decoded as JSON text when it parses as JSON; null otherwise.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ComputeInvokeResult.<b>fuelUsed</b></code>](#fuel-used)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#fuel-used\} 
+Fuel consumed by the call.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ComputeInvokeResult.<b>durationUs</b></code>](#duration-us)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#duration-us\} 
+Wall-clock duration in microseconds.
+
+
+
+
+### Returned By
+
+[`computeInvoke`](/reference/graphql/operations/mutations/compute-invoke.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

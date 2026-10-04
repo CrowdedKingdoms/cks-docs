@@ -25,7 +25,6 @@ input UpdateAppInput {
   visibility: AppVisibility
   status: AppStatus
   metadata: String
-  wildernessWritesOpen: Boolean
 }
 ```
 
@@ -50,10 +49,6 @@ New lifecycle status; set LIVE to publish, or DRAFT/LIVE to restore an archived 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>metadata</b></code>](#metadata)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata\} 
 New JSON-encoded marketplace metadata string, replacing the existing value (see App.metadata). Omit to leave unchanged.
-
-
-#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>wildernessWritesOpen</b></code>](#wilderness-writes-open)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#wilderness-writes-open\} 
-Open (true) or close (false) the app's wilderness to voxel and chunk writes: chunks that no grid but the app's world grid covers. Closing refuses every write there, whoever makes it; each game API replica, and each realtime server for a client's direct voxel updates, acts on the change within about 15 seconds. Omit to leave unchanged.
 
 
 

@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Set an app's compute allowance in units per minute. One unit is one millisecond of measured execution time; ck-exec work is converted from busy time and fuel. An over-ceiling value is REFUSED naming the ceiling (6000000 units per minute) rather than accepted and clamped, so the value reported back is always the value in force. Set enforce to true to pause the app's ck-exec code while its last settled minute is over the allowance; leave it false to record the allowance without pausing anything. Requires app-admin ('manage&#x005F;apps').
+Set an app's compute allowance in units per minute, spanning the model expression engine and both WASM tiers. One unit is one millisecond of measured execution time. An over-ceiling value is REFUSED naming the ceiling (6000000 units per minute) rather than accepted and clamped, so the value reported back is always the value in force. Set enforce to true to refuse invokes when the allowance is exceeded; leave it false to record the decision and admit, which is what produces the measurements a threshold should be chosen from. Requires app-admin ('manage&#x005F;apps').
 
 
 ```graphql
@@ -39,7 +39,7 @@ Compute units per minute; a positive integer no greater than 6000000.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setAppComputeBudget.<b>enforce</b></code>](#enforce)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#enforce\} 
-True to pause the app's ck-exec code while it is over the allowance. False (the default) records the allowance and pauses nothing.
+True to refuse model invokes once the allowance is exceeded. False (the default) records the decision and admits.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>setAppComputeBudget.<b>note</b></code>](#note)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#note\} 
@@ -51,4 +51,4 @@ Why this number was chosen. Recorded so the next operator can change it safely.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>AppComputeBudgetInfo</b></code>](/reference/graphql/types/objects/app-compute-budget-info.mdx) <Badge class="badge badge--secondary " text="object"/> 
-An app's compute allowance in units per minute. Absent when no allowance has been set for the app, in which case its ck-exec code is never paused for its budget.
+An app's compute allowance in units per minute, spanning the expression engine and both WASM tiers. Absent when no allowance has been set for the app, in which case the app is measured against the platform reference allowance and is never refused.

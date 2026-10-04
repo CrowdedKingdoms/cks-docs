@@ -1,0 +1,63 @@
+---
+id: user-code-fault-summary-entry
+title: UserCodeFaultSummaryEntry
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Faults grouped by engine, kind and blame over a window — the shape to alert on, and the answer to "is this us or them".
+
+
+```graphql
+type UserCodeFaultSummaryEntry {
+  engine: UserCodeFaultEngine!
+  kind: UserCodeFaultKind!
+  blame: UserCodeFaultBlame!
+  subject: String!
+  faults: Int!
+  lastAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultSummaryEntry.<b>engine</b></code>](#engine)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UserCodeFaultEngine!</b></code>](/reference/graphql/types/enums/user-code-fault-engine.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#engine\} 
+Which engine.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultSummaryEntry.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UserCodeFaultKind!</b></code>](/reference/graphql/types/enums/user-code-fault-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#kind\} 
+What went wrong.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultSummaryEntry.<b>blame</b></code>](#blame)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>UserCodeFaultBlame!</b></code>](/reference/graphql/types/enums/user-code-fault-blame.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#blame\} 
+Whose problem it is.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultSummaryEntry.<b>subject</b></code>](#subject)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#subject\} 
+What ran.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultSummaryEntry.<b>faults</b></code>](#faults)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#faults\} 
+How many faults of this shape in the window.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserCodeFaultSummaryEntry.<b>lastAt</b></code>](#last-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#last-at\} 
+The most recent one.
+
+
+
+
+### Returned By
+
+[`userCodeFaultSummary`](/reference/graphql/operations/queries/user-code-fault-summary.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
