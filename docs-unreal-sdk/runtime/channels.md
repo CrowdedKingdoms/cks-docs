@@ -98,7 +98,7 @@ There is no Blueprint figure for the receive side: `OnChannelMessageReceived` ca
 </Tabs>
 
 :::caution[A channel message is not signed on the way down. Validate the payload before acting on it.]
-The server does not sign the delivery, and any member with `send_messages` could have sent it. Treat the bytes as untrusted input: bound every length, clamp every value, and never let one decide an outcome that must hold against a modified client. Three payload prefixes are reserved on every channel and dropped before you see them: text beginning `cmc:`, `csg:`, or `gms|` is reserved by the SDK, so a notice that happens to start that way never arrives.
+The server does not sign the delivery, and any member with `send_messages` could have sent it. Treat the bytes as untrusted input: bound every length, clamp every value, and never let one decide an outcome that must hold against a modified client. The SDK does not filter payloads on a channel: every payload you are sent reaches your handler, whatever text it begins with.
 :::
 
 ## The full surface

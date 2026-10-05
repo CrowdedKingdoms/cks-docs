@@ -20,7 +20,7 @@
 //
 // Rows from a private header (`public_header: false`) are dropped. Rows from an editor
 // module stay in the file with `editor: true`, and rows the allowlist
-// (scripts/unreal-surface-allowlist.json) names carry their reason in `allowlist`; the
+// (docs-unreal-sdk/reference/surface-allowlist.json) names carry their reason in `allowlist`; the
 // component hides both kinds unless a page asks for them. The editor modules are the ones
 // the manifest itself marks `editor_module` anywhere.
 //
@@ -35,7 +35,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repo = resolve(here, '..');
 
 const SURFACE = 'static/helpers/unreal-sdk/sdk-surface.json';
-const ALLOWLIST = 'scripts/unreal-surface-allowlist.json';
+const ALLOWLIST = 'docs-unreal-sdk/reference/surface-allowlist.json';
 const DOCS = 'docs-unreal-sdk';
 const OUT_DIR = 'src/generated/unreal-sdk';
 const FOLDER_ORDER = ['concepts', 'runtime', 'services', 'studio', 'guides', ''];

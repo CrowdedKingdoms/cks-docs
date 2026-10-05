@@ -9,14 +9,12 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Console Variables
 
-The SDK exposes 40 `crowdy.*` console entries. Seven of them, the `crowdy.gamemodel.*` entries, belong to
-its Game Model API, which the game API no longer serves, and are not listed here (see
-[The Two Planes](../concepts/two-planes.md)). The other 33 come in three kinds: trace gates that turn on
+This page lists 46 `crowdy.*` console entries. They come in three kinds: trace gates that turn on
 informational logging for one area, behavior switches that change what the SDK does, and diagnostic
 commands that run once and hold no stored value. A row badged **Editor only** exists only in the editor
-process. Two of the diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`) are
-compiled out of a Shipping build and are absent there rather than silent; every other row ships in
-Development and Shipping.
+process. Four of the diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`,
+`crowdy.mass.derive`, `crowdy.mass.state.verdict`) and every other `crowdy.mass.*` entry are compiled out of
+a Shipping build and are absent there rather than silent; every other row ships in Development and Shipping.
 
 ## When you land here
 
@@ -26,7 +24,7 @@ turns on a specific area's logging. For the workflow around them (loopback testi
 
 ## Trace gates
 
-All 16 are off by default. Fourteen turn on that area's informational lines when set to `1`; the two
+All 19 are off by default. Seventeen turn on that area's informational lines when set to `1`; the two
 `.scopes` entries add Unreal Insights CPU scopes instead and log nothing. Warnings and errors print
 regardless of the setting.
 
@@ -48,12 +46,12 @@ Each nests inside a wider enclosing scope, so turning one on shifts the timing y
 enclosing scope too. If you are taking a performance reading, say whether the flag was on.
 :::
 
-`crowdy.studio.trace` is editor only and never logs the bearer token, a pattern worth copying in your own
-logging around Studio calls.
+`crowdy.studio.trace` and `crowdy.mass.nodes.trace` are editor only. `crowdy.studio.trace` never logs the
+bearer token, a pattern worth copying in your own logging around Studio calls.
 
 ## Behavior switches
 
-These change what the SDK does rather than what it logs. None of the 12 exist only in the editor.
+These change what the SDK does rather than what it logs. None of the 20 exist only in the editor.
 
 <SurfaceTable
   table="cvars"
@@ -96,10 +94,10 @@ measurement against the same build, not a fix for anything.
 
 ## Diagnostic commands
 
-Five commands with no stored value. Only `crowdy.rpc.dumpfn` takes arguments and prints usage without
-them; every other command acts as soon as you run it, and `crowdy.schema.RetagAssets` starts resaving
-assets immediately. Two are compiled out of a Shipping build: `crowdy.rpc.dumpfn` and
-`crowdy.state.heartbeat.advisories`.
+Seven commands with no stored value. Only `crowdy.rpc.dumpfn` and `crowdy.mass.derive` take arguments and
+print usage without them; every other command acts as soon as you run it. Four are compiled out of a Shipping
+build: `crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`, `crowdy.mass.derive` and
+`crowdy.mass.state.verdict`.
 
 <SurfaceTable
   table="cvars"
@@ -108,6 +106,8 @@ assets immediately. Two are compiled out of a Shipping build: `crowdy.rpc.dumpfn
   notes={{
     "crowdy.rpc.dumpfn": "Not in Shipping",
     "crowdy.state.heartbeat.advisories": "Not in Shipping",
+    "crowdy.mass.derive": "Not in Shipping",
+    "crowdy.mass.state.verdict": "Not in Shipping",
     "crowdy.cpp.selftest": "Every build",
     "crowdy.net.routes": "Every build"
   }}
@@ -117,13 +117,8 @@ assets immediately. Two are compiled out of a Shipping build: `crowdy.rpc.dumpfn
 :::tip[`crowdy.rpc.dumpfn` and `crowdy.state.heartbeat.advisories` print structured text you can paste directly into a bug report.]
 :::
 
-:::caution[Run `crowdy.schema.RetagAssets` on a clean sync, with no other outstanding changes.]
-It is a one-time migration step you run after upgrading the SDK. Expect version-stamp diff noise in the
-assets it touches; that noise is expected, not a sign something went wrong.
-:::
-
 `crowdy.cpp.selftest` and `crowdy.net.routes` carry no build guard, so they exist in every build including
-Shipping; the two diagnostics above do not, and a Shipping console answers them with an unknown command.
+Shipping; the four diagnostics above do not, and a Shipping console answers them with an unknown command.
 
 ## Gotchas
 

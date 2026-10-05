@@ -42,7 +42,7 @@ Studio writes three things into your project: the connection settings in `Defaul
 
 Studio has two surfaces.
 
-**Native pages** are Slate UI built into the editor. They cover the work you do while building: choosing an app, syncing config, authoring teams, channels, grids and models, and reading live state.
+**Native pages** are Slate UI built into the editor. They cover the work you do while building: choosing an app, syncing config, checking the app's features and tier grants, authoring teams, channels and grids, and reading live state.
 
 **The Web Console** is an embedded browser for account and organization administration: members, billing, tokens, secrets. It signs you in with the session you already have in Studio. The sidebar's bottom button opens it on your organization's overview.
 
@@ -55,13 +55,23 @@ The sidebar on the left lists the pages. A toggle at the top folds it to icons (
 | **Setup Wizard** | | No | The guided first run: sign in, pick an app, sync. Studio lands here after you sign in. |
 | **Home** | | Yes | Status cards: account, organization, active app, project sync. |
 | **Project** | CONFIGURE | Yes | Pick the app, create one, and run [Config Sync](./config-sync.md). See [Projects and Apps](./projects-and-apps.md). |
+| **Access** | CONFIGURE | Yes | The selected app's feature keys, and which access tiers grant each one. See [The Access page](#the-access-page). |
 | **Teams** | AUTHORING | Yes | Author teams, members, roles, and the team policy. See [Teams and Channels](./teams-and-channels.md). |
 | **Channels** | AUTHORING | Yes | Author named channels and the session channel. |
 | **Grid** | AUTHORING | Yes | Author spatial permission regions. See [Grids](./grids.md). |
-| **Game Model** | AUTHORING | Yes | The legacy Game Model schema. The game API no longer serves it, and since v2.18.0 the SDK deprecates it: the page shows a banner, does not load its lists, and refuses schema sync, pre-seeding, purge and Game Kit deploy. Its tier-features panel still works. See [Move from Game Models](../exec/move-from-game-models.md). |
 | **Inspector** | DEBUG | No | A read-only view of a running Play in Editor session. See [Inspector and Registry](./inspector-and-registry.md). |
 | **Registry** | DEBUG | No | The baked metadata that ships in packaged builds, and the button that rebuilds it. |
 | **Web Console** | | Yes | Pinned at the bottom: opens the browser console for admin surfaces. |
+
+## The Access page
+
+**Access** sits in the Configure group, under **Project**, and works on the app selected on the Project page. A feature is a key that server logic checks a player's access tier for (`ctx.players().features(player)`, see [World and platform data](/exec/world-and-platform-data)); the tiers themselves are created in the web console.
+
+- The list on the left holds the app's features, with a search box. Each row shows the key, its description and how many tiers grant it.
+- Select a feature to see every access tier on the right, marked **GRANTED** where it has the feature, with a **Grant** or **Revoke** button on each.
+- **Define feature** opens a form for a new key and an optional description. A key is 1 to 64 letters, digits, underscores, hyphens and dots, the same rule a Server Object's **Required Feature** follows. Defining a key that exists updates its description.
+
+The page loads its lists the first time you open it for the selected app, not when Studio starts. Press **Refresh** to read them again. Features work with a sign-in with your account or with an organization token. A Server Object function uses them through [Required Feature](../exec/access-members-and-timers.md#required-feature).
 
 ## Signing in
 

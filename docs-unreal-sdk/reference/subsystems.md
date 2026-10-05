@@ -2,14 +2,14 @@
 slug: subsystems
 sidebar_position: 1
 title: Classes and Subsystems
-description: "The 20 subsystem classes a game fetches from GetGameInstance or GetWorld, one line of purpose each, grouped by module, with a link to where each one is explained in full."
+description: "The 23 subsystem classes a game fetches from GetGameInstance or GetWorld, one line of purpose each, grouped by module, with a link to where each one is explained in full."
 ---
 
 import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Classes and Subsystems
 
-The consumer-facing classes you fetch most, with the module they live in and where to read more. The manifest carries 28 classes tagged as subsystems; 8 are excluded here because they are internal plumbing, deprecated, or part of the Game Model API the game API no longer serves, listed at the bottom of this page for completeness.
+The consumer-facing classes you fetch most, with the module they live in and where to read more. The manifest carries 31 classes tagged as subsystems; 8 are excluded here because they are internal plumbing or deprecated, listed at the bottom of this page for completeness.
 
 ## When you come here
 
@@ -39,6 +39,8 @@ You know the shape of what you need (send an event, read a team, elect a host) b
   UCrowdyHostSubsystem: "Host election and the server-validated host query.",
   UCrowdyTeams: "Create, join, leave, and query teams and roles at runtime.",
   UVoiceChatSubsystem: "The voice capture and playback engine, reached directly or through UCrowdySDKSubsystem.",
+  UCrowdyMassEntitySubsystem: "The crowd rows of a map that draws with Mass: targets, traces, events and fields. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
+  UCrowdyMassServerRecordsSubsystem: "The Server Object records of crowd rows, and a callback when one changes. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
 }} notesLabel="What it is for" />
 
 ## Fetching a subsystem
@@ -62,11 +64,11 @@ Blueprint function libraries (`UCrowdyUtilities`, `UCrowdyStateBlueprintLibrary`
 
 ## Excluded from this table
 
-Eight of the manifest's 28 subsystem classes do not appear in the table above:
+Eight of the manifest's 31 subsystem classes do not appear in the table above:
 
 - `UCrowdyCppClientSubsystem`, `UCrowdyCppReplicationSubsystem`, `UCrowdySDKBridgeSubsystem`, `UCrowdyWorkerThreadsSubsystem`: the vendored CrowdyCPP bridge and its worker threads. The game-facing surface is `UCrowdySDKSubsystem`; see [Connection and reconnect](../runtime/connection-and-reconnect.md).
-- `UCrowdyGameModelSubsystem` and `UCrowdyActiveSessionMemory`: the SDK's Game Model API and the memory that carried its active session across a map travel. The game API no longer serves it, so since v2.18.0 the SDK marks it deprecated and its calls fail at once, and a later release removes it; see [Move from Game Models](../exec/move-from-game-models.md) and [The Two Planes](../concepts/two-planes.md).
 - `UCrowdyConnectionMonitor`: the SDK reconnects on its own after a timeout, so starting the monitor adds a second retry loop. What it reports is covered on [Connection and reconnect](../runtime/connection-and-reconnect.md).
+- Two test harnesses in the Mass module that the SDK uses to verify itself. They are not part of the surface a game uses.
 - `UCrowdyPersistenceSubsystem`: superseded by server code on ck-exec; still present and working, and the plugin does not mark it deprecated. It reads the `CrowdyPersistent` and `CrowdySingleton` struct tags. See [What's Changed](../guides/whats-changed.md#persistence) for what still works and what does not get further development.
 
 ## Gotchas

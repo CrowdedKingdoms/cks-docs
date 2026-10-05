@@ -23,6 +23,7 @@ The village square has a beacon every villager feeds with oil. How much oil it h
 
 - **A definition asset** (`UCrowdyServerObjectDefinition`) describes one type of Server Object: the variables the server keeps, which of them players may see, and the functions they may call. You make one asset per type, in an editor laid out like the Blueprint editor. See [Create a Server Object type](./create-a-type.md).
 - **Access, members and timers** are settings on the asset that the server enforces before your code runs: who may read and call, how often, members and a leader, timers, and calling other types. See [Access, members and timers](./access-members-and-timers.md), and [Relate Server Objects to each other](./relate-server-objects.md) for which to use when one object belongs to a player, lists others or is shared by many.
+- **A record per entity** is a setting on the asset, **Holds**, for a crowd: the same variables kept once for each entity, with some visible to everyone, some to the entity's owner and some to its team. See [Keep a record per entity](./keep-a-record-per-entity.md).
 - **The server code** is a Rust crate the editor generates from the definition asset; you fill in what each Server Function does. See [Write its server logic](./write-server-logic.md), then [Deploy it with Server Compute](./deploy-with-server-compute.md).
 - **An Instance Id** picks one Server Object of that type. The beacon uses the village's name, so each village has its own.
 - **From Blueprint**, the **Crowdy Server Object** component and the typed nodes get the object, read and follow its variables and call its functions. See [Get a Server Object](./from-blueprint/get-a-server-object.md), [Read and follow its variables](./from-blueprint/read-and-follow-variables.md), [Call its functions](./from-blueprint/call-functions.md) and [Pins for every type](./from-blueprint/pins-for-every-type.md).
@@ -46,6 +47,8 @@ The platform has its own words for all of this (hubs, keys, methods, topics). Yo
 
 Describe the beacon's state and functions in [Create a Server Object type](./create-a-type.md), set who may do what in [Access, members and timers](./access-members-and-timers.md), see how types relate in [Relate Server Objects to each other](./relate-server-objects.md), write what its functions do in [Write its server logic](./write-server-logic.md), and [deploy it](./deploy-with-server-compute.md). Then use it [from Blueprint](./from-blueprint/get-a-server-object.md) or [from C++](./from-cpp/get-a-server-object.md). When something does not behave, [Troubleshooting](./troubleshooting.md) has the checks, and [Unreal and ck-exec names](./unreal-and-ck-exec-names.md) maps the SDK's words to the platform's.
 
-If your project uses the SDK's Game Models, which are deprecated, [Move from Game Models](./move-from-game-models.md) says what you will see and what to use instead.
+If your project used the SDK's Game Models, which were removed in v2.19.0, [Move from Game Models](./move-from-game-models.md) says what to do before you upgrade and what to use instead.
 
-The worked examples, a tip jar, guild halls and an arena, and a boss every player hits, are together under [Examples](./examples/tip-jar.md).
+A crowd of entities, each with values of its own, is [Keep a record per entity](./keep-a-record-per-entity.md).
+
+The worked examples, a tip jar, guild halls and an arena, a boss every player hits, and a warband of raiders, are together under [Examples](./examples/tip-jar.md).
