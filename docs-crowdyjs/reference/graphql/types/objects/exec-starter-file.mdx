@@ -1,0 +1,43 @@
+---
+id: exec-starter-file
+title: ExecStarterFile
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One source file of a starter crate.
+
+
+```graphql
+type ExecStarterFile {
+  path: String!
+  content: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecStarterFile.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\} 
+The path within the crate, as `execBuild` takes it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecStarterFile.<b>content</b></code>](#content)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#content\} 
+The file’s contents.
+
+
+
+
+### Member Of
+
+[`ExecStarter`](/reference/graphql/types/objects/exec-starter.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

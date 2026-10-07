@@ -75,7 +75,15 @@ the realtime stream:
 
 - **Hydrate**: `ensureAround(center, distance)` bulk-loads every stored chunk
   in range in one GraphQL round trip; `pruneBeyond` evicts far chunks
-  (persisting dirty ones first).
+  (persisting dirty ones first). The load selects each chunk's `voxelStates`
+  and puts every entry over the stored grid: its type at its voxel, and its
+  state. Since ck-api v2.33.0 those entries carry every voxel edit recorded
+  for the chunk (a hub's or mod's `world.set_voxels`, `updateVoxel`, realtime
+  voxel updates), which its stored `voxels` never hold, so a block a hub
+  placed is there after a reload (CrowdyCPP 0.56.0; earlier releases lost
+  it). An `IChunkSource` of your own reports them in
+  `StoredChunk::voxelStates`. A chunk the server has never stored comes back
+  with none, even when edits were recorded for it.
 - **Realtime merge**: inbound voxel notifications are applied to the cache
   automatically.
 - **Optimistic edits**: `setVoxel` applies locally, replicates over UDP, and
@@ -84,6 +92,20 @@ the realtime stream:
   generated client-side (`seed` / `insertGenerated`) and persisted so the
   world stays identical for everyone — write-back is throttled (default one
   chunk per 700 ms) and `flush()` forces it.
+- **Refused write-backs**: the write-back is `updateChunk` as the player, so
+  it persists only chunks the player may build in (see
+  [Writing whole chunks](/game-api/grids-and-permissions#writing-whole-chunks)).
+  A refusal the server will not change (`FORBIDDEN`, `SCOPE_MISSING`, a
+  validation error, `NOT_FOUND`, `extensions.retryable: false`, HTTP 400, 403,
+  404, 413 or 422) is sent once and dropped. Any other failure (`PLATFORM_BUSY`,
+  `UNAUTHENTICATED`, network, a timeout, a 5xx) is tried again after 0.7, 1.4,
+  2.8 and 5.6 s, then dropped. A dropped chunk keeps its local voxels and is no
+  longer dirty, and neither kind holds up any other chunk. `onWriteBackFailed`
+  reports each drop as a `ChunkWriteBackFailure` (`coord`, `reason` `Refused` or
+  `Exhausted`, `attempts`, and the last attempt's `GraphQLOutcome` as `error`);
+  undo or flag the edit there. `flush()` returns a `ChunkFlushResult`:
+  `persisted`, and the write-backs it `dropped`. `pruneBeyond` evicts a refused
+  chunk and keeps one whose failure can still clear. (CrowdyCPP 0.53.0.)
 - `onChunkChanged` observes both realtime and local changes.
 
 ## Voice and video
@@ -137,14 +159,7 @@ their own bytes):
   persists it to a file (the native analog of CrowdyJS's
   localStorage-backed store); implement `IUuidStore` for your own storage.
 
-## Game-model state: `ContainerMirror`
-
-Game-model changes are **pull-based** on this platform (there is no model
-subscription); functions declare notify effects and clients re-read. This is
-the **notify-to-pull** pattern (see
-[Model-driven notifications](/game-api/model-driven-notifications)).
-`ContainerMirror` is the client half: watch the containers you care about,
-bind the mirror to a notification channel, and every watched container
-re-pulls its snapshot when that channel pings — you render straight from the
-cache. `onChange` fires with the container id, revision, and parsed
-properties whenever a snapshot actually changed.
+Server-owned game state lives in your app's [ck-exec](/exec/intro) hubs. A
+client reads it by calling a hub and follows it by subscribing to the hub's
+topics through `client.exec()`; see
+[connect from a game](/exec/connect-from-a-game#crowdycpp).

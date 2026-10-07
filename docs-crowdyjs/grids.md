@@ -59,8 +59,8 @@ if (removed.error !== 'NO_ERROR') {
 
 `deleteGrid` refuses to remove the open-by-default world grid or a grid that still
 has nested child grids (delete the children first). It removes only the grid
-definition and its permission rows — chunks, voxels, actors, and game-model data
-in that region are untouched. Requires `cks-game-api >= v0.12.3` (release
+definition and its permission rows — chunks, voxels, and actors in that region
+are untouched. Requires `cks-game-api >= v0.12.3` (release
 `v0.1.33+`).
 
 ## Grant and limit permissions
@@ -85,6 +85,30 @@ await client.gameApps.setPermissionLimits({
 });
 ```
 
+## Open a grid to every player
+
+The most specific grid covering a chunk decides who may build there, so a zone
+nested in the world grid that everyone should build in (a public build area, an
+arena) must grant everyone itself. `setOpenPermissions` replaces the keys a grid
+grants every player with active access to the app, within its limits; players who
+gain access later get them too. An empty list closes it again (18.1.0):
+
+```ts
+await client.gameApps.setOpenPermissions({
+  appId: '1', gridId: '10',
+  permissionKeys: ['access', 'update_voxel_data', 'use_voice_chat'],
+});
+const { permissionKeys } = await client.gameApps.openPermissions('1', '10');
+
+await client.gameApps.setOpenPermissions({ appId: '1', gridId: '10', permissionKeys: [] }); // close it
+```
+
+It is refused with `BAD_REQUEST` for the app's world grid (open already), any of the
+four player-code keys, a key that is not an active grid key, and a 33rd open grid in
+one app. See [open grids](/game-api/grids-and-permissions#open-grids).
+
+## Revoke and inspect
+
 Use `revokePermissions` / `revokeGroup` to remove grants (omit `permissionKeys`
 to remove all), and the read helpers to inspect the effective ACL:
 
@@ -108,10 +132,11 @@ await client.gameApps.nearbyPermissions({                // grids overlapping a 
 | `grantPermissions(input)` / `revokePermissions(input)` | `grantGridPermissions` / `revokeGridPermissions` |
 | `assignGroup(input)` / `revokeGroup(input)` | `assignGroupToGrid` / `revokeGroupFromGrid` |
 | `setPermissionLimits(input)` | `setGridPermissionLimits` |
+| `setOpenPermissions(input)` / `openPermissions(appId, gridId)` | `setGridOpenPermissions` / `gridOpenPermissions` |
 | `userPermissions(appId, gridId, userId)` | `gridUserPermissions` |
 | `nearbyPermissions(input)` | `nearbyGridPermissions` |
-| `permissionLimits(appId, gridId)` | `gridGroupGrants`-adjacent `gridPermissionLimits` |
+| `permissionLimits(appId, gridId)` | `gridPermissionLimits` |
 | `groupGrants(appId, gridId, groupId)` | `gridGroupGrants` |
 
-All take/return the generated GraphQL input/output types. A grant or revoke takes
-effect immediately for connected players.
+All take/return the generated GraphQL input/output types. A grant or revoke reaches
+the Game API's voxel checks within 15 seconds.

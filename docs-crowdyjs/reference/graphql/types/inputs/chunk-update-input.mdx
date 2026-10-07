@@ -43,7 +43,7 @@ Optional BASE64-encoded dense voxel grid. The DECODED buffer must be exactly 409
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ChunkUpdateInput.<b>voxelStates</b></code>](#voxel-states)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[VoxelStateInput!]</b></code>](/reference/graphql/types/inputs/voxel-state-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#voxel-states\} 
-Optional per-voxel state overrides to write; each entry is also recorded as an individual voxel update. Omit to leave existing states unchanged.
+Optional per-voxel state overrides to write, at most 4096 (one per voxel); each entry is also recorded as an individual voxel update. Omit to leave existing states unchanged.
 
 
 

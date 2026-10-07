@@ -1,4 +1,4 @@
-use crowdy_compute_sdk::{api, host_call};
+use crowdy_client_sdk::{api, host_call};
 use serde_json::json;
 
 fn grid_origin() -> Option<(i64, i64, i64)> {
@@ -41,7 +41,7 @@ fn on_invoke(_payload: &[u8]) -> Vec<u8> {
     Vec::new()
 }
 
-crowdy_compute_sdk::register_module!(
+crowdy_client_sdk::register_module!(
     init: on_init,
     tick: on_tick,
     invoke: on_invoke

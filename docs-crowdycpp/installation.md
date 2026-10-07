@@ -66,7 +66,7 @@ and [`/schema/game-api.graphql`](pathname:///schema/game-api.graphql).)
 | `CROWDY_BUILD_TESTS` | `ON` | Unit tests (`ctest`) |
 | `CROWDY_BUILD_E2E` | `ON` | Env-gated end-to-end tests (skipped unless configured) |
 | `CROWDY_BUILD_BENCHMARKS` | `ON` | Micro + end-to-end benchmarks |
-| `CROWDY_BUILD_EXAMPLES` | `ON` | Example programs (`walker`, `kit_seed_and_play`) |
+| `CROWDY_BUILD_EXAMPLES` | `ON` | Example programs (`walker`, `native_studio_shell`) |
 
 Turn `CROWDY_WITH_CURL` / `CROWDY_WITH_OPENSSL` off when your integration
 injects its own `IHttpTransport` / `ICrypto` implementations.

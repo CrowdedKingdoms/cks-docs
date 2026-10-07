@@ -6,7 +6,7 @@ title: Overview
 
 # Overview
 
-Crowded Kingdoms provides APIs that individuals and studios can use to create online games with unlimited player density (UPD). There are **two**: one GraphQL API, and the replication (UDP) protocol.
+Crowded Kingdoms provides APIs that individuals and studios can use to create online games with unlimited player density (UPD). There are **two**: one GraphQL API, and the replication (UDP) protocol. Your game's server code runs on **ck-exec**, which players call through a WebSocket gateway that the GraphQL API hands them.
 
 The GraphQL API has two surfaces — **management** (identity, orgs, billing, app registry) and **game** (world data and realtime) — but they are one service at one endpoint, documented separately here because they are read at different times. What separates them is the token, not the host: sign-in yields an identity session token, and gameplay needs an app-scoped token minted from it.
 
@@ -41,6 +41,12 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 - You'll use Buddy to send spatially routed messages from one client to some or all nearby clients
 - The revolution that now makes true single shard games with unlimited player density possible is that Buddy servers work together to spatially route an unlimited number of messages per second. If you build your game on top of this kind of replication layer, you'll be able to deliver the necessary information to each client to render a virtually unlimited number of objects in your player's field of view.
 
+### ck-exec
+- Runs your game's server code: hubs that hold state and spokes that scale out, written in Rust and built to WebAssembly on the platform
+- Players connect with `execConnect`, which returns a gateway and a short-lived connect token, then call your code over a WebSocket; the SDKs do both
+- Players run their own code on grids they own as mods
+- See [ck-exec](/exec/intro)
+
 ## SDKs
 
 ### Unreal
@@ -51,6 +57,14 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 - NPM: https://www.npmjs.com/package/@crowdedkingdoms/crowdyjs
 - GitHub: https://github.com/CrowdedKingdoms/CrowdyJS
 
+### C++
+- **CrowdyCPP** — portable C++ SDK with a native UDP replication client ([docs](/crowdycpp/intro)).
+- GitHub: https://github.com/CrowdedKingdoms/CrowdyCPP
+
+### Python
+- **CrowdyPy** — Python SDK over CrowdyCPP's native core (`pip install crowdypy`, [docs](/crowdypy/intro)).
+- GitHub: https://github.com/CrowdedKingdoms/CrowdyPy
+
 ### Godot (Planned)
 - https://github.com/CrowdedKingdoms/CrowdySDK-Godot 
 
@@ -59,14 +73,16 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 
 - **[Brand guidelines](/overview/brand)** — colors, typography, wordmark, and UI tokens for Crowded Kingdoms surfaces.
 - **[Client Workflow](/overview/client-workflow)** — how the APIs and SDK fit together.
-- **[Best practices](/overview/best-practices)** — Game Models, effects, Compute, and tokens.
-- **[Before you ship](/overview/before-you-ship)** — hosts, SDK defaults, and the game-model seed a shipped client needs.
+- **[Best practices](/overview/best-practices)** — authority on ck-exec, tokens, and errors.
+- **[Before you ship](/overview/before-you-ship)** — the hosts and SDK defaults a shipped client needs.
 - **[Dev tier (client integration)](/management-ui/dev-tier)** — public sandbox URLs and shared-platform config for early client testing.
 - **[Create your first app](/management-ui/create-your-first-app)** — register on the shared platform.
 - **Management API** — authenticate, manage orgs, apps, billing, and shared environment.
 - **Game API** — chunks, voxels, actors, avatars, studio grids, and the GraphQL UDP proxy.
 - **Replication API** — wire protocol for native UDP clients.
+- **[ck-exec](/exec/intro)** — your game's server code, and players' mods.
 - **CrowdyJS** — install, configure endpoints, and run a game loop.
+- **[CrowdyCPP](/crowdycpp/intro)** and **[CrowdyPy](/crowdypy/intro)** — the native C++ and Python SDKs.
 - **Management UI** — portal workflows including [apps on the shared platform](/management-ui/environments).
 
 # Docs Project

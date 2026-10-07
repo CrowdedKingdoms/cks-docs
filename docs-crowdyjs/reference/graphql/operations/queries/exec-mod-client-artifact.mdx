@@ -1,0 +1,44 @@
+---
+id: exec-mod-client-artifact
+title: execModClientArtifact
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A served CLIENT half's module, for the browser broker. Served only to a player holding 'run&#x005F;client&#x005F;code' in the app, standing in the mod's grid now, who consented to it at its current hash or trusts its author at a union no wider; every refusal answers NOT&#x005F;FOUND. At most 12 fetches a minute per player and mod on each API instance (RATE&#x005F;LIMITED); the module never changes for its digest, so cache it.
+
+
+```graphql
+execModClientArtifact(
+  appId: BigInt!
+  modId: String!
+): ExecModClientArtifact!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>execModClientArtifact.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app the mod is in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execModClientArtifact.<b>modId</b></code>](#mod-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#mod-id\} 
+The mod’s id (`modId` of `execGridClientMods`).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ExecModClientArtifact</b></code>](/reference/graphql/types/objects/exec-mod-client-artifact.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A CLIENT half’s module and what the browser broker needs to run it: the fuel-metered wasm32-unknown-unknown module, its digest to check the bytes against, and the per-dispatch fuel budget to load into its `ck_fuel` global.

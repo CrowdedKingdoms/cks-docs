@@ -1,0 +1,68 @@
+---
+id: grid-token-response
+title: GridTokenResponse
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A grid-scoped token: an app token narrowed to one grid. Hand it to code that should act inside the grid and nowhere else (a JS grid program, a mod host adapter, an agent).
+
+
+```graphql
+type GridTokenResponse {
+  token: String!
+  gameTokenId: BigInt!
+  appId: BigInt!
+  gridId: BigInt!
+  lowChunk: ChunkCoordinates!
+  highChunk: ChunkCoordinates!
+  expiresAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GridTokenResponse.<b>token</b></code>](#token)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#token\} 
+Bearer token. It admits only the root fields the grid-token policy lists, each confined to the grid, and it is refused by the binary realtime relay (realtime runs over GraphQL).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridTokenResponse.<b>gameTokenId</b></code>](#game-token-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#game-token-id\} 
+The underlying game&#x005F;token id, as a BigInt.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridTokenResponse.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app it is confined to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridTokenResponse.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+The grid it is confined to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridTokenResponse.<b>lowChunk</b></code>](#low-chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#low-chunk\} 
+Low corner of the grid box, copied at mint.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridTokenResponse.<b>highChunk</b></code>](#high-chunk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChunkCoordinates!</b></code>](/reference/graphql/types/objects/chunk-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#high-chunk\} 
+High corner of the grid box, copied at mint.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GridTokenResponse.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+When the token stops working.
+
+
+
+
+### Returned By
+
+[`mintGridToken`](/reference/graphql/operations/mutations/mint-grid-token.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

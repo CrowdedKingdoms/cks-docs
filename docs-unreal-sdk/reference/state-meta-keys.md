@@ -70,9 +70,9 @@ Crowdy State covers plain values and plain structs: numbers, bools, enums, `FNam
 
 A struct type that carries a native net serializer (`FVector_NetQuantize`, `FRotator`, and the rest of the `_NetQuantize` family) quantizes on the wire automatically, with no key to set. See [type-driven quantization](/unreal-sdk/runtime/crowdy-state#accepted).
 
-A variable is either `CrowdyState` or `CrowdyModel`, never both. The unified "Crowdy Replication" dropdown
-enforces this in Blueprint; hand-written C++ metadata carrying both keys is rejected at discovery. See
-[Game Model metadata keys](./game-model-meta-keys.md) for the truth-plane equivalent.
+A variable is either `CrowdyState` or `CrowdyModel` (the legacy Game Model marker), never both. The unified
+"Crowdy Replication" dropdown enforces this in Blueprint; hand-written C++ metadata carrying both keys is
+rejected at discovery.
 
 :::warning[`HasMetaData`-backed discovery helpers, including the one behind this header, answer false in a cooked build, because cooked builds strip metadata. A runtime check routes through the baked registry instead, never through live metadata.]
 :::
@@ -90,4 +90,3 @@ enforces this in Blueprint; hand-written C++ metadata carrying both keys is reje
 - [Crowdy State](/unreal-sdk/runtime/crowdy-state): owner diffing, host precedence, world entities, and the
   keyframe baseline.
 - [RPC metadata keys](./rpc-meta-keys.md)
-- [Game Model metadata keys](./game-model-meta-keys.md)

@@ -10,7 +10,7 @@ import TabItem from '@theme/TabItem';
 
 # Avatars
 
-An avatar is a player-owned profile: an identity a player picks from and carries across sessions, holding small state other players can read and only the owner can write. It is not a live world actor and it is not a Game Model; it is a stored profile the rest of the SDK reads to seed one, distinct from [authoritative gameplay truth](../game-models/overview.md).
+An avatar is a player-owned profile: an identity a player picks from and carries across sessions, holding small state other players can read and only the owner can write. It is not a live world actor and it is not server-checked game state; it is a stored profile the rest of the SDK reads to seed one, distinct from [authoritative gameplay truth](../concepts/two-planes.md).
 
 ## When you touch this
 
@@ -114,7 +114,7 @@ Every network call above also exists as a Blueprint async action node with the s
 `ECrowdyAvatarErrorCode` is classified from the error message text by substring match, not a code the server sends. Branch on it for a coarse UI response; do not treat it as a stable server contract.
 :::
 
-Cosmetic selections and progression flags belong here; currency balances and match results do not. Avatar state, public, private, or app, is profile data, not server-authoritative gameplay truth, which belongs in [Game Models](../game-models/overview.md).
+Cosmetic selections and progression flags belong here; currency balances and match results do not. Avatar state, public, private, or app, is profile data, not server-authoritative gameplay truth, which belongs in your [server code](../concepts/two-planes.md).
 
 ## Gotchas
 
@@ -127,5 +127,5 @@ Cosmetic selections and progression flags belong here; currency balances and mat
 ## Related
 
 - [Teams](./teams.md): a sibling service on the same subsystem pattern.
-- [Containers and attributes](../game-models/containers-and-attributes.md): the Game Model contrast, avatar state is not a container.
+- [The Two Planes](../concepts/two-planes.md): the contrast; avatar state is profile data, not server-checked truth.
 - [Entities and spawning](../runtime/entities-and-spawning.md): seeding an entity's spawn state from an avatar's public part.

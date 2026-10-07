@@ -30,7 +30,7 @@ today's spend against the policy ceiling and who pays.
 The Ask / Build / Play dock, `client.crowdyStudioAgent`, the `agent` mount
 option, `PlayerControlGate`, `AgentControlBanner` and the lease manager were
 removed in 16.0.0 together with the server orchestrator they drove. See the
-[migration notes](https://github.com/CrowdedKingdoms/CrowdyJS/blob/dev/MIGRATION.md).
+[migration notes](https://github.com/CrowdedKingdoms/CrowdyJS/blob/prod/MIGRATION.md).
 :::
 
 ## What the agent can do
@@ -125,13 +125,15 @@ path you pass as `webBase`. The usual arrangement is a devDependency plus a
 
 ```json
 {
-  "devDependencies": { "@crowdedkingdoms/crowdy-dsh": "0.2.0-dev.1" },
+  "devDependencies": { "@crowdedkingdoms/crowdy-dsh": "0.4.5-dev.1" },
   "scripts": { "predev": "node scripts/copy-dsh-web.mjs", "prebuild": "node scripts/copy-dsh-web.mjs" }
 }
 ```
 
 Pin it exactly like the SDK and keep its CrowdyJS major equal to the SDK's;
-the harness build refuses to bundle a different major. `BUILD.json` says which
+the harness build refuses to bundle a different major. The version above is an
+example: take the one your tier's dist-tag names
+(`npm view @crowdedkingdoms/crowdy-dsh dist-tags`), the same way you pick the SDK's. `BUILD.json` says which
 harness tag and CrowdyJS the artifact carries.
 
 ### Headers

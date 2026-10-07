@@ -1,0 +1,39 @@
+---
+id: create-grid-channel
+title: createGridChannel
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Create a grid channel (DN-10): an ordinary channel bound to one grid, owned by the caller, so the grid's player modules may emit&#x005F;channel into it (their messages carry the sender uuid 'grid:&#x003C;gridId&#x003E;'). Only the grid's current owner may create one, whatever the app's channel creation policy says, and a grid holds at most 8 active channels. Membership works like any channel: membershipPolicy defaults to 'open' so visitors can join it, and members get send&#x005F;messages unless membersCanSend is false.
+
+
+```graphql
+createGridChannel(
+  input: CreateGridChannelInput!
+): Group!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>createGridChannel.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CreateGridChannelInput!</b></code>](/reference/graphql/types/inputs/create-grid-channel-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The app, the grid, the channel name, optional description / membership policy, and the membersCanSend flag.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Group</b></code>](/reference/graphql/types/objects/group.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A generic group. `groupType` discriminates teams ('team'), channels ('channel'), and grid-access groups ('grid').
