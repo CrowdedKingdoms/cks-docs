@@ -52,7 +52,7 @@ Decay is a server-side filter applied before the event reaches remote clients. U
 A `Multicast` event rides a [channel](./channels.md). "Reliable" here means coverage: every member of the channel is a recipient, at any distance, with no decay. It does not mean guaranteed delivery. The transport is still UDP with no acknowledgement, no retransmit, and no duplicate suppression.
 
 :::warning[Reliable is coverage, not delivery. A late joiner gets nothing from a past Multicast call.]
-Treat a Multicast event like any other fire-and-forget call for anything that must not be silently missed. If a value has to be right on a client that missed the event or joined afterwards, put it in a [Crowdy State](./crowdy-state.md) property or a [Game Model](../game-models/overview.md); an event has no history to replay.
+Treat a Multicast event like any other fire-and-forget call for anything that must not be silently missed. If a value has to be right on a client that missed the event or joined afterwards, put it in a [Crowdy State](./crowdy-state.md) property, or in your server code if it is [truth](../concepts/two-planes.md); an event has no history to replay.
 :::
 
 The payload of a Multicast call is capped at 1024 bytes (see the [C++ page](./rpc-events-cpp.md#containers-and-their-bounds)); a large container belongs on `SpatialMulticast`.

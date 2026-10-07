@@ -103,7 +103,7 @@ The generated graphs branch on booleans, so the three-way role grading of the C+
 `RequestOwnership_Implementation(RequesterID)` and `GrantOwnership_Implementation(NewOwnerID, PreviousOwnerID)` are `CrowdyEvent` functions with `CrowdyRecipient = "Multicast"` that carry [ownership transfer](./ownership-transfer.md) over the session channel. Call the static `UCrowdyOwnershipTransfer` nodes instead of these; `GrantOwnershipTo(NewOwnerID)` is the C++ entry the static nodes funnel through.
 
 :::caution[These two events are Multicast with no CrowdyChannel on purpose. Do not re-declare them with a channel.]
-They ride the app's session channel, which the SDK always joins, so a request or a grant reaches every client. Re-declared on a channel of their own they would reach that channel's members instead of the entity's audience. Ownership on this plane is a convention in any case; the enforced kind lives on a [Game Model](../game-models/overview.md).
+They ride the app's session channel, which the SDK always joins, so a request or a grant reaches every client. Re-declared on a channel of their own they would reach that channel's members instead of the entity's audience. Ownership on this plane is a convention in any case; the enforced kind lives in your server code, on the [truth plane](../concepts/two-planes.md).
 :::
 
 ## Advanced: the static identity helpers

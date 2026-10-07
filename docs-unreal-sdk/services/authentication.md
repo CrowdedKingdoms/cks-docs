@@ -180,7 +180,7 @@ The Game Instance Blueprint needs a Boolean variable `bCanPlay`. **Event Init** 
 | Accessor | Returns |
 |---|---|
 | `GetAppID()` | The app id, `int64`. |
-| `GetUserID()` | The signed-in user's id, `int64`. Also `GetLocalUserId` on the Game Model library. |
+| `GetUserID()` | The signed-in user's id, `int64`. |
 | `GetUUID()`, `GetID()` | This client's actor identity as a string and as an `FGuid`. |
 
 Its two events, `OnOwnerUUIDUpdated` (`FOnOwnerUUIDUpdated`) and `OnHostIDUpdated` (`FOnHostIDUpdated`), announce a new client identity and a change of the elected view-plane host; the host one belongs to [Host election](../runtime/host-authority.md). Everything else on the class, the setters, the token and URL getters, the clear call, and the getter that returns the whole connection-state struct, is written by the SDK and is not for a game to read, display, or log: that struct carries both tokens as fields, so breaking it into a widget is exactly the leak the box above forbids.
@@ -228,7 +228,7 @@ Expect the refusal in a UI that lists identities with a remove button; do not tr
 
 ## Gotchas
 
-- Nothing connects until someone signs in. Every entity, event, and Game Model read depends on it.
+- Nothing connects until someone signs in. Every entity and event depends on it.
 - `Register` on an existing address is a refusal, `EMAIL_ALREADY_REGISTERED`; offer Login instead.
 - The link and social flows need the player to reach a browser or inbox while the game runs; on a machine that cannot, use a password.
 - `OnAppTokenRefreshed` fires on every rotation. You rarely need it; the connection is re-armed for you.
@@ -238,6 +238,6 @@ Expect the refusal in a UI that lists identities with a remove button; do not tr
 
 - [Quickstart](../quickstart.md): the sign-in step this page extends.
 - [Connection and reconnect](../runtime/connection-and-reconnect.md): the realtime connection the sign-in requests.
-- [Sessions](../game-models/sessions.md): the Game Model session, the other meaning of the word.
+- [Sessions and presence](../concepts/sessions-and-presence.md): the other meanings of the word session.
 - [Teams](../services/teams.md) and [Avatars](../services/avatars.md): services that need a signed-in player.
 - [Sign in on the Management API](/management-api/authentication): the calls at the GraphQL level.

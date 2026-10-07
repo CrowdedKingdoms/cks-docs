@@ -13,7 +13,7 @@ import path from 'node:path';
 // be downloaded to run it.
 
 const baseURL = process.env.BLUEPRINT_BASE_URL ?? 'http://localhost:3112';
-const snippet = process.env.BLUEPRINT_SNIPPET ?? 'qs-model-read';
+const snippet = process.env.BLUEPRINT_SNIPPET ?? 'qs-entity';
 
 test.use({
   baseURL,

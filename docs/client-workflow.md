@@ -10,4 +10,6 @@ To play a game, a player's client authenticates on the Management API to get an 
 
 Our SDKs abstract this process. When initializing an SDK you provide the ONE GraphQL origin for the environment you are on — `https://ck.prod.crowdedkingdoms.com/graphql` in production; identity stays on a hub client, and a per-game client drives gameplay with its app-scoped token (`client.portal`). See **[CrowdyJS](/crowdyjs/intro)** for browsers and **[Native & non-browser clients](/management-api/native-clients)** for Unreal/Unity, desktop, console, mobile, and custom native clients.
 
+A game whose server code runs on **[ck-exec](/exec/intro)** then connects to it: with the app-scoped token, `execConnect` returns a gateway and a connect token valid for 60 seconds, and the client opens a WebSocket to that gateway and calls the game's hubs over it. The SDKs do both (`client.exec.connect` in CrowdyJS, `client.exec().connect` in CrowdyCPP). See **[Connect from a game](/exec/connect-from-a-game)**.
+
 Gameplay rules belong on the server. See **[Best practices](/overview/best-practices)**.

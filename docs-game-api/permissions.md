@@ -47,15 +47,17 @@ To keep the common case effortless, a **new app is open by default**:
   grant app access is automatically granted those same legacy keys on that
   grid.
 
-Player-code permissions are deliberately excluded. Adding new runtime keys
-does not widen the default tier/grid automatically; server/client code remains
-opt-in.
+The four code keys (`write_server_code`, `run_server_code`,
+`write_client_code`, `run_client_code`) are deliberately excluded. Adding new
+runtime keys does not widen the default tier/grid automatically; server/client
+code remains opt-in.
 
 :::caution[Editing a tier does not reach players who already joined]
 The automatic grid grant above happens **once, when the player is first given app
 access**. It is a snapshot of the tier at that moment, not a live link to it.
 
-So adding a key to a tier later — `run_server_code`, say, to switch on automations —
+So adding a key to a tier later — `run_server_code`, say, so players can switch their
+[mods](/exec/mods) on —
 reaches every *new* player and **none of the existing ones**. They keep the keys they
 were granted on the way in. Nothing errors: enforcement needs the key at both the app
 and grid layers, so the tier now allows the action and the grid still refuses it.
@@ -127,13 +129,17 @@ Teams use a separate set of **team-management** keys (`manage_group`,
 
 3. **Cap what a region allows (optional).** Use `setGridPermissionLimits` to make
    safe zones — e.g. allow `access` and `use_voice_chat` but never building,
-   regardless of other grants.
+   regardless of other grants. To stop building on land nobody has claimed, close
+   the [wilderness](grids-and-permissions#wilderness) (`updateApp` with
+   `wildernessWritesOpen: false`).
 
 4. **Grant permissions in the region.** Either:
    - **Per player** with `grantGridPermissions` (e.g. give a plot owner
      `update_voxel_data` on their chunk), or
    - **Per team/role** with `assignGroupToGrid` — grant a whole [team](teams)
-     (or just members holding a specific role) permissions across a region.
+     (or just members holding a specific role) permissions across a region, or
+   - **To every player** with `setGridOpenPermissions` — a public build area or
+     an arena ([open grids](grids-and-permissions#open-grids)).
 
 5. **Let players run their own teams (optional).** Use `setTeamPolicy` to choose
    who can create teams (`admin` / `member` / `anyone`) and the default join
@@ -146,13 +152,20 @@ spatial message — this is always on. A message is accepted only if the sender 
 active app access whose tier holds the needed key **and** the target chunk is
 inside a grid where the sender holds that key. A player without `access` to a
 region can't act there, building requires `update_voxel_data`, and voice requires
-`use_voice_chat`; anything else is rejected with `UNAUTHORIZED`. With the
-open-by-default setup above this is transparent — the default grid grants every
-entitled player every key everywhere — until you add narrower grids/limits. A
-player's effective keys on a grid are:
+`use_voice_chat`; anything else is rejected with `UNAUTHORIZED`. Building is
+checked against the chunk's **most specific** covering grid only (the smallest
+box; of equal boxes, the lowest `gridId`), and against the app's
+[wilderness](grids-and-permissions#wilderness) setting when that grid is the
+world grid; the other keys are granted by any covering grid. See
+[which grid decides a voxel write](grids-and-permissions#which-grid-decides-a-voxel-write).
+With the open-by-default setup above this is transparent — the default grid
+grants every entitled player every key everywhere — until you add narrower
+grids: a nested grid decides building in its chunks, so a zone everyone should
+build in must be [opened](grids-and-permissions#open-grids). A player's
+effective keys on a grid are:
 
-> (their tier baseline) plus (direct grants ∪ team/role grants) on that grid,
-> within the grid's limits.
+> (their tier baseline) plus (direct grants ∪ team/role grants ∪ the grid's
+> open keys) on that grid, within the grid's limits.
 
 Use `gridUserPermissions` (one grid) or `nearbyGridPermissions` (all grids around
 a chunk) to see exactly what a player has where.
@@ -164,7 +177,7 @@ a chunk) to see exactly what a player has where.
 - [Teams](teams) — teams, roles, delegation, and assigning teams to grids.
 - [Channels](channels) — app-wide message channels, the `send_messages` role,
   and publishing/receiving channel messages over the realtime UDP path.
-- [Player code and owned grids](player-code) — first-class grid title, the
-  four player-code keys, source privacy, and strict code admission.
+- [Mods](/exec/mods) — players' server code on grids they own, the code keys
+  it needs, and the app's code admission.
 - [Avatar state](avatar-state) and [Actor state](actor-state) — owner-exclusive
   write / public read for character data.

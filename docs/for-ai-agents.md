@@ -29,7 +29,9 @@ pass `httpUrl` / `wsUrl` explicitly if you are not on production.
 | **Management surface** | GraphQL (HTTP) | Identity, organizations, the apps marketplace, access tiers, billing, payments, quotas. Studio-backend operations. Dedicated customer environments were retired. |
 | **Game surface** | GraphQL (HTTP + WebSocket) | Runtime world data (chunks, voxels, actors, avatars) and the realtime **UDP-proxy** subscription/spatial-send surface. Authenticated with an **app-scoped token** (not the identity session token). |
 | **Replication API** | Binary UDP | Lowest-latency native spatial replication. Most clients use the Game API UDP-proxy instead and never touch raw UDP. Buddy (the replication server) authenticates only app-scoped tokens. |
-| **CrowdyJS** | TypeScript SDK | Browser clients — wraps sign-in (`auth.login` / `auth.register`, magic link, social), `client.portal` (app-scoped tokens / PKCE / consent), and the unified GraphQL API including the UDP proxy. Use one identity client plus a per-game client. Prefer it for web. |
+| **ck-exec gateway** | WebSocket (binary frames, MessagePack payloads) | Calls to your app's server code (hubs and spokes) and pushes from its topics. `execConnect`, with the app-scoped token, returns the gateway and a 60-second connect token. See [ck-exec](/exec/intro). |
+| **CrowdyJS** | TypeScript SDK | Browser clients — wraps sign-in (`auth.login` / `auth.register`, magic link, social), `client.portal` (app-scoped tokens / PKCE / consent), and the unified GraphQL API including the UDP proxy and ck-exec (`client.exec`). Use one identity client plus a per-game client. Prefer it for web. |
+| **CrowdyCPP**, **CrowdyPy** | C++ and Python SDKs | Native games and tools: the same surface as CrowdyJS, with native UDP replication. See [CrowdyCPP](/crowdycpp/intro) and [CrowdyPy](/crowdypy/intro). |
 
 ## Get the schema
 
@@ -178,11 +180,18 @@ clients never send the internal peer handshake.
 Server-side automation (with a studio/org token) typically:
 
 ```graphql
-# Create an app, then a paid access tier for it.
-mutation NewApp { createApp(input: { orgId: "10", name: "My Game", slug: "my-game" }) { appId } }
+# Pick a datacenter (a `code` whose `placeable` is true), create an app there,
+# then an access tier, then give the tier a price.
+query Datacenters { placeableDatacenters { datacenters { code placeable } } }
+
+mutation NewApp { createApp(input: { orgId: "10", name: "My Game", slug: "my-game", datacenter: "or" }) { appId } }
 
 mutation NewTier {
-  createAccessTier(input: { appId: "42", name: "Premium", priceCents: "999", permissionKeys: ["access"] }) { id }
+  createAccessTier(input: { appId: "42", name: "Premium", permissionKeys: ["access"] }) { tierId }
+}
+
+mutation PriceTier {
+  updateAccessTier(tierId: "7", input: { priceCents: "999", currency: "usd", billingPeriod: "month" }) { tierId priceCents }
 }
 
 # Check an org wallet (micro-USD), then open a top-up checkout (cents: the processor's unit).

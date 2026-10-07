@@ -93,7 +93,7 @@ The `CrowdyVoice` module links `AudioCapture`, `AudioCaptureCore`, `AudioMixer`,
 
 ## Gotchas
 
-- Voice is relayed live like any other RPC; the server stores nothing, so there is no truth to check against Game Models.
+- Voice is relayed live like any other RPC; the server stores nothing, so there is no truth to check it against.
 - The six calls need only `CrowdySDK` in Build.cs; `UVoiceChatSubsystem` needs `CrowdyVoice`, and of its four delegates only `OnAudioNotify` fires.
 - The device monitor is the SDK's own; it does something on Windows only and exposes nothing to a game.
 - `ToggleOwnerEcho(true)` is a one-time check, not a setting to leave on.

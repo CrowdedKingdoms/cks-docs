@@ -37,7 +37,7 @@ Add funds to an organization wallet. Requires orgId and amountCents, and the cal
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>PLAYER&#x005F;WALLET&#x005F;TOPUP</b></code>](#player-wallet-topup) \{#player-wallet-topup\} 
-Add funds to the caller's own player wallet (player compute P2). Requires amountCents only — any authenticated user may fund their own wallet; no org permission is involved. Credits the player wallet idempotently on completion.
+Add funds to the caller's own player wallet, which pays for their mods past the monthly trial (see PlayerWallet). Requires amountCents only — any authenticated user may fund their own wallet; no org permission is involved. Credits the player wallet idempotently on completion.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CheckoutPurpose.<b>APP&#x005F;ACCESS&#x005F;PURCHASE</b></code>](#app-access-purchase) \{#app-access-purchase\} 

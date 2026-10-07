@@ -21,7 +21,6 @@
       "claimFreeAppAccess",
       "completeLoginLink",
       "confirmEmail",
-      "cpSetComputePlatformCeilings",
       "cpSetCrowdyStudioAgentAppKill",
       "cpSetCrowdyStudioAgentPlatformPolicy",
       "createAccessTier",
@@ -33,7 +32,6 @@
       "createPortalAuthorizationCode",
       "deleteMyAccount",
       "deleteOrgRole",
-      "deletePlayerWasmPolicy",
       "deleteQuota",
       "exchangePortalCode",
       "forceLogoutUser",
@@ -75,7 +73,6 @@
       "setPlayerCodeListingStatus",
       "setPlayerRateMarkup",
       "setPlayerSpendCap",
-      "setPlayerWasmPolicy",
       "setQuota",
       "setSuperAdmin",
       "setupSharedPaymentMethod",
@@ -121,7 +118,6 @@
       "checkAuthMethod",
       "checkouts",
       "checkoutsConnection",
-      "cpComputePlatformCeilings",
       "cpCrowdyStudioAgentCatalog",
       "cpCrowdyStudioAgentPlatformPolicy",
       "crowdyStudioAgentEffectivePolicy",
@@ -164,7 +160,6 @@
       "playerUsageCharges",
       "playerWalletBalance",
       "playerWalletTransactions",
-      "playerWasmPolicies",
       "portalConsent",
       "quotasForApp",
       "quotasForOrg",
@@ -235,6 +230,16 @@
         "buddyBillingTiers",
         "graphqlBillingTiers",
         "postgresBillingTiers"
+      ]
+    },
+    "legacy-compute-engines": {
+      "reason": "Removed with the game API's legacy compute engines (cks-game-api #417, dev/v2.27.0): platform compute ceilings and per-player WASM policies bounded Studio and player compute. ck-exec code runs under its manifest limits within the platform's bounds, and mods under the platform's mod limits.",
+      "fields": [
+        "cpComputePlatformCeilings",
+        "cpSetComputePlatformCeilings",
+        "playerWasmPolicies",
+        "setPlayerWasmPolicy",
+        "deletePlayerWasmPolicy"
       ]
     },
     "operator-only": {

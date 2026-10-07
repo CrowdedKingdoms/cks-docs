@@ -29,14 +29,13 @@ So in practice there is one model, and this page describes it.
 - Each app includes a **monthly development quota**, per UTC calendar month:
   **5 GB of client egress**, **5 GB of client ingress** (decimal GB: 1 GB =
   1,000,000,000 bytes), **20 CPU-hours of compute** pooled across GraphQL
-  resolvers, automations and [compute modules](/game-api/compute-modules), and
+  resolvers and your app's [ck-exec](/exec/intro) code, and
   **1 GB-month of stored data**. Egress is the headline number and the one most
   games reach first. Unused quota does not roll over.
 - **You are billed for bytes, CPU and storage — never for counts.** A datagram,
   an API operation or a notification is paid for by the bytes it moves and the
   CPU it takes; there is no per-message, per-operation or per-notification rate
-  on the card (the count dimensions were retired on 2026-09-06). Rows and bytes
-  written by compute modules are priced from the first unit.
+  on the card (the count dimensions were retired on 2026-09-06).
 - Within the quota the app runs at no cost. Above it, usage is billed from your
   organization wallet at the published rate card **as it arrives**: each
   dimension's month-to-date total is rounded up to the next whole cent once, and
@@ -58,16 +57,15 @@ applies. A `MESSAGE_BUNDLE` datagram carrying several messages is one frame and 
 metered once, in either direction. A client-side byte counter will not match it. The full basis is in the
 [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html).
 
-For compute modules, one `wasm_compute_unit` is approximately one millisecond
-of reference CPU. A CPU-hour on the rate card is one core busy for one hour.
-The price is the rate card in your account and on the
-[pricing page](https://crowdedkingdoms.com/pricing.html). The platform takes the larger of measured CPU time and the
-deterministic fuel equivalent (`GREATEST(CEIL(cpu_us/1000),
-CEIL(fuel/22,000,000))`), so neither a host stall nor unusually dense guest
-instructions under-report work. The 22M conversion, free allowance, and rate
-were calibrated in the July 2026 hardening sweep; module-emitted bytes are a
-separate line item and are billed through the same monthly egress aggregate as
-every other byte your app sends.
+An app's [ck-exec](/exec/intro) code is metered minute by minute in compute
+units: the greater of the CPU time and the fuel each minute used, so neither a
+host stall nor unusually dense guest instructions under-report work. A
+CPU-hour on the rate card is one core busy for one hour, and the price is the
+rate card in your account and on the
+[pricing page](https://crowdedkingdoms.com/pricing.html). Realtime events the
+code sends count as replication egress, billed through the same monthly egress
+aggregate as every other byte your app sends. See
+[usage and budgets](/exec/operations#usage-and-budgets).
 
 Check your remaining free slots:
 
@@ -84,7 +82,7 @@ query {
 
 ## Creating an app (shared by default)
 
-New apps created through the Management UI **Get started** wizard or `createApp` with shared deployment go live on the shared Game API immediately:
+New apps created through the Management UI **Get started** wizard or `createApp` go live on the shared Game API immediately. `datacenter` is required: a `code` that `placeableDatacenters` lists as `placeable`.
 
 ```graphql
 mutation {
@@ -92,7 +90,7 @@ mutation {
     orgId: "123"
     name: "My Game"
     slug: "my-game"
-    deploymentTarget: "shared"
+    datacenter: "or"
   }) {
     appId
     deploymentTarget
@@ -236,9 +234,9 @@ query {
 While an app is denied or suspended, the Game API and realtime layer refuse new
 connections for that `appId` with a reason-bearing error, so your client can
 prompt the studio to fund the wallet, raise a cap, or renew. Server-driven work
-pauses too: [autonomous processes](/game-api/autonomous-processes) and
-[compute modules](/game-api/compute-modules) are deactivated until the app is
-`active` again.
+pauses too: the app's [ck-exec](/exec/operations#usage-and-budgets) code is
+switched off entirely until the app is `active` again, and resumes by itself
+the minute after.
 
 ## Connecting clients
 

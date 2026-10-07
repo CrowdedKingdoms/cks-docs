@@ -347,8 +347,8 @@ same `uuid` (a real reconnect after a stale looks exactly like that); never
 latch "gone forever". The SDK stores do this for you: CrowdyJS `RemoteActorStore`
 removes the actor and fires `onLeave` on 145, CrowdyCPP `RemoteActorLane` likewise;
 treat `leftReason` values other than 0 and 1 as stale. The server-side twin for
-game logic is the `player_left` automation / compute event — see
-[Autonomous processes → Players leaving](autonomous-processes#players-leaving).
+game logic is the root hub's `on_presence` on ck-exec, which lists the players
+who left — see [presence](/exec/timers-and-presence#presence).
 
 ## Other mutations
 

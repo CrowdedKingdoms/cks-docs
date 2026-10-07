@@ -179,8 +179,18 @@ is best-effort by design — sequence numbers are uint8 correlation ids.
 The client-side source of truth for chunks and voxels:
 
 - `ensureAround(center, radius)` bulk-loads via `getChunksByDistance`
-  (in-flight deduped), then **hydrates sparse `voxelStates` per chunk** —
-  the bulk query omits them, a platform trap the store encapsulates.
+  (in-flight deduped), then **hydrates each newly loaded chunk** with
+  `getChunk`. Its `voxelStates` carry every voxel edit recorded for the
+  chunk, each with its type: a hub's or mod's `world.set_voxels`,
+  `updateVoxel`, other players' realtime voxel updates (ck-api v2.33.0). The
+  store puts them over the dense grid; the bulk load's `voxels` hold none of
+  them. It hydrates when you configure a `voxelStateCodec` or set
+  `hydrateVoxelStates: true`; without either, a reload shows none of those
+  edits. A chunk the store has already loaded keeps its cache when a later
+  bulk load returns it again (CrowdyJS 18.2.0; earlier releases put the
+  stored grid back over the hydrated edits as the player moved). A chunk the
+  server has never stored comes back from neither read, even when edits were
+  recorded for it.
 - Realtime `voxelUpdate` notifications merge into the cache automatically:
   dense grid write, typed state decode, revision bump, `onChunkChanged`.
 - `setVoxel(...)` applies locally first (optimistic) and replicates over the
@@ -189,7 +199,16 @@ The client-side source of truth for chunks and voxels:
   are handed to your `onMissing(coord)` hook; returned grids are seeded
   locally and persisted through a throttled write-back queue (one chunk per
   `writeBackIntervalMs`, default 700 ms) — the proven shared-worldgen
-  pattern.
+  pattern. The write-back is `updateChunk` as the player, so it persists only
+  chunks the player may build in (see
+  [Writing whole chunks](/game-api/grids-and-permissions#writing-whole-chunks));
+  a refusal the server will not change (`FORBIDDEN`, `BAD_REQUEST`,
+  `retryable: false`, HTTP 400/403/404/413/422) is sent once and dropped, and
+  any other failure is retried after 0.7, 1.4, 2.8 and 5.6 s and then dropped.
+  A dropped chunk keeps its local voxels, is no longer dirty, holds up no other
+  chunk, and is reported to `onWriteBackFailed` with its `reason` (`refused` or
+  `exhausted`), `attempts` and the `error`; `flush()` returns the failures
+  (CrowdyJS 18.0.4).
 - Typed reads everywhere: `voxelTypeAt`, `voxelStateAt`, `get(coord)` with
   `voxels` (4096-byte dense grid), `voxelStates: Map<index, T>`, typed
   `chunkState`, `loadState`, `revision`.
@@ -212,22 +231,13 @@ The client-side source of truth for chunks and voxels:
 
 - **HostTracker**: heartbeats on the session ticker (default 3 s — also
   keeps you host-eligible), caches `hostUserId`/`isHost`, fires
-  `onHostChanged`. Election is informational — keep `is_host` invoke
-  policies on authoritative model functions.
+  `onHostChanged`. Election is informational — decide host-only rules in a
+  [ck-exec](/exec/intro) hub.
 - **SaveStateStore**: a typed cache over the per-user app save blob
   (`client.state`): `load()`, `set()`/`patch()`, `save()`, and debounced
   autosave (`autosaveMs`).
 - **AvatarStateStore**: typed, cached public / private / per-app avatar
   state, each with its own codec.
-
-### `model` — game-model mirror (ContainerMirror)
-
-The client half of the [notify-to-pull pattern](/crowdyjs/game-kit#notify-to-pull):
-`watch(containerId, parse)` keeps a typed snapshot of a game-model
-container; `bindToChannel(channelId)` re-pulls every watched container
-(coalesced) whenever the channel pings — pair it with model functions that
-declare channel notifications, e.g. the Game Kit's `match_changed` pings.
-`onChange` fires only when a refresh actually changed the visible state.
 
 ## Adopting it in an existing game
 
@@ -252,9 +262,10 @@ notification bus, the shared ticker, and send tracking, and every store's
 
 ## Relationship to other layers
 
-- The [Game Kit](/crowdyjs/game-kit) is the **server-side rules** layer
-  (blueprints + gated model functions); World Stores is the **client-side
-  state** layer. They meet in `model` (notify-to-pull) and compose freely.
+- Your app's [ck-exec](/exec/intro) hubs are the **server-side rules** layer;
+  World Stores is the **client-side state** layer. A hub's state reaches
+  clients on its topics, through `client.exec` subscriptions, rather than
+  through a store.
 - The Unreal SDK's [Crowdy State](/unreal-sdk/runtime/crowdy-state) solves an
   adjacent problem — diff-based *property replication* between clients on
   the view plane. World Stores manages what arrives over the platform's
