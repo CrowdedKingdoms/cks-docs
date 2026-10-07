@@ -150,6 +150,25 @@ affects every project that uses Game Models. Per-item detail:
 - **Lists that start with different values get their own struct in the generated code.** A List that shares another's shape but starts with different values is its own struct, not a `pub type` alias, and Generate shows a notice when a List switches; one that starts with the same values stays an alias. Generate again and fix any `logic.rs` that used one for the other. See [Create a Server Object type](/unreal-sdk/exec/create-a-type#variables-inputs-and-outputs-or-a-struct).
 - **Moving or renaming a definition asset keeps its server code findable.** Saving it updates its crate's `Cargo.toml` record, so a later Type Name change still finds the folder. A Ready Server Object also stops keeping an earlier read refusal's text as its failure reason.
 
+## 2026-10-07 (the terms and age gate: Game API v2.35.0 on dev, test and prod; CrowdyJS 18.4.0 on dev)
+
+- **Players agree to the terms and attest the age of majority before playing.** Since Game
+  API v2.35.0, `mintAppToken`, `createPortalAuthorizationCode` and `refreshAppToken` answer
+  `LEGAL_ACCEPTANCE_REQUIRED` (403) until the player has agreed to the current required
+  documents (Game Terms, API Terms, SDK Developer Terms, Free Tier and Billing Basis, Overworld
+  Privacy Policy) and attested that they are at least 18, or the age of majority where they
+  live if that is higher.
+  - Studio's hosted `/authorize` and its register page ask for both, so a browser game changes
+    nothing. When a refresh is refused this way, send the player back through hosted sign-in.
+  - A native client shows its own two checkboxes and calls the new `recordPlayerConsents`.
+    `playerLegalAcceptance` says whether that is still needed.
+  - A browser `register` must send `acceptLegal` and `attestAgeOfMajority`.
+
+  See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+- **CrowdyJS 18.4.0** (dev): `client.auth.recordPlayerConsents`,
+  `client.auth.playerLegalAcceptance`, the two fields on `auth.register`, and
+  `isLegalAcceptanceRequiredError`.
+
 ## 2026-10-07 (dev: a grid mod's page-held host calls; CrowdyJS 18.3.0)
 
 - **CrowdyJS 18.3.0**: `createGridHostCalls` takes a `local.page(fn, args)` hook for the host
