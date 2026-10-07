@@ -192,6 +192,13 @@ Two behaviours to code against, because both are easy to meet by accident:
   for this account."* The remedy is the emailed confirmation link, not a
   different password. A password-only account signs in immediately, because
   there is no other method to protect.
+- **`register` from a browser carries the clickwrap.** A request with an `Origin`
+  header must send `acceptLegal: true` and `attestAgeOfMajority: true` in
+  `registerUserInput` (the player ticked both boxes), or it is refused with
+  `LEGAL_ACCEPTANCE_REQUIRED` before any account exists. A request with no
+  `Origin` may omit them, but no gameplay token is issued until they are recorded
+  with `recordPlayerConsents`. See
+  [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
 
 ## Managing passwords
 
