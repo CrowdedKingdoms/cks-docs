@@ -58,7 +58,7 @@ The sidebar on the left lists the pages. A toggle at the top folds it to icons (
 | **Teams** | AUTHORING | Yes | Author teams, members, roles, and the team policy. See [Teams and Channels](./teams-and-channels.md). |
 | **Channels** | AUTHORING | Yes | Author named channels and the session channel. |
 | **Grid** | AUTHORING | Yes | Author spatial permission regions. See [Grids](./grids.md). |
-| **Game Model** | AUTHORING | Yes | The legacy Game Model schema. The game API no longer serves it; see [The Two Planes](../concepts/two-planes.md). |
+| **Game Model** | AUTHORING | Yes | The legacy Game Model schema. The game API no longer serves it, and after v2.17.0 the SDK deprecates it: the page shows a banner, does not load its lists, and refuses schema sync, pre-seeding, purge and Game Kit deploy. Its tier-features panel still works. See [Move from Game Models](../exec/move-from-game-models.md). |
 | **Inspector** | DEBUG | No | A read-only view of a running Play in Editor session. See [Inspector and Registry](./inspector-and-registry.md). |
 | **Registry** | DEBUG | No | The baked metadata that ships in packaged builds, and the button that rebuilds it. |
 | **Web Console** | | Yes | Pinned at the bottom: opens the browser console for admin surfaces. |

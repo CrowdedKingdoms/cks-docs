@@ -1,0 +1,50 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event BeginPlay",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_ServerVariableChanged_0",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_ServerVariableChanged",
+		"title": "On Health Changed (CSO_Boss)",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get HealthBar",
+		"title_drawn": false
+	},
+	{
+		"name": "CrowdyK2Node_GetServerVariable_0",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_GetServerVariable",
+		"title": "Get MaxHealth (CSO_Boss)",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "÷",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_1",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Set Percent\nTarget is Progress Bar",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_2",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "•",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_3",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "•",
+		"title_drawn": true
+	}
+]

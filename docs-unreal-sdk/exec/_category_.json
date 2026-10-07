@@ -1,0 +1,9 @@
+{
+  "label": "Server Logic",
+  "position": 40,
+  "link": {
+    "type": "generated-index",
+    "title": "Server Logic",
+    "description": "Game state the server owns and the code that changes it; every player sees each change. Start with what a Server Object is, then create a type, set who may read and call it, relate objects to each other, write its server logic and deploy it with Server Compute. Use it from Blueprint or from C++, fix what goes wrong with the troubleshooting page, read the Unreal and ck-exec names side by side, and follow the worked examples in Oakford. It also says how to move from the deprecated Game Models to Server Objects."
+  }
+}

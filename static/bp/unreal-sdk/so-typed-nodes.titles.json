@@ -1,0 +1,26 @@
+[
+	{
+		"name": "CrowdyK2Node_ServerVariableChanged_0",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_ServerVariableChanged",
+		"title": "On Oil Changed (CSO_VillageBeacon)",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_CallServerFunction_0",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_CallServerFunction",
+		"title": "Call FeedBeacon (CSO_VillageBeacon)",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_GetServerVariable_0",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_GetServerVariable",
+		"title": "Get Oil (CSO_VillageBeacon)",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_GetServerState_0",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_GetServerState",
+		"title": "Get Server State (CSO_VillageBeacon)",
+		"title_drawn": true
+	}
+]

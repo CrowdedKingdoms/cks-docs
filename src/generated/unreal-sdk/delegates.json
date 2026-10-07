@@ -229,7 +229,7 @@
       "type": "FCrowdyEdgeOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -251,7 +251,7 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -273,7 +273,7 @@
       "type": "FCrowdyApplyManifestOutcome",
       "category": "Crowdy SDK|Game Model|Containers",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -295,7 +295,7 @@
       "type": "FCrowdyApplyEffectOutcome",
       "category": "Crowdy SDK|Game Model|Effects",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -317,7 +317,7 @@
       "type": "FCrowdyApplyStatusEffectOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -339,7 +339,7 @@
       "type": "FCrowdyCombatAttackOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -361,7 +361,7 @@
       "type": "FCrowdyContainerIdOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -383,7 +383,7 @@
       "type": "FCrowdyContainerIdOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -405,7 +405,7 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -427,7 +427,7 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -449,7 +449,7 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -471,7 +471,7 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -493,7 +493,7 @@
       "type": "FCrowdyEnsureLeaderboardEntryOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Leaderboards",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -636,7 +636,7 @@
       "type": "FCrowdyGatherNodeOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -658,7 +658,7 @@
       "type": "FCrowdyContainerRefsOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -680,7 +680,7 @@
       "type": "FCrowdyCollectionItemsOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -702,7 +702,7 @@
       "type": "FCrowdyGetCombatantStateOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -724,7 +724,7 @@
       "type": "FCrowdyGetLeaderboardOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Leaderboards",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -746,7 +746,7 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -768,7 +768,7 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -790,7 +790,7 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -812,7 +812,7 @@
       "type": "FCrowdyGetWorldStateOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -834,7 +834,7 @@
       "type": "FCrowdyHarvestCropOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -856,7 +856,7 @@
       "type": "FCrowdyCallModelFunctionOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -878,7 +878,7 @@
       "type": "FCrowdyInvokeOnContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -900,7 +900,7 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -922,7 +922,7 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -944,7 +944,7 @@
       "type": "FCrowdyContainerRefsOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -966,7 +966,7 @@
       "type": "FCrowdyListCropsOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -999,7 +999,7 @@
       "type": "FCrowdyListResourceNodesOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1021,7 +1021,7 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1043,7 +1043,7 @@
       "type": "FCrowdyPlantCropOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Worldsim",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1065,7 +1065,7 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1087,7 +1087,7 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Collections",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1109,7 +1109,7 @@
       "type": "FCrowdyCombatantMutationOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1131,7 +1131,7 @@
       "type": "FCrowdyCombatantMutationOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1153,7 +1153,7 @@
       "type": "FCrowdyPullDataContainerOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1175,7 +1175,7 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1197,7 +1197,7 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1219,7 +1219,7 @@
       "type": "FCrowdySpawnCombatantOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1241,7 +1241,7 @@
       "type": "FCrowdySubmitScoreOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Leaderboards",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1263,7 +1263,7 @@
       "type": "FCrowdyCombatantMutationOutcome",
       "category": "Crowdy SDK|Game Model|Kits|Combat",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1285,7 +1285,7 @@
       "type": "FCrowdySessionFailureOutcome",
       "category": "Crowdy SDK|Game Model|Sessions & Turns",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
@@ -1307,7 +1307,7 @@
       "type": "FCrowdyTraverseOutcome",
       "category": "Crowdy SDK|Game Model|Advanced",
       "module": "CrowdyReplication",
-      "page": "services/host-election",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
     },
