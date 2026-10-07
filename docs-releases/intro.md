@@ -151,7 +151,7 @@ keep the engines until they move to ck-exec.
 - **CrowdyJS 18.0** removes their SDK surface (`client.gameModel`, `client.compute`,
   `client.playerCompute`, `client.playerModel`, the Game Kit's engines and `client.operator`),
   and Crowdy Studio runs on ck-exec only. 18.0.1 also drops what only platform staff can call.
-  See CrowdyJS's [migration notes](https://github.com/CrowdedKingdoms/CrowdyJS/blob/dev/MIGRATION.md).
+  See CrowdyJS's [migration notes](https://github.com/CrowdedKingdoms/CrowdyJS/blob/prod/MIGRATION.md).
 - **CrowdyCPP 0.50.0** removes the same, and 0.51.0 wraps only what players, developers and org
   admins can call.
 

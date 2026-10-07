@@ -30,11 +30,10 @@ write mods (a SERVER half on ck-exec and a CLIENT half in the browser), proximit
 (`B`) and voice (`V`), and `npm run setup` in a shell that creates your org and app (hosted
 sign-in only in the browser — the page never collects a password).
 
-This site describes the dev environment, so clone The Construct's `dev` branch, which matches
-it. The repository's default branch, `prod`, follows production.
+Clone The Construct's default branch, `prod`, which matches this site (production).
 
 ```bash
-git clone -b dev https://github.com/CrowdedKingdoms/the-construct.git
+git clone https://github.com/CrowdedKingdoms/the-construct.git
 cd the-construct
 npm install
 npm run dev

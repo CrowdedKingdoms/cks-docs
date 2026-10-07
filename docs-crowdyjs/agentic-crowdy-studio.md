@@ -30,7 +30,7 @@ today's spend against the policy ceiling and who pays.
 The Ask / Build / Play dock, `client.crowdyStudioAgent`, the `agent` mount
 option, `PlayerControlGate`, `AgentControlBanner` and the lease manager were
 removed in 16.0.0 together with the server orchestrator they drove. See the
-[migration notes](https://github.com/CrowdedKingdoms/CrowdyJS/blob/dev/MIGRATION.md).
+[migration notes](https://github.com/CrowdedKingdoms/CrowdyJS/blob/prod/MIGRATION.md).
 :::
 
 ## What the agent can do

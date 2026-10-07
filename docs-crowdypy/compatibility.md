@@ -12,7 +12,7 @@ CrowdyPy follows CrowdyJS at a pinned version and commit, recorded in its
 `pyproject.toml`. A strict parity gate fails the build on any CrowdyJS method,
 class, export or GraphQL root that CrowdyPy lacks. Each remaining difference
 carries a reviewed reason, and the generated
-[parity matrix](https://github.com/CrowdedKingdoms/CrowdyPy/blob/dev/docs/parity-matrix.md)
+[parity matrix](https://github.com/CrowdedKingdoms/CrowdyPy/blob/prod/docs/parity-matrix.md)
 lists them all:
 
 - **Native equivalents.** The same contract, built CrowdyPy's way: the native
@@ -35,4 +35,4 @@ records its CrowdyCPP and CrowdyJS versions in its migration notes.
 CPython 3.12 or later (`cp312-abi3`), and free-threaded CPython 3.14 (`cp314t`).
 CrowdyPy is pre-1.0. Patch releases keep source compatibility, and a new minor
 version may change the API, as described in each release's
-[migration notes](https://github.com/CrowdedKingdoms/CrowdyPy/blob/dev/MIGRATION.md).
+[migration notes](https://github.com/CrowdedKingdoms/CrowdyPy/blob/prod/MIGRATION.md).

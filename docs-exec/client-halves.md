@@ -406,7 +406,7 @@ CLIENT mod host needs: the platform glue worker served from your own origin, a h
 that answers only what your game offers, a HUD that renders payloads as text and never as HTML,
 and the cross-origin-isolation headers the worker's synchronous host calls depend on. The
 Construct implements that integration: see its
-[`docs/MODDING.md`](https://github.com/CrowdedKingdoms/the-construct/blob/dev/docs/MODDING.md) on
+[`docs/MODDING.md`](https://github.com/CrowdedKingdoms/the-construct/blob/prod/docs/MODDING.md) on
 the `dev` branch.
 
 ## Crowdy Studio's CLIENT target
