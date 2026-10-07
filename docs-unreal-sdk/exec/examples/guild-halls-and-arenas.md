@@ -8,7 +8,7 @@ description: Two worked Server Object examples in Oakford, using members, access
 # Guild halls and arena lobbies
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 Two things Oakford's players do in groups, built from the settings on [Access, members and timers](../access-members-and-timers.md). Each shows the settings on the asset, the few lines of `logic.rs` that are left, and the Blueprint side.

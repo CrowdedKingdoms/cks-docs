@@ -8,7 +8,7 @@ description: The pin each Server Object variable, input and output type gets in 
 # Pins for every type
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 The typed nodes give every value a pin of its own type, so none needs a cast. This page is what the pins are, and what happens to them when the asset changes.

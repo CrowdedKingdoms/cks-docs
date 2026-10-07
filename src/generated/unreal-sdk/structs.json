@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-09-22T14:39:18Z",
-  "sdk_version": "2.14.0",
+  "generated_from": "2026-10-07T15:57:00Z",
+  "sdk_version": "2.18.0",
   "table": "structs",
   "columns": [
     {
@@ -969,6 +969,86 @@
       "page": "",
       "editor": false,
       "allowlist": "internal"
+    },
+    {
+      "id": "FCrowdyServerCallResult",
+      "name": "FCrowdyServerCallResult",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectTypes.h",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyServerEnumValueName",
+      "name": "FCrowdyServerEnumValueName",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyServerFieldName",
+      "name": "FCrowdyServerFieldName",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyServerFunction",
+      "name": "FCrowdyServerFunction",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyServerListValueName",
+      "name": "FCrowdyServerListValueName",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyServerMemberInputs",
+      "name": "FCrowdyServerMemberInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyServerOpenInputs",
+      "name": "FCrowdyServerOpenInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyServerTimer",
+      "name": "FCrowdyServerTimer",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
     }
   ]
 }
