@@ -150,6 +150,22 @@ affects every project that uses Game Models. Per-item detail:
 - **Lists that start with different values get their own struct in the generated code.** A List that shares another's shape but starts with different values is its own struct, not a `pub type` alias, and Generate shows a notice when a List switches; one that starts with the same values stays an alias. Generate again and fix any `logic.rs` that used one for the other. See [Create a Server Object type](/unreal-sdk/exec/create-a-type#variables-inputs-and-outputs-or-a-struct).
 - **Moving or renaming a definition asset keeps its server code findable.** Saving it updates its crate's `Cargo.toml` record, so a later Type Name change still finds the folder. A Ready Server Object also stops keeping an earlier read refusal's text as its failure reason.
 
+## 2026-10-07 (dev: a grid mod's page-held host calls; CrowdyJS 18.3.0)
+
+- **CrowdyJS 18.3.0**: `createGridHostCalls` takes a `local.page(fn, args)` hook for the host
+  calls only the page can answer:
+  - the player's input (`input_axes`, `input_look`, `input_key`);
+  - the player's own body (`pose_get`, `pose_set`, `pose_release`, `teleport_request`);
+  - the mod's own actors (`actor_spawn`, `actor_pose`, `actor_despawn`);
+  - the scene (`scene_catalog`, `scene_instances`);
+  - presentation (`avatar_appearance`, `avatar_state_set`, `voice_set`, `video_set`);
+  - the player's own sends (`send_client_event`, `events_poll`, `send_text`,
+    `send_actor_message`, `send_channel_message`).
+
+  Without the hook each is refused as not offered, as before, and `clock` is answered locally.
+  The server refuses all of them. See
+  [Answering host calls](/exec/client-halves#answering-host-calls).
+
 ## 2026-10-03 (dev: chunk loads show recorded voxel edits; CrowdyJS 18.2.0, CrowdyCPP 0.56.0)
 
 Every voxel write except a chunk write-back lands only in the chunk's edit log: a hub's or
