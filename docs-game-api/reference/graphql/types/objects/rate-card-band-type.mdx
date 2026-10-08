@@ -1,0 +1,43 @@
+---
+id: rate-card-band-type
+title: RateCardBandType
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One band of a graduated price. Each unit of the period's running total is priced at the band its position falls in, so the price of the next unit never rises as the total grows. Bands are edges on the whole total and count from zero: the free allowance fills the first band first.
+
+
+```graphql
+type RateCardBandType {
+  upToUnits: BigInt
+  priceCents: Float!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>RateCardBandType.<b>upToUnits</b></code>](#up-to-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#up-to-units\} 
+Exclusive upper edge of this band on the period's running total, in raw metric units, as a BigInt decimal string. A band covers units from the previous band's edge up to this one. Null on the last band, which has no upper edge.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RateCardBandType.<b>priceCents</b></code>](#price-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#price-cents\} 
+Cents charged per the row's unitQuantity raw units for the units inside this band. Fractional values are permitted.
+
+
+
+
+### Member Of
+
+[`PublicRateCardEntryType`](/reference/graphql/types/objects/public-rate-card-entry-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`RateCardEntryType`](/reference/graphql/types/objects/rate-card-entry-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

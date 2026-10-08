@@ -44,6 +44,6 @@ void ULanternGameInstance::HandleLogin(bool bSuccess, FString Message)
 
 void ULanternGameInstance::HandleConnected()
 {
-	// From here on entities register on the wire, a host is elected, and Game Model containers bind.
+	// From here on entities register on the wire and a host is elected.
 	UE_LOG(LogTemp, Log, TEXT("Connected to the app"));
 }

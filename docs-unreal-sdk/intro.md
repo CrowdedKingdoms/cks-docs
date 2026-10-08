@@ -21,7 +21,7 @@ Everything the SDK replicates lives on one of two planes, and the whole guide le
 
 1. **The view plane (CrowdyState).** Fast, client-owned state such as movement, animation, and transient effects. The client that owns an entity writes its state and everyone else sees it. Nothing here is checked by a server.
 2. **The elected host is a convention.** One client is elected host to coordinate the view plane. It is a helper for shared logic, not a rule enforcer.
-3. **The truth plane (your server code).** Server-owned gameplay state such as hit points, stats, and inventory, held by your app's code on [ck-exec](/exec/intro). Clients ask the server for it and ask the server to change it; the server decides. This is the only place a rule is enforced. The SDK does not wrap ck-exec yet; C++ reaches it through CrowdyCPP's `client.exec()` ([connect from a game](/exec/connect-from-a-game#crowdycpp)).
+3. **The truth plane (your server code).** Server-owned gameplay state such as hit points, stats, and inventory, held by your app's code on [ck-exec](/exec/intro). Clients ask the server for it and ask the server to change it; the server decides. This is the only place a rule is enforced. The SDK reaches it from C++ through [Server Logic](./exec/overview.md).
 4. **The planes touch in one way.** A client asks the server's code for a change and is told the result. No gameplay value ever flows from the view plane into the truth plane as trusted input.
 
 Read [The Two Planes](./concepts/two-planes.md) before you decide where a new piece of state belongs.
@@ -41,8 +41,9 @@ Work through it in order the first time.
 2. **Concepts**: [The Two Planes](./concepts/two-planes.md), [Entities, Identity, and Ownership](./concepts/entities-identity-ownership.md), [Sessions and Presence](./concepts/sessions-and-presence.md), [The Host Is a Convention](./concepts/host-is-a-convention.md).
 3. **Crowdy Studio**: [sign in and connect your app](./studio/overview.md) from inside the editor.
 4. **Runtime (view plane)**: [map profiles](./runtime/map-profile.md), entities, RPC events, Crowdy State.
-5. **Services**: [voice chat](./services/voice-chat.md), [teams](./services/teams.md), [avatars](./services/avatars.md).
-6. **Guides** and **Reference**: [best practices](./guides/best-practices.md), the [sample project](./guides/sample-project.md), [packaging](./guides/packaging.md), and lookup tables such as [console variables](./reference/console-cvars.md).
+5. **Server Logic (truth plane)**: [server-owned state on ck-exec and the code that changes it](./exec/overview.md), from Blueprint or C++.
+6. **Services**: [voice chat](./services/voice-chat.md), [teams](./services/teams.md), [avatars](./services/avatars.md).
+7. **Guides** and **Reference**: [best practices](./guides/best-practices.md), the [sample project](./guides/sample-project.md), [packaging](./guides/packaging.md), and lookup tables such as [console variables](./reference/console-cvars.md).
 
 :::tip[Do Crowdy Studio first]
 Nothing on the network works until your project knows which app it belongs to. Sign in and run [Config Sync](./studio/config-sync.md) before anything else.

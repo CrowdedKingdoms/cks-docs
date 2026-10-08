@@ -19,7 +19,7 @@ Three machine-readable files sit beside the docs. This page is where they are de
 
 ## Where does this state go
 
-Ask one question: can a malicious client benefit from lying about this value? If yes, it belongs on the truth plane, in your app's server code on [ck-exec](/exec/intro), which the SDK does not wrap yet (C++ calls it through CrowdyCPP's `client.exec()`; see [connect from a game](/exec/connect-from-a-game#crowdycpp)). If no, it is view state. [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) owns the rule and every row but the door's; that one applies the same test.
+Ask one question: can a malicious client benefit from lying about this value? If yes, it belongs on the truth plane, in your app's server code on [ck-exec](/exec/intro), which the SDK reaches from C++ or Blueprint through [Server Logic](./exec/overview.md). If no, it is view state. [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) owns the rule and every row but the door's; that one applies the same test.
 
 | State | Plane | Mechanism | Owning page |
 |---|---|---|---|

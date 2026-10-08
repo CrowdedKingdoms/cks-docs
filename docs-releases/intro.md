@@ -36,6 +36,158 @@ own CLI is not published either. See
 
 :::
 
+## Unreleased (Unreal SDK, Server Objects; Game Models deprecated)
+
+Server Objects are additive; the Game Model deprecation below is not, and
+affects every project that uses Game Models. Per-item detail:
+[What's Changed](/unreal-sdk/guides/whats-changed#unreleased-after-v2170).
+
+- **The Unreal SDK's Game Model API is deprecated and does nothing; a later release removes it.**
+  Every call fails at once with `GAME_MODEL_DEPRECATED`, C++ warns at each use, each Blueprint that
+  uses Game Models gets one compiler warning listing them, and Crowdy Studio's Game Model page and
+  CrowdyMass's Game Model values stop working. Server Objects replace it.
+  See [Move from Game Models](/unreal-sdk/exec/move-from-game-models).
+- **Server Objects bring ck-exec to the Unreal SDK, from C++.** A data asset describes a type of
+  server-owned state (the struct the server keeps, the fields players may watch, the functions they
+  may call); the game acquires a shared Server Object by type and Instance Id, is told each time its
+  watched values change, and calls its Server Functions, with a busy server retried for it.
+  Blueprint use is in a later entry below. See
+  [Server Logic](/unreal-sdk/exec/overview).
+- **Generate Server Code writes a Server Object type's server code from its definition asset.**
+  Right-click the asset in the Content Browser: the editor writes a Rust crate under
+  `Server/<Type Name>/` in the project, regenerates the glue that keeps watched values, Owner Only
+  and Who Can Call in step with the definition, and leaves you one file, `logic.rs`, for what
+  each Server Function does. It warns before a regeneration drops a field or enum value. The
+  asset's editor also has a **Server Code** tab: an external-editor button and an editor for the
+  code with Save and Revert, and a **Generate** button in its toolbar. **Code Source** lets you choose **My own file**, a
+  `.rs` file of your own, instead of the generated `logic.rs`; Generate Server Code then never
+  creates or overwrites it, and Server Compute sends it as the type's `logic.rs`.
+  See [Write its server logic](/unreal-sdk/exec/write-server-logic).
+- **Server Compute builds and deploys a project's server code, and shows how it runs.** Open
+  Crowdy Studio and choose **Server Compute** in its navigation; it uses Studio's sign-in and the
+  app set there. **Deploy** sends every Server Object type in the project to ck-exec's build and
+  deploys the result as the app's active server code, with the build output shown on the page.
+  Its tabs list the versions (with **Make active** to go back to an earlier one), switch one type
+  or the whole app off and on, read the logs, including one call's lines, and show how the calls
+  to each Server Function went. The same operations run from the command line for CI with
+  `UnrealEditor-Cmd <project> -run=CrowdyServerCompute -op=deploy -yes`; `deploy`, `starters`,
+  `activate`, `disable` and `enable` refuse without `-yes` and send nothing. See
+  [Server Compute](/unreal-sdk/exec/deploy-with-server-compute).
+- **The Server Object definition asset has its own editor, and Server Compute tracks what changed.**
+  Double-clicking the asset opens an editor like the Material or Blueprint editors: a toolbar with
+  **Generate**, **Deploy** and a status readout, a **Server Code** tab with line numbers and Rust
+  colouring, and a **Details** tab with the settings, the watched values ticked from State's fields
+  and the Type Name suggested and checked as you type. Some settings read differently, for example **Who
+  Can Read** and **Players See**. **Open Server Compute** in the Deploy dropdown opens Crowdy Studio on
+  that page. **Who Can Call** (Players or Server only) replaces Player Callable: a Server only
+  function refuses a player's call. Each deploy now records what it sent beside the type's crate,
+  in `revisions.json`, so the Server Compute page can tell you, per type, that it has **No
+  changes**, has **Changed**, is **New** or is a **Removed** type still live, and offers **Deploy**
+  only when something changed. The asset lists the type's earlier deployed code to view, compare
+  or restore, a type can be removed from the project from its menu, and a **Settings** tab sets how
+  many revisions are kept. `-op=changes` reports the same comparison for CI. Commit
+  `revisions.json` with the crate. See [Create a Server Object type](/unreal-sdk/exec/create-a-type)
+  and [Server Compute](/unreal-sdk/exec/deploy-with-server-compute).
+- **A Server Object's State, params and reply can be Lists instead of structs.** Set **State As**,
+  **Sends As** or **Replies As** to **List** and add named values right in the asset, each with a
+  type and a starting value, with no struct to write. A List travels exactly like a struct with the
+  same fields, and the generated server code gives it the name a struct would have
+  (`VillageBeaconState`, `FeedBeaconParams`, `FeedBeaconReply`), so `logic.rs` does not change.
+  From C++, `MakeParams` and a `Call` overload send a List, `CrowdyExec::ToList` reads a List reply
+  and `GetStateList` a List State, all by name. Existing definitions stay Struct. See
+  [Create a Server Object type](/unreal-sdk/exec/create-a-type#variables-inputs-and-outputs-or-a-struct).
+- **Each Server Functions entry labels its header row** with **Function** before the name and
+  **Who can call** before the Players / Server only choice, each with a tooltip saying what it does.
+- **The Server Object asset editor now works like the Blueprint editor.** A **Server Object** panel,
+  where My Blueprint is, lists the type's **Variables** (each with its type pill and an eye for
+  **Visible to Players**) and **Functions** (each with its pins, such as `(Oil) -> Oil`), and
+  **Details** follows the selection. Labels use Blueprint's words: **Readable By** (was Who Can
+  Read), **Callable By** (was Who Can Call; **Players** or **Server Only**), **Visible to Players**
+  (was Players See), **Inputs** and **Outputs** (were Sends and Replies), each with a **Use Struct**
+  check-box in place of State As, Sends As and Replies As, and Lists are now variables, inputs or
+  outputs added in the asset. The wire, saved data and C++ calls are unchanged. See
+  [Create a Server Object type](/unreal-sdk/exec/create-a-type#the-asset-editor).
+- **Server Objects work from Blueprint.** A **Crowdy Server Object** component holds a Server Object
+  for its actor from Begin Play to End Play: pick the definition and an **Instance Mode**, **Instance
+  Id** (actors with the same id share one), **Signed-In Player** (the player's own, for Owner Only
+  types) or **This Actor** (a placed actor's place in the level), and it raises **On Variables
+  Changed** and **On Status Changed**. The **Server Objects** nodes cover the rest: **Get Server
+  Object**, **Release Server Object**, **Get Player Instance Id**, **Call Server Function** (with
+  **On Success** and **On Failed**, exactly one of which runs), **Make Inputs**, **Set Server Value**
+  and **Get Server Value** (by name), and on the object **Get Status**, **Get Failure Reason**, **Get
+  Instance Id**, **Get Variables**, **Watch Variables** and **Stop Watching Variables**. Typed nodes
+  with typed pins follow in a later entry below. See
+  [Get a Server Object, from Blueprint](/unreal-sdk/exec/from-blueprint/get-a-server-object).
+- **Server Objects get members, access rules, timers and Can Call.** In the asset, **Readable By**
+  gains **Members** and **Callable By** gains **Members** and **Leader**; each function can have a
+  **Cooldown** (seconds, per player) and each number input a **Value Range**. **Members From** is
+  **None**, **This Object** (Join, Leave, Add Member, Remove Member, Make Leader and Set Open For
+  Joining, a leader, **Max Members**, and **Open For Joining**) or **Crowdy Team**. **Timers**
+  (**Every** or **After**, each a function in `logic.rs`) and the **On Player Joined** and **On Player
+  Left** events run on the server, and **Can Call** lets one type call another with typed calls. A
+  refusal by one of these rules reaches the caller as **Denied**, and a cooldown as **Denied** and
+  retryable. The component gains the **Player's Team** and **From Server Value** modes, and the
+  object the nodes **Get Members**, **Get Member Count**, **Get Leader**, **Is Open For Joining**,
+  **Is Member** and **Is Leader**. Generate and deploy a type again to use them. See
+  [Access, members and timers](/unreal-sdk/exec/access-members-and-timers) and
+  [Guild halls and arena lobbies](/unreal-sdk/exec/examples/guild-halls-and-arenas).
+- **Typed Blueprint nodes, find by asset and Only One Instance.** In any Blueprint graph, a variable's name now offers `Get <Variable> (<Asset>)` and `On <Variable> Changed (<Asset>)`, a function's name `Call <Function> (<Asset>)`, and each asset `Get Server State (<Asset>)`, all under **Server Objects**, with a real pin for every value: Boolean to Map, enums, vectors, colors, dates, tags, soft references and your own structs (**Split Struct Pin**). `On <Variable> Changed` is bound once from Begin Play, runs at once with the current value and after every change of that variable, and needs no unbinding. `Call <Function>` has typed inputs and outputs, with **On Success** and **On Failed**. The object comes from **Target** (**Self** by default) or from **Find By Asset**: **Instance Id**, **Signed-In Player** or **Player's Team**. A new **Only One Instance** setting gives a type one shared instance for every player, which needs no Instance at all. Only variables ticked **Visible to Players** are offered, and a value that does not fit its pin is refused, not cut: a **Call** sends nothing and runs **On Failed** naming the input. **Get** has an advanced **Has Value** pin, false until the server has sent the values. A name that clashes with a node's own pin (such as `Team Id` or `On Success`) gets no node, and the compile says to rename it. The untyped nodes stay for dynamic cases. **Behavior change:** the names in **On Variables Changed** and **Watch Variables** are now the ones **Get Server Value** finds, also for variables renamed with **Server Names**. A new walkthrough, [Tip jar: your first Server Object](/unreal-sdk/exec/examples/tip-jar), builds a tip jar with only the editor. See [Get a Server Object, from Blueprint](/unreal-sdk/exec/from-blueprint/get-a-server-object).
+- **A shared boss, end to end, and a trace for Server Objects.** A new example page,
+  [Shared boss fight](/unreal-sdk/exec/examples/shared-boss), builds one boss that every player hits, with
+  its health on the server, a per-player cooldown, a 1 to 25 damage range, hits refused while it is
+  defeated and a Respawn timer that brings it back, then plays it with two players and switches the
+  type off and on from Server Compute. The new console variable `crowdy.exec.trace` (off by default,
+  log category `LogCrowdyExec`) prints each Server Object's status changes, the reads and pushes it
+  applied with their epoch, sequence number and changed variable names, why it read again, its
+  subscribes, each call sent and answered with its time, and connection closes and redials. It prints
+  no values and no tokens. See [Seeing what a Server Object is doing](/unreal-sdk/exec/troubleshooting#seeing-what-a-server-object-is-doing).
+- **A timer that cannot start refuses the call.** If the platform refuses a timer a Server Function starts, the call fails as `ServerError` ("the change was not kept: timer Respawn could not start: ..."), nothing it changed is kept or published, and timers it already started in that call are cancelled. See [Timers and events](/unreal-sdk/exec/access-members-and-timers#timers-and-events).
+- **Renames ask, every value is checked.** Renaming a variable, input or output added in the asset now asks at Generate whether to keep the old name on the server, so saved values carry over; a new Type Name offers to move the old server code folder; the generated code checks every value an Unreal client would refuse, including a state loaded from an older save (`unreadable`); each function keeps its own default values; and a function name can no longer reach the server in the wrong letter case in a packaged game. Generate and deploy your types again. See [After you change the definition](/unreal-sdk/exec/write-server-logic#after-you-change-the-definition).
+- **Type Settings, CSO_ names, tidier nodes.** The Server Object panel opens on a pinned **Type Settings** row, with a matching toolbar button, for the type's own settings. New assets come from **Add > Crowdy > Server Object** and are named `CSO_`; older `DA_` assets keep working. Details reads more plainly (seconds, **Min** and **Max**, timers that run **Every** or **Once After**), Call nodes tuck **Outcome**, **Reason** and **Retryable** under the arrow at the bottom (wired ones stay), and an `On <Variable> Changed` can be placed more than once. A new page, [Relate Server Objects to each other](/unreal-sdk/exec/relate-server-objects), covers registries, shared objects, lobbies and teams. Nothing to do.
+- **Generate fills in what logic.rs is missing.** A Server Function, timer or event added after `logic.rs` was written is now offered as an empty version at Generate, or with **Add Stubs** in the Server Code tab, instead of only breaking the build; a method the type no longer has is named. Each timer's name is a constant, `timers::END_MATCH`, so a misspelt timer no longer compiles. The Server Code tab now picks up a save from another editor by itself. Generate again. See [After you change the definition](/unreal-sdk/exec/write-server-logic#after-you-change-the-definition).
+- **The Crowdy Teams cache keeps itself current.** Signing in clears and refills the "my teams" cache, signing out empties it (`OnMyTeamsCacheChanged` fires with an empty list), and a successful create, join, leave, delete, update, member removal or role change refreshes it; Request To Join does not, since the membership is pending. A stale Get My Teams answer never fills it. C++ gains `ClearMyTeamsCache()`. See [Crowdy Teams](/unreal-sdk/services/teams#reading-the-cache-first).
+- **Too many new names no longer fail a whole Server Object message.** A client accepts at most 1 Mi (1,048,576) characters of new names per run; past it a new Name reads as None, an object path of new names reads as empty, the rest of the message still applies and the client logs one warning. See [Create a Server Object type](/unreal-sdk/exec/create-a-type#field-types).
+- **Lists that start with different values get their own struct in the generated code.** A List that shares another's shape but starts with different values is its own struct, not a `pub type` alias, and Generate shows a notice when a List switches; one that starts with the same values stays an alias. Generate again and fix any `logic.rs` that used one for the other. See [Create a Server Object type](/unreal-sdk/exec/create-a-type#variables-inputs-and-outputs-or-a-struct).
+- **Moving or renaming a definition asset keeps its server code findable.** Saving it updates its crate's `Cargo.toml` record, so a later Type Name change still finds the folder. A Ready Server Object also stops keeping an earlier read refusal's text as its failure reason.
+
+## 2026-10-07 (the terms and age gate: Game API v2.35.0 on dev, test and prod; CrowdyJS 18.4.0 and CrowdyCPP 0.57.0 on dev)
+
+- **Players agree to the terms and attest the age of majority before playing.** Since Game
+  API v2.35.0, `mintAppToken`, `createPortalAuthorizationCode` and `refreshAppToken` answer
+  `LEGAL_ACCEPTANCE_REQUIRED` (403) until the player has agreed to the current required
+  documents (Game Terms, API Terms, SDK Developer Terms, Free Tier and Billing Basis, Overworld
+  Privacy Policy) and attested that they are at least 18, or the age of majority where they
+  live if that is higher.
+  - Studio's hosted `/authorize` and its register page ask for both, so a browser game changes
+    nothing. When a refresh is refused this way, send the player back through hosted sign-in.
+  - A native client shows its own two checkboxes and calls the new `recordPlayerConsents`.
+    `playerLegalAcceptance` says whether that is still needed.
+  - A browser `register` must send `acceptLegal` and `attestAgeOfMajority`.
+
+  See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+- **CrowdyJS 18.4.0** (dev): `client.auth.recordPlayerConsents`,
+  `client.auth.playerLegalAcceptance`, the two fields on `auth.register`, and
+  `isLegalAcceptanceRequiredError`.
+- **CrowdyCPP 0.57.0** (dev): `auth().recordPlayerConsents` and `auth().playerLegalAcceptance`
+  (each with an `Async` twin), and a `registerUser` overload carrying both fields. Parity is
+  pinned to CrowdyJS 18.4.0.
+
+## 2026-10-07 (dev: a grid mod's page-held host calls; CrowdyJS 18.3.0)
+
+- **CrowdyJS 18.3.0**: `createGridHostCalls` takes a `local.page(fn, args)` hook for the host
+  calls only the page can answer:
+  - the player's input (`input_axes`, `input_look`, `input_key`);
+  - the player's own body (`pose_get`, `pose_set`, `pose_release`, `teleport_request`);
+  - the mod's own actors (`actor_spawn`, `actor_pose`, `actor_despawn`);
+  - the scene (`scene_catalog`, `scene_instances`);
+  - presentation (`avatar_appearance`, `avatar_state_set`, `voice_set`, `video_set`);
+  - the player's own sends (`send_client_event`, `events_poll`, `send_text`,
+    `send_actor_message`, `send_channel_message`).
+
+  Without the hook each is refused as not offered, as before, and `clock` is answered locally.
+  The server refuses all of them. See
+  [Answering host calls](/exec/client-halves#answering-host-calls).
+
 ## 2026-10-03 (dev: chunk loads show recorded voxel edits; CrowdyJS 18.2.0, CrowdyCPP 0.56.0)
 
 Every voxel write except a chunk write-back lands only in the chunk's edit log: a hub's or
