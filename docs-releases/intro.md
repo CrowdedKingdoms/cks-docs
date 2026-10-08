@@ -150,7 +150,7 @@ affects every project that uses Game Models. Per-item detail:
 - **Lists that start with different values get their own struct in the generated code.** A List that shares another's shape but starts with different values is its own struct, not a `pub type` alias, and Generate shows a notice when a List switches; one that starts with the same values stays an alias. Generate again and fix any `logic.rs` that used one for the other. See [Create a Server Object type](/unreal-sdk/exec/create-a-type#variables-inputs-and-outputs-or-a-struct).
 - **Moving or renaming a definition asset keeps its server code findable.** Saving it updates its crate's `Cargo.toml` record, so a later Type Name change still finds the folder. A Ready Server Object also stops keeping an earlier read refusal's text as its failure reason.
 
-## 2026-10-07 (the terms and age gate: Game API v2.35.0 on dev, test and prod; CrowdyJS 18.4.0 on dev)
+## 2026-10-07 (the terms and age gate: Game API v2.35.0 on dev, test and prod; CrowdyJS 18.4.0 and CrowdyCPP 0.57.0 on dev)
 
 - **Players agree to the terms and attest the age of majority before playing.** Since Game
   API v2.35.0, `mintAppToken`, `createPortalAuthorizationCode` and `refreshAppToken` answer
@@ -168,6 +168,9 @@ affects every project that uses Game Models. Per-item detail:
 - **CrowdyJS 18.4.0** (dev): `client.auth.recordPlayerConsents`,
   `client.auth.playerLegalAcceptance`, the two fields on `auth.register`, and
   `isLegalAcceptanceRequiredError`.
+- **CrowdyCPP 0.57.0** (dev): `auth().recordPlayerConsents` and `auth().playerLegalAcceptance`
+  (each with an `Async` twin), and a `registerUser` overload carrying both fields. Parity is
+  pinned to CrowdyJS 18.4.0.
 
 ## 2026-10-07 (dev: a grid mod's page-held host calls; CrowdyJS 18.3.0)
 

@@ -149,6 +149,16 @@ from a phishing page. The player signs in on Studio and your game receives a
 token confined to itself. See [Sign-in with `client.auth`](#sign-in-with-clientauth)
 for the other two rows.
 
+**Every row needs the player's terms and age attestation before a gameplay token**
+(ck-api v2.35.0, CrowdyJS 18.4.0). Until they are stored, `portal.mintAppToken`,
+`portal.createAuthorizationCode` and `portal.refresh` answer `LEGAL_ACCEPTANCE_REQUIRED`
+(`isLegalAcceptanceRequiredError`). On the first row Studio's `/authorize` asks, so
+your game only sends the player back through `portal.signIn` when a refresh is
+refused that way. On the other two, show your own two checkboxes, then call
+`client.auth.recordPlayerConsents({ acceptLegal: true, attestAgeOfMajority: true })`
+before minting; `client.auth.playerLegalAcceptance()` says whether that is still
+needed. See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+
 `client.portal` wraps hosted sign-in, minting, **and consent**:
 
 - `portal.signIn({ appId, redirectUri, authorizeUrl? })` → `portal.handleSignInCallback()`
