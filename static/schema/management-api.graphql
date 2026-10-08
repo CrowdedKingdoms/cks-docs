@@ -1422,6 +1422,20 @@ type PaymentMethodSetup {
 }
 
 """
+One band of a graduated price. Each unit of the period's running total is priced at the band its position falls in, so the price of the next unit never rises as the total grows. Bands are edges on the whole total and count from zero: the free allowance fills the first band first.
+"""
+type RateCardBandType {
+  """
+  Exclusive upper edge of this band on the period's running total, in raw metric units, as a BigInt decimal string. A band covers units from the previous band's edge up to this one. Null on the last band, which has no upper edge.
+  """
+  upToUnits: BigInt
+  """
+  Cents charged per the row's unitQuantity raw units for the units inside this band. Fractional values are permitted.
+  """
+  priceCents: Float!
+}
+
+"""
 Which rate card. SHARED prices organization metered usage for shared-environment apps (billed hourly to the org wallet as "shared_usage"). PLAYER prices player compute (billed hourly to the player wallet as "usage_debit").
 """
 enum RateScope {
@@ -1478,6 +1492,10 @@ type PublicRateCardEntryType {
   The period freeUnits resets on. Every dimension is billed as its period aggregate crosses each whole cent, within about a minute of the usage arriving.
   """
   freePeriod: AllowancePeriod
+  """
+  The graduated price, band by band, or null when the dimension has one flat price. Egress (aggregate_data_volume) is priced this way per app per calendar month: each GB is charged at the band the app's month-to-date total has reached, and priceCents is the first band's price.
+  """
+  priceBands: [RateCardBandType!]
 }
 
 """An edge in a WalletTransaction connection."""
