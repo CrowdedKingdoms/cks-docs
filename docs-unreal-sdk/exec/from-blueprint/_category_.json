@@ -1,0 +1,9 @@
+{
+  "label": "From Blueprint",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "title": "Server Objects from Blueprint",
+    "description": "Use a Server Object in a Blueprint graph: get one with the Crowdy Server Object component, read and follow its variables, call its functions, and the pin each type gets. Typed nodes first, by-name nodes at the end of each page."
+  }
+}

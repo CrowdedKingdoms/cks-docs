@@ -365,7 +365,11 @@ would the player's own. With it:
   other;
 - `voxel_set` refuses a voxel outside its chunk or a type outside 0-255, and a spatial or channel
   send goes out as `clientHalfActorUuid(gridId, name)`, where `name` is the uuid the half passed
-  (`uuid_hex`, decoded) or your `actorUuid` option when it passed none (CrowdyJS 18.0.2).
+  (`uuid_hex`, decoded) or your `actorUuid` option when it passed none (CrowdyJS 18.0.2);
+- the calls only your page can answer go to `local: { page }`, as `page(fn, args)`: the player's
+  input, the player's own body and sends, the mod's own actors, the scene and presentation. Each
+  is refused as not offered when you pass no `page`, and `clock` is answered locally (CrowdyJS
+  18.3.0). Keep what they move inside the grid box: the page enforces it, not the broker.
 
 Route on the fields the broker checks against the grid: `x`/`y`/`z` for reads and
 `chunkX`/`chunkY`/`chunkZ` for `voxel_set` and `emit_spatial`. The broker refuses a call that names

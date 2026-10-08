@@ -39,6 +39,22 @@ CrowdyClient identity(std::move(identityCfg));
 auto login = identity.auth().login("player@example.com", password);
 ```
 
+**Then the terms and age of majority** (ck-api v2.35.0, CrowdyCPP 0.57.0). No
+gameplay token is issued until the player has agreed to the current required legal
+documents and attested that they are at least 18, or the age of majority where they
+live if that is higher; the mint in step 2 answers `LEGAL_ACCEPTANCE_REQUIRED` until
+then. Show your own two checkboxes, linking each document, and record the player's
+answer with the session token:
+
+```cpp
+if (!identity.auth().playerLegalAcceptance()) {
+  // Only after the player ticked both boxes: this records their agreement.
+  identity.auth().recordPlayerConsents(/*acceptLegal=*/true, /*attestAgeOfMajority=*/true);
+}
+```
+
+See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+
 ## 2. App token and per-game client
 
 Gameplay requires a short-lived **app-scoped token** per app. Mint one and

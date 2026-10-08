@@ -1,0 +1,9 @@
+{
+  "label": "From C++",
+  "position": 8,
+  "link": {
+    "type": "generated-index",
+    "title": "Server Objects from C++",
+    "description": "Use a Server Object from C++: acquire one from the subsystem and how long it lives, read and follow its variables, and call its functions."
+  }
+}

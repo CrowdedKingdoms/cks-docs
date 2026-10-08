@@ -99,6 +99,12 @@ Send `Authorization: Bearer <session token>`. Free/open apps auto-grant on first
 mint; paid apps need an entitlement (else `FORBIDDEN`). The session token stays in
 your secure store to mint/refresh; the **app token** drives gameplay.
 
+**Ask for the terms first.** The mint answers `LEGAL_ACCEPTANCE_REQUIRED` until the
+player has agreed to the current required documents and attested the age of majority.
+A native client shows its own two checkboxes and calls `recordPlayerConsents` with the
+session token; `playerLegalAcceptance` says whether that is still needed. See
+[Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+
 ### B. Native launcher → child game (local handoff)
 
 A native launcher (an Overworld for native games) holds the session and launches
@@ -189,7 +195,10 @@ mutation Refresh { refreshAppToken { token expiresAt } }
 
 If a token lapses mid-session, Buddy drops the session and emits **`TOKEN_EXPIRED`**
 (UDP error 32) — mint/refresh and re-assign. Switching to a **different** app
-always gets a fresh per-app token (pattern A/B/C again). See
+always gets a fresh per-app token (pattern A/B/C again). A refresh refused with
+`LEGAL_ACCEPTANCE_REQUIRED` cannot succeed on retry: the player has not stored the terms,
+or a required document has a new version. Ask for them, record them with the session
+token, and mint again. See
 [Error codes](/overview/error-codes).
 
 ## Security checklist for native clients
