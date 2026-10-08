@@ -8,7 +8,7 @@ description: Describe a type of Server Object with a UCrowdyServerObjectDefiniti
 # Create a Server Object type
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 Each type of [Server Object](./overview.md) is described by one data asset of the class `UCrowdyServerObjectDefinition`. The asset names the variables the server keeps, which of them players may see, and the functions players may call. The SDK reads it at runtime to encode and decode every value, and the type's server code is generated from it, so both sides agree on every name.
@@ -196,7 +196,7 @@ In both, the second list stays empty until the first is chosen ("Choose the stru
 
 **Server Code** (set on the editor's Server Code tab, not in Details)
 
-- **Code Source**: where this type's Server Functions come from. **Generated** (the default) uses `Server/<Type Name>/src/logic.rs`, the file Generate Server Code writes once and never replaces. **My Own File** uses a `.rs` file of your own instead, for example one shared in your repo. It is the combo beside the file's path on the tab.
+- **Code Source**: where this type's Server Functions come from. **Generated** (the default) uses `Server/<Type Name>/src/logic.rs`, the file Generate Server Code writes once and never replaces. **My Own File** uses a `.rs` file of your own instead, for example one shared in your repo. It is the combo beside the file's path on the tab. In C++ the choice is the enum `ECrowdyServerCodeSource`, with the values `Generated` and `OwnFile`.
 - **Logic File**: your `.rs` file, relative to the project folder, chosen with the folder button on the Server Code tab. The button is shown, and the file used, only when Code Source is My Own File; with My Own File and no file chosen, the type cannot be generated or deployed, and the messages say "Code Source is My Own File but no file is chosen". The tab shows the file's state and code; see [Write its server logic](./write-server-logic.md#the-server-code-tab) and [Use your own logic file](./write-server-logic.md#use-your-own-logic-file). Both settings are editor-only, like the Description.
 
 **Baked** (in the Advanced group, read only)

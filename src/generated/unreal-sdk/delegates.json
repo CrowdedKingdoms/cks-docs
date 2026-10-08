@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-09-22T14:39:18Z",
-  "sdk_version": "2.14.0",
+  "generated_from": "2026-10-07T15:57:00Z",
+  "sdk_version": "2.18.0",
   "table": "delegates",
   "columns": [
     {
@@ -2749,6 +2749,61 @@
       "category": "",
       "module": "CrowdyServices",
       "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyServerCallAction::OnFailed",
+      "owner": "UCrowdyServerCallAction",
+      "name": "OnFailed",
+      "type": "FCrowdyServerCallDone",
+      "category": "Crowdy SDK|Server Objects",
+      "module": "CrowdyExec",
+      "page": "concepts/host-is-a-convention",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyServerCallAction::OnSuccess",
+      "owner": "UCrowdyServerCallAction",
+      "name": "OnSuccess",
+      "type": "FCrowdyServerCallDone",
+      "category": "Crowdy SDK|Server Objects",
+      "module": "CrowdyExec",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyServerObject::StatusChanged",
+      "owner": "UCrowdyServerObject",
+      "name": "StatusChanged",
+      "type": "FCrowdyServerStatusChanged",
+      "category": "Crowdy SDK|Server Objects",
+      "module": "CrowdyExec",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyServerObjectComponent::OnStatusChanged",
+      "owner": "UCrowdyServerObjectComponent",
+      "name": "OnStatusChanged",
+      "type": "FCrowdyServerStatusChanged",
+      "category": "Server Object",
+      "module": "CrowdyExec",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyServerObjectComponent::OnVariablesChanged",
+      "owner": "UCrowdyServerObjectComponent",
+      "name": "OnVariablesChanged",
+      "type": "FCrowdyServerVariablesChanged",
+      "category": "Server Object",
+      "module": "CrowdyExec",
+      "page": "",
       "editor": false,
       "allowlist": ""
     }

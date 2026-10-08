@@ -8,7 +8,7 @@ description: Build and deploy a project's Server Object code from the Server Com
 # Deploy it with Server Compute
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 Once a type's [server code](./write-server-logic.md) is generated and its `logic.rs` written, the server still has to run it. **Server Compute** is the page in [Crowdy Studio](../studio/overview.md) that builds your project's server code on the platform, deploys it to your app, and then lets you watch it work: which version is live, what it logged, how players' calls to each Server Function went, and a switch to stop one type if it misbehaves. There is nothing to install: the build happens on the platform, so no Rust toolchain is needed on your machine.

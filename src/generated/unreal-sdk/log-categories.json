@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-09-22T14:39:18Z",
-  "sdk_version": "2.14.0",
+  "generated_from": "2026-10-07T15:57:00Z",
+  "sdk_version": "2.18.0",
   "table": "log-categories",
   "columns": [
     {
@@ -101,6 +101,16 @@
       "category": "LogCrowdyCpp",
       "module": "CrowdyCppBridge",
       "trace_cvars": [],
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "LogCrowdyExec",
+      "category": "LogCrowdyExec",
+      "module": "CrowdyExec",
+      "trace_cvars": [
+        "crowdy.exec.trace"
+      ],
       "editor": false,
       "allowlist": ""
     },
