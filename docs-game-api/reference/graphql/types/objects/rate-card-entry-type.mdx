@@ -31,6 +31,7 @@ type RateCardEntryType {
   freeUnits: BigInt
   freePeriod: AllowancePeriod
   description: String
+  priceBands: [RateCardBandType!]
 }
 ```
 
@@ -79,6 +80,10 @@ The period freeUnits resets on. Null when the dimension has no allowance row.
 
 #### [<code style={{ fontWeight: 'normal' }}>RateCardEntryType.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
 Operator note on the seed row; null when unset.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RateCardEntryType.<b>priceBands</b></code>](#price-bands)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RateCardBandType!]</b></code>](/reference/graphql/types/objects/rate-card-band-type.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#price-bands\} 
+The graduated price, band by band, or null when the dimension has one flat price. When present the bands price the period total and priceCents is the first band's price. aggregate&#x005F;data&#x005F;volume (egress) is the dimension priced this way.
 
 
 
