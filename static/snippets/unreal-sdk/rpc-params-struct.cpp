@@ -1,5 +1,5 @@
 // Lantern.h
-// Cosmetic view data for the ignition sparkle; never mix this with server-owned fuel.
+// Cosmetic view data for the ignition sparkle; server-owned state never goes here.
 USTRUCT()
 struct FLanternSparkleStyle
 {

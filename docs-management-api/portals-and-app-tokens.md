@@ -33,6 +33,41 @@ sign-in on the CK GraphQL API — email + password, magic link, or social. Brief
 is in **[Sign in](/management-api/authentication)**. Hold the
 session token on your identity origin and mint app tokens from it as below.
 
+## Terms and age of majority
+
+No gameplay token is issued until the player has agreed to the current required
+legal documents — the [Game Terms](https://crowdedkingdoms.com/game-terms.html),
+[API Terms](https://crowdedkingdoms.com/api-terms.html),
+[SDK Developer Terms](https://crowdedkingdoms.com/sdk-terms.html),
+[Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html) and
+[Overworld Privacy Policy](https://crowdedkingdoms.com/overworld-privacy.html) — and
+attested that they are at least 18, or the age of majority where they live if that is
+higher. Until both are stored, `mintAppToken`, `createPortalAuthorizationCode` and
+`refreshAppToken` answer **`LEGAL_ACCEPTANCE_REQUIRED`** (403). ck-api v2.35.0.
+
+- **A browser game on its own domain** does nothing new: Studio's hosted `/authorize`
+  asks for both before it issues the code. When a refresh is refused this way, retrying
+  cannot succeed; send the player back through hosted sign-in. That also happens when
+  a required document gets a new version.
+- **A native or first-party client** shows its own two checkboxes, linking each
+  document, and records the player's answer with the session token:
+
+```graphql
+query Accepted { playerLegalAcceptance }            # false: ask before minting
+
+mutation Accept {
+  recordPlayerConsents(acceptLegal: true, attestAgeOfMajority: true)
+}
+```
+
+Both arguments must be `true`, and repeating the call is harmless. It records the
+player's own agreement, so call it only after they ticked both boxes. `register`
+takes the same two fields (`acceptLegal`, `attestAgeOfMajority`): a browser request
+must send both, and the account starts accepted. A request with no browser origin may
+omit them and record them before its first mint. The SDKs wrap both calls (CrowdyJS
+`client.auth.recordPlayerConsents` / `playerLegalAcceptance`, and
+`isLegalAcceptanceRequiredError` for the refusal).
+
 ## Minting an app token
 
 ### Native / same-origin (`mintAppToken`)
@@ -197,7 +232,9 @@ mutation Refresh { refreshAppToken { token expiresAt } }
 ```
 
 Send the current app token as the Bearer. Switching to a **different** app always
-routes back through the Overworld for a fresh per-app token.
+routes back through the Overworld for a fresh per-app token. A refresh refused with
+`LEGAL_ACCEPTANCE_REQUIRED` needs the player's consents first
+([above](#terms-and-age-of-majority)).
 
 **Native clients that hold a UDP session:** pass `currentServer` (the `ip4` +
 `clientPort` that `serverWithLeastClients` gave you) and read `authorizedServer`
@@ -219,6 +256,9 @@ requires the identity session token and returns `SCOPE_MISSING` for an app token
 
 ## Errors
 
+- `LEGAL_ACCEPTANCE_REQUIRED` on `mintAppToken`, `createPortalAuthorizationCode` or
+  `refreshAppToken` — the player's consents are not stored. See
+  [Terms and age of majority](#terms-and-age-of-majority).
 - `FORBIDDEN` on `mintAppToken` — no entitlement for a paid app.
 - `FORBIDDEN` (message prefixed **`CONSENT_REQUIRED`**) on
   `createPortalAuthorizationCode` — the user has not authorized this untrusted app

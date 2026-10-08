@@ -65,19 +65,21 @@ Enabling `CrowdySDK` brings in all ten of its modules. You never enable them one
 | Module | Type | What it holds |
 |---|---|---|
 | `CrowdySDK` | Runtime | The top-level subsystem: login, connection, voice toggle. |
-| `CrowdyReplication` | Runtime | Entities, RPC events, Crowdy State, Game Models (legacy), map profiles, project settings. |
+| `CrowdyReplication` | Runtime | Entities, RPC events, Crowdy State, Game Models (deprecated), map profiles, project settings. |
 | `CrowdyServices` | Runtime | Authentication, teams, channels, avatars, host election. |
 | `CrowdyNet` | Runtime | The UDP transport, the API client, and the routing enums. |
 | `CrowdyVoice` | Runtime | Microphone capture, encode and decode, playback. |
 | `CKSharedTypes` | Runtime | Shared data types used across modules. |
 | `CrowdyCppBridge` | Runtime | The vendored native client the transport is built on. You never include it directly. |
-| `CrowdyNodes` | UncookedOnly | The Blueprint nodes for Game Model authoring (Apply Crowdy Effect, legacy) and the compiler checks for Crowdy-replicated variables. |
+| `CrowdyNodes` | UncookedOnly | The Blueprint nodes for Game Model authoring (Apply Crowdy Effect, deprecated) and the compiler checks for Crowdy-replicated variables. |
 | `CrowdySDKEditor` | Editor | Turns event and state markers into Blueprint authoring surfaces and bakes them for cooked builds. |
 | `CrowdyStudio` | Editor | Crowdy Studio, the management console: sign-in, apps, Config Sync, authoring pages. |
 
 The Game Model pieces are legacy: the game API no longer serves game models, so nothing built on
-them reaches a server. Keep the state your game must trust in your server code on
-[ck-exec](/exec/intro); see [the two planes](./concepts/two-planes.md).
+them reaches a server. After v2.17.0 the SDK marks them deprecated and their calls fail at once, and a
+later release removes them. Keep the state
+your game must trust in your server code on [ck-exec](/exec/intro); see
+[Move from Game Models](./exec/move-from-game-models.md) and [the two planes](./concepts/two-planes.md).
 
 ## Step 4: Add the module dependencies
 

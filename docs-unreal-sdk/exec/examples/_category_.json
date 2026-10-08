@@ -1,0 +1,9 @@
+{
+  "label": "Examples",
+  "position": 11,
+  "link": {
+    "type": "generated-index",
+    "title": "Server Object Examples",
+    "description": "Worked examples in Oakford, step by step: a tip jar, your first Server Object; guild halls and an arena lobby with members, access and timers; and a boss every player hits. They use what the other pages explain; none is a separate feature."
+  }
+}

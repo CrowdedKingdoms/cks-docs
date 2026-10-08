@@ -23,6 +23,8 @@ input RegisterUserInput {
   email: String!
   password: String!
   gamertag: String
+  acceptLegal: Boolean
+  attestAgeOfMajority: Boolean
 }
 ```
 
@@ -39,6 +41,14 @@ Password for the new account (min 8 characters).
 
 #### [<code style={{ fontWeight: 'normal' }}>RegisterUserInput.<b>gamertag</b></code>](#gamertag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#gamertag\} 
 Optional initial public gamertag (min 3 characters). Can be set later via updateGamertag.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RegisterUserInput.<b>acceptLegal</b></code>](#accept-legal)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#accept-legal\} 
+True when the player has agreed to the current required legal documents (Game Terms, API Terms, SDK Developer Terms, Free Tier and Billing Basis, Overworld Privacy Policy). A browser signup that omits this, or sends false, is refused with LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED. Calls with no Origin header may omit it; gameplay tokens stay refused until the documents are stored.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RegisterUserInput.<b>attestAgeOfMajority</b></code>](#attest-age-of-majority)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#attest-age-of-majority\} 
+True when the player attests they are at least 18, or the age of majority where they live if that is higher. Same requirement as acceptLegal: required on a browser signup, optional when the request has no Origin.
 
 
 

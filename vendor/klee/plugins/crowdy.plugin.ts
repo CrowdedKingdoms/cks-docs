@@ -1,4 +1,6 @@
+import { FoldableHeadedNodeControl } from "../src/controls/nodes/foldable-headed-node.control";
 import { HeadedNodeControl } from "../src/controls/nodes/headed-node-control";
+import { HeadlessNodeControl } from "../src/controls/nodes/headless-node-control";
 import { NodeControl } from "../src/controls/nodes/node.control";
 import { IconLibrary } from "../src/controls/utils/icon-library";
 import { Constants } from "../src/constants";
@@ -11,6 +13,8 @@ import { StructNodeParser } from "../src/parser/node-parsers/struct-node.parser"
 import { CallFunctionNode } from "../src/data/nodes/call-function.node";
 import { StructNode } from "../src/data/nodes/struct.node";
 import { PinProperty } from "../src/data/pin/pin-property";
+import { PinCategory } from "../src/data/pin/pin-category";
+import { BlueprintParserUtils } from "../src/parser/blueprint-parser-utils";
 import { insertSpacesBetweenCapitalizedWords } from "../src/utils/text-utils";
 import { CrowdyFunctionNames, CrowdyFunctionNamesByClass } from "./crowdy-names.generated";
 
@@ -18,23 +22,42 @@ import { CrowdyFunctionNames, CrowdyFunctionNamesByClass } from "./crowdy-names.
 // its C++ member name, so a DisplayName meta (GetFloat is "Get Model Attribute (Float)") is only
 // known through the generated table; the Crowdy replication subtitle under a custom event is drawn
 // by the SDK's node widget from the node's MetaDataMap; an Apply Crowdy Effect node appends its
-// effect's name; a latent action node is titled after its factory function. The check in
+// effect's name; a latent action node is titled after its factory function; a Server Object node is
+// titled from its variable or function and its definition asset. The check in
 // scripts/blueprint-component.spec.ts compares every rendered title with the editor's own.
 
 // Engine functions the snippets use whose editor title is a DisplayName, not the member name.
 const ENGINE_FUNCTION_NAMES: { [memberName: string]: string } = {
-    "Conv_DoubleToString": "To String (Float)",
-    "Conv_FloatToString": "To String (Float)",
-    "Conv_IntToString": "To String (Integer)",
-    "Conv_Int64ToString": "To String (Integer64)",
-    "Conv_BoolToString": "To String (Boolean)",
-    "Conv_NameToString": "To String (Name)",
-    "Conv_GuidToString": "To String (Guid)",
-    "Conv_VectorToString": "To String (Vector)",
     "Conv_StringToText": "To Text (String)",
+    "Conv_IntToText": "To Text (Integer)",
+    "BuildString_Int": "Build String (Integer)",
     "GetTransform": "Get Actor Transform",
     "RemoveFromParent": "Remove from Parent",
 };
+
+// Engine functions whose display name differs by owning class, keyed "Class::Member" as the text names them.
+const ENGINE_FUNCTION_NAMES_BY_CLASS: { [classAndMember: string]: string } = {
+    "TextBlock::SetText": "SetText (Text)",
+};
+
+// Classes the editor names by a DisplayName in a "Target is" subtitle, not by their C++ name.
+const CLASS_DISPLAY_NAMES: { [className: string]: string } = {
+    "TextBlock": "Text",
+    "CrowdyServerObjectComponent": "Crowdy Server Object",
+};
+
+// The string and math conversions the editor draws as a compact node titled with a bullet; the text-library ones
+// (To Text (Integer)) keep a full header.
+const COMPACT_CONVERSION = /MemberParent="[^"]*Kismet(String|Math)Library'",MemberName="Conv_/;
+
+// Server Object nodes are titled from the definition asset and the member they name, both properties in the text.
+const SERVER_OBJECT_NODES: { [classPath: string]: { title: (member: string, asset: string) => string; pure: boolean } } = {
+    "/Script/CrowdyExecNodes.CrowdyK2Node_GetServerVariable": { title: (m, a) => `Get ${m} (${a})`, pure: true },
+    "/Script/CrowdyExecNodes.CrowdyK2Node_ServerVariableChanged": { title: (m, a) => `On ${m} Changed (${a})`, pure: false },
+    "/Script/CrowdyExecNodes.CrowdyK2Node_CallServerFunction": { title: (m, a) => `Call ${m} (${a})`, pure: false },
+    "/Script/CrowdyExecNodes.CrowdyK2Node_GetServerState": { title: (_m, a) => `Get Server State (${a})`, pure: true },
+};
+const CALL_SERVER_FUNCTION_NODE = "/Script/CrowdyExecNodes.CrowdyK2Node_CallServerFunction";
 
 const CROWDY_NODE_TITLES: { [classPath: string]: string } = {
     "/Script/CrowdyNodes.CrowdyK2Node_ApplyEffect": "Apply Crowdy Effect",
@@ -58,7 +81,9 @@ function crowdySubtitle(recipient: string): string[] {
 }
 
 function displayName(className: string | undefined, memberName: string): string {
-    const qualified = className ? CrowdyFunctionNamesByClass[`${className}::${memberName}`] : undefined;
+    const qualified = className
+        ? CrowdyFunctionNamesByClass[`${className}::${memberName}`] || ENGINE_FUNCTION_NAMES_BY_CLASS[`${className}::${memberName}`]
+        : undefined;
     const known = qualified || CrowdyFunctionNames[memberName] || ENGINE_FUNCTION_NAMES[memberName];
     return known || insertSpacesBetweenCapitalizedWords(memberName);
 }
@@ -90,7 +115,7 @@ class CrowdyCallFunctionParser extends CallFunctionNodeParser {
                 const className = referencedClassName(selfPin?.subCategoryObject?.class);
                 const subtitle = node.subTitles.find(s => s.text === "Target is self context");
                 if (className && subtitle) {
-                    subtitle.text = `Target is ${identifierDisplayName(className)}`;
+                    subtitle.text = `Target is ${classDisplayName(className)}`;
                 }
                 return;
             }
@@ -99,13 +124,20 @@ class CrowdyCallFunctionParser extends CallFunctionNodeParser {
             const parentName = node.functionReference?.memberParent?.className;
             const targetSubtitle = parentName && node.subTitles.find(s => s.text.startsWith("Target is "));
             if (parentName && targetSubtitle) {
-                targetSubtitle.text = `Target is ${identifierDisplayName(parentName)}`;
+                targetSubtitle.text = `Target is ${classDisplayName(parentName)}`;
             }
         });
     }
 
     public parse(data: ParsingNodeData): NodeControl {
         const ref = data.lines.find(l => l.trim().startsWith("FunctionReference="));
+        if (ref && COMPACT_CONVERSION.test(ref)) {
+            this.parseProperties(data);
+            data.node.title = "•";
+            data.node.subTitles = [];
+            BlueprintParserUtils.hidePinNames(data.node.customProperties);
+            return new HeadlessNodeControl(data.node);
+        }
         const member = ref && /MemberName="([^"]+)"/.exec(ref);
         if (member && ENGINE_FUNCTION_NAMES[member[1]]) {
             const at = data.unparsedLines.findIndex(l => l.trim().startsWith("FunctionReference="));
@@ -121,6 +153,10 @@ class CrowdyCallFunctionParser extends CallFunctionNodeParser {
 // digit, and one between an acronym and the word after it (CrowdySDKSubsystem -> Crowdy SDK Subsystem).
 function identifierDisplayName(name: string): string {
     return name.replace(/([a-z0-9])([A-Z])/g, "$1 $2").replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2");
+}
+
+function classDisplayName(name: string): string {
+    return CLASS_DISPLAY_NAMES[name] || identifierDisplayName(name);
 }
 
 // The last path segment of a class reference such as "/Script/CoreUObject.Class'/Script/CrowdyServices.CrowdyChannels'".
@@ -233,6 +269,49 @@ class CrowdyEffectNodeParser extends NodeParser {
     }
 }
 
+// Enum to String: a pure node with a full header (its sibling Enum to Name is the compact one).
+class CrowdyEnumToStringParser extends NodeParser {
+    constructor() {
+        super({});
+    }
+
+    public parse(data: ParsingNodeData): NodeControl {
+        data.node.title = "Enum to String";
+        data.node.backgroundColor = Constants.DEFAULT_FUNC_PURE_BACKGROUND_COLOR;
+        return new HeadedNodeControl(data.node, IconLibrary.FUNCTION);
+    }
+}
+
+// Get <Variable>, On <Variable> Changed, Call <Function> and Get Server State: the title names the variable or function
+// and the definition asset. An exec pin shows its name unless it is the plain execute or then, as the editor does,
+// so Bind, Changed, On Success and On Failed are labelled.
+class CrowdyServerObjectNodeParser extends NodeParser {
+    constructor() {
+        super({});
+    }
+
+    public parse(data: ParsingNodeData): NodeControl {
+        const spec = SERVER_OBJECT_NODES[data.node.class];
+        const asset = referencedClassName(data.lines.find(l => l.trim().startsWith("Definition=")));
+        const memberLine = data.lines.find(l => l.trim().startsWith("Member="));
+        const member = memberLine ? memberLine.trim().replace(/^Member=/, "").replace(/"/g, "") : "";
+        const generic = data.node.class === CALL_SERVER_FUNCTION_NODE && (!asset || !member);
+        data.node.title = generic ? "Call Server Function" : spec.title(member, asset || "None");
+        data.node.subTitles = [];
+        data.node.backgroundColor = spec.pure ? Constants.DEFAULT_FUNC_PURE_BACKGROUND_COLOR : Constants.DEFAULT_FUNC_BACKGROUND_COLOR;
+        data.node.latent = data.node.class === CALL_SERVER_FUNCTION_NODE;
+        for (const property of data.node.customProperties) {
+            const pin = property as PinProperty;
+            if (!(property instanceof PinProperty) || pin.category !== PinCategory.exec) {
+                continue;
+            }
+            const name = (pin.name || "").toLowerCase();
+            pin.hideName = !pin.friendlyName && (name === "execute" || name === "then");
+        }
+        return data.node.advancedPinDisplay !== undefined ? new FoldableHeadedNodeControl(data.node) : new HeadedNodeControl(data.node);
+    }
+}
+
 export const CrowdyPlugin: NodeParserPlugin = {
     getNodeParsers() {
         const parsers: { [classPath: string]: () => NodeParser } = {
@@ -242,7 +321,11 @@ export const CrowdyPlugin: NodeParserPlugin = {
             "/Script/BlueprintGraph.K2Node_AddDelegate": () => new CrowdyAddDelegateParser(),
             "/Script/BlueprintGraph.K2Node_MakeMap": () => new CrowdyMakeMapParser(),
             "/Script/BlueprintGraph.K2Node_BreakStruct": () => new CrowdyBreakStructParser(),
+            "/Script/BlueprintGraph.K2Node_GetEnumeratorNameAsString": () => new CrowdyEnumToStringParser(),
         };
+        for (const classPath of Object.keys(SERVER_OBJECT_NODES)) {
+            parsers[classPath] = () => new CrowdyServerObjectNodeParser();
+        }
         for (const classPath of ASYNC_NODE_CLASSES) {
             parsers[classPath] = () => new CrowdyAsyncActionParser();
         }
