@@ -1,0 +1,38 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event BeginPlay",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_ServerVariableChanged_0",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_ServerVariableChanged",
+		"title": "On Phase Changed (CSO_Boss)",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_ServerVariableChanged_1",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_ServerVariableChanged",
+		"title": "On Respawns Changed (CSO_Boss)",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Print String",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_1",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Print String",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_GetEnumeratorNameAsString_0",
+		"class": "/Script/BlueprintGraph.K2Node_GetEnumeratorNameAsString",
+		"title": "Enum to String",
+		"title_drawn": true
+	}
+]
