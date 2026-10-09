@@ -171,7 +171,7 @@ app's byte-hours and the bytes it holds now; the full basis is in
 | Code | Meaning |
 |---|---|
 | `INPUT_LOG_FUNDS_NEEDED` | `updateApp` was asked to turn replay logging on, and the organization's wallet has no spendable balance (and the organization is not exempt from billing). Fund the wallet, then try again. 402. |
-| `INPUT_LOG_UNAVAILABLE` | Input logging is not available on this deployment. 503. |
+| `INPUT_LOG_UNAVAILABLE` | Input logging is not available on this deployment, or `inputLogMessages` cannot read the log right now. The `remediation` says which: retry the second shortly with the same cursor. 503. |
 | `FORBIDDEN` | `inputLogSessions` was asked for another player's sessions without `manage_apps`. |
 | `NOT_FOUND` | `inputLogMessages` was asked for a session that is not yours, without `manage_apps`, or that does not exist. |
 | `BAD_USER_INPUT` | A cursor from another session or query, or a filter out of range. |
