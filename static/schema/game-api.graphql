@@ -9541,6 +9541,15 @@ type Mutation {
     """
     input: ChannelMessageInput!
   ): Boolean!
+  """
+  Publish a message to a channel that only reaches members near an origin chunk: a member receives it, as an ordinary ChannelMessageNotification on udpNotifications, when one of its live actors is in the same app within maxDistance chunks of input.chunk (straight-line distance between chunk coordinates, boundary included). A member with no live actor does not receive it. Requires a bearer game token and the channel send_messages permission, as for sendChannelMessage; the origin app must be the token’s app. Opens a UDP proxy session automatically if none exists. The sender receives no echo. Returns Boolean! that is true only when the datagram was ACCEPTED FOR SENDING — NOT confirmation of delivery; failures arrive ASYNCHRONOUSLY as GenericErrorResponse on udpNotifications (UNAUTHORIZED without the send right, INVALID_APP_ID for another app), correlated by the request sequenceNumber (correlation only — not an idempotency key; the server does not dedupe replays).
+  """
+  sendRangedChannelMessage(
+    """
+    The channel message to publish: channelId (groups.group_id), the sender’s 32-byte actor uuid, base64 payload (max 1024 bytes), the origin appId and chunk, maxDistance in chunks, and optional sequenceNumber. See RangedChannelMessageInput.
+    """
+    input: RangedChannelMessageInput!
+  ): Boolean!
 }
 
 input UpdateGamertagInput {
@@ -11669,6 +11678,38 @@ input ChannelMessageInput {
   The message payload, base64-encoded. Opaque to the server; decode per your application protocol. Max 1024 bytes.
   """
   payload: String!
+  """
+  Client-assigned correlation id for this datagram: a uint8 (0-255) that wraps at gameClientBootstrap.sequenceNumberModulo (256); defaults to 0 if omitted. For CORRELATION ONLY — it is NOT an idempotency key and the server does not dedupe replays. Echoed on any GenericErrorResponse for this send, delivered on the udpNotifications subscription.
+  """
+  sequenceNumber: Int
+}
+
+"""
+Input for publishing a channel message that only reaches members near an origin chunk. A member receives it when one of its live actors is in the same app within maxDistance chunks of the origin, measured as the straight-line (Euclidean) distance between chunk coordinates, boundary included; a member with no live actor does not receive it. Members receive an ordinary ChannelMessageNotification. The sender must have the channel send_messages permission, exactly as for sendChannelMessage.
+"""
+input RangedChannelMessageInput {
+  """The channel id (groups.group_id) to publish to."""
+  channelId: BigInt!
+  """
+  The sender's actor UUID (your own actor's UUID). Must be exactly 32 bytes when encoded as UTF-8.
+  """
+  uuid: String!
+  """
+  The message payload, base64-encoded. Opaque to the server; decode per your application protocol. Max 1024 bytes.
+  """
+  payload: String!
+  """
+  The app the origin chunk is in. Must be the app this token is scoped to (the game server answers INVALID_APP_ID otherwise).
+  """
+  appId: BigInt!
+  """
+  The origin chunk distance is measured from, usually the chunk of the sending actor. A chunk is a 16x16x16 voxel cube.
+  """
+  chunk: ChunkCoordinatesInput!
+  """
+  Largest straight-line distance from the origin chunk, in chunks, at which a member still receives the message: 0 (the origin chunk only) to 2147483647. Not capped at 8 and not the Chebyshev ring count spatial sends use.
+  """
+  maxDistance: Int!
   """
   Client-assigned correlation id for this datagram: a uint8 (0-255) that wraps at gameClientBootstrap.sequenceNumberModulo (256); defaults to 0 if omitted. For CORRELATION ONLY — it is NOT an idempotency key and the server does not dedupe replays. Echoed on any GenericErrorResponse for this send, delivered on the udpNotifications subscription.
   """

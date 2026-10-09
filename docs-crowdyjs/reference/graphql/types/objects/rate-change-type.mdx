@@ -40,11 +40,11 @@ type RateChangeType {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RateChangeType.<b>field</b></code>](#field)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#field\} 
-One of "priceCents", "unitLabel", "unitQuantity", "freeUnits", "freePeriod" or "freePerMonth".
+One of "priceCents", "priceBands", "unitLabel", "unitQuantity", "freeUnits", "freePeriod" or "freePerMonth".
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RateChangeType.<b>previous</b></code>](#previous)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#previous\} 
-The value before this call, as a decimal string. "none" when there was no allowance row.
+The value before this call, as a decimal string; for priceBands the schedule as JSON. "none" when there was no allowance row, or no bands.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>RateChangeType.<b>updated</b></code>](#updated)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated\} 
