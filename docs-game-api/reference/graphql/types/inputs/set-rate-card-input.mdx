@@ -30,6 +30,8 @@ input SetRateCardInput {
   freeUnits: BigInt
   freePeriod: AllowancePeriod
   freePerMonth: BigInt
+  priceBands: [RateCardBandInput!]
+  clearPriceBands: Boolean
   reason: String!
 }
 ```
@@ -75,6 +77,14 @@ New period for the free allowance. Leaves the units as they are unless freeUnits
 
 #### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>freePerMonth</b></code>](#free-per-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#free-per-month\} 
 New monthly free allowance in raw metric units, as a BigInt decimal string. Must be &#x003E;= 0. On the PLAYER card with metric player&#x005F;wasm&#x005F;compute&#x005F;units this is the pooled monthly TRIAL BUDGET per (player, app) — the only sanctioned way to change it on a live tier. Omit to leave it unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>priceBands</b></code>](#price-bands)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RateCardBandInput!]</b></code>](/reference/graphql/types/inputs/rate-card-band-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> \{#price-bands\} 
+A whole graduated schedule, replacing the one the dimension holds: 1 to 10 bands, ascending edges, the last band open, no band dearer than the one below. Band 1's price becomes priceCents (supply priceCents only if it is the same). Accepted for SHARED aggregate&#x005F;data&#x005F;volume only. Like every price, it applies from a dimension's next period where a period has already been charged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>clearPriceBands</b></code>](#clear-price-bands)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#clear-price-bands\} 
+true removes the dimension's bands so it is priced flat at priceCents (the former first band's price unless priceCents is also given). Not combinable with priceBands.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 

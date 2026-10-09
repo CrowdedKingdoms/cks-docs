@@ -9,9 +9,9 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Console Variables
 
-The SDK exposes 34 `crowdy.*` console entries. Five of them, the `crowdy.gamemodel.*` entries, belong to
+The SDK exposes 40 `crowdy.*` console entries. Seven of them, the `crowdy.gamemodel.*` entries, belong to
 its Game Model API, which the game API no longer serves, and are not listed here (see
-[The Two Planes](../concepts/two-planes.md)). The other 29 come in three kinds: trace gates that turn on
+[The Two Planes](../concepts/two-planes.md)). The other 33 come in three kinds: trace gates that turn on
 informational logging for one area, behavior switches that change what the SDK does, and diagnostic
 commands that run once and hold no stored value. A row badged **Editor only** exists only in the editor
 process. Two of the diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`) are
@@ -26,7 +26,7 @@ turns on a specific area's logging. For the workflow around them (loopback testi
 
 ## Trace gates
 
-All 15 are off by default. Thirteen turn on that area's informational lines when set to `1`; the two
+All 16 are off by default. Fourteen turn on that area's informational lines when set to `1`; the two
 `.scopes` entries add Unreal Insights CPU scopes instead and log nothing. Warnings and errors print
 regardless of the setting.
 
@@ -35,6 +35,12 @@ regardless of the setting.
 :::caution[`crowdy.serialize.trace` and `crowdy.serialize.scopes` are high frequency.]
 They log on every message encode and decode. Leave them off unless you are actively debugging
 serialization.
+:::
+
+:::caution[`crowdy.net.trace` logs every routed send and every received spatial message.]
+Since 2.17.0 it also prints one line per spatial message received ("Received opcode ... for actor ... in chunk
+...") and the transport's totals (datagrams received, verification failures, drops) about once a second. That
+is what tells "the server never sent it" apart from "the client dropped it"; it is too chatty to leave on.
 :::
 
 :::note[`crowdy.serialize.scopes` and `crowdy.state.scopes` are nested CPU trace scopes.]
@@ -47,7 +53,7 @@ logging around Studio calls.
 
 ## Behavior switches
 
-These change what the SDK does rather than what it logs. None of the 9 exist only in the editor.
+These change what the SDK does rather than what it logs. None of the 12 exist only in the editor.
 
 <SurfaceTable
   table="cvars"
@@ -57,12 +63,21 @@ These change what the SDK does rather than what it logs. None of the 9 exist onl
     "crowdy.net.receive.maxdrainms": "How many milliseconds of one frame may be spent delivering inbound messages. Raise the message count first. Default 4.",
     "crowdy.net.send.bundle": "Pack one network pass's outbound messages into one datagram. Needs a replication server of v0.27.0 or later; against an older one every bundled message is dropped together. Default 1, read when a connection opens.",
     "crowdy.net.recv.signedbundles": "Tell the replication server this client reads signed inbound bundles, so notifications arrive with one signature per datagram instead of one per member. A server older than v0.30.0 ignores it. Default 1, read when a connection opens.",
-    "crowdy.replication.tracker.maxgatheredupdates": "How many actor updates for already-tracked actors may be gathered before the backlog is discarded; reached only when the world tick is not consuming them. Default 8192."
+    "crowdy.replication.tracker.maxgatheredupdates": "How many actor updates for already-tracked actors may be gathered before the backlog is discarded; reached only when the world tick is not consuming them. Default 8192.",
+    "crowdy.replication.tracker.maxqueuedupdates": "How many updates for actors not yet on screen may wait for a worker thread before further ones are dropped, counted, and reported once a second; reached only when the worker pool is not draining them. A dropped actor appears on a later update. Default 8192."
   }}
   notesLabel="Where the Help cell is empty"
 />
 
-The notes map above stands in for these five rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
+The notes map above stands in for these six rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
+
+:::warning[Turn `crowdy.net.http2` off if you ship, or collect logs from, a build with logging enabled.]
+On by default, it asks for HTTP/2 on the SDK's own requests (falling back to HTTP/1.1 when the server does not offer it); the game's other HTTP traffic and the engine's `http.CurlAllowHTTP2` are untouched. With HTTP/2, when a request fails at the network level (not a cancel or a timeout), the curl diagnostics the engine logs at `Warning` can include the request headers, bearer token included. A default Shipping build compiles logging out, so most projects never see this; if yours ships or collects logs from a build with logging enabled, set `crowdy.net.http2 0`.
+:::
+
+:::note[`crowdy.net.retry.busy` resends a refusal the platform blames on itself before the caller ever sees `Failed`.]
+On by default. An SDK query resends on any platform-blamed retryable refusal except `WRONG_DATACENTER` and `APP_UNAVAILABLE`. At most 3 retries, with the server's suggested wait when it names one or a doubling local wait otherwise. Turn it off (`0`) only to compare against the un-retried behavior; leave it on for a shipping build.
+:::
 
 :::warning[Leave `crowdy.rpc.allowObjectLoad` off in production.]
 While it is off, an untrusted peer cannot trigger an arbitrary asset load; an unresolved object or class

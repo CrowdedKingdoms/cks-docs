@@ -8,7 +8,7 @@ description: Read a Server Object's variables from Blueprint with Get and Get Se
 # Read and follow its variables
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 Players see the variables their [definition](../create-a-type.md) marks **Visible to Players**. The typed nodes read them and follow their changes, each with a real pin of the variable's type. The examples use the village beacon, whose `CSO_VillageBeacon` asset has `Oil`, `bLit` and a Server Only `LastFedBy`. Every node here needs a Server Object; see [Get a Server Object](./get-a-server-object.md#where-the-object-comes-from).
@@ -77,7 +77,7 @@ Select the component and add its **On Variables Changed** event. The event runs 
 | Node | What it does |
 |---|---|
 | **Get Variables** | The Variables the server last sent, to read with **Get Server Value**. They hold their defaults until the object is Ready. |
-| **Watch Variables** | Takes an event and runs it after every change, with the names that changed. If the Variables are already current it also runs once at once, naming them all. |
+| **Watch Variables** | Takes an event (the delegate `FCrowdyServerVariablesEvent`) and runs it after every change, with the names that changed. If the Variables are already current it also runs once at once, naming them all. |
 | **Stop Watching Variables** | Removes an event that **Watch Variables** was given. |
 | **Get Members** | The user ids of the members, in the order they joined. Only for a type whose **Members From** is **This Object** with **Show Members to Players** on; empty otherwise. |
 | **Get Member Count** | How many members there are, even when the list is not shown. |

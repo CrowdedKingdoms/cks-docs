@@ -8,7 +8,7 @@ description: The settings that make the server enforce who may read a Server Obj
 # Access, members and timers
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 Some rules are the same in every game: only the players of a team may spend the team's gold, a match starts once and only its leader starts it, a purchase can be made once a minute. You can write each of them in `logic.rs`, or you can set them in the [definition asset](./create-a-type.md) and let the server code the editor generates enforce them before your code runs. Then `logic.rs` holds only the rules that are truly yours.
@@ -107,6 +107,8 @@ The panel's **Built-in** section then lists six functions, greyed out, each with
 
 **Add Member** exists so that one type can seat players in another, as a registry does; see [Guild Halls](./examples/guild-halls-and-arenas.md#guild-halls).
 
+The inputs of **Add Member**, **Remove Member** and **Make Leader** are the struct `FCrowdyServerMemberInputs`, whose one field is `Player`. The input of **Set Open for Joining** is `FCrowdyServerOpenInputs`, whose one field is `bOpen`.
+
 ### The leader
 
 - The first member to join is the leader.
@@ -139,7 +141,7 @@ Give an actor the Server Object of the player's team with the component's **Play
 Under **Timers & Events**, a **Timer** is something your Server Object does on a clock, each with:
 
 - **Name**: what it is called. Not empty, unique, and not the name of a function.
-- **Runs**: **Every**, which runs again and again, **Time** apart, or **Once After**, which runs once, **Time** after it starts.
+- **Runs**: **Every**, which runs again and again, **Time** apart, or **Once After**, which runs once, **Time** after it starts. In C++ this is the enum `ECrowdyServerTimerRepeat`, with the values `Every` and `After`.
 - **Time**: in seconds, at least 0.01.
 - **Start Automatically**: on by default. It starts when the Server Object first starts. With it off, your code starts it.
 

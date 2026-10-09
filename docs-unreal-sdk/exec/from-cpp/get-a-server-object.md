@@ -8,7 +8,7 @@ description: Acquire a Server Object from UCrowdyServerObjectSubsystem, how owne
 # Get a Server Object
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 A game never creates a `UCrowdyServerObject` itself. It asks `UCrowdyServerObjectSubsystem`, a game instance subsystem, for the one matching a [definition asset](../create-a-type.md) and an Instance Id, and names an owner: the object that needs it. The subsystem keeps the Server Object connected for as long as it has an owner, and shares it between every owner that asks for the same one.

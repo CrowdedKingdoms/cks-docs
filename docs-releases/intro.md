@@ -36,11 +36,11 @@ own CLI is not published either. See
 
 :::
 
-## Unreleased (Unreal SDK, Server Objects; Game Models deprecated)
+## 2026-10-07 (Unreal SDK v2.18.0: Server Objects; Game Models deprecated)
 
 Server Objects are additive; the Game Model deprecation below is not, and
-affects every project that uses Game Models. Per-item detail:
-[What's Changed](/unreal-sdk/guides/whats-changed#unreleased-after-v2170).
+affects every project that uses Game Models. The release vendors CrowdyCPP 0.56.0 on every tier.
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-07-sdk-v2180).
 
 - **The Unreal SDK's Game Model API is deprecated and does nothing; a later release removes it.**
   Every call fails at once with `GAME_MODEL_DEPRECATED`, C++ warns at each use, each Blueprint that
@@ -149,6 +149,12 @@ affects every project that uses Game Models. Per-item detail:
 - **Too many new names no longer fail a whole Server Object message.** A client accepts at most 1 Mi (1,048,576) characters of new names per run; past it a new Name reads as None, an object path of new names reads as empty, the rest of the message still applies and the client logs one warning. See [Create a Server Object type](/unreal-sdk/exec/create-a-type#field-types).
 - **Lists that start with different values get their own struct in the generated code.** A List that shares another's shape but starts with different values is its own struct, not a `pub type` alias, and Generate shows a notice when a List switches; one that starts with the same values stays an alias. Generate again and fix any `logic.rs` that used one for the other. See [Create a Server Object type](/unreal-sdk/exec/create-a-type#variables-inputs-and-outputs-or-a-struct).
 - **Moving or renaming a definition asset keeps its server code findable.** Saving it updates its crate's `Cargo.toml` record, so a later Type Name change still finds the folder. A Ready Server Object also stops keeping an earlier read refusal's text as its failure reason.
+- **Smaller changes.** Actor updates carry the payload type id their sender used; the `CrowdySDK`
+  module no longer lists HTTP as a public dependency (add `"HTTP"` to your own `Build.cs` if you
+  relied on it); `FCrowdyCppClient`'s test-only accessors exist only with automation tests; and
+  updates for actors not yet on screen wait in a bounded queue
+  (`crowdy.replication.tracker.maxqueuedupdates`). See
+  [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-07-sdk-v2180).
 
 ## 2026-10-07 (the terms and age gate: Game API v2.35.0 on dev, test and prod; CrowdyJS 18.4.0 and CrowdyCPP 0.57.0 on dev)
 
@@ -337,6 +343,24 @@ CrowdyCPP versions it names, on their dev releases.
 ## 2026-09-23 (CPU price)
 
 **The CPU rate is $0.20 per CPU-hour, one core.** It was $3.60. A CPU-hour is one core busy for one hour, not one machine. The same price covers GraphQL resolvers, automations, compute modules, and player-authored compute. The monthly allowance is unchanged: **20 CPU-hours** pooled per app. The price in effect is the rate card in your account and on the [pricing page](https://crowdedkingdoms.com/pricing.html). A price applies from the next settlement period for usage that has already been billed this month.
+
+## 2026-09-26 (Unreal SDK v2.17.0)
+
+Entities that went missing now appear, and the Game Model path makes fewer calls. Most projects change nothing;
+read the HTTP/2 logging caveat if you ship or collect logs from a build with logging on. Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-09-26-sdk-v2170).
+
+- **Remote entities no longer go missing past eight per class.** The actor pool grows on demand up to
+  `MaxPoolSizePerClass` (256), keeps a spawn event's actor until a pool actor is secured, and retries an entity
+  it cannot draw yet instead of dropping it. See [Rendering backends](/unreal-sdk/runtime/rendering-backends#configure-it).
+- **The Game Model path makes fewer, cheaper calls.** Only invokes count toward the invoke allowance; one
+  state-applying pull per container is in flight at a time; remote copies bind from one paged list per type;
+  your own invokes no longer pull back what they wrote; busy refusals are retried by the SDK; HTTP/2 by
+  default (`crowdy.net.http2 0` turns it off: a failed request's curl diagnostics can log its headers, bearer
+  token included, in a build with logging on); `ListContainers` reads every page; `crowdy.gamemodel.stats` for diagnostics. See
+  [Move from Game Models](/unreal-sdk/exec/move-from-game-models).
+- **A value that changes only in letter case now applies**, in the runtime and in Crowdy Studio.
+- **Known server issue:** a player who just joined can stay invisible to others until they move. See
+  [Troubleshooting](/unreal-sdk/guides/troubleshooting#a-player-who-just-joined-is-invisible-until-they-move).
 
 ## 2026-09-23 (Unreal SDK v2.16.0)
 

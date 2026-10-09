@@ -8,7 +8,7 @@ description: "How to model relations with Server Objects: one to one (a player, 
 # Relate Server Objects to each other
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 A game rarely has one Server Object on its own. A player has a stash, a guild has a hall, a hall sits in a registry, a match reports to a leaderboard. This page shows how to model those relations with the settings you already have: the Instance Id, **Readable By**, **Members From**, **Only One Instance** and **Can Call**. Nothing here is a separate feature.
