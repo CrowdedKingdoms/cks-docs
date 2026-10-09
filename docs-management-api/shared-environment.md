@@ -33,8 +33,8 @@ So in practice there is one model, and this page describes it.
   **1 GB-month of stored data**. Egress is the headline number and the one most
   games reach first. Unused quota does not roll over.
 - **Stored input logs have no free allowance.** An app records nothing until an
-  org member with `manage_apps` turns on replay logging (`updateApp(appId,
-  { replayLoggingEnabled: true })`), which is refused with
+  org member with `manage_apps` turns on replay logging
+  (`replayLoggingEnabled: true` on `updateApp`), which is refused with
   `INPUT_LOG_FUNDS_NEEDED` unless the org wallet has a spendable balance. See
   [Input logging](/replication-api/input-logging).
 - **You are billed for bytes, CPU and storage — never for counts.** A datagram,

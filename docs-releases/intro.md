@@ -36,6 +36,27 @@ own CLI is not published either. See
 
 :::
 
+## 2026-10-09 (dev: input logging; replication server v0.36.0, Game API v2.39.0, CrowdyJS 18.6.0, CrowdyCPP 0.59.0, CrowdyPy 0.7.0)
+
+Additive. Nothing records until an app turns it on.
+
+- **An app can record its players' inputs.** With replay logging on
+  (`App.replayLoggingEnabled`, set with `updateApp` by `manage_apps`, or in Crowdy Studio's
+  app settings), every client message the replication servers accept for the app is recorded
+  with its arrival time, player and session. `inputLogSessions` lists the recorded sessions
+  and `inputLogMessages` reads one session's inputs, each as the client sent it without its
+  authentication tail. A player reads their own; `manage_apps` reads every session. Inputs are
+  kept for the published retention (7 days). See [Input logging](/replication-api/input-logging).
+- **Stored input logs are a new rate-card line**, `input_log_storage_byte_hours`, priced per
+  GB-month with no free allowance. Turning logging on is refused with `INPUT_LOG_FUNDS_NEEDED`
+  unless the organization's wallet has a spendable balance. See
+  [Shared environment](/management-api/shared-environment).
+- **CrowdyJS 18.6.0**: `client.inputLog.sessions` / `messages`; every app read selects
+  `replayLoggingEnabled`.
+- **CrowdyCPP 0.59.0**: `client.inputLog().sessions` / `messages`, each with an `Async` twin.
+  Parity is pinned to CrowdyJS 18.6.0.
+- **CrowdyPy 0.7.0**: `client.input_log.sessions` / `messages`.
+
 ## 2026-10-09 (dev: channel messages limited by distance; replication server v0.35.0, Game API v2.38.0, CrowdyJS 18.5.0, CrowdyCPP 0.58.0, CrowdyPy 0.6.0)
 
 Additive; receivers change nothing.
