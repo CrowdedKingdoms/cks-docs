@@ -36,7 +36,7 @@ own CLI is not published either. See
 
 :::
 
-## 2026-10-09 (dev: input logging; replication server v0.36.0, Game API v2.39.0, CrowdyJS 18.6.0, CrowdyCPP 0.59.0, CrowdyPy 0.7.0)
+## 2026-10-09 (dev: input logging; replication server v0.36.1, Game API v2.39.0, CrowdyJS 18.6.0, CrowdyCPP 0.59.0, CrowdyPy 0.7.0)
 
 Additive. Nothing records until an app turns it on.
 
