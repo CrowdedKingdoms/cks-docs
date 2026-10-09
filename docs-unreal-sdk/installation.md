@@ -20,9 +20,9 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 ## Step 1: Get the release
 
-Download the `v2.16.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+Download the `v2.18.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
 
-:::note[The release you install must match the version this guide describes (2.16).]
+:::note[The release you install must match the version this guide describes (2.18).]
 :::
 
 ## Step 2: Place the plugin at `Plugins/CrowdySDK`
@@ -76,7 +76,7 @@ Enabling `CrowdySDK` brings in all ten of its modules. You never enable them one
 | `CrowdyStudio` | Editor | Crowdy Studio, the management console: sign-in, apps, Config Sync, authoring pages. |
 
 The Game Model pieces are legacy: the game API no longer serves game models, so nothing built on
-them reaches a server. After v2.17.0 the SDK marks them deprecated and their calls fail at once, and a
+them reaches a server. Since v2.18.0 the SDK marks them deprecated and their calls fail at once, and a
 later release removes them. Keep the state
 your game must trust in your server code on [ck-exec](/exec/intro); see
 [Move from Game Models](./exec/move-from-game-models.md) and [the two planes](./concepts/two-planes.md).
@@ -112,7 +112,7 @@ Or from a command line, which is what a build machine runs:
 "C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat" YourProjectEditor Win64 Development -Project="C:\Path\To\YourProject.uproject" -WaitMutex
 ```
 
-The first build compiles the whole plugin and takes a few minutes. The log ends with `Link [x64] UnrealEditor-CrowdyStudio.dll` and `Result: Succeeded`. Expect a few warnings from a third-party header inside the plugin (a `C4324` padding warning from the vendored client's `spsc.hpp`, and two `CS0618` obsolete-property warnings from its `Build.cs`); they are harmless and repeat on every build.
+The first build compiles the whole plugin and takes a few minutes. The log ends with `Link [x64] UnrealEditor-CrowdyStudio.dll` and `Result: Succeeded`. Expect a few warnings from a third-party header inside the plugin (a `C4324` padding warning from the vendored client's `spsc.hpp`); they are harmless and repeat on every build.
 
 Once it compiles, the SDK subsystems are available in both C++ and Blueprint.
 

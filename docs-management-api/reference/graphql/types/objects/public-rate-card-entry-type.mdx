@@ -30,6 +30,7 @@ type PublicRateCardEntryType {
   freePerMonth: BigInt
   freeUnits: BigInt
   freePeriod: AllowancePeriod
+  priceBands: [RateCardBandType!]
 }
 ```
 
@@ -74,6 +75,10 @@ The allowance as the biller reads it: raw metric units free per freePeriod, as a
 
 #### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>freePeriod</b></code>](#free-period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AllowancePeriod</b></code>](/reference/graphql/types/enums/allowance-period.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#free-period\} 
 The period freeUnits resets on. Every dimension is billed as its period aggregate crosses each whole cent, within about a minute of the usage arriving.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PublicRateCardEntryType.<b>priceBands</b></code>](#price-bands)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RateCardBandType!]</b></code>](/reference/graphql/types/objects/rate-card-band-type.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="object"/> \{#price-bands\} 
+The graduated price, band by band, or null when the dimension has one flat price. Egress (aggregate&#x005F;data&#x005F;volume) is priced this way per app per calendar month: each GB is charged at the band the app's month-to-date total has reached, and priceCents is the first band's price.
 
 
 

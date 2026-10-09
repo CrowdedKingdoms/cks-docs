@@ -8,7 +8,7 @@ description: Build a shared tip jar from nothing with only the editor and Bluepr
 # Tip jar: your first Server Object
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 This page builds the village square's tip jar. Every villager can drop a coin in, and everyone sees the same running total. The total is worth keeping on the server, so nobody can tip a thousand coins from a modified client. You use only the editor and Blueprints; the one piece of code is a few lines of Rust that you paste.

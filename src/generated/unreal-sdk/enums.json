@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-09-22T14:39:18Z",
-  "sdk_version": "2.14.0",
+  "generated_from": "2026-10-07T15:57:00Z",
+  "sdk_version": "2.18.0",
   "table": "enums",
   "columns": [
     {
@@ -1049,6 +1049,141 @@
       "page": "",
       "editor": false,
       "allowlist": "internal"
+    },
+    {
+      "id": "ECrowdyServerCallOutcome",
+      "name": "ECrowdyServerCallOutcome",
+      "values": [
+        "Success",
+        "ServerError",
+        "Busy",
+        "Unavailable",
+        "NotDeployed",
+        "Timeout",
+        "Denied",
+        "ServerCrashed",
+        "BadRequest",
+        "Canceled"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectTypes.h",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyServerFunctionCaller",
+      "name": "ECrowdyServerFunctionCaller",
+      "values": [
+        "Players",
+        "Members",
+        "Leader",
+        "ServerOnly"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyServerMembersSource",
+      "name": "ECrowdyServerMembersSource",
+      "values": [
+        "None",
+        "ThisObject",
+        "CrowdyTeam"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyServerObjectFind",
+      "name": "ECrowdyServerObjectFind",
+      "values": [
+        "InstanceId",
+        "SignedInPlayer",
+        "PlayersTeam"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyServerObjectInstanceMode",
+      "name": "ECrowdyServerObjectInstanceMode",
+      "values": [
+        "InstanceId",
+        "SignedInPlayer",
+        "ThisActor",
+        "PlayersTeam",
+        "FromServerValue"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectComponent.h",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyServerObjectSourceInstance",
+      "name": "ECrowdyServerObjectSourceInstance",
+      "values": [
+        "InstanceId",
+        "SignedInPlayer"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectComponent.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyServerObjectStatus",
+      "name": "ECrowdyServerObjectStatus",
+      "values": [
+        "Connecting",
+        "Ready",
+        "Failed",
+        "Released"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyServerObjectVisibility",
+      "name": "ECrowdyServerObjectVisibility",
+      "values": [
+        "Public",
+        "OwnerOnly",
+        "Members"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyServerTimerRepeat",
+      "name": "ECrowdyServerTimerRepeat",
+      "values": [
+        "Every",
+        "After"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
     }
   ]
 }
