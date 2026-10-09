@@ -193,9 +193,13 @@ Do **not** publish:
 - Server-status table jobs, heartbeat/cleanup internals, infra dashboards
 - Builder, CI, ECR, Secrets Manager, Tailscale, Fargate, Citus cluster
   internals, or local replica topology
-- References to our `dev` / `test` / `prod` cloud ladder except **public
-  hostnames** customers actually use (`ck.prod…`, `ck.dev…` sandbox, Studio /
-  docs hosts)
+- References to our `dev` / `test` / `prod` cloud ladder except the
+  **production hostnames** customers use (`ck.prod…`, `studio.crowdedkingdoms.com`,
+  the docs hosts). **Dev and test are internal since 2026-10-09** (staff, approved
+  partners and our harnesses; anyone else gets `TIER_ACCESS_REQUIRED`), so no page
+  sends a reader there and every example uses production hosts. A page may say
+  they exist and are internal; `/management-ui/client-integration` is the client
+  guide (the old `/management-ui/dev-tier` redirects to it)
 - Load-test instructions aimed at *our* environments; customer load-test
   pages describe how *they* test *their* integration
 - Author asides, screenshot TODOs that read as staff notes, links to

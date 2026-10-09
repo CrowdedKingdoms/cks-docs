@@ -11,7 +11,7 @@ import asyncio
 
 import crowdypy
 
-API = "https://ck.dev.crowdedkingdoms.com"
+API = "https://ck.prod.crowdedkingdoms.com"
 
 
 async def main() -> None:

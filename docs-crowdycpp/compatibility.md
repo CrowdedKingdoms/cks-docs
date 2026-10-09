@@ -45,7 +45,7 @@ given, is the maintained invariant.
 ## Testing your integration
 
 CrowdyCPP ships an extensive **black-box end-to-end suite** you can point at
-any deployment (including your own dev tier) to validate an integration
+any deployment you can sign in to (production, or your own local stack) to validate an integration
 end to end. It provisions like a real integrator through the public
 Management API — sign in, ensure an access tier, grant access — with no
 privileged or database access, and it drives replication over the **native

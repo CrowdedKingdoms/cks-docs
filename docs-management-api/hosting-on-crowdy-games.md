@@ -134,7 +134,8 @@ uploads expire on their own after two days.
 ## Which tier
 
 You publish to the tier your SDK dials: a CrowdyJS `latest` install publishes to
-production Crowdy Games; a `@dev` install to the dev tier. A tier that does not
+production Crowdy Games. The `dev` and `test` dist-tags dial Crowded Kingdoms' internal
+environments, which refuse outside accounts (`TIER_ACCESS_REQUIRED`). A tier that does not
 host third-party games answers `CONTENT_HOSTING_DISABLED`.
 
 ## Reads for a page
