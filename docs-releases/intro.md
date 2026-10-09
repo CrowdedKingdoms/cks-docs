@@ -36,7 +36,7 @@ own CLI is not published either. See
 
 :::
 
-## 2026-10-08 (dev: channel messages limited by distance; replication server v0.35.0, Game API v2.38.0, CrowdyJS 18.5.0, CrowdyCPP 0.58.0, CrowdyPy 0.6.0)
+## 2026-10-09 (dev: channel messages limited by distance; replication server v0.35.0, Game API v2.38.0, CrowdyJS 18.5.0, CrowdyCPP 0.58.0, CrowdyPy 0.6.0)
 
 Additive; receivers change nothing.
 
