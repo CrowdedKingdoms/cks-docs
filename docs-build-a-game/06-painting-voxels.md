@@ -18,7 +18,7 @@ On click, convert world position to chunk/voxel coords (chapter 4) and call:
 
 ```ts
 await client.udp.sendVoxelUpdate({
-  appId: '1',
+  appId: '<your-app-id>',
   chunk: { x: String(chunkX), y: String(chunkY), z: '0' },
   uuid: actorUuid,
   voxel: { x: voxelX, y: voxelY, z: 0 },
@@ -40,7 +40,7 @@ Load existing paint with `client.voxels.listByDistance`:
 
 ```ts
 await client.voxels.listByDistance({
-  appId: '1',
+  appId: '<your-app-id>',
   centerCoordinate: { x: '0', y: '0', z: '0' },
   maxDistance: 3,
 });

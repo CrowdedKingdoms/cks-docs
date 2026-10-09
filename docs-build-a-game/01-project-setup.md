@@ -13,10 +13,10 @@ Verify connectivity to the Crowded Kingdoms API before writing game logic.
 ## Configuration
 
 ```text
-ApiHttpUrl=https://ck.dev.crowdedkingdoms.com/graphql
-ApiWsUrl=wss://ck.dev.crowdedkingdoms.com/graphql
-AppId=1
-OrgId=1
+ApiHttpUrl=https://ck.prod.crowdedkingdoms.com/graphql
+ApiWsUrl=wss://ck.prod.crowdedkingdoms.com/graphql
+AppId=<your-app-id>
+OrgId=<your-org-id>
 ```
 
 ## One URL
@@ -39,8 +39,8 @@ import {
 } from '@crowdedkingdoms/crowdyjs';
 
 const client = createCrowdyClient({
-  httpUrl: 'https://ck.dev.crowdedkingdoms.com/graphql',
-  wsUrl: 'wss://ck.dev.crowdedkingdoms.com/graphql',
+  httpUrl: 'https://ck.prod.crowdedkingdoms.com/graphql',
+  wsUrl: 'wss://ck.prod.crowdedkingdoms.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore(),
 });
 ```
@@ -48,7 +48,7 @@ const client = createCrowdyClient({
 :::note[One endpoint, two tokens]
 One URL does **not** mean one credential. `register` / `login` (next chapter) return
 an **identity session token**, and that token is **rejected for gameplay**. Before any
-world or UDP call you mint a short-lived **app-scoped token** for `AppId=1`
+world or UDP call you mint a short-lived **app-scoped token** for your `AppId`
 ([chapter 2](/build-a-game/02-auto-guest-auth)) and drive gameplay with it. See
 [Portals & app-scoped tokens](/management-api/portals-and-app-tokens).
 :::
@@ -60,7 +60,7 @@ POST `{ query: "{ __typename }" }` to the GraphQL endpoint. It should return HTT
 ## Exit criteria
 
 - API reachable
-- AppId=1 configured
+- Your `AppId` configured
 
 **In The Construct:** `src/platform/config.ts` resolves the API origin from the installed SDK build and `src/platform/network/NetworkManager.ts` creates the client.
 

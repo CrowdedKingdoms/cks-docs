@@ -100,21 +100,21 @@ to untrusted end users. A trusted admin context — a studio backend **or** an
 admin-only / authenticated web app — is fine.
 :::
 
-### Dev tier example
+### Production example
 
-For integration testing on the sandbox (dev) environment, see **[Dev tier (client integration)](/management-ui/dev-tier)**. Minimal CrowdyJS config:
+Build and test against production; see **[Connecting game clients](/management-ui/client-integration)**. Minimal CrowdyJS config:
 
 ```ts
 createCrowdyClient({
-  httpUrl: 'https://ck.dev.crowdedkingdoms.com/graphql',
-  wsUrl: 'wss://ck.dev.crowdedkingdoms.com/graphql',
+  httpUrl: 'https://ck.prod.crowdedkingdoms.com/graphql',
+  wsUrl: 'wss://ck.prod.crowdedkingdoms.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore(),
 });
 ```
 
-This single client covers identity and routing reads. For gameplay you still mint an app-scoped token and drive the world surfaces from a per-game client — see [Authentication: session vs app-scoped tokens](#authentication-session-vs-app-scoped-tokens) and [Dev tier (client integration)](/management-ui/dev-tier).
+This single client covers identity and routing reads. For gameplay you still mint an app-scoped token and drive the world surfaces from a per-game client — see [Authentication: session vs app-scoped tokens](#authentication-session-vs-app-scoped-tokens) and [Connecting game clients](/management-ui/client-integration).
 
-Register at [https://studio.dev.crowdedkingdoms.com/register](https://studio.dev.crowdedkingdoms.com/register) — no shared admin account required.
+Register at [https://studio.crowdedkingdoms.com/register](https://studio.crowdedkingdoms.com/register) — no shared admin account required. Crowded Kingdoms' `dev` and `test` environments are internal and refuse outside accounts (`TIER_ACCESS_REQUIRED`).
 
 **Tutorial:** [Build a collaborative canvas game](/build-a-game/intro) — step-by-step guide with live demo chapters using the config above.
 
