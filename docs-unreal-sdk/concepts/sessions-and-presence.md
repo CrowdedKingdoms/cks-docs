@@ -28,7 +28,7 @@ The session channel is a shared transport, named `__crowdy_session_<appId>`, tha
 A match is state the game must be able to trust (its roster, its host, whose turn it is, the score), so it lives on the [truth plane](./two-planes.md), in your server code. On ck-exec that is a hub for the match: the `session` [starter pack](/exec/builds#starter-packs) keeps one game from lobby to result, with a host, ready checks, turns with a time limit, and a winner.
 
 :::caution[The SDK's Game Model sessions are gone.]
-The SDK's own session API (Create, Join, Leave and End on the Game Model subsystem, and the active session) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. After v2.17.0 the SDK marks it deprecated and every call fails at once, and a later release removes it. A match is a [Server Object](../exec/overview.md) (from Blueprint or C++); see [Move from Game Models](../exec/move-from-game-models.md).
+The SDK's own session API (Create, Join, Leave and End on the Game Model subsystem, and the active session) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. Since v2.18.0 the SDK marks it deprecated and every call fails at once, and a later release removes it. A match is a [Server Object](../exec/overview.md) (from Blueprint or C++); see [Move from Game Models](../exec/move-from-game-models.md).
 :::
 
 ## Gotchas

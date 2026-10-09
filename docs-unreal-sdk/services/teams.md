@@ -59,7 +59,7 @@ it current for you:
   replaces a newer one.
 
 Read it for the value to show now; treat a query's result and `OnMyTeamsCacheChanged` as the update that
-follows. In C++, `ClearMyTeamsCache()` empties it by hand; it is not exposed to Blueprint.
+follows. In C++, `ClearMyTeamsCache()` empties it by hand and `RefreshMyTeams()` asks for the player's teams again, with the answer arriving through `OnMyTeamsCacheChanged`; neither is exposed to Blueprint.
 
 | Call | Returns |
 |---|---|

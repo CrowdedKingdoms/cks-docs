@@ -8,7 +8,7 @@ description: Call a Server Function with UCrowdyServerObject::Call, with a struc
 # Call its functions
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 A client never changes a Server Object's values. It asks, by calling one of the Server Functions its [definition](../create-a-type.md) lists, and the server's code decides what happens. Each function says who can call it, with [Callable By](../create-a-type.md#callable-by): **Players**, **Members**, **Leader** or **Server Only**, which refuses a player's call. A function can also have a **Cooldown**, and a number input a **Value Range**; see [Access, members and timers](../access-members-and-timers.md). The answer comes back to the caller; the change, if there is one, reaches every player through the [variables they can see](./read-and-follow-variables.md).

@@ -8,7 +8,7 @@ description: Call a Server Function from Blueprint with the typed Call node, wit
 # Call its functions
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 A client never changes a Server Object's values. It calls one of the Server Functions its [definition](../create-a-type.md) lists, and the server decides. The examples use the village beacon's `FeedBeacon` function, which takes an `Oil` amount and answers with the oil the beacon now holds. Every node here needs a Server Object; see [Get a Server Object](./get-a-server-object.md#where-the-object-comes-from).
@@ -60,7 +60,7 @@ The generic **Call Server Function** under **Server Objects** has a **Function**
 
 The figure is steps 1 to 4 only: it has no trigger event, no **Is Valid** and nothing on **On Success** or **On Failed**, and it reads the Server Object from a component variable named `Beacon`. Add your own trigger and the **Is Valid**, and wire step 5.
 
-**Call Server Function** here is the one with no **Function** dropdown, found under **Crowdy SDK > Server Objects**; it takes a Server Object and Inputs. It is latent like the typed one, and its **On Success** and **On Failed** behave the same.
+**Call Server Function** here is the one with no **Function** dropdown, found under **Crowdy SDK > Server Objects**; it takes a Server Object and Inputs. It is latent like the typed one, and its **On Success** and **On Failed** behave the same. Both are the delegate `FCrowdyServerCallDone`, which carries **Outputs**, **Outcome**, **Reason** and **Retryable**.
 
 **Make Inputs** returns a function's Inputs with their default values, and is empty when the function takes none.
 

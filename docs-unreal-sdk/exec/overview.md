@@ -8,7 +8,7 @@ description: What a Server Object is, what it gives a game (server-owned values 
 # What a Server Object is
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170). You can use them from Blueprint or from C++; see [From Blueprint](./from-blueprint/get-a-server-object.md) and [From C++](./from-cpp/get-a-server-object.md).
+Server Objects run on [ck-exec](/exec/intro). You can use them from Blueprint or from C++; see [From Blueprint](./from-blueprint/get-a-server-object.md) and [From C++](./from-cpp/get-a-server-object.md).
 :::
 
 A Server Object is a piece of game state that lives on the server and that every player sees the same way. The server keeps its values, saves them, and is the only thing that changes them. Your game reads the values it is allowed to see, is told each time they change, and asks for a change by calling one of its **Server Functions**. The server decides, and every player watching sees the result.

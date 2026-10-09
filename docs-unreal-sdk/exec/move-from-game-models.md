@@ -8,7 +8,7 @@ description: What the Game Model deprecation does to a project (C++ warnings, on
 # Move from Game Models
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them or the deprecation below; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 The SDK's Game Model API is deprecated and does nothing, and a later release removes it. It was built on a game API engine that ck-exec replaced, so it has no server to talk to. This page says what you will see in your project, what takes the place of each part, and how to move a system across. The replacement is [Server Objects](./overview.md), from Blueprint or C++.

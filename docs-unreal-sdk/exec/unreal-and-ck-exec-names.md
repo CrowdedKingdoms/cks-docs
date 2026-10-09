@@ -8,7 +8,7 @@ description: The Unreal SDK's name for each part of a Server Object next to the 
 # Unreal and ck-exec names
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 The SDK names things the way an Unreal project would. The platform's [ck-exec pages](/exec/intro), its operations tools and its logs use their own words. This table maps one to the other.

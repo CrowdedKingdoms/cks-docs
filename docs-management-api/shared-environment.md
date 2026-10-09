@@ -57,6 +57,22 @@ applies. A `MESSAGE_BUNDLE` datagram carrying several messages is one frame and 
 metered once, in either direction. A client-side byte counter will not match it. The full basis is in the
 [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html).
 
+**Volume bands.** A line on the rate card can be priced in graduated volume
+bands, and egress is: the more an app sends in a UTC calendar month, the lower
+the rate on its next gigabyte. Each byte is charged at the rate of the band it
+falls in, so reaching a higher band does not re-price the bytes below it. The
+bands count each app's own egress from the start of the month, free quota
+included (the 5 GB quota is the bottom of the first band), and the month's
+total is still rounded up to the cent once. An app's rate for the month is set
+at its first charge in that month, so a change to the rate card reaches an app
+from its next month. The schedule is on the rate card in your account and on
+the [pricing page](https://crowdedkingdoms.com/pricing.html). In the API,
+`meteredRateCard` lists a banded line's `priceBands`: each band's `priceCents`
+per the line's `unitQuantity` (a GB, for egress) and its upper edge
+`upToUnits` in raw units (bytes, for egress; `null` on the last, open-ended
+band). The line's own `priceCents` is the first band's rate, and a line priced
+at one rate has no `priceBands`.
+
 An app's [ck-exec](/exec/intro) code is metered minute by minute in compute
 units: the greater of the CPU time and the fuel each minute used, so neither a
 host stall nor unusually dense guest instructions under-report work. A
