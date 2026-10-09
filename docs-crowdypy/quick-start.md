@@ -18,6 +18,11 @@ async def main() -> None:
     # The identity client: sign-in, account and studio calls, minting.
     async with crowdypy.AsyncCrowdyClient(http_url=API) as identity:
         await identity.auth.login("player@example.com", "correct-horse-battery")
+        if not await identity.auth.player_legal_acceptance():
+            # Only after the player ticked both boxes: this records their agreement.
+            await identity.auth.record_player_consents(
+                accept_legal=True, attest_age_of_majority=True
+            )
         minted = await identity.portal.mint_app_token("42")
 
     # The game client: one per app, at the app's own datacenter.
@@ -44,6 +49,16 @@ without `await`.
    UDP. `client.refresh_gameplay_token()` refreshes it, and concurrent callers
    share one refresh. A live UDP connection keeps its replication server
    across the refresh.
+
+   **The terms and age of majority** (CrowdyPy 0.6.0). No app token is issued
+   until the player has agreed to the current required legal documents and
+   attested that they are at least 18, or the age of majority where they live if
+   that is higher; until then minting raises `LEGAL_ACCEPTANCE_REQUIRED`
+   (`crowdypy.is_legal_acceptance_required_error`). Show your own two checkboxes,
+   linking each document, then call `auth.record_player_consents` as above.
+   `auth.register(..., accept_legal=True, attest_age_of_majority=True)` creates
+   an account that starts accepted. See
+   [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
 3. Build one identity client and one client per game. The game client points
    at the app's datacenter (`game_api_url`), and `discovery_url` lets it find
    the app again if that instance stops answering.

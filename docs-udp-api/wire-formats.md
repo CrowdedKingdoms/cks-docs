@@ -39,6 +39,7 @@ COMMAND_RECONNECT = 22;             // server -> client: reconnect to a differen
 CLIENT_ACTOR_HEARTBEAT = 26;        // client -> server: optional keep-alive for the client's own actor (see "Actor presence and heartbeats")
 CLIENT_CAPABILITIES = 29;           // client -> server: what this client can read (see "Signed bundles"); server v0.30.0+
 MESSAGE_BUNDLE_SIGNED = 30;         // server -> client: a bundle with ONE trailing HMAC, only to a client that advertised it
+CHANNEL_MESSAGE_RANGED_REQUEST = 32; // client -> server: publish to a channel, delivered only near an origin chunk; server v0.35.0+
 // other values in 19–127 are unused / reserved or internal server-to-server
 ```
 
@@ -73,9 +74,10 @@ UUIDs are client generated 32 byte UTF8 strings. The null termination byte (33rd
 ## Channel messages
 
 Channels are app-wide message groups: a channel message is delivered to every
-member of the channel regardless of location (not chunk-routed). Membership and
-the `send_messages` permission are managed over the Game API GraphQL surface
-(see the Game API [Channels](/game-api/channels) guide). These are
+member of the channel regardless of location (not chunk-routed), unless it is
+sent as a [distance-limited channel message](#channel_message_ranged_request-client--server).
+Membership and the `send_messages` permission are managed over the Game API
+GraphQL surface (see the Game API [Channels](/game-api/channels) guide). These are
 **non-spatial** types, so they do not use the long spatial header.
 
 ### `CHANNEL_MESSAGE_REQUEST` (client → server)
@@ -99,10 +101,62 @@ the token octets). The server requires the sender to be a channel member holding
 | gameTokenId    | 64   | 8     | int64  | Identifies the client session.                              |
 | sequenceNumber | 8    | 1     | uint8  | Client sequence (0-255); correlates error responses.        |
 
+### `CHANNEL_MESSAGE_RANGED_REQUEST` (client → server)
+
+A channel publish that reaches only the members near an origin chunk (replication
+server v0.35.0+). A member receives it when one of its live actors is in the origin's
+app and within `maxDistance` chunks of the origin chunk, measured as the straight-line
+(Euclidean) distance between chunk coordinates with the boundary included:
+`dx² + dy² + dz² ≤ maxDistance²`. So `maxDistance` 0 reaches only the origin chunk, and
+5 reaches a member 3 chunks east and 4 north but not one 4 east and 4 north (about
+5.66), which the Chebyshev rings of spatial messages would count as 4. There is no cap
+of 8. Members receive the ordinary `CHANNEL_MESSAGE_NOTIFICATION` (18), so receivers
+need no change. A member with no live actor does not receive it, and the sender gets no
+echo.
+
+Sent to the **client** UDP port, authenticated exactly like `CHANNEL_MESSAGE_REQUEST`
+(the HMAC covers every byte up to and including `containsAuth`, then the token octets),
+and it needs the same right: channel membership with `send_messages`. It may travel
+inside a client `MESSAGE_BUNDLE`.
+
+| Identifier     | Bits | Bytes | Type   | Description                                                   |
+| -------------- | ---- | ----- | ------ | ------------------------------------------------------------ |
+| messageType    | 8    | 1     | enum   | `CHANNEL_MESSAGE_RANGED_REQUEST` (32).                       |
+| channelId      | 64   | 8     | int64  | The channel id to publish to.                               |
+| uuid           | 256  | 32    | utf8   | The sending actor's UUID (32 bytes, no null terminator).    |
+| appId          | 64   | 8     | int64  | The origin chunk's app; must be your session's app.         |
+| chunkX         | 64   | 8     | int64  | Origin chunk X.                                             |
+| chunkY         | 64   | 8     | int64  | Origin chunk Y.                                             |
+| chunkZ         | 64   | 8     | int64  | Origin chunk Z.                                             |
+| maxDistance    | 32   | 4     | uint32 | Reach in chunks, inclusive: 0 to 2147483647.                |
+| payloadLength  | 16   | 2     | uint16 | Length of the application payload (max 1024).               |
+| payload        | X    | X     | bytes  | Opaque application bytes.                                    |
+| containsAuth   | 8    | 1     | bool   | Always 1.                                                   |
+| hmac           | 256  | 32    | bytes  | HMAC-SHA256 over all bytes up to and including containsAuth. |
+| gameTokenId    | 64   | 8     | int64  | Identifies the client session.                              |
+| sequenceNumber | 8    | 1     | uint8  | Client sequence (0-255); correlates error responses.        |
+
+The header before the payload is 79 bytes and the tail after it 42, so a request is
+121 to 1145 bytes. The server answers `GENERIC_ERROR_MESSAGE` with your sequence number
+for a refusal: `UNAUTHORIZED` without the send right, `INVALID_APP_ID` when `appId` is
+not your session's app, `INVALID_REQUEST` for a `maxDistance` above 2147483647. A server
+older than v0.35.0 drops the request and delivers nothing.
+
+Test vector: token `"A"` × 64, gameTokenId 555, channelId 100, uuid `"u"` × 32, appId 2,
+chunk (-3, 4, 5), maxDistance 12, payload `hi`, sequenceNumber 9 encode to these 123
+bytes:
+
+```
+20640000000000000075757575757575757575757575757575757575757575757575757575757575750200
+000000000000fdffffffffffffff040000000000000005000000000000000c00000002006869017f1c386f
+d1ec421f0a72745fae881f8adbcb17bcd8a0bb3e446565651d18533d2b0200000000000009
+```
+
 ### `CHANNEL_MESSAGE_NOTIFICATION` (server → client)
 
 Delivered to every active member except the sender (no echo), standalone or
-inside a `MESSAGE_BUNDLE`.
+inside a `MESSAGE_BUNDLE`. For a `CHANNEL_MESSAGE_RANGED_REQUEST`, only the members in
+range receive it; the notification is the same.
 
 | Identifier     | Bits | Bytes | Type   | Description                                  |
 | -------------- | ---- | ----- | ------ | -------------------------------------------- |

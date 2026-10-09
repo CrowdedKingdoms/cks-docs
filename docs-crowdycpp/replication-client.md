@@ -50,6 +50,13 @@ message's **sequence number**:
   no echo; embed sender identity in the payload if the recipient needs it)
 - `sendChannelMessage` — publish to a channel (membership + `send_messages`
   enforced server-side)
+- `sendRangedChannelMessage(channelId, uuid, payload, origin, maxDistance)`
+  (0.58.0+) — publish to a channel, delivered only to members with a live actor
+  within `maxDistance` chunks of `origin` by straight-line distance, boundary
+  included (`CHANNEL_MESSAGE_RANGED_REQUEST`, 32; see
+  [the channels guide](/game-api/channels#limit-delivery-by-distance)). The origin's
+  app is `Config::appId`; `maxDistance` is 0 to `wire::channel_ranged::kMaxDistance`
+  (2147483647). Members receive an ordinary channel message
 - `sendHeartbeat` — idle keep-alive for your own actor (send every ~2 s while
   idle so presence never lapses)
 

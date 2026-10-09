@@ -30,6 +30,25 @@ number, and each `*_and_wait` variant resolves with the server's echo or raises
 on timeout. Sends are bundled into
 `MESSAGE_BUNDLE` datagrams; `flush_sends()` sends the pending bundle now.
 
+## Channel messages limited by distance
+
+`send_ranged_channel_message` (0.6.0) publishes to a channel but delivers only to the
+members with a live actor within `max_distance` chunks of an origin chunk, by
+straight-line distance with the boundary included. Members receive it through the same
+`channel_message` handler:
+
+```python
+await game.udp.send_ranged_channel_message(
+    channel_id, my_uuid, b"over here", chunk=(10, 0, -4), max_distance=5
+)
+```
+
+A member 3 chunks east and 4 north of the origin (exactly 5) receives it; one 4 east
+and 4 north (about 5.66) does not. The origin's app is the connection's app,
+`max_distance` is 0 to `crowdypy.wire.CHANNEL_RANGED_MAX_DISTANCE` (2147483647), it
+takes the same right as `send_channel_message`, and the sender receives no echo. See
+[the channels guide](/game-api/channels#limit-delivery-by-distance).
+
 ## A game loop
 
 On a hot path, use the connection underneath. It sends a frame's entities in
