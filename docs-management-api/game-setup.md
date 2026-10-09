@@ -269,4 +269,4 @@ Two things about that call, both of which return a clear error rather than faili
 | Invite‑only / paid | `createApp`, then remove the free default tier and define paid tiers | Explicit `grantAppAccess` per player (or after purchase) |
 | Premium tier on an open game | `createApp` + `createAccessTier` (premium) | Free tier auto; premium via `grantAppAccess` |
 
-See the **[GraphQL schema reference](/management-api/reference/graphql-overview)** for exact inputs, and the **[Dev tier](/management-ui/dev-tier)** page for integration‑testing endpoints.
+See the **[GraphQL schema reference](/management-api/reference/graphql-overview)** for exact inputs, and **[Connecting game clients](/management-ui/client-integration)** for the endpoints.
