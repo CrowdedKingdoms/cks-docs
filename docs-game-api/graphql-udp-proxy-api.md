@@ -361,6 +361,7 @@ who left — see [presence](/exec/timers-and-presence#presence).
 | `sendClientEvent` | Send a custom event |
 | `sendSingleActorMessage` | Send a direct message to one actor by UUID (not broadcast) |
 | `sendChannelMessage` | Publish to a channel; delivered to members as `ChannelMessageNotification` (see [Channels](/game-api/channels)) |
+| `sendRangedChannelMessage` | Publish to a channel, delivered only to members with a live actor within `maxDistance` chunks (straight-line) of an origin chunk; members receive the ordinary `ChannelMessageNotification` (see [Limit delivery by distance](/game-api/channels#limit-delivery-by-distance)) |
 | `connectUdpProxy` | Explicitly open a UDP session (optional -- mutations and subscription auto-open) |
 | `disconnectUdpProxy` | Release the UDP session |
 

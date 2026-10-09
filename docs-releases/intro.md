@@ -36,6 +36,34 @@ own CLI is not published either. See
 
 :::
 
+## 2026-10-08 (dev: channel messages limited by distance; replication server v0.35.0, Game API v2.38.0, CrowdyJS 18.5.0, CrowdyCPP 0.58.0, CrowdyPy 0.6.0)
+
+Additive; receivers change nothing.
+
+- **A channel message can reach only the members near an origin chunk.** The new
+  `sendRangedChannelMessage` mutation and the `CHANNEL_MESSAGE_RANGED_REQUEST` UDP message
+  (type 32) take an origin chunk and a `maxDistance` in chunks. A member receives the
+  message when one of its live actors is within that straight-line (Euclidean) distance of
+  the origin, boundary included, so 5 reaches a member 3 chunks east and 4 north but not one
+  4 east and 4 north. Any distance up to 2147483647 is accepted. Members receive the ordinary
+  `ChannelMessageNotification`, the send right is `sendChannelMessage`'s, the sender gets no
+  echo, and a member with no live actor receives nothing. A replication server older than
+  v0.35.0 drops the request. See
+  [Limit delivery by distance](/game-api/channels#limit-delivery-by-distance) and the
+  [wire format](/replication-api/wire-formats#channel_message_ranged_request-client--server).
+- **Channel publishes are rate-limited like every other client message** (replication server
+  v0.35.0). A `CHANNEL_MESSAGE_REQUEST` now counts against the session's message rate, and
+  one over it is dropped; once the session's token has expired it is answered
+  `TOKEN_EXPIRED`. Spatial sends already behaved this way.
+- **CrowdyJS 18.5.0**: `client.udp.sendRangedChannelMessage`, `serializeRangedChannelMessage`
+  and `CHANNEL_RANGED_MAX_DISTANCE`.
+- **CrowdyCPP 0.58.0**: `Connection::sendRangedChannelMessage` and
+  `wire::encodeRangedChannelMessage`. Parity is pinned to CrowdyJS 18.5.0.
+- **CrowdyPy 0.6.0**: `client.udp.send_ranged_channel_message` and
+  `crowdypy.wire.encode_ranged_channel_message`, plus CrowdyJS 18.4.0's terms and age gate:
+  `auth.record_player_consents`, `auth.player_legal_acceptance`, `register`'s
+  `accept_legal` and `attest_age_of_majority`, and `is_legal_acceptance_required_error`.
+
 ## 2026-10-07 (Unreal SDK v2.18.0: Server Objects; Game Models deprecated)
 
 Server Objects are additive; the Game Model deprecation below is not, and

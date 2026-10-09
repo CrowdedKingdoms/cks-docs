@@ -213,6 +213,46 @@ subscription {
 Messages are **ephemeral** — the server routes them and does not store history.
 Keep your own log client-side if you need scrollback.
 
+## Limit delivery by distance
+
+`sendRangedChannelMessage` publishes to a channel but delivers only to the members
+near an origin chunk, such as a shout heard by party members in earshot or a squad
+order for the members on the same front. A member receives it when one of its live
+actors is in the origin's app and within `maxDistance` chunks of `chunk`, measured as
+the straight-line distance between chunk coordinates with the boundary included.
+
+```graphql
+mutation {
+  sendRangedChannelMessage(input: {
+    channelId: "12",
+    uuid: "0123456789abcdef0123456789abcdef",  # your actor UUID (32 bytes)
+    payload: "aGVsbG8=",                        # base64, app-defined, <= 1024 bytes
+    appId: "42",                                # the app this token is for
+    chunk: { x: "10", y: "0", z: "-4" },        # the origin, usually the sender's chunk
+    maxDistance: 5,                             # chunks, inclusive
+    sequenceNumber: 2
+  })
+}
+```
+
+- **Distance is Euclidean, not the spatial rings.** A member 3 chunks east and 4 north
+  of the origin is exactly 5 away and receives it with `maxDistance: 5`; one 4 east and
+  4 north is about 5.66 away and does not, although the Chebyshev rings of spatial
+  messages put both in ring 4. `maxDistance: 0` reaches only the origin chunk. Any distance up to
+  2147483647 is accepted; there is no cap of 8.
+- **Members receive the ordinary `ChannelMessageNotification`**, so nothing changes on
+  the receiving side. A member whose actors are all out of range, and a member with no
+  live actor at all, receives nothing. The sender gets no echo.
+- **The same right as `sendChannelMessage`**: an active member holding
+  `send_messages`. The origin `appId` must be the token's app. Refusals arrive on
+  `udpNotifications` as a `GenericErrorResponse` with your `sequenceNumber`:
+  `UNAUTHORIZED` without the send right, `INVALID_APP_ID` for another app.
+- A grid token may send it into one of its grid's channels from a chunk inside its
+  box, as for the other grid-scoped sends (see [Grid tokens](grid-tokens)).
+
+Native clients send the `CHANNEL_MESSAGE_RANGED_REQUEST` UDP message (type 32; see the
+[Replication API wire formats](/replication-api/wire-formats#channel_message_ranged_request-client--server)).
+
 ## Reference
 
 See the [Game API GraphQL reference](/game-api/reference/graphql/graphql-overview)

@@ -92,3 +92,32 @@ Notes:
 - The sender receives **no echo** of its own message.
 - Payloads are opaque (base64) and messages are ephemeral — keep your own
   scrollback client-side if needed.
+
+## Limit delivery by distance
+
+`client.udp.sendRangedChannelMessage` (CrowdyJS 18.5.0) publishes to a channel but
+delivers only to the members with a live actor within `maxDistance` chunks of an
+origin chunk, by straight-line distance with the boundary included. Members receive
+it through the same `channelMessage` handler, so the receiving code above does not
+change.
+
+```ts
+await game.udp.sendRangedChannelMessage({
+  channelId: channel.groupId,
+  uuid: myActorUuid,
+  payload: Buffer.from('over here').toString('base64'),
+  appId: '1',                        // the app this game client's token is for
+  chunk: { x: '10', y: '0', z: '-4' }, // the origin, usually your actor's chunk
+  maxDistance: 5,                    // chunks, inclusive
+  sequenceNumber: 2,
+});
+```
+
+A member 3 chunks east and 4 north of the origin (exactly 5) receives it; one 4 east
+and 4 north (about 5.66) does not. `maxDistance` is 0 (the origin chunk only) to
+`CHANNEL_RANGED_MAX_DISTANCE` (2147483647); a larger one, or a payload over 1024 bytes,
+is refused with a `CrowdyGraphQLError` and reaches nobody. It takes the same right as `sendChannelMessage`, the
+sender receives no echo, and a member with no live actor receives nothing. On the
+binary relay it is sent as the `CHANNEL_MESSAGE_RANGED_REQUEST` datagram
+(`serializeRangedChannelMessage`); see the
+[Game API channels guide](/game-api/channels#limit-delivery-by-distance).
