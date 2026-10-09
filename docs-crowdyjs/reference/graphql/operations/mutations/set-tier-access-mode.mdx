@@ -1,0 +1,39 @@
+---
+id: set-tier-access-mode
+title: setTierAccessMode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+SUPER ADMIN: set this tier to OBSERVE (log what would be refused) or ENFORCE. Refused on prod, where the gate is always off.
+
+
+```graphql
+setTierAccessMode(
+  mode: TierAccessStoredMode!
+): TierAccessSettings!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setTierAccessMode.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TierAccessStoredMode!</b></code>](/reference/graphql/types/enums/tier-access-stored-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#mode\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>TierAccessSettings</b></code>](/reference/graphql/types/objects/tier-access-settings.mdx) <Badge class="badge badge--secondary " text="object"/> 
+OPERATOR: the tier-access settings of this tier.

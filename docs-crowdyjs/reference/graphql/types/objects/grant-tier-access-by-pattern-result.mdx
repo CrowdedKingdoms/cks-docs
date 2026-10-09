@@ -1,0 +1,48 @@
+---
+id: grant-tier-access-by-pattern-result
+title: GrantTierAccessByPatternResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: the result of a bulk grant by pattern.
+
+
+```graphql
+type GrantTierAccessByPatternResult {
+  matched: Int!
+  granted: Int!
+  dryRun: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>GrantTierAccessByPatternResult.<b>matched</b></code>](#matched)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#matched\} 
+Accounts the pattern matches that lack a grant.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GrantTierAccessByPatternResult.<b>granted</b></code>](#granted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#granted\} 
+Accounts granted (0 on a dry run).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GrantTierAccessByPatternResult.<b>dryRun</b></code>](#dry-run)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#dry-run\} 
+
+
+
+
+
+### Returned By
+
+[`grantTierAccessByPattern`](/reference/graphql/operations/mutations/grant-tier-access-by-pattern.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

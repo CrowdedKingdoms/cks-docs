@@ -1,0 +1,108 @@
+---
+id: input-log-message
+title: InputLogMessage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One recorded client input: the message exactly as the client sent it, without its trailing authentication bytes.
+
+
+```graphql
+type InputLogMessage {
+  receivedAt: DateTime!
+  receivedAtMicros: BigInt!
+  userId: BigInt!
+  gameTokenId: BigInt!
+  messageType: Int!
+  seq: Int!
+  fromBundle: Boolean!
+  signed: Boolean!
+  sizeBytes: Int!
+  body: String!
+  chunkX: BigInt
+  chunkY: BigInt
+  chunkZ: BigInt
+  actorUuid: String
+  channelId: BigInt
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>receivedAt</b></code>](#received-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#received-at\} 
+When the realtime server received the message.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>receivedAtMicros</b></code>](#received-at-micros)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#received-at-micros\} 
+The receive time in Unix microseconds (receivedAt at full precision).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The user whose client sent the message.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>gameTokenId</b></code>](#game-token-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#game-token-id\} 
+The game token the message was sent on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>messageType</b></code>](#message-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message-type\} 
+The client message type (its first byte).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>seq</b></code>](#seq)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#seq\} 
+The message's sequence byte, as the client sent it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>fromBundle</b></code>](#from-bundle)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#from-bundle\} 
+True when the message arrived inside a client message bundle.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>signed</b></code>](#signed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#signed\} 
+False when the message type is one accepted without a signature.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>sizeBytes</b></code>](#size-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#size-bytes\} 
+Recorded size in bytes, record header included: what stored input logs are billed on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>body</b></code>](#body)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#body\} 
+The message bytes, base64: the client message from its type byte up to, not including, its authentication tail.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>chunkX</b></code>](#chunk-x)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#chunk-x\} 
+Chunk x of a spatial message's target chunk; null for other types.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>chunkY</b></code>](#chunk-y)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#chunk-y\} 
+Chunk y of a spatial message's target chunk; null for other types.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>chunkZ</b></code>](#chunk-z)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#chunk-z\} 
+Chunk z of a spatial message's target chunk; null for other types.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>actorUuid</b></code>](#actor-uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#actor-uuid\} 
+The 32-character actor uuid of a spatial message; null for other types.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogMessage.<b>channelId</b></code>](#channel-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#channel-id\} 
+The channel of a channel message; null for other types.
+
+
+
+
+### Member Of
+
+[`InputLogMessageEdge`](/reference/graphql/types/objects/input-log-message-edge.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

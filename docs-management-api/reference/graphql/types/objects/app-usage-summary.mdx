@@ -29,6 +29,8 @@ type AppUsageSummary {
   automationRuns: String!
   automationInvocations: String!
   automationComputeUnits: String!
+  inputLogByteHours: String!
+  inputLogRetainedBytes: String!
 }
 ```
 
@@ -69,6 +71,14 @@ Legacy: function invocations of the removed automation engine over the window (s
 
 #### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>automationComputeUnits</b></code>](#automation-compute-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#automation-compute-units\} 
 Legacy: billed compute units of the removed automation engine over the window (string counter). Always 0 for usage since the legacy engines were removed; kept for the API shape until the migration.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>inputLogByteHours</b></code>](#input-log-byte-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#input-log-byte-hours\} 
+Stored input logs over the window, in byte-hours (string counter): the sum of the hourly samples, which is the quantity input&#x005F;log&#x005F;storage&#x005F;byte&#x005F;hours bills. Each recorded byte (InputLogMessage.sizeBytes) is held for the input log retention, one byte-hour per hour. 0 when replay logging was off.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>inputLogRetainedBytes</b></code>](#input-log-retained-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#input-log-retained-bytes\} 
+Recorded input-log bytes the app holds now (string counter): the latest hourly sample, the bytes recorded within the trailing retention. 0 when replay logging has never been on.
 
 
 

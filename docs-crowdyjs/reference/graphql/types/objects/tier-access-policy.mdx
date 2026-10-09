@@ -1,0 +1,53 @@
+---
+id: tier-access-policy
+title: TierAccessPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Whether this tier is an internal (staff-only) environment, for the sign-in pages. Public.
+
+
+```graphql
+type TierAccessPolicy {
+  restricted: Boolean!
+  enforced: Boolean!
+  message: String
+  publicStudioUrl: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessPolicy.<b>restricted</b></code>](#restricted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#restricted\} 
+True on dev and test: accounts need a verified company address, an operator listing or a provisioning grant.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessPolicy.<b>enforced</b></code>](#enforced)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enforced\} 
+True when refusals are enforced; false while a restricted tier only logs them (observe), and off the restricted tiers. Read by the control plane status check.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessPolicy.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
+A sentence for the sign-in pages to show when restricted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessPolicy.<b>publicStudioUrl</b></code>](#public-studio-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#public-studio-url\} 
+Production Studio, where outside developers create accounts.
+
+
+
+
+### Returned By
+
+[`tierAccessPolicy`](/reference/graphql/operations/queries/tier-access-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

@@ -29,6 +29,8 @@ type AppUsageProjection {
   freeAllowanceBytes: String!
   projectedPctOfFree: Float
   onTrackToExceed: Boolean
+  inputLogByteHours: String!
+  projectedInputLogByteHours: String
 }
 ```
 
@@ -69,6 +71,14 @@ Projected usage as a percentage of the free allowance, or null when insufficient
 
 #### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>onTrackToExceed</b></code>](#on-track-to-exceed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#on-track-to-exceed\} 
 True when projected egress exceeds the free allowance, or null when insufficient data.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>inputLogByteHours</b></code>](#input-log-byte-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#input-log-byte-hours\} 
+Stored input logs this calendar month so far, in byte-hours (input&#x005F;log&#x005F;storage&#x005F;byte&#x005F;hours, which has no free allowance). 0 when replay logging was off all month.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>projectedInputLogByteHours</b></code>](#projected-input-log-byte-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#projected-input-log-byte-hours\} 
+Projected end-of-month stored input logs in byte-hours (linear extrapolation), or null when insufficient data.
 
 
 

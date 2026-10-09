@@ -1,0 +1,83 @@
+---
+id: tier-access-inventory
+title: TierAccessInventory
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: who on this tier would be refused.
+
+
+```graphql
+type TierAccessInventory {
+  tier: String
+  mode: TierAccessMode!
+  totalAccounts: Int!
+  granted: Int!
+  grantedByVia: [TierAccessCount!]!
+  pending: Int!
+  denied: Int!
+  accountsTotal: Int!
+  accounts: [TierAccessInventoryAccount!]!
+  orgsWithoutGrantedMember: [TierAccessInventoryOrg!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventory.<b>tier</b></code>](#tier)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventory.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TierAccessMode!</b></code>](/reference/graphql/types/enums/tier-access-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#mode\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventory.<b>totalAccounts</b></code>](#total-accounts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#total-accounts\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventory.<b>granted</b></code>](#granted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#granted\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventory.<b>grantedByVia</b></code>](#granted-by-via)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[TierAccessCount!]!</b></code>](/reference/graphql/types/objects/tier-access-count.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#granted-by-via\} 
+Granted accounts by reason.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventory.<b>pending</b></code>](#pending)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#pending\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventory.<b>denied</b></code>](#denied)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#denied\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventory.<b>accountsTotal</b></code>](#accounts-total)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#accounts-total\} 
+Refused (pending + denied) accounts in total.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventory.<b>accounts</b></code>](#accounts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[TierAccessInventoryAccount!]!</b></code>](/reference/graphql/types/objects/tier-access-inventory-account.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#accounts\} 
+A page of the refused accounts, newest first.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventory.<b>orgsWithoutGrantedMember</b></code>](#orgs-without-granted-member)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[TierAccessInventoryOrg!]!</b></code>](/reference/graphql/types/objects/tier-access-inventory-org.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#orgs-without-granted-member\} 
+
+
+
+
+
+### Returned By
+
+[`tierAccessInventory`](/reference/graphql/operations/queries/tier-access-inventory.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

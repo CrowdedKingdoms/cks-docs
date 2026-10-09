@@ -1,0 +1,48 @@
+---
+id: tier-access-mode
+title: TierAccessMode
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+How the dev/test staff-only gate behaves on this tier. OFF on prod and on any tier that is not dev or test; OBSERVE logs what would be refused; ENFORCE refuses.
+
+
+```graphql
+enum TierAccessMode {
+  OFF
+  OBSERVE
+  ENFORCE
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessMode.<b>OFF</b></code>](#off) \{#off\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessMode.<b>OBSERVE</b></code>](#observe) \{#observe\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessMode.<b>ENFORCE</b></code>](#enforce) \{#enforce\} 
+
+
+
+
+
+### Member Of
+
+[`TierAccessInventory`](/reference/graphql/types/objects/tier-access-inventory.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`TierAccessSettings`](/reference/graphql/types/objects/tier-access-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
