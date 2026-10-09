@@ -32,6 +32,11 @@ So in practice there is one model, and this page describes it.
   resolvers and your app's [ck-exec](/exec/intro) code, and
   **1 GB-month of stored data**. Egress is the headline number and the one most
   games reach first. Unused quota does not roll over.
+- **Stored input logs have no free allowance.** An app records nothing until an
+  org member with `manage_apps` turns on replay logging (`updateApp(appId,
+  { replayLoggingEnabled: true })`), which is refused with
+  `INPUT_LOG_FUNDS_NEEDED` unless the org wallet has a spendable balance. See
+  [Input logging](/replication-api/input-logging).
 - **You are billed for bytes, CPU and storage — never for counts.** A datagram,
   an API operation or a notification is paid for by the bytes it moves and the
   CPU it takes; there is no per-message, per-operation or per-notification rate
@@ -56,6 +61,17 @@ headers each frame carries, and it is counted after any compression the service
 applies. A `MESSAGE_BUNDLE` datagram carrying several messages is one frame and is
 metered once, in either direction. A client-side byte counter will not match it. The full basis is in the
 [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html).
+
+**What counts as a stored input-log byte.** `input_log_storage_byte_hours` is
+measured in recorded bytes: each input counts at its record size — the
+`sizeBytes` that `inputLogMessages` returns, a fixed header plus the message —
+before compression and replication, so you can add it up yourself. Each byte is
+billed for exactly the input log's retention (7 days, 168 hours), so 1 GB
+recorded is 168 GB-hours, 0.23 GB-month; it is priced per GB-month on the rate
+card in your account and on the
+[pricing page](https://crowdedkingdoms.com/pricing.html). `appUsageSummary`
+reports an app's byte-hours and the bytes it holds now, and
+`appUsageProjection` the month so far and a projection.
 
 **Volume bands.** A line on the rate card can be priced in graduated volume
 bands, and egress is: the more an app sends in a UTC calendar month, the lower
