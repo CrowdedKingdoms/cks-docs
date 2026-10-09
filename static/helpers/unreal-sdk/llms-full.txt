@@ -5,7 +5,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/intro
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.14**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.18**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
 
 :::note[This guide is written for Unreal Engine 5.8 and a C++ project.]
 Gameplay can be driven entirely from Blueprint, but the plugin itself compiles as C++, so your project needs a C++ target. See [Installation](./installation.md).
@@ -67,9 +67,9 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 ## Step 1: Get the release
 
-Download the `v2.16.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+Download the `v2.18.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
 
-:::note[The release you install must match the version this guide describes (2.16).]
+:::note[The release you install must match the version this guide describes (2.18).]
 :::
 
 ## Step 2: Place the plugin at `Plugins/CrowdySDK`
@@ -123,7 +123,7 @@ Enabling `CrowdySDK` brings in all ten of its modules. You never enable them one
 | `CrowdyStudio` | Editor | Crowdy Studio, the management console: sign-in, apps, Config Sync, authoring pages. |
 
 The Game Model pieces are legacy: the game API no longer serves game models, so nothing built on
-them reaches a server. After v2.17.0 the SDK marks them deprecated and their calls fail at once, and a
+them reaches a server. Since v2.18.0 the SDK marks them deprecated and their calls fail at once, and a
 later release removes them. Keep the state
 your game must trust in your server code on [ck-exec](/exec/intro); see
 [Move from Game Models](./exec/move-from-game-models.md) and [the two planes](./concepts/two-planes.md).
@@ -159,7 +159,7 @@ Or from a command line, which is what a build machine runs:
 "C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat" YourProjectEditor Win64 Development -Project="C:\Path\To\YourProject.uproject" -WaitMutex
 ```
 
-The first build compiles the whole plugin and takes a few minutes. The log ends with `Link [x64] UnrealEditor-CrowdyStudio.dll` and `Result: Succeeded`. Expect a few warnings from a third-party header inside the plugin (a `C4324` padding warning from the vendored client's `spsc.hpp`, and two `CS0618` obsolete-property warnings from its `Build.cs`); they are harmless and repeat on every build.
+The first build compiles the whole plugin and takes a few minutes. The log ends with `Link [x64] UnrealEditor-CrowdyStudio.dll` and `Result: Succeeded`. Expect a few warnings from a third-party header inside the plugin (a `C4324` padding warning from the vendored client's `spsc.hpp`); they are harmless and repeat on every build.
 
 Once it compiles, the SDK subsystems are available in both C++ and Blueprint.
 
@@ -880,7 +880,7 @@ Every piece of networked state in the SDK lives on one of two planes. The view p
 **Plane B, the truth plane (your server code).** Gameplay state the game must be able to trust: hit points, stats, inventory, currency, anything a client could benefit from lying about. The server owns it: your app's code on [ck-exec](/exec/intro) holds it, and a client asks that code for a change, which it decides and confirms. This is the only place a rule is enforced.
 
 :::caution[The SDK reaches ck-exec through Server Objects.]
-The SDK's own truth-plane API (Game Model containers and attributes, `CrowdyModel` markers, Crowdy Effects, invoke policies and sessions) was built on the game API's legacy game-model engine, which ck-exec replaced. The game API no longer serves it, so do not build on it: after v2.17.0 the SDK marks it deprecated and every call to it fails at once, and a later release removes it. Its replacement is [Server Objects](../exec/overview.md), from Blueprint or C++. See [Move from Game Models](../exec/move-from-game-models.md).
+The SDK's own truth-plane API (Game Model containers and attributes, `CrowdyModel` markers, Crowdy Effects, invoke policies and sessions) was built on the game API's legacy game-model engine, which ck-exec replaced. The game API no longer serves it, so do not build on it: since v2.18.0 the SDK marks it deprecated and every call to it fails at once, and a later release removes it. Its replacement is [Server Objects](../exec/overview.md), from Blueprint or C++. See [Move from Game Models](../exec/move-from-game-models.md).
 :::
 
 :::note[The elected host is a convention, not an enforcement point.]
@@ -1099,7 +1099,7 @@ The session channel is a shared transport, named `__crowdy_session_<appId>`, tha
 A match is state the game must be able to trust (its roster, its host, whose turn it is, the score), so it lives on the [truth plane](./two-planes.md), in your server code. On ck-exec that is a hub for the match: the `session` [starter pack](/exec/builds#starter-packs) keeps one game from lobby to result, with a host, ready checks, turns with a time limit, and a winner.
 
 :::caution[The SDK's Game Model sessions are gone.]
-The SDK's own session API (Create, Join, Leave and End on the Game Model subsystem, and the active session) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. After v2.17.0 the SDK marks it deprecated and every call fails at once, and a later release removes it. A match is a [Server Object](../exec/overview.md) (from Blueprint or C++); see [Move from Game Models](../exec/move-from-game-models.md).
+The SDK's own session API (Create, Join, Leave and End on the Game Model subsystem, and the active session) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. Since v2.18.0 the SDK marks it deprecated and every call fails at once, and a later release removes it. A match is a [Server Object](../exec/overview.md) (from Blueprint or C++); see [Move from Game Models](../exec/move-from-game-models.md).
 :::
 
 ## Gotchas
@@ -1215,7 +1215,7 @@ The sidebar on the left lists the pages. A toggle at the top folds it to icons (
 | **Teams** | AUTHORING | Yes | Author teams, members, roles, and the team policy. See [Teams and Channels](./teams-and-channels.md). |
 | **Channels** | AUTHORING | Yes | Author named channels and the session channel. |
 | **Grid** | AUTHORING | Yes | Author spatial permission regions. See [Grids](./grids.md). |
-| **Game Model** | AUTHORING | Yes | The legacy Game Model schema. The game API no longer serves it, and after v2.17.0 the SDK deprecates it: the page shows a banner, does not load its lists, and refuses schema sync, pre-seeding, purge and Game Kit deploy. Its tier-features panel still works. See [Move from Game Models](../exec/move-from-game-models.md). |
+| **Game Model** | AUTHORING | Yes | The legacy Game Model schema. The game API no longer serves it, and since v2.18.0 the SDK deprecates it: the page shows a banner, does not load its lists, and refuses schema sync, pre-seeding, purge and Game Kit deploy. Its tier-features panel still works. See [Move from Game Models](../exec/move-from-game-models.md). |
 | **Inspector** | DEBUG | No | A read-only view of a running Play in Editor session. See [Inspector and Registry](./inspector-and-registry.md). |
 | **Registry** | DEBUG | No | The baked metadata that ships in packaged builds, and the button that rebuilds it. |
 | **Web Console** | | Yes | Pinned at the bottom: opens the browser console for admin surfaces. |
@@ -2100,7 +2100,7 @@ The shipped default profile leaves **Backend Config** at None and runs on the bu
 | `MaxTrackedActors` | 4096 | How many network-received actors may be tracked at once. A bound on forged ids, not a performance setting; set it above the largest crowd you intend to show. |
 | `MaxUpdatesPerBatch`, `MaxBatchWaitTime` | 100, 5 ms | How updates for not-yet-seen entities are batched off the game thread. |
 
-The tracker's events, all on the game thread: `OnRemoteEntityAppeared` (an id seen for the first time, with its `InitialState`), `OnRemoteEntityTimedOut` (this client heard nothing for `ActorTimeoutThreshold`), `OnRemoteEntityLeft` (the server said it is gone, with an `FCrowdyActorLeft` carrying the `ECrowdyActorLeftReason`: `Stale`, or `SessionReleased` when the server ended that actor's session), and `OnRemoteEntityLeftAnnounced` (every departure, including one for an actor this client never held, for code keeping its own per-sender state). Whichever of timed-out and left reaches an actor first is the only one that reports it. The delegate types are `FOnActorSpawnRequested`, `FOnActorTimeoutRequested`, `FOnActorLeftReported` (used by both departure events), and `FOnActorUpdateGameThreadBatch`. `Configure`, `ToggleOwnerTracking`, and `ToggleBroadcastUpdatesToGameThread` change the same settings at runtime; `FCrowdyActorUpdate` is the batch element. `crowdy.replication.tracker.maxgatheredupdates` caps the backlog of gathered updates for actors already on screen. You do not normally touch any of this: the actor manager and the [rendering backend](./rendering-backends.md) consume it for you.
+The tracker's events, all on the game thread: `OnRemoteEntityAppeared` (an id seen for the first time, with its `InitialState`), `OnRemoteEntityTimedOut` (this client heard nothing for `ActorTimeoutThreshold`), `OnRemoteEntityLeft` (the server said it is gone, with an `FCrowdyActorLeft` carrying the `ECrowdyActorLeftReason`: `Stale`, or `SessionReleased` when the server ended that actor's session), and `OnRemoteEntityLeftAnnounced` (every departure, including one for an actor this client never held, for code keeping its own per-sender state). Whichever of timed-out and left reaches an actor first is the only one that reports it. The delegate types are `FOnActorSpawnRequested`, `FOnActorTimeoutRequested`, `FOnActorLeftReported` (used by both departure events), and `FOnActorUpdateGameThreadBatch`. `Configure`, `ToggleOwnerTracking`, and `ToggleBroadcastUpdatesToGameThread` change the same settings at runtime; `FCrowdyActorUpdate` is the batch element, carrying `PayloadTypeID`, the payload type id the sender's state blob led with, kept even when no struct is registered for it on this client. `crowdy.replication.tracker.maxgatheredupdates` caps the backlog of gathered updates for actors already on screen. You do not normally touch any of this: the actor manager and the [rendering backend](./rendering-backends.md) consume it for you.
 
 ## Looking entities up
 
@@ -3584,8 +3584,11 @@ The fallback arrived in 2.15.0. On 2.14.0 and earlier an empty Backend Config, o
 |---|---|---|
 | `ReplicationPolicyClass` | none | Your `UCrowdyRepApplicationPolicy` subclass. Unset means `UCrowdyTransformRepPolicy`, which moves the proxy from `FCrowdyActorState`; set it when your executor sends more than the transform, and move the proxy yourself in it. |
 | `PoolPolicyClass` | none, optional | A `UCrowdyActorPoolPolicy` subclass. Unset means the concrete base, which already hides pooled actors, shows them on activation, and strips proxy movement. |
-| `DefaultPoolSizePerClass` | 8 | Pools are created lazily per entity class at this size. |
-| `PerClassPoolOverrides` | empty | A per-class pool size; a class listed here is also pre-warmed at map load. |
+| `DefaultPoolSizePerClass` | 8 | Pools are created lazily per entity class with this many actors made up front. |
+| `PerClassPoolOverrides` | empty | A per-class up-front size; a class listed here is also pre-warmed at map load. |
+| `MaxPoolSizePerClass` | 256 | How far a class's pool may grow. When every actor is in use, the pool spawns one more, up to this cap (never below the up-front size). |
+
+A pool that is full grows by one actor at a time, spawned during play with collision off until it is activated. At the cap, a new entity of that class waits: it is activated as soon as another entity of the class leaves, or, if its spawn event already made an actor for it, that actor is kept and drawn instead of being replaced. Nothing is dropped. The cap is there so a flood of made-up entity ids from a misbehaving peer cannot make your client spawn without limit; raise it if you legitimately expect more than 256 live remote entities of one class.
 
 :::caution[A custom executor needs a matching policy. The default policy reads FCrowdyActorState and refuses anything else.]
 `UCrowdyTransformRepPolicy` skips an update whose struct is not `FCrowdyActorState`, so a Dynamic entity whose executor sends its own struct stands still until its profile names a policy that reads it. `UCrowdyRepApplicationPolicy` has two pure virtuals and requires a subclass; `UCrowdyActorPoolPolicy` ships full bodies and is meant to be instantiated as is.
@@ -3720,7 +3723,7 @@ void ULanternRepPolicy::OnInstanceDeactivated(int32 SlotId)
 
 `UCrowdyActorPoolPolicy` decides what a pooled actor does at three moments, each a `BlueprintNativeEvent` a Blueprint subclass can implement without C++: `OnActorPooled(Actor)` once per actor right after it is spawned into the pool, `OnActorActivated(Actor, InitialState)` when it is checked out (its `InitialState` is empty in the shipped pool, and the identity lands on the component right after it returns), and `OnActorDeactivated(Actor)` when it goes back. The base hides and shows the actor and disables proxy movement; subclass only to add per-actor behaviour at those moments.
 
-Pooled actors are genuinely spawned (`SpawnActorDeferred` and `FinishSpawning`), so their constructors and Blueprint-added components run. Before `BeginPlay` the pool marks any entity component on them dormant, so a pre-warmed actor registers no entity and no listener while it stands for nothing. `UCrowdyActorPoolSubsystem::RegisterPool(FCrowdyPoolConfig)` (`ActorClass`, `PoolPolicyClass`, `PoolSize`) is what the backend calls to create a pool, a no-op for a class that already has one; `AcquireActor` and `ReleaseActor` check actors out and in. `crowdy.pool.trace 1` logs spawn, release, and reuse.
+Pooled actors are genuinely spawned (`SpawnActorDeferred` and `FinishSpawning`), so their constructors and Blueprint-added components run. Before `BeginPlay` the pool marks any entity component on them dormant, so a pre-warmed actor registers no entity and no listener while it stands for nothing. `UCrowdyActorPoolSubsystem::RegisterPool(FCrowdyPoolConfig)` (`ActorClass`, `PoolPolicyClass`, `PoolSize`, `MaxPoolSize`) is what the backend calls to create a pool, a no-op for a class that already has one, and `HasPool(Class)` says whether one exists; `AcquireActor` checks an actor out, growing the pool up to `MaxPoolSize` when every actor is in use, and `ReleaseActor` checks it back in. `crowdy.pool.trace 1` logs spawn, release, reuse, and growth.
 
 ## What a pooled proxy does and does not do
 
@@ -3740,7 +3743,7 @@ The pool is fed only by inbound network state, so the owner ends up with the loc
 
 ## Writing a backend
 
-Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendConfig` subclass carrying whatever your backend needs (an instanced mesh, a pool size). Four overrides are required and two optional:
+Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendConfig` subclass carrying whatever your backend needs (an instanced mesh, a pool size). Four overrides are required and three optional:
 
 | Override | Required | Contract |
 |---|---|---|
@@ -3750,6 +3753,7 @@ Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendCo
 | `ApplyInterpolation(SlotId, RenderTimeMs)` | yes | Apply the interpolated state; `RenderTimeMs` is already offset by the interpolation delay. |
 | `InitializeBackend(World, Config)` | no | Acquire subsystems, read the config. Return false, after logging the reason and the remedy, when you cannot draw with what you were given; the manager refuses you rather than installing you. |
 | `DeinitializeBackend()` | no | Release what you held. |
+| `IsInstanceActive(SlotId)` | no | Whether `SlotId` holds something drawn. Return false when `ActivateInstance` could not acquire a resource (a full pool), and the actor manager calls `ActivateInstance` again once capacity may have freed or the entity registers. The default, true, never retries. |
 
 `DrawsEntitiesAsCrowdRows()` is one more, for a backend that represents entities without spawning an actor of the entity's class; the editor reads it off the class default object to decide whether to show authoring surfaces that only make sense on that representation. The default is false. A Mass Entity based backend exists as a separate, opt-in plugin and is the only current override; it is not part of the core SDK and is out of scope for this guide.
 
@@ -3765,7 +3769,7 @@ The actor manager is already the single caller of `ActivateInstance` and `Deacti
 - A policy built on `TInterpolatedField` is the smooth choice for anything that moves. Sample it at `RenderTimeMs`, never at the newest sample: the delay is what hides the network.
 - `bUseCrowdyActorTracker` off on the profile means no tracker, no manager, and no backend at all.
 - A pooled proxy's spawn-time look comes from class defaults or the state struct, never the spawn payload.
-- Pool exhaustion is a warning per entity, `Pool exhausted for <class>`, and the entity is not drawn until a slot frees. Raise `DefaultPoolSizePerClass` or add a `PerClassPoolOverrides` row.
+- A pool at its cap warns once per class, naming the class and `MaxPoolSizePerClass`; each entity it could not draw is a `crowdy.pool.trace` line, not a warning, since it is retried. Raise `MaxPoolSizePerClass` if you see the warning. On 2.16.0 and earlier, a pool never grew past `DefaultPoolSizePerClass` (8), every entity past that was dropped with a warning and never retried, and its spawn-event actor was destroyed first; see [What's Changed](../guides/whats-changed.md#2026-09-26-sdk-v2170).
 - A class that arrives over the wire before it is loaded cannot be drawn; see Preloaded Entity Classes on [Entities and spawning](./entities-and-spawning.md).
 
 ## Related
@@ -4247,7 +4251,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/overview
 # What a Server Object is
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170). You can use them from Blueprint or from C++; see [From Blueprint](./from-blueprint/get-a-server-object.md) and [From C++](./from-cpp/get-a-server-object.md).
+Server Objects run on [ck-exec](/exec/intro). You can use them from Blueprint or from C++; see [From Blueprint](./from-blueprint/get-a-server-object.md) and [From C++](./from-cpp/get-a-server-object.md).
 :::
 
 A Server Object is a piece of game state that lives on the server and that every player sees the same way. The server keeps its values, saves them, and is the only thing that changes them. Your game reads the values it is allowed to see, is told each time they change, and asks for a change by calling one of its **Server Functions**. The server decides, and every player watching sees the result.
@@ -4295,7 +4299,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/create-a-type
 # Create a Server Object type
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 Each type of [Server Object](./overview.md) is described by one data asset of the class `UCrowdyServerObjectDefinition`. The asset names the variables the server keeps, which of them players may see, and the functions players may call. The SDK reads it at runtime to encode and decode every value, and the type's server code is generated from it, so both sides agree on every name.
@@ -4508,7 +4512,7 @@ In both, the second list stays empty until the first is chosen ("Choose the stru
 
 **Server Code** (set on the editor's Server Code tab, not in Details)
 
-- **Code Source**: where this type's Server Functions come from. **Generated** (the default) uses `Server/<Type Name>/src/logic.rs`, the file Generate Server Code writes once and never replaces. **My Own File** uses a `.rs` file of your own instead, for example one shared in your repo. It is the combo beside the file's path on the tab.
+- **Code Source**: where this type's Server Functions come from. **Generated** (the default) uses `Server/<Type Name>/src/logic.rs`, the file Generate Server Code writes once and never replaces. **My Own File** uses a `.rs` file of your own instead, for example one shared in your repo. It is the combo beside the file's path on the tab. In C++ the choice is the enum `ECrowdyServerCodeSource`, with the values `Generated` and `OwnFile`.
 - **Logic File**: your `.rs` file, relative to the project folder, chosen with the folder button on the Server Code tab. The button is shown, and the file used, only when Code Source is My Own File; with My Own File and no file chosen, the type cannot be generated or deployed, and the messages say "Code Source is My Own File but no file is chosen". The tab shows the file's state and code; see [Write its server logic](./write-server-logic.md#the-server-code-tab) and [Use your own logic file](./write-server-logic.md#use-your-own-logic-file). Both settings are editor-only, like the Description.
 
 **Baked** (in the Advanced group, read only)
@@ -4582,7 +4586,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/access-members-and-time
 # Access, members and timers
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 Some rules are the same in every game: only the players of a team may spend the team's gold, a match starts once and only its leader starts it, a purchase can be made once a minute. You can write each of them in `logic.rs`, or you can set them in the [definition asset](./create-a-type.md) and let the server code the editor generates enforce them before your code runs. Then `logic.rs` holds only the rules that are truly yours.
@@ -4681,6 +4685,8 @@ The panel's **Built-in** section then lists six functions, greyed out, each with
 
 **Add Member** exists so that one type can seat players in another, as a registry does; see [Guild Halls](./examples/guild-halls-and-arenas.md#guild-halls).
 
+The inputs of **Add Member**, **Remove Member** and **Make Leader** are the struct `FCrowdyServerMemberInputs`, whose one field is `Player`. The input of **Set Open for Joining** is `FCrowdyServerOpenInputs`, whose one field is `bOpen`.
+
 ### The leader
 
 - The first member to join is the leader.
@@ -4713,7 +4719,7 @@ Give an actor the Server Object of the player's team with the component's **Play
 Under **Timers & Events**, a **Timer** is something your Server Object does on a clock, each with:
 
 - **Name**: what it is called. Not empty, unique, and not the name of a function.
-- **Runs**: **Every**, which runs again and again, **Time** apart, or **Once After**, which runs once, **Time** after it starts.
+- **Runs**: **Every**, which runs again and again, **Time** apart, or **Once After**, which runs once, **Time** after it starts. In C++ this is the enum `ECrowdyServerTimerRepeat`, with the values `Every` and `After`.
 - **Time**: in seconds, at least 0.01.
 - **Start Automatically**: on by default. It starts when the Server Object first starts. With it off, your code starts it.
 
@@ -4828,7 +4834,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/relate-server-objects
 # Relate Server Objects to each other
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 A game rarely has one Server Object on its own. A player has a stash, a guild has a hall, a hall sits in a registry, a match reports to a leaderboard. This page shows how to model those relations with the settings you already have: the Instance Id, **Readable By**, **Members From**, **Only One Instance** and **Can Call**. Nothing here is a separate feature.
@@ -4921,7 +4927,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/write-server-logic
 # Write its server logic
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 A Server Object's values change only when its server code says so. That code is a small Rust crate, one per type, which the editor writes from the type's [definition asset](./create-a-type.md). Most of it is generated and kept in step with the definition; the part that decides what a Server Function does is yours, and the generator never touches it again once it exists.
@@ -5223,7 +5229,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/deploy-with-server-comp
 # Deploy it with Server Compute
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 Once a type's [server code](./write-server-logic.md) is generated and its `logic.rs` written, the server still has to run it. **Server Compute** is the page in [Crowdy Studio](../studio/overview.md) that builds your project's server code on the platform, deploys it to your app, and then lets you watch it work: which version is live, what it logged, how players' calls to each Server Function went, and a switch to stop one type if it misbehaves. There is nothing to install: the build happens on the platform, so no Rust toolchain is needed on your machine.
@@ -5480,7 +5486,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/troubleshooting
 # Troubleshooting
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 This page is for Blueprint and C++ alike. In Blueprint, **Get Status** and **Get Failure Reason** are the nodes for what `GetStatus()` and `GetFailureReason()` answer in C++, and **On Failed** carries the **Outcome**, **Reason** and **Retryable** that `OnDone` receives. On a **Call** node those three pins are in the advanced area: click the small arrow at the bottom of the node to show them.
@@ -5613,7 +5619,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/unreal-and-ck-exec-name
 # Unreal and ck-exec names
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 The SDK names things the way an Unreal project would. The platform's [ck-exec pages](/exec/intro), its operations tools and its logs use their own words. This table maps one to the other.
@@ -5655,7 +5661,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/move-from-game-models
 # Move from Game Models
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them or the deprecation below; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 The SDK's Game Model API is deprecated and does nothing, and a later release removes it. It was built on a game API engine that ck-exec replaced, so it has no server to talk to. This page says what you will see in your project, what takes the place of each part, and how to move a system across. The replacement is [Server Objects](./overview.md), from Blueprint or C++.
@@ -5724,7 +5730,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-blueprint/get-a-se
 # Get a Server Object
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 Everything on the [C++ pages](../from-cpp/get-a-server-object.md) can be done from Blueprint, and most of it needs no variable, no cast and no setup of your own. Open any Blueprint graph, type the name of a variable or function from a [definition asset](../create-a-type.md), and pick the node that appears. The node reads the variable, tells you when it changes, or calls the function, with a real pin for every value. A Blueprint and a C++ class can use the same Server Object at the same time.
@@ -5762,6 +5768,8 @@ Every typed node needs a Server Object. There are three ways to give it one.
   - **Signed-In Player**: the signed-in player's own object, for an [Owner Only](../from-cpp/get-a-server-object.md#owner-only-types) type.
   - **Player's Team**: the signed-in player's [Crowdy Team](../access-members-and-timers.md#crowdy-team). A **Team Id** pin picks the team when the player is in several; 0 uses the first.
 
+  In C++ the choice of **Instance** is the enum `ECrowdyServerObjectFind`, with the values `InstanceId`, `SignedInPlayer` and `PlayersTeam`.
+
   The object is acquired the first time a node of this Blueprint uses it, and held while the Blueprint lives. Right-click the node and choose **Use Target** to go back.
 - **Only One Instance.** A type with [Only One Instance](../access-members-and-timers.md#only-one-instance) has just the one object, so its nodes need neither a Target nor an Instance. Place the node and use it.
 
@@ -5775,7 +5783,7 @@ The typed nodes take **Self** as the default **Target**, so the simplest way to 
   - **Signed-In Player**: the signed-in player's user id. Use it for an [Owner Only](../from-cpp/get-a-server-object.md#owner-only-types) type, so each player gets their own. The component waits for the player to sign in, and joins again after a new sign-in or a new account.
   - **This Actor**: the actor's placement in the level, which is the same on every player's machine. Only for an actor placed in the level with the component already on it, not one spawned at run time or given the component at run time.
   - **Player's Team**: the signed-in player's [Crowdy Team](../access-members-and-timers.md#crowdy-team), for a type whose **Members From** is **Crowdy Team**. **Team Id** picks the team; 0 uses the player's only team. The component gets the player's teams if the game has not, and joins again when **On My Teams Changed** runs. A player in several teams fails with "This player is in 2 teams; set Team Id": set **Team Id**, then call **Rejoin**.
-  - **From Server Value**: the Instance Id is a variable of another Server Object, followed as it changes. Set **Source Definition**, **Source Instance** (**Instance Id**, with **Source Instance Id**, or **Signed-In Player**) and **Source Variable**, a String or an integer. While the variable is empty the component waits ("Waiting for TeamId"), and when it changes the component joins the new one. See [Guild Halls](../examples/guild-halls-and-arenas.md#guild-halls).
+  - **From Server Value**: the Instance Id is a variable of another Server Object, followed as it changes. Set **Source Definition**, **Source Instance** (the enum `ECrowdyServerObjectSourceInstance`: **Instance Id**, with **Source Instance Id**, or **Signed-In Player**) and **Source Variable**, a String or an integer. While the variable is empty the component waits ("Waiting for TeamId"), and when it changes the component joins the new one. See [Guild Halls](../examples/guild-halls-and-arenas.md#guild-halls).
 
 ![The Crowdy Server Object component: Definition CSO_VillageBeacon, Instance Mode Instance Id, Instance Id oakford](/img/unreal-sdk/server-object-component.png)
 
@@ -5787,15 +5795,15 @@ If you change **Definition** or **Instance Id** in a graph after the actor has b
 
 | Event or node | What it does |
 |---|---|
-| **On Variables Changed** (event) | Runs after every change of the Variables players can see, and once when they are first read. It gives the Server Object and the names that changed. |
-| **On Status Changed** (event) | Runs when the Server Object's status changes. **Object** is None when it could not be joined. |
+| **On Variables Changed** (event) | Runs after every change of the Variables players can see, and once when they are first read. It gives the Server Object and the names that changed. The delegate is `FCrowdyServerVariablesChanged`. |
+| **On Status Changed** (event) | Runs when the Server Object's status changes. **Object** is None when it could not be joined. The delegate is `FCrowdyServerStatusChanged`, which gives the Server Object and its status. |
 | **Get Server Object** | The Server Object the component holds, or None before it joins one or after it could not. |
 | **Get Failure Reason** | Why there is no usable Server Object, or empty. |
 | **Rejoin** | Joins again. |
 
 ## Without the component
 
-The component is a convenience over the same nodes. You can use them from any Blueprint, such as a widget that shows the beacon's oil without owning it:
+The component is a convenience over the same nodes. You can use them from any Blueprint, such as a widget that shows the beacon's oil without owning it. These nodes, and **Set Server Value** and **Get Server Value**, are in the function library `UCrowdyServerObjectLibrary`:
 
 - **Get Server Object**: takes a **Definition**, an **Instance Id** and an **Owner** (which defaults to the Blueprint itself), and returns the Server Object, or None with **Error** saying why. Owners that ask for the same one share it. It is held until the owner is destroyed.
 - **Release Server Object**: stops one owner holding it, for an owner that lives on after it stops needing it, such as a widget that is reused.
@@ -5828,7 +5836,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-blueprint/read-and
 # Read and follow its variables
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 Players see the variables their [definition](../create-a-type.md) marks **Visible to Players**. The typed nodes read them and follow their changes, each with a real pin of the variable's type. The examples use the village beacon, whose `CSO_VillageBeacon` asset has `Oil`, `bLit` and a Server Only `LastFedBy`. Every node here needs a Server Object; see [Get a Server Object](./get-a-server-object.md#where-the-object-comes-from).
@@ -5897,7 +5905,7 @@ Select the component and add its **On Variables Changed** event. The event runs 
 | Node | What it does |
 |---|---|
 | **Get Variables** | The Variables the server last sent, to read with **Get Server Value**. They hold their defaults until the object is Ready. |
-| **Watch Variables** | Takes an event and runs it after every change, with the names that changed. If the Variables are already current it also runs once at once, naming them all. |
+| **Watch Variables** | Takes an event (the delegate `FCrowdyServerVariablesEvent`) and runs it after every change, with the names that changed. If the Variables are already current it also runs once at once, naming them all. |
 | **Stop Watching Variables** | Removes an event that **Watch Variables** was given. |
 | **Get Members** | The user ids of the members, in the order they joined. Only for a type whose **Members From** is **This Object** with **Show Members to Players** on; empty otherwise. |
 | **Get Member Count** | How many members there are, even when the list is not shown. |
@@ -5933,7 +5941,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-blueprint/call-fun
 # Call its functions
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 A client never changes a Server Object's values. It calls one of the Server Functions its [definition](../create-a-type.md) lists, and the server decides. The examples use the village beacon's `FeedBeacon` function, which takes an `Oil` amount and answers with the oil the beacon now holds. Every node here needs a Server Object; see [Get a Server Object](./get-a-server-object.md#where-the-object-comes-from).
@@ -5985,7 +5993,7 @@ The generic **Call Server Function** under **Server Objects** has a **Function**
 
 The figure is steps 1 to 4 only: it has no trigger event, no **Is Valid** and nothing on **On Success** or **On Failed**, and it reads the Server Object from a component variable named `Beacon`. Add your own trigger and the **Is Valid**, and wire step 5.
 
-**Call Server Function** here is the one with no **Function** dropdown, found under **Crowdy SDK > Server Objects**; it takes a Server Object and Inputs. It is latent like the typed one, and its **On Success** and **On Failed** behave the same.
+**Call Server Function** here is the one with no **Function** dropdown, found under **Crowdy SDK > Server Objects**; it takes a Server Object and Inputs. It is latent like the typed one, and its **On Success** and **On Failed** behave the same. Both are the delegate `FCrowdyServerCallDone`, which carries **Outputs**, **Outcome**, **Reason** and **Retryable**.
 
 **Make Inputs** returns a function's Inputs with their default values, and is empty when the function takes none.
 
@@ -6010,7 +6018,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-blueprint/pins-for
 # Pins for every type
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 The typed nodes give every value a pin of its own type, so none needs a cast. This page is what the pins are, and what happens to them when the asset changes.
@@ -6062,7 +6070,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-cpp/get-a-server-o
 # Get a Server Object
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 A game never creates a `UCrowdyServerObject` itself. It asks `UCrowdyServerObjectSubsystem`, a game instance subsystem, for the one matching a [definition asset](../create-a-type.md) and an Instance Id, and names an owner: the object that needs it. The subsystem keeps the Server Object connected for as long as it has an owner, and shares it between every owner that asks for the same one.
@@ -6212,14 +6220,14 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-cpp/read-and-follo
 # Read and follow its variables
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 The variables a [definition](../create-a-type.md) marks **Visible to Players** are a Server Object's public face. The SDK keeps a copy of them current on every client that has the Server Object, and tells your code each time the server changes them.
 
 ## React to changes
 
-`WatchValues` takes a listener and returns an `FDelegateHandle`. The beacon watches its Server Object right after acquiring it, and sets its light from the oil and the lit flag:
+`WatchValues`, a function of `UCrowdyServerObject`, takes a listener and returns an `FDelegateHandle`. The beacon watches its Server Object right after acquiring it, and sets its light from the oil and the lit flag:
 
 ```cpp
 // VillageBeacon.h
@@ -6303,7 +6311,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-cpp/call-functions
 # Call its functions
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 A client never changes a Server Object's values. It asks, by calling one of the Server Functions its [definition](../create-a-type.md) lists, and the server's code decides what happens. Each function says who can call it, with [Callable By](../create-a-type.md#callable-by): **Players**, **Members**, **Leader** or **Server Only**, which refuses a player's call. A function can also have a **Cooldown**, and a number input a **Value Range**; see [Access, members and timers](../access-members-and-timers.md). The answer comes back to the caller; the change, if there is one, reaches every player through the [variables they can see](./read-and-follow-variables.md).
@@ -6407,7 +6415,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/examples/tip-jar
 # Tip jar: your first Server Object
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 This page builds the village square's tip jar. Every villager can drop a coin in, and everyone sees the same running total. The total is worth keeping on the server, so nobody can tip a thousand coins from a modified client. You use only the editor and Blueprints; the one piece of code is a few lines of Rust that you paste.
@@ -6537,7 +6545,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/examples/guild-halls-an
 # Guild halls and arena lobbies
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 Two things Oakford's players do in groups, built from the settings on [Access, members and timers](../access-members-and-timers.md). Each shows the settings on the asset, the few lines of `logic.rs` that are left, and the Blueprint side.
@@ -6690,7 +6698,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/examples/shared-boss
 # Shared boss fight
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 The Hollow Giant stalks Oakford's north road. Every player who passes can hit it, and all of them see the same health bar fall. Its health is the kind of number a client must never decide, so it lives on the server as a Server Object: one boss, however many players are hitting it.
@@ -7349,7 +7357,7 @@ it current for you:
   replaces a newer one.
 
 Read it for the value to show now; treat a query's result and `OnMyTeamsCacheChanged` as the update that
-follows. In C++, `ClearMyTeamsCache()` empties it by hand; it is not exposed to Blueprint.
+follows. In C++, `ClearMyTeamsCache()` empties it by hand and `RefreshMyTeams()` asks for the player's teams again, with the answer arriving through `OnMyTeamsCacheChanged`; neither is exposed to Blueprint.
 
 | Call | Returns |
 |---|---|
@@ -8660,6 +8668,8 @@ section with the full fix and the trace CVar that confirms it.
 | [Nothing replicates on a map](#nothing-replicates-at-all) | A `MapProfiles` row or `DefaultProfile` names an asset that did not load, or networking is off on the resolved profile | Fix the asset path the warning names, or tick Enable Networking | `crowdy.entity.trace` |
 | [Actors do not appear at all](#rendering-backend-not-set) | The map profile's Backend Class was cleared | Assign a `UCrowdyRenderingBackend` subclass | `crowdy.entity.trace` |
 | [Entities register but are never drawn](#entities-register-but-are-never-drawn) | Backend Config empty, or its Replication Policy Class unset (2.14.0 and earlier) | Set a Crowdy Actor Pool Backend Config with a policy class | `crowdy.entity.trace` |
+| [Only some remote entities of a class appear](#only-some-remote-entities-of-a-class-appear) | The actor pool never grew past 8 per class (2.16.0 and earlier), or it is at `MaxPoolSizePerClass` | Update to 2.17.0; raise the cap if it warns | `crowdy.pool.trace` |
+| [A player who just joined is invisible until they move](#a-player-who-just-joined-is-invisible-until-they-move) | A known server issue: the actor's first update is refused and later ones are not relayed to other players | Nothing on the client fixes it yet; moving recovers | `crowdy.net.trace` |
 | [An RPC never runs on other clients](#events-are-not-received) | Missing entity component, unregistered entity, recipient/distance settings, or a registry gap | Work through the four sub-causes in order | `crowdy.rpc.trace` |
 | [A remote entity shows as the wrong class](#a-remote-entity-cannot-be-targeted) | The entity's class was never loaded on this client | Add the class to Preloaded Entity Classes | `crowdy.entity.trace` |
 | [A CrowdyState property does nothing on a crowd-rendered actor](#a-crowdystate-property-does-nothing-on-the-crowd) | Mass-rendered entities need their own field registration | See the rendering backend's own docs | n/a |
@@ -8721,6 +8731,33 @@ this state no longer occurs. On an older plugin, set **Backend Config** on the m
 Actor Pool Backend Config asset and its **Replication Policy Class** to a `UCrowdyRepApplicationPolicy`
 subclass; see [Rendering backends](../runtime/rendering-backends.md) and
 [What's changed](./whats-changed.md).
+
+## Only some remote entities of a class appear
+
+Another client spawns twenty entities of one class and this client shows eight. On 2.16.0 and earlier the
+actor pool held `DefaultPoolSizePerClass` actors (8) per class and never grew: every entity past that logged
+`Pool exhausted for <class>` and was never drawn, and one whose spawn event had already made an actor lost
+that actor too.
+
+Fix: update to 2.17.0, where the pool grows on demand up to `MaxPoolSizePerClass` (256) and an entity it
+cannot draw yet is retried instead of dropped. If the log says a pool "is at its cap", raise
+`MaxPoolSizePerClass` on the map profile's Actor Pool Backend Config. `crowdy.pool.trace` logs each
+activation, each growth step, and each entity waiting at the cap; see
+[Rendering backends](../runtime/rendering-backends.md#configure-it).
+
+## A player who just joined is invisible until they move
+
+A player spawns and stands still, and the other players do not see them until they take a step; this can last
+a minute or more. The client is sending correctly. The replication server refuses each actor's first update
+with `UNAUTHORIZED` while it loads the player's permissions, which is expected and logged once as "The server
+rejected a send: code 7 (Unauthorized) ... ACTOR_UPDATE_REQUEST". Every later update is accepted, but the server
+does not relay that actor to the other players, nor theirs to it, until the actor moves. This is a server issue
+and has been reported.
+
+Confirm it with `crowdy.net.trace 1` on both clients: each client's log shows its own actor coming back to it
+(`Received opcode 130 for actor <its own id>`) every few seconds, and no line for the other player's actor until
+one of them moves. "Transport totals" should show no verification failures and no drops. Until the server is
+fixed, the actor becomes visible to everyone as soon as it moves.
 
 ## Events are not received
 
@@ -9156,13 +9193,9 @@ The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, ea
 
 ## When you come here
 
-You built against the SDK in July, you are updating the plugin to 2.15 or later, and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), and, in 2.15.0, the array delegates.
+You built against the SDK in July, you are updating the plugin to 2.15 or later (2.18.0 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), and, in 2.15.0, the array delegates.
 
-:::caution[The Game Model entries below no longer reach a server.]
-The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The entries that describe it are kept as history. Do not adopt it: after v2.17.0 the SDK marks it deprecated and makes every call fail at once, and a later release removes it. Its replacement is [Server Objects](../exec/overview.md), described under [Unreleased](#unreleased-after-v2170); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
-:::
-
-## Unreleased (after v2.17.0)
+## 2026-10-07 (SDK v2.18.0)
 
 - **The Game Model API is deprecated and does nothing; a later release removes it.** It covers Game Model containers and attributes (the `CrowdyModel` and `CrowdyContainer` markers and container tags), model functions and Invoke Model Function, Crowdy Effects and the Apply Effect nodes, invoke policies, sessions and turns, collections, container manifests and pre-seeding, the Game Kits, automations and signals, **Listen for Model Changes**, `UCrowdyGameModelSubsystem` and the libraries `UCrowdyModel`, `UCrowdyGameModel`, `UCrowdyModelValue` and `UCrowdyEffects`. Every call now fails at once, once: an async node fires its **Failed** pin immediately with "Game Models are deprecated and no longer available; use Server Compute." (code `GAME_MODEL_DEPRECATED`), **Listen for Model Changes** never fires, nothing is sent to a server, waited for or retried, reads return their defaults (**Get Local User Id** still answers), and the SDK logs the deprecation once per run. In C++ the classes and functions are marked deprecated, so the compiler warns (C4996 on MSVC) wherever your code names one; they are warnings only, and nothing fails unless your project treats warnings as errors. In Blueprint the Game Model library functions and the subsystem's events show the engine's deprecation warning, and each Blueprint that uses Game Models also gets one compiler warning listing its uses (the first 12, then how many more), `[CrowdySDK] This Blueprint uses Game Models, which are deprecated and no longer available; move it to a Server Object (Server Compute). Uses: ...`, when it compiles, loads or cooks; assets still load, save and cook. The deprecated library functions no longer appear in the Blueprint context menu, and the editor silently drops a deprecated call node when you paste or duplicate it unless **Expose Deprecated Functions** is on in Editor Preferences; the async Game Model nodes and the Apply Effect nodes are still listed, and the per-Blueprint warning flags them. A **Failed** pin wired straight back into the same node with no **Delay** used to retry once per frame; it now calls itself straight away, because the failure is immediate, and can hang or crash the game. **Get Local User Id** is replaced by **Get User ID** on the Crowdy Game Session. In Crowdy Studio the Game Model page shows a deprecation banner and no longer loads its lists, schema sync, pre-seeding, purge and Game Kit deploy refuse with the same message, and the tier-features panel on that page keeps working; in a Crowdy Effect asset's editor the sync status in the toolbar reads "Deprecated". In CrowdyMass, Game Model values no longer land on crowd entities: **Get Crowdy Mass Model Value** answers "no fragment" and **Bind Entity Model Containers** binds nothing and returns 0; landing Server Object values on crowd entities is planned for a later release. A subsystem tagged as a Game Model container is no longer registered as an entity participant by the Game Model system. **What you do:** take this release and read the warnings, which name the uses; author each system as a Server Object type and switch the call sites; add a **Delay** to, or remove, any **Failed** loop; and seed any data that must persist with a one-off script, since nothing moves automatically. Server Objects need ck-exec on your app's environment, so a project can finish moving once its environment has it. See [Move from Game Models](../exec/move-from-game-models.md).
 - **Server Objects: server-owned state on ck-exec, from C++.** A new module, `CrowdyExec`, lets a game use server code on [ck-exec](/exec/intro) without meeting the platform's vocabulary. A `UCrowdyServerObjectDefinition` data asset describes one type: the struct the server keeps, the fields players may watch, and the Server Functions they may call. `UCrowdyServerObjectSubsystem::Acquire` hands out a shared `UCrowdyServerObject` per definition and Instance Id, held for its owners and given back 10 seconds after the last one is gone; `WatchValues` reports each server change once, naming every field it touched; `Call` sends a params struct and completes once with an `FCrowdyServerCallResult` whose `ECrowdyServerCallOutcome` says what happened, after the SDK has retried a busy server; a call the server may already have run is never repeated for you. Log category `LogCrowdyExec`. **What you do:** nothing unless you adopt it. To adopt it, add `CrowdyExec` to your module's `Build.cs`, and deploy the type's server code to your app; C++ only for now, with Blueprint support to come. See [Server Logic](../exec/overview.md).
@@ -9205,6 +9238,31 @@ The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seed
   - **Lists that start with different values get their own struct in the generated server code.** Lists that share a shape (one copied from the other) shared one struct, and later ones became `pub type X = Y;` aliases that took the first List's starting values. Now a List that starts with different values gets its own struct and defaults, and one that starts with the same values stays an alias. Generate shows a notice when a List switches, such as "TipReply is now its own struct, since its starting values differ from those of TipJarState; code that uses one for the other no longer builds." **What you do:** generate again; fix any `logic.rs` that used one of those types for the other. See [Create a Server Object type](../exec/create-a-type.md#variables-inputs-and-outputs-or-a-struct).
   - **Moving or renaming a definition asset keeps its server code findable.** Saving a moved or renamed definition updates the record in its crate's `Cargo.toml`, so a later Type Name change still finds the folder. See [After you change the definition](../exec/write-server-logic.md#after-you-change-the-definition).
   - **Fixed:** a Ready Server Object no longer keeps an earlier read refusal's text as its failure reason once a read succeeds.
+- **Actor updates carry their payload type id.** `FCrowdyActorUpdate` gains `PayloadTypeID`, the payload type id the sender's state blob led with, kept even when no struct is registered for it on this client. The stranded and evicted pending-activation warnings, for an entity waiting on a spawn event that never resolves its class, now print that id when the state could not be decoded instead of saying the payload cannot be named. **What you do:** nothing; it is diagnostic. See [Entities and spawning](../runtime/entities-and-spawning.md).
+- **The CrowdySDK module no longer lists HTTP as a public dependency.** It never used it. A game module that only picked up Unreal's HTTP module because it came in through `CrowdySDK`'s public dependencies now needs `"HTTP"` in its own `Build.cs`. Separately, the `CrowdyCppBridge` module's build no longer prints a precompiled-header warning or the two `CS0618` obsolete-property warnings. **What you do:** add `"HTTP"` to your module's dependency list if your code calls it and relied on this. See [Installation](../installation.md#step-4-add-the-module-dependencies).
+- **Test-only accessors on `FCrowdyCppClient` are compiled only with automation tests.** `MakeForTest`, `GetLastTestRequest`, `GetLastTestRequestBody`, `SetTestStampsHandOff`, `SetTestResponseScript`, `SetTestOnRequest`, and the `Test*WebSocket*` helpers, and `FCrowdyCppLoopback::SetTimeForTests` / `ClearTimeForTests`, now exist only when `WITH_DEV_AUTOMATION_TESTS` is set, never in Shipping. **What you do:** guard any code that calls them behind the same `WITH_DEV_AUTOMATION_TESTS` check.
+- **Updates for actors not yet on screen wait in a bounded queue.** They used to queue without limit while the worker threads that place them were stalled. Past `crowdy.replication.tracker.maxqueuedupdates` (default 8192), a further update is dropped, counted, and reported in a warning at most once a second; the actor appears on a later update. A working client never reaches it. **What you do:** nothing; if you see the warning, the worker pool is not keeping up. See [Console variables](../reference/console-cvars.md#behavior-switches).
+
+:::caution[The Game Model entries below no longer reach a server.]
+The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The entries that describe it are kept as history. Do not adopt it: since v2.18.0 the SDK marks it deprecated and makes every call fail at once, and a later release removes it. Its replacement is [Server Objects](../exec/overview.md), described under [SDK v2.18.0](#2026-10-07-sdk-v2180); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
+:::
+
+## 2026-09-26 (SDK v2.17.0)
+
+- **The actor pool grows instead of dropping entities.** Up to and including 2.16.0 a class's pool held `DefaultPoolSizePerClass` actors (8) and never grew, so a client with more than eight live remote entities of one class drew only eight: the rest logged "Pool exhausted" and were never retried, and one whose spawn event had already made an actor lost that actor too, destroyed before the pool was asked. A Game Model container bound to such an entity never bound. Now a full pool spawns one more actor, up to the new `MaxPoolSizePerClass` on the Actor Pool Backend Config (default 256); the up-front sizes stay as they were. The spawn event's actor is only replaced once a pool actor is secured, and at the cap it is kept and drawn instead. An entity the pool cannot draw yet is retried when another of its class leaves or when its spawn event registers it, and the cap warns once per class instead of once per entity (each waiting entity is now a `crowdy.pool.trace` line). In the sandbox's two-client test, the observing client went from 0 of 20 respawned entities alive and bound to all 20. A custom rendering backend can take part in the retry by overriding the new optional `UCrowdyRenderingBackend::IsInstanceActive`. **What you do:** nothing; raise `MaxPoolSizePerClass` if a pool warns it is at its cap. See [Rendering backends](../runtime/rendering-backends.md#configure-it).
+- **A remote destroy no longer hands a still-live pool actor to another entity.** When a destroy event with a destroy delay arrived and the entity then left the tracker inside that delay, the pool actor went back to the pool, was given to the next entity, and was destroyed under it when the delay ran out, leaving that entity invisible until it timed out. The actor now stays with the destroy until it is gone, and an entity that keeps sending after its actor was destroyed is activated again. An actor's `EndPlay` also no longer removes the entity record of an actor that replaced it under the same id. **What you do:** nothing.
+- **More trace lines for entities that do not appear.** `crowdy.entity.trace` now logs the success path too: "Spawn dispatched", "Spawn received" and "Entity registered", each with the id, class and location. `crowdy.pool.trace` logs each activation, each pool growth step, and each entity waiting at the cap. `crowdy.net.trace` logs every spatial message received (opcode, actor, chunk) and the transport's totals, so "the server never sent it" can be told apart from "the client dropped it". **What you do:** nothing; see [Troubleshooting](./troubleshooting.md#only-some-remote-entities-of-a-class-appear).
+- **Known server issue: a player who just joined can stay invisible until they move.** The replication server refuses an actor's first update while it loads permissions, then accepts every later one but does not relay the actor to other players, or theirs to it, until it moves. The SDK sends what it should; this has been reported. See [Troubleshooting](./troubleshooting.md#a-player-who-just-joined-is-invisible-until-they-move).
+- **A string value that changes only in letter case is now a change.** Unreal compares strings without regard to case by default, and the Game Model used that comparison to decide whether a value changed, so `alice` becoming `Alice` was never applied: the member kept the old spelling and no `CrowdyOnRep` or change delegate fired. It now applies like any other change, on pulls, confirmed invokes, and free containers. The same fix reaches the editor: Crowdy Studio's sync preview now shows a value, policy, or effect expression that changed only in case (it used to report nothing and never send it), the **Apply Effect** node keeps a string input you set to a different case of its default instead of dropping it, including after the Blueprint is reloaded, and the effect script editor keeps an edit that only changes case. **What you do:** nothing; the first sync after updating may upload a function whose stored text differs from your project only in case, once.
+- **Your own invokes no longer pull back what they just wrote.** The notification the server sends for your own invoke used to be dropped once per container, so several quick invokes on one container pulled it again for all but the first. The SDK now expects one notification per invoke, counted when the request is sent, and drops that many, each expiring three seconds after its invoke; an invoke that fails or writes nothing gives its count back, and pulls instead if its notification was already dropped. Since a dropped notification could have been another client's write, a container that had one dropped is pulled once more within about three seconds. In the sandbox, a client invoking its own row ten times a second for a minute went from 118 pulls of that row to 29 (20 of them the three-second catch-up), with the watching client still pulling every change. `crowdy.gamemodel.stats` gains `SelfEchoMarksExpired` and `SelfEchoBackstopPulls`, and `SelfInvokesMarked` now counts invoke attempts sent (a retried invoke counts each attempt). **What you do:** nothing; another client's write to a container you are writing yourself can take up to about three seconds to show, where before it usually came with the next pull. See [Change pings and pull](../exec/move-from-game-models.md).
+- **Your copies of other players' entities bind from one paged list per type, and first pulls after a bind are merged.** A remote proxy used to read its owner's row by key, one call each and again on every retry while the owner had not created it yet; it now joins the same paged list shared entities use, under the session active when it is listed, and one the list does not find yet waits for the next list instead of calling on its own. A copy never creates its owner's row. A copy-only list reads at most one page per copy it looks for; a type with more rows than that (an app-wide per-player type) is marked, and its copies read one key at a time from then on. The first pull after any container binds now waits the usual tenth of a second, so entities binding together read their state in one bulk call, and every entity bound to that container receives it; an invoke you send while that pull waits keeps its value when the pull lands. In the sandbox's two-client test, the observing client bound the same 40 copies with 10 list calls instead of 140 keyed reads, and the spawning client read the state of its 200 new containers in 10 calls instead of 200. `crowdy.gamemodel.bulkresolve`'s help now names remote copies, and `crowdy.gamemodel.stats` gains `BulkResolveListPages`. **What you do:** nothing; a newly bound entity may show its defaults up to a tenth of a second longer than before. See [Pre-seeding](../exec/move-from-game-models.md) and [Change pings and pull](../exec/move-from-game-models.md).
+- **At most one state-applying pull per container is ever in flight, and a pull that would overlap it is held and merged instead of sent again.** A change notification, **Refresh Game Model** (`PullNow`), a first bind, or a bulk bind requested while a pull of that container is already out waits for it to land, then follows up: an explicit request (Refresh Game Model, a bulk bind) is sent right away, a notification or a first bind goes back through the usual tenth-of-a-second merge window. A bulk bind leaves out a container already being pulled. A read that never applies state (the combat kit's **Get Combatant State**, for example) is never held. `PullNow`'s tooltip now says it pulls now, or right after a read of that container already in flight lands, and `PullDataContainer`'s `OnDone` fires exactly once for the read that lands after the call, its own or the follow-up. Separately, a pull landing after your own invoke already wrote a newer value no longer rolls that value back: a key your invoke wrote after the pull was sent keeps the invoke's value, and if the pulled value actually differed, one follow-up pull is queued to re-converge the row; a key written before the pull is not protected, since the pull is newer. This does not cover another client's write landing in that same window, which still reaches you through the next notification as before. `crowdy.gamemodel.stats` gains `PullsHeldBehindInFlight`, `FollowUpPulls`, and `StaleKeysSkipped`, printed as `pulls held behind in flight N follow-ups N stale keys skipped N`; `OverlappingPulls` now counts only pulls that still applied state while another was out despite this, and should read near zero. **What you do:** nothing to keep working; a caller polling `PullNow` in a tight loop now gets fewer actual round trips for the same calls, not more state. See [Change pings and pull](../exec/move-from-game-models.md).
+- **The SDK now retries a platform-busy refusal on its own before the caller ever sees a failure.** A query (a container state read, a bulk state read, a `ListContainers` page, or any other SDK query) resends on any refusal the platform blames on itself and marks retryable, except `WRONG_DATACENTER` (the SDK already follows that redirect) and `APP_UNAVAILABLE` (nowhere else to serve it). A container ensure and a `gameModelInvoke` resend only on `PLATFORM_BUSY`, the one code that means the work never started, so nothing is ever applied twice. At most 3 retries, waiting the server's suggested time when it names one (at least 0.1 s, plus up to 20% jitter, and not retried past 5 s) or a random 0.1-0.2 s doubled each time otherwise; at most 256 requests may be waiting out a backoff at once, past which a refusal goes straight to the caller. An invoke's busy retries run beside its existing rate-limit retry (`RATE_LIMITED`, 2 retries): the two caps are separate, and every attempt still counts toward the SDK's local invoke allowance window. `crowdy.net.retry.busy` (default 1, every build) turns it off, handing every refusal straight to the caller as before. `crowdy.gamemodel.stats` gains `Retries` / `RecoveredByRetry` per operation and an `invoke busy retries N recovered M gave up K` line (`InvokeBusyRetries` / `InvokeBusyRecovered` / `InvokeBusyGaveUp` on `UCrowdyGameModelSubsystem::GetNetStats`); a failure reason now counts only the final outcome, not each retried attempt. `UCrowdyGameModelSubsystem::IsBusyRefusal` and `FCrowdyCppJsonResult::Blame` / `bRetryable` / `RetryAfterMs` are new. **What you do:** nothing to keep working; a caller that built its own retry loop around a busy refusal is now retrying on top of the SDK's own retries. See [Console variables](../reference/console-cvars.md#behavior-switches), [Coalescing](../exec/move-from-game-models.md), and [Change pings and pull](../exec/move-from-game-models.md).
+- **The SDK now asks for HTTP/2 on its own requests by default.** `crowdy.net.http2` (default 1, every build including Shipping, read per request) sets `IHttpRequest`'s HTTP version to `2TLS`, falling back to HTTP/1.1 when the server does not offer it; plain `http://` stays HTTP/1.1 regardless. Only the SDK's own requests are affected: the game's other HTTP traffic and the engine's `http.CurlAllowHTTP2` are untouched. On the test tier, multiplexing took a burst of 300 reads in 10 seconds from about 7.2 s p50 to 0.41 s, and stopped an unrelated call issued mid-burst from being delayed behind it. **What you do:** nothing to keep working, but read the caveat before you rely on the default: with HTTP/2 on, a request that fails at the network level (not a cancel or a timeout) can have its curl diagnostics logged at `Warning` with the request headers, bearer token included, in any build with logging enabled (a default Shipping build compiles logging out); set `crowdy.net.http2 0` if you ship or collect logs from a build with logging enabled. Faster delivery also means a burst reaches the server together, so expect more `PLATFORM_BUSY` refusals under heavy bursts; the SDK retries those on its own, see the busy-retry entry below. See [Console variables](../reference/console-cvars.md#behavior-switches) and [Change pings and pull](../exec/move-from-game-models.md).
+- **`ListContainers` now reads every matching row instead of only the server's first page.** It pages the server 1000 rows at a time until a short page, up to 50 pages (50,000 rows), logging a warning if it stops there with more left unread; a failed page fails the whole call (`bOk` false, no partial list), and a row the server returns on two pages comes back once. For an app-scoped type, `SessionId` is now ignored the same way create and ensure already ignore it. `FCrowdyCppClient::ListContainers` at the bridge layer is unchanged and still returns one page. **What you do:** nothing to keep working, but a caller that assumed at most 200 rows back may now see more, and a caller that actually wanted only the first page has no way to ask for that anymore. See [Collections and Free Containers](../exec/move-from-game-models.md).
+- **The invoke allowance governor now counts only invokes.** A pull, a list, an ensure, or any other Game Model read used to spend the same 120-per-10s allowance as a `gameModelInvoke`, which could stretch the coalesce merge window, the refresh-pull merge window, and container manifest pre-seeding under pure read traffic. Now an invoke is counted only when its request actually starts (a budget retry counts again); the coalesce window still widens as invokes approach the allowance, but the refresh-pull merge window no longer widens and manifest pre-seeding is no longer paced by the invoke count at all. **What you do:** nothing to keep working; a project whose pulls or a large manifest apply were being slowed down by the old shared counting should see that stop. See [Coalescing](../exec/move-from-game-models.md) and [Pre-seeding containers](../exec/move-from-game-models.md).
+- **`crowdy.gamemodel.stats` splits each operation's latency into SDK time and HTTP time, breaks its failures down by reason, and adds in-flight and dispatched counts.** Each op row gains `SdkP50Ms` / `SdkP95Ms` (request created to handed off to the engine's HTTP module) and `HttpP50Ms` / `HttpP95Ms` (handed off to completion delivered, including any wait inside the HTTP module, the network, the server, and up to one frame for delivery); a cancelled request records no SDK/HTTP split. `FCrowdyGameModelOpStatsRow::FailureReasons` (and the log line's `failures: CODE xN, CODE xM`) counts each failure under the server's error code, or `graphql`, `http <status>`, `rejected`, `canceled`, or `transport` when there is none, up to eight reasons per op with the rest under `other`. Transport totals gain `InFlight` and `PeakInFlight`; net stats gain `InvokesDispatched`. No behavior changed. **What you do:** nothing; it is read-only, and a high HTTP time next to a low SDK time on the same op points at queueing inside the engine's HTTP module, not the SDK or the network. See [Change pings and pull](../exec/move-from-game-models.md).
+- **New network diagnostics for the Game Model path.** `crowdy.gamemodel.stats` logs op calls, failures, and latency per server operation; pull counts and how many were redundant or overlapping; self-echo counts; resolves and re-resolves; invokes in the rate window beside the SDK's own governor count; transport bytes; the top pulled containers; and invoke faults by code, since the last reset. `crowdy.gamemodel.stats.reset` zeroes it. Both are new console commands, stripped from Shipping builds like the existing watch commands. The same numbers are on `UCrowdyGameModelSubsystem` in C++: `GetNetStats`, `ResetNetStats`, `GetInvokesInWindow`, `GetOpStats`, `DescribeNetStats`. No behavior changed. **What you do:** nothing; it is read-only. See [Change pings and pull](../exec/move-from-game-models.md) and [Console variables](../reference/console-cvars.md#diagnostic-commands).
 
 ## 2026-09-23 (SDK v2.16.0)
 
@@ -9363,7 +9421,7 @@ Blueprint function libraries (`UCrowdyUtilities`, `UCrowdyStateBlueprintLibrary`
 Eight of the manifest's 28 subsystem classes do not appear in the table above:
 
 - `UCrowdyCppClientSubsystem`, `UCrowdyCppReplicationSubsystem`, `UCrowdySDKBridgeSubsystem`, `UCrowdyWorkerThreadsSubsystem`: the vendored CrowdyCPP bridge and its worker threads. The game-facing surface is `UCrowdySDKSubsystem`; see [Connection and reconnect](../runtime/connection-and-reconnect.md).
-- `UCrowdyGameModelSubsystem` and `UCrowdyActiveSessionMemory`: the SDK's Game Model API and the memory that carried its active session across a map travel. The game API no longer serves it, so after v2.17.0 the SDK marks it deprecated and its calls fail at once, and a later release removes it; see [Move from Game Models](../exec/move-from-game-models.md) and [The Two Planes](../concepts/two-planes.md).
+- `UCrowdyGameModelSubsystem` and `UCrowdyActiveSessionMemory`: the SDK's Game Model API and the memory that carried its active session across a map travel. The game API no longer serves it, so since v2.18.0 the SDK marks it deprecated and its calls fail at once, and a later release removes it; see [Move from Game Models](../exec/move-from-game-models.md) and [The Two Planes](../concepts/two-planes.md).
 - `UCrowdyConnectionMonitor`: the SDK reconnects on its own after a timeout, so starting the monitor adds a second retry loop. What it reports is covered on [Connection and reconnect](../runtime/connection-and-reconnect.md).
 - `UCrowdyPersistenceSubsystem`: superseded by server code on ck-exec; still present and working, and the plugin does not mark it deprecated. It reads the `CrowdyPersistent` and `CrowdySingleton` struct tags. See [What's Changed](../guides/whats-changed.md#persistence) for what still works and what does not get further development.
 
@@ -9446,9 +9504,9 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/console-cvars
 
 # Console Variables
 
-The SDK exposes 34 `crowdy.*` console entries. Five of them, the `crowdy.gamemodel.*` entries, belong to
+The SDK exposes 40 `crowdy.*` console entries. Seven of them, the `crowdy.gamemodel.*` entries, belong to
 its Game Model API, which the game API no longer serves, and are not listed here (see
-[The Two Planes](../concepts/two-planes.md)). The other 29 come in three kinds: trace gates that turn on
+[The Two Planes](../concepts/two-planes.md)). The other 33 come in three kinds: trace gates that turn on
 informational logging for one area, behavior switches that change what the SDK does, and diagnostic
 commands that run once and hold no stored value. A row badged **Editor only** exists only in the editor
 process. Two of the diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`) are
@@ -9463,7 +9521,7 @@ turns on a specific area's logging. For the workflow around them (loopback testi
 
 ## Trace gates
 
-All 15 are off by default. Thirteen turn on that area's informational lines when set to `1`; the two
+All 16 are off by default. Fourteen turn on that area's informational lines when set to `1`; the two
 `.scopes` entries add Unreal Insights CPU scopes instead and log nothing. Warnings and errors print
 regardless of the setting.
 
@@ -9472,6 +9530,12 @@ regardless of the setting.
 :::caution[`crowdy.serialize.trace` and `crowdy.serialize.scopes` are high frequency.]
 They log on every message encode and decode. Leave them off unless you are actively debugging
 serialization.
+:::
+
+:::caution[`crowdy.net.trace` logs every routed send and every received spatial message.]
+Since 2.17.0 it also prints one line per spatial message received ("Received opcode ... for actor ... in chunk
+...") and the transport's totals (datagrams received, verification failures, drops) about once a second. That
+is what tells "the server never sent it" apart from "the client dropped it"; it is too chatty to leave on.
 :::
 
 :::note[`crowdy.serialize.scopes` and `crowdy.state.scopes` are nested CPU trace scopes.]
@@ -9484,7 +9548,7 @@ logging around Studio calls.
 
 ## Behavior switches
 
-These change what the SDK does rather than what it logs. None of the 9 exist only in the editor.
+These change what the SDK does rather than what it logs. None of the 12 exist only in the editor.
 
 <SurfaceTable
   table="cvars"
@@ -9494,12 +9558,21 @@ These change what the SDK does rather than what it logs. None of the 9 exist onl
     "crowdy.net.receive.maxdrainms": "How many milliseconds of one frame may be spent delivering inbound messages. Raise the message count first. Default 4.",
     "crowdy.net.send.bundle": "Pack one network pass's outbound messages into one datagram. Needs a replication server of v0.27.0 or later; against an older one every bundled message is dropped together. Default 1, read when a connection opens.",
     "crowdy.net.recv.signedbundles": "Tell the replication server this client reads signed inbound bundles, so notifications arrive with one signature per datagram instead of one per member. A server older than v0.30.0 ignores it. Default 1, read when a connection opens.",
-    "crowdy.replication.tracker.maxgatheredupdates": "How many actor updates for already-tracked actors may be gathered before the backlog is discarded; reached only when the world tick is not consuming them. Default 8192."
+    "crowdy.replication.tracker.maxgatheredupdates": "How many actor updates for already-tracked actors may be gathered before the backlog is discarded; reached only when the world tick is not consuming them. Default 8192.",
+    "crowdy.replication.tracker.maxqueuedupdates": "How many updates for actors not yet on screen may wait for a worker thread before further ones are dropped, counted, and reported once a second; reached only when the worker pool is not draining them. A dropped actor appears on a later update. Default 8192."
   }}
   notesLabel="Where the Help cell is empty"
 />
 
-The notes map above stands in for these five rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
+The notes map above stands in for these six rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
+
+:::warning[Turn `crowdy.net.http2` off if you ship, or collect logs from, a build with logging enabled.]
+On by default, it asks for HTTP/2 on the SDK's own requests (falling back to HTTP/1.1 when the server does not offer it); the game's other HTTP traffic and the engine's `http.CurlAllowHTTP2` are untouched. With HTTP/2, when a request fails at the network level (not a cancel or a timeout), the curl diagnostics the engine logs at `Warning` can include the request headers, bearer token included. A default Shipping build compiles logging out, so most projects never see this; if yours ships or collects logs from a build with logging enabled, set `crowdy.net.http2 0`.
+:::
+
+:::note[`crowdy.net.retry.busy` resends a refusal the platform blames on itself before the caller ever sees `Failed`.]
+On by default. An SDK query resends on any platform-blamed retryable refusal except `WRONG_DATACENTER` and `APP_UNAVAILABLE`. At most 3 retries, with the server's suggested wait when it names one or a doubling local wait otherwise. Turn it off (`0`) only to compare against the un-retried behavior; leave it on for a shipping build.
+:::
 
 :::warning[Leave `crowdy.rpc.allowObjectLoad` off in production.]
 While it is off, an untrusted peer cannot trigger an arbitrary asset load; an unresolved object or class

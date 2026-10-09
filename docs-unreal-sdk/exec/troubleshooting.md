@@ -8,7 +8,7 @@ description: What to check when a Server Object stays in Connecting or fails, a 
 # Troubleshooting
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 This page is for Blueprint and C++ alike. In Blueprint, **Get Status** and **Get Failure Reason** are the nodes for what `GetStatus()` and `GetFailureReason()` answer in C++, and **On Failed** carries the **Outcome**, **Reason** and **Retryable** that `OnDone` receives. On a **Call** node those three pins are in the advanced area: click the small arrow at the bottom of the node to show them.

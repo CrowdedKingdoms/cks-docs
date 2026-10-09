@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-09-22T14:39:18Z",
-  "sdk_version": "2.14.0",
+  "generated_from": "2026-10-07T15:57:00Z",
+  "sdk_version": "2.18.0",
   "table": "async-actions",
   "columns": [
     {
@@ -1870,6 +1870,39 @@
       "page": "services/teams",
       "editor": false,
       "allowlist": ""
+    },
+    {
+      "id": "UCrowdyServerCallAction",
+      "node": [
+        "Call Server Function"
+      ],
+      "factories": [
+        "CallServerFunction"
+      ],
+      "class": "UCrowdyServerCallAction",
+      "pins": [
+        "OnSuccess",
+        "OnFailed"
+      ],
+      "module": "CrowdyExec",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyServerTypedCallAction",
+      "node": [
+        "Call Server Function with Inputs"
+      ],
+      "factories": [
+        "CallServerFunctionWithInputs"
+      ],
+      "class": "UCrowdyServerTypedCallAction",
+      "pins": [],
+      "module": "CrowdyExec",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
     }
   ]
 }

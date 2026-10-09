@@ -8548,6 +8548,16 @@
     "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
   },
   {
+    "id": "crowdy.gamemodel.stats",
+    "reason": "deprecated",
+    "note": "Game Model diagnostics; Game Models are deprecated and their calls fail at once."
+  },
+  {
+    "id": "crowdy.gamemodel.stats.reset",
+    "reason": "deprecated",
+    "note": "Game Model diagnostics; Game Models are deprecated and their calls fail at once."
+  },
+  {
     "id": "crowdy.gamemodel.bulkresolve",
     "reason": "deprecated",
     "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
@@ -9116,5 +9126,960 @@
     "id": "UCrowdySDKDeveloperSettings::DefaultModelNotificationCarrier",
     "reason": "deprecated",
     "note": "Legacy game-model engine removed; the Unreal SDK moves to ck-exec later."
+  },
+  {
+    "id": "FAppearedIds",
+    "reason": "internal",
+    "note": "Tracker internals: the class and payload type id recorded when an entity first appears."
+  },
+  {
+    "id": "UCrowdyActorTracker::GetPayloadTypeIDForUUID",
+    "reason": "internal",
+    "note": "Tracker internals the actor manager and the delivery path call."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats",
+    "reason": "internal",
+    "note": "Plain counters behind crowdy.gamemodel.stats / UCrowdyGameModelSubsystem::GetNetStats, never read to make a decision; the shape is described in prose on Change pings and pull, not field by field."
+  },
+  {
+    "id": "FCrowdyGameModelOpStatsRow",
+    "reason": "internal",
+    "note": "One server operation's call/fail/latency row behind UCrowdyGameModelSubsystem::GetOpStats; described in prose on Change pings and pull."
+  },
+  {
+    "id": "FCrowdyGameModelTransportTotals",
+    "reason": "internal",
+    "note": "Transport byte/response totals behind UCrowdyGameModelSubsystem::GetOpStats; described in prose on Change pings and pull."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::CountBounded",
+    "reason": "internal",
+    "note": "Private bookkeeping helper that caps a diagnostics map's distinct keys; not called by a game."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::MakeInvokeFaultKey",
+    "reason": "internal",
+    "note": "Private bookkeeping helper that builds the invoke-fault tally key; not called by a game."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::Percentile",
+    "reason": "internal",
+    "note": "Private nearest-rank percentile helper backing the p50/p95/max in DescribeNetStats; not called by a game."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::Reset",
+    "reason": "internal",
+    "note": "Zeroes the counters; a game reaches the same behavior through UCrowdyGameModelSubsystem::ResetNetStats, which is documented."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::TEXT",
+    "reason": "internal",
+    "note": "Not a member function: the surface exporter reads the TEXT() macro call inside MakeInvokeFaultKey as a method. No API to document."
+  },
+  {
+    "id": "FCrowdyCppOpStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge transport-level per-operation stats row behind FCrowdyCppClient::GetStats, one layer under UCrowdyGameModelSubsystem::GetOpStats; not a type a game touches directly."
+  },
+  {
+    "id": "FCrowdyCppTransportStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge transport totals behind FCrowdyCppClient::GetStats, one layer under UCrowdyGameModelSubsystem::GetOpStats; not a type a game touches directly."
+  },
+  {
+    "id": "FCrowdyCppClient::GetStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal plumbing that UCrowdyGameModelSubsystem::GetOpStats reads; a game calls the subsystem method, which is documented."
+  },
+  {
+    "id": "FCrowdyCppClient::ResetStats",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal plumbing that UCrowdyGameModelSubsystem::ResetNetStats calls; a game calls the subsystem method, which is documented."
+  },
+  {
+    "id": "FCrowdyCppClient::GetLastTestRequestBody",
+    "reason": "internal",
+    "note": "Test-only: reports the body of the last request a MakeForTest client sent, for a headless test to assert against. No real client ever returns true from it."
+  },
+  {
+    "id": "FCrowdyCppClient::SetTestStampsHandOff",
+    "reason": "internal",
+    "note": "Test-only: makes a MakeForTest client fill the sdk/http latency split as the real transport does, for a stats headless test. No-op on a real client."
+  },
+  {
+    "id": "CrowdyPlayerFaultBlameToWord",
+    "reason": "internal",
+    "note": "The canonical word for a fault blame value, used to build the crowdy.gamemodel.stats invoke-fault key; the documented surface is the stats output, not this formatter."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::RecordBound",
+    "reason": "internal",
+    "note": "Private bookkeeping that records a bound entity for the re-resolve count behind crowdy.gamemodel.stats; not called by a game."
+  },
+  {
+    "id": "FCrowdyGameModelNetStats::FormatFailureReasons",
+    "reason": "internal",
+    "note": "Formats the per-operation failure-reason breakdown into the crowdy.gamemodel.stats log line; the shape (\"CODE xN, CODE xM\") is described in prose on Change pings and pull, not as an API a game calls."
+  },
+  {
+    "id": "CrowdyCppBusyRetryDelaySeconds",
+    "reason": "internal",
+    "note": "The busy-retry backoff curve behind crowdy.net.retry.busy, pure and static so it is table-testable; the behavior (3 retries, the server's wait plus jitter, else doubling) is described in prose on What's Changed, not as an API a game calls."
+  },
+  {
+    "id": "CrowdyCppIsBusyRetryEnabled",
+    "reason": "internal",
+    "note": "Reads the crowdy.net.retry.busy console variable for the retry path; a game reads the documented cvar itself rather than this accessor."
+  },
+  {
+    "id": "FCrowdyCppClient::GetTestNextRetryDueSeconds",
+    "reason": "internal",
+    "note": "Test-only: when the soonest parked busy retry falls due, for a headless test to advance time onto it. No production caller."
+  },
+  {
+    "id": "FCrowdyCppClient::NumTestWaitingRetries",
+    "reason": "internal",
+    "note": "Test-only: how many requests are parked waiting out a busy-retry backoff, for a headless test to assert against. No production caller."
+  },
+  {
+    "id": "FCrowdyContainerPull",
+    "reason": "internal",
+    "note": "Private bookkeeping for one container's in-flight pull (held waiters, issued sequence, keys an invoke wrote since); the one-in-flight-pull behavior it backs is described in prose on Change pings and pull, not as a type a game touches."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::BindServerVariableChanged",
+    "reason": "internal",
+    "note": "A helper the typed Server Object nodes call (BlueprintInternalUseOnly); the documented nodes are the typed Get, On Changed and Call nodes and the by-name nodes."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::FindServerObjectLink",
+    "reason": "internal",
+    "note": "A helper the typed Server Object nodes call (BlueprintInternalUseOnly); the documented nodes are the typed Get, On Changed and Call nodes and the by-name nodes."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::GetHeldServerObject",
+    "reason": "internal",
+    "note": "A helper the typed Server Object nodes call (BlueprintInternalUseOnly); the documented nodes are the typed Get, On Changed and Call nodes and the by-name nodes."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::MakeFunctionInputs",
+    "reason": "internal",
+    "note": "A helper the typed Server Object nodes call (BlueprintInternalUseOnly); the documented nodes are the typed Get, On Changed and Call nodes and the by-name nodes."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::NoteInputError",
+    "reason": "internal",
+    "note": "A helper the typed Server Object nodes call (BlueprintInternalUseOnly); the documented nodes are the typed Get, On Changed and Call nodes and the by-name nodes."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::ReadServerVariable",
+    "reason": "internal",
+    "note": "A helper the typed Server Object nodes call (BlueprintInternalUseOnly); the documented nodes are the typed Get, On Changed and Call nodes and the by-name nodes."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::SetServerValueOrUnset",
+    "reason": "internal",
+    "note": "A helper the typed Server Object nodes call (BlueprintInternalUseOnly); the documented nodes are the typed Get, On Changed and Call nodes and the by-name nodes."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::UnbindServerVariableChanged",
+    "reason": "internal",
+    "note": "A helper the typed Server Object nodes call (BlueprintInternalUseOnly); the documented nodes are the typed Get, On Changed and Call nodes and the by-name nodes."
+  },
+  {
+    "id": "UCrowdyServerTypedCallAction::CallServerFunctionWithInputs",
+    "reason": "internal",
+    "note": "A helper the typed Server Object nodes call (BlueprintInternalUseOnly); the documented nodes are the typed Get, On Changed and Call nodes and the by-name nodes."
+  },
+  {
+    "id": "FCrowdyExecNodesTestEveryType",
+    "reason": "internal",
+    "note": "Test type for the headless tests of the typed Server Object nodes; not shipped as API."
+  },
+  {
+    "id": "FCrowdyExecNodesTestHit",
+    "reason": "internal",
+    "note": "Test type for the headless tests of the typed Server Object nodes; not shipped as API."
+  },
+  {
+    "id": "ECrowdyExecNodesTestPhase",
+    "reason": "internal",
+    "note": "Test type for the headless tests of the typed Server Object nodes; not shipped as API."
+  },
+  {
+    "id": "ECrowdyNativeExecStatus",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecOptions",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecPush",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecReply",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyExecBakedEnum",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyExecBakedField",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyExecBakedStruct",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerNamedList",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerObjectKey",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerObjectLinkKey",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerVariableBindings",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectLink",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerTypedCallAction",
+    "reason": "internal",
+    "note": "The typed Call node's action; the node places it itself, so it has no palette entry. The documented nodes are the typed Call node and Call Server Function."
+  },
+  {
+    "id": "FBinding",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FPendingCall",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FGeneratedCrate",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "FGeneratedFile",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "FListValueRename",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "FLogicGaps",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "FLogicStub",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "FCrowdyStudioStyle",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "EBadgeTone",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyTabItem",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyCppClient::CreateExecConnection",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::GetTestExecConnectRequest",
+    "reason": "internal",
+    "note": "Test accessor on the shared API client for the headless tests; not shipped as API."
+  },
+  {
+    "id": "FCrowdyCppClient::NumTestExecConnections",
+    "reason": "internal",
+    "note": "Test accessor on the shared API client for the headless tests; not shipped as API."
+  },
+  {
+    "id": "FCrowdyCppClient::TakeTestExecSentFrames",
+    "reason": "internal",
+    "note": "Test accessor on the shared API client for the headless tests; not shipped as API."
+  },
+  {
+    "id": "FCrowdyCppClient::TestExecCloseFromServer",
+    "reason": "internal",
+    "note": "Test accessor on the shared API client for the headless tests; not shipped as API."
+  },
+  {
+    "id": "FCrowdyCppClient::TestExecOpen",
+    "reason": "internal",
+    "note": "Test accessor on the shared API client for the headless tests; not shipped as API."
+  },
+  {
+    "id": "FCrowdyCppClient::TestExecReceiveBinary",
+    "reason": "internal",
+    "note": "Test accessor on the shared API client for the headless tests; not shipped as API."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::Call",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::CanceledMessage",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::Close",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::Connect",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::GetHost",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::IsConnected",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::OnReconnect",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::Ping",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::Subscribe",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::Unsubscribe",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecReply::IsOk",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "CrowdyExec::Decode",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "CrowdyExec::NotifyStructsChanged",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "CrowdyExecTrace::Exec",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerFunction::GetMethodName",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerFunction::GetParamsListName",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerFunction::GetParamsStruct",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerFunction::GetReplyListName",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerFunction::GetReplyStruct",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerFunction::InitializeParams",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerFunction::InitializeReply",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerVariableBindings::Bind",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerVariableBindings::HasLiveHandler",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerVariableBindings::LatestSerial",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerVariableBindings::Notify",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerVariableBindings::Num",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerVariableBindings::Reset",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerVariableBindings::Unbind",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerVariableBindings::UnbindHandler",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerCallAction::Setup",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObject::GetAnnouncedSerial",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObject::GetVariableBindings",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObject::ToVariableNames",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectComponent::FindServerObjects",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectComponent::GetVariableBindings",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectComponent::ResolveInstanceId",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::Bake",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::BuildTables",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::FindFunction",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::FindListName",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::FindListStruct",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::FindVariable",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::GetLists",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::GetMemberFunctions",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::GetStateStruct",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::InitializeValues",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::IsMemberFunction",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::IsServerValueTypeAccepted",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::KeepListValueServerName",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::ResolveLayout",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::FindServerValue",
+    "reason": "internal",
+    "note": "The C++ counterparts of the by-name nodes, taking reflection pointers for the nodes' own thunks; C++ code reads values with GetState."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::GetServerValueInto",
+    "reason": "internal",
+    "note": "The C++ counterparts of the by-name nodes, taking reflection pointers for the nodes' own thunks; C++ code reads values with GetState."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::ReadServerVariableInto",
+    "reason": "internal",
+    "note": "The C++ counterparts of the by-name nodes, taking reflection pointers for the nodes' own thunks; C++ code reads values with GetState."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::ResolveServerObject",
+    "reason": "internal",
+    "note": "The C++ counterparts of the by-name nodes, taking reflection pointers for the nodes' own thunks; C++ code reads values with GetState."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::SetServerValueFrom",
+    "reason": "internal",
+    "note": "The C++ counterparts of the by-name nodes, taking reflection pointers for the nodes' own thunks; C++ code reads values with GetState."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::SetServerValueOrUnsetFrom",
+    "reason": "internal",
+    "note": "The C++ counterparts of the by-name nodes, taking reflection pointers for the nodes' own thunks; C++ code reads values with GetState."
+  },
+  {
+    "id": "UCrowdyServerObjectLink::GetDefinition",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectLink::GetVariableBindings",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectSubsystem::FindLink",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectSubsystem::GetConnection",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectSubsystem::GetSignedInUserId",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectSubsystem::MoveBinding",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "CrowdyExecCodegen::AddLogicStubs",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecCodegen::FindLogicGaps",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecCodegen::FindRemovals",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecCodegen::FindRenames",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecCodegen::FindTypeIdentityChanges",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecCodegen::Generate",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecCodegen::GetCrateDirectory",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecCodegen::GetLogicFile",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecCodegen::GetServerDirectory",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecCodegen::HasOwnLogicFile",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecCodegen::ReadCrateDefinition",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecCodegen::RetagCrates",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecCodegen::WithoutCrateDefinition",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecCodegen::WriteCrate",
+    "reason": "editor",
+    "note": "Editor-only Server Compute code generation behind Generate Server Code; the Generate button and commandlet are documented, these helpers are not an API."
+  },
+  {
+    "id": "CrowdyExecNodesSpawn::HasValuePinName",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring helpers for the typed Server Object nodes; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExecNodesSpawn::SetFindByAsset",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring helpers for the typed Server Object nodes; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExecNodesSpawn::SpawnServerFunctionCall",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring helpers for the typed Server Object nodes; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExecNodesSpawn::SpawnServerState",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring helpers for the typed Server Object nodes; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExecNodesSpawn::SpawnServerVariableChanged",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring helpers for the typed Server Object nodes; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyExecNodesSpawn::SpawnServerVariableGetter",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring helpers for the typed Server Object nodes; not runtime SDK surface."
+  },
+  {
+    "id": "UCrowdySDKDeveloperSettings::MakeClientConfig",
+    "reason": "internal",
+    "note": "Builds the shared API client's configuration from the settings; the settings themselves are documented on the Project Settings page."
+  },
+  {
+    "id": "CrowdyStudioExtraPages::OpenPage",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioExtraPages::RegisterPage",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioExtraPages::UnregisterPage",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::Badge",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::BrandMark",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::Card",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::Chip",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::ColorForTone",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::CopyButton",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::CopyChip",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::EmptyState",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::Field",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::GroupLabel",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::Icon",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::Input",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::ReadCapBox",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::SectionHeader",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::SegmentedEnum",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::SetCapBox",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::TabStrip",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyStudioWidgets::ToneForStatus",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::Danger",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::Get",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::Gold",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::GoldBright",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::IconBrush",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::Info",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::Initialize",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::Line",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::Panel",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::Rail",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::Shutdown",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::StyleName",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::Success",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::Surface",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::SurfaceHover",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::TextPrimary",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::TextSecondary",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::TextSubtle",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyStudioStyle::Warning",
+    "reason": "editor",
+    "note": "Editor-only Crowdy Studio widget and style helpers; not runtime SDK surface."
+  },
+  {
+    "id": "CrowdyCppSetGameModelDeprecated",
+    "reason": "internal",
+    "note": "Fills a bridge result with the Game Model deprecation refusal; the SDK's own helper, not for game code."
   }
 ]

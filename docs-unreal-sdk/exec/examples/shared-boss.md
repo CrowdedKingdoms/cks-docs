@@ -8,7 +8,7 @@ description: A worked Server Object example in Oakford - one boss every player h
 # Shared boss fight
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 The Hollow Giant stalks Oakford's north road. Every player who passes can hit it, and all of them see the same health bar fall. Its health is the kind of number a client must never decide, so it lives on the server as a Server Object: one boss, however many players are hitting it.

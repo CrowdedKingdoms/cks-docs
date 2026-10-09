@@ -8,7 +8,7 @@ description: "Get the Server Object a Blueprint uses: the typed nodes a Definiti
 # Get a Server Object
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 Everything on the [C++ pages](../from-cpp/get-a-server-object.md) can be done from Blueprint, and most of it needs no variable, no cast and no setup of your own. Open any Blueprint graph, type the name of a variable or function from a [definition asset](../create-a-type.md), and pick the node that appears. The node reads the variable, tells you when it changes, or calls the function, with a real pin for every value. A Blueprint and a C++ class can use the same Server Object at the same time.
@@ -46,6 +46,8 @@ Every typed node needs a Server Object. There are three ways to give it one.
   - **Signed-In Player**: the signed-in player's own object, for an [Owner Only](../from-cpp/get-a-server-object.md#owner-only-types) type.
   - **Player's Team**: the signed-in player's [Crowdy Team](../access-members-and-timers.md#crowdy-team). A **Team Id** pin picks the team when the player is in several; 0 uses the first.
 
+  In C++ the choice of **Instance** is the enum `ECrowdyServerObjectFind`, with the values `InstanceId`, `SignedInPlayer` and `PlayersTeam`.
+
   The object is acquired the first time a node of this Blueprint uses it, and held while the Blueprint lives. Right-click the node and choose **Use Target** to go back.
 - **Only One Instance.** A type with [Only One Instance](../access-members-and-timers.md#only-one-instance) has just the one object, so its nodes need neither a Target nor an Instance. Place the node and use it.
 
@@ -59,7 +61,7 @@ The typed nodes take **Self** as the default **Target**, so the simplest way to 
   - **Signed-In Player**: the signed-in player's user id. Use it for an [Owner Only](../from-cpp/get-a-server-object.md#owner-only-types) type, so each player gets their own. The component waits for the player to sign in, and joins again after a new sign-in or a new account.
   - **This Actor**: the actor's placement in the level, which is the same on every player's machine. Only for an actor placed in the level with the component already on it, not one spawned at run time or given the component at run time.
   - **Player's Team**: the signed-in player's [Crowdy Team](../access-members-and-timers.md#crowdy-team), for a type whose **Members From** is **Crowdy Team**. **Team Id** picks the team; 0 uses the player's only team. The component gets the player's teams if the game has not, and joins again when **On My Teams Changed** runs. A player in several teams fails with "This player is in 2 teams; set Team Id": set **Team Id**, then call **Rejoin**.
-  - **From Server Value**: the Instance Id is a variable of another Server Object, followed as it changes. Set **Source Definition**, **Source Instance** (**Instance Id**, with **Source Instance Id**, or **Signed-In Player**) and **Source Variable**, a String or an integer. While the variable is empty the component waits ("Waiting for TeamId"), and when it changes the component joins the new one. See [Guild Halls](../examples/guild-halls-and-arenas.md#guild-halls).
+  - **From Server Value**: the Instance Id is a variable of another Server Object, followed as it changes. Set **Source Definition**, **Source Instance** (the enum `ECrowdyServerObjectSourceInstance`: **Instance Id**, with **Source Instance Id**, or **Signed-In Player**) and **Source Variable**, a String or an integer. While the variable is empty the component waits ("Waiting for TeamId"), and when it changes the component joins the new one. See [Guild Halls](../examples/guild-halls-and-arenas.md#guild-halls).
 
 ![The Crowdy Server Object component: Definition CSO_VillageBeacon, Instance Mode Instance Id, Instance Id oakford](/img/unreal-sdk/server-object-component.png)
 
@@ -71,15 +73,15 @@ If you change **Definition** or **Instance Id** in a graph after the actor has b
 
 | Event or node | What it does |
 |---|---|
-| **On Variables Changed** (event) | Runs after every change of the Variables players can see, and once when they are first read. It gives the Server Object and the names that changed. |
-| **On Status Changed** (event) | Runs when the Server Object's status changes. **Object** is None when it could not be joined. |
+| **On Variables Changed** (event) | Runs after every change of the Variables players can see, and once when they are first read. It gives the Server Object and the names that changed. The delegate is `FCrowdyServerVariablesChanged`. |
+| **On Status Changed** (event) | Runs when the Server Object's status changes. **Object** is None when it could not be joined. The delegate is `FCrowdyServerStatusChanged`, which gives the Server Object and its status. |
 | **Get Server Object** | The Server Object the component holds, or None before it joins one or after it could not. |
 | **Get Failure Reason** | Why there is no usable Server Object, or empty. |
 | **Rejoin** | Joins again. |
 
 ## Without the component
 
-The component is a convenience over the same nodes. You can use them from any Blueprint, such as a widget that shows the beacon's oil without owning it:
+The component is a convenience over the same nodes. You can use them from any Blueprint, such as a widget that shows the beacon's oil without owning it. These nodes, and **Set Server Value** and **Get Server Value**, are in the function library `UCrowdyServerObjectLibrary`:
 
 - **Get Server Object**: takes a **Definition**, an **Instance Id** and an **Owner** (which defaults to the Blueprint itself), and returns the Server Object, or None with **Error** saying why. Owners that ask for the same one share it. It is held until the owner is destroyed.
 - **Release Server Object**: stops one owner holding it, for an owner that lives on after it stops needing it, such as a widget that is reused.

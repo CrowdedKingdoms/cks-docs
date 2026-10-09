@@ -8,7 +8,7 @@ description: Generate a Server Object type's server code (a Rust crate) from its
 # Write its server logic
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 A Server Object's values change only when its server code says so. That code is a small Rust crate, one per type, which the editor writes from the type's [definition asset](./create-a-type.md). Most of it is generated and kept in step with the definition; the part that decides what a Server Function does is yours, and the generator never touches it again once it exists.

@@ -8,14 +8,14 @@ description: Read a Server Object's variables that players can see from its stat
 # Read and follow its variables
 
 :::note
-Server Objects run on [ck-exec](/exec/intro). The tagged v2.17.0 plugin does not have them; see [What's Changed](../../guides/whats-changed.md#unreleased-after-v2170).
+Server Objects run on [ck-exec](/exec/intro).
 :::
 
 The variables a [definition](../create-a-type.md) marks **Visible to Players** are a Server Object's public face. The SDK keeps a copy of them current on every client that has the Server Object, and tells your code each time the server changes them.
 
 ## React to changes
 
-`WatchValues` takes a listener and returns an `FDelegateHandle`. The beacon watches its Server Object right after acquiring it, and sets its light from the oil and the lit flag:
+`WatchValues`, a function of `UCrowdyServerObject`, takes a listener and returns an `FDelegateHandle`. The beacon watches its Server Object right after acquiring it, and sets its light from the oil and the lit flag:
 
 <CppSnippet id="so-watch" />
 
