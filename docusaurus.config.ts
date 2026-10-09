@@ -39,6 +39,13 @@ const legacyEngineRedirects: {from: string; to: string}[] = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'scripts/legacy-engine-redirects.json'), 'utf8'),
 );
 
+// Pages that moved for another reason. Static like the map above, so a renamed target fails
+// the build. `dev-tier` described a public dev sandbox; dev and test have been internal since
+// 2026-10-09, and the page became the production client guide.
+const movedPageRedirects: {from: string; to: string}[] = [
+  {from: '/management-ui/dev-tier', to: '/management-ui/client-integration'},
+];
+
 // ---------------------------------------------------------------------------------------
 // WHICH SITE THIS BUILD IS.
 //
@@ -350,7 +357,7 @@ const config: Config = {
     [
       '@docusaurus/plugin-client-redirects',
       {
-        redirects: legacyEngineRedirects,
+        redirects: [...legacyEngineRedirects, ...movedPageRedirects],
         createRedirects(existingPath: string) {
           const from = unrealSdkRedirects
             .filter((r) => r.to === existingPath)
@@ -568,7 +575,7 @@ const config: Config = {
           title: 'Portal',
           items: [
             {label: 'Management UI', to: '/management-ui/intro'},
-            {label: 'Dev tier', to: '/management-ui/dev-tier'},
+            {label: 'Connecting game clients', to: '/management-ui/client-integration'},
             {label: 'Create your first app', to: '/management-ui/create-your-first-app'},
             {label: 'Shared platform apps', to: '/management-ui/environments'},
           ],

@@ -20,7 +20,7 @@ After create, use **[Connecting to your app](/management-ui/connecting)** for en
 
 | Concept | Detail |
 | ------- | ------ |
-| **Shared endpoint** | One Game API fleet per tier (e.g. `https://ck.dev.crowdedkingdoms.com` on dev). |
+| **Shared endpoint** | One Game API fleet (`https://ck.prod.crowdedkingdoms.com`), with a host per datacenter. |
 | **App scoping** | Traffic is isolated by `appId` — your players only see your app's world data. |
 | **Discovery** | Read `gameApiUrl` from the app record or `mintAppToken`; or call public `platformConfig` for tier defaults. |
 
@@ -100,7 +100,7 @@ Keep tokens secret; they grant org-level power equivalent to a highly privileged
 
 - **[Create your first app](/management-ui/create-your-first-app)** — app-first onboarding for new studios.
 - **[Connecting to your app](/management-ui/connecting)** — endpoints, tokens, and client configuration.
-- **[Dev tier (client integration)](/management-ui/dev-tier)** — public dev hosts and smoke checklist.
+- **[Connecting game clients](/management-ui/client-integration)** — production hosts and smoke checklist.
 - **[Shared environment & billing](/management-api/shared-environment)** — free tier, wallet, and runtime denial reasons.
 - **[Management API](/management-api/intro)** — programmatic app and billing operations.
 - **[Account and org basics](/management-ui/readme)** — wallet, members, and tokens.

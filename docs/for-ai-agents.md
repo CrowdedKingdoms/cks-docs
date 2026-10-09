@@ -38,7 +38,7 @@ pass `httpUrl` / `wsUrl` explicitly if you are not on production.
 - Management API SDL: [`/schema/management-api.graphql`](pathname:///schema/management-api.graphql)
 - Game API SDL: [`/schema/game-api.graphql`](pathname:///schema/game-api.graphql)
 - CrowdyJS SDL: [`/schema/crowdyjs.graphql`](pathname:///schema/crowdyjs.graphql)
-- Each GraphQL API serves a Playground at its `/graphql` endpoint. Introspection is available on the sandbox (dev) environment.
+- Production serves no GraphQL playground and does not answer introspection: read the SDL above.
 - Unreal SDK: [For AI agents (Unreal SDK)](/unreal-sdk/for-ai-agents) and the drop-in [`/helpers/unreal-sdk/AGENTS.md`](pathname:///helpers/unreal-sdk/AGENTS.md).
 
 Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
@@ -86,16 +86,17 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
 - **Permissions are machine-readable:** each guarded field carries a
   `@requiresPermission(scope:, permission:, scopeArg:)` directive in the SDL/introspection.
 
-## Get a sandbox key
+## Get a key
 
-Use the **sandbox (dev) environment** to sign in, create an org and an app, and
-obtain your identity session token without touching production data (then
-`mintAppToken` per app for gameplay). `register(registerUserInput:{ email, password })`
-gives an agent a session in one call and needs no inbox — see
-[Sign in](/management-api/authentication).
+Use **production**, as any developer does: sign in, create an org and an app (the free
+tier covers it), and obtain your identity session token (then `mintAppToken` per app for
+gameplay). `register(registerUserInput:{ email, password })` gives an agent a session in
+one call and needs no inbox — see [Sign in](/management-api/authentication).
+Crowded Kingdoms' `dev` and `test` environments are internal and refuse outside accounts
+with `TIER_ACCESS_REQUIRED`.
 
 There is no unauthenticated shortcut. Start at
-[Dev tier](/management-ui/dev-tier) and
+[Connecting game clients](/management-ui/client-integration) and
 [Create your first app](/management-ui/create-your-first-app).
 
 ## Workflow 1 — realtime gameplay (recommended path)

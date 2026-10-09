@@ -67,6 +67,6 @@ You see the tab with the organization's `manage_compute` or `view_compute_diagno
 
 ## Integrating with APIs
 
-The portal uses the **Management API**. Game clients and dedicated servers use the **Game API** and **Replication API** with **app-scoped tokens** after authenticating; see [CrowdyJS](/crowdyjs/intro) for browser games and [Dev tier (client integration)](/management-ui/dev-tier) for public dev hosts.
+The portal uses the **Management API**. Game clients and dedicated servers use the **Game API** and **Replication API** with **app-scoped tokens** after authenticating; see [CrowdyJS](/crowdyjs/intro) for browser games and [Connecting game clients](/management-ui/client-integration) for the production hosts.
 
 For custom studio backends, use org tokens and the [Management API GraphQL reference](/management-api/reference/graphql-overview) alongside [Shared environment & billing](/management-api/shared-environment).
