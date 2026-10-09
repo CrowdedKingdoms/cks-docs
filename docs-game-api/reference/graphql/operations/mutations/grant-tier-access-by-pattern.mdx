@@ -1,0 +1,44 @@
+---
+id: grant-tier-access-by-pattern
+title: grantTierAccessByPattern
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: grant every existing account a prefix&#x002A;@domain pattern matches that has no grant -- for bot rosters created before the gate. The domain must be a reserved test domain or a company domain. Dry run by default. Refused on prod.
+
+
+```graphql
+grantTierAccessByPattern(
+  emailPattern: String!
+  dryRun: Boolean = true
+): GrantTierAccessByPatternResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>grantTierAccessByPattern.<b>emailPattern</b></code>](#email-pattern)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email-pattern\} 
+prefix&#x002A;@domain: the domain must be a reserved test domain or a company domain, the prefix at least three characters.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>grantTierAccessByPattern.<b>dryRun</b></code>](#dry-run)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#dry-run\} 
+Count the matches without granting (the default).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GrantTierAccessByPatternResult</b></code>](/reference/graphql/types/objects/grant-tier-access-by-pattern-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+OPERATOR: the result of a bulk grant by pattern.

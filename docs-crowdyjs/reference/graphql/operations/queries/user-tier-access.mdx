@@ -1,0 +1,39 @@
+---
+id: user-tier-access
+title: userTierAccess
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: one account's access to this tier and its stored grant.
+
+
+```graphql
+userTierAccess(
+  userId: BigInt!
+): UserTierAccess!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>userTierAccess.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UserTierAccess</b></code>](/reference/graphql/types/objects/user-tier-access.mdx) <Badge class="badge badge--secondary " text="object"/> 
+OPERATOR: one account's access to this tier.

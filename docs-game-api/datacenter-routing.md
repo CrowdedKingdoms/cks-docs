@@ -18,8 +18,7 @@ Every row of your app — chunks, actors, grids, compute state — lives in a
 **single datacenter**. The app is placed in one datacenter rather than spread
 across several.
 
-The published origin (`ck.prod.crowdedkingdoms.com` in production,
-`ck.dev.crowdedkingdoms.com` on the sandbox) resolves to **every** datacenter.
+The published origin (`ck.prod.crowdedkingdoms.com`) resolves to **every** datacenter.
 Whichever one answers your first request is correct for identity and token
 minting. Gameplay for *your* app must go to the datacenter that holds that
 app. Calling gameplay on the wrong datacenter is refused (`WRONG_DATACENTER`).

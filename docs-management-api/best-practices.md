@@ -27,9 +27,9 @@ not the host.
 
 - Prefer `platformConfig.sharedGameApiUrl` and the URLs `mintAppToken`
   returns over a hostname you assemble.
-- Production GraphQL: `https://ck.prod.crowdedkingdoms.com/graphql`.
-  Sandbox / integration: see
-  [Dev tier](/management-ui/dev-tier).
+- Production GraphQL: `https://ck.prod.crowdedkingdoms.com/graphql`. Build and test
+  there too ([Connecting game clients](/management-ui/client-integration)); Crowded
+  Kingdoms' `dev` and `test` environments are internal and refuse outside accounts.
 - There is no separate management host. Do not set `managementUrl`.
 
 ## Apps and entitlements

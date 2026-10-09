@@ -750,6 +750,10 @@ type App {
   Whether players may write the app's wilderness: chunks that no grid but the app's world grid covers. True (the default) leaves those writes to the ordinary voxel permission; false refuses every voxel and chunk write there (updateVoxel, sendVoxelUpdate, updateChunk, ck-exec's world.set_voxels, and a client's voxel updates sent straight to the realtime servers), whoever makes it. Set with updateApp (manage_apps).
   """
   wildernessWritesOpen: Boolean!
+  """
+  Whether replay logging is on: the realtime servers record every client input they accept for this app, searchable with inputLogSessions and readable with inputLogMessages, and billed as stored input logs. False (the default) records nothing ("No replication logging"). Set with updateApp (manage_apps); turning it on needs a funded org wallet or a billing-exempt org.
+  """
+  replayLoggingEnabled: Boolean!
   """Timestamp when the app was created."""
   createdAt: DateTime!
   """Timestamp when the app was last updated."""
@@ -2514,6 +2518,14 @@ type AppUsageSummary {
   Legacy: billed compute units of the removed automation engine over the window (string counter). Always 0 for usage since the legacy engines were removed; kept for the API shape until the migration.
   """
   automationComputeUnits: String!
+  """
+  Stored input logs over the window, in byte-hours (string counter): the sum of the hourly samples, which is the quantity input_log_storage_byte_hours bills. Each recorded byte (InputLogMessage.sizeBytes) is held for the input log retention, one byte-hour per hour. 0 when replay logging was off.
+  """
+  inputLogByteHours: String!
+  """
+  Recorded input-log bytes the app holds now (string counter): the latest hourly sample, the bytes recorded within the trailing retention. 0 when replay logging has never been on.
+  """
+  inputLogRetainedBytes: String!
 }
 
 """
@@ -2550,6 +2562,14 @@ type AppUsageProjection {
   True when projected egress exceeds the free allowance, or null when insufficient data.
   """
   onTrackToExceed: Boolean
+  """
+  Stored input logs this calendar month so far, in byte-hours (input_log_storage_byte_hours, which has no free allowance). 0 when replay logging was off all month.
+  """
+  inputLogByteHours: String!
+  """
+  Projected end-of-month stored input logs in byte-hours (linear extrapolation), or null when insufficient data.
+  """
+  projectedInputLogByteHours: String
 }
 
 """Per-app projection row within an org rollup."""
@@ -3785,7 +3805,7 @@ type Mutation {
     input: CreateAppInput!
   ): App! @requiresPermission(scope: "org", permission: "manage_apps", scopeArg: "input.orgId")
   """
-  Update mutable fields of an existing app (name, description, visibility, status, metadata, wildernessWritesOpen); only fields present in the input are changed. Requires the 'manage_apps' permission on the app (resolved via its org); super admins bypass. Use this to publish (status=LIVE), change visibility, or restore an archived app (status back to DRAFT/LIVE). Throws if the app id does not exist.
+  Update mutable fields of an existing app (name, description, visibility, status, metadata, wildernessWritesOpen, replayLoggingEnabled); only fields present in the input are changed. Turning replayLoggingEnabled on is refused with INPUT_LOG_FUNDS_NEEDED unless the org's wallet has a spendable balance or the org is billing-exempt. Requires the 'manage_apps' permission on the app (resolved via its org); super admins bypass. Use this to publish (status=LIVE), change visibility, or restore an archived app (status back to DRAFT/LIVE). Throws if the app id does not exist.
   """
   updateApp(
     """Numeric id of the app to update."""
@@ -4405,6 +4425,10 @@ input UpdateAppInput {
   Open (true) or close (false) the app's wilderness to voxel and chunk writes: chunks that no grid but the app's world grid covers. Closing refuses every write there, whoever makes it; each game API replica, and each realtime server for a client's direct voxel updates, acts on the change within about 15 seconds. Omit to leave unchanged.
   """
   wildernessWritesOpen: Boolean
+  """
+  Turn replay logging on (true) or off (false): record every client input the realtime servers accept for this app, kept for the input log's published retention and billed as stored input logs (input_log_storage_byte_hours, no free allowance). Turning it ON is refused with INPUT_LOG_FUNDS_NEEDED unless the org's wallet has a spendable balance or the org is billing-exempt; turning it off always succeeds. Recording starts and stops within about 15 seconds. Omit to leave unchanged.
+  """
+  replayLoggingEnabled: Boolean
 }
 
 input AdmitAppCodeInput {

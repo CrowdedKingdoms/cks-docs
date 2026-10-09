@@ -1,0 +1,83 @@
+---
+id: user-tier-access
+title: UserTierAccess
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: one account's access to this tier.
+
+
+```graphql
+type UserTierAccess {
+  userId: BigInt!
+  email: String
+  isConfirmed: Boolean!
+  status: TierAccessStatus!
+  via: String
+  expiresAt: DateTime
+  grantSource: String
+  grantedBy: String
+  grantedAt: DateTime
+  grantExpiresAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UserTierAccess.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserTierAccess.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserTierAccess.<b>isConfirmed</b></code>](#is-confirmed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-confirmed\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserTierAccess.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TierAccessStatus!</b></code>](/reference/graphql/types/enums/tier-access-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserTierAccess.<b>via</b></code>](#via)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#via\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserTierAccess.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserTierAccess.<b>grantSource</b></code>](#grant-source)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grant-source\} 
+The stored grant: operator or provisioning, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserTierAccess.<b>grantedBy</b></code>](#granted-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#granted-by\} 
+Who granted it: operator:&#x003C;user id&#x003E;, token:&#x003C;token id&#x003E; or loadtest-mint:&#x003C;label&#x003E;.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserTierAccess.<b>grantedAt</b></code>](#granted-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#granted-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UserTierAccess.<b>grantExpiresAt</b></code>](#grant-expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grant-expires-at\} 
+When the stored grant ends.
+
+
+
+
+### Returned By
+
+[`setUserTierAccess`](/reference/graphql/operations/mutations/set-user-tier-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`userTierAccess`](/reference/graphql/operations/queries/user-tier-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

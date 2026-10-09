@@ -50,7 +50,7 @@ On the app dashboard (and in API responses):
 
 - `deploymentTarget` = **`shared`**
 - `runtimeStatus` = **`active`**
-- `gameApiUrl` points at the tier's shared endpoint (for dev: `https://ck.dev.crowdedkingdoms.com`)
+- `gameApiUrl` points at the shared endpoint of the datacenter holding your app (on production, a `https://ck-<datacenter>.prod.crowdedkingdoms.com` host)
 
 Use that URL (or values returned from `mintAppToken`) to connect game clients — see **[Connecting to your app](/management-ui/connecting)**.
 
@@ -89,5 +89,5 @@ you need enterprise isolation.
 ## Next steps
 
 - **[Connecting to your app](/management-ui/connecting)** — endpoints, tokens, and client configuration.
-- **[Dev tier (client integration)](/management-ui/dev-tier)** — public dev hosts and copy/paste config for early testing.
+- **[Connecting game clients](/management-ui/client-integration)** — production hosts and copy/paste config for your first client.
 - **[Account and org basics](/management-ui/readme)** — members, tokens, budgets, and quotas.

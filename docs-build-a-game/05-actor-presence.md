@@ -16,7 +16,7 @@ Send `sendActorUpdate` at ~10 Hz with your world X/Y encoded in actor `state` (s
 
 ```ts
 await client.udp.sendActorUpdate({
-  appId: '1',
+  appId: '<your-app-id>',
   chunk: { x: '0', y: '0', z: '0' },
   uuid: actorUuid,       // 32 UTF-8 bytes
   state: encodeActorState({ worldX, worldY, pushFlags: 0 }),
@@ -32,7 +32,7 @@ On `ActorUpdateNotification`, decode `state` and render a dot for each remote UU
 
 ## Multiplayer test
 
-Open two browser tabs. Each tab should show the other's dot within ~200 ms on the dev tier.
+Open two browser tabs. Each tab should show the other's dot within ~200 ms.
 
 ## Exit criteria
 

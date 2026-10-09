@@ -4,7 +4,7 @@
 
 ## Start here (for AI agents and integrators)
 
-- [For AI agents — quickstart & end-to-end workflows](https://docs.crowdedkingdoms.com/overview/for-ai-agents): get a sandbox key, the SDL/introspection URLs, and the most common flows (register → token → host discovery → spatial send; and the studio-backend economy flow).
+- [For AI agents — quickstart & end-to-end workflows](https://docs.crowdedkingdoms.com/overview/for-ai-agents): get a key on production, the SDL URLs, and the most common flows (register → token → host discovery → spatial send; and the studio-backend economy flow).
 - [Best practices](https://docs.crowdedkingdoms.com/overview/best-practices): authority in your server code on ck-exec (hubs and spokes), tokens and hosts.
 - [Overview / client workflow](https://docs.crowdedkingdoms.com/overview/client-workflow): one endpoint, two token types, and how an app's datacenter endpoint is discovered.
 - [Before you ship](https://docs.crowdedkingdoms.com/overview/before-you-ship): public hosts and aliases, and the SDK default origins a shipped client needs.
@@ -15,7 +15,7 @@
 - [Full SDL](https://docs.crowdedkingdoms.com/schema/game-api.graphql) - the complete unified schema; start here.
 - [Management-surface SDL](https://docs.crowdedkingdoms.com/schema/management-api.graphql) - the same schema filtered to identity/orgs/apps/billing, for reading that surface alone.
 - [CrowdyJS SDL](https://docs.crowdedkingdoms.com/schema/crowdyjs.graphql)
-- The GraphQL Playground is served at the API's `/graphql` endpoint. Introspection is available on the sandbox (dev) environment.
+- Production serves no GraphQL playground and does not answer introspection; read the SDL above. The API is https://ck.prod.crowdedkingdoms.com/graphql. Crowded Kingdoms' dev and test environments are internal (staff and approved partners only) and refuse other accounts with TIER_ACCESS_REQUIRED.
 
 ## Conventions (read before calling)
 

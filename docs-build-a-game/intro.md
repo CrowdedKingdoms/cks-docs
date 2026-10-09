@@ -52,22 +52,22 @@ architecture.
 
 - Node.js 20+
 - A modern browser
-- No org membership required for the dev tier
+- A Crowded Kingdoms account on production (no org membership required)
 
-## Fixed dev-tier configuration
+## Configuration
 
 All chapters use these values:
 
 ```text
-ApiHttpUrl=https://ck.dev.crowdedkingdoms.com/graphql
-GameApiHttpUrl=https://ck.dev.crowdedkingdoms.com/graphql
-GameApiWsUrl=wss://ck.dev.crowdedkingdoms.com/graphql
+ApiHttpUrl=https://ck.prod.crowdedkingdoms.com/graphql
+GameApiHttpUrl=https://ck.prod.crowdedkingdoms.com/graphql
+GameApiWsUrl=wss://ck.prod.crowdedkingdoms.com/graphql
 AppId=<your-app-id>
 ```
 
-Create your own app on dev and use its `appId` — `npm run setup` in The Construct does this from a shell, or use CK Studio's **Get started**.
+Create your own app and use its `appId` — `npm run setup` in The Construct does this from a shell, or use CK Studio's **Get started**.
 
-See also [Dev tier (client integration)](/management-ui/dev-tier).
+See also [Connecting game clients](/management-ui/client-integration).
 
 ## Chapters
 

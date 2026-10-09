@@ -1,0 +1,29 @@
+---
+id: my-tier-access
+title: myTierAccess
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The signed-in account's access to this tier: GRANTED, PENDING&#x005F;VERIFICATION (confirm the email address), DENIED, or NOT&#x005F;RESTRICTED on prod. Requires a session token, and stays callable while access is pending or denied.
+
+
+```graphql
+myTierAccess: MyTierAccess!
+```
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>MyTierAccess</b></code>](/reference/graphql/types/objects/my-tier-access.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The signed-in account's access to this tier. Callable while access is pending or denied, so a client can say why it cannot continue.

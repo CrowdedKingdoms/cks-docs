@@ -1,0 +1,49 @@
+---
+id: set-user-tier-access
+title: setUserTierAccess
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: grant one account access to this tier regardless of its email (a service account, an unverifiable address), optionally until a date, or clear the grant. Clearing ends its sessions if nothing else admits it. Refused on prod.
+
+
+```graphql
+setUserTierAccess(
+  userId: BigInt!
+  granted: Boolean!
+  expiresAt: DateTime
+): UserTierAccess!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setUserTierAccess.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setUserTierAccess.<b>granted</b></code>](#granted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#granted\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setUserTierAccess.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+When the grant ends. Omit for none.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>UserTierAccess</b></code>](/reference/graphql/types/objects/user-tier-access.mdx) <Badge class="badge badge--secondary " text="object"/> 
+OPERATOR: one account's access to this tier.

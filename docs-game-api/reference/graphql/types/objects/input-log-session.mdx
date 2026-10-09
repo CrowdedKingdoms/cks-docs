@@ -1,0 +1,88 @@
+---
+id: input-log-session
+title: InputLogSession
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One recorded client session of an app with replay logging on: a game token's inputs, from the first one the realtime servers accepted to the last. Kept for the input log's published retention.
+
+
+```graphql
+type InputLogSession {
+  appId: BigInt!
+  gameTokenId: BigInt!
+  userId: BigInt!
+  datacenter: String
+  startedAt: DateTime!
+  lastSeenAt: DateTime!
+  endedAt: DateTime
+  endReason: String
+  messageCount: BigInt!
+  byteCount: BigInt!
+  messageTypes: [Int!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app the session belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>gameTokenId</b></code>](#game-token-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#game-token-id\} 
+The game token the session ran on; pass it to inputLogMessages to read the inputs.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The user whose client sent the inputs.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>datacenter</b></code>](#datacenter)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#datacenter\} 
+The datacenter that recorded the session, when known.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>startedAt</b></code>](#started-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#started-at\} 
+When the first recorded input arrived.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>lastSeenAt</b></code>](#last-seen-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#last-seen-at\} 
+When the latest recorded input or marker arrived.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>endedAt</b></code>](#ended-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#ended-at\} 
+When the session ended, if its end was recorded; null while it may still be running.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>endReason</b></code>](#end-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#end-reason\} 
+How the session ended, as the client saw it: expired, revoked, reconnect or released. Null while it may still be running.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>messageCount</b></code>](#message-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message-count\} 
+Inputs recorded in the session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>byteCount</b></code>](#byte-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#byte-count\} 
+Recorded bytes (the sum of every message sizeBytes): the quantity stored input logs are billed on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>messageTypes</b></code>](#message-types)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Int!]!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message-types\} 
+The client message types the session contains, ascending.
+
+
+
+
+### Member Of
+
+[`InputLogSessionEdge`](/reference/graphql/types/objects/input-log-session-edge.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -31,8 +31,9 @@ need the interpreter lock.
 
 Each release carries the API origin it was built for, so
 `crowdypy.AsyncCrowdyClient()` with no `http_url` reaches it. A stable release
-points at production. A pre-release points at the sandbox
-(`https://ck.dev.crowdedkingdoms.com`). Pass `http_url=` to choose explicitly.
+points at production. A pre-release is built for one of Crowded Kingdoms' internal
+environments, which refuse outside accounts; install a stable release, or pass
+`http_url=` to choose explicitly.
 
 ## Building from source
 

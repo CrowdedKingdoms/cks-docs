@@ -1,0 +1,68 @@
+---
+id: tier-access-settings
+title: TierAccessSettings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: the tier-access settings of this tier.
+
+
+```graphql
+type TierAccessSettings {
+  tier: String
+  mode: TierAccessMode!
+  storedMode: TierAccessStoredMode
+  updatedAt: DateTime
+  updatedBy: BigInt
+  companyDomains: [String!]!
+  publicStudioUrl: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessSettings.<b>tier</b></code>](#tier)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#tier\} 
+The tier this instance serves.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessSettings.<b>mode</b></code>](#mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TierAccessMode!</b></code>](/reference/graphql/types/enums/tier-access-mode.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#mode\} 
+The effective mode.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessSettings.<b>storedMode</b></code>](#stored-mode)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TierAccessStoredMode</b></code>](/reference/graphql/types/enums/tier-access-stored-mode.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#stored-mode\} 
+The stored mode; null means none was set (a restricted tier then observes).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessSettings.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessSettings.<b>updatedBy</b></code>](#updated-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#updated-by\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessSettings.<b>companyDomains</b></code>](#company-domains)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#company-domains\} 
+Domains whose verified addresses are always allowed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessSettings.<b>publicStudioUrl</b></code>](#public-studio-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#public-studio-url\} 
+
+
+
+
+
+### Returned By
+
+[`setTierAccessMode`](/reference/graphql/operations/mutations/set-tier-access-mode.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`tierAccessSettings`](/reference/graphql/operations/queries/tier-access-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

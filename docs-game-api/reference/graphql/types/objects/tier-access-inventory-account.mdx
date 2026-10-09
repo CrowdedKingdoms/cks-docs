@@ -1,0 +1,93 @@
+---
+id: tier-access-inventory-account
+title: TierAccessInventoryAccount
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: an account this tier would refuse, with what it holds.
+
+
+```graphql
+type TierAccessInventoryAccount {
+  userId: BigInt!
+  email: String
+  username: String
+  createdAt: DateTime
+  isConfirmed: Boolean!
+  status: TierAccessStatus!
+  createdViaCrowdAltar: Boolean!
+  orgs: [String!]!
+  appsCreated: Int!
+  activeSessions: Int!
+  activeAppTokens: Int!
+  ckActivity: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventoryAccount.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventoryAccount.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventoryAccount.<b>username</b></code>](#username)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#username\} 
+Set when the account was created through Crowd Altar.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventoryAccount.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventoryAccount.<b>isConfirmed</b></code>](#is-confirmed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-confirmed\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventoryAccount.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TierAccessStatus!</b></code>](/reference/graphql/types/enums/tier-access-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventoryAccount.<b>createdViaCrowdAltar</b></code>](#created-via-crowd-altar)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-via-crowd-altar\} 
+Created through Crowd Altar (it carries a username).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventoryAccount.<b>orgs</b></code>](#orgs)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#orgs\} 
+Slugs of the organizations it belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventoryAccount.<b>appsCreated</b></code>](#apps-created)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#apps-created\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventoryAccount.<b>activeSessions</b></code>](#active-sessions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#active-sessions\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventoryAccount.<b>activeAppTokens</b></code>](#active-app-tokens)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#active-app-tokens\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessInventoryAccount.<b>ckActivity</b></code>](#ck-activity)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#ck-activity\} 
+Holds app tokens, organizations or apps -- the accounts whose sessions a cutover should end.
+
+
+
+
+### Member Of
+
+[`TierAccessInventory`](/reference/graphql/types/objects/tier-access-inventory.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

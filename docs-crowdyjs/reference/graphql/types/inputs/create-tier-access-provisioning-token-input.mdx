@@ -1,0 +1,53 @@
+---
+id: create-tier-access-provisioning-token-input
+title: CreateTierAccessProvisioningTokenInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input CreateTierAccessProvisioningTokenInput {
+  label: String!
+  emailPatterns: [String!]!
+  maxAccounts: Int!
+  expiresInDays: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateTierAccessProvisioningTokenInput.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#label\} 
+What uses it, e.g. identity-probe or bwf-loadtest.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateTierAccessProvisioningTokenInput.<b>emailPatterns</b></code>](#email-patterns)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email-patterns\} 
+prefix&#x002A;@domain patterns. The domain must be a reserved test domain (.invalid, .test, .example, .localhost, .local, example.com) or a company domain; the prefix is at least three characters.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateTierAccessProvisioningTokenInput.<b>maxAccounts</b></code>](#max-accounts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-accounts\} 
+The most accounts it may ever create.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateTierAccessProvisioningTokenInput.<b>expiresInDays</b></code>](#expires-in-days)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-in-days\} 
+Days until it expires (1-90). Accounts it created keep their grant.
+
+
+
+
+### Member Of
+
+[`createTierAccessProvisioningToken`](/reference/graphql/operations/mutations/create-tier-access-provisioning-token.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

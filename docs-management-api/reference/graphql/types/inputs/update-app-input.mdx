@@ -26,6 +26,7 @@ input UpdateAppInput {
   status: AppStatus
   metadata: String
   wildernessWritesOpen: Boolean
+  replayLoggingEnabled: Boolean
 }
 ```
 
@@ -54,6 +55,10 @@ New JSON-encoded marketplace metadata string, replacing the existing value (see 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>wildernessWritesOpen</b></code>](#wilderness-writes-open)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#wilderness-writes-open\} 
 Open (true) or close (false) the app's wilderness to voxel and chunk writes: chunks that no grid but the app's world grid covers. Closing refuses every write there, whoever makes it; each game API replica, and each realtime server for a client's direct voxel updates, acts on the change within about 15 seconds. Omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>replayLoggingEnabled</b></code>](#replay-logging-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#replay-logging-enabled\} 
+Turn replay logging on (true) or off (false): record every client input the realtime servers accept for this app, kept for the input log's published retention and billed as stored input logs (input&#x005F;log&#x005F;storage&#x005F;byte&#x005F;hours, no free allowance). Turning it ON is refused with INPUT&#x005F;LOG&#x005F;FUNDS&#x005F;NEEDED unless the org's wallet has a spendable balance or the org is billing-exempt; turning it off always succeeds. Recording starts and stops within about 15 seconds. Omit to leave unchanged.
 
 
 
