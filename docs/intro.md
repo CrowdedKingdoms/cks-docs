@@ -21,7 +21,7 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 ## APIs
 
 ### Management surface
-- On the GraphQL API at [https://ck.prod.crowdedkingdoms.com/graphql](https://ck.prod.crowdedkingdoms.com/graphql) (dev: [https://ck.dev.crowdedkingdoms.com/graphql](https://ck.dev.crowdedkingdoms.com/graphql))
+- On the GraphQL API at `https://ck.prod.crowdedkingdoms.com/graphql`
 - Manage user and org accounts
 - Configure marketplace settings for apps (games)
 - Create apps on the shared platform; manage billing and wallet
@@ -75,7 +75,7 @@ Join the [Crowded Kingdoms Discord](https://discord.gg/x7tMKGwHf) for community 
 - **[Client Workflow](/overview/client-workflow)** — how the APIs and SDK fit together.
 - **[Best practices](/overview/best-practices)** — authority on ck-exec, tokens, and errors.
 - **[Before you ship](/overview/before-you-ship)** — the hosts and SDK defaults a shipped client needs.
-- **[Dev tier (client integration)](/management-ui/dev-tier)** — public sandbox URLs and shared-platform config for early client testing.
+- **[Connecting game clients](/management-ui/client-integration)** — production hosts, tokens and a smoke checklist for your first client.
 - **[Create your first app](/management-ui/create-your-first-app)** — register on the shared platform.
 - **Management API** — authenticate, manage orgs, apps, billing, and shared environment.
 - **Game API** — chunks, voxels, actors, avatars, studio grids, and the GraphQL UDP proxy.

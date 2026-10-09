@@ -14,14 +14,17 @@ answers, and the wrong SDK build installs cleanly.
 
 Public hosts:
 
-| Surface | Production | Bare brand name | Sandbox (dev) |
-|---|---|---|---|
-| CK API (GraphQL, HTTP and WebSocket) | `ck.prod.crowdedkingdoms.com` | `ck.crowdedkingdoms.com` — same addresses as `ck.prod` | `ck.dev.crowdedkingdoms.com` |
-| Portal ([Management UI](/management-ui/intro)) | `studio.prod.crowdedkingdoms.com` | `studio.crowdedkingdoms.com` — same addresses as `studio.prod` | `studio.dev.crowdedkingdoms.com` |
-| Sign-in / register | `studio.prod.crowdedkingdoms.com/login` | `studio.crowdedkingdoms.com/login` — same portal | `studio.dev.crowdedkingdoms.com/login` |
-| Documentation | — | `docs.crowdedkingdoms.com` — this site | `docs.dev.crowdedkingdoms.com` |
+| Surface | Production | Bare brand name |
+|---|---|---|
+| CK API (GraphQL, HTTP and WebSocket) | `ck.prod.crowdedkingdoms.com` | `ck.crowdedkingdoms.com` — same addresses as `ck.prod` |
+| Portal ([Management UI](/management-ui/intro)) | `studio.prod.crowdedkingdoms.com` | `studio.crowdedkingdoms.com` — same addresses as `studio.prod` |
+| Sign-in / register | `studio.prod.crowdedkingdoms.com/login` | `studio.crowdedkingdoms.com/login` — same portal |
+| Documentation | — | `docs.crowdedkingdoms.com` — this site |
 
-`docs.prod.crowdedkingdoms.com` does not resolve. The former `app.*.crowdedkingdoms.com` sign-in hosts were retired on 2026-09-16; use the Studio hosts above.
+`docs.prod.crowdedkingdoms.com` does not resolve. The `dev` and `test` hosts
+(`*.dev.crowdedkingdoms.com`, `*.test.crowdedkingdoms.com`) are Crowded Kingdoms' internal
+environments: they refuse outside accounts with `TIER_ACCESS_REQUIRED`, so a build shipped
+against them works for nobody you ship it to. The former `app.*.crowdedkingdoms.com` sign-in hosts were retired on 2026-09-16; use the Studio hosts above.
 If you were given a different host for a preview environment, use that host —
 do not invent one by pattern.
 
@@ -35,12 +38,12 @@ an endpoint rather than expecting you to build one. See
 ## 2. The default origin is baked into the SDK build
 
 `npm install @crowdedkingdoms/crowdyjs` installs `latest`, whose default origin is
-production (`https://ck.prod.crowdedkingdoms.com`). A sandbox project that never
-passes `httpUrl` therefore talks to production.
+production (`https://ck.prod.crowdedkingdoms.com`). Install `latest`: the `dev` and
+`test` dist-tags are builds for Crowded Kingdoms' internal environments, whose default
+origins refuse outside accounts.
 
 ```bash
 npm install @crowdedkingdoms/crowdyjs          # production (latest)
-npm install @crowdedkingdoms/crowdyjs@dev      # sandbox default origin
 npm view @crowdedkingdoms/crowdyjs dist-tags   # what each tag resolves to right now
 ```
 

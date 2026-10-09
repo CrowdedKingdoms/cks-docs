@@ -9655,7 +9655,9 @@ come from [Config Sync](../studio/config-sync.md); **you** properties are yours 
 `Environment` is an `ECrowdyEnvironment`: **Dev (shared)**, **Test**, **Production**, or **Custom**, which is
 when the Discovery URL is read. Dev, Test, and Production each resolve to a built-in host
 (`ck.dev.crowdedkingdoms.com`, `ck.test.crowdedkingdoms.com`, `ck.prod.crowdedkingdoms.com`); Custom is the
-only value that reads `DiscoveryUrl` from the project.
+only value that reads `DiscoveryUrl` from the project. **Choose Production.** Dev and Test are Crowded
+Kingdoms' internal environments: only staff and approved partners can sign in there, and any other account
+is refused with `TIER_ACCESS_REQUIRED`.
 
 <SurfaceTable table="settings" filter="class=UCrowdySDKDeveloperSettings" group="category" />
 
@@ -9691,8 +9693,8 @@ and the id to force: an `FCrowdyIDOverride` holds `Struct` and `Override ID` (0 
 
 A project that has never run Config Sync's Backend selector has no `Environment` written to its
 `DefaultGame.ini` yet, so it runs on whatever this SDK build defaults to: the tier the build was released
-for. A build off the `dev` branch defaults to Dev, a `test` build to Test, and the public release defaults
-to Production; the Discovery URL default follows the same tier. Read the active default from code with the
+for. A build off the `dev` branch defaults to Dev, a `test` build to Test (both internal), and the public
+release defaults to Production; the Discovery URL default follows the same tier. Read the active default from code with the
 static `UCrowdySDKDeveloperSettings::GetReleaseEnvironment()` (C++ only, not exposed to Blueprint). Once you
 pick a Backend on the Sign In page and sync, `DefaultGame.ini` holds that choice from then on and this
 default no longer applies.

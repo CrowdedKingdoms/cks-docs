@@ -10,20 +10,19 @@ import DocImage from '@site/src/components/DocImage';
 
 After you create an app on the **shared platform**, connection details come from the **app dashboard** and from Management API queries — not from a dedicated environment detail page. Use those values in game clients, dedicated servers, and CI.
 
-## Dev tier (shared integration hosts)
+## Production hosts
 
-For early client integration on the **dev tier**, use the public shared hosts documented in **[Dev tier (client integration)](/management-ui/dev-tier)**:
+Build and test against production, using the hosts in **[Connecting game clients](/management-ui/client-integration)**:
 
 | Surface | URL |
 | ------- | --- |
-| Management UI | [https://studio.dev.crowdedkingdoms.com](https://studio.dev.crowdedkingdoms.com) |
-| Management API | [https://ck.dev.crowdedkingdoms.com](https://ck.dev.crowdedkingdoms.com) |
-| Shared Game API (HTTP) | `https://ck.dev.crowdedkingdoms.com/graphql` |
-| Shared Game API (WebSocket) | `wss://ck.dev.crowdedkingdoms.com/graphql` |
+| Studio | [https://studio.crowdedkingdoms.com](https://studio.crowdedkingdoms.com) |
+| GraphQL API (management and game) | `https://ck.prod.crowdedkingdoms.com/graphql` |
+| Shared Game API (WebSocket) | `wss://ck.prod.crowdedkingdoms.com/graphql` |
 
-Management hosts are shared across the dev tier; **all shared-platform apps on dev** use the same Game API host, scoped by `appId`. Each API also exposes a **GraphQL playground** at `/graphql` for manual testing.
+**All shared-platform apps** use the same Game API host, scoped by `appId`. Production serves no GraphQL playground and does not answer introspection: use the published [schema](pathname:///schema/game-api.graphql) with the GraphQL client of your choice.
 
-On production (and any other environment you were given), read `platformConfig.sharedGameApiUrl` or your app's `gameApiUrl` for the correct host — do not assume the sandbox URL.
+Read `platformConfig.sharedGameApiUrl` or your app's `gameApiUrl` rather than hard-coding a host. Crowded Kingdoms' `dev` and `test` environments are internal and refuse outside accounts with `TIER_ACCESS_REQUIRED`.
 
 ## Find your endpoints
 
@@ -103,13 +102,13 @@ Keep tokens secret; rotation and least-privilege labels are your responsibility.
 2. **Sign in** on the management API for the identity session token.
 3. **`mintAppToken(appId)`** → app-scoped token and game URLs.
 4. Call the shared Game API playground or run `{ __typename }` with `Authorization: Bearer <app-scoped token>`.
-5. For realtime: **`connectUdpProxy`** → `connected: true`; then actor updates or subscriptions (see [Dev tier → Verify connectivity](/management-ui/dev-tier)).
+5. For realtime: **`connectUdpProxy`** → `connected: true`; then actor updates or subscriptions (see [Connecting game clients → Verify connectivity](/management-ui/client-integration#verify-connectivity-smoke-checklist)).
 
 If `runtimeStatus` is not `active`, check wallet balance, spend caps, or subscription state before debugging client code.
 
 ## Related guides
 
-- **[Dev tier (client integration)](/management-ui/dev-tier)** — public dev hosts and smoke checklist.
+- **[Connecting game clients](/management-ui/client-integration)** — production hosts and smoke checklist.
 - **[Create your first app](/management-ui/create-your-first-app)** — register on the shared platform.
 - **[Apps on the shared platform](/management-ui/environments)** — routing, free tier, and app dashboard.
 - **[Shared environment & billing](/management-api/shared-environment)** — wallet, caps, and denial reasons.

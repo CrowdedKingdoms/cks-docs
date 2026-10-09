@@ -6,7 +6,7 @@ title: Introduction
 
 # Crowded Kingdoms Management UI
 
-The **Management UI** is the web portal at [https://studio.crowdedkingdoms.com](https://studio.crowdedkingdoms.com), with a tier-labelled host per tier — [https://studio.dev.crowdedkingdoms.com](https://studio.dev.crowdedkingdoms.com) on dev. Sign in and register at those same hosts (`/login`, `/register`). `crowdedkingdoms.com` on its own is the marketing site, not the portal.
+The **Management UI** is the web portal at [https://studio.crowdedkingdoms.com](https://studio.crowdedkingdoms.com) (also served as `studio.prod.crowdedkingdoms.com`). Sign in and register there (`/login`, `/register`). The `studio.dev` and `studio.test` hosts are Crowded Kingdoms' internal environments and refuse outside accounts. `crowdedkingdoms.com` on its own is the marketing site, not the portal.
 
 Studios and players use the portal to manage accounts, organizations, marketplace access, billing, and **apps on the shared platform** — the managed Game API where your games run, scoped by `appId`.
 
@@ -38,7 +38,7 @@ Game runtime (chunks, voxels, actors, UDP) is **not** configured in this portal;
 
 ## Next steps
 
-- **[Dev tier (client integration)](/management-ui/dev-tier)** — public dev hosts, shared endpoints, and smoke checklist for early client testing.
+- **[Connecting game clients](/management-ui/client-integration)** — production hosts, shared endpoints, and a smoke checklist for your first client.
 - **[Create your first app](/management-ui/create-your-first-app)** — primary onboarding wizard (shared platform).
 - **[Connecting to your app](/management-ui/connecting)** — endpoints, tokens, and client configuration.
 - **[Apps on the shared platform](/management-ui/environments)** — routing, free tier, and app dashboard.

@@ -28,7 +28,7 @@ Combine all chapters into one shippable game.
 | --- | --- | --- |
 | Shell | Vite + TypeScript | Vite + TypeScript, `GameScene` adapter |
 | Rendering | Raw canvas 2D | pixi.js (Paint) and three.js (hub) |
-| Backend I/O | CrowdyJS → dev-tier APIs | CrowdyJS + World Stores |
+| Backend I/O | CrowdyJS → the GraphQL API directly | CrowdyJS + World Stores |
 | Persistence | Voxel updates via the UDP proxy | Chunk store write-back (`markDirty` → `chunks.update`) |
 
 ## Next steps
@@ -41,4 +41,4 @@ Combine all chapters into one shippable game.
 
 - [CrowdyJS SDK guide](/crowdyjs/readme)
 - [GraphQL UDP Proxy API](/game-api/graphql-udp-proxy-api)
-- [Dev tier](/management-ui/dev-tier)
+- [Connecting game clients](/management-ui/client-integration)
