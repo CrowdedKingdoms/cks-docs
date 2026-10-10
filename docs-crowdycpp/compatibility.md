@@ -15,6 +15,13 @@ deployments:
   `state` input verbatim and re-encoded on read, so reads returned
   base64(base64(bytes)); newer builds round-trip symmetrically. Decode
   defensively if you must read rows written through an old server.
+- **The input log** (`inputLog()`, 0.59.0) needs Game API v2.39.0 or later: every
+  app read selects `replayLoggingEnabled`, which an older Game API refuses. The
+  retryable `INPUT_LOG_TEMPORARILY_UNAVAILABLE` / `INPUT_LOG_RATE_LIMITED` and the
+  `logging_off` / `shutdown` end reasons come with the Game API release after
+  v2.40.2. A message's `body` is standard base64: `crowdy::core::base64Decode`
+  (`crowdy/core/base64.hpp`) gives the bytes. See
+  [Input logging](/replication-api/input-logging).
 
 ## CrowdyJS parity
 

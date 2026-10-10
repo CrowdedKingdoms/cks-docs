@@ -168,7 +168,7 @@ Whether players may write the app's wilderness: chunks that no grid but the app'
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>replayLoggingEnabled</b></code>](#replay-logging-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#replay-logging-enabled\} 
-Whether replay logging is on: the realtime servers record every client input they accept for this app, searchable with inputLogSessions and readable with inputLogMessages, and billed as stored input logs. False (the default) records nothing ("No replication logging"). Set with updateApp (manage&#x005F;apps); turning it on needs a funded org wallet or a billing-exempt org.
+Whether replay logging is on: the realtime servers record every client message they accept for this app, searchable with inputLogSessions and readable with inputLogMessages, and billed as stored input logs. False (the default) records nothing ("No replication logging"). Set with updateApp (manage&#x005F;apps); turning it on needs a wallet that covers the projected cost of one retention period, or a billing-exempt org.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>claimOwnerKeys</b></code>](#claim-owner-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#claim-owner-keys\} 

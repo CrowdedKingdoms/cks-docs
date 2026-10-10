@@ -31,6 +31,7 @@ type InputLogSession {
   messageCount: BigInt!
   byteCount: BigInt!
   messageTypes: [Int!]!
+  missingRecords: BigInt
 }
 ```
 
@@ -66,7 +67,7 @@ When the session ended; null while it may still be running. A session whose end 
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>endReason</b></code>](#end-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#end-reason\} 
-How the session ended: expired, revoked, reconnect or released, as the client saw it; logging&#x005F;off, when the app turned replay logging off while the session was open; or unrecorded, when its end was not recorded and it was closed an hour after its last record. Null while it may still be running.
+How the session ended: expired, revoked, reconnect or released, as the client saw it; logging&#x005F;off, when the app turned replay logging off while the session was open; shutdown, when the realtime server recording it stopped (a deploy), after which the client reconnects elsewhere; or unrecorded, when its end was not recorded and it was closed an hour after its last record. Null while it may still be running.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>messageCount</b></code>](#message-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message-count\} 
@@ -79,6 +80,10 @@ Recorded bytes (the sum of every message sizeBytes): the quantity stored input l
 
 #### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>messageTypes</b></code>](#message-types)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[Int!]!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message-types\} 
 The client message types the session contains, ascending.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSession.<b>missingRecords</b></code>](#missing-records)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#missing-records\} 
+Records the realtime servers numbered for this session that never reached the log: recording is best-effort, so an overloaded server or a broker outage can leave gaps, and this is how many. 0 when the recording is complete as far as it is known. A lost end of the recording cannot be counted (its session closes as unrecorded instead). Null for a session recorded before the realtime servers numbered their records.
 
 
 
