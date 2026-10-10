@@ -74,7 +74,7 @@ Legacy: billed compute units of the removed automation engine over the window (s
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>inputLogByteHours</b></code>](#input-log-byte-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#input-log-byte-hours\} 
-Stored input logs over the window, in byte-hours (string counter): the sum of the hourly samples, which is the quantity input&#x005F;log&#x005F;storage&#x005F;byte&#x005F;hours bills. Each recorded byte (InputLogMessage.sizeBytes) is held for the input log retention, one byte-hour per hour. 0 when replay logging was off.
+Stored input logs over the window, in byte-hours (string counter): the sum of the hourly samples, which is the quantity input&#x005F;log&#x005F;storage&#x005F;byte&#x005F;hours bills. Each recorded byte (InputLogMessage.sizeBytes) is held for the input log retention, one byte-hour per hour, so recordings keep accruing byte-hours after replay logging is turned off, until they age out. 0 when nothing was held during the window.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppUsageSummary.<b>inputLogRetainedBytes</b></code>](#input-log-retained-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#input-log-retained-bytes\} 

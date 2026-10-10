@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-The recorded inputs of one session, oldest first, each exactly as the client sent it (without its authentication tail). Read from the input log by the offset ranges its index holds, so inputs past the published retention are gone even while the session is still listed. With 'manage&#x005F;apps' on the app you may read any session; anyone else may read only their own, and any other session answers NOT&#x005F;FOUND. Game plane: send the app-scoped token for this app to the app's datacenter. Page with `first` (default 50, max 200) and `after`; a page can hold fewer than `first` inputs when it stopped at its time or scan limit, so keep paging while hasNextPage is true. INPUT&#x005F;LOG&#x005F;UNAVAILABLE when input logging is not configured on this deployment, and also, retryable with the same cursor, when the log cannot be read right now.
+The recorded inputs of one session, oldest first, each exactly as the client sent it (without its authentication tail). Read from the input log by the offset ranges its index holds, so inputs past the published retention are gone even while the session is still listed. With 'manage&#x005F;apps' on the app you may read any session; anyone else may read only their own, and any other session answers NOT&#x005F;FOUND. Game plane: send the app-scoped token for this app to the app's datacenter. Page with `first` (default 50, max 200) and `after`, the previous page's endCursor for this same session (a cursor from another session is BAD&#x005F;USER&#x005F;INPUT); a page can hold fewer than `first` inputs, or none, when it stopped at its time or scan limit, so keep paging while hasNextPage is true. An operation may select this field only once. Errors: INPUT&#x005F;LOG&#x005F;UNAVAILABLE when input logging is not configured on this deployment (do not retry); INPUT&#x005F;LOG&#x005F;RATE&#x005F;LIMITED (429) when you already have a read running, and INPUT&#x005F;LOG&#x005F;TEMPORARILY&#x005F;UNAVAILABLE (503) when the log cannot be read just now, both with extensions.retryable: retry shortly with the same cursor.
 
 
 ```graphql
@@ -40,7 +40,7 @@ The session to read: InputLogSession.gameTokenId.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>inputLogMessages.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#first\} 
-Return the first N edges after `after`. Default 50; clamped to 1..200.
+Return the first N edges after `after`. Default 50; clamped to 1..200, so 0 returns one edge.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>inputLogMessages.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#after\} 
