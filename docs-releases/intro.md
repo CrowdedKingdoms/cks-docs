@@ -32,9 +32,29 @@ convenience and **was never published**. The entries are left as written because
 this page is a historical record. The compute modules it deployed were replaced by
 ck-exec, which builds and deploys through the game API (`execBuild`, `execDeploy`); its
 own CLI is not published either. See
-[from the legacy engines](/exec/from-the-legacy-engines#build-and-deploy).
+[from the legacy engines](/exec/from-the-legacy-engines#build-and-deploy). To build and test
+on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
+
+## 2026-10-10 (dev: the open mod dev kit; ckx-sdk 0.9.0 on crates.io, with native tests)
+
+Additive. Modules are unchanged (guest ABI 5).
+
+- **Develop hubs, spokes and mods on your machine.** The open dev kit, `ckx-kit`
+  (`@crowdedkingdoms/ckx-kit` on npm; MIT or Apache-2.0,
+  [github.com/CrowdedKingdoms/ckx-kit](https://github.com/CrowdedKingdoms/ckx-kit)), starts a
+  crate from the templates and starter packs, runs the platform's source checks, builds with the
+  Rust release, release profile and dependency versions the platform pins, checks the module and
+  the mod limits, and meters a mod's CLIENT half, printing the capability summary and hash the
+  platform's build reports. A crate that passes there builds on the platform. See [develop on
+  your machine](/exec/develop-locally).
+- **`ckx-sdk` and `crowdy-client-sdk` are on crates.io**, under MIT or Apache-2.0.
+- **`ckx-sdk` 0.9.0 tests nodes natively.** `ckx_sdk::testing` runs a hub, a spoke or a mod under
+  `cargo test` against a fake of the platform: calls, timers on a clock the test moves, topics,
+  presence, sessions, a mod's world events, snapshots and restarts, each call held to the
+  platform's bounds. A mod's `FakeGrid` answers it as the node API does, refusals included.
+  `ckx_sdk::limits` states the platform's bounds. See [test](/exec/develop-locally#test).
 
 ## 2026-10-10 (dev: free hub tier, pause signals, app-defined voxels, channel voice, hub grid and access APIs; replication server v0.37.0, Game API v2.40.1, ck-exec 0.15.0, CrowdyJS 18.7.0, CrowdyCPP 0.60.0, CrowdyPy 0.8.0)
 

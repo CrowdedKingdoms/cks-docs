@@ -115,10 +115,10 @@ other instances with `ctx.call(type, key, method, bytes)` and publishes to its s
 named fields, which game clients decode into plain objects.
 
 Have the platform build it: `execBuild` compiles your crates' sources, with no Rust toolchain
-on your machine; see [builds and starter packs](builds). Building on your own machine (`cargo
-build --release --target wasm32-unknown-unknown`) needs the `ckx-sdk` crate, which is not
-published yet. Players run their own code on grids they own the
-same way, as [mods](mods), and in their visitors' browsers as a mod's [CLIENT
+on your machine; see [builds and starter packs](builds). To test and build on your own machine,
+with the platform's checks, use the open [dev kit](develop-locally): `ckx-sdk` is on crates.io,
+and `cargo test` runs your hubs against a fake of the platform. Players run their own code on
+grids they own the same way, as [mods](mods), and in their visitors' browsers as a mod's [CLIENT
 half](client-halves).
 
 ### What one call may send and return

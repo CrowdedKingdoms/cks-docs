@@ -136,6 +136,11 @@ suits a HUD; a game with a fast input loop goes lower, as long as each tick stay
 A CLIENT half rides a mod: deploy the mod first ([build, deploy and switch
 on](mods#build-deploy-and-switch-on)), then build the CLIENT half and attach it.
 
+On your machine, `npx @crowdedkingdoms/ckx-kit new client` starts a CLIENT half, and
+`ckx-kit build` meters and optimizes it as `execModClientBuild` does and prints its [capability
+summary](#the-capability-summary) with its hash: the same summary and hash the platform's build
+reports, and visitors are asked about. See [develop on your machine](develop-locally).
+
 ```graphql
 mutation {
   execModClientBuild(appId: "…", crate: { name: "plot-hud", files: [
