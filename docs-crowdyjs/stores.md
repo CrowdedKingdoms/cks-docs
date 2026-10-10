@@ -121,7 +121,9 @@ client starts with:
 - **Send loop**: defaults to **5 Hz** (`sendIntervalMs: 200`); set `false`
   to drive `sendNow()` yourself. With `sendOnChange` (default) unchanged
   encodes are deduped, and a keyframe still goes out every `keyframeEveryMs`
-  (default 3000) so presence never starves.
+  (default 3000) so presence never starves. Since replication v0.37.0 two idle
+  players on different servers see each other at the first keyframe after joining;
+  no faster cadence is needed.
 - **Queryable records**: `lastSent` (typed state + encoded form + sequence
   number + timestamp), `lastAck` (your server-applied self-echo, decoded),
   `lastError`, and `status: 'idle' | 'pending' | 'acked' | 'error'`.
