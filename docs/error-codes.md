@@ -235,7 +235,7 @@ Correlate to the request that caused it by `sequenceNumber`.
 | `INVALID_APP_ID` | `appId` was missing, zero, or invalid — **or** the token is not scoped to the packet's app (app-scoped token confinement). | Supply a valid `appId`, and use the token minted for that app. |
 | `USER_NOT_AUTHENTICATED` | No session on the server for this client. | Open the UDP proxy (`connectUdpProxy`) or complete the native token handshake first. |
 | `TOKEN_EXPIRED` | The app-scoped gameplay token's TTL elapsed mid-session. | Refresh the app token (same app: `refreshAppToken`) before it lapses, or re-portal through the Overworld for a fresh one, then re-authorize the session. |
-| `APP_PAUSED` (33) | The app's runtime gate is not active (no funds, a spend cap, a lapsed subscription), so nothing is delivered for it. Sent in answer to a send, at most once every few seconds per session. Replication v0.37.0. | Tell the player the world is paused; `gameClientBootstrap.runtimeGate` (or the mint's `runtimeGate`) carries the reason. Sends work again within seconds of the owner fixing it. |
+| `APP_PAUSED` (33) | The app's runtime gate is not active (no funds, a spend cap, a lapsed subscription), so nothing is delivered for it. Sent in answer to a send, at most once every few seconds per session. Replication v0.37.0. | Tell the player the world is paused; `gameClientBootstrap.runtimeGate` (or the mint's `runtimeGate`) carries the reason. The server re-checks with backoff and serves the session again once the owner fixes it, without a reconnect. |
 
 The full enum (including login-validation codes that never appear on the UDP wire) is in
 the [Game API SDL](pathname:///schema/game-api.graphql) as `UdpErrorCode`, each value documented.

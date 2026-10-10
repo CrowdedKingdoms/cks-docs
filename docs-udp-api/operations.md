@@ -29,12 +29,13 @@ match the current wire enum; the `MAP_*` forms are legacy aliases.
 | 18 | `INVALID_APP_ID` | Not authorized for this app — unknown app **or the token is scoped to a different app** (app-scope mismatch) |
 | 20 | `USER_NOT_AUTHENTICATED` | Session not ready (or not an app-scoped token) — `mintAppToken`, call `serverWithLeastClients`, wait ~1.5 s, retry |
 | 32 | `TOKEN_EXPIRED` | The app-scoped token passed its `expiresAt` — Buddy evicted the session. Mint a fresh token (`refreshAppToken` for the same app) and re-assign |
+| 33 | `APP_PAUSED` | The app is paused (its organization has no funds, reached a spend cap, or its subscription lapsed): nothing it sends replicates. Keep the session and tell the player; the server re-checks with backoff and serves it again once the app is active, without a reconnect (server v0.37.0) |
 
 ## Permissions (always enforced)
 
 Every spatial message is authorized on the server. The sender must have **active
 app access** whose tier includes the relevant permission key (`access` to
-move/send events, `update_voxel_data` to edit voxels, `use_voice_chat` for audio,
+move/send events and text, `update_voxel_data` to edit voxels, `use_voice_chat` for audio,
 `use_video_chat` for webcam video — opcode 143, see
 **[Wire formats → Video payload](/replication-api/wire-formats#video-payload-client_video_packet_2-client_video_notification_2)**)
 **and** the target chunk must be inside a **grid** where the sender holds that
@@ -71,12 +72,23 @@ into restrictions (safe zones, plot ownership) via the Game API. See
 
 ## App suspended or over budget
 
-If an app is **runtime-denied** — suspended, out of wallet funds, or over a spend
-cap on the shared environment — the server refuses to authorize its game tokens,
-so session setup fails and spatial sends come back `UNAUTHORIZED` /
-`USER_NOT_AUTHENTICATED`. This is a billing/runtime state, not a client bug:
-resolve it on the management API (fund the wallet, raise the cap, or renew). See
-**[Shared environment & billing](/management-api/shared-environment)**.
+If an app is **paused** — its organization is out of wallet funds, over a spend cap
+on the shared environment, or its subscription lapsed — sessions still connect, and
+nothing the app's clients send replicates. Since server v0.37.0 the server says so: a
+refused spatial or channel send is answered `GENERIC_ERROR_MESSAGE` with code **33
+(`APP_PAUSED`)**, at most once per session every 5 seconds, and the rest are dropped
+silently. Heartbeats are not refused. The server re-checks with backoff and serves the
+session again once the app is active, with no reconnect. `mintAppToken` and `gameClientBootstrap`
+report the reason in `runtimeGate`, so tell the player the world is paused. This is a
+billing/runtime state, not a client bug: the owner resolves it on the management API
+(fund the wallet, raise the cap, or renew). See
+**[What "access denied" means](/management-api/shared-environment#what-access-denied-means)**.
+(Before v0.37.0 every send was answered `INVALID_APP_ID` and a session did not
+recover when the app was re-activated.)
+
+A player whose **own access** to the app is revoked or suspended is different: their
+tokens for the app are revoked and the session ends at once; signing in again is
+refused with `ACCESS_REVOKED` or `ACCESS_SUSPENDED` until it is lifted.
 
 ## Server reassignment
 
