@@ -27,6 +27,7 @@ input UpdateAppInput {
   metadata: String
   wildernessWritesOpen: Boolean
   replayLoggingEnabled: Boolean
+  claimOwnerKeys: [String!]
 }
 ```
 
@@ -59,6 +60,10 @@ Open (true) or close (false) the app's wilderness to voxel and chunk writes: chu
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>replayLoggingEnabled</b></code>](#replay-logging-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#replay-logging-enabled\} 
 Turn replay logging on (true) or off (false): record every client input the realtime servers accept for this app, kept for the input log's published retention and billed as stored input logs (input&#x005F;log&#x005F;storage&#x005F;byte&#x005F;hours, no free allowance). Turning it ON is refused with INPUT&#x005F;LOG&#x005F;FUNDS&#x005F;NEEDED unless the org's wallet has a spendable balance or the org is billing-exempt; turning it off always succeeds. Recording starts and stops within about 15 seconds. Omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>claimOwnerKeys</b></code>](#claim-owner-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#claim-owner-keys\} 
+Grid permission keys a player's claim grants its owner on the claimed grid (at most 8; active grid keys; never a player-code key). An empty list grants none. Applies to claims made from now on. Omit to leave unchanged.
 
 
 

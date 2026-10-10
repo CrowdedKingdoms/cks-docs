@@ -204,15 +204,37 @@ spoke's: the host picks a replica.
 |---|---|---|
 | `Ok` | 0 | The payload is the handler's reply. |
 | `AppError` | 1 | The handler returned an error; the payload is its message. |
-| `Busy` | 2 | The instance's mailbox is full. Retry with backoff. |
+| `Busy` | 2 | Refused before the handler ran: the instance's mailbox is full, or the player's call limit ("rate limited", saying when to retry). Retry with backoff. |
 | `Moved` | 3 | The instance moved. Retry; a fresh `execConnect` may pick a closer host. |
 | `NotFound` | 4 | No such type in the app's active version. |
 | `DeadlineExceeded` | 5 | No reply in time. |
-| `Denied` | 6 | Players may not call that type, or the method is reserved. |
+| `Denied` | 6 | Players may not call that type, the method is reserved, or the app or type is switched off or paused by billing (the message says which, and why). |
 | `RateLimited` | 7 | The root hub's rate limit. |
-| `Unavailable` | 8 | The platform could not reach the instance; safe to retry. |
+| `Unavailable` | 8 | The platform could not place or reach the instance, for example the app is at its instance or memory limit, or a new version is not ready on that host yet (the message says why). See below for when it is safe to retry. |
 | `Internal` | 9 | A platform fault. |
 | `Trapped` | 10 | The handler crashed; the instance restarts from its last snapshot. |
 | `BadRequest` | 11 | A malformed frame or request. |
+
+### Did the handler run?
+
+What a status says about whether your handler ran, for a player's call and an instance's
+`call` alike:
+
+- **It ran:** `Ok`, `AppError`, `Trapped` (it crashed; its state since the last snapshot is
+  lost, what it sent stays sent) and `Internal`.
+- **It did not run:** `Busy`, `RateLimited`, `Denied`, `NotFound`, `BadRequest`, and an
+  `Unavailable` refused before the call was sent (placement: the app's instance or memory
+  limit, no host free, a start that failed; or a new version not ready on that host yet). These
+  are safe to retry.
+- **Unknown:** an `Unavailable` after the call was sent (the link to the host running it was
+  lost, or that host went away) and `DeadlineExceeded`. The handler may have run, and the
+  platform may already have sent the call once more, so a handler that must not run twice should
+  take a request id and remember it.
+
+The platform resends a call answered `Moved`, or answered `Unavailable` by the host it was
+relayed to, at most twice before you hear anything; a one-way `send` is never resent. Only the
+message tells the two kinds of `Unavailable` apart. When your code calls the platform's node API
+and the Game API is too busy to start the work (`PLATFORM_BUSY`), the call fails `Unavailable`:
+it did not run, and a retry after a second is safe.
 
 Next: [timers, subscriptions and presence](timers-and-presence).

@@ -1,0 +1,39 @@
+---
+id: send-channel-audio
+title: sendChannelAudio
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Send audio to a channel: delivered to every active member of the channel, wherever they are (party or guild voice), as a ChannelAudioNotification on udpNotifications. The payload is opaque (at most 1024 bytes): your app or an SDK voice helper defines the format and codec. Requires a bearer game token, the channel send&#x005F;voice permission and the player’s use&#x005F;voice&#x005F;chat; without either the server refuses it with UNAUTHORIZED (asynchronously, on udpNotifications). Opens a UDP proxy session automatically if none exists. The sender receives no echo. Every member’s downlink is billed as egress, so keep voice channels small. Returns Boolean! that is true only when the datagram was ACCEPTED FOR SENDING, not delivered; correlate failures by sequenceNumber (correlation only, not an idempotency key).
+
+
+```graphql
+sendChannelAudio(
+  input: ChannelMessageInput!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>sendChannelAudio.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ChannelMessageInput!</b></code>](/reference/graphql/types/inputs/channel-message-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The channel audio to send: channelId (groups.group&#x005F;id), the sender’s 32-byte actor uuid, base64 payload (max 1024 bytes), and optional sequenceNumber. Same shape as sendChannelMessage.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

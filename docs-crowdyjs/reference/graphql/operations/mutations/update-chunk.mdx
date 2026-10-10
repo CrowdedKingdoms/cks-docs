@@ -36,4 +36,4 @@ updateChunk(
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>Chunk</b></code>](/reference/graphql/types/objects/chunk.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A persisted 16x16x16-voxel chunk (4096 voxels) of an app's voxel world. Holds the packed voxel-type grid (`voxels`), sparse per-voxel state overrides (`voxelStates`), an optional opaque chunk-level state blob (`chunkState`), and level-of-detail meshes (`lods`). Returned by getChunk/getChunksByDistance and written by updateChunk/updateChunkState/updateChunkLods.
+A persisted chunk of an app's voxel world. Holds an optional packed voxel-type grid for 16x16x16 chunks (`voxels`, one byte per voxel), sparse per-voxel state overrides and recorded edits (`voxelStates`; voxel positions and types are app-defined signed 16-bit values, so an app may address its chunks however it likes), an optional opaque chunk-level state blob (`chunkState`), and level-of-detail meshes (`lods`). Returned by getChunk/getChunksByDistance and written by updateChunk/updateChunkState/updateChunkLods.

@@ -174,7 +174,15 @@ For premium tiers, or for apps that opted out of open‑by‑default, the admin 
 mutation { grantAppAccess(input: { appId: "APP_ID", userId: "PLAYER_USER_ID", tierId: "TIER_ID" }) { appUserAccessId status } }
 ```
 
-Revoke a player's access with `revokeAppAccess(appId, userId)`. Granting and revoking both require **`manage_access_tiers`**.
+Revoke a player's access with `revokeAppAccess(appId, userId)`. For a ban that lifts by itself, suspend it instead:
+
+```graphql
+mutation { suspendAppAccess(appId: "APP_ID", userId: "PLAYER_USER_ID", until: "2026-11-01T00:00:00Z") { suspendedUntil } }
+```
+
+`until` is at most 365 days away; `unsuspendAppAccess(appId, userId)` lifts it early. Revoking or suspending ends the player's sessions at once, and signing in is refused with `ACCESS_REVOKED` or `ACCESS_SUSPENDED` (which carries `suspendedUntil`) until it is lifted; a player with no access to an app with no free tier gets `ACCESS_NOT_GRANTED`. None of these tells the player to buy anything. Granting, revoking and suspending require **`manage_access_tiers`**, and your app's [ck-exec](/exec/world-and-platform-data) code can do the same with the `access.write` scope.
+
+When you change what a tier grants, `resyncTierGridPermissions(appId)` re-applies each player's tier keys on the app's default world grid. It only adds keys: a key the tier no longer carries stays until you revoke it.
 
 The grant propagates to the Game API automatically (the matching grid permissions are provisioned server‑side via replica‑sync), so the player is authorized end to end — again with no direct database access.
 

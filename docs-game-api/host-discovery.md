@@ -150,9 +150,9 @@ CrowdyJS: `client.host.heartbeat(appId)`.
 
 `actorHeartbeat` returns the **same `GameHost` shape** as the `gameHost` query — the freshly-elected host *after* recording your heartbeat — so you can fold your poll and your heartbeat into a single round-trip and drop the separate `gameHost` query entirely.
 
-Why this exists: the underlying actor record is created by the replication layer when you first move into the world and is normally removed a few seconds after you go idle. If a server drops a client ungracefully that record can be left behind and would otherwise keep winning the election forever. Heartbeating makes liveness explicit — a host that stops heartbeating (crash, network loss, app quit) ages out automatically and the next-oldest fresh user takes over.
+Why this exists: the election reads live presence, the entry the replication layer keeps for each actor while its client sends actor updates (not an `actors` record, which only `createActor` makes). An entry normally expires a few seconds after you go idle. If a server drops a client ungracefully that entry can be left behind and would otherwise keep winning the election forever. Heartbeating makes liveness explicit — a host that stops heartbeating (crash, network loss, app quit) ages out automatically and the next-oldest fresh user takes over.
 
-- **You can't heartbeat your way into being host.** `actorHeartbeat` only refreshes records that already exist; the record itself is created by sending actor updates (native `ACTOR_UPDATE_REQUEST_2` or the GraphQL UDP proxy `sendActorUpdate`). Until you have done that, `actorHeartbeat` is a no-op and simply reports whoever the current host is.
+- **You can't heartbeat your way into being host.** `actorHeartbeat` only refreshes presence that already exists; presence comes from sending actor updates (native `ACTOR_UPDATE_REQUEST_2` or the GraphQL UDP proxy `sendActorUpdate`). Until you have done that, `actorHeartbeat` is a no-op and simply reports whoever the current host is.
 - **Beat faster than the server's freshness window.** Every ~3 s is a good default. The window is operator-configured (`HOST_ACTOR_FRESHNESS_SECONDS`); beating several times within it means brief packet loss won't cost you host status.
 
 ## Important behaviors and limits

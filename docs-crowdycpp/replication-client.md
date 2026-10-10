@@ -57,8 +57,14 @@ message's **sequence number**:
   [the channels guide](/game-api/channels#limit-delivery-by-distance)). The origin's
   app is `Config::appId`; `maxDistance` is 0 to `wire::channel_ranged::kMaxDistance`
   (2147483647). Members receive an ordinary channel message
+- `sendChannelAudio(channelId, uuid, payload)` (0.60.0+) — send audio to a channel
+  (`CHANNEL_AUDIO_REQUEST`, 35; replication v0.37.0): every other member receives it in
+  `Handlers::channelAudio` (or `WorldSessionConfig::onChannelAudio`), wherever they are.
+  Needs the channel's `send_voice` and `use_voice_chat`; the payload is at most 1,024
+  bytes, in any format (the `crowdy::media` voice helpers are optional)
 - `sendHeartbeat` — idle keep-alive for your own actor (send every ~2 s while
-  idle so presence never lapses)
+  idle so presence never lapses). Since replication v0.37.0 idle players on different
+  servers see each other from the first full update after joining, whatever the heartbeats
 
 Payload bytes are copied into a pooled send buffer during the call, so they
 need not outlive it.
@@ -154,14 +160,16 @@ request/confirm flows CrowdyCPP offers the same convenience CrowdyJS's
 - `sendActorUpdateAndWait` / `sendVoxelUpdateAndWait` — wait (pumping and
   polling internally; other handlers still fire) until the send's **self-echo
   notification** arrives, a correlated error frame arrives, or the timeout
-  elapses.
-- `sendTextAndWait` — text (like audio and client events) has **no echo**;
-  only errors correlate. A clean timeout therefore means *accepted*.
+  elapses. An accepted voxel edit always echoes to its sender (replication
+  v0.37.0); an actor update echoes while your actor is in range of its chunk.
+- `sendTextAndWait` — text (like audio, video and client events) comes back to
+  you only when your actor is near the target chunk, so its echo is not an
+  acknowledgment; only errors correlate. A clean timeout therefore means *accepted*.
 - `waitForSequence` — the low-level primitive: wait on any sequence + uuid.
 
-`sendVideoFrame` returns the number of fragments sent; like audio it has no
-echo, so only a correlated `Unauthorized` error frame (no `use_video_chat`)
-tells you it was refused.
+`sendVideoFrame` returns the number of fragments sent; like audio, its echo
+reaches you only when your actor is near the chunk, so only a correlated
+`Unauthorized` error frame (no `use_video_chat`) tells you it was refused.
 
 The outcome reports `acknowledged`, the correlated error code if any, and the
 server epoch-millis from the echo.
@@ -170,7 +178,12 @@ server epoch-millis from the echo.
 
 The replication layer **never throws on the hot path**: sends return
 `Result` codes, server failures arrive as correlated error notifications, and
-connection changes surface through the status callback. GraphQL-layer
+connection changes surface through the status callback. `wire::ErrorCode::AppPaused`
+(33, replication v0.37.0) means the app is paused (no funds, a spend cap, a lapsed
+subscription): keep the session, tell the player, and read the reason from the token
+mint's `runtimeGate` (`domains::isAppPaused`). Voxel edits take any signed 16-bit
+position and type; a state over 1,024 bytes (`wire::voxel::kMaxStateSize`) is refused
+before it is sent, and your own accepted edit always comes back once as a notification. GraphQL-layer
 operations (assignment, token mint/refresh) throw the structured exception
 types shared with the rest of the SDK — branch on `error.code()` rather than
 parsing messages.

@@ -121,7 +121,9 @@ client starts with:
 - **Send loop**: defaults to **5 Hz** (`sendIntervalMs: 200`); set `false`
   to drive `sendNow()` yourself. With `sendOnChange` (default) unchanged
   encodes are deduped, and a keyframe still goes out every `keyframeEveryMs`
-  (default 3000) so presence never starves.
+  (default 3000) so presence never starves. Since replication v0.37.0 two idle
+  players on different servers see each other at the first keyframe after joining;
+  no faster cadence is needed.
 - **Queryable records**: `lastSent` (typed state + encoded form + sequence
   number + timestamp), `lastAck` (your server-applied self-echo, decoded),
   `lastError`, and `status: 'idle' | 'pending' | 'acked' | 'error'`.
@@ -212,6 +214,16 @@ The client-side source of truth for chunks and voxels:
 - Typed reads everywhere: `voxelTypeAt`, `voxelStateAt`, `get(coord)` with
   `voxels` (4096-byte dense grid), `voxelStates: Map<index, T>`, typed
   `chunkState`, `loadState`, `revision`.
+- **A 16×16×16 helper, and wide edits are kept, not truncated** (CrowdyJS
+  18.7.0). Voxel positions and types are your app's signed 16-bit values; the
+  dense grid holds one byte per voxel of a 16×16×16 chunk. An edit it cannot
+  hold (a type outside 0-255, a position outside 0-15) goes to the chunk's
+  `overlay` (`Map<voxelKey(x, y, z), { x, y, z, voxelType, state }>`), and
+  `voxelTypeAt` / `voxelStateAt` return the overlay's value for that voxel. A
+  game with other addressing reads the raw `voxelUpdate` events instead.
+- Your own accepted edits come back to you as `voxelUpdate`s (replication
+  v0.37.0 echoes every accepted edit to its sender), and the store applies
+  that echo idempotently over its optimistic write.
 
 ### `channelInbox`, `actorInbox`, `events` — messaging
 

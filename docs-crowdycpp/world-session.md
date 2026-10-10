@@ -35,13 +35,19 @@ thread that reads them — so reads are plain snapshots with no locking.
 - **Periodic keyframes** (default every 3 s): a full send goes out even when
   nothing changed, keeping presence fresh and repairing lost packets.
 - **Idle heartbeats** (default every 2 s): while unchanged, a cheap
-  `sendHeartbeat` replaces the full update so presence never lapses.
+  `sendHeartbeat` replaces the full update so presence never lapses. Since
+  replication v0.37.0 two idle players on different servers see each other at the
+  first keyframe after joining (3 s with these defaults); no faster cadence is needed.
 - **Chunk moves send immediately**: `moveTo(chunk)` does not wait for the
   next send slot — crossing a chunk boundary should never lag.
 - **Acks**: your own updates echo back from the server; `lastAck()` exposes
   the last applied echo (sequence, server time, state) for reconciliation.
 
-State payloads are opaque bytes. For typed states, `PodCodec<T>` maps a
+State payloads are opaque bytes, and **the session stores keep at most 256 bytes of
+one** (`crowdy::session::kMaxStateBytes`): a longer state, yours through `setState` or
+another actor's from the wire, is cut to its first 256 bytes without an error. Keep poses
+well under it, and carry anything larger in an event, a channel message or app state (a
+spatial datagram is at most 1,232 bytes in all). For typed states, `PodCodec<T>` maps a
 trivially-copyable packed struct to the wire payload (the struct layout *is*
 the wire layout), and `UnrealPose` ships as a ready-made 88-byte layout
 interoperable with the Unreal SDK's pose format.
@@ -107,6 +113,20 @@ the realtime stream:
   `persisted`, and the write-backs it `dropped`. `pruneBeyond` evicts a refused
   chunk and keeps one whose failure can still clear. (CrowdyCPP 0.53.0.)
 - `onChunkChanged` observes both realtime and local changes.
+- **A 16×16×16 helper that keeps wide edits** (CrowdyCPP 0.60.0). Voxel
+  positions and types are your app's signed 16-bit values; the dense grid holds
+  one byte per voxel of a 16×16×16 chunk. An edit it cannot hold (a type
+  outside 0-255, a position outside 0-15) goes to `ChunkData::overlay`, keyed
+  by `voxelKey(x, y, z)`, and `voxelTypeAt` (now `std::int16_t`) returns it.
+  `setVoxel` with such a position keeps it in the overlay and sends it, where
+  it used to return `InvalidArgument`. Before 0.60.0 a realtime update with a
+  large position could be written past the end of the 4,096-byte grid; it no
+  longer can.
+- **`WorldSessionConfig::onVoxel(notification, voxel)`** is called for every
+  inbound voxel update after `chunks()` has merged it, with the sender and the
+  edit's state blob, for a game that keeps its own world or uses other
+  addressing. Your own accepted edits come back too (replication v0.37.0
+  echoes every accepted edit to its sender).
 
 ## Voice and video
 
@@ -120,6 +140,19 @@ session installed without them receives neither, so wire both if your game
 has either. Sending goes through the connection: `sendAudio`, and
 `sendVideoFrame(chunk, uuid, frame, frameId, codec)`, which needs
 `use_video_chat` on the sender's tier and the grid under the chunk.
+
+Audio payloads are yours to define. `crowdy::media` (`voice_frames.hpp`,
+CrowdyCPP 0.60.0) offers an optional convention shared with CrowdyJS: a
+10-byte voice header inside the payload (`encodeVoicePacket`,
+`decodeVoicePacket`), a `VoicePacketizer` that numbers frames, and a
+`VoiceJitterBuffer` keyed by sender that reorders, delays playout by 60 ms and
+reports missing frames as gaps. The layout and behaviour are on the
+[CrowdyJS voice page](/crowdyjs/voice-chat#voice-payload-helpers). Configure
+with `-DCROWDY_WITH_OPUS=ON` to get `OpusVoiceEncoder` / `OpusVoiceDecoder`
+(`opus.hpp`) over a libopus you provide; the default build needs no codec.
+
+`WorldSessionConfig::onGenericSpatial` receives `GENERIC_SPATIAL_1` (opcode
+140), the long spatial message whose payload your game defines.
 
 ## Events, messages, errors
 

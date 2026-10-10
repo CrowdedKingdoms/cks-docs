@@ -1,0 +1,39 @@
+---
+id: player-profiles
+title: playerProfiles
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Public profiles (user id, gamertag, disambiguation) for up to 100 user ids in one call, in no particular order; ids with no user are omitted. Requires a valid game token. Use it after batchLookupActors to name everyone in view at once.
+
+
+```graphql
+playerProfiles(
+  userIds: [BigInt!]!
+): [PlayerProfile!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerProfiles.<b>userIds</b></code>](#user-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-ids\} 
+User ids (BigInt decimal strings), at most 100; duplicates are read once.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerProfile</b></code>](/reference/graphql/types/objects/player-profile.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A player's public profile: what another player's client may show (a nametag, a friends list). Carries nothing private; for your own account read `me`.

@@ -35,6 +35,8 @@ type GameClientBootstrap {
   discoveryUrl: String
   gameApiUrl: String
   gameApiWsUrl: String
+  runtimeGate: AppRuntimeGate!
+  wildernessWritesOpen: Boolean!
 }
 ```
 
@@ -99,6 +101,14 @@ HTTPS origin the client should use for GraphQL right now: the app's OWN datacent
 
 #### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>gameApiWsUrl</b></code>](#game-api-ws-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#game-api-ws-url\} 
 The wss:// form of gameApiUrl, for the graphql-transport-ws subscription socket and the binary relay. Same origin, same caveat: under direct connect it is one instance.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>runtimeGate</b></code>](#runtime-gate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppRuntimeGate!</b></code>](/reference/graphql/types/objects/app-runtime-gate.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#runtime-gate\} 
+The app's runtime gate. Bootstrap answers for a paused app too, so a client can tell the player the world is paused (status not ACTIVE, with the reason) instead of showing an empty one; realtime sends and hub calls are refused until it is ACTIVE again.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>GameClientBootstrap.<b>wildernessWritesOpen</b></code>](#wilderness-writes-open)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wilderness-writes-open\} 
+Whether the app's wilderness (land no grid but the world grid covers) is open to players' voxel edits (App.wildernessWritesOpen). When false, edits there are refused, so a client can stop a player before sending one.
 
 
 

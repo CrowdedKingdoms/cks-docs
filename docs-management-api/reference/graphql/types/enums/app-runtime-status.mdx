@@ -39,7 +39,7 @@ Still running on a temporary allowance (e.g. low funds) but at risk of being den
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppRuntimeStatus.<b>DENIED</b></code>](#denied) \{#denied\} 
-Blocked from running now (e.g. insufficient funds, spend cap hit, or free allowance exhausted); recoverable once the cause clears.
+Blocked from running now (insufficient funds or a spend cap hit); recoverable once the cause clears.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AppRuntimeStatus.<b>SUSPENDED</b></code>](#suspended) \{#suspended\} 
@@ -50,4 +50,4 @@ Hard-stopped (e.g. lapsed subscription); requires action to restore.
 
 ### Member Of
 
-[`AppRuntimeState`](/reference/graphql/types/objects/app-runtime-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
+[`AppRuntimeGate`](/reference/graphql/types/objects/app-runtime-gate.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`AppRuntimeState`](/reference/graphql/types/objects/app-runtime-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
