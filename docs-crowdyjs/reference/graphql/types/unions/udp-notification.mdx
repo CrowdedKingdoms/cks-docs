@@ -19,7 +19,7 @@ All game-server messages delivered over the UDP proxy as GraphQL payloads. Subsc
 
 
 ```graphql
-union UdpNotification = ActorUpdateResponse | ActorUpdateNotification | VoxelUpdateResponse | VoxelUpdateNotification | ClientAudioNotification | ClientVideoNotification | ActorLeftNotification | ClientTextNotification | ClientEventNotification | ServerEventNotification | SingleActorMessageNotification | ChannelMessageNotification | GenericErrorResponse | RealtimeConnectionEvent
+union UdpNotification = ActorUpdateResponse | ActorUpdateNotification | VoxelUpdateResponse | VoxelUpdateNotification | ClientAudioNotification | ClientVideoNotification | ActorLeftNotification | ClientTextNotification | ClientEventNotification | ServerEventNotification | SingleActorMessageNotification | ChannelMessageNotification | ChannelAudioNotification | GenericErrorResponse | RealtimeConnectionEvent
 ```
 
 
@@ -71,6 +71,10 @@ Notification received when another actor sends you a direct actor-to-actor messa
 
 #### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ChannelMessageNotification</b></code>](/reference/graphql/types/objects/channel-message-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
 Notification received when a message is published to a channel you are a member of. Delivered over the udpNotifications subscription to every active channel member.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>ChannelAudioNotification</b></code>](/reference/graphql/types/objects/channel-audio-notification.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Channel audio from another member of a channel you belong to (party or guild voice), delivered over the udpNotifications subscription wherever you are. The payload is opaque to the server: your app (or an SDK voice helper) defines its format and codec.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UdpNotification.<b>GenericErrorResponse</b></code>](/reference/graphql/types/objects/generic-error-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
