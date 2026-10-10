@@ -56,8 +56,17 @@ expired token, a rate limit, a chunk the player may not act in, a channel they a
 member of) is not.
 
 A **session** is one game token's inputs: it starts with the first recorded input and ends
-when the token's session ends. Its end reason is what the client saw: `expired`, `revoked`,
-`reconnect` (the player connected again on a new token) or `released`.
+when the token's session ends. Its end reason is one of these:
+
+- What the client saw: `expired`, `revoked`, `reconnect` (the player connected again on a new
+  token) or `released`.
+- `logging_off`: you turned replay logging off while the session was open. The player's game
+  goes on; only the recording stops.
+- `unrecorded`: the end itself was not recorded, so the session was closed at its last input
+  once an hour had passed without one.
+
+A session that records again after it ended, because you turned logging back on or its inputs
+resumed, reopens: `endedAt` and `endReason` return to null.
 
 ## Read it
 

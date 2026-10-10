@@ -37,6 +37,41 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-10 (dev: input logging reports what it lost, ends every session and says when to retry; the replication server release after v0.37.0, the Game API release after v2.40.2, CrowdyJS 18.8.0)
+
+Input logging fixes and one new requirement. See [Input logging](/replication-api/input-logging).
+
+- **Turning replay logging on needs funds for what it will keep.** `updateApp` refuses
+  `replayLoggingEnabled: true` with `INPUT_LOG_FUNDS_NEEDED` unless the organization's wallet can
+  spend at least the projected cost of keeping one retention period of the app's recent traffic
+  (`extensions.requiredMicrousd` and `spendableMicrousd` say how much), or the organization is
+  exempt from billing. Recordings already kept go on being billed after logging is turned off,
+  until they age out.
+- **Every recorded session gets an end.** Turning replay logging off while a session is open ends
+  it as `logging_off`; a replication server that stops (a deploy) ends its open sessions as
+  `shutdown`, and the client reconnects elsewhere as a new session. A session whose end was not
+  recorded is closed as `unrecorded` at its last input, once an hour has passed without one. A
+  session that records again after it ended reopens.
+- **A session says how many of its inputs were lost.** `InputLogSession.missingRecords` counts the
+  inputs the replication server accepted that never reached the log. Recording is best-effort:
+  an outage or an overload leaves a gap, and this is how it shows.
+- **Reads say when to retry.** `inputLogMessages` answers `INPUT_LOG_TEMPORARILY_UNAVAILABLE`
+  when the log cannot be read right now, where it used to answer `INPUT_LOG_UNAVAILABLE` or an
+  empty page, and `INPUT_LOG_RATE_LIMITED` while another read of yours is running (one per user,
+  two per app). Both carry `extensions.retryable`: retry with the same cursor. An operation may
+  select `inputLogMessages` only once.
+- **A cursor belongs to its session.** `inputLogMessages` refuses a cursor from another session
+  with `BAD_USER_INPUT`, as it refuses a malformed one.
+- **Offset cursors are bounded.** A connection cursor that points past 10,000,000 rows is
+  `BAD_USER_INPUT`; `first: 0` returns one edge.
+- **`appUsageSummary` and `orgUsageSummary` report each total once.** An app with both
+  replication and GraphQL usage in the window had its replication bytes multiplied by its number
+  of GraphQL usage rows, and the other way round, and an organization's summary counted only its
+  own apps from the derived tables. Crowdy Studio's usage figures were affected too. Charges were
+  never affected.
+- **CrowdyJS 18.8.0** selects `missingRecords` and documents the above, so it needs this Game
+  API. CrowdyCPP and CrowdyPy follow it.
+
 ## 2026-10-10 (dev: the open mod dev kit; ckx-sdk 0.9.0 on crates.io, with native tests)
 
 Additive. Modules are unchanged (guest ABI 5).
