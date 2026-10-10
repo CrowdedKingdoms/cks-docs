@@ -35,13 +35,19 @@ thread that reads them — so reads are plain snapshots with no locking.
 - **Periodic keyframes** (default every 3 s): a full send goes out even when
   nothing changed, keeping presence fresh and repairing lost packets.
 - **Idle heartbeats** (default every 2 s): while unchanged, a cheap
-  `sendHeartbeat` replaces the full update so presence never lapses.
+  `sendHeartbeat` replaces the full update so presence never lapses. Since
+  replication v0.37.0 two idle players on different servers see each other at the
+  first keyframe after joining (3 s with these defaults); no faster cadence is needed.
 - **Chunk moves send immediately**: `moveTo(chunk)` does not wait for the
   next send slot — crossing a chunk boundary should never lag.
 - **Acks**: your own updates echo back from the server; `lastAck()` exposes
   the last applied echo (sequence, server time, state) for reconciliation.
 
-State payloads are opaque bytes. For typed states, `PodCodec<T>` maps a
+State payloads are opaque bytes, and **the session stores keep at most 256 bytes of
+one** (`crowdy::session::kMaxStateBytes`): a longer state, yours through `setState` or
+another actor's from the wire, is cut to its first 256 bytes without an error. Keep poses
+well under it, and carry anything larger in an event, a channel message or app state (a
+spatial datagram is at most 1,232 bytes in all). For typed states, `PodCodec<T>` maps a
 trivially-copyable packed struct to the wire payload (the struct layout *is*
 the wire layout), and `UnrealPose` ships as a ready-made 88-byte layout
 interoperable with the Unreal SDK's pose format.
