@@ -89,6 +89,11 @@ a call, 20 calls a second, and a module of at most 4 MiB.
 - **What happens in its grid**: `Hub::on_world` receives the grid's world events in batches:
   actors moving into or out of a chunk (`actors`) and voxel changes (`voxels`), each with its
   chunk. An actor arriving starts a mod that is switched on but not running. Events can be lost.
+  `voxels` reports the writes the Game API makes: `updateVoxel`, `updateChunk`, a rollback, and
+  `world.set_voxels` from the app's hubs and from mods, the mod's own included (so a mod that
+  writes on every `voxels` event never stops). A player's realtime voxel edit
+  (`sendVoxelUpdate`) produces no event yet; read the chunk's edits with `world.voxels` when
+  your mod needs them.
 - **Nothing else**: a mod calls no other node, subscribes to no topic, and sends no realtime
   events. Only players call it.
 
