@@ -37,6 +37,25 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-10 (dev, later: faster hub voxel writes, mods hear every Game API voxel write, builds report their SDK; Game API v2.40.2, CrowdyJS 18.8.0, CrowdyCPP 0.61.0, CrowdyPy 0.9.0)
+
+- **Hub voxel writes are faster.** `world.set_voxels` writes its batch in one statement and
+  sends it to nearby players once, instead of one write and one send per voxel. On dev a
+  16-voxel batch used to outlast ckx-sdk's 2-second node call deadline: the write landed and the
+  hub got `DeadlineExceeded`. The batch is still all or none, and a voxel listed twice keeps
+  the later write and reaches players once. See
+  [World and platform data](/exec/world-and-platform-data).
+- **Mods hear every Game API voxel write.** A mod's `on_world` `voxels` events now come from
+  `world.set_voxels` (the app's hubs and mods, the mod's own included), `updateChunk` and an
+  applied rollback, as well as `updateVoxel`; before, only `updateVoxel` produced them. A
+  player's realtime voxel edit still produces none. See [Mods](/exec/mods).
+- **Builds report their SDK.** `ExecBuild.sdkVersion` (from `execBuildStatus`,
+  `execModBuildStatus` and the build mutations) is the `ckx-sdk` version a build compiled
+  against, or `crowdy-client-sdk`'s for a CLIENT half, and the build log's first line names the
+  toolchain. The platform compiles every crate against its own copy of the SDK, whatever version
+  the crate names. CrowdyJS 18.8.0, CrowdyCPP 0.61.0 and CrowdyPy 0.9.0 return it, and need
+  Game API v2.40.2: an older API refuses their build calls. See [Builds](/exec/builds#building).
+
 ## 2026-10-10 (dev: the open mod dev kit; ckx-sdk 0.9.0 on crates.io, with native tests)
 
 Additive. Modules are unchanged (guest ABI 5).
