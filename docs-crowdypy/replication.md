@@ -49,6 +49,32 @@ and 4 north (about 5.66) does not. The origin's app is the connection's app,
 takes the same right as `send_channel_message`, and the sender receives no echo. See
 [the channels guide](/game-api/channels#limit-delivery-by-distance).
 
+## Voice on a channel
+
+`send_channel_audio` (0.8.0, replication v0.37.0) sends audio to a channel: every other
+member receives it on the `channel_audio` handler (or `session.on("channel_audio", ...)`),
+wherever they are. The sender needs the channel's `send_voice` right (`members_can_speak=True`
+on `channels.create` gives it to every member) and `use_voice_chat`; a refusal is
+`UNAUTHORIZED` for the returned sequence. The payload is at most 1,024 bytes, and the
+`crowdypy.media` voice helpers below are an optional format for it. See
+[voice on a channel](/game-api/channels#voice-on-a-channel).
+
+```python
+packetizer = VoicePacketizer(VoiceCodec.OPUS, 20)
+await game.udp.send_channel_audio(channel_id, my_uuid, packetizer.packetize(opus_frame))
+```
+
+## Paused apps, voxel limits and echoes
+
+- Error code 33, `crowdypy.wire.ErrorCode.APP_PAUSED` (replication v0.37.0), answers a send
+  while the app is paused (no funds, a spend cap, a lapsed subscription). Keep the session and
+  tell the player; `AppTokenResponse.runtime_gate` and `is_app_paused(gate)` say why at sign-in.
+- Voxel positions and types are your app's signed 16-bit values; a state over 1,024 bytes is
+  refused before it is sent (`crowdypy.wire.assert_voxel_edit`). Your own accepted voxel edit
+  always comes back once; other spatial messages come back only while your actor is in range.
+- Idle players on different servers see each other at the first full update after joining
+  (replication v0.37.0), so the default keyframe and heartbeat cadence is enough.
+
 ## A game loop
 
 On a hot path, use the connection underneath. It sends a frame's entities in
@@ -75,3 +101,10 @@ without an event loop: `wait()`, then `poll()` from your own loop.
 `crowdypy.media` fragments video frames onto the wire and reassembles them
 (`fragment_frame`, `VideoFrameAssembler`), using the header format the other
 SDKs use. `send_video_frame` and `send_audio_packet` send them.
+
+For voice, `crowdypy.media` (0.8.0) carries the optional convention the other SDKs share: a
+10-byte header in front of each codec frame (`encode_voice_packet`, `decode_voice_packet`,
+which returns `None` for anything malformed), a `VoicePacketizer`, and a `VoiceJitterBuffer`
+keyed by sender that reorders, delays playout by 60 ms and reports missing frames as gaps
+(`frame` is `None`). The layout is on the [CrowdyJS voice page](/crowdyjs/voice-chat#voice-payload-helpers).
+No codec ships: which one to use is your app's choice.

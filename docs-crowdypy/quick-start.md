@@ -79,3 +79,9 @@ Every error is a `crowdypy.CrowdyError`. A GraphQL refusal is a
 (`error.code == "FORBIDDEN"`) and its `extensions`. HTTP, network and timeout
 failures have their own classes. A `WRONG_DATACENTER` refusal moves the client
 to the app's datacenter and retries once, without your code doing anything.
+
+Some refusals carry more (0.8.0): `access_refusal_of(error)` reads `ACCESS_REVOKED`,
+`ACCESS_SUSPENDED` (with when it lifts) and `ACCESS_NOT_GRANTED` from a mint;
+`actor_exists_of(error)` reads `ACTOR_EXISTS` and whether the actor is already yours; and
+`app_paused_of(error)` reads `APP_PAUSED` and its reason. A paused app still mints:
+check `is_app_paused(token.runtime_gate)` and tell the player the world is paused.
