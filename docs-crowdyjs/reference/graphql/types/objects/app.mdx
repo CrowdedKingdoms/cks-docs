@@ -47,6 +47,7 @@ type App {
   gridClaimApproverUserIds: [String!]!
   wildernessWritesOpen: Boolean!
   replayLoggingEnabled: Boolean!
+  claimOwnerKeys: [String!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   org: Organization
@@ -168,6 +169,10 @@ Whether players may write the app's wilderness: chunks that no grid but the app'
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>replayLoggingEnabled</b></code>](#replay-logging-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#replay-logging-enabled\} 
 Whether replay logging is on: the realtime servers record every client input they accept for this app, searchable with inputLogSessions and readable with inputLogMessages, and billed as stored input logs. False (the default) records nothing ("No replication logging"). Set with updateApp (manage&#x005F;apps); turning it on needs a funded org wallet or a billing-exempt org.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>claimOwnerKeys</b></code>](#claim-owner-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#claim-owner-keys\} 
+Grid permission keys a player's claim grants its owner on the claimed grid (claimGridOwnership), beside the player-code keys the owner's tier carries; for example update&#x005F;voxel&#x005F;data makes a claim buildable without a hub granting it. Never a player-code key; the grid's permission limits still cap them. Empty by default. Set with updateApp (manage&#x005F;apps).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 

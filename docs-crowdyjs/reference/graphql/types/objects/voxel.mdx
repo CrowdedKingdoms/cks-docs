@@ -47,11 +47,11 @@ Address of the chunk that contains the edited voxel.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>location</b></code>](#location)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinates!</b></code>](/reference/graphql/types/objects/voxel-coordinates.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#location\} 
-Local position of the edited voxel within its chunk (0-15 per axis).
+Position of the edited voxel within its chunk (signed 16-bit per axis, app-defined).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>voxelType</b></code>](#voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-type\} 
-New voxel type id written by this edit (0-255).
+New voxel type id written by this edit (signed 16-bit, app-defined).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Voxel.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 

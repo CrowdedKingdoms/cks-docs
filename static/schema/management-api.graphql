@@ -200,7 +200,9 @@ type GraphQLServer {
 type User {
   """Unique user id and primary key. BigInt serialized as a decimal string."""
   userId: BigInt!
-  """Account email; null for anonymized/soft-deleted accounts."""
+  """
+  Account email. Private: null unless the caller is this user, a super-admin or an operator (and for anonymized/soft-deleted accounts).
+  """
   email: String
   """
   Public display name; null if unset or anonymized. Unique in combination with `disambiguation`.
@@ -211,50 +213,56 @@ type User {
   """
   disambiguation: String
   """
-  User-level state blob, base64-encoded binary (management-owned). Null when cleared.
+  User-level state blob, base64-encoded binary (management-owned). Private: null unless the caller is this user, a super-admin or an operator; also null when cleared.
   """
   state: String
-  """Whether the account email has been confirmed."""
-  isConfirmed: Boolean!
+  """
+  Whether the account email has been confirmed. Private: null unless the caller is this user, a super-admin or an operator.
+  """
+  isConfirmed: Boolean
   """Account creation timestamp (ISO-8601)."""
   createdAt: DateTime!
   """
-  Whether the user qualifies for early access through normal eligibility (the free-play window/rollout).
+  Whether the user qualifies for early access through normal eligibility (the free-play window/rollout). Private: null unless the caller is this user, a super-admin or an operator.
   """
-  grantEarlyAccess: Boolean!
+  grantEarlyAccess: Boolean
   """
-  Admin override forcing early access on/off regardless of normal eligibility (set via `setEarlyAccessOverride`).
+  Admin override forcing early access on/off regardless of normal eligibility (set via `setEarlyAccessOverride`). Private: null unless the caller is this user, a super-admin or an operator.
   """
-  grantEarlyAccessOverride: Boolean!
+  grantEarlyAccessOverride: Boolean
   """
-  Organization the user belongs to, or null. BigInt serialized as a decimal string.
+  Organization the user belongs to, or null. BigInt serialized as a decimal string. Private: null unless the caller is this user, a super-admin or an operator.
   """
   orgId: BigInt
-  """External identity-provider id for federated accounts, or null."""
+  """
+  External identity-provider id for federated accounts, or null. Private: null unless the caller is this user, a super-admin or an operator.
+  """
   externalId: String
-  """Account type, e.g. "direct" or "deleted"."""
-  userType: String!
   """
-  Whether the user holds platform super-admin privileges (toggled via `setSuperAdmin`).
+  Account type, e.g. "direct" or "deleted". Private: null unless the caller is this user, a super-admin or an operator.
   """
-  isSuperAdmin: Boolean!
+  userType: String
   """
-  Company-employee flag that grants access to control-plane / operator features. Independent from is_super_admin.
+  Whether the user holds platform super-admin privileges (toggled via `setSuperAdmin`). Private: null unless the caller is this user, a super-admin or an operator.
   """
-  isOperator: Boolean!
+  isSuperAdmin: Boolean
   """
-  Whether this account has a password set. Studio reads it to say "set a password" only to accounts that have none (magic-link and OAuth sign-ups); it used to say so to everyone. The hash itself never leaves the process.
+  Company-employee flag that grants access to control-plane / operator features. Independent from is_super_admin. Private: null unless the caller is this user, a super-admin or an operator.
   """
-  hasPassword: Boolean!
+  isOperator: Boolean
   """
-  The user's effective permission keys on the given org (empty if not a member; full set if super admin). Requires a valid bearer game token.
+  Whether this account has a password set. Studio reads it to say "set a password" only to accounts that have none (magic-link and OAuth sign-ups); it used to say so to everyone. The hash itself never leaves the process. Private: null unless the caller is this user, a super-admin or an operator.
+  """
+  hasPassword: Boolean
+  """
+  The user's effective permission keys on the given org (empty if not a member; full set if super admin). Requires a valid bearer game token. Private: null unless the caller is this user, a super-admin or an operator.
   """
   permissionsForOrg(
     """
     Organization id (BigInt sent as a decimal string) to evaluate the user against.
     """
     orgId: BigInt!
-  ): [String!]!
+  ): [String!]
 }
 
 """
@@ -427,6 +435,10 @@ type AppUserAccess {
   Optional expiry timestamp; access is treated as inactive once it has passed. Null means the grant does not expire.
   """
   expiresAt: DateTime
+  """
+  A timed suspension: while this time is in the future the player holds no access (a gameplay token is refused with ACCESS_SUSPENDED and realtime sessions end), and access returns by itself once it passes. Null when the player is not suspended. Set with suspendAppAccess, cleared with unsuspendAppAccess.
+  """
+  suspendedUntil: DateTime
   """Timestamp when the access record was first created."""
   createdAt: DateTime!
   """
@@ -754,6 +766,10 @@ type App {
   Whether replay logging is on: the realtime servers record every client input they accept for this app, searchable with inputLogSessions and readable with inputLogMessages, and billed as stored input logs. False (the default) records nothing ("No replication logging"). Set with updateApp (manage_apps); turning it on needs a funded org wallet or a billing-exempt org.
   """
   replayLoggingEnabled: Boolean!
+  """
+  Grid permission keys a player's claim grants its owner on the claimed grid (claimGridOwnership), beside the player-code keys the owner's tier carries; for example update_voxel_data makes a claim buildable without a hub granting it. Never a player-code key; the grid's permission limits still cap them. Empty by default. Set with updateApp (manage_apps).
+  """
+  claimOwnerKeys: [String!]!
   """Timestamp when the app was created."""
   createdAt: DateTime!
   """Timestamp when the app was last updated."""
@@ -866,6 +882,36 @@ enum CodeAdmissionSubjectKind {
 }
 
 """
+The app's runtime gate as a player's client may read it. When status is not ACTIVE the app's realtime traffic and hubs are paused: replication delivers nothing and refuses sends with APP_PAUSED, and hub calls are refused. Clients should tell the player the world is paused rather than show an empty one. Readable with the player's own app token; carries no billing figures.
+"""
+type AppRuntimeGate {
+  """ACTIVE when the app runs; anything else means paused."""
+  status: AppRuntimeStatus!
+  """
+  Why the app is paused: insufficient_funds, spend_cap or subscription_lapsed. Null while ACTIVE.
+  """
+  reason: String
+}
+
+"""
+The per-app runtime gate game-api + Buddy enforce. See runtimeDenialReason when not active.
+"""
+enum AppRuntimeStatus {
+  """Allowed to run; clients may connect."""
+  ACTIVE
+  """
+  Still running on a temporary allowance (e.g. low funds) but at risk of being denied soon.
+  """
+  GRACE
+  """
+  Blocked from running now (insufficient funds or a spend cap hit); recoverable once the cause clears.
+  """
+  DENIED
+  """Hard-stopped (e.g. lapsed subscription); requires action to restore."""
+  SUSPENDED
+}
+
+"""
 A short-lived, app-scoped gameplay token (Overworld portal). Confined to a single app: usable only against that app's Game API + Buddy realtime surface (plus read-only `me` and same-app `refreshAppToken`). It CANNOT perform management operations and CANNOT mint tokens for other apps, so a game stack that receives it never gets the player's full identity session.
 """
 type AppTokenResponse {
@@ -901,6 +947,10 @@ type AppTokenResponse {
   Set only by `refreshAppToken` when the caller passed `currentServer`: the Buddy the NEW token was just authorized on, which is the node the client is already connected to. When present, keep the existing UDP session and start signing datagrams with the new token; there is no need to call serverWithLeastClients. Null when the caller passed nothing, or when that node can no longer serve this app (gone, draining, Full, or not local to the app) -- then call serverWithLeastClients for a fresh placement, exactly as before.
   """
   authorizedServer: ServerStatus
+  """
+  The app's runtime gate when the token was minted. A token is issued for a paused app too, so a client can read status and reason and tell the player the world is paused; realtime sends and hub calls are refused until status is ACTIVE again. Null only when the gate could not be read.
+  """
+  runtimeGate: AppRuntimeGate
 }
 
 """
@@ -1286,24 +1336,6 @@ enum AppDeploymentTarget {
   SHARED
   """Runs on a dedicated, org-provisioned environment."""
   DEDICATED
-}
-
-"""
-The per-app runtime gate game-api + Buddy enforce. See runtimeDenialReason when not active.
-"""
-enum AppRuntimeStatus {
-  """Allowed to run; clients may connect."""
-  ACTIVE
-  """
-  Still running on a temporary allowance (e.g. low funds) but at risk of being denied soon.
-  """
-  GRACE
-  """
-  Blocked from running now (e.g. insufficient funds, spend cap hit, or free allowance exhausted); recoverable once the cause clears.
-  """
-  DENIED
-  """Hard-stopped (e.g. lapsed subscription); requires action to restore."""
-  SUSPENDED
 }
 
 """
@@ -2741,7 +2773,9 @@ type Query {
   Returns the authenticated user resolved from the token (sent as `Authorization: Bearer <token>`), or null if missing/invalid. Readable with either an identity session token or an app-scoped gameplay token.
   """
   me: User
-  """Looks up a single user by id. Requires a valid game token."""
+  """
+  Looks up a single user by id. Requires a valid game token. Another user's private fields (email, state, isConfirmed, early access, orgId, externalId, userType, isSuperAdmin, isOperator, hasPassword, permissionsForOrg) are null unless the caller is that user, a super-admin or an operator. A game client showing names should use playerProfile / playerProfiles.
+  """
   user(
     """Target user id (BigInt sent as a decimal string)."""
     id: BigInt!
@@ -3568,7 +3602,7 @@ type Mutation {
     input: GrantAppAccessInput!
   ): AppUserAccess! @requiresPermission(scope: "app", permission: "manage_access_tiers", scopeArg: "input.appId")
   """
-  Revoke a user's access to an app by setting their app_user_access status to 'revoked', and notifies the game API so the user immediately loses runtime access in Buddy. Requires the 'manage_access_tiers' permission on the app; super admins bypass. The row is retained for audit (not deleted); REVERSIBLE via grantAppAccess.
+  Revoke a user's access to an app by setting their app_user_access status to 'revoked'. Their gameplay tokens for the app are deleted and their realtime sessions ended at once, and a new token is refused with ACCESS_REVOKED. Requires the 'manage_access_tiers' permission on the app; super admins bypass. The row is retained for audit (not deleted); REVERSIBLE via grantAppAccess. For a ban that lifts by itself use suspendAppAccess.
   """
   revokeAppAccess(
     """Numeric id of the app to revoke access on."""
@@ -3580,6 +3614,39 @@ type Mutation {
     """
     idempotencyKey: String
   ): AppUserAccess! @requiresPermission(scope: "app", permission: "manage_access_tiers", scopeArg: "appId")
+  """
+  Suspend a user's access to an app until a time: a timed ban that lifts by itself. Until then their gameplay tokens are refused with ACCESS_SUSPENDED (carrying suspendedUntil), and the tokens they hold for the app are deleted and their realtime sessions ended at once. The time must be in the future and at most 365 days away. The user must have an access record. Requires the 'manage_access_tiers' permission on the app; super admins bypass. REVERSIBLE early via unsuspendAppAccess.
+  """
+  suspendAppAccess(
+    """Numeric id of the app."""
+    appId: BigInt!
+    """Numeric id of the user to suspend."""
+    userId: BigInt!
+    """
+    When the suspension lapses (ISO-8601, in the future). Access returns by itself then.
+    """
+    until: DateTime!
+    """
+    Optional idempotency key. Recommended for retries: replaying with the same key and identical arguments returns the first result instead of re-applying; the same key with different arguments returns IDEMPOTENCY_CONFLICT. Keys expire after 24h.
+    """
+    idempotencyKey: String
+  ): AppUserAccess! @requiresPermission(scope: "app", permission: "manage_access_tiers", scopeArg: "appId")
+  """
+  Lift a user's suspension (suspendAppAccess) before it lapses. A no-op for a user who is not suspended. Requires the 'manage_access_tiers' permission on the app; super admins bypass.
+  """
+  unsuspendAppAccess(
+    """Numeric id of the app."""
+    appId: BigInt!
+    """Numeric id of the user whose suspension to lift."""
+    userId: BigInt!
+  ): AppUserAccess! @requiresPermission(scope: "app", permission: "manage_access_tiers", scopeArg: "appId")
+  """
+  Re-apply every player's tier keys that follow onto the app's world grid (today use_video_chat) and rebuild the world grid's permissions. Tier changes (grantAppAccess with a tier, updateAccessTier with permissionKeys) already do this; call it after any change made another way. Requires the 'manage_access_tiers' permission on the app; super admins bypass.
+  """
+  resyncTierGridPermissions(
+    """Numeric id of the app."""
+    appId: BigInt!
+  ): Boolean! @requiresPermission(scope: "app", permission: "manage_access_tiers", scopeArg: "appId")
   """
   Self-service: the authenticated caller claims access to an app via its free, open-by-default tier. Requires authentication only (no org membership needed). ENTITLEMENT CHANGE: grants the free default tier as a 'system' grant and notifies the game API. Idempotent: returns the existing row if already granted, and never overrides a prior revoke. Errors if the app has no free default tier or is archived.
   """
@@ -4429,6 +4496,10 @@ input UpdateAppInput {
   Turn replay logging on (true) or off (false): record every client input the realtime servers accept for this app, kept for the input log's published retention and billed as stored input logs (input_log_storage_byte_hours, no free allowance). Turning it ON is refused with INPUT_LOG_FUNDS_NEEDED unless the org's wallet has a spendable balance or the org is billing-exempt; turning it off always succeeds. Recording starts and stops within about 15 seconds. Omit to leave unchanged.
   """
   replayLoggingEnabled: Boolean
+  """
+  Grid permission keys a player's claim grants its owner on the claimed grid (at most 8; active grid keys; never a player-code key). An empty list grants none. Applies to claims made from now on. Omit to leave unchanged.
+  """
+  claimOwnerKeys: [String!]
 }
 
 input AdmitAppCodeInput {
