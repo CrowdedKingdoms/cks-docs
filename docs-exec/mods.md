@@ -45,6 +45,12 @@ mutation { execModDeploy(appId: "…", gridId: "…", name: "greeter", buildId: 
 mutation { execModSetEnabled(appId: "…", gridId: "…", name: "greeter", enabled: true) { enabled blocked } }
 ```
 
+On your machine, the open [dev kit](develop-locally) starts from the same crate
+(`npx @crowdedkingdoms/ckx-kit new mod greeter`). Its `cargo test` runs the mod against a fake of
+its grid (`TestHub::mod_on(FakeGrid)`), which answers the mod as the node API does and applies
+the platform's rules for mods, and `ckx-kit build --mod` builds it as `execModBuild` does, with
+the mod limits.
+
 A build is the same sandboxed build as `execBuild`, with one crate; you have one build at a
 time, and only you can read it. A new mod starts switched off. Deploying a new version of a
 running mod restarts it on that version. A mod's name is 1 to 48 lowercase letters, digits,

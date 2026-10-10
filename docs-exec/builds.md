@@ -132,6 +132,14 @@ the same rules, with its own dependency list, and runs in browsers rather than o
 The requests are billed like any other; the compile itself is not, as the compute compile it
 replaces was not.
 
+### On your machine
+
+The open [dev kit](develop-locally) runs this build on your own machine: the same checks on the
+same files, the Rust release the platform pins, its release profile and its dependency
+versions, then the same module check. `ckx-kit check` runs the source checks alone, and
+`cargo test` tests your crates natively against a fake of the platform. When a crate passes
+there, build it here from the same sources and deploy that build.
+
 ## Deploying a build
 
 Pass the build's id to `execDeploy`. A type may name its `crate` instead of a `digest`, and the
