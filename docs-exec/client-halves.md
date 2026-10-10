@@ -113,7 +113,7 @@ The host calls, grouped as a capability summary groups them (below):
 |---|---|---|
 | `state` | `user_state_get`, `user_state_set`, `avatar_state_get` | The visiting player's app state; an avatar's, for an avatar whose actor is in the grid. |
 | `world_read` | `chunk_get`, `voxels_list`, `actors_list`, `actors_list_radius` | Chunks inside the grid. `actors_list_radius` reads a box of chunks around one, at most 3 out sideways and 1 up or down, clipped to the grid. |
-| `world_write` | `voxel_set` | One voxel inside the grid (`voxel` 0-15 on each axis, a voxel type 0-255), as the visiting player: it needs their `update_voxel_data`. |
+| `world_write` | `voxel_set` | One voxel inside the grid, as the visiting player: it needs their `update_voxel_data`. By default `voxel` is 0-15 on each axis and the type 0-255; a game whose world uses other values widens them (`voxelBounds`, below). |
 | `meta` | `grid_info`, `grid_permission_check` | The grid's box in chunk coordinates; whether the visitor holds one of the four code-permission keys (`write_server_code`, `run_server_code`, `write_client_code`, `run_client_code`) on this grid. The page knows no other key for a grid, so any other key is refused (`denied`), never answered false. |
 | `egress` | `emit_spatial`, `emit_channel`, `emit_event`, `emit_event_to` | A spatial message from a chunk inside the grid (distance at most 8), a post to one of the grid's channels, and an event on the page's grid event bus, which the other CLIENT halves of this grid on the same page receive. Nothing on the bus leaves the page. A spatial message or a post goes out as an actor uuid the page derives for the grid from the `uuid_hex` the half names, never that uuid itself, so a CLIENT half cannot move the visitor's avatar or speak as another player. |
 | `present` | `hud_set`, `overlay_draw` | A payload for the game's HUD or overlay. The CLIENT half never touches the DOM, and a game that offers neither answers `{ delivered: false }`. |
@@ -363,8 +363,9 @@ would the player's own. With it:
   your game holds for them on the grid (`local: { gridPermissionKeys }`), and answers only about
   that player on this grid and only for the four keys (`GRID_PERMISSION_CHECK_KEYS`), refusing any
   other;
-- `voxel_set` refuses a voxel outside its chunk or a type outside 0-255, and a spatial or channel
-  send goes out as `clientHalfActorUuid(gridId, name)`, where `name` is the uuid the half passed
+- `voxel_set` refuses a voxel or type outside the bounds your game gives `createGridHostCalls`
+  (`voxelBounds: { position: { min, max }, type: { min, max } }`, CrowdyJS 18.7.0; by default
+  positions 0-15 and types 0-255, the 16×16×16 layout), and a spatial or channel send goes out as `clientHalfActorUuid(gridId, name)`, where `name` is the uuid the half passed
   (`uuid_hex`, decoded) or your `actorUuid` option when it passed none (CrowdyJS 18.0.2);
 - the calls only your page can answer go to `local: { page }`, as `page(fn, args)`: the player's
   input, the player's own body and sends, the mod's own actors, the scene and presentation. Each

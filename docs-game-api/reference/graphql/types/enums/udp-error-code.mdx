@@ -53,6 +53,7 @@ enum UdpErrorCode {
   CANNOT_DELETE_DEFAULT_WORLD_GRID
   GRID_HAS_NESTED_CHILDREN
   TOKEN_EXPIRED
+  APP_PAUSED
 }
 ```
 
@@ -189,6 +190,10 @@ The requested gamertag is already taken.
 
 #### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>TOKEN&#x005F;EXPIRED</b></code>](#token-expired) \{#token-expired\} 
 The app-scoped gameplay token has expired. Refresh it (same app, via refreshAppToken) before it lapses, or re-portal through the Overworld for a fresh token, then re-authorize the realtime session.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UdpErrorCode.<b>APP&#x005F;PAUSED</b></code>](#app-paused) \{#app-paused\} 
+The app's runtime gate is not ACTIVE (its organization has no funds, it hit its spend cap, or its subscription lapsed), so the server delivers nothing for it. Sent at most once per session every few seconds. Tell the player the world is paused; gameClientBootstrap.runtimeGate carries the reason, and sends work again within seconds of the owner fixing the cause.
 
 
 

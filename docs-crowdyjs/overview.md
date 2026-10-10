@@ -444,6 +444,13 @@ client.realtime.onStatus((status) => {
 });
 ```
 
+`genericSpatial` (CrowdyJS 18.7.0) receives `GENERIC_SPATIAL_1` (opcode 140), the long
+spatial message your game defines the payload of. It arrives on the binary relay only
+(`realtime.binaryTransport: true`): the GraphQL `udpNotifications` union has no member for it.
+A `genericError` with `errorCode` 33 (`APP_PAUSED`) means the app is paused (its organization
+has no funds, reached a spend cap, or its subscription lapsed) and nothing will be delivered
+until the owner fixes it; `gameClientBootstrap(appId).runtimeGate` says why.
+
 `client.world(appId).subscribe(handlers)` is a convenience wrapper that passes
 its `appId` for you.
 

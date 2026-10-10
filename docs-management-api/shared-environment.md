@@ -29,9 +29,22 @@ So in practice there is one model, and this page describes it.
 - Each app includes a **monthly development quota**, per UTC calendar month:
   **5 GB of client egress**, **5 GB of client ingress** (decimal GB: 1 GB =
   1,000,000,000 bytes), **20 CPU-hours of compute** pooled across GraphQL
-  resolvers and your app's [ck-exec](/exec/intro) code, and
-  **1 GB-month of stored data**. Egress is the headline number and the one most
-  games reach first. Unused quota does not roll over.
+  resolvers and your app's [ck-exec](/exec/intro) code,
+  **1 GB-month of stored data**, and **1 GB of compute-module writes** (what your
+  hubs write when they save their state). Egress is the headline number and the
+  one most games reach first. Unused quota does not roll over.
+- **The quota runs a small game's hubs unfunded.** A hub saves its state on every
+  persist interval, so its writes are roughly its state size times the persist
+  rate times the hours it runs: a four-player game with about six hubs holding
+  100 KB between them, saving every 30 seconds, writes about 12 MB per hour of
+  play, so the 1 GB covers roughly 80 hours a month. Rows a hub writes have no
+  allowance.
+- **ck-exec instance limits follow funding.** An app whose organization cannot be
+  charged (no spendable wallet balance, no auto-billing) may run **16 hub
+  instances reserving 1 GB of memory** per datacenter at once; an organization
+  that can be charged gets **16,384 instances and 64 GB**. Past either limit the
+  next instance is refused until some stop; running ones are left alone. See
+  [limits](/exec/operations#usage-and-budgets).
 - **Stored input logs have no free allowance.** An app records nothing until an
   org member with `manage_apps` turns on replay logging
   (`replayLoggingEnabled: true` on `updateApp`), which is refused with
@@ -263,12 +276,22 @@ query {
 }
 ```
 
-While an app is denied or suspended, the Game API and realtime layer refuse new
-connections for that `appId` with a reason-bearing error, so your client can
-prompt the studio to fund the wallet, raise a cap, or renew. Server-driven work
-pauses too: the app's [ck-exec](/exec/operations#usage-and-budgets) code is
-switched off entirely until the app is `active` again, and resumes by itself
-the minute after.
+While an app is denied, nothing is delivered for it, and every path tells your
+client why so it can say "this world is paused" instead of showing an empty one:
+
+- **Sign-in still works.** `mintAppToken` and `refreshAppToken` return the token
+  with a `runtimeGate` (`status` and `reason`; no wallet figures), and
+  `gameClientBootstrap` returns the same `runtimeGate` instead of failing.
+- **Realtime refuses.** The GraphQL realtime proxy refuses to connect with
+  `APP_PAUSED` (carrying the reason). A direct or relayed session gets a generic
+  error with code **33 (`APP_PAUSED`)** in answer to a send, at most once every
+  few seconds per session; see [error codes](/replication-api/operations).
+- **Hubs pause.** The app's [ck-exec](/exec/operations#usage-and-budgets) code is
+  switched off entirely, and a refused call names the cause ("app 456 is paused:
+  its organization has no funds (insufficient_funds)").
+
+Everything resumes by itself within a minute of the app becoming `active` again:
+fund the wallet, raise the cap, or renew.
 
 ## Connecting clients
 

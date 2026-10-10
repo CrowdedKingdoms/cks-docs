@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A persisted 16x16x16-voxel chunk (4096 voxels) of an app's voxel world. Holds the packed voxel-type grid (`voxels`), sparse per-voxel state overrides (`voxelStates`), an optional opaque chunk-level state blob (`chunkState`), and level-of-detail meshes (`lods`). Returned by getChunk/getChunksByDistance and written by updateChunk/updateChunkState/updateChunkLods.
+A persisted chunk of an app's voxel world. Holds an optional packed voxel-type grid for 16x16x16 chunks (`voxels`, one byte per voxel), sparse per-voxel state overrides and recorded edits (`voxelStates`; voxel positions and types are app-defined signed 16-bit values, so an app may address its chunks however it likes), an optional opaque chunk-level state blob (`chunkState`), and level-of-detail meshes (`lods`). Returned by getChunk/getChunksByDistance and written by updateChunk/updateChunkState/updateChunkLods.
 
 
 ```graphql
@@ -25,6 +25,7 @@ type Chunk {
   coordinates: ChunkCoordinates!
   voxels: String
   voxelStates: [VoxelState!]!
+  voxelStatesTruncated: Boolean!
   owner: ID
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -54,7 +55,11 @@ BASE64-encoded binary blob of the dense voxel-type grid. When present, the DECOD
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>voxelStates</b></code>](#voxel-states)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[VoxelState!]!</b></code>](/reference/graphql/types/objects/voxel-state.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#voxel-states\} 
-Sparse list of per-voxel overrides: the states stored with the chunk (e.g. rotation, atlas, flags) and every voxel edit recorded for it since (the voxel&#x005F;updates log), each with its voxel type, which takes precedence over the type byte in `voxels`. Empty when the chunk has neither.
+Sparse list of per-voxel overrides: the states stored with the chunk (e.g. rotation, atlas, flags) and every voxel edit recorded for it since (the voxel&#x005F;updates log), each with its voxel type, which takes precedence over the type byte in `voxels`. Positions and types are app-defined signed 16-bit values; an entry outside the 16x16x16 grid or the 0-255 type range lives only here. Empty when the chunk has neither.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>voxelStatesTruncated</b></code>](#voxel-states-truncated)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-states-truncated\} 
+True when the chunk holds more recorded edits than one read applies (65,536 for getChunk; 262,144 across one getChunksByDistance call), so voxelStates stops short of the newest. Read the whole log with listVoxels, which pages.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>Chunk.<b>owner</b></code>](#owner)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ID</b></code>](/reference/graphql/types/scalars/id.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#owner\} 

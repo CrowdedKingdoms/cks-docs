@@ -81,9 +81,20 @@ scopes and limits, with a spawn seed shown as its size (`seed_bytes`).
 `execActivateVersion(appId, version)` makes an earlier one active again, which is a rollback.
 Running instances pick it up when they next start, just as they do after a deploy. A hub stops
 when it has been idle for its eviction window or the app has been empty that long, and one whose
-timer is pending doesn't go idle while players are in. To move such a hub now, switch its type
-off and on with the kill switch below: it persists, stops, and its next call starts it on the
-active version from its snapshot.
+timer is pending doesn't go idle while players are in, so a deploy alone can leave hubs on the
+old version for a long time. To move a type's running instances now (ck-exec 0.15), restart it:
+
+```graphql
+mutation {
+  execRestartType(appId: "…", nodeType: "arena") {
+    stopped
+  }
+}
+```
+
+Each running instance of the type persists and stops, without the type being switched off, and
+its next call starts it on the active version from its snapshot. `stopped` counts the instances
+told to stop. It needs `manage_compute` on the app's organization.
 
 ## The kill switch
 
@@ -167,11 +178,17 @@ Since ck-exec 0.11 two more limits keep one player from filling what everyone sh
   before any socket opens, and so is a connection to a host that is full. A browser cannot read
   that answer and reports `Unavailable`; CrowdyJS in Node (with the `ws` package) and CrowdyCPP
   report `Unavailable` with the reason. Close the connections a game no longer uses.
-- **Instances.** At most 1,024 instances of one app run at once, mods included. Past that,
-  nothing new of the app is placed until some stop, whoever asks: a call to a hub key that is
-  not running is answered `Unavailable`, and `execConnect` with a `nodeType` and `key` that would
-  place one fails. An idle instance stops after its `evict_after_ms` (5 minutes by default), so
-  keep the keys a game creates bounded, for example one hub per match rather than per action.
+- **Instances.** Each app has an instance limit and a memory limit per datacenter, set by its
+  organization's funding (ck-exec 0.15). An organization that cannot be charged (no spendable
+  wallet balance, no auto-billing) gets **16 instances reserving at most 1 GB**; one that can be
+  charged gets **16,384 instances and 64 GB**. An instance reserves its type's memory limit times
+  its concurrency, and mods count too. Past either limit nothing new of the app is placed until
+  some stop, whoever asks: a call to a hub key that is not running is answered `Unavailable` with
+  a message naming the limit, and `execConnect` with a `nodeType` and `key` that would place one
+  fails. Running instances are never stopped for it. An idle instance stops after its
+  `evict_after_ms` (5 minutes by default), so keep the keys a game creates bounded, for example
+  one hub per match rather than per action; small per-player hubs (a type may declare 1 to
+  512 MB) fit far more instances into the same memory.
 
 Neither SDK retries a `Busy` call for you. CrowdyJS marks this refusal on the error
 (`CrowdyExecError.rateLimited`, with the wait in `retryAfterMs`), and CrowdyCPP on the reply
@@ -190,8 +207,16 @@ An app's code is **paused** (`budgetPaused`) in two cases:
   with `enforce: true`);
 - the app's runtime status is not active, for example because the account ran out of funds.
 
-A paused app is switched off entirely, as above. It resumes by itself the minute after both
+A paused app is switched off entirely, as above, and a refused call names the cause: "app 456 is
+paused: its organization has no funds (insufficient_funds)", "... it reached its spend cap
+(spend_cap)", or "... it is over its compute budget". It resumes by itself the minute after both
 conditions clear.
+
+What hubs write when they save their state is billed as compute-module writes, and each app's
+monthly free quota includes **1 GB** of them, enough for a small game's hubs to run unfunded
+([free tier](/management-api/shared-environment#free-tier)). A hub saves on every persist
+interval, but a save identical to the one stored last is neither stored nor billed again, so an
+idle hub's state costs nothing more.
 
 Players' [mods](mods) are not in the app's usage or budget: each bills its owner's player
 wallet, and billing switches off only that owner's mods; see

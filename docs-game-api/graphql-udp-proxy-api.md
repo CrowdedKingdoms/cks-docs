@@ -77,6 +77,7 @@ subscription {
     ... on ServerEventNotification  { appId chunkX chunkY chunkZ distance decayRate uuid eventType state sequenceNumber epochMillis }
     ... on SingleActorMessageNotification { appId chunkX chunkY chunkZ uuid payload sequenceNumber epochMillis }
     ... on ChannelMessageNotification { channelId uuid payload sequenceNumber epochMillis }
+    ... on ChannelAudioNotification   { channelId uuid audioData sequenceNumber epochMillis }
     ... on RealtimeConnectionEvent  { status code message retryable }
   }
 }
@@ -95,8 +96,9 @@ All spatial types include the full header fields (`appId`, `chunkX/Y/Z`,
 > compatibility only — do not select them in new code; they will be removed in
 > a future major version.
 >
-> `ChannelMessageNotification` is delivered on this same subscription but is
-> **not** spatial (it has no chunk header) — see [Channels](/game-api/channels).
+> `ChannelMessageNotification` and `ChannelAudioNotification` are delivered on this
+> same subscription but are **not** spatial (they have no chunk header) — see
+> [Channels](/game-api/channels).
 
 Subscribing automatically opens a UDP proxy session to the game server if one
 does not already exist.  The server picks the game server with the fewest
@@ -256,12 +258,16 @@ sendActorUpdate (seq=2, state) ──▶  UDP ACTOR_UPDATE_REQUEST ──▶
   must move themselves — see the [Replication API](/replication-api/operations).)
 - Error responses (e.g., invalid token, unknown app) arrive as
   `GenericErrorResponse` on the subscription.
-- **Runtime-denied apps are refused.** If an app is suspended or over its budget
-  (see [Shared environment & billing](/management-api/shared-environment)), the
-  proxy refuses to open a session: HTTP mutations error and the subscription
-  delivers a `RealtimeConnectionEvent` with `code: 'UDP_PROXY_CONNECTION_FAILED'`
-  (`retryable: true`). Surface it so the studio can fund the wallet or lift the
-  cap, then retry.
+- **A paused app is refused, and says so.** If an app's organization has no
+  funds, reached a spend cap, or its subscription lapsed (see
+  [Shared environment & billing](/management-api/shared-environment#what-access-denied-means)),
+  the proxy refuses to open a session: HTTP mutations error with `APP_PAUSED`
+  (`extensions.reason` names the cause) and the subscription delivers a
+  `RealtimeConnectionEvent` with `code: 'UDP_PROXY_CONNECTION_FAILED'`
+  (`retryable: true`). A session already open gets `GenericErrorResponse` with
+  `errorCode` 33 (`APP_PAUSED`) in answer to a send. `gameClientBootstrap` still
+  answers and reports `runtimeGate`, so check it at startup and tell the player
+  the world is paused rather than showing an empty one.
 
 ## Actor-to-actor messages
 
@@ -361,6 +367,7 @@ who left — see [presence](/exec/timers-and-presence#presence).
 | `sendClientEvent` | Send a custom event |
 | `sendSingleActorMessage` | Send a direct message to one actor by UUID (not broadcast) |
 | `sendChannelMessage` | Publish to a channel; delivered to members as `ChannelMessageNotification` (see [Channels](/game-api/channels)) |
+| `sendChannelAudio` | Send an audio packet to a channel; delivered to every other member as `ChannelAudioNotification`. Needs the channel's `send_voice` and `use_voice_chat` (see [Voice on a channel](/game-api/channels#voice-on-a-channel)) |
 | `sendRangedChannelMessage` | Publish to a channel, delivered only to members with a live actor within `maxDistance` chunks (straight-line) of an origin chunk; members receive the ordinary `ChannelMessageNotification` (see [Limit delivery by distance](/game-api/channels#limit-delivery-by-distance)) |
 | `connectUdpProxy` | Explicitly open a UDP session (optional -- mutations and subscription auto-open) |
 | `disconnectUdpProxy` | Release the UDP session |
@@ -370,4 +377,4 @@ who left — see [presence](/exec/timers-and-presence#presence).
 | Query | Description |
 |---|---|
 | `udpProxyConnectionStatus` | Check if a UDP session is active |
-| `gameClientBootstrap(appId)` | One-shot startup payload: current user, version requirements, UDP proxy status, realtime protocol + subscription name, and spatial send limits (`maxReplicationDistance`, `maxDecayRate`, `sequenceNumberModulo`) |
+| `gameClientBootstrap(appId)` | One-shot startup payload: current user, version requirements, UDP proxy status, realtime protocol + subscription name, spatial send limits (`maxReplicationDistance`, `maxDecayRate`, `sequenceNumberModulo`), the app's `runtimeGate` (`status`, `reason`: anything but `ACTIVE` means paused) and `wildernessWritesOpen` (whether players may build where only the world grid covers) |

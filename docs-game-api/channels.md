@@ -13,9 +13,10 @@ coordination, trade broadcasts, or app-wide announcements.
 A channel is a kind of player [group](teams) (`group_type` `channel`), so it
 shares the same membership and role model as teams: a channel has **members**,
 **roles** (a `leader` role is created automatically for the creator), and
-per-role **permissions**. The one channel-specific permission is
-`send_messages`, which controls who may **publish** to the channel. Receiving is
-available to every active member.
+per-role **permissions**. Two permissions are channel-specific: `send_messages`,
+which controls who may **publish** messages to the channel, and `send_voice`, which
+controls who may send [audio](#voice-on-a-channel) to it. Receiving is available to
+every active member.
 
 All channel management runs over the Game API GraphQL endpoint; publishing and
 receiving messages run over the realtime UDP path (the same `udpNotifications`
@@ -59,7 +60,8 @@ mutation {
     appId: "1",
     name: "Global Trade",
     membershipPolicy: "open",   # optional; defaults to the app policy
-    membersCanSend: true        # optional; defaults to true
+    membersCanSend: true,       # optional; defaults to true
+    membersCanSpeak: false      # optional; defaults to false
   }) { groupId name membershipPolicy }
 }
 ```
@@ -73,6 +75,10 @@ every channel permission, including `send_messages`).
   created and auto-assigned to everyone who joins, so all members can post.
 - **`false` (announce / read-only):** joiners receive messages but cannot post.
   Grant a posting role explicitly to chosen members (see Roles below).
+
+`membersCanSpeak: true` adds `send_voice` to that default role, so every member may
+also send audio (a party or guild voice channel). It is off by default: only roles
+you grant `send_voice` may speak.
 
 ## Grid channels
 
@@ -133,6 +139,7 @@ A channel's roles carry these permission keys:
 | Key | Allows |
 | --- | ------ |
 | `send_messages` | Publish messages to the channel |
+| `send_voice` | Send audio to the channel |
 | `manage_group` | Rename/delete the channel and edit its settings |
 | `manage_members` | Add and remove members |
 | `manage_roles` | Create/edit/delete roles and assign them |
@@ -252,6 +259,49 @@ mutation {
 
 Native clients send the `CHANNEL_MESSAGE_RANGED_REQUEST` UDP message (type 32; see the
 [Replication API wire formats](/replication-api/wire-formats#channel_message_ranged_request-client--server)).
+
+## Voice on a channel
+
+Audio packets can go to a channel too, so a party or a guild can talk wherever its
+members are (replication v0.37.0). It works like a channel message, with its own
+right:
+
+- The sender must be an active member whose role grants `send_voice`, and hold the
+  `use_voice_chat` permission for the app (the same key spatial voice needs). A
+  missing one is refused with `UNAUTHORIZED` on `udpNotifications`.
+- Every other active member receives a `ChannelAudioNotification`, wherever they are;
+  the sender gets no echo.
+- The payload is **opaque**, at most 1,024 bytes per packet, and carries whatever your
+  app's audio format needs (codec, sequence, timing). The SDKs offer an optional
+  [voice header and jitter buffer](/crowdyjs/voice-chat#voice-payload-helpers) you can adopt.
+
+```graphql
+mutation {
+  sendChannelAudio(input: {
+    channelId: "12",
+    uuid: "0123456789abcdef0123456789abcdef",  # your actor UUID (32 bytes)
+    payload: "AQEAAAAAAAAUAA==",                # base64 audio packet, <= 1024 bytes
+    sequenceNumber: 3
+  })
+}
+
+subscription {
+  udpNotifications {
+    __typename
+    ... on ChannelAudioNotification { channelId uuid audioData sequenceNumber epochMillis }
+  }
+}
+```
+
+A mutation per packet suits a test, not a conversation: send sustained voice over the
+binary realtime relay or the UDP path, as `CHANNEL_AUDIO_REQUEST` (type 35; members
+receive `CHANNEL_AUDIO_NOTIFICATION`, type 36; see the
+[Replication API wire formats](/replication-api/wire-formats)).
+
+**Every member's downlink is billed.** One speaker sending 50 packets a second of
+100 bytes to a 20-member channel delivers about 19 × 50 × 100 bytes, roughly 95 KB a
+second, as egress. Keep voice channels small, or use spatial voice
+(`sendAudioPacket`) for proximity chat.
 
 ## Reference
 
