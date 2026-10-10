@@ -36,6 +36,52 @@ own CLI is not published either. See
 
 :::
 
+## 2026-10-10 (dev: free hub tier, pause signals, app-defined voxels, channel voice, hub grid and access APIs; replication server v0.37.0, Game API v2.40.1, ck-exec 0.15.0, CrowdyJS 18.7.0, CrowdyCPP 0.60.0, CrowdyPy 0.8.0)
+
+Additive, apart from three behaviour changes called out below. From the asks of a studio
+building a Minecraft integration.
+
+- **Hubs run free for a small game.** The monthly quota now includes **1 GB of
+  compute-module writes** per app (what hubs write when they save), and a save identical to the
+  last one is neither stored nor billed. An app whose organization cannot be charged may run 16
+  hub instances reserving 1 GB per datacenter; a funded one 16,384 and 64 GB. `execAppStatus`
+  reports the limits and current use. See [free tier](/management-api/shared-environment#free-tier).
+- **A paused app says so.** `mintAppToken`, `refreshAppToken` and `exchangePortalCode` still mint
+  and report `runtimeGate { status reason }`; `gameClientBootstrap` reports it instead of failing,
+  with `wildernessWritesOpen`; the realtime proxy refuses with `APP_PAUSED`; replication answers a
+  paused app's sends with error code **33 (`APP_PAUSED`)** instead of silence, and serves the
+  session again once the app is active. A paused hub's refusal names the cause. See
+  [what "access denied" means](/management-api/shared-environment#what-access-denied-means).
+- **Voxel positions and types are yours to define** within signed 16 bits on every write path;
+  nothing checks 0-15 or 0-255 any more. One 1 KiB cap on a voxel's state, replication included.
+  A chunk read applies up to 65,536 recorded edits (`voxelStatesTruncated` past that); a rollback
+  is stamped with its own time, so readers of edits since their last sync see it; a chunk's state
+  is capped at 64 KiB. **Behaviour change:** an accepted voxel edit is always delivered back to its
+  sender, once. See [voxel positions and types](/game-api/grids-and-permissions#voxel-positions-and-types-are-yours-to-define).
+- **Typed refusals.** `ACTOR_EXISTS` (with `ownedByCaller`) for a uuid the app already has;
+  `ACCESS_REVOKED`, `ACCESS_SUSPENDED` (with `suspendedUntil`) and `ACCESS_NOT_GRANTED` from the
+  mint paths, none of which tell the player to buy anything. See [error codes](/overview/error-codes).
+- **Other players' accounts are private.** **Behaviour change:** `user(id)` returns private fields
+  only to the player themselves; game clients use `playerProfile` / `playerProfiles` for names.
+- **Voice on a channel.** `sendChannelAudio` and `ChannelAudioNotification` (opcodes 35 and 36), a
+  channel `send_voice` right and `membersCanSpeak`. See [voice on a channel](/game-api/channels#voice-on-a-channel).
+- **Hub code manages grids and access** (ck-exec 0.15.0, ckx-sdk 0.8.0): `grids.write`
+  (create and delete its own grids, give groups keys, open grids), `access.read` / `access.write`
+  (grant, revoke, suspend players), `world.set_chunk_state`, voxel authors, the grid owner and the
+  wilderness setting; an app's own hub writes skip the wilderness rule. `execRestartType` moves a
+  type's running instances to the active version. Players can be suspended until a time
+  (`suspendAppAccess`), tier keys re-applied (`resyncTierGridPermissions`), and claims can grant
+  keys (`claimOwnerKeys`). Permission changes reach every Game API server at once. See
+  [world and platform data](/exec/world-and-platform-data). **Behaviour change** for module
+  authors: ckx-sdk 0.8.0 makes `Player.disambiguation` optional and voxel types `i16`.
+- **Idle players on different servers meet.** A heartbeat that reached a server ahead of the
+  first update kept two idle players on different servers apart; they now see each other at the
+  first full update (3 s with the SDK defaults). No client cadence is required.
+- **CrowdyJS 18.7.0 / CrowdyCPP 0.60.0 / CrowdyPy 0.8.0**: optional voice payload helpers (a
+  10-byte header, a packetizer, a jitter buffer; CrowdyCPP optionally wraps libopus), channel
+  audio, opcode 140 delivered to the app, chunk stores that keep wide edits, CrowdyCPP's
+  `onVoxel`, and wrappers for everything above. They need Game API v2.40 or later.
+
 ## 2026-10-09 (dev: input logging; replication server v0.36.1, Game API v2.39.0, CrowdyJS 18.6.0, CrowdyCPP 0.59.0, CrowdyPy 0.7.0)
 
 Additive. Nothing records until an app turns it on.
