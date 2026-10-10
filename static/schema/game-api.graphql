@@ -5156,11 +5156,11 @@ type InputLogSession {
   """When the latest recorded input or marker arrived."""
   lastSeenAt: DateTime!
   """
-  When the session ended, if its end was recorded; null while it may still be running.
+  When the session ended; null while it may still be running. A session whose end was not recorded is closed at its last record once it has gone an hour without one. Later records reopen a session (endedAt returns to null).
   """
   endedAt: DateTime
   """
-  How the session ended, as the client saw it: expired, revoked, reconnect or released. Null while it may still be running.
+  How the session ended: expired, revoked, reconnect or released, as the client saw it; logging_off, when the app turned replay logging off while the session was open; or unrecorded, when its end was not recorded and it was closed an hour after its last record. Null while it may still be running.
   """
   endReason: String
   """Inputs recorded in the session."""
