@@ -160,14 +160,16 @@ request/confirm flows CrowdyCPP offers the same convenience CrowdyJS's
 - `sendActorUpdateAndWait` / `sendVoxelUpdateAndWait` — wait (pumping and
   polling internally; other handlers still fire) until the send's **self-echo
   notification** arrives, a correlated error frame arrives, or the timeout
-  elapses.
-- `sendTextAndWait` — text (like audio and client events) has **no echo**;
-  only errors correlate. A clean timeout therefore means *accepted*.
+  elapses. An accepted voxel edit always echoes to its sender (replication
+  v0.37.0); an actor update echoes while your actor is in range of its chunk.
+- `sendTextAndWait` — text (like audio, video and client events) comes back to
+  you only when your actor is near the target chunk, so its echo is not an
+  acknowledgment; only errors correlate. A clean timeout therefore means *accepted*.
 - `waitForSequence` — the low-level primitive: wait on any sequence + uuid.
 
-`sendVideoFrame` returns the number of fragments sent; like audio it has no
-echo, so only a correlated `Unauthorized` error frame (no `use_video_chat`)
-tells you it was refused.
+`sendVideoFrame` returns the number of fragments sent; like audio, its echo
+reaches you only when your actor is near the chunk, so only a correlated
+`Unauthorized` error frame (no `use_video_chat`) tells you it was refused.
 
 The outcome reports `acknowledged`, the correlated error code if any, and the
 server epoch-millis from the echo.

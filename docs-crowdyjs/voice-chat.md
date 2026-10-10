@@ -37,8 +37,10 @@ await game.udp.sendAudioPacket({
 });
 ```
 
-There is no success echo. Prefer the fire-and-forget send; a refusal arrives
-as a correlated `GenericErrorResponse`. Enable `realtime.binaryTransport: true`
+Your own packets come back to you only when your actor is near the target
+chunk, so an echo is not an acknowledgment (and the receive handler below skips
+your own uuid). Prefer the fire-and-forget send; a refusal arrives as a
+correlated `GenericErrorResponse`. Enable `realtime.binaryTransport: true`
 when `gameClientBootstrap.binaryRelayEnabled` is true so voice (and video)
 does not ride one GraphQL mutation per frame.
 
