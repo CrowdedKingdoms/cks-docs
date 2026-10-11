@@ -68,7 +68,9 @@ Each recorded input is one client message, as the client sent it:
 **Every message the server accepts is recorded, keep-alives included.** The actor heartbeat
 (type 26) and the capabilities message (type 29) are accepted messages, so they are recorded
 and billed like any other: with the SDKs' defaults, a connected player who does nothing
-records about 50 to 110 bytes a second, roughly 30 to 65 MB held at the 7-day retention.
+records about 50 to 110 bytes a second, roughly 30 to 67 MB held at the 7-day retention, plus
+about a third of their actor state's size a second, because the SDKs send a keyframe of the
+state every 3 seconds.
 
 A message the server refused at its checks is not recorded: a bad signature, an expired
 token, a rate limit, a chunk the player may not act in, a channel they are not a member of or
@@ -84,7 +86,9 @@ when the token's session ends. Its end reason is one of these:
 - `logging_off`: you turned replay logging off while the session was open. The player's game
   goes on; only the recording stops.
 - `shutdown`: the replication server recording the session stopped (a deploy). The client
-  reconnects to another server, and that is a new session.
+  reconnects to another server, where the same session continues and its end is replaced.
+- `paused`: recording paused because the app's logging setting could not be confirmed. The
+  player sees nothing; a later record reopens the session.
 - `unrecorded`: the end itself was not recorded, so the session was closed at its last input
   once an hour had passed without one.
 
@@ -127,8 +131,10 @@ query RecordedSessions($appId: BigInt!, $after: String) {
 ```
 
 `missingRecords` counts the session's inputs that the replication server accepted but that
-never reached the log (a full queue, or a broker outage): 0 for a complete session, null on a
-session recorded before the count existed. `filter` narrows the list: `userId` (another
+never reached the log (an overloaded server or a broker outage): 0 when the recording is
+complete as far as it is known, null on a session recorded before the count existed. A lost
+end of a recording cannot be counted, because nothing after it reaches the log; such a session
+closes as `unrecorded`. `filter` narrows the list: `userId` (another
 player's needs `manage_apps`, and is `FORBIDDEN` without it), `from` / `to`, and
 `messageType` (sessions containing that type).
 
@@ -165,11 +171,13 @@ limit for one request; its `endCursor` still moves the next page on, so pass it 
 (and keep the previous cursor if one comes back null). A short page is not the end of the
 session.
 
-**Reads can ask you to retry.** `inputLogMessages` answers `INPUT_LOG_TEMPORARILY_UNAVAILABLE`
-when the log cannot be read right now, and `INPUT_LOG_RATE_LIMITED` while another read of
-yours is running: one read per user and two per app run at a time. Both carry
+**Reads can ask you to retry.** Each server runs one read per user, and two per app and per
+organization, at a time. A read over that share waits for an earlier one within its own
+few-second deadline, and answers `INPUT_LOG_RATE_LIMITED` if the wait runs out;
+`INPUT_LOG_TEMPORARILY_UNAVAILABLE` means the log cannot be read right now. Both carry
 `extensions.retryable`; wait a moment and retry with the same cursor, and nothing is skipped.
-Read one session per request: an operation may select `inputLogMessages` only once.
+A read over HTTP whose request is closed (an aborted `fetch`) stops and frees its share. Read
+one session per request: an operation may select `inputLogMessages` only once.
 
 A cursor belongs to the session it came from: a cursor from another session, or a malformed
 one, is `BAD_USER_INPUT`.
@@ -177,7 +185,7 @@ one, is `BAD_USER_INPUT`.
 ### With an SDK
 
 ```ts
-// CrowdyJS 18.8.0+, on the app-scoped client
+// CrowdyJS 18.9.0+, on the app-scoped client
 import { CrowdyGraphQLError, decodeBase64 } from '@crowdedkingdoms/crowdyjs';
 
 const RETRY = new Set(['INPUT_LOG_TEMPORARILY_UNAVAILABLE', 'INPUT_LOG_RATE_LIMITED']);
@@ -215,8 +223,9 @@ inputs are gone; its inputs then read as an empty page with no next page.
 
 Each app's inputs are stored in the app's datacenter. If CK moves an app to another
 datacenter, the sessions recorded before the move stay listed (their `datacenter` says
-where), and their inputs stay in the previous datacenter, and billed, until their retention
-ends; read from the app's new datacenter they answer an empty page with no next page.
+where), and their inputs stay in the previous datacenter until their retention ends,
+neither readable nor billed: read from the app's new datacenter they answer an empty page with
+no next page.
 
 ## Billing
 
@@ -234,9 +243,9 @@ app's byte-hours and the bytes it holds now; the full basis is in
 | Code | Meaning |
 |---|---|
 | `INPUT_LOG_FUNDS_NEEDED` | `updateApp` was asked to turn replay logging on, and the organization's wallet cannot spend the projected cost of keeping one retention period of the app's recent traffic (and the organization is not exempt from billing). `extensions.requiredMicrousd` and `spendableMicrousd` say how much. Fund the wallet, then try again. 402. |
-| `INPUT_LOG_UNAVAILABLE` | Input logging is not available on this deployment. 503. |
+| `INPUT_LOG_UNAVAILABLE` | Input logging is not available on this deployment, or the deployment cannot read its log. Do not retry. 503. |
 | `INPUT_LOG_TEMPORARILY_UNAVAILABLE` | `inputLogMessages` could not read the log just now (its readers were busy, or the store was briefly unreachable). Retryable: retry shortly with the same cursor; nothing is lost. 503. |
-| `INPUT_LOG_RATE_LIMITED` | Another `inputLogMessages` read of yours is running: one read per user and two per app run at a time. Retryable: wait for it, then retry with the same cursor. 429. |
+| `INPUT_LOG_RATE_LIMITED` | An earlier `inputLogMessages` read was still running when this one's wait ran out: each server runs one read per user, and two per app and per organization, at a time. Retryable: retry shortly with the same cursor. 429. |
 | `FORBIDDEN` | `inputLogSessions` was asked for another player's sessions without `manage_apps`. |
 | `NOT_FOUND` | `inputLogMessages` was asked for a session that is not yours, without `manage_apps`, or that does not exist. |
 | `BAD_USER_INPUT` | `inputLogMessages` was given a malformed cursor or one from another session; a connection cursor points past 10,000,000 rows; or a filter is out of range. (`inputLogSessions` treats a malformed cursor as the first page.) |

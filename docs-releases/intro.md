@@ -37,7 +37,7 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
-## 2026-10-10 (dev: input logging reports what it lost, ends every session and says when to retry; the replication server release after v0.37.0, the Game API release after v2.40.2, CrowdyJS 18.9.0)
+## 2026-10-10 (dev, latest: input logging reports what it lost, ends every session and says when to retry; the replication server release after v0.37.0, the Game API release after v2.40.2, CrowdyJS 18.9.0)
 
 Input logging fixes and one new requirement. See [Input logging](/replication-api/input-logging).
 
@@ -49,21 +49,27 @@ Input logging fixes and one new requirement. See [Input logging](/replication-ap
   until they age out.
 - **Every recorded session gets an end.** Turning replay logging off while a session is open ends
   it as `logging_off`; a replication server that stops (a deploy) ends its open sessions as
-  `shutdown`, and the client reconnects elsewhere as a new session. A session whose end was not
-  recorded is closed as `unrecorded` at its last input, once an hour has passed without one. A
-  session that records again after it ended reopens.
+  `shutdown`, and the client reconnects to another server, where the same session continues and
+  its end is replaced. Recording that pauses because the app's logging setting could not be
+  confirmed ends its sessions as `paused`, which the player does not see. A session whose end was
+  not recorded is closed as `unrecorded` at its last input, once an hour has passed without one.
+  A session that records again after it ended reopens.
 - **A session says how many of its inputs were lost.** `InputLogSession.missingRecords` counts the
   inputs the replication server accepted that never reached the log. Recording is best-effort:
-  an outage or an overload leaves a gap, and this is how it shows.
+  an overloaded server or a broker outage leaves a gap, and this is how it shows. A lost end of
+  a recording cannot be counted; its session closes as `unrecorded`.
 - **Reads say when to retry.** `inputLogMessages` answers `INPUT_LOG_TEMPORARILY_UNAVAILABLE`
   when the log cannot be read right now, where it used to answer `INPUT_LOG_UNAVAILABLE` or an
-  empty page, and `INPUT_LOG_RATE_LIMITED` while another read of yours is running (one per user,
-  two per app). Both carry `extensions.retryable`: retry with the same cursor. An operation may
-  select `inputLogMessages` only once.
+  empty page. Each server runs one read per user, and two per app and per organization, at a
+  time: a read over that share waits for an earlier one within its few-second deadline, and
+  answers `INPUT_LOG_RATE_LIMITED` if the wait runs out. Both carry `extensions.retryable`: retry
+  with the same cursor. A read whose HTTP request is closed stops and frees its share. An
+  operation may select `inputLogMessages` only once.
 - **A cursor belongs to its session.** `inputLogMessages` refuses a cursor from another session
   with `BAD_USER_INPUT`, as it refuses a malformed one.
 - **Offset cursors are bounded.** A connection cursor that points past 10,000,000 rows is
-  `BAD_USER_INPUT`; `first: 0` returns one edge.
+  `BAD_USER_INPUT`; `first: 0` returns one edge. `walletTransactions` clamps `limit` to 1 to 200
+  and `offset` to 0 to 9,999,999.
 - **`appUsageSummary` and `orgUsageSummary` report each total once.** An app with both
   replication and GraphQL usage in the window had its replication bytes multiplied by its number
   of GraphQL usage rows, and the other way round, and an organization's summary counted only its
