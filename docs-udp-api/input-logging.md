@@ -173,11 +173,13 @@ session.
 
 **Reads can ask you to retry.** Each server runs one read per user, and two per app and per
 organization, at a time. A read over that share waits for an earlier one within its own
-few-second deadline, and answers `INPUT_LOG_RATE_LIMITED` if the wait runs out;
-`INPUT_LOG_TEMPORARILY_UNAVAILABLE` means the log cannot be read right now. Both carry
-`extensions.retryable`; wait a moment and retry with the same cursor, and nothing is skipped.
-A read over HTTP whose request is closed (an aborted `fetch`) stops and frees its share. Read
-one session per request: an operation may select `inputLogMessages` only once.
+few-second deadline, and answers `INPUT_LOG_RATE_LIMITED` if the wait runs out (or leaves too
+little of the deadline to read in); `INPUT_LOG_TEMPORARILY_UNAVAILABLE` means the log cannot be
+read right now. Both carry `extensions.retryable`; wait a moment and retry with the same cursor,
+a bounded number of times, and nothing is skipped. A read over HTTP whose request is closed
+stops and frees its share at once, so abort a read nobody will see, say when the user opens
+another session: with CrowdyJS 18.9.0, pass `signal` in the options of `inputLog.messages`
+(below). Read one session per request: an operation may select `inputLogMessages` only once.
 
 A cursor belongs to the session it came from: a cursor from another session, or a malformed
 one, is `BAD_USER_INPUT`.
@@ -189,20 +191,28 @@ one, is `BAD_USER_INPUT`.
 import { CrowdyGraphQLError, decodeBase64 } from '@crowdedkingdoms/crowdyjs';
 
 const RETRY = new Set(['INPUT_LOG_TEMPORARILY_UNAVAILABLE', 'INPUT_LOG_RATE_LIMITED']);
+const MAX_RETRIES = 8; // in a row, about half a minute of back-off; then give up
 const sessions = await game.inputLog.sessions(appId, { first: 20 });
 const session = sessions.edges[0].node;
+const reading = new AbortController(); // reading.abort() when the user moves on
 let after: string | undefined;
-for (let backoffMs = 250; ; ) {
+for (let backoffMs = 250, retries = 0; ; ) {
   let page;
   try {
-    page = await game.inputLog.messages(appId, session.gameTokenId, { first: 200, after });
+    page = await game.inputLog.messages(appId, session.gameTokenId, {
+      first: 200,
+      after,
+      signal: reading.signal,
+    });
   } catch (err) {
     if (!(err instanceof CrowdyGraphQLError) || !RETRY.has(String(err.code))) throw err;
+    if (++retries > MAX_RETRIES) throw err;
     await new Promise((r) => setTimeout(r, backoffMs));
     backoffMs = Math.min(backoffMs * 2, 5_000);
     continue; // the same cursor
   }
   backoffMs = 250;
+  retries = 0;
   for (const { node } of page.edges) replay(node.messageType, decodeBase64(node.body));
   if (!page.pageInfo.hasNextPage) break;
   after = page.pageInfo.endCursor ?? after;
@@ -245,7 +255,8 @@ app's byte-hours and the bytes it holds now; the full basis is in
 | `INPUT_LOG_FUNDS_NEEDED` | `updateApp` was asked to turn replay logging on, and the organization's wallet cannot spend the projected cost of keeping one retention period of the app's recent traffic (and the organization is not exempt from billing). `extensions.requiredMicrousd` and `spendableMicrousd` say how much. Fund the wallet, then try again. 402. |
 | `INPUT_LOG_UNAVAILABLE` | Input logging is not available on this deployment, or the deployment cannot read its log. Do not retry. 503. |
 | `INPUT_LOG_TEMPORARILY_UNAVAILABLE` | `inputLogMessages` could not read the log just now (its readers were busy, or the store was briefly unreachable). Retryable: retry shortly with the same cursor; nothing is lost. 503. |
-| `INPUT_LOG_RATE_LIMITED` | An earlier `inputLogMessages` read was still running when this one's wait ran out: each server runs one read per user, and two per app and per organization, at a time. Retryable: retry shortly with the same cursor. 429. |
+| `INPUT_LOG_RATE_LIMITED` | An earlier `inputLogMessages` read was still running when this one's wait ran out, or freed its share with too little of this read's deadline left to read: each server runs one read per user, and two per app and per organization, at a time. Retryable: retry shortly with the same cursor. 429. |
+| `INPUT_LOG_READ_ABORTED` | An `inputLogMessages` read stopped because its HTTP request closed (you aborted it). Nobody receives this answer: your request has already ended with your own abort. It shows in usage figures as a client error. 499. |
 | `FORBIDDEN` | `inputLogSessions` was asked for another player's sessions without `manage_apps`. |
 | `NOT_FOUND` | `inputLogMessages` was asked for a session that is not yours, without `manage_apps`, or that does not exist. |
 | `BAD_USER_INPUT` | `inputLogMessages` was given a malformed cursor or one from another session; a connection cursor points past 10,000,000 rows; or a filter is out of range. (`inputLogSessions` treats a malformed cursor as the first page.) |

@@ -63,8 +63,10 @@ Input logging fixes and one new requirement. See [Input logging](/replication-ap
   empty page. Each server runs one read per user, and two per app and per organization, at a
   time: a read over that share waits for an earlier one within its few-second deadline, and
   answers `INPUT_LOG_RATE_LIMITED` if the wait runs out. Both carry `extensions.retryable`: retry
-  with the same cursor. A read whose HTTP request is closed stops and frees its share. An
-  operation may select `inputLogMessages` only once.
+  with the same cursor, a bounded number of times. A read whose HTTP request is closed stops and
+  frees its share at once (CrowdyJS 18.9.0: the `signal` option of `inputLog.messages`), and ends
+  as `INPUT_LOG_READ_ABORTED`, a client error nobody receives. An operation may select
+  `inputLogMessages` only once.
 - **A cursor belongs to its session.** `inputLogMessages` refuses a cursor from another session
   with `BAD_USER_INPUT`, as it refuses a malformed one.
 - **Offset cursors are bounded.** A connection cursor that points past 10,000,000 rows is
