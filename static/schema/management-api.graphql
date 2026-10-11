@@ -3310,7 +3310,9 @@ type Query {
   playerUsageCharges(
     """Optional: only charges for this app."""
     appId: BigInt
-    """Max entries (default 50, max 200)."""
+    """
+    Maximum number of charges to return, 1 to 200 (a value outside is clamped). Defaults to 50 when omitted.
+    """
     limit: Int
   ): [PlayerUsageCharge!]!
   """
