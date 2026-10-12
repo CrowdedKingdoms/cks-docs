@@ -43,6 +43,7 @@ const channel = await game.channels.create({
   name: 'Global Trade',
   membershipPolicy: 'open',
   membersCanSend: true,
+  membersCanSpeak: false,   // true: every member may also send channel audio
 });
 
 await game.channels.join(channel.groupId);
@@ -92,3 +93,62 @@ Notes:
 - The sender receives **no echo** of its own message.
 - Payloads are opaque (base64) and messages are ephemeral — keep your own
   scrollback client-side if needed.
+
+## Voice on a channel
+
+CrowdyJS 18.7.0 sends and receives channel audio (replication v0.37.0): a party or guild
+can talk wherever its members are. The sender needs the channel's `send_voice` right
+(`membersCanSpeak: true` on `channels.create` gives it to every member) and `use_voice_chat`;
+a refusal arrives as a `genericError` with `UNAUTHORIZED`.
+
+```ts
+game.udp.subscribe(
+  {
+    channelAudio: (a) => jitter.push(`${a.channelId}:${a.uuid}`, fromBase64(a.audioData)),
+  },
+  '1',
+);
+
+const packetizer = new VoicePacketizer({ codec: VoiceCodec.OPUS, frameMs: 20 });
+await game.udp.sendChannelAudio({
+  channelId: channel.groupId,
+  uuid: myActorUuid,
+  payload: toBase64(packetizer.packetize(opusFrame)),
+});
+```
+
+- `sendChannelAudio` sends opcode 35 on the binary relay when `realtime.binaryTransport`
+  is on, and falls back to the GraphQL mutation; members receive it through the same
+  `channelAudio` handler either way. Prefer the relay for sustained voice.
+- The payload is opaque, at most 1,024 bytes; the [voice helpers](voice-chat#voice-payload-helpers)
+  are an optional format. The sender gets no echo.
+- Every member's downlink is billed as egress, so keep voice channels small.
+
+## Limit delivery by distance
+
+`client.udp.sendRangedChannelMessage` (CrowdyJS 18.5.0) publishes to a channel but
+delivers only to the members with a live actor within `maxDistance` chunks of an
+origin chunk, by straight-line distance with the boundary included. Members receive
+it through the same `channelMessage` handler, so the receiving code above does not
+change.
+
+```ts
+await game.udp.sendRangedChannelMessage({
+  channelId: channel.groupId,
+  uuid: myActorUuid,
+  payload: Buffer.from('over here').toString('base64'),
+  appId: '1',                        // the app this game client's token is for
+  chunk: { x: '10', y: '0', z: '-4' }, // the origin, usually your actor's chunk
+  maxDistance: 5,                    // chunks, inclusive
+  sequenceNumber: 2,
+});
+```
+
+A member 3 chunks east and 4 north of the origin (exactly 5) receives it; one 4 east
+and 4 north (about 5.66) does not. `maxDistance` is 0 (the origin chunk only) to
+`CHANNEL_RANGED_MAX_DISTANCE` (2147483647); a larger one, or a payload over 1024 bytes,
+is refused with a `CrowdyGraphQLError` and reaches nobody. It takes the same right as `sendChannelMessage`, the
+sender receives no echo, and a member with no live actor receives nothing. On the
+binary relay it is sent as the `CHANNEL_MESSAGE_RANGED_REQUEST` datagram
+(`serializeRangedChannelMessage`); see the
+[Game API channels guide](/game-api/channels#limit-delivery-by-distance).

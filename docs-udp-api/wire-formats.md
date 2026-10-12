@@ -39,6 +39,9 @@ COMMAND_RECONNECT = 22;             // server -> client: reconnect to a differen
 CLIENT_ACTOR_HEARTBEAT = 26;        // client -> server: optional keep-alive for the client's own actor (see "Actor presence and heartbeats")
 CLIENT_CAPABILITIES = 29;           // client -> server: what this client can read (see "Signed bundles"); server v0.30.0+
 MESSAGE_BUNDLE_SIGNED = 30;         // server -> client: a bundle with ONE trailing HMAC, only to a client that advertised it
+CHANNEL_MESSAGE_RANGED_REQUEST = 32; // client -> server: publish to a channel, delivered only near an origin chunk; server v0.35.0+
+CHANNEL_AUDIO_REQUEST = 35;        // client -> server: send audio to a channel; server v0.37.0+
+CHANNEL_AUDIO_NOTIFICATION = 36;   // server -> client: deliver channel audio; server v0.37.0+
 // other values in 19–127 are unused / reserved or internal server-to-server
 ```
 
@@ -73,9 +76,10 @@ UUIDs are client generated 32 byte UTF8 strings. The null termination byte (33rd
 ## Channel messages
 
 Channels are app-wide message groups: a channel message is delivered to every
-member of the channel regardless of location (not chunk-routed). Membership and
-the `send_messages` permission are managed over the Game API GraphQL surface
-(see the Game API [Channels](/game-api/channels) guide). These are
+member of the channel regardless of location (not chunk-routed), unless it is
+sent as a [distance-limited channel message](#channel_message_ranged_request-client--server).
+Membership and the `send_messages` permission are managed over the Game API
+GraphQL surface (see the Game API [Channels](/game-api/channels) guide). These are
 **non-spatial** types, so they do not use the long spatial header.
 
 ### `CHANNEL_MESSAGE_REQUEST` (client → server)
@@ -99,10 +103,81 @@ the token octets). The server requires the sender to be a channel member holding
 | gameTokenId    | 64   | 8     | int64  | Identifies the client session.                              |
 | sequenceNumber | 8    | 1     | uint8  | Client sequence (0-255); correlates error responses.        |
 
+### `CHANNEL_MESSAGE_RANGED_REQUEST` (client → server)
+
+A channel publish that reaches only the members near an origin chunk (replication
+server v0.35.0+). A member receives it when one of its live actors is in the origin's
+app and within `maxDistance` chunks of the origin chunk, measured as the straight-line
+(Euclidean) distance between chunk coordinates with the boundary included:
+`dx² + dy² + dz² ≤ maxDistance²`. So `maxDistance` 0 reaches only the origin chunk, and
+5 reaches a member 3 chunks east and 4 north but not one 4 east and 4 north (about
+5.66), which the Chebyshev rings of spatial messages would count as 4. There is no cap
+of 8. Members receive the ordinary `CHANNEL_MESSAGE_NOTIFICATION` (18), so receivers
+need no change. A member with no live actor does not receive it, and the sender gets no
+echo.
+
+Sent to the **client** UDP port, authenticated exactly like `CHANNEL_MESSAGE_REQUEST`
+(the HMAC covers every byte up to and including `containsAuth`, then the token octets),
+and it needs the same right: channel membership with `send_messages`. It may travel
+inside a client `MESSAGE_BUNDLE`.
+
+| Identifier     | Bits | Bytes | Type   | Description                                                   |
+| -------------- | ---- | ----- | ------ | ------------------------------------------------------------ |
+| messageType    | 8    | 1     | enum   | `CHANNEL_MESSAGE_RANGED_REQUEST` (32).                       |
+| channelId      | 64   | 8     | int64  | The channel id to publish to.                               |
+| uuid           | 256  | 32    | utf8   | The sending actor's UUID (32 bytes, no null terminator).    |
+| appId          | 64   | 8     | int64  | The origin chunk's app; must be your session's app.         |
+| chunkX         | 64   | 8     | int64  | Origin chunk X.                                             |
+| chunkY         | 64   | 8     | int64  | Origin chunk Y.                                             |
+| chunkZ         | 64   | 8     | int64  | Origin chunk Z.                                             |
+| maxDistance    | 32   | 4     | uint32 | Reach in chunks, inclusive: 0 to 2147483647.                |
+| payloadLength  | 16   | 2     | uint16 | Length of the application payload (max 1024).               |
+| payload        | X    | X     | bytes  | Opaque application bytes.                                    |
+| containsAuth   | 8    | 1     | bool   | Always 1.                                                   |
+| hmac           | 256  | 32    | bytes  | HMAC-SHA256 over all bytes up to and including containsAuth. |
+| gameTokenId    | 64   | 8     | int64  | Identifies the client session.                              |
+| sequenceNumber | 8    | 1     | uint8  | Client sequence (0-255); correlates error responses.        |
+
+The header before the payload is 79 bytes and the tail after it 42, so a request is
+121 to 1145 bytes. The server answers `GENERIC_ERROR_MESSAGE` with your sequence number
+for a refusal: `UNAUTHORIZED` without the send right, `INVALID_APP_ID` when `appId` is
+not your session's app, `INVALID_REQUEST` for a `maxDistance` above 2147483647. A server
+older than v0.35.0 drops the request and delivers nothing.
+
+Test vector: token `"A"` × 64, gameTokenId 555, channelId 100, uuid `"u"` × 32, appId 2,
+chunk (-3, 4, 5), maxDistance 12, payload `hi`, sequenceNumber 9 encode to these 123
+bytes:
+
+```
+20640000000000000075757575757575757575757575757575757575757575757575757575757575750200
+000000000000fdffffffffffffff040000000000000005000000000000000c00000002006869017f1c386f
+d1ec421f0a72745fae881f8adbcb17bcd8a0bb3e446565651d18533d2b0200000000000009
+```
+
+### `CHANNEL_AUDIO_REQUEST` (35) and `CHANNEL_AUDIO_NOTIFICATION` (36)
+
+Channel voice (server v0.37.0). `CHANNEL_AUDIO_REQUEST` is exactly `CHANNEL_MESSAGE_REQUEST`
+with type byte 35, signed the same way, and `CHANNEL_AUDIO_NOTIFICATION` exactly
+`CHANNEL_MESSAGE_NOTIFICATION` (below) with type byte 36:
+
+```
+35: [1B type=35][8B channelId][32B uuid][2B payloadLen][payload <= 1024][1B containsAuth=1][32B HMAC][8B gameTokenId][1B seq]
+36: [1B type=36][8B channelId][32B senderUuid][2B payloadLen][payload][8B epochMillis][1B seq]
+```
+
+- The payload is opaque: your audio format (the SDKs offer an optional
+  [voice header](/crowdyjs/voice-chat#voice-payload-helpers)).
+- The sender must be an active member whose role grants `send_voice`, and hold
+  `use_voice_chat` for the channel's app; otherwise `UNAUTHORIZED`. A payload over 1,024
+  bytes is dropped.
+- Every other active member receives 36, wherever they are, standalone or inside a
+  `MESSAGE_BUNDLE`; the sender gets no echo. There is no distance-limited form.
+
 ### `CHANNEL_MESSAGE_NOTIFICATION` (server → client)
 
 Delivered to every active member except the sender (no echo), standalone or
-inside a `MESSAGE_BUNDLE`.
+inside a `MESSAGE_BUNDLE`. For a `CHANNEL_MESSAGE_RANGED_REQUEST`, only the members in
+range receive it; the notification is the same.
 
 | Identifier     | Bits | Bytes | Type   | Description                                  |
 | -------------- | ---- | ----- | ------ | -------------------------------------------- |
@@ -240,6 +315,7 @@ INVALID_REQUEST = 15;
 INVALID_APP_ID = 18;      // formerly INVALID_MAP_ID; also app-scope mismatch
 USER_NOT_AUTHENTICATED = 20;
 TOKEN_EXPIRED = 32;       // app-scoped token passed expiresAt — re-mint / refreshAppToken
+APP_PAUSED = 33;          // the app's runtime gate is closed (no funds, spend cap, lapsed subscription); server v0.37.0+
 ```
 
 ## Error Response
@@ -306,6 +382,14 @@ When the player is actively moving you already send `ACTOR_UPDATE_REQUEST`s, whi
 **Cross-server presence is automatic.** You only ever talk to your own server; you never address other servers. The server itself keeps your actor visible to players on **other servers and other worker cores** on a server-controlled cadence. As long as you keep your local actor alive (via actor updates while moving, or `CLIENT_ACTOR_HEARTBEAT` while idle), remote players continue to see you — no special client action is required.
 
 A reasonable client policy: send `ACTOR_UPDATE_REQUEST` as the actor moves, and when idle send a `CLIENT_ACTOR_HEARTBEAT` every couple of seconds (comfortably under the staleness window) so presence never lapses.
+
+**No particular keyframe cadence is needed to be seen across servers (server v0.37.0).** Two
+idle players on different servers see each other from the first full actor update after
+joining, whatever the heartbeats between them; with the SDKs' defaults (a full update every
+3 s, heartbeats every 2 s) that is 3 s after joining. Before v0.37.0 a heartbeat that reached the
+server ahead of the first update kept the two from ever meeting until one changed chunk, and
+only full updates every 1.5 s or faster without heartbeats worked around it. A heartbeat does not
+change the rings or the distance your updates asked for.
 
 ## Spatial Routing Diagram
 
@@ -398,10 +482,16 @@ Voxel messages use the same long form shell. The table below is only the **`payl
 | voxelY      | 16   | 2     | int16  | The voxel's y coordinate in the chunk.                                                    |
 | voxelZ      | 16   | 2     | int16  | The voxel's z coordinate in the chunk.                                                    |
 | voxelType   | 16   | 2     | int16  | The new voxel type for this location.                                                     |
-| stateLength | 16   | 2     | uint16 | The length of the state object. If 0, there is no state. Must be set when state is empty. |
+| stateLength | 16   | 2     | uint16 | The length of the state object, at most 1,024 (server v0.37.0; a longer one is refused `INVALID_REQUEST`). If 0, there is no state. Must be set when state is empty. |
 | voxelState  | X    | X     | bytes  | an array of bytes.                                                                        |
 
 Minimum **total** application length for a voxel update with `stateLength = 0`: **87** bytes without HMAC (`68` header + `10` fixed voxel fields + `9` tail), or **119** bytes with HMAC (`68 + 10 + 41`).
+
+The voxel position and type are **your app's signed 16-bit values**: the server checks no
+narrower range (a game on 16×16×16 chunks uses 0-15, but nothing requires it). Since server
+v0.37.0 an accepted edit is always delivered back to its sender, once, as a normal
+`VOXEL_UPDATE_NOTIFICATION`, even when the sender's actor is out of range of the chunk; other
+spatial messages reach their sender only when its actor is in range.
 
 ### Video payload (`CLIENT_VIDEO_PACKET_2`, `CLIENT_VIDEO_NOTIFICATION_2`)
 

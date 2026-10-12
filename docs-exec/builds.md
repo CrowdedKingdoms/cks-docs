@@ -73,15 +73,18 @@ It returns at once, with the build `queued`. Poll it until it is `succeeded` or 
 query {
   execBuildStatus(appId: "…", buildId: "…") {
     status
+    sdkVersion
     log
     artifacts { crate digest sizeBytes }
   }
 }
 ```
 
-Each crate becomes one module. `log` is the compiler's output, and a failed build says why. A
-build of the four starters with nothing cached takes about a minute; the same sources again come
-from the cache.
+Each crate becomes one module. `log` is the compiler's output, and a failed build says why; its
+first line names the toolchain the build ran with. `sdkVersion` is the version of `ckx-sdk` the
+build compiled against (of `crowdy-client-sdk` for a CLIENT half), once the build has started.
+A build of the four starters with nothing cached takes about a minute; the same sources again
+come from the cache.
 
 ### What a crate may contain
 
@@ -89,8 +92,9 @@ from the cache.
 - `Cargo.toml` holds `[package]` (`name`, `version`, `edition`, `description`, `publish`,
   `license`, `authors`, `rust-version`), `[lib]` with `crate-type = ["cdylib"]`, and
   `[dependencies]` on `ckx-sdk`, `serde` and `serde_json` only. Each key is on one line, and there
-  is no workspace inheritance. The platform points `ckx-sdk` at its own copy (0.7.0 today) and
-  adds the release profile.
+  is no workspace inheritance. The platform points `ckx-sdk` at its own copy, whatever version
+  the crate names, and adds the release profile. A build's `sdkVersion` says which version that
+  was; code written for a newer SDK than the platform's fails to compile against it.
 
   ```toml
   [package]
@@ -131,6 +135,14 @@ the same rules, with its own dependency list, and runs in browsers rather than o
 
 The requests are billed like any other; the compile itself is not, as the compute compile it
 replaces was not.
+
+### On your machine
+
+The open [dev kit](develop-locally) runs this build on your own machine: the same checks on the
+same files, the Rust release the platform pins, its release profile and its dependency
+versions, then the same module check. `ckx-kit check` runs the source checks alone, and
+`cargo test` tests your crates natively against a fake of the platform. When a crate passes
+there, build it here from the same sources and deploy that build.
 
 ## Deploying a build
 

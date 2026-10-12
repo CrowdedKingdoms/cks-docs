@@ -32,9 +32,186 @@ convenience and **was never published**. The entries are left as written because
 this page is a historical record. The compute modules it deployed were replaced by
 ck-exec, which builds and deploys through the game API (`execBuild`, `execDeploy`); its
 own CLI is not published either. See
-[from the legacy engines](/exec/from-the-legacy-engines#build-and-deploy).
+[from the legacy engines](/exec/from-the-legacy-engines#build-and-deploy). To build and test
+on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
+
+## 2026-10-12 (dev, latest: input logging reports what it lost, ends every session and says when to retry; replication server v0.38.1, Game API v2.41.0, CrowdyJS 18.9.0)
+
+Input logging fixes and one new requirement. See [Input logging](/replication-api/input-logging).
+
+- **Turning replay logging on needs funds for what it will keep.** `updateApp` refuses
+  `replayLoggingEnabled: true` with `INPUT_LOG_FUNDS_NEEDED` unless the organization's wallet can
+  spend at least the projected cost of keeping one retention period of the app's recent traffic
+  (`extensions.requiredMicrousd` and `spendableMicrousd` say how much), or the organization is
+  exempt from billing. Recordings already kept go on being billed after logging is turned off,
+  until they age out.
+- **Every recorded session gets an end.** Turning replay logging off while a session is open ends
+  it as `logging_off`; a replication server that stops (a deploy) ends its open sessions as
+  `shutdown`, and the client reconnects to another server, where the same session continues and
+  its end is replaced. Recording that pauses because the app's logging setting could not be
+  confirmed ends its sessions as `paused`, which the player does not see. A session whose end was
+  not recorded is closed as `unrecorded` at its last input, once an hour has passed without one.
+  A session that records again after it ended reopens.
+- **A session says how many of its inputs were lost.** `InputLogSession.missingRecords` counts the
+  inputs the replication server accepted that never reached the log. Recording is best-effort:
+  an overloaded server or a broker outage leaves a gap, and this is how it shows. A lost end of
+  a recording cannot be counted; its session closes as `unrecorded`.
+- **Reads say when to retry.** `inputLogMessages` answers `INPUT_LOG_TEMPORARILY_UNAVAILABLE`
+  when the log cannot be read right now, where it used to answer `INPUT_LOG_UNAVAILABLE` or an
+  empty page. Each server runs one read per user, and two per app and per organization, at a
+  time: a read over that share waits for an earlier one within its few-second deadline, and
+  answers `INPUT_LOG_RATE_LIMITED` if the wait runs out. Both carry `extensions.retryable`: retry
+  with the same cursor, a bounded number of times. A read whose HTTP request is closed stops and
+  frees its share at once (CrowdyJS 18.9.0: the `signal` option of `inputLog.messages`), and ends
+  as `INPUT_LOG_READ_ABORTED`, a client error nobody receives. An operation may select
+  `inputLogMessages` only once.
+- **A cursor belongs to its session.** `inputLogMessages` refuses a cursor from another session
+  with `BAD_USER_INPUT`, as it refuses a malformed one.
+- **Offset cursors are bounded.** A connection cursor that points past 10,000,000 rows is
+  `BAD_USER_INPUT`; `first: 0` returns one edge. `walletTransactions` clamps `limit` to 1 to 200
+  and `offset` to 0 to 9,999,999.
+- **`appUsageSummary` and `orgUsageSummary` report each total once.** An app with both
+  replication and GraphQL usage in the window had its replication bytes multiplied by its number
+  of GraphQL usage rows, and the other way round, and an organization's summary counted only its
+  own apps from the derived tables. Crowdy Studio's usage figures were affected too. Charges were
+  never affected.
+- **CrowdyJS 18.9.0** selects `missingRecords` and documents the above, so it needs this Game
+  API. CrowdyCPP and CrowdyPy follow it.
+
+## 2026-10-10 (dev, later: faster hub voxel writes, mods hear every Game API voxel write, builds report their SDK; Game API v2.40.2, CrowdyJS 18.8.0, CrowdyCPP 0.61.0, CrowdyPy 0.9.0)
+
+- **Hub voxel writes are faster.** `world.set_voxels` writes its batch in one statement and
+  sends it to nearby players once, instead of one write and one send per voxel. On dev a
+  16-voxel batch used to outlast ckx-sdk's 2-second node call deadline: the write landed and the
+  hub got `DeadlineExceeded`. The batch is still all or none, and a voxel listed twice keeps
+  the later write and reaches players once. See
+  [World and platform data](/exec/world-and-platform-data).
+- **Mods hear every Game API voxel write.** A mod's `on_world` `voxels` events now come from
+  `world.set_voxels` (the app's hubs and mods, the mod's own included), `updateChunk` and an
+  applied rollback, as well as `updateVoxel`; before, only `updateVoxel` produced them. A
+  player's realtime voxel edit still produces none. See [Mods](/exec/mods).
+- **Builds report their SDK.** `ExecBuild.sdkVersion` (from `execBuildStatus`,
+  `execModBuildStatus` and the build mutations) is the `ckx-sdk` version a build compiled
+  against, or `crowdy-client-sdk`'s for a CLIENT half, and the build log's first line names the
+  toolchain. The platform compiles every crate against its own copy of the SDK, whatever version
+  the crate names. CrowdyJS 18.8.0, CrowdyCPP 0.61.0 and CrowdyPy 0.9.0 return it, and need
+  Game API v2.40.2: an older API refuses their build calls. See [Builds](/exec/builds#building).
+
+## 2026-10-10 (dev: the open mod dev kit; ckx-sdk 0.9.0 on crates.io, with native tests)
+
+Additive. Modules are unchanged (guest ABI 5).
+
+- **Develop hubs, spokes and mods on your machine.** The open dev kit, `ckx-kit`
+  (`@crowdedkingdoms/ckx-kit` on npm; MIT or Apache-2.0,
+  [github.com/CrowdedKingdoms/ckx-kit](https://github.com/CrowdedKingdoms/ckx-kit)), starts a
+  crate from the templates and starter packs, runs the platform's source checks, builds with the
+  Rust release, release profile and dependency versions the platform pins, checks the module and
+  the mod limits, and meters a mod's CLIENT half, printing the capability summary and hash the
+  platform's build reports. A crate that passes there builds on the platform. See [develop on
+  your machine](/exec/develop-locally).
+- **`ckx-sdk` and `crowdy-client-sdk` are on crates.io**, under MIT or Apache-2.0.
+- **`ckx-sdk` 0.9.0 tests nodes natively.** `ckx_sdk::testing` runs a hub, a spoke or a mod under
+  `cargo test` against a fake of the platform: calls, timers on a clock the test moves, topics,
+  presence, sessions, a mod's world events, snapshots and restarts, each call held to the
+  platform's bounds. A mod's `FakeGrid` answers it as the node API does, refusals included.
+  `ckx_sdk::limits` states the platform's bounds. See [test](/exec/develop-locally#test).
+
+## 2026-10-10 (dev: free hub tier, pause signals, app-defined voxels, channel voice, hub grid and access APIs; replication server v0.37.0, Game API v2.40.1, ck-exec 0.15.0, CrowdyJS 18.7.0, CrowdyCPP 0.60.0, CrowdyPy 0.8.0)
+
+Additive, apart from three behaviour changes called out below. From the asks of a studio
+building a Minecraft integration.
+
+- **Hubs run free for a small game.** The monthly quota now includes **1 GB of
+  compute-module writes** per app (what hubs write when they save), and a save identical to the
+  last one is neither stored nor billed. An app whose organization cannot be charged may run 16
+  hub instances reserving 1 GB per datacenter; a funded one 16,384 and 64 GB. `execAppStatus`
+  reports the limits and current use. See [free tier](/management-api/shared-environment#free-tier).
+- **A paused app says so.** `mintAppToken`, `refreshAppToken` and `exchangePortalCode` still mint
+  and report `runtimeGate { status reason }`; `gameClientBootstrap` reports it instead of failing,
+  with `wildernessWritesOpen`; the realtime proxy refuses with `APP_PAUSED`; replication answers a
+  paused app's sends with error code **33 (`APP_PAUSED`)** instead of silence, and serves the
+  session again once the app is active. A paused hub's refusal names the cause. See
+  [what "access denied" means](/management-api/shared-environment#what-access-denied-means).
+- **Voxel positions and types are yours to define** within signed 16 bits on every write path;
+  nothing checks 0-15 or 0-255 any more. One 1 KiB cap on a voxel's state, replication included.
+  A chunk read applies up to 65,536 recorded edits (`voxelStatesTruncated` past that); a rollback
+  is stamped with its own time, so readers of edits since their last sync see it; a chunk's state
+  is capped at 64 KiB. **Behaviour change:** an accepted voxel edit is always delivered back to its
+  sender, once. See [voxel positions and types](/game-api/grids-and-permissions#voxel-positions-and-types-are-yours-to-define).
+- **Typed refusals.** `ACTOR_EXISTS` (with `ownedByCaller`) for a uuid the app already has;
+  `ACCESS_REVOKED`, `ACCESS_SUSPENDED` (with `suspendedUntil`) and `ACCESS_NOT_GRANTED` from the
+  mint paths, none of which tell the player to buy anything. See [error codes](/overview/error-codes).
+- **Other players' accounts are private.** **Behaviour change:** `user(id)` returns private fields
+  only to the player themselves; game clients use `playerProfile` / `playerProfiles` for names.
+- **Voice on a channel.** `sendChannelAudio` and `ChannelAudioNotification` (opcodes 35 and 36), a
+  channel `send_voice` right and `membersCanSpeak`. See [voice on a channel](/game-api/channels#voice-on-a-channel).
+- **Hub code manages grids and access** (ck-exec 0.15.0, ckx-sdk 0.8.0): `grids.write`
+  (create and delete its own grids, give groups keys, open grids), `access.read` / `access.write`
+  (grant, revoke, suspend players), `world.set_chunk_state`, voxel authors, the grid owner and the
+  wilderness setting; an app's own hub writes skip the wilderness rule. `execRestartType` moves a
+  type's running instances to the active version. Players can be suspended until a time
+  (`suspendAppAccess`), tier keys re-applied (`resyncTierGridPermissions`), and claims can grant
+  keys (`claimOwnerKeys`). Permission changes reach every Game API server at once. See
+  [world and platform data](/exec/world-and-platform-data). **Behaviour change** for module
+  authors: ckx-sdk 0.8.0 makes `Player.disambiguation` optional and voxel types `i16`.
+- **Idle players on different servers meet.** A heartbeat that reached a server ahead of the
+  first update kept two idle players on different servers apart; they now see each other at the
+  first full update (3 s with the SDK defaults). No client cadence is required.
+- **CrowdyJS 18.7.0 / CrowdyCPP 0.60.0 / CrowdyPy 0.8.0**: optional voice payload helpers (a
+  10-byte header, a packetizer, a jitter buffer; CrowdyCPP optionally wraps libopus), channel
+  audio, opcode 140 delivered to the app, chunk stores that keep wide edits, CrowdyCPP's
+  `onVoxel`, and wrappers for everything above. They need Game API v2.40 or later.
+
+## 2026-10-09 (dev: input logging; replication server v0.36.1, Game API v2.39.0, CrowdyJS 18.6.0, CrowdyCPP 0.59.0, CrowdyPy 0.7.0)
+
+Additive. Nothing records until an app turns it on.
+
+- **An app can record its players' inputs.** With replay logging on
+  (`App.replayLoggingEnabled`, set with `updateApp` by `manage_apps`, or in Crowdy Studio's
+  app settings), every client message the replication servers accept for the app is recorded
+  with its arrival time, player and session. `inputLogSessions` lists the recorded sessions
+  and `inputLogMessages` reads one session's inputs, each as the client sent it without its
+  authentication tail. A player reads their own; `manage_apps` reads every session. Inputs are
+  kept for the published retention (7 days). See [Input logging](/replication-api/input-logging).
+- **Stored input logs are a new rate-card line**, `input_log_storage_byte_hours`, priced per
+  GB-month with no free allowance. Turning logging on is refused with `INPUT_LOG_FUNDS_NEEDED`
+  unless the organization's wallet has a spendable balance. See
+  [Shared environment](/management-api/shared-environment).
+- **CrowdyJS 18.6.0**: `client.inputLog.sessions` / `messages`; every app read selects
+  `replayLoggingEnabled`.
+- **CrowdyCPP 0.59.0**: `client.inputLog().sessions` / `messages`, each with an `Async` twin.
+  Parity is pinned to CrowdyJS 18.6.0.
+- **CrowdyPy 0.7.0**: `client.input_log.sessions` / `messages`.
+
+## 2026-10-09 (dev: channel messages limited by distance; replication server v0.35.0, Game API v2.38.0, CrowdyJS 18.5.0, CrowdyCPP 0.58.0, CrowdyPy 0.6.0)
+
+Additive; receivers change nothing.
+
+- **A channel message can reach only the members near an origin chunk.** The new
+  `sendRangedChannelMessage` mutation and the `CHANNEL_MESSAGE_RANGED_REQUEST` UDP message
+  (type 32) take an origin chunk and a `maxDistance` in chunks. A member receives the
+  message when one of its live actors is within that straight-line (Euclidean) distance of
+  the origin, boundary included, so 5 reaches a member 3 chunks east and 4 north but not one
+  4 east and 4 north. Any distance up to 2147483647 is accepted. Members receive the ordinary
+  `ChannelMessageNotification`, the send right is `sendChannelMessage`'s, the sender gets no
+  echo, and a member with no live actor receives nothing. A replication server older than
+  v0.35.0 drops the request. See
+  [Limit delivery by distance](/game-api/channels#limit-delivery-by-distance) and the
+  [wire format](/replication-api/wire-formats#channel_message_ranged_request-client--server).
+- **Channel publishes are rate-limited like every other client message** (replication server
+  v0.35.0). A `CHANNEL_MESSAGE_REQUEST` now counts against the session's message rate, and
+  one over it is dropped; once the session's token has expired it is answered
+  `TOKEN_EXPIRED`. Spatial sends already behaved this way.
+- **CrowdyJS 18.5.0**: `client.udp.sendRangedChannelMessage`, `serializeRangedChannelMessage`
+  and `CHANNEL_RANGED_MAX_DISTANCE`.
+- **CrowdyCPP 0.58.0**: `Connection::sendRangedChannelMessage` and
+  `wire::encodeRangedChannelMessage`. Parity is pinned to CrowdyJS 18.5.0.
+- **CrowdyPy 0.6.0**: `client.udp.send_ranged_channel_message` and
+  `crowdypy.wire.encode_ranged_channel_message`, plus CrowdyJS 18.4.0's terms and age gate:
+  `auth.record_player_consents`, `auth.player_legal_acceptance`, `register`'s
+  `accept_legal` and `attest_age_of_majority`, and `is_legal_acceptance_required_error`.
 
 ## 2026-10-07 (Unreal SDK v2.18.0: Server Objects; Game Models deprecated)
 

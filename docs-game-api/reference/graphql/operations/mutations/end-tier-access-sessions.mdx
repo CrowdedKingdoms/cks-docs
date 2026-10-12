@@ -1,0 +1,39 @@
+---
+id: end-tier-access-sessions
+title: endTierAccessSessions
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: end the sessions and app tokens of these accounts (at most 1000), skipping any this tier admits. Returns how many had sessions ended. Refused on prod.
+
+
+```graphql
+endTierAccessSessions(
+  userIds: [BigInt!]!
+): Int!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>endTierAccessSessions.<b>userIds</b></code>](#user-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-ids\} 
+Accounts whose sessions and app tokens end; at most 1000.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.

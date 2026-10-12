@@ -1,0 +1,39 @@
+---
+id: send-ranged-channel-message
+title: sendRangedChannelMessage
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Publish a message to a channel that only reaches members near an origin chunk: a member receives it, as an ordinary ChannelMessageNotification on udpNotifications, when one of its live actors is in the same app within maxDistance chunks of input.chunk (straight-line distance between chunk coordinates, boundary included). A member with no live actor does not receive it. Requires a bearer game token and the channel send&#x005F;messages permission, as for sendChannelMessage; the origin app must be the token’s app. Opens a UDP proxy session automatically if none exists. The sender receives no echo. Returns Boolean! that is true only when the datagram was ACCEPTED FOR SENDING — NOT confirmation of delivery; failures arrive ASYNCHRONOUSLY as GenericErrorResponse on udpNotifications (UNAUTHORIZED without the send right, INVALID&#x005F;APP&#x005F;ID for another app), correlated by the request sequenceNumber (correlation only — not an idempotency key; the server does not dedupe replays).
+
+
+```graphql
+sendRangedChannelMessage(
+  input: RangedChannelMessageInput!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>sendRangedChannelMessage.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RangedChannelMessageInput!</b></code>](/reference/graphql/types/inputs/ranged-channel-message-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+The channel message to publish: channelId (groups.group&#x005F;id), the sender’s 32-byte actor uuid, base64 payload (max 1024 bytes), the origin appId and chunk, maxDistance in chunks, and optional sequenceNumber. See RangedChannelMessageInput.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

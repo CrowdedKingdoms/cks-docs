@@ -1,0 +1,44 @@
+---
+id: exec-restart-type
+title: execRestartType
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Moves one node type's running instances to the app's active version: each is persisted and stopped, and starts again on the active version at its next call. A deploy (execDeploy, execActivateVersion) changes which version NEW instances run but leaves running ones on theirs until they stop; this is how to move them without switching the type off. Requires the org 'manage&#x005F;compute' permission.
+
+
+```graphql
+execRestartType(
+  appId: BigInt!
+  nodeType: String!
+): ExecRestartResult!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>execRestartType.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+The app whose ck-exec code this is about.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>execRestartType.<b>nodeType</b></code>](#node-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#node-type\} 
+The node type whose running instances to restart.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ExecRestartResult</b></code>](/reference/graphql/types/objects/exec-restart-result.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The result of execRestartType: how many running instances were persisted and stopped. They start again on the app's active version at their next call.

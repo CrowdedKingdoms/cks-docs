@@ -1,0 +1,39 @@
+---
+id: revoke-tier-access-rule
+title: revokeTierAccessRule
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: remove an entry from the list. Accounts it was admitting are refused at their next request, and their sessions and app tokens are ended. Refused on prod.
+
+
+```graphql
+revokeTierAccessRule(
+  ruleId: BigInt!
+): TierAccessRule!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>revokeTierAccessRule.<b>ruleId</b></code>](#rule-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#rule-id\} 
+The rule to revoke (tierAccessRules.ruleId).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>TierAccessRule</b></code>](/reference/graphql/types/objects/tier-access-rule.mdx) <Badge class="badge badge--secondary " text="object"/> 
+OPERATOR: one entry on a tier access list.

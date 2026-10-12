@@ -1,0 +1,39 @@
+---
+id: tier-access-rules
+title: tierAccessRules
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: the addresses and domains allowed on this tier besides the company domains.
+
+
+```graphql
+tierAccessRules(
+  includeRevoked: Boolean = false
+): [TierAccessRule!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>tierAccessRules.<b>includeRevoked</b></code>](#include-revoked)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#include-revoked\} 
+Also list revoked and expired-then-revoked entries.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>TierAccessRule</b></code>](/reference/graphql/types/objects/tier-access-rule.mdx) <Badge class="badge badge--secondary " text="object"/> 
+OPERATOR: one entry on a tier access list.
