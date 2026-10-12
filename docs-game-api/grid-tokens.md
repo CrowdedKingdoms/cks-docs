@@ -37,7 +37,7 @@ confined as shown. Anything else returns `SCOPE_MISSING`.
 | Identity and transport | `me`, `versionInfo`, `gameClientBootstrap`, `serverWithLeastClients`, `connectUdpProxy`, `disconnectUdpProxy`, `udpProxyConnectionStatus`, `udpNotifications`, `actorHeartbeat` |
 | Chunk inside the grid | `getChunk`, `getVoxelList`, `listVoxels`, `updateVoxel` |
 | **Origin** chunk inside the grid (reach follows `distance`) | `sendActorUpdate`, `sendVoxelUpdate`, `sendTextPacket`, `sendClientEvent`, `sendAudioPacket`, `sendVideoPacket`, `sendSingleActorMessage` |
-| The grid's own channels | `gridChannels`, `joinChannel`, `leaveChannel`, `sendChannelMessage` |
+| The grid's own channels | `gridChannels`, `joinChannel`, `leaveChannel`, `sendChannelMessage`, `sendRangedChannelMessage` (its origin chunk must also be inside the grid) |
 
 `refreshAppToken`, `logout`, `mintGridToken` and `mintAppToken` are refused,
 so a grid token can neither widen into nor tear down its parent.

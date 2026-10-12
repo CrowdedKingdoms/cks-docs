@@ -45,6 +45,12 @@ mutation { execModDeploy(appId: "…", gridId: "…", name: "greeter", buildId: 
 mutation { execModSetEnabled(appId: "…", gridId: "…", name: "greeter", enabled: true) { enabled blocked } }
 ```
 
+On your machine, the open [dev kit](develop-locally) starts from the same crate
+(`npx @crowdedkingdoms/ckx-kit new mod greeter`). Its `cargo test` runs the mod against a fake of
+its grid (`TestHub::mod_on(FakeGrid)`), which answers the mod as the node API does and applies
+the platform's rules for mods, and `ckx-kit build --mod` builds it as `execModBuild` does, with
+the mod limits.
+
 A build is the same sandboxed build as `execBuild`, with one crate; you have one build at a
 time, and only you can read it. A new mod starts switched off. Deploying a new version of a
 running mod restarts it on that version. A mod's name is 1 to 48 lowercase letters, digits,
@@ -83,6 +89,11 @@ a call, 20 calls a second, and a module of at most 4 MiB.
 - **What happens in its grid**: `Hub::on_world` receives the grid's world events in batches:
   actors moving into or out of a chunk (`actors`) and voxel changes (`voxels`), each with its
   chunk. An actor arriving starts a mod that is switched on but not running. Events can be lost.
+  `voxels` reports the writes the Game API makes: `updateVoxel`, `updateChunk`, a rollback, and
+  `world.set_voxels` from the app's hubs and from mods, the mod's own included (so a mod that
+  writes on every `voxels` event never stops). A player's realtime voxel edit
+  (`sendVoxelUpdate`) produces no event yet; read the chunk's edits with `world.voxels` when
+  your mod needs them.
 - **Nothing else**: a mod calls no other node, subscribes to no topic, and sends no realtime
   events. Only players call it.
 

@@ -25,6 +25,7 @@ input CreateGridChannelInput {
   description: String
   membershipPolicy: String
   membersCanSend: Boolean
+  membersCanSpeak: Boolean
   gridId: BigInt!
 }
 ```
@@ -50,6 +51,10 @@ open | request | invite | admin. Defaults to the app policy.
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateGridChannelInput.<b>membersCanSend</b></code>](#members-can-send)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#members-can-send\} 
 When true (default), new members are auto-granted send&#x005F;messages so they can post (open chat channel). When false, only roles you grant may post (announce/read-only channel).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateGridChannelInput.<b>membersCanSpeak</b></code>](#members-can-speak)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#members-can-speak\} 
+When true, new members are also auto-granted send&#x005F;voice so they can send channel audio (party or guild voice, delivered to every member wherever they are). False (default): only roles you grant send&#x005F;voice may speak. Voice also needs the player's use&#x005F;voice&#x005F;chat tier permission, and every member's downlink is billed as egress, so keep voice channels small.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateGridChannelInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 

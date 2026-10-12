@@ -78,13 +78,22 @@ A client that already holds the session token can mint directly:
 mutation Enter($appId: BigInt!) {
   mintAppToken(input: { appId: $appId }) {
     token gameTokenId appId expiresAt gameApiUrl gameApiWsUrl discoveryUrl launchUrl
+    runtimeGate { status reason }
   }
 }
 ```
 
 Send `Authorization: Bearer <session token>`. Free/open apps auto-grant access on
-first mint; paid apps require an existing entitlement (else `FORBIDDEN`). Use the
-returned `token` against `gameApiUrl` / `gameApiWsUrl`.
+first mint; an app with no free tier needs a grant first (else
+`ACCESS_NOT_GRANTED`). Use the returned `token` against `gameApiUrl` /
+`gameApiWsUrl`.
+
+**Check `runtimeGate`.** A paused app (its organization has no funds, reached a
+spend cap, or its subscription lapsed) still mints, so your client can tell the
+player why: when `runtimeGate.status` is not `ACTIVE`, the world delivers nothing
+until the owner fixes it, and `reason` says which. Show "this world is paused"
+rather than an empty world. `refreshAppToken` and `exchangePortalCode` report it
+too.
 
 **Keep `discoveryUrl`, and do not confuse it with `gameApiUrl`.** `gameApiUrl` is the ONE
 datacenter holding this app's data, which is where gameplay must go. `discoveryUrl` is the
@@ -259,7 +268,11 @@ requires the identity session token and returns `SCOPE_MISSING` for an app token
 - `LEGAL_ACCEPTANCE_REQUIRED` on `mintAppToken`, `createPortalAuthorizationCode` or
   `refreshAppToken` — the player's consents are not stored. See
   [Terms and age of majority](#terms-and-age-of-majority).
-- `FORBIDDEN` on `mintAppToken` — no entitlement for a paid app.
+- `ACCESS_NOT_GRANTED`, `ACCESS_REVOKED`, `ACCESS_SUSPENDED` (with
+  `extensions.suspendedUntil`) on `mintAppToken`, `refreshAppToken` or
+  `exchangePortalCode` — the player has no access, the app revoked it, or the app
+  suspended it until a time. None asks the player to buy anything; see
+  [Error codes](/overview/error-codes).
 - `FORBIDDEN` (message prefixed **`CONSENT_REQUIRED`**) on
   `createPortalAuthorizationCode` — the user has not authorized this untrusted app
   yet. Call `authorizeApp` (after `portalConsent`) first. See

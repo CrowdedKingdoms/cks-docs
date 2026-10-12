@@ -43,7 +43,7 @@ realtime). What separates the surfaces is the token, not the host:
 | Sub-client | Token | Use |
 |---|---|---|
 | `client.auth`, `client.users`, `client.apps`, `client.platform` | identity session | Identity (`login`/`register`, `requestLoginLink`/`completeLoginLink`, `socialLoginStart`/`socialLoginComplete`, `availableLoginProviders`, `myIdentities`/`linkIdentity`/`unlinkIdentity`, `logout`, `me`, `updateGamertag`), app routing reads (`apps.routeFor`), and public platform config (`platform.config`). |
-| `client.chunks`, `client.voxels`, `client.actors`, `client.avatars`, `client.teleport`, `client.state`, `client.host`, `client.serverStatus`, `client.channels`, `client.teams`, `client.udp` | app-scoped | World data, avatars, channels & teams, the GraphQL UDP proxy subscription, and game-client bootstrap. `client.host` covers host election (`get` / `amIHost`) and `heartbeat` — see [Host discovery](/game-api/host-discovery). |
+| `client.chunks`, `client.voxels`, `client.actors`, `client.avatars`, `client.teleport`, `client.state`, `client.host`, `client.serverStatus`, `client.channels`, `client.teams`, `client.udp`, `client.inputLog` | app-scoped | World data, avatars, channels & teams, the GraphQL UDP proxy subscription, and game-client bootstrap. `client.host` covers host election (`get` / `amIHost`) and `heartbeat` — see [Host discovery](/game-api/host-discovery). `client.inputLog` reads the inputs recorded for an app with replay logging on (18.6.0) — see [Input logging](/replication-api/input-logging). |
 
 Each client has one `AuthState`, so you still build **two clients**: an identity client
 holding the session token, and a per-game client holding that app's app-scoped token —
@@ -72,7 +72,7 @@ are namespaced by audience:
 
 | Audience | Sub-clients | Notes |
 |---|---|---|
-| **Game-client** (browser-safe) | `auth`, `users`, `udp`, `world(...)`, `chunks`, `voxels`, `actors`, `avatars`, `state`, `teleport`, `host`, `channels`, `teams`, `exec`, `serverStatus`, `crowdyStudio`, `crowdyStudioGitHub` | Safe to drive from an untrusted browser with the documented token and server policy. `auth`/`users` use the identity **session token**; world, Studio, and realtime surfaces require an **app-scoped token**. The Studio agent pane (`dsh` option) reaches the model through the metered REST endpoint with that token and separately requires `use_studio_agent`. |
+| **Game-client** (browser-safe) | `auth`, `users`, `udp`, `world(...)`, `chunks`, `voxels`, `actors`, `avatars`, `state`, `teleport`, `host`, `channels`, `teams`, `exec`, `inputLog`, `serverStatus`, `crowdyStudio`, `crowdyStudioGitHub` | Safe to drive from an untrusted browser with the documented token and server policy. `auth`/`users` use the identity **session token**; world, Studio, and realtime surfaces require an **app-scoped token**. The Studio agent pane (`dsh` option) reaches the model through the metered REST endpoint with that token and separately requires `use_studio_agent`. |
 | **Studio-admin** (token whose user holds `manage_apps`) | `organizations`, `apps`, `appAccess`, `billing`, `payments`, `quotas`, `usage`, `sharedEnvironment`, `gameApps` ([grids](grids)) — also grouped under `client.admin.*` | Privileged org/app administration. Requires a user with the `manage_apps` permission (or an org token). Not end-user-safe — see the note below. Dedicated `environments` were removed in v13. |
 
 The SDK never relaxes server-side authorization — exposing an operation just
@@ -443,6 +443,13 @@ client.realtime.onStatus((status) => {
   console.log('realtime:', status);
 });
 ```
+
+`genericSpatial` (CrowdyJS 18.7.0) receives `GENERIC_SPATIAL_1` (opcode 140), the long
+spatial message your game defines the payload of. It arrives on the binary relay only
+(`realtime.binaryTransport: true`): the GraphQL `udpNotifications` union has no member for it.
+A `genericError` with `errorCode` 33 (`APP_PAUSED`) means the app is paused (its organization
+has no funds, reached a spend cap, or its subscription lapsed) and nothing will be delivered
+until the owner fixes it; `gameClientBootstrap(appId).runtimeGate` says why.
 
 `client.world(appId).subscribe(handlers)` is a convenience wrapper that passes
 its `appId` for you.

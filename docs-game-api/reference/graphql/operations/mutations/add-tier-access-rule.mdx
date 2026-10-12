@@ -1,0 +1,39 @@
+---
+id: add-tier-access-rule
+title: addTierAccessRule
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: allow an email address (a contractor or partner) or a domain on this tier, optionally until a date. The address must still be verified to count. Refused on prod.
+
+
+```graphql
+addTierAccessRule(
+  input: AddTierAccessRuleInput!
+): TierAccessRule!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>addTierAccessRule.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AddTierAccessRuleInput!</b></code>](/reference/graphql/types/inputs/add-tier-access-rule-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#input\} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>TierAccessRule</b></code>](/reference/graphql/types/objects/tier-access-rule.mdx) <Badge class="badge badge--secondary " text="object"/> 
+OPERATOR: one entry on a tier access list.

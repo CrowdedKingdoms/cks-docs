@@ -40,7 +40,7 @@ Use walletTransactionsConnection(first:, after:) instead. See /overview/paginati
 
 :::
 
-Maximum number of transactions to return. Defaults to 50 when omitted.
+Maximum number of transactions to return, 1 to 200 (a value outside is clamped). Defaults to 50 when omitted.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>walletTransactions.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
@@ -50,7 +50,7 @@ Use walletTransactionsConnection(first:, after:) instead. See /overview/paginati
 
 :::
 
-Number of transactions to skip before returning results, for offset/limit pagination. Defaults to 0 when omitted.
+Number of transactions to skip before returning results, for offset/limit pagination, 0 to 9999999 (a value outside is clamped). Defaults to 0 when omitted.
 
 
 

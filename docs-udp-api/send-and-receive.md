@@ -33,8 +33,10 @@ This registers your chunk position and validates your token.
 
 Beyond broadcast spatial traffic you can also send **direct actor-to-actor
 messages** (`SINGLE_ACTOR_MESSAGE`, type `142`) and **channel messages**
-(`CHANNEL_MESSAGE_REQUEST`, type `17` — app-wide, not chunk-routed). Both are
-detailed in **[Wire formats](/replication-api/wire-formats)**.
+(`CHANNEL_MESSAGE_REQUEST`, type `17` — app-wide, not chunk-routed). A channel message
+can also be limited by distance (`CHANNEL_MESSAGE_RANGED_REQUEST`, type `32`): it then
+reaches only the members with an actor within a straight-line number of chunks of an
+origin chunk. All three are detailed in **[Wire formats](/replication-api/wire-formats)**.
 
 ## Receive notifications
 

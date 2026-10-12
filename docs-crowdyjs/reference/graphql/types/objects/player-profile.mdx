@@ -1,0 +1,48 @@
+---
+id: player-profile
+title: PlayerProfile
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A player's public profile: what another player's client may show (a nametag, a friends list). Carries nothing private; for your own account read `me`.
+
+
+```graphql
+type PlayerProfile {
+  userId: BigInt!
+  gamertag: String
+  disambiguation: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerProfile.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The user id. BigInt serialized as a decimal string.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerProfile.<b>gamertag</b></code>](#gamertag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#gamertag\} 
+Public display name; null if unset or anonymized.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerProfile.<b>disambiguation</b></code>](#disambiguation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#disambiguation\} 
+Discriminator paired with gamertag to form a unique handle; null if unset.
+
+
+
+
+### Returned By
+
+[`playerProfile`](/reference/graphql/operations/queries/player-profile.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`playerProfiles`](/reference/graphql/operations/queries/player-profiles.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

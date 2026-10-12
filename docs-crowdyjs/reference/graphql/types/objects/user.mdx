@@ -25,19 +25,19 @@ type User {
   gamertag: String
   disambiguation: String
   state: String
-  isConfirmed: Boolean!
+  isConfirmed: Boolean
   createdAt: DateTime!
-  grantEarlyAccess: Boolean!
-  grantEarlyAccessOverride: Boolean!
+  grantEarlyAccess: Boolean
+  grantEarlyAccessOverride: Boolean
   orgId: BigInt
   externalId: String
-  userType: String!
-  isSuperAdmin: Boolean!
-  isOperator: Boolean!
-  hasPassword: Boolean!
+  userType: String
+  isSuperAdmin: Boolean
+  isOperator: Boolean
+  hasPassword: Boolean
   permissionsForOrg(
     orgId: BigInt!
-  ): [String!]!
+  ): [String!]
 }
 ```
 
@@ -49,7 +49,7 @@ Unique user id and primary key. BigInt serialized as a decimal string.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
-Account email; null for anonymized/soft-deleted accounts.
+Account email. Private: null unless the caller is this user, a super-admin or an operator (and for anonymized/soft-deleted accounts).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>gamertag</b></code>](#gamertag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#gamertag\} 
@@ -61,51 +61,51 @@ Discriminator paired with `gamertag` to form a unique handle; null if unset.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 
-User-level state blob, base64-encoded binary (management-owned). Null when cleared.
+User-level state blob, base64-encoded binary (management-owned). Private: null unless the caller is this user, a super-admin or an operator; also null when cleared.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>User.<b>isConfirmed</b></code>](#is-confirmed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-confirmed\} 
-Whether the account email has been confirmed.
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>isConfirmed</b></code>](#is-confirmed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#is-confirmed\} 
+Whether the account email has been confirmed. Private: null unless the caller is this user, a super-admin or an operator.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 Account creation timestamp (ISO-8601).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>User.<b>grantEarlyAccess</b></code>](#grant-early-access)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grant-early-access\} 
-Whether the user qualifies for early access through normal eligibility (the free-play window/rollout).
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>grantEarlyAccess</b></code>](#grant-early-access)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grant-early-access\} 
+Whether the user qualifies for early access through normal eligibility (the free-play window/rollout). Private: null unless the caller is this user, a super-admin or an operator.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>User.<b>grantEarlyAccessOverride</b></code>](#grant-early-access-override)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grant-early-access-override\} 
-Admin override forcing early access on/off regardless of normal eligibility (set via `setEarlyAccessOverride`).
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>grantEarlyAccessOverride</b></code>](#grant-early-access-override)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#grant-early-access-override\} 
+Admin override forcing early access on/off regardless of normal eligibility (set via `setEarlyAccessOverride`). Private: null unless the caller is this user, a super-admin or an operator.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#org-id\} 
-Organization the user belongs to, or null. BigInt serialized as a decimal string.
+Organization the user belongs to, or null. BigInt serialized as a decimal string. Private: null unless the caller is this user, a super-admin or an operator.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>externalId</b></code>](#external-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#external-id\} 
-External identity-provider id for federated accounts, or null.
+External identity-provider id for federated accounts, or null. Private: null unless the caller is this user, a super-admin or an operator.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>User.<b>userType</b></code>](#user-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-type\} 
-Account type, e.g. "direct" or "deleted".
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>userType</b></code>](#user-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#user-type\} 
+Account type, e.g. "direct" or "deleted". Private: null unless the caller is this user, a super-admin or an operator.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>User.<b>isSuperAdmin</b></code>](#is-super-admin)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-super-admin\} 
-Whether the user holds platform super-admin privileges (toggled via `setSuperAdmin`).
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>isSuperAdmin</b></code>](#is-super-admin)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#is-super-admin\} 
+Whether the user holds platform super-admin privileges (toggled via `setSuperAdmin`). Private: null unless the caller is this user, a super-admin or an operator.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>User.<b>isOperator</b></code>](#is-operator)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#is-operator\} 
-Company-employee flag that grants access to control-plane / operator features. Independent from is&#x005F;super&#x005F;admin.
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>isOperator</b></code>](#is-operator)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#is-operator\} 
+Company-employee flag that grants access to control-plane / operator features. Independent from is&#x005F;super&#x005F;admin. Private: null unless the caller is this user, a super-admin or an operator.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>User.<b>hasPassword</b></code>](#has-password)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#has-password\} 
-Whether this account has a password set. Studio reads it to say "set a password" only to accounts that have none (magic-link and OAuth sign-ups); it used to say so to everyone. The hash itself never leaves the process.
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>hasPassword</b></code>](#has-password)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#has-password\} 
+Whether this account has a password set. Studio reads it to say "set a password" only to accounts that have none (magic-link and OAuth sign-ups); it used to say so to everyone. The hash itself never leaves the process. Private: null unless the caller is this user, a super-admin or an operator.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>User.<b>permissionsForOrg</b></code>](#permissions-for-org)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permissions-for-org\} 
-The user's effective permission keys on the given org (empty if not a member; full set if super admin). Requires a valid bearer game token.
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>permissionsForOrg</b></code>](#permissions-for-org)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permissions-for-org\} 
+The user's effective permission keys on the given org (empty if not a member; full set if super admin). Requires a valid bearer game token. Private: null unless the caller is this user, a super-admin or an operator.
 ##### [<code style={{ fontWeight: 'normal' }}>User.permissionsForOrg.<b>orgId</b></code>](#user-permissions-for-org-org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-permissions-for-org-org-id\} 
 Organization id (BigInt sent as a decimal string) to evaluate the user against.
 

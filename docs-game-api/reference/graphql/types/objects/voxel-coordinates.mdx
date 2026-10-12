@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Integer (x, y, z) position of a single voxel LOCAL to its chunk (not a world position). Stored as signed 16-bit smallints (-32,768..32,767), but a chunk is 16x16x16 = 4096 voxels, so valid in-bounds positions are 0-15 on each axis.
+Integer (x, y, z) position of a single voxel LOCAL to its chunk (not a world position). App-defined: any signed 16-bit integer on each axis (-32,768..32,767). Apps that use the 16x16x16 dense grid (Chunk.voxels) use 0-15; other addressing lives in voxel states and the edit log.
 
 
 ```graphql
@@ -30,15 +30,15 @@ type VoxelCoordinates {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelCoordinates.<b>x</b></code>](#x)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#x\} 
-Local voxel X within the chunk (0-15 for in-bounds voxels).
+Local voxel X within the chunk (signed 16-bit, app-defined).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelCoordinates.<b>y</b></code>](#y)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#y\} 
-Local voxel Y within the chunk (0-15 for in-bounds voxels).
+Local voxel Y within the chunk (signed 16-bit, app-defined).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelCoordinates.<b>z</b></code>](#z)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#z\} 
-Local voxel Z within the chunk (0-15 for in-bounds voxels).
+Local voxel Z within the chunk (signed 16-bit, app-defined).
 
 
 

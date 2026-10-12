@@ -31,12 +31,24 @@ fields and require an app token for the actor's app.
 | `publicState` | Visible to everyone in the actor's app who holds that app's token (base64 binary) |
 | `privateState` | Visible to the owner only (base64 binary) |
 
-An actor record can come into existence two ways:
+Only `createActor` (below) creates an actor record. The realtime layer never
+creates, moves or deletes one: from the actor updates a client sends it keeps
+**live presence** (which actors are where right now), which host election and the
+nearby-actor queries read, and that presence expires a few seconds after the
+actor goes quiet. See [GraphQL UDP Proxy API](/game-api/graphql-udp-proxy-api).
 
-- **Explicitly**, by calling `createActor` (below).
-- **Automatically**, when the player starts moving in the world — the realtime
-  layer creates/updates the actor as actor updates arrive. See
-  [GraphQL UDP Proxy API](/game-api/graphql-udp-proxy-api).
+An actor uuid is unique within an app. `createActor` with a uuid the app already
+has is refused with `ACTOR_EXISTS` (HTTP 409), whose `extensions.ownedByCaller`
+says whether the existing record is yours: if it is, keep using it
+(`updateActor` / `updateActorState`); if not, pick another uuid.
+
+:::caution[A uuid in a spatial message is a label]
+The realtime layer does not check that the actor uuid a client puts in a spatial
+message belongs to that client, so another player's client can send messages under
+your actor's uuid. Treat it as a label for display and interpolation. For anything
+that matters, trust the identity your server code is given (a hub's caller) and the
+owner on the actor record.
+:::
 
 ## Creating an actor
 

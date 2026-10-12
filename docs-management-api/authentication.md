@@ -73,6 +73,17 @@ type AuthResponse {
 Send `Authorization: Bearer <token>` on subsequent Management API requests. Resolve
 the caller with `me { userId email gamertag }`.
 
+**Other players' accounts are private.** `user(id)` returns a player's `email`,
+`state`, confirmation and early-access flags, organization and role fields only to
+that player themselves; anyone else reads them as `null` (ck-api v2.40). A game
+client that needs other players' names uses `playerProfile(userId)` or
+`playerProfiles(userIds)` (up to 100 at a time, with the app-scoped token), which
+return only `userId`, `gamertag` and `disambiguation`:
+
+```graphql
+query { playerProfiles(userIds: ["777", "778"]) { userId gamertag disambiguation } }
+```
+
 Studio (ck-api **v1.92.1**) also receives `ck_session` (HttpOnly, SameSite=Lax) and
 a readable `ck_csrf` on every session mint. Studio authenticates with
 `credentials: 'include'` and `X-CSRF-Token`; it does **not** persist `token` in
