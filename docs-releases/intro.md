@@ -37,7 +37,7 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
-## 2026-10-10 (dev, latest: input logging reports what it lost, ends every session and says when to retry; the replication server release after v0.37.0, the Game API release after v2.40.2, CrowdyJS 18.9.0)
+## 2026-10-12 (dev, latest: input logging reports what it lost, ends every session and says when to retry; replication server v0.38.1, Game API v2.41.0, CrowdyJS 18.9.0)
 
 Input logging fixes and one new requirement. See [Input logging](/replication-api/input-logging).
 
