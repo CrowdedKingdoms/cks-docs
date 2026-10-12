@@ -5,6 +5,7 @@ import { NodeControl } from "../src/controls/nodes/node.control";
 import { IconLibrary } from "../src/controls/utils/icon-library";
 import { Constants } from "../src/constants";
 import { NodeParserPlugin } from "../src/parser/node-parser-plugin";
+import { Node } from "../src/data/nodes/node";
 import { NodeParser } from "../src/parser/node.parser";
 import { ParsingNodeData } from "../src/parser/parsing-node-data";
 import { CallFunctionNodeParser } from "../src/parser/node-parsers/call-function-node.parser";
@@ -21,9 +22,8 @@ import { CrowdyFunctionNames, CrowdyFunctionNamesByClass } from "./crowdy-names.
 // What the Unreal editor shows that the clipboard text does not carry. The text names a function by
 // its C++ member name, so a DisplayName meta (GetFloat is "Get Model Attribute (Float)") is only
 // known through the generated table; the Crowdy replication subtitle under a custom event is drawn
-// by the SDK's node widget from the node's MetaDataMap; an Apply Crowdy Effect node appends its
-// effect's name; a latent action node is titled after its factory function; a Server Object node is
-// titled from its variable or function and its definition asset. The check in
+// by the SDK's node widget from the node's MetaDataMap; a latent action node is titled after its
+// factory function; a Server Object node is titled from its variable or function and its definition asset. The check in
 // scripts/blueprint-component.spec.ts compares every rendered title with the editor's own.
 
 // Engine functions the snippets use whose editor title is a DisplayName, not the member name.
@@ -59,12 +59,6 @@ const SERVER_OBJECT_NODES: { [classPath: string]: { title: (member: string, asse
 };
 const CALL_SERVER_FUNCTION_NODE = "/Script/CrowdyExecNodes.CrowdyK2Node_CallServerFunction";
 
-const CROWDY_NODE_TITLES: { [classPath: string]: string } = {
-    "/Script/CrowdyNodes.CrowdyK2Node_ApplyEffect": "Apply Crowdy Effect",
-    "/Script/CrowdyNodes.CrowdyK2Node_ApplyEffectToContainer": "Apply Crowdy Effect to Model (by Id)",
-    "/Script/CrowdyNodes.CrowdyK2Node_ApplyEffectFireAndForget": "Apply Crowdy Effect (Fire and Forget)",
-};
-
 const ASYNC_NODE_CLASSES = [
     "/Script/BlueprintGraph.K2Node_AsyncAction",
     "/Script/BlueprintGraph.K2Node_BaseAsyncTask",
@@ -86,13 +80,6 @@ function displayName(className: string | undefined, memberName: string): string 
         : undefined;
     const known = qualified || CrowdyFunctionNames[memberName] || ENGINE_FUNCTION_NAMES[memberName];
     return known || insertSpacesBetweenCapitalizedWords(memberName);
-}
-
-// The asset name inside a pin's DefaultObject, e.g. FX_Heal out of "/Game/Effects/FX_Heal.FX_Heal".
-function pinDefaultObjectName(lines: string[], pinName: string): string | undefined {
-    const line = lines.find(l => l.includes(`PinName="${pinName}"`) && l.includes("DefaultObject="));
-    const match = line && /DefaultObject="[^"]*?\.([A-Za-z0-9_]+)'?"/.exec(line);
-    return match ? match[1] : undefined;
 }
 
 // A call node titled by its display name; the conversion nodes keep their full title rather than the
@@ -255,20 +242,6 @@ class CrowdyBreakStructParser extends StructNodeParser {
     }
 }
 
-class CrowdyEffectNodeParser extends NodeParser {
-    constructor() {
-        super({});
-    }
-
-    public parse(data: ParsingNodeData): NodeControl {
-        const base = CROWDY_NODE_TITLES[data.node.class] || data.node.title;
-        const effect = pinDefaultObjectName(data.lines, "Effect");
-        data.node.title = effect ? `${base}: ${effect}` : base;
-        data.node.backgroundColor = Constants.DEFAULT_FUNC_BACKGROUND_COLOR;
-        return new HeadedNodeControl(data.node, IconLibrary.FUNCTION);
-    }
-}
-
 // Enum to String: a pure node with a full header (its sibling Enum to Name is the compact one).
 class CrowdyEnumToStringParser extends NodeParser {
     constructor() {
@@ -279,6 +252,21 @@ class CrowdyEnumToStringParser extends NodeParser {
         data.node.title = "Enum to String";
         data.node.backgroundColor = Constants.DEFAULT_FUNC_PURE_BACKGROUND_COLOR;
         return new HeadedNodeControl(data.node, IconLibrary.FUNCTION);
+    }
+}
+
+// Equal (Enum): the editor draws it as a compact node titled "==".
+class CrowdyEnumEqualityParser extends NodeParser {
+    constructor() {
+        super({});
+    }
+
+    public parse(data: ParsingNodeData): NodeControl {
+        this.parseProperties(data);
+        data.node.title = "==";
+        data.node.subTitles = [];
+        BlueprintParserUtils.hidePinNames(data.node.customProperties);
+        return new HeadlessNodeControl(data.node);
     }
 }
 
@@ -300,14 +288,98 @@ class CrowdyServerObjectNodeParser extends NodeParser {
         data.node.subTitles = [];
         data.node.backgroundColor = spec.pure ? Constants.DEFAULT_FUNC_PURE_BACKGROUND_COLOR : Constants.DEFAULT_FUNC_BACKGROUND_COLOR;
         data.node.latent = data.node.class === CALL_SERVER_FUNCTION_NODE;
-        for (const property of data.node.customProperties) {
-            const pin = property as PinProperty;
-            if (!(property instanceof PinProperty) || pin.category !== PinCategory.exec) {
-                continue;
-            }
-            const name = (pin.name || "").toLowerCase();
-            pin.hideName = !pin.friendlyName && (name === "execute" || name === "then");
+        hidePlainExecNames(data.node);
+        return data.node.advancedPinDisplay !== undefined ? new FoldableHeadedNodeControl(data.node) : new HeadedNodeControl(data.node);
+    }
+}
+
+function hidePlainExecNames(node: Node): void {
+    for (const property of node.customProperties) {
+        const pin = property as PinProperty;
+        if (!(property instanceof PinProperty) || pin.category !== PinCategory.exec) {
+            continue;
         }
+        const name = (pin.name || "").toLowerCase();
+        pin.hideName = !pin.friendlyName && (name === "execute" || name === "then");
+    }
+}
+
+// The upstream pass hides an exec name when it is the only one of its direction; these nodes name every exec pin.
+function showExecNames(node: Node): void {
+    for (const property of node.customProperties) {
+        if (property instanceof PinProperty && property.category === PinCategory.exec) {
+            property.hideName = false;
+        }
+    }
+}
+
+// The short name of a class reference ("/Script/CoreUObject.Class'/Script/Mod.Type'", "/Game/Dir/BP_Thing.BP_Thing_C").
+function classShortName(reference: string | undefined): string | undefined {
+    const quoted = reference && /'([^']*)'/.exec(reference);
+    const path = quoted ? quoted[1] : reference;
+    const name = path && path.slice(Math.max(path.lastIndexOf("."), path.lastIndexOf("/")) + 1).replace(/_C$/, "");
+    return name && name !== "None" ? name : undefined;
+}
+
+// EventReference carries the event's function name and its owner class; either can be absent.
+function readEventReference(lines: string[]): { event?: string; className?: string } {
+    const line = lines.find(l => l.trim().startsWith("EventReference="));
+    const member = line && /MemberName="([^"]+)"/.exec(line);
+    const parent = line && /MemberParent="([^"]*)"/.exec(line);
+    const event = member ? member[1].replace(/_Implementation$/, "") : undefined;
+    return { event: event && event !== "None" ? event : undefined, className: classShortName(parent ? parent[1] : undefined) };
+}
+
+// The class an entity node targets, from the DefaultObject of its "Crowdy Mass Entity Class" pin.
+function readEntityClassPin(lines: string[]): string | undefined {
+    for (const line of lines) {
+        const pinName = line.trim().startsWith("CustomProperties Pin") && /PinName="([^"]*)"/.exec(line);
+        if (!pinName || pinName[1].replace(/\s/g, "") !== "CrowdyMassEntityClass") {
+            continue;
+        }
+        const object = /DefaultObject="([^"]*)"/.exec(line);
+        return classShortName(object ? object[1] : undefined);
+    }
+    return undefined;
+}
+
+// Call/Receive <Event> on Entity: titled from the event name in EventReference, the owner class in the subtitle.
+// Receive draws its Bind, Unbind, Then and On Event labels; Call keeps the plain execute and then unlabelled.
+class CrowdyEntityEventNodeParser extends NodeParser {
+    private readonly _verb: string;
+    private readonly _labelledExec: boolean;
+
+    constructor(verb: string, labelledExec: boolean) {
+        super({});
+        this._verb = verb;
+        this._labelledExec = labelledExec;
+    }
+
+    public parse(data: ParsingNodeData): NodeControl {
+        const reference = readEventReference(data.lines);
+        data.node.title = `${this._verb} ${reference.event || "Crowdy Event"} on Entity`;
+        data.node.subTitles = reference.className ? [{ text: reference.className }] : [];
+        data.node.backgroundColor = Constants.DEFAULT_FUNC_BACKGROUND_COLOR;
+        if (this._labelledExec) {
+            showExecNames(data.node);
+        } else {
+            hidePlainExecNames(data.node);
+        }
+        return data.node.advancedPinDisplay !== undefined ? new FoldableHeadedNodeControl(data.node) : new HeadedNodeControl(data.node);
+    }
+}
+
+class CrowdyReceiveServerValuesChangedParser extends NodeParser {
+    constructor() {
+        super({});
+    }
+
+    public parse(data: ParsingNodeData): NodeControl {
+        const className = readEntityClassPin(data.lines);
+        data.node.title = "Receive Server Values Changed on Entity";
+        data.node.subTitles = className ? [{ text: className }] : [];
+        data.node.backgroundColor = Constants.DEFAULT_FUNC_BACKGROUND_COLOR;
+        showExecNames(data.node);
         return data.node.advancedPinDisplay !== undefined ? new FoldableHeadedNodeControl(data.node) : new HeadedNodeControl(data.node);
     }
 }
@@ -322,15 +394,16 @@ export const CrowdyPlugin: NodeParserPlugin = {
             "/Script/BlueprintGraph.K2Node_MakeMap": () => new CrowdyMakeMapParser(),
             "/Script/BlueprintGraph.K2Node_BreakStruct": () => new CrowdyBreakStructParser(),
             "/Script/BlueprintGraph.K2Node_GetEnumeratorNameAsString": () => new CrowdyEnumToStringParser(),
+            "/Script/BlueprintGraph.K2Node_EnumEquality": () => new CrowdyEnumEqualityParser(),
+            "/Script/CrowdyMassNodes.CrowdyK2Node_CallCrowdyEventOnEntity": () => new CrowdyEntityEventNodeParser("Call", false),
+            "/Script/CrowdyMassNodes.CrowdyK2Node_ReceiveCrowdyEventOnEntity": () => new CrowdyEntityEventNodeParser("Receive", true),
+            "/Script/CrowdyMassNodes.CrowdyK2Node_ReceiveServerValuesChangedOnEntity": () => new CrowdyReceiveServerValuesChangedParser(),
         };
         for (const classPath of Object.keys(SERVER_OBJECT_NODES)) {
             parsers[classPath] = () => new CrowdyServerObjectNodeParser();
         }
         for (const classPath of ASYNC_NODE_CLASSES) {
             parsers[classPath] = () => new CrowdyAsyncActionParser();
-        }
-        for (const classPath of Object.keys(CROWDY_NODE_TITLES)) {
-            parsers[classPath] = () => new CrowdyEffectNodeParser();
         }
         return parsers;
     },

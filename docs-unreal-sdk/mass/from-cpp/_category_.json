@@ -1,0 +1,9 @@
+{
+  "label": "From C++",
+  "position": 10,
+  "link": {
+    "type": "generated-index",
+    "title": "Crowds with Mass from C++",
+    "description": "Act on a crowd row from C++: target an entity with a trace or an overlap, call an event on it, receive its events, register and read its fields, and read its server values."
+  }
+}

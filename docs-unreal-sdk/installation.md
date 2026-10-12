@@ -20,9 +20,9 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 ## Step 1: Get the release
 
-Download the `v2.18.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+Download the `v2.19.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
 
-:::note[The release you install must match the version this guide describes (2.18).]
+:::note[The release you install must match the version this guide describes (2.19).]
 :::
 
 ## Step 2: Place the plugin at `Plugins/CrowdySDK`
@@ -39,7 +39,7 @@ Create the `Plugins` folder if it does not exist. The first time you open the pr
 A plugin mounted from anywhere else (for example through `AdditionalPluginDirectories` in the `.uproject`) is an External plugin, and Unreal silently drops the config it ships in `Plugins/CrowdySDK/Config/*.ini`. That config is load-bearing:
 
 - `CoreRedirects` that repoint content saved against the SDK's older single-module layout to the current modules, so older assets still load.
-- `AssetRegistry` cook-tag exclusions that keep editor-only Game Model schema tags out of a packaged build's asset registry.
+- `AssetRegistry` cook-tag exclusions that keep editor-only tags, left on assets saved by an older SDK, out of a packaged build's asset registry.
 - A packaging entry that cooks the plugin's shipped map profile (the per-map data asset that switches the SDK on; see [Map profiles](./runtime/map-profile.md)), without which a packaged build is inactive on any map that configured nothing.
 
 Once the project opens in the editor (after Step 5), check the Output Log for `Mounting Project plugin CrowdySDK`. If the line says External, move the plugin.
@@ -60,25 +60,26 @@ Or add it to your `.uproject` by hand:
 }
 ```
 
-Enabling `CrowdySDK` brings in all ten of its modules. You never enable them one by one.
+Enabling `CrowdySDK` brings in all twelve modules in this table, including the two Mass modules, and the engine plugins they need (MassGameplay and MassCrowd). You never enable them one by one, and there is no separate Mass plugin to add. The engine marks MassGameplay and MassCrowd experimental, and they bring in the engine plugins they depend on (among them MassAI, ZoneGraph, SmartObjects, StateTree and PoseSearch), so every project with the SDK carries them and the engine's Mass processing runs each frame, even on maps that draw no crowd rows; the SDK's own Mass work runs only on maps whose profile selects the Mass backend. That holds since v2.19.0; on v2.18.0 and earlier CrowdyMass was a separate plugin, which a project upgrading removes from its `.uproject`. See [What's Changed](./guides/whats-changed.md#2026-10-12-sdk-v2190).
 
 | Module | Type | What it holds |
 |---|---|---|
 | `CrowdySDK` | Runtime | The top-level subsystem: login, connection, voice toggle. |
-| `CrowdyReplication` | Runtime | Entities, RPC events, Crowdy State, Game Models (deprecated), map profiles, project settings. |
+| `CrowdyReplication` | Runtime | Entities, RPC events, Crowdy State, map profiles, project settings. |
 | `CrowdyServices` | Runtime | Authentication, teams, channels, avatars, host election. |
 | `CrowdyNet` | Runtime | The UDP transport, the API client, and the routing enums. |
 | `CrowdyVoice` | Runtime | Microphone capture, encode and decode, playback. |
 | `CKSharedTypes` | Runtime | Shared data types used across modules. |
 | `CrowdyCppBridge` | Runtime | The vendored native client the transport is built on. You never include it directly. |
-| `CrowdyNodes` | UncookedOnly | The Blueprint nodes for Game Model authoring (Apply Crowdy Effect, deprecated) and the compiler checks for Crowdy-replicated variables. |
+| `CrowdyMass` | Runtime | The Crowdy Mass Rendering Backend, which draws remote entities as crowd rows. See [Draw a crowd with Mass](./mass/draw-a-crowd-with-mass.md). |
+| `CrowdyNodes` | UncookedOnly | The compiler checks for Crowdy-replicated variables. |
+| `CrowdyMassNodes` | UncookedOnly | The editor-side Blueprint nodes for crowd rows. |
 | `CrowdySDKEditor` | Editor | Turns event and state markers into Blueprint authoring surfaces and bakes them for cooked builds. |
 | `CrowdyStudio` | Editor | Crowdy Studio, the management console: sign-in, apps, Config Sync, authoring pages. |
 
-The Game Model pieces are legacy: the game API no longer serves game models, so nothing built on
-them reaches a server. Since v2.18.0 the SDK marks them deprecated and their calls fail at once, and a
-later release removes them. Keep the state
-your game must trust in your server code on [ck-exec](/exec/intro); see
+The SDK has no Game Model API: the game API no longer serves game models, and the SDK dropped
+its side of them in v2.19.0. Keep the state your game must trust in
+your server code on [ck-exec](/exec/intro); see
 [Move from Game Models](./exec/move-from-game-models.md) and [the two planes](./concepts/two-planes.md).
 
 ## Step 4: Add the module dependencies

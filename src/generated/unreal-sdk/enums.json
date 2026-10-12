@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-10-07T15:57:00Z",
+  "generated_from": "2026-10-10T20:35:53Z",
   "sdk_version": "2.18.0",
   "table": "enums",
   "columns": [
@@ -340,234 +340,6 @@
       "allowlist": ""
     },
     {
-      "id": "ECrowdyEffectAssignmentOp",
-      "name": "ECrowdyEffectAssignmentOp",
-      "values": [
-        "Set",
-        "Add",
-        "Subtract",
-        "Multiply",
-        "Divide"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffectSpec.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "internal"
-    },
-    {
-      "id": "ECrowdyEffectAutomationTargetMode",
-      "name": "ECrowdyEffectAutomationTargetMode",
-      "values": [
-        "Container",
-        "Type",
-        "Global"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffect.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdyEffectAutomationTrigger",
-      "name": "ECrowdyEffectAutomationTrigger",
-      "values": [
-        "EveryInterval",
-        "Cron",
-        "OnPropertyChange",
-        "OnFunctionInvoked",
-        "OnPlayerLeft",
-        "OnPlayerCountChanged"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffect.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdyEffectBinaryOp",
-      "name": "ECrowdyEffectBinaryOp",
-      "values": [
-        "Add",
-        "Subtract",
-        "Multiply",
-        "Divide"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffectSpec.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "internal"
-    },
-    {
-      "id": "ECrowdyEffectCallableFrom",
-      "name": "ECrowdyEffectCallableFrom",
-      "values": [
-        "Players",
-        "ServerOnly",
-        "OtherEffectsOnly"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffect.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdyEffectComparator",
-      "name": "ECrowdyEffectComparator",
-      "values": [
-        "Equal",
-        "NotEqual",
-        "Less",
-        "Greater",
-        "LessOrEqual",
-        "GreaterOrEqual"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffectSpec.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "internal"
-    },
-    {
-      "id": "ECrowdyEffectNotificationCarrier",
-      "name": "ECrowdyEffectNotificationCarrier",
-      "values": [
-        "Default",
-        "None",
-        "Channel",
-        "Spatial"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffectNotificationCarrier.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdyEffectOperandKind",
-      "name": "ECrowdyEffectOperandKind",
-      "values": [
-        "Number",
-        "Attribute",
-        "Magnitude",
-        "Raw",
-        "Expression",
-        "If",
-        "Call"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffectSpec.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "internal"
-    },
-    {
-      "id": "ECrowdyEffectPolicyKeyword",
-      "name": "ECrowdyEffectPolicyKeyword",
-      "values": [
-        "Owner",
-        "MyTurn",
-        "Host",
-        "Participant",
-        "Automation",
-        "Anyone"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffectSpec.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdyEffectPropertyWriteSource",
-      "name": "ECrowdyEffectPropertyWriteSource",
-      "values": [
-        "Any",
-        "Direct",
-        "Function"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffect.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdyEffectRequireKind",
-      "name": "ECrowdyEffectRequireKind",
-      "values": [
-        "Keyword",
-        "Comparison"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffectSpec.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdyEffectReturnType",
-      "name": "ECrowdyEffectReturnType",
-      "values": [
-        "None",
-        "Int",
-        "Float",
-        "Bool",
-        "String"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffect.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdyEffectRole",
-      "name": "ECrowdyEffectRole",
-      "values": [
-        "Target",
-        "Source"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffectSpec.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "internal"
-    },
-    {
-      "id": "ECrowdyEffectSource",
-      "name": "ECrowdyEffectSource",
-      "values": [
-        "Text",
-        "Graph"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffectSpec.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdyEffectValueType",
-      "name": "ECrowdyEffectValueType",
-      "values": [
-        "Int",
-        "Float",
-        "Bool",
-        "String",
-        "ContainerRef"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyEffect.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
       "id": "ECrowdyEntityMode",
       "name": "ECrowdyEntityMode",
       "values": [
@@ -608,47 +380,6 @@
       "allowlist": ""
     },
     {
-      "id": "ECrowdyKitAuthority",
-      "name": "ECrowdyKitAuthority",
-      "values": [
-        "Server",
-        "Host",
-        "Automation",
-        "Owner"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyKitLayerPreset.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdyKitCreator",
-      "name": "ECrowdyKitCreator",
-      "values": [
-        "Member",
-        "Admin"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyKitLayerPreset.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdyKitOwnerId",
-      "name": "ECrowdyKitOwnerId",
-      "values": [
-        "Int",
-        "String"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyKitLayerPreset.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
       "id": "ECrowdyOwnership",
       "name": "ECrowdyOwnership",
       "values": [
@@ -675,182 +406,6 @@
       "page": "runtime/entity-component",
       "editor": false,
       "allowlist": ""
-    },
-    {
-      "id": "ECrowdySessionAdmission",
-      "name": "ECrowdySessionAdmission",
-      "values": [
-        "Open",
-        "Locked",
-        "Closed"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyGameModelSessionTypes.h",
-      "page": "guides/whats-changed",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdySessionAdmissionFilter",
-      "name": "ECrowdySessionAdmissionFilter",
-      "values": [
-        "Any",
-        "Open",
-        "Locked",
-        "Closed"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyGameModelSessionTypes.h",
-      "page": "guides/whats-changed",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdySessionEndReason",
-      "name": "ECrowdySessionEndReason",
-      "values": [
-        "None",
-        "Completed",
-        "Abandoned",
-        "EmptyTimeout",
-        "Unknown"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyGameModelSessionTypes.h",
-      "page": "guides/whats-changed",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdySessionError",
-      "name": "ECrowdySessionError",
-      "values": [
-        "None",
-        "NotSignedIn",
-        "NotAllowed",
-        "Full",
-        "Locked",
-        "Closed",
-        "Ended",
-        "NotParticipant",
-        "TargetNotParticipant",
-        "IncarnationStale",
-        "HostTermStale",
-        "Other"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyGameModelSessionTypes.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdySessionEventKind",
-      "name": "ECrowdySessionEventKind",
-      "values": [
-        "Created",
-        "ParticipantJoined",
-        "ParticipantRejoined",
-        "ParticipantLeft",
-        "ParticipantExpired",
-        "HostChanged",
-        "AdmissionChanged",
-        "TurnChanged",
-        "Ended",
-        "Unknown"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyGameModelSessionTypes.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdySessionLeftReason",
-      "name": "ECrowdySessionLeftReason",
-      "values": [
-        "None",
-        "Left",
-        "PresenceExpired",
-        "SessionEnded",
-        "Kicked",
-        "Unknown"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyGameModelSessionTypes.h",
-      "page": "guides/whats-changed",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdySessionParticipantState",
-      "name": "ECrowdySessionParticipantState",
-      "values": [
-        "Joined",
-        "Left",
-        "Unknown"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyGameModelSessionTypes.h",
-      "page": "",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdySessionPresence",
-      "name": "ECrowdySessionPresence",
-      "values": [
-        "Actor",
-        "None"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyGameModelSessionTypes.h",
-      "page": "guides/whats-changed",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdySessionSeedState",
-      "name": "ECrowdySessionSeedState",
-      "values": [
-        "Defaults",
-        "App"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyGameModelSessionTypes.h",
-      "page": "guides/whats-changed",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdySessionStatus",
-      "name": "ECrowdySessionStatus",
-      "values": [
-        "Active",
-        "Completed",
-        "Abandoned",
-        "Unknown"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyGameModelSessionTypes.h",
-      "page": "guides/whats-changed",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
-      "id": "ECrowdySessionStatusFilter",
-      "name": "ECrowdySessionStatusFilter",
-      "values": [
-        "Active",
-        "Any",
-        "Completed",
-        "Abandoned"
-      ],
-      "module": "CrowdyReplication",
-      "header": "CrowdyGameModelSessionTypes.h",
-      "page": "guides/whats-changed",
-      "editor": false,
-      "allowlist": "deprecated"
     },
     {
       "id": "ECrowdyStateHeartbeat",
@@ -1072,6 +627,20 @@
       "allowlist": ""
     },
     {
+      "id": "ECrowdyServerFieldAudience",
+      "name": "ECrowdyServerFieldAudience",
+      "values": [
+        "Everyone",
+        "Owner",
+        "Team"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "ECrowdyServerFunctionCaller",
       "name": "ECrowdyServerFunctionCaller",
       "values": [
@@ -1115,6 +684,19 @@
       "allowlist": ""
     },
     {
+      "id": "ECrowdyServerObjectHolds",
+      "name": "ECrowdyServerObjectHolds",
+      "values": [
+        "OneSet",
+        "RecordPerEntity"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "ECrowdyServerObjectInstanceMode",
       "name": "ECrowdyServerObjectInstanceMode",
       "values": [
@@ -1122,7 +704,8 @@
         "SignedInPlayer",
         "ThisActor",
         "PlayersTeam",
-        "FromServerValue"
+        "FromServerValue",
+        "ThisActorsArea"
       ],
       "module": "CrowdyExec",
       "header": "CrowdyServerObjectComponent.h",
@@ -1173,14 +756,69 @@
       "allowlist": ""
     },
     {
+      "id": "ECrowdyServerTeamSource",
+      "name": "ECrowdyServerTeamSource",
+      "values": [
+        "ThisObjectsRecords",
+        "CrowdyTeam"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "ECrowdyServerTimerRepeat",
       "name": "ECrowdyServerTimerRepeat",
       "values": [
         "Every",
-        "After"
+        "After",
+        "Schedule"
       ],
       "module": "CrowdyExec",
       "header": "CrowdyServerObjectDefinition.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyMassAvatarState",
+      "name": "ECrowdyMassAvatarState",
+      "values": [
+        "NoEntity",
+        "NotMinted",
+        "Present",
+        "Evicted"
+      ],
+      "module": "CrowdyMass",
+      "header": "CrowdyMassEntitySubsystem.h",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "ECrowdyMassPoseRank",
+      "name": "ECrowdyMassPoseRank",
+      "values": [
+        "BelowActions",
+        "AboveActions"
+      ],
+      "module": "CrowdyMass",
+      "header": "CrowdyMassAnimSet.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyMassSpatialGridMode",
+      "name": "ECrowdyMassSpatialGridMode",
+      "values": [
+        "TwoDimensional",
+        "ThreeDimensional"
+      ],
+      "module": "CrowdyMass",
+      "header": "CrowdyMassDeveloperSettings.h",
       "page": "",
       "editor": false,
       "allowlist": ""

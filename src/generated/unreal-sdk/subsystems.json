@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-10-07T15:57:00Z",
+  "generated_from": "2026-10-10T20:35:53Z",
   "sdk_version": "2.18.0",
   "table": "subsystems",
   "columns": [
@@ -111,16 +111,6 @@
       "allowlist": "internal"
     },
     {
-      "id": "UCrowdyActiveSessionMemory",
-      "class": "UCrowdyActiveSessionMemory",
-      "base": "UGameInstanceSubsystem",
-      "outer": "GameInstance",
-      "module": "CrowdyReplication",
-      "page": "",
-      "editor": false,
-      "allowlist": "internal"
-    },
-    {
       "id": "UCrowdyActorManager",
       "class": "UCrowdyActorManager",
       "base": "UTickableWorldSubsystem",
@@ -189,16 +179,6 @@
       "page": "runtime/recipients-and-routing",
       "editor": false,
       "allowlist": ""
-    },
-    {
-      "id": "UCrowdyGameModelSubsystem",
-      "class": "UCrowdyGameModelSubsystem",
-      "base": "UWorldSubsystem",
-      "outer": "World",
-      "module": "CrowdyReplication",
-      "page": "guides/whats-changed",
-      "editor": false,
-      "allowlist": "deprecated"
     },
     {
       "id": "UCrowdyReplicatedGameInstanceSubsystem",
@@ -319,6 +299,56 @@
       "page": "guides/whats-changed",
       "editor": false,
       "allowlist": ""
+    },
+    {
+      "id": "UCrowdyMassCrowdSimHarness",
+      "class": "UCrowdyMassCrowdSimHarness",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyMass",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "UCrowdyMassEntitySubsystem",
+      "class": "UCrowdyMassEntitySubsystem",
+      "base": "UWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyMass",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyMassGateHarness",
+      "class": "UCrowdyMassGateHarness",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyMass",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "UCrowdyMassServerRecordsSubsystem",
+      "class": "UCrowdyMassServerRecordsSubsystem",
+      "base": "UWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyMass",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyMassVisualReleaseQueue",
+      "class": "UCrowdyMassVisualReleaseQueue",
+      "base": "UWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyMass",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
     }
   ]
 }

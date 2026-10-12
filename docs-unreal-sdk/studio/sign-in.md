@@ -27,11 +27,15 @@ Options 2, 3, and 4 are all account sign-ins and end in the same place: a sessio
 
 **An organization token** gives management-only access. It can browse apps, run Config Sync, and reach the Web Console, but it cannot author game-plane data.
 
-:::caution[An organization token cannot author teams, channels, grids, or models.]
+:::caution[An organization token cannot author teams, channels, or grids.]
 Those pages need an account sign-in. If you signed in with a token and an authoring page looks read-only, sign out and sign in with your account. The token is the right choice for a build machine that syncs config and must not hold authoring credentials.
 :::
 
 After a successful sign-in Studio lands on the Setup Wizard, so the guided path is the first thing you see.
+
+## Agreeing to the terms
+
+When Studio asks the server for its access to your app and the account has not yet agreed to the current terms and age confirmation, Studio opens a small window titled **Crowdy Studio: terms and age** over the editor. It is the same prompt a player sees in your game: the documents as links, two check boxes, **Accept** and **Decline**. **Accept** carries on where Studio left off. **Decline**, or closing the window, stops there and Studio reports `Studio needs the terms and the age confirmation accepted for this account.` You see the prompt again only when a document gets a new version. How the same prompt works in a game, and how to draw your own, is on [Authentication](../services/authentication.md#let-the-player-agree-to-the-terms).
 
 ## Where the session is kept
 
