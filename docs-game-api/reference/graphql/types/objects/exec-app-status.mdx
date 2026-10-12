@@ -24,6 +24,12 @@ type ExecAppStatus {
   disabled: Boolean!
   disabledTypes: [String!]!
   budgetPaused: Boolean!
+  budgetPauseReason: String
+  maxInstances: Int
+  maxReservedMb: Int
+  instanceLimit: Int
+  instances: Int
+  reservedMb: Int
 }
 ```
 
@@ -43,7 +49,31 @@ Node types switched off one by one.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>budgetPaused</b></code>](#budget-paused)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#budget-paused\} 
-Paused while the app is over its compute budget; it resumes by itself once a minute is back under it.
+Paused while the app's runtime gate is not active (no funds, a spend cap, a lapsed subscription) or it is over its compute budget; it resumes by itself once the cause clears.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>budgetPauseReason</b></code>](#budget-pause-reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#budget-pause-reason\} 
+Why the app is paused: insufficient&#x005F;funds, spend&#x005F;cap, subscription&#x005F;lapsed or compute&#x005F;budget. Null when it is not paused (or the manager predates reasons).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>maxInstances</b></code>](#max-instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-instances\} 
+The most instances the app may have placed in this datacenter. The free hub tier (an organization that has not funded the app) allows 16; null means the manager's default.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>maxReservedMb</b></code>](#max-reserved-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#max-reserved-mb\} 
+The most memory, in MB, the app's placed instances may reserve in this datacenter (each instance reserves its type's memory). The free hub tier allows 1,024; null means no memory limit beyond the instance count.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>instanceLimit</b></code>](#instance-limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#instance-limit\} 
+The instance limit in force: maxInstances, or the manager’s default when that is null. Null from a manager older than ck-exec 0.15.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>instances</b></code>](#instances)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#instances\} 
+Instances of the app placed and not yet stopped in this datacenter now, mods included. Null from a manager older than ck-exec 0.15.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>reservedMb</b></code>](#reserved-mb)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reserved-mb\} 
+Memory, in MB, those instances reserve now (what maxReservedMb limits). Null from a manager older than ck-exec 0.15.
 
 
 

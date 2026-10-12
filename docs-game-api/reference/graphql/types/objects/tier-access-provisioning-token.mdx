@@ -1,0 +1,87 @@
+---
+id: tier-access-provisioning-token
+title: TierAccessProvisioningToken
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: a credential test harnesses send on register to create accounts that may use a restricted tier. The secret is never returned after creation.
+
+
+```graphql
+type TierAccessProvisioningToken {
+  tokenId: BigInt!
+  label: String!
+  emailPatterns: [String!]!
+  maxAccounts: Int!
+  accountsCreated: Int!
+  createdBy: BigInt
+  createdAt: DateTime!
+  expiresAt: DateTime!
+  revokedAt: DateTime
+  lastUsedAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessProvisioningToken.<b>tokenId</b></code>](#token-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#token-id\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessProvisioningToken.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#label\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessProvisioningToken.<b>emailPatterns</b></code>](#email-patterns)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email-patterns\} 
+Addresses it may create, as prefix&#x002A;@domain.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessProvisioningToken.<b>maxAccounts</b></code>](#max-accounts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#max-accounts\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessProvisioningToken.<b>accountsCreated</b></code>](#accounts-created)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#accounts-created\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessProvisioningToken.<b>createdBy</b></code>](#created-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#created-by\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessProvisioningToken.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessProvisioningToken.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessProvisioningToken.<b>revokedAt</b></code>](#revoked-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#revoked-at\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessProvisioningToken.<b>lastUsedAt</b></code>](#last-used-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#last-used-at\} 
+
+
+
+
+
+### Returned By
+
+[`revokeTierAccessProvisioningToken`](/reference/graphql/operations/mutations/revoke-tier-access-provisioning-token.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`tierAccessProvisioningTokens`](/reference/graphql/operations/queries/tier-access-provisioning-tokens.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+
+### Member Of
+
+[`CreatedTierAccessProvisioningToken`](/reference/graphql/types/objects/created-tier-access-provisioning-token.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

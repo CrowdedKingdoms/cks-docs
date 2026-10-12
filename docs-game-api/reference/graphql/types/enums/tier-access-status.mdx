@@ -1,0 +1,53 @@
+---
+id: tier-access-status
+title: TierAccessStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An account on this tier: NOT&#x005F;RESTRICTED (prod, or no gate), GRANTED, PENDING&#x005F;VERIFICATION (a listed address that is not confirmed yet), or DENIED.
+
+
+```graphql
+enum TierAccessStatus {
+  NOT_RESTRICTED
+  GRANTED
+  PENDING_VERIFICATION
+  DENIED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessStatus.<b>NOT&#x005F;RESTRICTED</b></code>](#not-restricted) \{#not-restricted\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessStatus.<b>GRANTED</b></code>](#granted) \{#granted\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessStatus.<b>PENDING&#x005F;VERIFICATION</b></code>](#pending-verification) \{#pending-verification\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TierAccessStatus.<b>DENIED</b></code>](#denied) \{#denied\} 
+
+
+
+
+
+### Member Of
+
+[`MyTierAccess`](/reference/graphql/types/objects/my-tier-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`TierAccessInventoryAccount`](/reference/graphql/types/objects/tier-access-inventory-account.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`UserTierAccess`](/reference/graphql/types/objects/user-tier-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

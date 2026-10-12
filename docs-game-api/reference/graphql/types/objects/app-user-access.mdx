@@ -28,6 +28,7 @@ type AppUserAccess {
   grantedBy: String!
   subscriptionId: String
   expiresAt: DateTime
+  suspendedUntil: DateTime
   createdAt: DateTime!
   updatedAt: DateTime!
   user: User
@@ -70,6 +71,10 @@ External billing subscription id (e.g. Stripe/PayPal) backing a paid grant; null
 Optional expiry timestamp; access is treated as inactive once it has passed. Null means the grant does not expire.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>suspendedUntil</b></code>](#suspended-until)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#suspended-until\} 
+A timed suspension: while this time is in the future the player holds no access (a gameplay token is refused with ACCESS&#x005F;SUSPENDED and realtime sessions end), and access returns by itself once it passes. Null when the player is not suspended. Set with suspendAppAccess, cleared with unsuspendAppAccess.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>AppUserAccess.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
 Timestamp when the access record was first created.
 
@@ -90,7 +95,7 @@ The access tier granted by this record. Null if no tier is associated (tierId is
 
 ### Returned By
 
-[`appUserAccessByApp`](/reference/graphql/operations/queries/app-user-access-by-app.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`claimFreeAppAccess`](/reference/graphql/operations/mutations/claim-free-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`grantAppAccess`](/reference/graphql/operations/mutations/grant-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`grantMyAppAccess`](/reference/graphql/operations/mutations/grant-my-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`myAppAccess`](/reference/graphql/operations/queries/my-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`revokeAppAccess`](/reference/graphql/operations/mutations/revoke-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+[`appUserAccessByApp`](/reference/graphql/operations/queries/app-user-access-by-app.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`claimFreeAppAccess`](/reference/graphql/operations/mutations/claim-free-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`grantAppAccess`](/reference/graphql/operations/mutations/grant-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`grantMyAppAccess`](/reference/graphql/operations/mutations/grant-my-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`myAppAccess`](/reference/graphql/operations/queries/my-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`revokeAppAccess`](/reference/graphql/operations/mutations/revoke-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`suspendAppAccess`](/reference/graphql/operations/mutations/suspend-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`unsuspendAppAccess`](/reference/graphql/operations/mutations/unsuspend-app-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
 
 ### Member Of
 

@@ -1,0 +1,39 @@
+---
+id: player-profile
+title: playerProfile
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A player's public profile (user id, gamertag, disambiguation), for a game client's nametags and lists. Requires a valid game token. Null when there is no such user.
+
+
+```graphql
+playerProfile(
+  userId: BigInt!
+): PlayerProfile
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerProfile.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The user id (BigInt sent as a decimal string).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerProfile</b></code>](/reference/graphql/types/objects/player-profile.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A player's public profile: what another player's client may show (a nametag, a friends list). Carries nothing private; for your own account read `me`.

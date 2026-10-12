@@ -1,0 +1,63 @@
+---
+id: my-tier-access
+title: MyTierAccess
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The signed-in account's access to this tier. Callable while access is pending or denied, so a client can say why it cannot continue.
+
+
+```graphql
+type MyTierAccess {
+  restricted: Boolean!
+  enforced: Boolean!
+  status: TierAccessStatus!
+  via: String
+  expiresAt: DateTime
+  message: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>MyTierAccess.<b>restricted</b></code>](#restricted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#restricted\} 
+True on dev and test.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>MyTierAccess.<b>enforced</b></code>](#enforced)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enforced\} 
+True when refusals are enforced rather than only logged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>MyTierAccess.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TierAccessStatus!</b></code>](/reference/graphql/types/enums/tier-access-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>MyTierAccess.<b>via</b></code>](#via)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#via\} 
+Why access is granted: platform&#x005F;role, operator&#x005F;grant, provisioning or verified&#x005F;email.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>MyTierAccess.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+When the grant or listing ends, if it does.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>MyTierAccess.<b>message</b></code>](#message)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#message\} 
+A sentence explaining the status.
+
+
+
+
+### Returned By
+
+[`myTierAccess`](/reference/graphql/operations/queries/my-tier-access.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

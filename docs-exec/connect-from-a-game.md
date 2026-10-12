@@ -230,8 +230,8 @@ const { version } = await client.exec.deploy({
 Any other [manifest field](intro#the-manifest) goes on the type as written. CrowdyCPP has the
 same call as `client.exec().deploy(appId, root, types)`, with a vector of `ExecNodeType`.
 
-The modules above come from a build on your machine, which needs the `ckx-sdk` crate, not
-published yet. A platform build deploys the same way: pass its `buildId`, and give each type
+The modules above come from a build on your machine, with the open [dev kit](develop-locally)
+(`ckx-kit build`). A platform build deploys the same way: pass its `buildId`, and give each type
 its `crate` instead of `wasm` ([builds from an SDK](builds#from-an-sdk)).
 
 Next: [world and platform data](world-and-platform-data).

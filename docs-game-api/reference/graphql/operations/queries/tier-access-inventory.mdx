@@ -1,0 +1,44 @@
+---
+id: tier-access-inventory
+title: tierAccessInventory
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: who on this tier would be refused -- counts, a page of refused accounts with what they hold, and organizations with no admitted member. Reads every account; for review, not for polling. Refused on prod.
+
+
+```graphql
+tierAccessInventory(
+  limit: Int = 200
+  offset: Int = 0
+): TierAccessInventory!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>tierAccessInventory.<b>limit</b></code>](#limit)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#limit\} 
+Refused accounts per page (1 to 500).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>tierAccessInventory.<b>offset</b></code>](#offset)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#offset\} 
+Refused accounts to skip, newest first.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>TierAccessInventory</b></code>](/reference/graphql/types/objects/tier-access-inventory.mdx) <Badge class="badge badge--secondary " text="object"/> 
+OPERATOR: who on this tier would be refused.

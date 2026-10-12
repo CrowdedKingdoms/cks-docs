@@ -29,6 +29,7 @@ type AppTokenResponse {
   discoveryUrl: String
   launchUrl: String
   authorizedServer: ServerStatus
+  runtimeGate: AppRuntimeGate
 }
 ```
 
@@ -69,6 +70,10 @@ Browser launch URL for this app (where the player's browser plays it), if config
 
 #### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>authorizedServer</b></code>](#authorized-server)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ServerStatus</b></code>](/reference/graphql/types/objects/server-status.mdx) <Badge class="badge badge--secondary " text="object"/> \{#authorized-server\} 
 Set only by `refreshAppToken` when the caller passed `currentServer`: the Buddy the NEW token was just authorized on, which is the node the client is already connected to. When present, keep the existing UDP session and start signing datagrams with the new token; there is no need to call serverWithLeastClients. Null when the caller passed nothing, or when that node can no longer serve this app (gone, draining, Full, or not local to the app) -- then call serverWithLeastClients for a fresh placement, exactly as before.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppTokenResponse.<b>runtimeGate</b></code>](#runtime-gate)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppRuntimeGate</b></code>](/reference/graphql/types/objects/app-runtime-gate.mdx) <Badge class="badge badge--secondary " text="object"/> \{#runtime-gate\} 
+The app's runtime gate when the token was minted. A token is issued for a paused app too, so a client can read status and reason and tell the player the world is paused; realtime sends and hub calls are refused until status is ACTIVE again. Null only when the gate could not be read.
 
 
 
