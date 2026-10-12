@@ -238,11 +238,21 @@ building works this way. `access`, `teleport`, `use_voice_chat` and
 `use_video_chat` are still granted by **any** covering grid where the player holds
 them, so a player keeps moving and talking inside a plot they cannot build on.
 
-A grant or revoke reaches the Game API's voxel checks within 15 seconds.
+A grant or revoke reaches every Game API server's voxel checks at once, and the
+replication servers' within 15 seconds.
 
-Every voxel write also names a voxel inside its chunk, 0–15 on each axis, and a voxel
-type from 0 to 255: `updateVoxel`, `sendVoxelUpdate`, `updateChunk`'s `voxelStates` and a
-mod's `set_voxels` refuse anything else as invalid input.
+### Voxel positions and types are yours to define
+
+A voxel write names a position inside its chunk and a voxel type, and both are
+**app-defined signed 16-bit integers** (-32,768 to 32,767): `updateVoxel`,
+`sendVoxelUpdate`, `updateChunk`'s `voxelStates`, a hub's `set_voxels` and a client's
+own realtime voxel update all accept the full range and check nothing narrower. A
+game on 16×16×16 chunks uses 0–15 on each axis; another may address voxels however
+its world needs. The chunk's dense grid (`Chunk.voxels`, one byte per voxel) is an
+optional 16×16×16, 8-bit format: a type above 255 or a position outside it travels
+as a voxel state (`Chunk.voxelStates`) and in the edit log. A voxel's state is at
+most 1 KiB on every path. A chunk read applies up to 65,536 recorded edits and sets
+`voxelStatesTruncated` past that; `listVoxels` pages the whole log.
 
 ### Open grids
 
@@ -294,15 +304,17 @@ mutation {
 ```
 
 While it is closed, the Game API refuses **every** voxel and chunk write to a
-wilderness chunk, whoever makes it: `updateVoxel`, `sendVoxelUpdate`,
-`updateChunk` (org admins included) and your server code's
-`ctx.world().set_voxels`. Each is answered `FORBIDDEN` ("This app has closed its
-wilderness…"). A client's own realtime voxel update there is refused with
-`UNAUTHORIZED`. A chunk that any other grid covers (a claimed plot, a zone you
-created) is unaffected: its most specific grid decides. `App.wildernessWritesOpen`
-reports the setting to the app's org admins. A game client cannot read it with the
-player's app-scoped token, so a player learns that the wilderness is closed from the
-refusal. Each Game API instance applies a change within 15 seconds.
+wilderness chunk made for a player: `updateVoxel`, `sendVoxelUpdate`, `updateChunk`
+(org admins included) and a player's [mod](/exec/mods). Each is answered `FORBIDDEN`
+("This app has closed its wilderness…"). A client's own realtime voxel update there
+is refused with `UNAUTHORIZED`. Your app's own [ck-exec](/exec/intro) code is not
+held to it: its `ctx.world().set_voxels` writes the wilderness either way, so a hub
+can run the world while players may not build in it. A chunk that any other grid
+covers (a claimed plot, a zone you created) is unaffected: its most specific grid
+decides. `App.wildernessWritesOpen` reports the setting to the app's org admins, a
+game client reads it in `gameClientBootstrap.wildernessWritesOpen`, and a hub with
+`grids.read` in `ctx.grids().settings()`. Every Game API server applies a change at
+once; the replication servers within 15 seconds.
 
 ## Writing whole chunks
 
@@ -331,7 +343,10 @@ map overlay.
 All grid operations (`createGrid`, `deleteGrid`, `grantGridPermissions`,
 `revokeGridPermissions`, `assignGroupToGrid`, `revokeGroupFromGrid`,
 `setGridPermissionLimits`, `setGridOpenPermissions`) require the `manage_apps` permission on the app's
-organization.
+organization. Your app's own [ck-exec](/exec/world-and-platform-data) code can make
+the same changes with the `grids.write` and `permissions.write` scopes: create grids
+(and delete the ones it created), give groups keys, open grids, and grant players
+keys.
 
 ## Reference
 

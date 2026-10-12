@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Input form of a voxel position LOCAL to its chunk (see VoxelCoordinates). Each coordinate is 0-15 on a 16x16x16 chunk, and the voxel writes (updateVoxel, sendVoxelUpdate, updateChunk's voxelStates) refuse any other value. Teleport's voxelAddress, which is not a write, takes any signed 16-bit value.
+Input form of a voxel position LOCAL to its chunk (see VoxelCoordinates). App-defined: each coordinate is any signed 16-bit integer, on every voxel write (updateVoxel, sendVoxelUpdate, updateChunk's voxelStates) and in teleport's voxelAddress; the platform checks no narrower range. Apps that use the 16x16x16 dense grid use 0-15.
 
 
 ```graphql
@@ -30,15 +30,15 @@ input VoxelCoordinatesInput {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelCoordinatesInput.<b>x</b></code>](#x)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#x\} 
-Local voxel X within the chunk, 0-15; voxel writes refuse other values.
+Local voxel X within the chunk. App-defined: any signed 16-bit integer (-32768 to 32767). Apps that use the 16x16x16 dense grid use 0-15.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelCoordinatesInput.<b>y</b></code>](#y)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#y\} 
-Local voxel Y within the chunk, 0-15; voxel writes refuse other values.
+Local voxel Y within the chunk. App-defined: any signed 16-bit integer (-32768 to 32767). Apps that use the 16x16x16 dense grid use 0-15.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>VoxelCoordinatesInput.<b>z</b></code>](#z)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#z\} 
-Local voxel Z within the chunk, 0-15; voxel writes refuse other values.
+Local voxel Z within the chunk. App-defined: any signed 16-bit integer (-32768 to 32767). Apps that use the 16x16x16 dense grid use 0-15.
 
 
 

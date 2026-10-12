@@ -91,7 +91,7 @@ module](port-a-compute-module).
 | Uploading built modules | `execDeploy` with the WASM | [Builds](builds#deploying-a-build) |
 | Module versions and rollback | `execVersions`, `execActivateVersion` | [Operations](operations#instances-and-versions) |
 | `computeSetModuleEnabled`, automation `enabled`, the policy kill switch | `execSetEnabled` for the app or one node type | [Operations](operations#the-kill-switch) |
-| The `crowdy-compute` CLI | `execBuild` and `execDeploy`, or from a script CrowdyJS `client.exec.build` and `deploy`. ck-exec's own CLI is not published | [Deploying from a script](connect-from-a-game#deploying-from-a-script) |
+| The `crowdy-compute` CLI | On your machine, the open dev kit's `ckx-kit` creates, tests and builds crates; `execBuild` and `execDeploy`, or from a script CrowdyJS `client.exec.build` and `deploy`, build and deploy them. ck-exec's own CLI is not published | [Develop on your machine](develop-locally), [deploying from a script](connect-from-a-game#deploying-from-a-script) |
 
 ## Operations
 

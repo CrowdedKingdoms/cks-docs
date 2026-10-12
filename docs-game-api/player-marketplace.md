@@ -107,7 +107,10 @@ are off the public API.
 `claimGridOwnership(appId, gridId)` executes the policy. On success the
 claimer also receives grid grants for whichever code keys their tier
 already carries — mod rights ride tier keys, and studio
-`grid_permission_limits` still cap the result.
+`grid_permission_limits` still cap the result. To make a claim buildable
+without granting anything afterwards, name the keys every claim gives its
+owner: `updateApp(appId, input: { claimOwnerKeys: ["update_voxel_data"] })`
+(`manage_apps`; at most 8 runtime grid keys, never a code key).
 
 ## Ownership transfer and delisting
 

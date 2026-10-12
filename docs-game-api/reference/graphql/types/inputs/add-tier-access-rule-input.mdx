@@ -1,0 +1,53 @@
+---
+id: add-tier-access-rule-input
+title: AddTierAccessRuleInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input AddTierAccessRuleInput {
+  kind: TierAccessRuleKind!
+  value: String!
+  note: String
+  expiresAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AddTierAccessRuleInput.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>TierAccessRuleKind!</b></code>](/reference/graphql/types/enums/tier-access-rule-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> \{#kind\} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AddTierAccessRuleInput.<b>value</b></code>](#value)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#value\} 
+An email address (EMAIL) or a domain (EMAIL&#x005F;DOMAIN).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AddTierAccessRuleInput.<b>note</b></code>](#note)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#note\} 
+Who this is and why, for the next operator.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AddTierAccessRuleInput.<b>expiresAt</b></code>](#expires-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#expires-at\} 
+When the listing ends (a contractor engagement). Omit for none.
+
+
+
+
+### Member Of
+
+[`addTierAccessRule`](/reference/graphql/operations/mutations/add-tier-access-rule.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

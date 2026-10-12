@@ -32,9 +32,14 @@ states = pose.decode_many(snapshot.state_offsets, snapshot.state_data)  # numpy,
 |---|---|
 | `session.self` | your actor: join, set or patch state, send-on-change with keyframes and heartbeats |
 | `session.actors` | everyone else, with staleness, sample history, join, leave and update callbacks, native lanes filtered by `state[offset] & mask == value`, and `snapshot()` columns |
-| `session.chunks` | voxels: real-time merge, optimistic `set_voxel`, `ensure_around` and `hydrate` from the Game API, write-back with retries, and an `on_missing` world-generation hook |
+| `session.chunks` | voxels: real-time merge, optimistic `set_voxel`, `ensure_around` and `hydrate` from the Game API, write-back with retries, and an `on_missing` world-generation hook. A 16×16×16 helper: an edit its one-byte grid cannot hold (a type outside 0-255, a position outside 0-15) is kept in `overlay(chunk)` (0.8.0) |
 | `session.errors`, `direct_inbox`, `channel_inbox`, `events` | errors attributed to your sends, inboxes and the event router |
 | `session.host`, `save`, `avatar` | host election, save state and avatar state, run from the session's timers |
+
+Session events (0.8.0): `session.on("voxel_update", ...)` for every inbound voxel edit after
+`session.chunks` merged it, your own echo included (compare the uuid and sequence with your
+send's); `session.on("generic_spatial", ...)` for message type 140; and
+`session.on("channel_audio", ...)` for channel voice.
 
 ## Codecs
 

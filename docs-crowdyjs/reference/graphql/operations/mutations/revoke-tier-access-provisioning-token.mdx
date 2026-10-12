@@ -1,0 +1,44 @@
+---
+id: revoke-tier-access-provisioning-token
+title: revokeTierAccessProvisioningToken
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: revoke a provisioning token. With revokeAccounts, also clear the grant of every account it created and end their sessions. Refused on prod.
+
+
+```graphql
+revokeTierAccessProvisioningToken(
+  tokenId: BigInt!
+  revokeAccounts: Boolean = false
+): TierAccessProvisioningToken!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>revokeTierAccessProvisioningToken.<b>tokenId</b></code>](#token-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#token-id\} 
+The token to revoke (tierAccessProvisioningTokens.tokenId).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>revokeTierAccessProvisioningToken.<b>revokeAccounts</b></code>](#revoke-accounts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#revoke-accounts\} 
+Also clear the grants of the accounts it created and end their sessions.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>TierAccessProvisioningToken</b></code>](/reference/graphql/types/objects/tier-access-provisioning-token.mdx) <Badge class="badge badge--secondary " text="object"/> 
+OPERATOR: a credential test harnesses send on register to create accounts that may use a restricted tier. The secret is never returned after creation.

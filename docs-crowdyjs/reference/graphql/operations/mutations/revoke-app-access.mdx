@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Revoke a user's access to an app by setting their app&#x005F;user&#x005F;access status to 'revoked', and notifies the game API so the user immediately loses runtime access in Buddy. Requires the 'manage&#x005F;access&#x005F;tiers' permission on the app; super admins bypass. The row is retained for audit (not deleted); REVERSIBLE via grantAppAccess.
+Revoke a user's access to an app by setting their app&#x005F;user&#x005F;access status to 'revoked'. Their gameplay tokens for the app are deleted and their realtime sessions ended at once, and a new token is refused with ACCESS&#x005F;REVOKED. Requires the 'manage&#x005F;access&#x005F;tiers' permission on the app; super admins bypass. The row is retained for audit (not deleted); REVERSIBLE via grantAppAccess. For a ban that lifts by itself use suspendAppAccess.
 
 
 ```graphql

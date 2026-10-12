@@ -54,8 +54,9 @@ setInterval(async () => {
 }, 100);
 ```
 
-`sendVideoFrame` resolves to the number of fragments sent. Like audio, video
-has no echo; a refusal arrives as a correlated error.
+`sendVideoFrame` resolves to the number of fragments sent. Like audio, your own
+fragments come back only when your actor is near the target chunk, so an echo is
+not an acknowledgment; a refusal arrives as a correlated error.
 
 ## Receiving: `handlers.video` + `VideoFrameAssembler`
 

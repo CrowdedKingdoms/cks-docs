@@ -1,0 +1,53 @@
+---
+id: input-log-session-filter
+title: InputLogSessionFilter
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Narrows inputLogSessions. All fields are optional and AND-combined.
+
+
+```graphql
+input InputLogSessionFilter {
+  userId: BigInt
+  from: DateTime
+  to: DateTime
+  messageType: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSessionFilter.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+Only this user's sessions. Without manage&#x005F;apps on the app, only your own user id is accepted (and is the default).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSessionFilter.<b>from</b></code>](#from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#from\} 
+Only sessions still active at or after this instant.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSessionFilter.<b>to</b></code>](#to)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#to\} 
+Only sessions started at or before this instant.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>InputLogSessionFilter.<b>messageType</b></code>](#message-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#message-type\} 
+Only sessions containing this client message type (0-255).
+
+
+
+
+### Member Of
+
+[`inputLogSessions`](/reference/graphql/operations/queries/input-log-sessions.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
