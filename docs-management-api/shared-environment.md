@@ -48,7 +48,11 @@ So in practice there is one model, and this page describes it.
 - **Stored input logs have no free allowance.** An app records nothing until an
   org member with `manage_apps` turns on replay logging
   (`replayLoggingEnabled: true` on `updateApp`), which is refused with
-  `INPUT_LOG_FUNDS_NEEDED` unless the org wallet has a spendable balance. See
+  `INPUT_LOG_FUNDS_NEEDED` unless the org wallet can spend the projected cost of
+  keeping one retention period of the app's recent traffic. Every message a client
+  sends is recorded once it is on, keep-alives included (about 50 to 110 bytes a
+  second for a connected player who does nothing), and recordings already kept go
+  on being billed after it is turned off, until they age out. See
   [Input logging](/replication-api/input-logging).
 - **You are billed for bytes, CPU and storage — never for counts.** A datagram,
   an API operation or a notification is paid for by the bytes it moves and the
@@ -78,7 +82,10 @@ metered once, in either direction. A client-side byte counter will not match it.
 **What counts as a stored input-log byte.** `input_log_storage_byte_hours` is
 measured in recorded bytes: each input counts at its record size — the
 `sizeBytes` that `inputLogMessages` returns, a fixed header plus the message —
-before compression and replication, so you can add it up yourself. Each byte is
+before compression and replication, so you can add it up yourself. The header is
+48 bytes since the replication server release after v0.37.0 (40 before), which is
+what a recorded spatial message's fixed overhead of 116 bytes is made of (with its
+68-byte spatial header). Each byte is
 billed for exactly the input log's retention (7 days, 168 hours), so 1 GB
 recorded is 168 GB-hours, 0.23 GB-month; it is priced per GB-month on the rate
 card in your account and on the
