@@ -126,12 +126,52 @@ the roles you left out.
 **App-wide policy:** `SetTeamPolicy(CreationPolicy, DefaultMembershipPolicy, OnSuccess, OnError)` returns
 `FOnTeamPolicySuccess` and is an app-admin operation.
 
+## Ban a member
+
+A manager removes a member for good with `BanTeamMember(TeamId, UserId, Reason, OnSuccess, OnError)`. It takes
+the user off the team and refuses every later join, request to join and add of that user until a manager lifts
+the ban with `UnbanTeamMember(TeamId, UserId, OnSuccess, OnError)`. The caller needs the manage-members
+permission, and the team's owner and the caller themselves cannot be banned. A user who is not on the team yet
+can be banned too, and leaving or being removed does not lift a ban.
+
+`Reason` is optional and at most 500 characters. A longer one fails at once with a `PolicyViolation` error, and
+nothing is sent. Ban answers the member record (`FOnTeamMemberSuccess`), whose `Status` is `banned`; unban
+answers `bWasBanned` (`FOnTeamUnbanSuccess`), which is false when the user had no ban.
+
+A banned user's `JoinTeam`, `RequestToJoinTeam`, or a manager's `AddTeamMember` for them, fails with the error
+code `Banned` in `ECrowdyTeamErrorCode`. It comes from the server's own error code, not from the message text,
+so it is safe to branch on. A ban lasts until a manager lifts it, so do not retry: tell the player instead.
+
+The village's elder bans a member from the village team. `VillageTeamId` is the id the game instance kept when it
+founded the village.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+A Ban button on the member list calls `BanFromVillage` with the member picked. `HandleVillageBanned` receives the
+member record, and `HandleVillageBanFailed` the error.
+
+<CppSnippet id="team-ban" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+**Ban Team Member** is a latent node with `Team Id`, `User Id` and `Reason` inputs, and **Unban Team Member** one
+with `Team Id` and `User Id`. They are wired the way **Ban Channel Member** is in
+[Ban a member](../runtime/channels.md#ban-a-member): **On Success** carries the member record (`Was Banned` for an
+unban), and **On Error** carries `Error` and `Message`. Break `Error` with **Break Crowdy Team Error** and
+compare its `Code` with **Banned** in a **Branch** to handle a ban on **Join Team**, as
+[Handle a ban on join](../runtime/channels.md#handle-a-ban-on-join) does for a channel.
+
+</TabItem>
+</Tabs>
+
 ## Data types
 
 | Struct | Holds |
 |---|---|
 | `FCrowdyTeam` | `TeamId`, `AppId`, `Name`, `Description`, `OwnerUserId`, `MembershipPolicy`, `Status`, `CreatedAt`. |
-| `FCrowdyTeamMember` | `TeamMemberId`, `TeamId`, `UserId`, `Status` (active or pending), `Roles` sorted by rank, `CreatedAt`. |
+| `FCrowdyTeamMember` | `TeamMemberId`, `TeamId`, `UserId`, `Status` (active, pending, or banned in the answer to a ban), `Roles` sorted by rank, `CreatedAt`. |
 | `FCrowdyTeamMembership` | `Team`, `Roles`, the effective `Permissions` (a server-computed union across roles), `JoinedAt`, and `HasPermission(ECrowdyTeamPermission)`. |
 | `FCrowdyTeamPermissions` | Flags `bManageTeam`, `bManageMembers`, `bManageRoles`, `bInviteMembers`, all `BlueprintReadWrite`, and `Has()`. Build one to pass into `CreateTeamRole` or `UpdateTeamRole`. |
 | `FCrowdyTeamPolicy` | `AppId`, `CreationPolicy`, `DefaultMembershipPolicy`, `MaxMembers` (0 is uncapped), `MaxTeamsPerUser` (0 is uncapped). |
@@ -143,19 +183,19 @@ the roles you left out.
 | `ECrowdyTeamCreationPolicy` | `Admin`, `Member`, `Anyone` |
 | `ECrowdyTeamMembershipPolicy` | `Open`, `Request`, `Invite`, `Admin` |
 | `ECrowdyTeamPermission` | `ManageTeam`, `ManageMembers`, `ManageRoles`, `InviteMembers` |
-| `ECrowdyTeamErrorCode` | `Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError` |
+| `ECrowdyTeamErrorCode` | `Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError`, `Banned` |
 
-:::note[Code is a coarse bucket, not a precise diagnosis.]
-`FCrowdyTeamError` is built by pattern-matching the server's message text; there is no structured error
-code from the server. Read `Message` for the detail and branch on `Code` only for the broad cases.
+:::note[Code is a coarse bucket, not a precise diagnosis, except Banned.]
+`FCrowdyTeamError` is built by pattern-matching the server's message text, so every `Code` but one is a
+guess. `Banned` is the exception: it comes from the server's own error code. Read `Message` for the detail
+and branch on `Code` only for the broad cases.
 :::
 
 ## Blueprint nodes
 
 The subsystem's per-call delegates need a Create Event node per call. For a graph that just drops in a
 node, use the async-action latent nodes instead: one static factory and `Activate()` per node, with
-multicast `OnSuccess`/`OnError` (`FTeamsAsyncOnError`, the same two parameters as `FOnTeamError`),
-wrapping the same server calls.
+multicast `OnSuccess`/`OnError`, wrapping the same server calls.
 
 | Node | Class | Returns |
 |---|---|---|
@@ -174,6 +214,8 @@ wrapping the same server calls.
 | Leave Team | `UCrowdyTeams_LeaveTeam` | void |
 | Add Team Member | `UCrowdyTeams_AddTeamMember` | `FCrowdyTeamMember` |
 | Remove Team Member | `UCrowdyTeams_RemoveTeamMember` | void |
+| Ban Team Member | `UCrowdyTeams_BanTeamMember` | `FCrowdyTeamMember` |
+| Unban Team Member | `UCrowdyTeams_UnbanTeamMember` | `Was Banned` (bool) |
 | Set Team Member Roles | `UCrowdyTeams_SetTeamMemberRoles` | `FCrowdyTeamMember` |
 | Create Team Role | `UCrowdyTeams_CreateTeamRole` | `FCrowdyTeamRole` |
 | Update Team Role | `UCrowdyTeams_UpdateTeamRole` | `FCrowdyTeamRole` |
@@ -184,14 +226,19 @@ wrapping the same server calls.
 each wrap one multi-item result (`Teams`, `Memberships`, `Members`, `Roles`); a single-item call like
 `GetTeam` or `CreateTeam` returns its struct directly.
 
-Each async-action node's own `On Success` pin is a multicast delegate named after its call:
-`FTeamAsyncOnSuccess` (Get Team, Create Team, Update Team), `FTeamsAsyncOnSuccess` (Get All Teams),
-`FMyTeamsAsyncOnSuccess` (Get My Teams), `FMemberAsyncOnSuccess` (Join Team, Request to Join Team, Add
-Team Member, Set Team Member Roles), `FMembersAsyncOnSuccess` (Get Team Members, Get Pending Join
-Requests), `FRoleAsyncOnSuccess` (Create Team Role, Update Team Role), `FRolesAsyncOnSuccess` (Get Team
-Roles), `FPolicyAsyncOnSuccess` (Get Team Policy, Set Team Policy), and `FVoidAsyncOnSuccess` (Delete
-Team, Leave Team, Remove Team Member, Delete Team Role). These are separate from the per-call
-`FOnTeam*Success` delegates above; the async-action nodes never use those.
+**On Success** and **On Error** of a node share one set of data pins: the result, then `Error` and
+`Message`. On **On Success**, `Error` and `Message` are empty. On **On Error** the result is empty, `Error`
+is an `FCrowdyTeamError` (break it to read its `Code`) and `Message` is the text to show; a node that
+returns nothing has only `Error` and `Message`.
+
+The pins are a multicast delegate named after the result: `FTeamAsyncResult` (Get Team, Create Team,
+Update Team), `FTeamsAsyncResult` (Get All Teams), `FMyTeamsAsyncResult` (Get My Teams),
+`FMemberAsyncResult` (Join Team, Request to Join Team, Add Team Member, Ban Team Member, Set Team Member
+Roles), `FMembersAsyncResult` (Get Team Members, Get Pending Join Requests), `FRoleAsyncResult` (Create Team
+Role, Update Team Role), `FRolesAsyncResult` (Get Team Roles), `FPolicyAsyncResult` (Get Team Policy, Set
+Team Policy), `FTeamUnbanAsyncResult` (Unban Team Member), and `FTeamsAsyncOnError` (Delete Team, Leave
+Team, Remove Team Member, Delete Team Role). These are separate from the per-call `FOnTeam*Success`
+delegates above; the async-action nodes never use those.
 
 :::caution[Bind a per-call delegate to a UFUNCTION on a UObject that outlives the request.]
 The response arrives asynchronously; if the object is gone by then, the callback has nowhere to land.
@@ -279,8 +326,8 @@ same one.
   `IsPlayerInTeam` still answers from before it.
 - `GetPendingJoinRequests` filters the full member list on the client; it is not a dedicated server call.
 - `SetTeamMemberRoles` replaces the member's role set. Pass the full set every time.
-- `FCrowdyTeamError::Code` is pattern-matched from the server's message text, not a structured server
-  code; treat it as a coarse bucket and `Message` as the detail.
+- `FCrowdyTeamError::Code` is pattern-matched from the server's message text, except `Banned`, which is the
+  server's own code; treat the rest as a coarse bucket and `Message` as the detail.
 - A per-call delegate needs a `UFUNCTION` on a `UObject` that outlives the request, including when the
   request never reaches the server.
 - The array delegates take `const TArray<T>&` handlers; a mismatch fails to bind. The async-action nodes

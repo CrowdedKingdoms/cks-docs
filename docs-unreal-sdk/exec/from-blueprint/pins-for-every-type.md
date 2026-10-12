@@ -1,6 +1,6 @@
 ---
 slug: pins-for-every-type
-sidebar_position: 4
+sidebar_position: 6
 title: Pins for every type
 description: The pin each Server Object variable, input and output type gets in Blueprint (bool, integers, floats, strings, enums, structs, containers, optionals and the C++-only types), names a node cannot use, types with no pin, and what the nodes do when the asset changes.
 ---

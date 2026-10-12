@@ -2,7 +2,7 @@
 slug: read-and-follow-variables
 sidebar_position: 2
 title: Read and follow its variables
-description: Read a Server Object's variables from Blueprint with Get and Get Server State, follow each change with On Changed, show the village beacon's oil in a graph and in a widget with Find By Asset, and the by-name nodes (Get Variables, Get Server Value, Watch Variables and the member nodes) for dynamic cases.
+description: Read a Server Object's variables from Blueprint with Get and Get Server State, follow each change with On Changed, show the village beacon's oil in a graph and in a widget with Find By Asset, and the by-name nodes (Get Variables, Get Server Value, Watch Variables and the member nodes) for dynamic cases, and Get Players Online for how many players are in the app's world.
 ---
 
 # Read and follow its variables
@@ -20,6 +20,8 @@ Players see the variables their [definition](../create-a-type.md) marks **Visibl
 To tell a real zero from "the server has not answered yet", use the node's advanced pin, **Oil Has Value**. It is collapsed by default: click the small arrow at the bottom of the node to show it. It is false until the server has sent this Server Object's values, and true after. A variable that is an optional in C++ has a **Has Value** pin that is always shown, and it is false when the optional is empty or the values have not arrived; see [What the pins are](./pins-for-every-type.md#what-the-pins-are).
 
 **Get Server State** is the same for every visible variable at once, with one advanced **Has Values** pin that is false until the server has sent the values.
+
+The nodes work whether the definition takes its variables from a struct or you [added them in the asset](../create-a-type.md#variables-inputs-and-outputs-or-a-struct) (the List form): **Get**, **Get Server State** and **On Changed** read and follow a variable added in the asset with the same pins.
 
 ## Follow a variable
 
@@ -58,6 +60,18 @@ A widget has no component, so use **Find By Asset**. In its Event Construct, add
 
 <Blueprint src="so-widget-oil" title="Event Construct, On Oil Changed with Find By Asset (Instance Id oakford), SetText on OilText" />
 
+## How many players are online
+
+Every app has one root Server Object, which Server Compute deploys along with your types. It counts the players in the app's world. **Get Players Online** reads that count:
+
+- It takes an **Owner**, the Blueprint itself unless you connect another object, and gives **Players Online** and a return value that is false until the count first arrives.
+- The first call starts following the count, and the owner keeps it followed until the owner is destroyed. So a widget can read it in a binding, or an actor on Tick.
+- The count is the number of players the platform's realtime servers report for your app. A player who leaves is still counted for a few minutes, until their session ends.
+
+The root's definition is `CSO_PlayersOnline`, in the Crowdy SDK's content under **Data**. Use it like any other definition, for example with **Find By Asset** on the **On Changed** node for **PlayersOnline**, to run a graph each time the count changes. Leave the asset as it is: deploying sends the root's server code as the SDK writes it.
+
+An app last deployed with an older Crowdy SDK, or never deployed from Server Compute, has no Crowdy SDK root. Deploy once from Server Compute. Until then **Get Players Online** returns false, and the log says why once for each reason in each game instance (so once per Play In Editor client): "This app has no Crowdy SDK root, so Players Online has no count: deploy the app from Server Compute (an app last deployed with an older Crowdy SDK, or by another tool, has none). It is asked again every minute." The root waits and asks again once a minute instead of every few seconds, and once the app is deployed the count arrives without restarting the game.
+
 ## Records
 
 A type whose **Holds** is **A Record per Entity** keeps its variables once for each entity; see [Keep a record per entity](../keep-a-record-per-entity.md). A component on an entity's actor reads that actor's own record, so everything above works unchanged. **Get**, **On Changed**, **On Variables Changed** and **Get Server Value** read the record, and a variable the player may not receive reads its default and never changes.
@@ -66,7 +80,10 @@ To read the other records, take the Server Object from the component with **Get 
 
 - **Find Record** takes an **Id** and gives that record's **Values**, its **Owner** (a user id, 0 for none) and its **Team**. It returns false when there is no such record. Read a variable out of **Values** with **Get Server Value**.
 - **Get Record Ids** gives the id of every record the player can see, in no particular order.
+- **Holds Records** says whether the type keeps records, and **Num Records** counts them.
+- **Watch Record** takes a **Record Id** and an event (the delegate `FCrowdyServerRecordEvent`), which runs with the **Object**, the **Record Id** and the **Changed** variables after each change of that record and when it is removed (**Find Record** is then false). If the record is already current it also runs once at once, naming all its variables. **Stop Watching Record** removes it. Records dropped because the object **Failed** are not reported; **On Status Changed** is.
 - **On Records Changed** is an event. Bind it with **Assign** on the Server Object. It runs after every read, batch or fetch that changed records, with the **Object**, the ids that are new or changed (**Changed Ids**) and the ids that were removed (**Removed Ids**).
+- **On Records Updated** is bound the same way and runs at the same times, but gives a list of **Record Id** with its **Changed Variables**, then the removed ids. **Changed Variables** is empty when only the record's owner or team changed.
 
 Ids are compared with capitals significant. **Find By Asset**, and **Watch Variables** on a Server Object of this kind, read its defaults and not a record: use the component or **Find Record**.
 
@@ -113,7 +130,7 @@ Two things to know about the by-name nodes:
 
 - [Read and follow its variables, from C++](../from-cpp/read-and-follow-variables.md): the same rules, from C++
 - [Get a Server Object](./get-a-server-object.md): the previous page, where the object comes from
-- [Call its functions](./call-functions.md): the next page
+- [Hear its messages](./hear-server-messages.md): the next page, the messages a type sends
 - [Pins for every type](./pins-for-every-type.md): which pin each variable type gets
 - [Tip jar: your first Server Object](../examples/tip-jar.md): **On Total Changed**, click by click
 - [Shared boss fight](../examples/shared-boss.md): a health bar, a phase and a respawn message

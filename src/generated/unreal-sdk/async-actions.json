@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-10T20:35:53Z",
-  "sdk_version": "2.18.0",
+  "generated_from": "2026-10-16T18:01:58Z",
+  "sdk_version": "2.20.0",
   "table": "async-actions",
   "columns": [
     {
@@ -35,6 +35,146 @@
     }
   ],
   "rows": [
+    {
+      "id": "UCrowdyAccount_AddPassword",
+      "node": [
+        "Add Password"
+      ],
+      "factories": [
+        "AddPassword"
+      ],
+      "class": "UCrowdyAccount_AddPassword",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAccount_ChangePassword",
+      "node": [
+        "Change Password"
+      ],
+      "factories": [
+        "ChangePassword"
+      ],
+      "class": "UCrowdyAccount_ChangePassword",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAccount_ClaimFreeAccess",
+      "node": [
+        "Claim Free Access"
+      ],
+      "factories": [
+        "ClaimFreeAccess"
+      ],
+      "class": "UCrowdyAccount_ClaimFreeAccess",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAccount_DeleteAccount",
+      "node": [
+        "Delete Account"
+      ],
+      "factories": [
+        "DeleteAccount"
+      ],
+      "class": "UCrowdyAccount_DeleteAccount",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAccount_GetMyAccess",
+      "node": [
+        "Get My Access"
+      ],
+      "factories": [
+        "GetMyAccess"
+      ],
+      "class": "UCrowdyAccount_GetMyAccess",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAccount_RequestPasswordReset",
+      "node": [
+        "Request Password Reset"
+      ],
+      "factories": [
+        "RequestPasswordReset"
+      ],
+      "class": "UCrowdyAccount_RequestPasswordReset",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAccount_ResendConfirmationEmail",
+      "node": [
+        "Resend Confirmation Email"
+      ],
+      "factories": [
+        "ResendConfirmationEmail"
+      ],
+      "class": "UCrowdyAccount_ResendConfirmationEmail",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAccount_SignOutEverywhere",
+      "node": [
+        "Sign Out Everywhere"
+      ],
+      "factories": [
+        "SignOutEverywhere"
+      ],
+      "class": "UCrowdyAccount_SignOutEverywhere",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyAccountAction",
+      "node": [],
+      "factories": [],
+      "class": "UCrowdyAccountAction",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "",
+      "editor": false,
+      "allowlist": "internal"
+    },
     {
       "id": "UCrowdyAuth_BeginMagicLinkSignIn",
       "node": [
@@ -360,6 +500,24 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyChannels_BanChannelMember",
+      "node": [
+        "Ban Channel Member"
+      ],
+      "factories": [
+        "BanChannelMember"
+      ],
+      "class": "UCrowdyChannels_BanChannelMember",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyChannels_CreateChannel",
       "node": [
         "Create Channel"
@@ -666,6 +824,24 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyChannels_UnbanChannelMember",
+      "node": [
+        "Unban Channel Member"
+      ],
+      "factories": [
+        "UnbanChannelMember"
+      ],
+      "class": "UCrowdyChannels_UnbanChannelMember",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "runtime/channels",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyChannels_UpdateChannel",
       "node": [
         "Update Channel"
@@ -721,6 +897,60 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyPlayers_GetPlayerName",
+      "node": [
+        "Get Player Name"
+      ],
+      "factories": [
+        "GetPlayerName"
+      ],
+      "class": "UCrowdyPlayers_GetPlayerName",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/player-names",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyPlayers_GetPlayerNames",
+      "node": [
+        "Get Player Names"
+      ],
+      "factories": [
+        "GetPlayerNames"
+      ],
+      "class": "UCrowdyPlayers_GetPlayerNames",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/player-names",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyPlayers_SetPlayerName",
+      "node": [
+        "Set Player Name"
+      ],
+      "factories": [
+        "SetPlayerName"
+      ],
+      "class": "UCrowdyPlayers_SetPlayerName",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/player-names",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyTeams_AddTeamMember",
       "node": [
         "Add Team Member"
@@ -729,6 +959,24 @@
         "AddTeamMember"
       ],
       "class": "UCrowdyTeams_AddTeamMember",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyTeams_BanTeamMember",
+      "node": [
+        "Ban Team Member"
+      ],
+      "factories": [
+        "BanTeamMember"
+      ],
+      "class": "UCrowdyTeams_BanTeamMember",
       "pins": [
         "OnSuccess",
         "OnError"
@@ -1045,6 +1293,24 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyTeams_UnbanTeamMember",
+      "node": [
+        "Unban Team Member"
+      ],
+      "factories": [
+        "UnbanTeamMember"
+      ],
+      "class": "UCrowdyTeams_UnbanTeamMember",
+      "pins": [
+        "OnSuccess",
+        "OnError"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyTeams_UpdateTeam",
       "node": [
         "Update Team"
@@ -1089,6 +1355,24 @@
         "CallServerFunction"
       ],
       "class": "UCrowdyServerCallAction",
+      "pins": [
+        "OnSuccess",
+        "OnFailed"
+      ],
+      "module": "CrowdyExec",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyServerPingAction",
+      "node": [
+        "Ping Server Objects"
+      ],
+      "factories": [
+        "PingServerObjects"
+      ],
+      "class": "UCrowdyServerPingAction",
       "pins": [
         "OnSuccess",
         "OnFailed"

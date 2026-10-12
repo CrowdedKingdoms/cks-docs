@@ -14,6 +14,7 @@ Use it when you:
 - Start a project: sign in, pick the app, and write its ids and endpoints into the project with Config Sync.
 - Author server-side data ahead of play: teams, channels, grids.
 - Debug: watch a running Play in Editor session in the Inspector, or check the baked registry.
+- Manage your own account: your name, your password, and your sessions.
 
 :::tip[Start here before you write any runtime code.]
 Most setup mistakes come from a project pointed at the wrong app, or one that never ran Config Sync. Both are fixed on the Project page.
@@ -54,6 +55,7 @@ The sidebar on the left lists the pages. A toggle at the top folds it to icons (
 |---|---|---|---|
 | **Setup Wizard** | | No | The guided first run: sign in, pick an app, sync. Studio lands here after you sign in. |
 | **Home** | | Yes | Status cards: account, organization, active app, project sync. |
+| **Account** | | Yes, with your account | Your own name, password and sessions; an organization token has no account of its own. See [Your account](./sign-in.md#your-account). |
 | **Project** | CONFIGURE | Yes | Pick the app, create one, and run [Config Sync](./config-sync.md). See [Projects and Apps](./projects-and-apps.md). |
 | **Access** | CONFIGURE | Yes | The selected app's feature keys, and which access tiers grant each one. See [The Access page](#the-access-page). |
 | **Teams** | AUTHORING | Yes | Author teams, members, roles, and the team policy. See [Teams and Channels](./teams-and-channels.md). |
@@ -61,6 +63,7 @@ The sidebar on the left lists the pages. A toggle at the top folds it to icons (
 | **Grid** | AUTHORING | Yes | Author spatial permission regions. See [Grids](./grids.md). |
 | **Inspector** | DEBUG | No | A read-only view of a running Play in Editor session. See [Inspector and Registry](./inspector-and-registry.md). |
 | **Registry** | DEBUG | No | The baked metadata that ships in packaged builds, and the button that rebuilds it. |
+| **Server Compute** | COMPUTE | Yes | Deploy your Server Object types and run them: versions, switching off and on, restarts. See [Deploy it with Server Compute](../exec/deploy-with-server-compute.md). |
 | **Web Console** | | Yes | Pinned at the bottom: opens the browser console for admin surfaces. |
 
 ## The Access page

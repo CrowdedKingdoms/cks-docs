@@ -81,6 +81,21 @@ the current session and is only read when `Environment` is Custom, and `SetGameA
 HTTP endpoint for the session. `ReloadEndpointsFromSettings` is kept for old call sites and does nothing;
 the API client already re-reads both endpoints from the settings on every call.
 
+### Server Object gateway domains
+
+A Server Object connects to the gateway the Game API names. The SDK connects only when that gateway is on the Game API's own domains, so a Game API that points somewhere else cannot receive the player's connect token. If you host the server yourself on a domain of your own, list it under **Project Settings, Crowdy SDK, Server Objects, Allowed Exec Gateway Domains** (`AllowedExecGatewayDomains` in `Config/DefaultGame.ini`, with the other Crowdy SDK settings). An entry such as `example.com` allows that domain and its subdomains. A scheme, a path, a port, a leading dot or `*.` in an entry is ignored, so `https://*.example.com:8443/` counts as `example.com`.
+
+A gateway outside both the Game API's own domains and this list is refused for good: every Server Object fails with a reason that starts "Could not open the connection to the server: the Game API named a gateway outside its own domains", and none is retried until you acquire it again (or call Restart). See [Troubleshooting](../exec/troubleshooting.md#what-makes-it-fail).
+
+### Server Object timeouts
+
+Two properties under **Crowdy SDK, Developer, Server Objects** set how long a Server Object connection waits. Like the Network category they are read-only in Project Settings and are edited on Crowdy Studio's Project page, in the **Connection** tab under **Server Objects**; see [Config Sync](../studio/config-sync.md).
+
+- `ServerObjectCallTimeoutSeconds` (**Server Object Call Timeout**) is how long a call waits for the platform's answer before it fails with a `Timeout`: 11 to 120 seconds, 20 by default. It stays above the longest **Time per Call** a type may have, 10 seconds. A **Call** node's **Timeout** can shorten it for one call; see [Give up sooner](../exec/from-blueprint/call-functions.md#give-up-sooner).
+- `ServerObjectOpenTimeoutSeconds` (**Server Object Open Timeout**) is how long opening the connection waits before the attempt fails: 1 to 60 seconds, 10 by default.
+
+Both apply from the next Play, and to the editor's developer connections. A dropped connection is always reopened; there is no setting for that.
+
 ## Gotchas
 
 - The class is `Config=Game`. A property you change in code at runtime through the settings object itself
