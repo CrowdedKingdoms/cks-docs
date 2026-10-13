@@ -16,9 +16,9 @@ a stated removal date. **Three removals did not get one**, and each is called ou
 its own entry rather than left to be discovered: the customer-provisioned
 environment surface on [2026-07-27](#2026-07-27), the dev sign-in bypass on
 [2026-08-20](#2026-08-20), and the game API's legacy engines on
-[2026-09-28](#2026-09-28-dev-the-legacy-engines-removed), so far on the dev environment
-only. Treat **the published SDL as the authority** on what exists today; this page is the
-record of how it got there.
+[2026-09-28](#2026-09-28-dev-the-legacy-engines-removed) on the dev environment, which test
+followed on 2026-10-04 and production on 2026-10-06. Treat **the published SDL as the
+authority** on what exists today; this page is the record of how it got there.
 
 Older entries describe the game API's legacy engines (game models, automations, compute
 modules and player code), which ck-exec replaced. Their links lead to the matching section
@@ -36,6 +36,23 @@ own CLI is not published either. See
 on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
+
+## 2026-10-13 (rate card: the legacy automation and compile rows are gone)
+
+- **Four rows that only the legacy engines fed are off the rate card.** On the developer
+  card, `automation_compute_units`, the automations' share of the pooled CPU allowance; on
+  the player card, `player_automation_units`, `player_wasm_compile_count` and
+  `player_wasm_compile_cpu_ms`. Automations and server-side player compiles went with the
+  [legacy engines](#2026-09-28-dev-the-legacy-engines-removed), and no usage has been
+  recorded against these rows since, so no bill changes.
+- **The pools are what they already were in practice.** The 20 CPU-hours a month each app
+  gets are pooled across GraphQL resolvers and your app's ck-exec code, and a player's
+  monthly trial is spent by mod compute (`player_wasm_compute_units`). The four names
+  disappear from `billingRateCard` and from new statements, and `setBillingRate` refuses
+  them, as it refuses the dimensions retired before. `appPlayerUsage` keeps
+  `automationUnits` and `compileCount` so the API shape does not change; both stay 0. See
+  [the shared environment](/management-api/shared-environment#free-tier) and
+  [player billing](/management-api/player-billing#the-free-trial).
 
 ## 2026-10-13 (CrowdyCPP 0.62.0, CrowdyPy 0.10.0: the input log says what it lost)
 
@@ -577,7 +594,8 @@ player code with its browser client modules and player models. That took 129 roo
 types and 11 error codes out of the schema. ck-exec replaces them, and
 [from the legacy engines](/exec/from-the-legacy-engines) maps every removed call to what
 replaces it; the engines' deleted pages redirect to their sections there. Test and production
-keep the engines until they move to ck-exec.
+keep the engines until they move to ck-exec. (They did: test on 2026-10-04 and production on
+2026-10-06.)
 
 - **CrowdyJS 18.0** removes their SDK surface (`client.gameModel`, `client.compute`,
   `client.playerCompute`, `client.playerModel`, the Game Kit's engines and `client.operator`),
