@@ -19,7 +19,7 @@ section with the full fix and the trace CVar that confirms it.
 | [A player who just joined is invisible until they move](#a-player-who-just-joined-is-invisible-until-they-move) | A known server issue: the actor's first update is refused and later ones are not relayed to other players | Nothing on the client fixes it yet; moving recovers | `crowdy.net.trace` |
 | [An RPC never runs on other clients](#events-are-not-received) | Missing entity component, unregistered entity, recipient/distance settings, or a registry gap | Work through the four sub-causes in order | `crowdy.rpc.trace` |
 | [A remote entity shows as the wrong class](#a-remote-entity-cannot-be-targeted) | The entity's class was never loaded on this client | Add the class to Preloaded Entity Classes | `crowdy.entity.trace` |
-| [A CrowdyState property does nothing on a crowd-rendered actor](#a-crowdystate-property-does-nothing-on-the-crowd) | Mass-rendered entities need their own field registration | See the rendering backend's own docs | n/a |
+| [A CrowdyState property does nothing on a crowd-rendered actor](#a-crowdystate-property-does-nothing-on-the-crowd) | Mass-rendered entities need their own field registration | See [Add your own crowd data](../mass/add-your-own-crowd-data.md) | n/a |
 | [Client cannot connect, or connects on one machine and not another](#connection-fails-ipv4-versus-ipv6) | Address-family mismatch, or the realtime connection never came up | Match the family, check the UDP path | `crowdy.net.trace` |
 | [Thousands of warnings a second, frame rate drops](#a-refused-connection-floods-the-log) | The realtime connection was refused or never came up; every send after that logs | Confirm the connection came up before chasing anything else | `crowdy.net.trace` |
 | [Code will not compile against the SDK](#module-dependency-or-include-errors) | Missing module dependency or missing include | Add the module, include the header | n/a |
@@ -195,12 +195,12 @@ client, whether or not this client ever spawns one itself.
 ## A CrowdyState property does nothing on the crowd
 
 A `CrowdyState` property that works perfectly on a normally-spawned actor does nothing when the same actor
-is spawned through a Mass or crowd rendering backend: the value is decoded and then silently dropped.
+is drawn as a crowd row by the Crowdy Mass Rendering Backend: the value is decoded and then silently dropped.
 
-A normally-spawned actor needs nothing extra. An actor rendered through a crowd backend needs its own field
-registration on that backend before a `CrowdyState` property reaches it; this is a rendering-backend
-authoring topic, not a runtime setting, so it is covered where the backends are:
-[Rendering backends](../runtime/rendering-backends.md).
+A normally-spawned actor needs nothing extra. An entity drawn as a crowd row needs its own field
+registration before a `CrowdyState` property reaches it; see
+[Add your own crowd data](../mass/add-your-own-crowd-data.md). For other crowd symptoms, such as a grey
+crowd or no rows at all, see [Fix a crowd that does not look right](../mass/troubleshooting.md).
 
 ## Connection fails: IPv4 versus IPv6
 
@@ -295,7 +295,7 @@ at your own network path, not the SDK. Check your route to the backend before fi
 - Preloaded Entity Classes is empty by default. Add every entity class a client needs to see belonging to
   someone else, not just the ones it spawns itself.
 - A `CrowdyState` property needs no setup on a normal actor, but needs its own field registration on a
-  crowd-rendered one.
+  crowd-rendered one; see [Add your own crowd data](../mass/add-your-own-crowd-data.md).
 - A refused connection can flood the log by itself; rule that out before trusting any other measurement
   from the same run.
 
@@ -303,6 +303,8 @@ at your own network path, not the SDK. Check your route to the backend before fi
 
 - [Testing locally](./testing-locally.md): the loopback CVars for reproducing a symptom with one client.
 - [Log categories](../reference/log-categories.md): every `LogCrowdy<X>` category and its trace CVar.
-- [Rendering backends](../runtime/rendering-backends.md): field registration for crowd-rendered entities.
+- [Fix a crowd that does not look right](../mass/troubleshooting.md): a grey crowd, missing rows, and the crowd diagnostics.
+- [Add your own crowd data](../mass/add-your-own-crowd-data.md): field registration for crowd-rendered entities.
+- [Rendering backends](../runtime/rendering-backends.md): the actor pool and the backend contract.
 - [Authentication](../services/authentication.md): the sign-in events to gate your first calls on.
 - [What's changed](./whats-changed.md): renamed or removed nodes that can look like a new bug.

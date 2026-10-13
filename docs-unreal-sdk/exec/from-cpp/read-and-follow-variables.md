@@ -49,6 +49,22 @@ if (Oil.HasValue() && bLit.HasValue())
 
 The same rules hold: the variables players do not see keep their default values on every client.
 
+## Records
+
+A type whose **Holds** is **A Record per Entity** keeps the variables once for each entity; see [Keep a record per entity](../keep-a-record-per-entity.md). `WatchValues` and `GetState()` on its Server Object give the type's defaults, not a record. Use the records instead:
+
+- `HoldsRecords()` says whether the definition keeps records, `NumRecords()` counts them and `GetRecordIds()` lists their ids, in no particular order.
+- `GetRecord(Id)` returns an `FCrowdyServerRecord`, or null when there is no such record. Its `Values` is an `FInstancedStruct` holding the State struct, its `Owner` is the owning player's user id (0 for none) and its `Team` is the team. A variable the player may not receive holds its default. Ids are compared with capitals significant.
+- `OnRecordsChanged`, an `FOnCrowdyServerRecordsChanged`, runs after every read, batch or fetch that changed records. It gives the Server Object, the ids that are new or changed, the ids that were removed, and for each changed id the State fields that changed, one bit per field. `GetFieldVariableNames` names the fields by index.
+- `WatchRecord(Id, Listener)` follows one record with an `FOnCrowdyServerValuesChanged` listener that names the variables on each change and when the record is removed, and `UnwatchRecord(Id, Handle)` stops it.
+
+```cpp
+const FCrowdyServerRecord* Record = Area->GetRecord(RaiderId);
+const FRaiderState* Raider = Record ? Record->Values.GetPtr<FRaiderState>() : nullptr;
+```
+
+The component on an actor reads the actor's own record: `GetVariables()` and `OnVariablesChanged` give it.
+
 ## Field names
 
 The names the listener receives are the fields' names on the server: the C++ member name (`Oil`, `bLit`), the name of a variable added in the asset, a Blueprint struct field's name with the spaces and other characters removed, or the Server Name you set under **Field Names** on the definition. Compare them exactly as they are spelled there.
@@ -57,6 +73,7 @@ The names the listener receives are the fields' names on the server: the C++ mem
 
 - [Create a Server Object type](../create-a-type.md): choosing which variables players see
 - [Call its functions](./call-functions.md)
+- [Keep a record per entity](../keep-a-record-per-entity.md): a Server Object with a record for each entity of a crowd
 - [Read and follow its variables, from Blueprint](../from-blueprint/read-and-follow-variables.md): **On Changed**, **Watch Variables** and **On Variables Changed**
 - [Troubleshooting](../troubleshooting.md#a-value-is-not-what-you-expect): when a value is not what you expect
 - [The Two Planes](../../concepts/two-planes.md): why these values are the server's, not the client's

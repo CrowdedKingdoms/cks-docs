@@ -9,7 +9,7 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Log Categories
 
-The SDK logs under 11 `LogCrowdy<X>` categories, one or more per module. Two knobs control what you see:
+The SDK logs under 12 `LogCrowdy<X>` categories, one or more per module. Two knobs control what you see:
 the category's own log verbosity, which is native Unreal and free, and the paired `crowdy.<area>.trace`
 CVar, which is a one-line switch for that area's extra informational stream. The two are independent: a
 trace CVar gates SDK trace lines that print at `Log` verbosity, and `Log <Category> Verbose` reveals the
@@ -31,7 +31,7 @@ every cooked build, Development or Shipping alike.
 <SurfaceTable
   table="log-categories"
   includeEditor
-  notes={{LogCrowdyReplication: "Entity tracking, actor pool churn, and Crowdy State replication all log under this plain category rather than one of their own; narrow with the trace CVar before you read it."}}
+  notes={{LogCrowdyMass: "Crowds with Mass: entity configs, animation, targets and events. The `crowdy.mass.anim.trace` and `crowdy.mass.neartier.trace` gates add its informational lines.", LogCrowdyReplication: "Entity tracking, actor pool churn, and Crowdy State replication all log under this plain category rather than one of their own; narrow with the trace CVar before you read it."}}
 />
 
 ```text

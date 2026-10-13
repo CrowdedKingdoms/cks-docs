@@ -1,0 +1,9 @@
+{
+  "label": "From Blueprint",
+  "position": 9,
+  "link": {
+    "type": "generated-index",
+    "title": "Crowds with Mass from Blueprint",
+    "description": "Act on a crowd row from a Blueprint graph: target an entity with a trace or an overlap, call an event on it, receive its events, read and write its fields, and read its server values."
+  }
+}

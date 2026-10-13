@@ -62,9 +62,10 @@ channel. It names the channel a `Multicast` event routes over by name rather tha
 resolves to the same channel in every environment your app is deployed to.
 
 `CrowdyAction` takes no value. It declares that the receiver's parameters describe a one-shot action, an
-attack swing, a flinch, an emote, rather than a body to run. The SDK only carries the declaration; the
-rendering backend decides what to do with it for a receiver holding the entity as data rather than a live
-actor.
+attack swing, a flinch, an emote, rather than a body to run. The Crowdy Mass Rendering Backend plays it as an
+animation action on a receiver that holds the entity as a crowd row rather than a live actor. On the
+actor pool the declaration changes nothing. See
+[Play poses and one-shot actions](../mass/play-poses-and-one-shot-actions.md).
 
 `CrowdyReplicates` takes no value. It marks a Blueprint custom event as RPC-style ("Crowdy Replicates" in
 the Blueprint dropdown), which is what tells the router to bind it through the RPC path rather than as a
@@ -93,8 +94,9 @@ to keep an untrusted client from reaching the logic.
   `SpatialMulticast` recipient.
 - `CrowdyReplicates` and its legacy alias `CrowdyReplicate` only ever appear on a Blueprint custom event; a
   C++ receiver never sets them.
-- `CrowdyAction` is a declaration only. The SDK does not interpret it; a rendering backend that reads
-  entity data instead of driving a live actor is what gives it meaning.
+- `CrowdyAction` is a declaration only. The actor pool ignores it; the Crowdy Mass Rendering Backend reads
+  it to play the call as an action on a crowd row. See
+  [Play poses and one-shot actions](../mass/play-poses-and-one-shot-actions.md).
 
 ## Related
 

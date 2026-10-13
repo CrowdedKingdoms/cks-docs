@@ -114,12 +114,12 @@ You marked a property `CrowdyState` and nothing arrives, or you are about to mar
 ### Rejected
 
 :::warning[Containers and object references are rejected at discovery, in any position, including inside a struct. Use a CrowdyEvent, or your server code.]
-The error names the escape hatch: `CrowdyState: property 'Players' on '/Script/MyGame.Lantern' is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Game Model container. Omitting it.` The Game Model container it names is legacy, and no server serves it. A list of who lit the lantern is a `TArray` parameter on a [CrowdyEvent](./rpc-events-cpp.md) if it is a moment, or state your server code on ck-exec holds if it is [truth](../concepts/two-planes.md). Never re-attempt it here.
+The error names the escape hatch: `CrowdyState: property 'Players' on '/Script/MyGame.Lantern' is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Server Object. Omitting it.` A list of who lit the lantern is a `TArray` parameter on a [CrowdyEvent](./rpc-events-cpp.md) if it is a moment, or a [Server Object](../exec/overview.md) if it is [truth](../concepts/two-planes.md). Never re-attempt it here.
 :::
 
 | Rejected | The reason discovery logs |
 |---|---|
-| `TArray`, `TSet`, `TMap` | `is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Game Model container` |
+| `TArray`, `TSet`, `TMap` | `is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Server Object` |
 | A plain struct that holds a container at any depth | `is a USTRUCT that transitively contains a container (TArray/TSet/TMap); such nested containers are rejected because a forged element count would drive an unbounded allocation on decode` |
 | A fixed-size C array (`float Values[4]`) | `is a fixed-size array; CrowdyState replicates only single-value POD and USTRUCT properties (its positional diff would miss changes past element 0)` |
 | `UObject*`, `TSubclassOf`, soft object and class references, interfaces, delegates | `is an object/interface/delegate reference; CrowdyState replicates only POD and USTRUCT values` |
@@ -217,7 +217,7 @@ A modified client can stamp its own pushes host-sourced. This orders who wins on
 
 ## A field that silently does nothing
 
-The first thing to check. Discovery logs an unconditional error for every marked property it cannot carry, of the shape `CrowdyState: property 'X' on '/Script/MyGame.Lantern' is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Game Model container. Omitting it.` (The Game Model container is legacy; keep that state in your server code on ck-exec.) The reasons are a container, a struct that buries a container, a fixed-size array, an object or interface or delegate reference, or an otherwise unsupported type such as `FText`; [Rejected](#rejected) lists them. Two more lines to know: a property marked both `CrowdyState` and `CrowdyModel` is dropped with `is marked both CrowdyState and CrowdyModel; a field lives in exactly one plane`, and a property whose name and type also appear in the actor's continuous-state executor struct is dropped with `also lives in its executor state struct ... Dropping it from the CrowdyState layout`, so a field lives on exactly one channel.
+The first thing to check. Discovery logs an unconditional error for every marked property it cannot carry, of the shape `CrowdyState: property 'X' on '/Script/MyGame.Lantern' is a container; CrowdyState does not replicate containers; use a CrowdyEvent RPC or a Server Object. Omitting it.` The reasons are a container, a struct that buries a container, a fixed-size array, an object or interface or delegate reference, or an otherwise unsupported type such as `FText`; [Rejected](#rejected) lists them. One more line to know: a property whose name and type also appear in the actor's continuous-state executor struct is dropped with `also lives in its executor state struct ... Dropping it from the CrowdyState layout`, so a field lives on exactly one channel.
 
 These fire at class registration and are not gated by the trace variable. Grep the log for `CrowdyState: property`, which all three lines share, before turning anything on. When the property is in the layout but the change is not arriving, that is the other question:
 

@@ -55,6 +55,7 @@ Many players, or many objects, share one Server Object.
 |---|---|
 | Many players on one shared object, such as a boss | **Readable By**: **Every Player**; a **Cooldown** and a **Value Range** on the functions players call |
 | Many objects reporting to one, such as matches to a leaderboard | **Can Call** on the reporting type, listing the shared one; the shared function's **Callable By** on **Server Only** |
+| Many entities, such as a crowd, each with values of its own | **Holds**: **A Record per Entity**, in one object for an area, a match or a team; see [Keep a record per entity](./keep-a-record-per-entity.md) |
 
 The [shared boss](./examples/shared-boss.md) is the first: every player hits one boss, and the **Cooldown** and **Value Range** keep each player to a fair rate and a fair hit, enforced on the server before your code runs. **Every Player** sends each change to every watcher; with **Members** or **Owner Only**, every watcher reads again after every change. See [Large groups](./access-members-and-timers.md#large-groups).
 
