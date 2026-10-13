@@ -104,6 +104,6 @@ Studio-facing controls (org permissions in parentheses):
 | Surface | Purpose |
 |---|---|
 | `playerRateMarkup` / `setPlayerRateMarkup` (`view_billing` / `manage_billing`) | Markup in basis points on the platform base price — the studio's usage-revenue stream, always shown to players as a separate component |
-| `appPlayerUsage` (`view_compute_diagnostics`) | Per-player usage aggregate: top spenders, quota utilization, compiles, cents charged |
+| `appPlayerUsage` (`view_compute_diagnostics`) | Per-player usage aggregate: top spenders, quota utilization, cents charged. Its `automationUnits` and `compileCount` belong to the removed legacy engines and are always 0 |
 | `appPlayerMarkupAccrued` (`view_billing`) | Total markup income earned. Each charge's markup is **credited to the organization wallet in the same transaction as the player's debit**, and appears in the org ledger as `markup_payout` — so this total and the money in the wallet cannot drift apart |
 | `execModSetSwitch` / `execModSwitches` (Game API, `manage_compute`) | The kill ladder for players' [mods](/exec/mods#for-the-apps-developers): one mod, a player's, a grid's, a listing's installs, or every mod in the app |
