@@ -27,7 +27,7 @@ The screenshot is the SDK's own shipped default profile. **Backend Config** is e
 | Field | Default | What it controls |
 |---|---|---|
 | `bEnableNetworking` | on | Gates the host subsystem, the event router, and the entity subsystem on this map. Off means the map runs with the SDK loaded but idle. |
-| `ActorManagement` | see [Rendering backends](./rendering-backends.md) | Which backend draws remote entities (`BackendClass`, `BackendConfig`) and the actor tracker settings. |
+| `ActorManagement` | see [Rendering backends](./rendering-backends.md) | Which backend draws remote entities (`BackendClass`, `BackendConfig`) and the actor tracker settings. Pick **Crowdy Mass Rendering Backend** as the **Backend Class** to draw a crowd; see [Turn Mass on for a map](../mass/turn-mass-on-for-a-map.md). |
 | `bUseAutoReplicator` | on | The continuous state channel for Dynamic entities. See [Continuous state](./continuous-state.md). |
 | `ReplicationIntervalHz` | 10 (1 to 10) | Shown as **Replication Interval (Hertz)**. The send cadence shared by the continuous channel and the Crowdy State replicator. Greyed out in the Details panel when Use Auto Replicator is off, but still read by the Crowdy State replicator. |
 | `bSendActorStateOnlyOnChange` | on | Shown as **Send Actor State Only On Change**. An unchanged Dynamic entity sends a keyframe or a heartbeat instead of restating its state every interval. |
@@ -38,7 +38,7 @@ The screenshot is the SDK's own shipped default profile. **Backend Config** is e
 | `StateKeyframeIntervalSeconds` | 2.0 | Period of the Crowdy State keyframe, the full re-send of every property marked `CrowdyHeartbeat`. 0 turns the keyframe off map-wide; on-change replication is unaffected. |
 
 :::note[An empty Backend Config means the built-in default, not a disabled backend.]
-`ActorManagement.BackendClass` defaults to `UCrowdyActorPoolBackend`. With `ActorManagement.BackendConfig` left empty, the backend creates a transient **Actor Pool Backend Config** and applies remote movement with `UCrowdyTransformRepPolicy`, the shipped policy that reads the default executor's `FCrowdyActorState` (location and rotation) and interpolates across a ring of recent samples, extrapolating briefly when an update is late. Set a config of your own when your executor sends a state struct of its own, when you want pool sizes per class, or when you want a different pool policy. A config of another backend's class is still refused with a warning naming the field. See [Rendering backends](./rendering-backends.md).
+`ActorManagement.BackendClass` defaults to `UCrowdyActorPoolBackend`. With `ActorManagement.BackendConfig` left empty, the backend creates a transient **Actor Pool Backend Config** and applies remote movement with `UCrowdyTransformRepPolicy`, the shipped policy that reads the default executor's `FCrowdyActorState` (location and rotation) and interpolates across a ring of recent samples, extrapolating briefly when an update is late. Set a config of your own when your executor sends a state struct of its own, when you want pool sizes per class, or when you want a different pool policy. The actor pool refuses a config of another backend's class with a warning naming the field. The Crowdy Mass Rendering Backend takes its own Backend Config, and ignores a config of another class without a word. See [Rendering Backends](./rendering-backends.md) and [Turn Mass on for a map](../mass/turn-mass-on-for-a-map.md).
 :::
 
 ## Assign the profile
@@ -99,6 +99,7 @@ The plugin registers a shipped profile under the provider name `CrowdySDK`, and 
 ## Related
 
 - [Rendering backends](./rendering-backends.md): `BackendClass`, `BackendConfig`, and the policy classes.
+- [Turn Mass on for a map](../mass/turn-mass-on-for-a-map.md): choose the Crowdy Mass Rendering Backend and give it a Backend Config.
 - [Continuous state](./continuous-state.md): what `bUseAutoReplicator` and the keyframe and heartbeat intervals drive.
 - [Crowdy State](./crowdy-state.md): what `bUseStateReplicator`, `StateRelevanceDistance`, and `StateKeyframeIntervalSeconds` drive.
 - [Config Sync](../studio/config-sync.md): the network half of the same settings class, written by Crowdy Studio.

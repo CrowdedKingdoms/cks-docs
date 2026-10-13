@@ -9,7 +9,7 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Blueprint Async Actions
 
-A Blueprint async action is a latent node: it keeps running after the graph moves on and fires one of its own exec pins when it finishes. The SDK ships 102 of them, one C++ class each. 45 belong to its Game Model API, which the game API no longer serves, and are left out (see [The Two Planes](../concepts/two-planes.md)); every one of the other 57 is covered by the pages below, so this table is a lookup, not a gap list.
+A Blueprint async action is a latent node: it keeps running after the graph moves on and fires one of its own exec pins when it finishes. The SDK ships 59 of them, one C++ class each. One, the class behind the typed Call node of a Server Object, has no palette entry of its own, so the table lists the other 58. Every one listed is covered by the pages below, so this table is a lookup, not a gap list.
 
 ## When you come here
 
@@ -20,12 +20,12 @@ The **Blueprint node** column is the title you see in the Blueprint editor, take
 <SurfaceTable table="async-actions" group="page" />
 
 :::note[Every row above links forward. There is nothing left uncovered in this table.]
-Coverage for the 57 listed is complete: every one is mentioned on the page its row links to. A class that later stops matching any page (a rename, a page deleted) reopens as a coverage gap, not a silent removal from this table.
+Coverage for the 58 listed is complete: every one is mentioned on the page its row links to. A class that later stops matching any page (a rename, a page deleted) reopens as a coverage gap, not a silent removal from this table.
 :::
 
 ## Gotchas
 
-- The node's display name, its factory function and its C++ class name can all differ (`Link Models` is `AddEdge` on `UCrowdyAddEdgeAction`); search the palette by the **Blueprint node** column, not the **Class** column.
+- The node's display name, its factory function and its C++ class name can all differ (the **Call Server Function** node is `UCrowdyServerCallAction`); search the palette by the **Blueprint node** column, not the **Class** column.
 - A latent node only fires its completion pins while the graph that called it is still alive. A widget removed from its parent before the call completes never sees the result.
 - An async action with no ID pin operates on whatever the node's own inputs named at spawn time; it does not automatically track a Target that changes after the call starts.
 

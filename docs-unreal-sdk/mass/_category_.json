@@ -1,0 +1,9 @@
+{
+  "label": "Crowds with Mass",
+  "position": 35,
+  "link": {
+    "type": "generated-index",
+    "title": "Crowds with Mass",
+    "description": "Draw hundreds to thousands of remote players as rows of a crowd instead of one actor each. Turn the Mass rendering backend on for a map, make a character draw as a crowd row, give the crowd an animation set, poses and one-shot actions, promote close entities to real actors, run your code on a row, add your own crowd data, then target an entity and read its events, fields and server values from Blueprint or from C++. Fix what goes wrong with the troubleshooting page and follow the worked example in Oakford."
+  }
+}

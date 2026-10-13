@@ -175,7 +175,7 @@ viewer function is ever detached.
   Site-internal links and `llms.txt` need nothing: the `tier-origin` plugin
   rewrites the prod origin in built text files to the tier's own.
 - **The Unreal SDK still ships its Game Model API, and no page documents it.**
-  Its symbols are in `scripts/unreal-surface-allowlist.json` with reason
+  Its symbols are in `docs-unreal-sdk/reference/surface-allowlist.json` with reason
   `deprecated` and the note "Legacy game-model engine removed; the Unreal SDK
   moves to ck-exec later", which also hides them from the generated reference
   tables. Remove those entries when the SDK drops or ports that API.

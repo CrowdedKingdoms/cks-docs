@@ -37,6 +37,102 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-13 (CrowdyCPP 0.62.0, CrowdyPy 0.10.0: the input log says what it lost)
+
+Both SDKs catch up with CrowdyJS 18.9.0, and both need the Game API release after v2.40.2,
+because every sessions read selects `missingRecords`.
+
+- **CrowdyCPP 0.62.0.** Sessions carry `missingRecords`. `graphql::inputLogReadRetryable(errors)`
+  says when a read is worth repeating with the same cursor, and `graphql::inputLogFundsNeededOf`
+  reads `requiredMicrousd` / `spendableMicrousd` from `INPUT_LOG_FUNDS_NEEDED`. A new
+  `graphql::CancelToken` cancels a request from any thread: each input-log read has an overload
+  taking one, and `GraphQLClient` takes it through `RequestOptions`. A cancelled request ends as
+  `CrowdyCancelledError` / `GraphQLErrorKind::Cancelled`; the client's timeout still applies. A
+  `switch` over `GraphQLErrorKind` or `Errc` needs the new `Cancelled` case. See
+  [compatibility](/crowdycpp/compatibility).
+- **CrowdyPy 0.10.0.** Sessions carry `missingRecords`, and the docstrings carry the new end
+  reasons and the retry rules. Cancelling a read's task closes its request. It vendors
+  CrowdyCPP 0.62.0. See [compatibility](/crowdypy/compatibility).
+
+## 2026-10-13 (rate card: rows written by compute modules are no longer priced)
+
+- **Writes by compute modules are charged by the byte only.** The rate card's
+  `wasm_db_rows_written` row (40¢ per million rows, no allowance) is gone from every
+  environment; writes go on being charged as `wasm_write_bytes`, 25¢ per decimal GB above
+  the 1 GB each app gets a month. Nothing changes in the API or the SDKs: the dimension
+  disappears from `billingRateCard` and from new hourly statements, and `setBillingRate`
+  refuses the name, as it refuses the counts retired on 2026-09-06. The
+  [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html) and the
+  [Pricing page](https://crowdedkingdoms.com/pricing.html) say so. See
+  [the shared environment](/management-api/shared-environment#free-tier).
+
+## 2026-10-12 (Unreal SDK v2.19.0: Game Models removed; crowds with Mass, records per entity, the terms and age prompt)
+
+The release after Server Objects removes the SDK's Game Model API, which is breaking for every
+project that still uses it. The release vendors CrowdyCPP 0.57.0 on every tier. Per-item detail:
+[What's Changed](/unreal-sdk/guides/whats-changed#2026-10-12-sdk-v2190).
+
+- **Signing in asks the player to agree to the terms and confirm their age.** For the Game API's
+  terms and age gate, a refused sign-in, restore or token refresh is held, and a prompt in the
+  Crowded Kingdoms colors opens over the game; **Accept** records the agreement and the sign-in
+  completes. A game can turn the prompt off and draw its own. Crowdy Studio shows the same prompt.
+  The SDK vendors CrowdyCPP 0.57.0. See
+  [Let the player agree to the terms](/unreal-sdk/services/authentication#let-the-player-agree-to-the-terms).
+
+- **CrowdyMass is part of the Unreal SDK.** There is no separate plugin to enable: a map opts in by
+  setting its profile's **Backend Class** to **Crowdy Mass Rendering Backend**, and the actor pool
+  stays the default. Module names are unchanged, the shipped assets live under `/CrowdySDK/Mass/`,
+  and the CrowdyMass entry comes out of your `.uproject` and any `.uplugin` of your own that names
+  it, or a C++ build stops naming that file. A class whose anim set names a **Bank**
+  animates with nothing else authored, and its rows stand where its mesh stands, even when the
+  mesh is nested under other components. The SDK turns off the engine's animation pass for you,
+  so no `Config/DefaultMass.ini` is needed; that holds in every project with the SDK, so a skinned
+  Mass crowd of your own that stands still gets no animation updates. A Blueprint **Receive Crowdy Event on Entity** node
+  no longer stops a row playing its declared action. C++ gains the typed
+  `CROWDY_MASS_SEND_EVENT` and `GetServerValueAs`. A map that does not use the Mass backend now
+  pays almost nothing for it, and your own world subsystems should gate themselves with
+  `ShouldCreateSubsystem`. See
+  [Draw a crowd with Mass](/unreal-sdk/mass/draw-a-crowd-with-mass).
+- **The Unreal SDK's Game Model API is removed.** Containers and attributes, model functions,
+  Crowdy Effects and the Apply Effect nodes, sessions, automations, pre-seeding, the Game Kit and
+  `UCrowdyGameModelSubsystem` are gone, along with the **Server Owned** replication choice,
+  CrowdyMass's Game Model values and Crowdy Studio's Game Model page. Studio gains an **Access**
+  page for features and tier-feature grants, which now read and change correctly (the old page
+  sent them with the wrong credential). Some C++ API changes break a build
+  (`ICrowdyEntitySubscriber::ApplyModelChanges`, the sub-participant functions,
+  `FCrowdyModelIdentity`). Channels no longer drop payloads starting `cmc:`, `csg:` or `gms|`.
+  Open and compile your project on the Server Objects release first to list every use, search
+  your C++ for `CrowdyModel`, and do a clean cook after upgrading. See
+  [Move from Game Models](/unreal-sdk/exec/move-from-game-models).
+- **A Server Object function can require a feature.** **Required Feature** names a feature key the
+  caller's access tier must grant; other players are refused. See
+  [Required Feature](/unreal-sdk/exec/access-members-and-timers#required-feature).
+- **Server Object timers can run on a schedule.** **On Schedule** takes a cron expression and a
+  UTC offset; the generated code re-arms each run before your function is called. See
+  [Access, members and timers](/unreal-sdk/exec/access-members-and-timers#timers-and-events).
+- **A changed timer reaches running Server Objects.** After a deploy that changes a timer's
+  **Runs**, a pending timer is armed again under the new Runs and a new automatic timer starts;
+  generate again, and the first deploy of the new code re-arms nothing. See
+  [Access, members and timers](/unreal-sdk/exec/access-members-and-timers#timers-and-events).
+- **Fixes:** a Player's Team Server Object component asks for the player's teams again every 5
+  seconds while it waits; a Type Name change offers the crate Generate wrote last when two name
+  one definition; a Server Object waiting to connect gives the connection's error as its reason,
+  and one type that cannot be placed no longer holds up the others; seamless travel pauses the
+  grace period; Deploy refuses two types that share a Logic File.
+- **Server code the SDK did not generate is left alone.** Generate Server Code refuses, and
+  **Remove from project...** keeps, a `Server/<Type Name>/` folder holding a crate you wrote
+  yourself; Deploy names the live types it takes offline right after its first sentence, and
+  Deploy starter pack names every type the live version runs. See
+  [Deploy](/unreal-sdk/exec/deploy-with-server-compute#deploy).
+- **A Server Object can keep a record per entity.** For a crowd: the same variables kept once for
+  each entity in one Server Object per area, match or team, each variable visible to everyone, to
+  the entity's owner, to its team, or to nobody. The component has a This Actor's Area mode, and
+  crowd rows read the values. See
+  [Keep a record per entity](/unreal-sdk/exec/keep-a-record-per-entity).
+- **A Server Object type can read world data.** **Reads World Data** lets its server code ask which
+  actors are near a chunk; deploying asks for the `world.read` permission. See
+  [Reads World Data](/unreal-sdk/exec/access-members-and-timers#reads-world-data).
+
 ## 2026-10-12 (dev, latest: input logging reports what it lost, ends every session and says when to retry; replication server v0.38.1, Game API v2.41.0, CrowdyJS 18.9.0)
 
 Input logging fixes and one new requirement. See [Input logging](/replication-api/input-logging).

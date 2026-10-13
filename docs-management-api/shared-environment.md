@@ -37,8 +37,8 @@ So in practice there is one model, and this page describes it.
   persist interval, so its writes are roughly its state size times the persist
   rate times the hours it runs: a four-player game with about six hubs holding
   100 KB between them, saving every 30 seconds, writes about 12 MB per hour of
-  play, so the 1 GB covers roughly 80 hours a month. Rows a hub writes have no
-  allowance.
+  play, so the 1 GB covers roughly 80 hours a month. Writes are charged by the
+  byte only; how many rows a save touches does not matter.
 - **ck-exec instance limits follow funding.** An app whose organization cannot be
   charged (no spendable wallet balance, no auto-billing) may run **16 hub
   instances reserving 1 GB of memory** per datacenter at once; an organization
@@ -55,9 +55,11 @@ So in practice there is one model, and this page describes it.
   on being billed after it is turned off, until they age out. See
   [Input logging](/replication-api/input-logging).
 - **You are billed for bytes, CPU and storage — never for counts.** A datagram,
-  an API operation or a notification is paid for by the bytes it moves and the
-  CPU it takes; there is no per-message, per-operation or per-notification rate
-  on the card (the count dimensions were retired on 2026-09-06).
+  an API operation, a notification or a row a hub writes is paid for by the bytes
+  it moves or writes and the CPU it takes; there is no per-message,
+  per-operation, per-notification or per-row rate on the card (the message and
+  operation counts were retired on 2026-09-06, rows written by compute modules
+  on 2026-10-12).
 - Within the quota the app runs at no cost. Above it, usage is billed from your
   organization wallet at the published rate card **as it arrives**: each
   dimension's month-to-date total is rounded up to the next whole cent once, and

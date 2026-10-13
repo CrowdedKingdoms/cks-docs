@@ -53,7 +53,6 @@ All of it lands on one settings class, `UCrowdySDKDeveloperSettings`, which you 
 |---|---|
 | `MapProfiles`, `DefaultProfile` | Per-map SDK configuration and the fallback when a map has no entry. See [Map profiles](../runtime/map-profile.md). |
 | `BakedRegistry` | The cooked snapshot of Crowdy metadata. See [Inspector and Registry](./inspector-and-registry.md). |
-| `DefaultModelNotificationCarrier` | The realtime carrier an Effect's change notification uses by default. |
 | `PreloadedEntityClasses` | Entity classes to preload so a class nobody has spawned yet can still resolve off the wire. |
 | `IDOverrides`, `ClassIDOverrides` | Populate only when the log reports a type id hash collision. |
 
@@ -94,7 +93,7 @@ If you prefer a guided path, the **Setup Wizard** page walks through the same st
 - The Configuration tab writes on **Sync to project**. The Connection tab writes on every edit.
 - The shared origin is not per app. Change it on the Sign In page's backend selector, then sync.
 - A PIE session that was already running picks up a sync; a packaged build needs the new `DefaultGame.ini` cooked in.
-- An organization token is enough to run Config Sync. It is not enough to author teams, channels, grids, or models.
+- An organization token is enough to run Config Sync. It is not enough to author teams, channels, or grids.
 
 ## Related
 

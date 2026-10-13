@@ -1,0 +1,38 @@
+[
+	{
+		"name": "K2Node_InputKey_0",
+		"class": "/Script/BlueprintGraph.K2Node_InputKey",
+		"title": "V",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get TracedTarget",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Is Crowdy Mass Target Live",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_IfThenElse_0",
+		"class": "/Script/BlueprintGraph.K2Node_IfThenElse",
+		"title": "Branch",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_1",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get TracedTarget",
+		"title_drawn": false
+	},
+	{
+		"name": "CrowdyK2Node_CallCrowdyEventOnEntity_0",
+		"class": "/Script/CrowdyMassNodes.CrowdyK2Node_CallCrowdyEventOnEntity",
+		"title": "Call WaveTorch on Entity\nLanternPlayer",
+		"title_drawn": true
+	}
+]

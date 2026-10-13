@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-10-07T15:57:00Z",
+  "generated_from": "2026-10-10T20:35:53Z",
   "sdk_version": "2.18.0",
   "table": "log-categories",
   "columns": [
@@ -41,16 +41,6 @@
       ],
       "editor": false,
       "allowlist": ""
-    },
-    {
-      "id": "LogCrowdyGameModel",
-      "category": "LogCrowdyGameModel",
-      "module": "CrowdyReplication",
-      "trace_cvars": [
-        "crowdy.gamemodel.trace"
-      ],
-      "editor": false,
-      "allowlist": "deprecated"
     },
     {
       "id": "LogCrowdyReplication",
@@ -113,6 +103,27 @@
       ],
       "editor": false,
       "allowlist": ""
+    },
+    {
+      "id": "LogCrowdyMass",
+      "category": "LogCrowdyMass",
+      "module": "CrowdyMass",
+      "trace_cvars": [
+        "crowdy.mass.anim.trace",
+        "crowdy.mass.neartier.trace"
+      ],
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "LogCrowdyMassNodes",
+      "category": "LogCrowdyMassNodes",
+      "module": "CrowdyMassNodes",
+      "trace_cvars": [
+        "crowdy.mass.nodes.trace"
+      ],
+      "editor": true,
+      "allowlist": "editor"
     },
     {
       "id": "LogCrowdyNodes",

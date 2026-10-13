@@ -2,7 +2,7 @@
 slug: rendering-backends
 sidebar_position: 14
 title: Rendering Backends
-description: "How a remote entity's continuous state becomes something on screen: the actor-pool backend the SDK ships, the policy class you subclass to apply your own state struct, the pool policy, and how to write a backend of your own."
+description: "How a remote entity's continuous state becomes something on screen: the two backends the SDK ships (the default actor pool and the Crowdy Mass Rendering Backend), the policy class you subclass to apply your own state struct, the pool policy, and how to write a backend of your own."
 ---
 
 import Tabs from '@theme/Tabs';
@@ -10,11 +10,11 @@ import TabItem from '@theme/TabItem';
 
 # Rendering Backends
 
-A rendering backend turns the [continuous state](./continuous-state.md) a remote entity's owner sends into something on screen for everyone else. The SDK ships one, the actor pool; a project customises it through two policy classes, or replaces it by implementing four methods.
+A rendering backend turns the [continuous state](./continuous-state.md) a remote entity's owner sends into something on screen for everyone else. The SDK ships two: the actor pool, which is the default, and the Crowdy Mass Rendering Backend, which draws remote entities as crowd rows (see [Draw a crowd with Mass](../mass/draw-a-crowd-with-mass.md)). A project customises the actor pool through two policy classes, or replaces the backend by implementing four methods.
 
 ## When you touch this
 
-When a Dynamic entity moves on its owner and not on anyone else, when you want your own state struct applied to a proxy, or when pooled actors of the entity's class are the wrong way to draw a crowd. A Static entity never comes through here: its proxy is spawned by the spawn event and driven by Crowdy State and events.
+When a Dynamic entity moves on its owner and not on anyone else, when you want your own state struct applied to a proxy, or when pooled actors of the entity's class are the wrong way to draw a crowd; see [Draw a crowd with Mass](../mass/draw-a-crowd-with-mass.md). A Static entity never comes through here: its proxy is spawned by the spawn event and driven by Crowdy State and events.
 
 ## The default: the actor pool
 
@@ -123,7 +123,7 @@ Subclass `UCrowdyRenderingBackend` and pair it with a `UCrowdyRenderingBackendCo
 | `DeinitializeBackend()` | no | Release what you held. |
 | `IsInstanceActive(SlotId)` | no | Whether `SlotId` holds something drawn. Return false when `ActivateInstance` could not acquire a resource (a full pool), and the actor manager calls `ActivateInstance` again once capacity may have freed or the entity registers. The default, true, never retries. |
 
-`DrawsEntitiesAsCrowdRows()` is one more, for a backend that represents entities without spawning an actor of the entity's class; the editor reads it off the class default object to decide whether to show authoring surfaces that only make sense on that representation. The default is false. A Mass Entity based backend exists as a separate, opt-in plugin and is the only current override; it is not part of the core SDK and is out of scope for this guide.
+`DrawsEntitiesAsCrowdRows()` is one more, for a backend that represents entities without spawning an actor of the entity's class; the editor reads it off the class default object to decide whether to show authoring surfaces that only make sense on that representation. The default is false. The Crowdy Mass Rendering Backend that ships in the SDK is the one backend that returns true; choose it as the map profile's **Backend Class** and see [Turn Mass on for a map](../mass/turn-mass-on-for-a-map.md).
 
 `SlotId` is a stable index the actor manager assigns for the instance's lifetime; keep your per-instance state in arrays indexed by it.
 
@@ -143,6 +143,7 @@ The actor manager is already the single caller of `ActivateInstance` and `Deacti
 ## Related
 
 - [Map profiles](./map-profile.md): where `BackendClass` and `BackendConfig` live.
+- [Draw a crowd with Mass](../mass/draw-a-crowd-with-mass.md): the Crowdy Mass Rendering Backend, which draws remote entities as crowd rows.
 - [Continuous state](./continuous-state.md): the executor that produces what the policy consumes.
 - [Entities and spawning](./entities-and-spawning.md): the actor tracker and the spawn event.
 - [Entity component](./entity-component.md): the identity a pooled actor is given.

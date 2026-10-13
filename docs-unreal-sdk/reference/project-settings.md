@@ -47,6 +47,10 @@ normal traffic instead of only after a real drop.
 It is not guaranteed at shutdown. For cleanup you can rely on, call `ClearAllState` before logout instead.
 :::
 
+:::info[`bShowConsentPrompt` is on by default.]
+It opens the built-in terms and age prompt when a sign-in needs the player's agreement. Turn it off only if your game draws its own; see [Draw your own prompt](../services/authentication.md#draw-your-own-prompt).
+:::
+
 :::caution[Map profiles decide what the SDK does on each level.]
 These settings point the SDK at an app; `MapProfiles` and `DefaultProfile` decide what it does per map. A
 map with neither runs on the SDK's shipped default profile; a row whose asset does not load leaves the map
