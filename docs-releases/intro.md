@@ -37,6 +37,23 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-13 (CrowdyCPP 0.62.0, CrowdyPy 0.10.0: the input log says what it lost)
+
+Both SDKs catch up with CrowdyJS 18.9.0, and both need the Game API release after v2.40.2,
+because every sessions read selects `missingRecords`.
+
+- **CrowdyCPP 0.62.0.** Sessions carry `missingRecords`. `graphql::inputLogReadRetryable(errors)`
+  says when a read is worth repeating with the same cursor, and `graphql::inputLogFundsNeededOf`
+  reads `requiredMicrousd` / `spendableMicrousd` from `INPUT_LOG_FUNDS_NEEDED`. A new
+  `graphql::CancelToken` cancels a request from any thread: each input-log read has an overload
+  taking one, and `GraphQLClient` takes it through `RequestOptions`. A cancelled request ends as
+  `CrowdyCancelledError` / `GraphQLErrorKind::Cancelled`; the client's timeout still applies. A
+  `switch` over `GraphQLErrorKind` or `Errc` needs the new `Cancelled` case. See
+  [compatibility](/crowdycpp/compatibility).
+- **CrowdyPy 0.10.0.** Sessions carry `missingRecords`, and the docstrings carry the new end
+  reasons and the retry rules. Cancelling a read's task closes its request. It vendors
+  CrowdyCPP 0.62.0. See [compatibility](/crowdypy/compatibility).
+
 ## 2026-10-13 (rate card: rows written by compute modules are no longer priced)
 
 - **Writes by compute modules are charged by the byte only.** The rate card's

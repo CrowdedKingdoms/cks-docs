@@ -221,7 +221,11 @@ for (let backoffMs = 250, retries = 0; ; ) {
 
 CrowdyCPP 0.59.0 has `client.inputLog().sessions` / `messages` (each with an `Async`
 twin; `crowdy::core::base64Decode` decodes a body), and CrowdyPy 0.7.0 has
-`client.input_log.sessions` / `messages` (`decode_base64`).
+`client.input_log.sessions` / `messages` (`decode_base64`). CrowdyCPP 0.62.0 and CrowdyPy
+0.10.0 select `missingRecords` and port the rest of this page's reading rules: in C++,
+`graphql::inputLogReadRetryable` names the two retryable codes and a `graphql::CancelToken`
+overload of each read plays the part of `signal`; in Python, cancelling a read's task closes its
+request.
 
 ## Retention
 
