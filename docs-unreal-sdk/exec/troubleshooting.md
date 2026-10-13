@@ -27,7 +27,8 @@ Most problems on the server clear up by themselves, so reading and watching a Se
 - the server code crashed and its Server Object is restarting;
 - the server did not answer in time, or failed internally;
 - the server code refused the read, such as `unreadable` when the state holds a value players cannot read (see [refusals from your server code](#refusals-from-your-server-code));
-- the server is busy or cannot be reached.
+- the server is busy or cannot be reached;
+- the connection to the server could not be opened: the reason reads "Could not open the connection to the server for `<Type Name>`: ..." and names the type the SDK tried it with. The next try uses another type's Server Object, so one type that is not deployed or is switched off does not hold up the others.
 
 So a game can acquire its Server Objects before their server code is deployed, and they come up as soon as it is.
 

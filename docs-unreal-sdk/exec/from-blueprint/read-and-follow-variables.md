@@ -58,6 +58,18 @@ A widget has no component, so use **Find By Asset**. In its Event Construct, add
 
 <Blueprint src="so-widget-oil" title="Event Construct, On Oil Changed with Find By Asset (Instance Id oakford), SetText on OilText" />
 
+## Records
+
+A type whose **Holds** is **A Record per Entity** keeps its variables once for each entity; see [Keep a record per entity](../keep-a-record-per-entity.md). A component on an entity's actor reads that actor's own record, so everything above works unchanged. **Get**, **On Changed**, **On Variables Changed** and **Get Server Value** read the record, and a variable the player may not receive reads its default and never changes.
+
+To read the other records, take the Server Object from the component with **Get Server Object**. On it:
+
+- **Find Record** takes an **Id** and gives that record's **Values**, its **Owner** (a user id, 0 for none) and its **Team**. It returns false when there is no such record. Read a variable out of **Values** with **Get Server Value**.
+- **Get Record Ids** gives the id of every record the player can see, in no particular order.
+- **On Records Changed** is an event. Bind it with **Assign** on the Server Object. It runs after every read, batch or fetch that changed records, with the **Object**, the ids that are new or changed (**Changed Ids**) and the ids that were removed (**Removed Ids**).
+
+Ids are compared with capitals significant. **Find By Asset**, and **Watch Variables** on a Server Object of this kind, read its defaults and not a record: use the component or **Find Record**.
+
 ## By name
 
 The typed nodes cover a Server Object whose shape you know. The by-name nodes work by name and by type, for the dynamic cases: a graph that shows any variable by a name in a data table, or one that works for several types. They are the ones every Blueprint had before typed nodes, and they still work.
@@ -105,4 +117,5 @@ Two things to know about the by-name nodes:
 - [Pins for every type](./pins-for-every-type.md): which pin each variable type gets
 - [Tip jar: your first Server Object](../examples/tip-jar.md): **On Total Changed**, click by click
 - [Shared boss fight](../examples/shared-boss.md): a health bar, a phase and a respawn message
+- [Raiders on the north road](../examples/raiders-on-the-north-road.md): the same nodes on a record per raider, with values only some players see
 - [Troubleshooting](../troubleshooting.md#a-value-is-not-what-you-expect): when a value is not what you expect

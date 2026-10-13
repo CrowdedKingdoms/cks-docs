@@ -2,7 +2,7 @@
 slug: access-members-and-timers
 sidebar_position: 3
 title: Access, members and timers
-description: The settings that make the server enforce who may read a Server Object and who may call each Server Function (Readable By, Callable By, Cooldown, Value Range), give it members (Members From This Object or a Crowdy Team, Max Members, the Join, Leave, Add Member, Remove Member, Make Leader and Set Open for Joining functions, Open for Joining, the leader rules), run timers and player events, and let one type call another (Call other Server Objects), with what a refused player sees and the names logic.rs gets.
+description: The settings that make the server enforce who may read a Server Object and who may call each Server Function (Readable By, who receives each variable of a record, Reads World Data, Callable By, Cooldown, Value Range), give it members (Members From This Object or a Crowdy Team, Max Members, the Join, Leave, Add Member, Remove Member, Make Leader and Set Open for Joining functions, Open for Joining, the leader rules), run timers and player events, and let one type call another (Call other Server Objects), with what a refused player sees and the names logic.rs gets.
 ---
 
 # Access, members and timers
@@ -51,6 +51,12 @@ With **Members** or **Owner Only** the server does not send a change's values to
 
 Other server code and developer tools may call every function whatever it says. **Members** and **Leader** need **Members From**. The check is made on the server, so a modified game client cannot get around it.
 
+### Required Feature
+
+**Required Feature**, beside **Callable By**, names a feature key the caller's access tier must grant, such as `vip`. Define features and grant them to tiers on the [Access page](../studio/overview.md#the-access-page) in Crowdy Studio. A player whose tier does not grant it is refused before your code runs, with the outcome `Denied`, not retryable, and the reason "needs the vip feature". A refused call does not start the **Cooldown**. Leave it empty for no check.
+
+It checks players only, like **Callable By**: other server code and developer tools are let through. A key is 1 to 64 letters, digits, underscores, hyphens and dots, matched exactly, capitals included, and a **Server Only** function cannot have one, since no player calls it. A type with a Required Feature on any function asks the platform for the `players.read` scope when it is deployed; nothing else is needed.
+
 ### Cooldown
 
 **Cooldown**, in seconds, sits beside **Callable By**. It is how long one player waits between two calls of that function that succeeded; 0 means no wait. A call inside the wait is refused, and the refusal is retryable: "Feed can be called again in 4 s". A call that failed does not start the wait. Each player has their own wait, and the server remembers the last calls of up to 10,000 players per function.
@@ -73,6 +79,25 @@ For an input taken from a struct, set the range on the struct's field with `meta
 - It cannot be combined with **Readable By** set to **Owner Only**, whose Instance Id is each player's user id, or with **Members From** set to **Crowdy Team**, whose Instance Id is the team id. The asset says so when you save it.
 
 Ticking or clearing it changes which object players reach, so generate and deploy the type again. Data saved under the old Instance Id is not moved to the new one.
+
+### Who receives a variable of a record
+
+In a type whose **Holds** is **A Record per Entity**, each variable has its own audience instead of the single **Visible to Players** switch. Select the variable and set **Visible to Players** in its Details:
+
+| Choice | Who receives it |
+|---|---|
+| **Server Only** | Nobody. It never leaves the server. |
+| **Everyone** | Every player who watches the object. |
+| **Owner Only** | The player who owns the record's entity. |
+| **Team Only** | Players whose own record in the same object has the same team, or who are on the record's Crowdy Team, as **Team From** says. |
+
+The record's owner and team are set by server code, not by a variable. A player who owns no record, or no matching team, receives the Everyone variables only; the others read as their defaults and never raise a change. Everyone values arrive in the server's batches. Owner Only and Team Only values are fetched when the server says they changed, at most once a second for each object, so they arrive a moment later. See [Who receives a value](./keep-a-record-per-entity.md#who-receives-a-value).
+
+**Readable By** must be **Every Player** for such a type, and **Members From** must be **None**: who sees what is decided per variable.
+
+### Reads World Data
+
+Tick **Reads World Data**, also in **Access**, when the type's server code asks the world which actors are near or in a chunk. Deploy then asks the platform for the `world.read` permission for the type, after `players.read` when the type asks for that too. Without it the platform refuses the server code's world calls with `Denied`. See [World and platform data](/exec/world-and-platform-data).
 
 ## Members
 
@@ -104,6 +129,8 @@ The panel's **Built-in** section then lists six functions, greyed out, each with
 | **Remove Member** | `Player` | The leader, or server code | Removes that player. |
 | **Make Leader** | `Player` | The leader, or server code | Makes that member the leader. Refused for a player who is not a member. |
 | **Set Open for Joining** | `bOpen` (Boolean) | The leader, or server code | Opens or closes joining. |
+
+The inputs of **Add Member**, **Remove Member** and **Make Leader** are the struct `FCrowdyServerMemberInputs`, whose one field is `Player`. The input of **Set Open for Joining** is `FCrowdyServerOpenInputs`, whose one field is `bOpen`.
 
 **Add Member** exists so that one type can seat players in another, as a registry does; see [Guild Halls](./examples/guild-halls-and-arenas.md#guild-halls).
 
@@ -141,11 +168,16 @@ Give an actor the Server Object of the player's team with the component's **Play
 Under **Timers & Events**, a **Timer** is something your Server Object does on a clock, each with:
 
 - **Name**: what it is called. Not empty, unique, and not the name of a function.
-- **Runs**: **Every**, which runs again and again, **Time** apart, or **Once After**, which runs once, **Time** after it starts. In C++ this is the enum `ECrowdyServerTimerRepeat`, with the values `Every` and `After`.
-- **Time**: in seconds, at least 0.01.
+- **Runs**: **Every**, which runs again and again, **Time** apart; **Once After**, which runs once, **Time** after it starts; or **On Schedule**, which runs at the times a **Cron** expression names. In C++ this is the enum `ECrowdyServerTimerRepeat`, with the values `Every`, `After` and `Schedule`.
+- **Time**: in seconds, at least 0.01. Not shown for **On Schedule**.
+- **Cron** and **UTC Offset**: for **On Schedule** only. **Cron** has five fields (minute, hour, day of month, month, day of week), or six with seconds first, or is one of `@hourly`, `@daily`, `@weekly`, `@monthly` and `@yearly`; `0 */6 * * *` is every six hours, on the hour. Times are UTC; **UTC Offset** reads them that many minutes ahead of UTC, from -840 to 840, with no daylight saving: 60 runs `0 9 * * *` at 09:00 in UTC+1. Saving checks each field against its range (an hour of 25 is refused, naming the field), with the syntax in [Timers and presence](/exec/timers-and-presence#cron-schedules).
 - **Start Automatically**: on by default. It starts when the Server Object first starts. With it off, your code starts it.
 
 Each timer's row is titled with its name and when it runs, such as "Respawn: Once After 10 s".
+
+A schedule runs on the platform's own clock. Each time it fires, the generated code arms its next run before your function is called, so an error in your function does not end the schedule. A run that came due while the Server Object was stopped runs once when it starts again; the other missed runs are skipped.
+
+Changing a timer's **Runs** reaches instances that are already running too, once they start on the new code: a deploy does not restart them, so that is when they next start, or at once if you switch the type off and on (see [Deploy](./deploy-with-server-compute.md#deploy)). Each Server Object saves its timers' Runs with its values, and when it starts after a deploy that changed one, a timer that was still pending is armed again under the new Runs. A timer that had stopped, or a Once After that already ran, stays so. A timer with **Start Automatically** that you add later starts in running instances as well, and a timer you remove or rename stops under its old name. A changed timer starts its new Runs from that moment, so a pending Once After waits its full new time. Server code generated by an earlier SDK did not save the Runs, so the first deploy of code generated by this one re-arms nothing; every deploy after it does.
 
 Each timer is a function in `logic.rs`, named after it in snake case, so a timer named `EndMatch` is `end_match`. It changes the variables the same way a Server Function does, and its changes reach the watchers.
 
@@ -213,10 +245,13 @@ Saving refuses the asset, and lists every problem at once, when:
 - A function of your own has the name of a built-in one while **Members From** is **This Object**.
 - **Max Members** is below 0, or is 0 or above 4,096 while **Show Members to Players** is on.
 - A **Value Range** has a minimum above its maximum, or is on an input that is not a number.
-- A timer's name is empty, is used twice, is not a usable name once written in snake case, or is a function's name, or its **Time** is under 0.01 seconds.
+- A timer's name is empty, is used twice, is not a usable name once written in snake case, or is a function's name, or is `crowdy_flush` in snake case (the name a record type uses to send its changes), or its **Time** is under 0.01 seconds.
 - **Can Call** has an empty entry, the type itself, or a type without a Type Name.
 - **Members From** is **Crowdy Team** and **Readable By** is **Owner Only**.
 - **Only One Instance** is ticked with **Readable By** on **Owner Only**, or with **Members From** on **Crowdy Team**.
+- **Holds** is **A Record per Entity** and **Readable By** is not **Every Player** ("needs Readable By Every Player; make the variables others must not see Owner Only or Team Only"), or **Members From** is not **None** ("cannot use Members From; each record carries its own owner and team"), or a function is named `changes`.
+- A variable is Owner Only or Team Only but is not a field of the State or not Visible to Players, or is both ("'Gold' is both Owner Only and Team Only; choose one").
+- **Max Records**, **Send Changes Every**, **Area Size** or **Areas Followed Around a Player** is outside its range ("Max Records is 5000; it must be from 1 to 4096").
 
 ## For logic.rs
 

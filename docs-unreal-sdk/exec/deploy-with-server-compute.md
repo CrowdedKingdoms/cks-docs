@@ -77,9 +77,9 @@ The **...** menu on a type has two entries. **Open definition** opens the type's
 The confirm changes with the situation:
 
 - **What it deletes.** Everything in the type's `Server/<Type Name>/` folder goes with it: `logic.rs`, the generated files and `revisions.json`, so the type's revision history goes too. Get them back from version control if you need them. A logic file of your own that lives outside that folder is never touched.
-- **What it leaves, and why.** The folder is left alone, and the dialog says "This deletes its definition ... only." followed by the reason, when deleting it could hurt something else: "Another definition has the same Type Name and so the same Server Code folder, which is left as it is."; "Its Type Name is not a valid one, so its Server Code folder may be another type's; it is left as it is."; "Its Server Code folder is not directly inside the project's Server folder, so it is left as it is."; "It has no Server Code folder."; or "Its Server Code folder is, or holds, a link to somewhere else, and deleting it could delete what the link points to; it is left as it is, so delete it by hand." A folder that could not be deleted is reported in red under the tab: "Removed village_beacon's definition, but could not delete its Server Code folder Server/village_beacon. Delete it by hand."
+- **What it leaves, and why.** The folder is left alone, and the dialog says "This deletes its definition ... only." followed by the reason, when deleting it could hurt something else: "Another definition has the same Type Name and so the same Server Code folder, which is left as it is."; "Its Type Name is not a valid one, so its Server Code folder may be another type's; it is left as it is."; "Its Server Code folder is not directly inside the project's Server folder, so it is left as it is."; "It has no Server Code folder."; "Its Server Code folder holds server code the Crowdy SDK did not generate, so it is left as it is."; or "Its Server Code folder is, or holds, a link to somewhere else, and deleting it could delete what the link points to; it is left as it is, so delete it by hand." A folder that could not be deleted is reported in red under the tab: "Removed village_beacon's definition, but could not delete its Server Code folder Server/village_beacon. Delete it by hand."
 - **Unsaved code edits.** If the type's code has edits you have not saved, the dialog lists the files: "Its unsaved code edits are lost:".
-- **What it does on the server: nothing yet.** A type that is live keeps running, with players calling it, until your next deploy, which no longer includes it and removes it (the deploy's confirm says "It removes village_beacon, which the project no longer has; its Server Objects stop."). Until then it shows as a **Removed** row, where you can still switch it off. A type that was never deployed ("New") says "village_beacon is not live on the server (App 12345 on Dev), so nothing changes there."
+- **What it does on the server: nothing yet.** A type that is live keeps running, with players calling it, until your next deploy, which no longer includes it and removes it (the deploy's confirm says "It removes village_beacon, which this project does not have; their Server Objects stop."). Until then it shows as a **Removed** row, where you can still switch it off. A type that was never deployed ("New") says "village_beacon is not live on the server (App 12345 on Dev), so nothing changes there."
 - **The last type.** A deploy needs at least one type, so removing the project's last one cannot take it off the server: the confirm says "village_beacon keeps running on the server (App 12345 on Dev) until the project has a type to deploy again, since a deploy needs at least one type. To stop players' calls to it meanwhile, use Switch off on this page."
 
 After you confirm, the editor's own delete runs, with its usual check of what still refers to the definition, for example a Blueprint slot holding it; it may ask again, and if you cancel there nothing else happens. If the row went stale (the asset moved, or its Type Name changed since the list was read) nothing is removed and the page says "/Game/Beacon/CSO_VillageBeacon is no longer the definition of village_beacon, so nothing was removed. The list is read again; try once more from it."
@@ -95,17 +95,21 @@ The **Deploy** card says "Builds every type's server code on the server and make
 - "Nothing is deployed yet. Deploying sends the project's 2 types." for an app with no active version.
 - "Ready to deploy 2 Server Object types." when the live version could not be compared, for example because it has not been read yet; press **Refresh**.
 
-A change you have just deployed keeps its "Deployed as version 8." line until something changes again, then the summary takes over. A failed or half-recorded deploy keeps its message until the next deploy. **Deploy** is disabled while any type is not fine, and the line says what to do: "Fix the 1 type marked Problem first.", "Generate Server Code for 1 type first (right-click the definition in the Content Browser).", or "Create a Server Object Definition asset to deploy."; two definitions with one Type Name show "Two Server Object types are named village_beacon (...) and (...); each needs its own Type Name". It is also disabled while another operation runs. The same rules apply to the **Deploy** button in a definition asset editor's toolbar.
+A change you have just deployed keeps its "Deployed as version 8." line until something changes again, then the summary takes over. A failed or half-recorded deploy keeps its message until the next deploy. **Deploy** is disabled while any type is not fine, and the line says what to do: "Fix the 1 type marked Problem first.", "Generate Server Code for 1 type first (right-click the definition in the Content Browser).", or "Create a Server Object Definition asset to deploy."; two definitions with one Type Name show "Two Server Object types are named village_beacon (...) and (...); each needs its own Type Name". A type whose `Server/<Type Name>/` folder holds a crate the SDK did not generate is marked **Problem** with "... holds server code the Crowdy SDK did not generate; choose another Type Name, or move that folder" (see [Generate it](./write-server-logic.md#generate-it)). It is also disabled while another operation runs. The same rules apply to the **Deploy** button in a definition asset editor's toolbar.
 
-**Deploy** asks first, in a dialog titled Deploy. The first sentence is always there, then one sentence for each kind of change that applies, naming the types:
+**Deploy** asks first, in a dialog titled Deploy. The first sentence is always there, then one sentence for each kind of change that applies, naming the types, with what it removes first:
 
 > Deploying replaces the active server code of App 12345 on Dev with this project's 2 Server Object types.
+>
+> It removes tip_jar, which this project does not have; their Server Objects stop.
 >
 > It adds lantern.
 >
 > It changes village_beacon (server code, save interval).
 
-The other two are "It replaces live code this project has no record of in village_beacon." and "It removes lantern, which the project no longer has; its Server Objects stop." When what the app runs now could not be read, the dialog says "What the app runs now could not be read, so what this changes is not known." instead. Read the list before you answer Yes: it is the difference between what you have here and what players are running.
+The other one is "It replaces live code this project has no record of in village_beacon." When what the app runs now could not be read, the dialog says "What the app runs now could not be read, so what this changes is not known." instead. Read the list before you answer Yes: it is the difference between what you have here and what players are running.
+
+"It removes" names every type the live version runs that this project does not have, however it got there: a type you removed from the project, one deployed from another copy of the project, or server code deployed another way, such as a crate written by hand and deployed with the platform's API. Deploy cannot send such code, so answering Yes takes it offline. If your app runs code like that, deploy it the same way you deployed it before, not from this page.
 
 If any server code file has edits you have not saved in the asset editor's Server Code tab, the dialog adds:
 
@@ -137,6 +141,10 @@ A running Server Object keeps its old code until it next starts; see [Operations
 **Deploy starter pack** builds and deploys the platform's example types instead of your project, after asking:
 
 > Deploying the starter pack replaces the active server code of App 12345 on Dev with the platform's example Server Object types.
+>
+> It removes village_beacon, lantern, which the active version runs, unless the starter pack has a type of the same name; that type then takes over its saved Server Objects.
+
+The second sentence names what the live version runs, the SDK's `root` left out, and is missing when nothing is live. When what the app runs could not be read, it says "What the app runs now could not be read, so what this removes is not known." instead.
 
 It is meant for trying the platform out on an empty app. It replaces your project's server code just as **Deploy** replaces the previous code, so do not press it on an app your game uses; if you do, make the earlier version active again on the Versions tab. See [Starter packs](/exec/builds#starter-packs).
 

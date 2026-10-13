@@ -1,0 +1,21 @@
+[
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "WaveTorch\nCustom Event",
+		"title_drawn": true,
+		"crowdy_subtitle": "Crowdy Spatial Multicast\nEveryone In Range"
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get Mesh",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Play Crowdy Mass Action",
+		"title_drawn": true
+	}
+]
