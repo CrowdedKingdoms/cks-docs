@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-10-07T15:57:00Z",
+  "generated_from": "2026-10-10T20:35:53Z",
   "sdk_version": "2.18.0",
   "table": "cvars",
   "columns": [
@@ -58,17 +58,6 @@
       "allowlist": ""
     },
     {
-      "id": "crowdy.gamemodel.trace",
-      "name": "crowdy.gamemodel.trace",
-      "kind": "variable",
-      "role": "trace",
-      "trace": true,
-      "help": "When non-zero, logs CrowdyReplication Game Model activity: identity resolution, invoke client, container cache/diffing, and effect lowering. Off by default.",
-      "module": "CrowdyReplication",
-      "editor": false,
-      "allowlist": "deprecated"
-    },
-    {
       "id": "crowdy.hud.trace",
       "name": "crowdy.hud.trace",
       "kind": "variable",
@@ -77,6 +66,39 @@
       "help": "When non-zero, logs CrowdyServices HUD activity: HUD base and widgets. Off by default.",
       "module": "CrowdyServices",
       "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.mass.anim.trace",
+      "name": "crowdy.mass.anim.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "Log every animation sequence index the Crowdy animation processor writes, per entity.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.mass.neartier.trace",
+      "name": "crowdy.mass.neartier.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "Say when a crowd entity gains a near tier actor, whether that actor was built or taken from the pool, and when it goes back. 1 on, 0 off.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.mass.nodes.trace",
+      "name": "crowdy.mass.nodes.trace",
+      "kind": "variable",
+      "role": "trace",
+      "trace": true,
+      "help": "Log where the Call Crowdy Event on Entity dropdown's entries came from (0 = off, 1 = on).",
+      "module": "CrowdyMassNodes",
+      "editor": true,
       "allowlist": ""
     },
     {
@@ -223,26 +245,103 @@
       "allowlist": ""
     },
     {
-      "id": "crowdy.gamemodel.bulkresolve",
-      "name": "crowdy.gamemodel.bulkresolve",
+      "id": "crowdy.mass.anim.dump",
+      "name": "crowdy.mass.anim.dump",
       "kind": "variable",
       "role": "behaviour",
       "trace": false,
-      "help": "1: shared (Host-owned) entities and remote copies of other players' entities bind their Game Model containers from one paged list per type; 0: one call per entity.",
-      "module": "CrowdyReplication",
+      "help": "While set to 1, log a summary of the animation sets in use and of the instance batches handed to each instanced skinned mesh component, once per second. Set back to 0 to stop.",
+      "module": "CrowdyMass",
       "editor": false,
-      "allowlist": "deprecated"
+      "allowlist": ""
     },
     {
-      "id": "crowdy.gamemodel.emitfallbackping",
-      "name": "crowdy.gamemodel.emitfallbackping",
+      "id": "crowdy.mass.anim.force",
+      "name": "crowdy.mass.anim.force",
       "kind": "variable",
       "role": "behaviour",
       "trace": false,
-      "help": "1 (default): acting client emits a fallback model-changed ping after a successful Game Model invoke so peers re-pull. 0: rely solely on the server-native model-driven notification (isolates that path in 2-client PIE).",
-      "module": "CrowdyReplication",
+      "help": "Force this animation bank sequence index on every Mass entity the Crowdy animation processor sees. A negative value disables forcing, which is the default.",
+      "module": "CrowdyMass",
       "editor": false,
-      "allowlist": "deprecated"
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.mass.anim.releasefromobserver",
+      "name": "crowdy.mass.anim.releasefromobserver",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Release an entity's renderer visual straight from the destruction observer instead of deferring it to the next frame. This is the behaviour the deferral replaced and it leaks an animation track per entity destroyed mid-frame. It exists so the animation track gate can be proven to fail. 0 is correct behaviour and the default.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "crowdy.mass.derive.force",
+      "name": "crowdy.mass.derive.force",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Spawn every remote entity from a Mass entity config built out of its own class, pushing aside the per-class binding, the backend override and the project-wide Remote Entity Config. 1 on, 0 off. The class's animation set is pushed aside with it, so the entity animates from the set and the Bank the class itself declares, and an entity that appears in bind pose under this is showing what an unconfigured class carries. Entities already spawned keep the config they were built from; every class's animation answer is worked out again.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.mass.event.proxy",
+      "name": "crowdy.mass.event.proxy",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Run an inbound event's own body on a per-class stand-in for entities held here as rows. 1 on, 0 off. Off, an event nothing registered a handler for lands nothing beyond the action write a declared action gets, which is what this client did before the stand-in existed.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.mass.interp.adaptive",
+      "name": "crowdy.mass.interp.adaptive",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Replay each remote segment over the observed arrival interval. 1 on, 0 off (fixed duration), -1 to follow the project setting.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.mass.interp.max",
+      "name": "crowdy.mass.interp.max",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Longest span a remote segment may be replayed over, in seconds. Negative to follow the project setting.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.mass.interp.min",
+      "name": "crowdy.mass.interp.min",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "Shortest span a remote segment may be replayed over, in seconds. Negative to follow the project setting.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.mass.interp.overshoot",
+      "name": "crowdy.mass.interp.overshoot",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "How much longer than the observed arrival interval a remote segment is replayed over. Negative to follow the project setting.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": ""
     },
     {
       "id": "crowdy.net.http2",
@@ -377,6 +476,17 @@
       "allowlist": ""
     },
     {
+      "id": "crowdy.auth.consent.preview",
+      "name": "crowdy.auth.consent.preview",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Shows the consent prompt over the game viewport without recording anything; Accept and Decline only close it.",
+      "module": "CrowdyServices",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "crowdy.cpp.selftest",
       "name": "crowdy.cpp.selftest",
       "kind": "command",
@@ -388,48 +498,147 @@
       "allowlist": ""
     },
     {
-      "id": "crowdy.gamemodel.stats",
-      "name": "crowdy.gamemodel.stats",
+      "id": "crowdy.mass.crowdsim.local",
+      "name": "crowdy.mass.crowdsim.local",
       "kind": "command",
       "role": "command",
       "trace": false,
-      "help": "Log how the Game Model has used the network since the last reset: pulls, applies, self-echoes, resolves, invokes, per-operation latency and transport bytes.",
-      "module": "CrowdyReplication",
+      "help": "",
+      "module": "CrowdyMass",
       "editor": false,
-      "allowlist": "deprecated"
+      "allowlist": "internal"
     },
     {
-      "id": "crowdy.gamemodel.stats.reset",
-      "name": "crowdy.gamemodel.stats.reset",
+      "id": "crowdy.mass.crowdsim.profile",
+      "name": "crowdy.mass.crowdsim.profile",
       "kind": "command",
       "role": "command",
       "trace": false,
-      "help": "Zero the counters crowdy.gamemodel.stats reports, including the API client's per-operation and transport totals.[GameModel] net stats reset.",
-      "module": "CrowdyReplication",
+      "help": "crowdy.mass.crowdsim.profile",
+      "module": "CrowdyMass",
       "editor": false,
-      "allowlist": "deprecated"
+      "allowlist": "internal"
     },
     {
-      "id": "crowdy.gamemodel.unwatchcontainers",
-      "name": "crowdy.gamemodel.unwatchcontainers",
+      "id": "crowdy.mass.crowdsim.start",
+      "name": "crowdy.mass.crowdsim.start",
       "kind": "command",
       "role": "command",
       "trace": false,
-      "help": "Close the container-change feed opened by crowdy.gamemodel.watchcontainers.",
-      "module": "CrowdyReplication",
+      "help": "Crowd simulation: emit position updates for N simulated players through the real send path. Args: [count] [radiusMetres] [class].crowdy.mass.crowdsim.start",
+      "module": "CrowdyMass",
       "editor": false,
-      "allowlist": "deprecated"
+      "allowlist": "internal"
     },
     {
-      "id": "crowdy.gamemodel.watchcontainers",
-      "name": "crowdy.gamemodel.watchcontainers",
+      "id": "crowdy.mass.crowdsim.state",
+      "name": "crowdy.mass.crowdsim.state",
       "kind": "command",
       "role": "command",
       "trace": false,
-      "help": "Open the server's container-change feed over a WebSocket and log every notification. Optional argument narrows it to one container type. Diagnostic only: nothing is re-pulled from it. Run with no argument again, or crowdy.gamemodel.unwatchcontainers, to close it.",
-      "module": "CrowdyReplication",
+      "help": "",
+      "module": "CrowdyMass",
       "editor": false,
-      "allowlist": "deprecated"
+      "allowlist": "internal"
+    },
+    {
+      "id": "crowdy.mass.crowdsim.status",
+      "name": "crowdy.mass.crowdsim.status",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Crowd simulation: report the rate actually achieved, what the simulated players are doing, and how they are spread over chunks.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "crowdy.mass.crowdsim.stop",
+      "name": "crowdy.mass.crowdsim.stop",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Crowd simulation: stop emitting. The simulated players are left to the tracker's normal timeout.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "crowdy.mass.derive",
+      "name": "crowdy.mass.derive",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Says what a Mass entity config derived from an actor class would contain, without spawning anything. Args: <class>, a short name, an asset path or a full object path.Usage: crowdy.mass.derive <class>, a short name, an asset path or a full object path.crowdy.mass.derive:",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.mass.gates",
+      "name": "crowdy.mass.gates",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Runs every automated gate and prints one PASS/FAIL report to copy in a single selection: the one-shot action path, the view-state echo (a pose landing, a second echo changing it, a pose touching nothing else, a pose clearing, a hostile echo in every field being unable to unmake an entity, a truncated payload, a forged payload), the renderer's animation track count across a spawn and destroy churn, whether every authored pose resolves to a bank slot of its own, the CrowdyState delta path into an entity that owns no participant (which road actually wrote the pose, what was dropped, and whether a field registered from outside this module receives its bytes), and any gate a game has registered. Optional arg: how many entities the churn spawns (default 64, clamped 1 to 1024). Around fifteen seconds at the default; forces crowdy.rpc.loopback on for the run and restores it afterwards.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "crowdy.mass.gates.stop",
+      "name": "crowdy.mass.gates.stop",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Abandons a gate run in progress, destroying its entities and restoring crowdy.rpc.loopback.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "crowdy.mass.oneshot",
+      "name": "crowdy.mass.oneshot",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Fires one PlayOneShot at a Mass entity along the camera's aim, or at any tracked one. Args: <actionId> [variant] [playRate].",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "crowdy.mass.proxyprobe",
+      "name": "crowdy.mass.proxyprobe",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Builds a never-spawned dispatch proxy of a class and reports what is real on it: which components exist, which are registered, whether a body would be allowed to run, and what only a genuinely spawned actor has. Args: <ClassPathOrName> [FunctionName] [SpawnComparison 0|1, default 1]. The comparison spawns and immediately destroys one real actor of the class, which runs its construction script and its BeginPlay.[dispatch proxy probe]: name a class, for example crowdy.mass.proxyprobe /Game/Characters/BP_Hero.BP_Hero_C[dispatch proxy probe]: nothing loaded for '",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "crowdy.mass.sendaction",
+      "name": "crowdy.mass.sendaction",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Sends the SDK's generic Crowdy action at a Mass entity along the camera's aim, or at any tracked one, through the real Send Crowdy Action path: it reaches every machine drawing the entity, this one included, and unlike crowdy.mass.oneshot it carries no ownership check. Args: <actionName> [variant] [playRate].",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": "internal"
+    },
+    {
+      "id": "crowdy.mass.state.verdict",
+      "name": "crowdy.mass.state.verdict",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Print one block describing whether CrowdyState is reaching crowd entities: every replicated property no fragment field claims, deltas claimed and applied, every drop reason, and which road wrote the pose. Paste the whole block when reporting a gate.",
+      "module": "CrowdyMass",
+      "editor": false,
+      "allowlist": ""
     },
     {
       "id": "crowdy.net.routes",
@@ -451,17 +660,6 @@
       "help": "Reports what a Crowdy event is in this process: resolved, replicated, its recipient, its FunctionID, and whether its compiled body carries the dispatch gate. Args: <ClassPathOrName> <FunctionName>. A Blueprint class name ends in _C.",
       "module": "CrowdyReplication",
       "editor": false,
-      "allowlist": ""
-    },
-    {
-      "id": "crowdy.schema.RetagAssets",
-      "name": "crowdy.schema.RetagAssets",
-      "kind": "command",
-      "role": "command",
-      "trace": false,
-      "help": "One-time migration: resaves every Blueprint the Game Model container scan cannot yet answer for from its asset-registry tags, parent-first, so the scan's fast path covers the whole project. Run on a clean sync with no other outstanding changes; expect version-stamp diff noise.",
-      "module": "CrowdySDKEditor",
-      "editor": true,
       "allowlist": ""
     },
     {

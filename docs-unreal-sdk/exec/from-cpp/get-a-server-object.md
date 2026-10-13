@@ -35,8 +35,24 @@ Every owner that acquires the same definition and Instance Id gets the same `UCr
 
 The subsystem holds owners weakly. You do not have to give a Server Object back: when every owner has been destroyed, a grace period starts, `UCrowdyServerObjectSubsystem::GracePeriodSeconds` (10 seconds). An owner that acquires it again inside that time gets the same object back, values and all. When the grace period runs out, the Server Object is **Released** and forgotten; the next `Acquire` starts a fresh one.
 
-- **Map travel.** The grace period does not run while the game instance is loading a map. A beacon destroyed by leaving one map and acquired again by a beacon in the next reuses the same Server Object, with no gap in its values.
+- **Map travel.** The grace period does not run while the game instance is loading a map, or during a seamless travel. A beacon destroyed by leaving one map and acquired again by a beacon in the next reuses the same Server Object, with no gap in its values.
 - **Giving it back early.** `Release(Object, Owner)` stops one owner holding it, as if that owner had been destroyed. Use it for an owner that lives on after it stops needing the Server Object, such as a pooled widget.
+
+## One object per area
+
+A type used for a crowd can keep one Server Object for each area of the ground; see [Keep a record per entity](../keep-a-record-per-entity.md#pick-the-object). The Instance Id is the area's `x,y`. The session's chunk size places a location in a chunk the way actor updates do: `UCrowdyServerObjectSubsystem::FindGroundChunk` gives the chunk of a location, Unreal's X and Y over the chunk size, rounded down, and `GetAreaKey` on the definition turns a chunk into the Instance Id, using the definition's **Area Size**:
+
+```cpp
+int64 ChunkX = 0;
+int64 ChunkY = 0;
+if (Subsystem->FindGroundChunk(GetActorLocation(), ChunkX, ChunkY))
+{
+	const FString AreaId = RaiderDefinition->GetAreaKey(ChunkX, ChunkY);
+	Area = Subsystem->Acquire(RaiderDefinition, AreaId, this, Error);
+}
+```
+
+Look again when the location moves into another area, and `Release` the old one. In Blueprint, or on an actor with a `UCrowdyServerObjectComponent`, the component's **This Actor's Area** instance mode does all of this. `FindGroundChunk` returns false without a game session.
 
 ## Status
 

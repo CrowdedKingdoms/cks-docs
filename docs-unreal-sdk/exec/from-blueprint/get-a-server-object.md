@@ -2,7 +2,7 @@
 slug: get-a-server-object
 sidebar_position: 1
 title: Get a Server Object
-description: "Get the Server Object a Blueprint uses: the typed nodes a Definition asset adds to the palette, finding the object by Target, by asset or with Only One Instance, the Crowdy Server Object component (Instance Id, Signed-In Player, This Actor, Player's Team and From Server Value) with its events and nodes, and getting one without the component, with its status."
+description: "Get the Server Object a Blueprint uses: the typed nodes a Definition asset adds to the palette, finding the object by Target, by asset or with Only One Instance, the Crowdy Server Object component (Instance Id, Signed-In Player, This Actor, This Actor's Area, Player's Team and From Server Value) with its events and nodes, and getting one without the component, with its status."
 ---
 
 # Get a Server Object
@@ -61,6 +61,7 @@ The typed nodes take **Self** as the default **Target**, so the simplest way to 
   - **Signed-In Player**: the signed-in player's user id. Use it for an [Owner Only](../from-cpp/get-a-server-object.md#owner-only-types) type, so each player gets their own. The component waits for the player to sign in, and joins again after a new sign-in or a new account.
   - **This Actor**: the actor's placement in the level, which is the same on every player's machine. Only for an actor placed in the level with the component already on it, not one spawned at run time or given the component at run time.
   - **Player's Team**: the signed-in player's [Crowdy Team](../access-members-and-timers.md#crowdy-team), for a type whose **Members From** is **Crowdy Team**. **Team Id** picks the team; 0 uses the player's only team. The component gets the player's teams if the game has not, and joins again when **On My Teams Changed** runs. A player in several teams fails with "This player is in 2 teams; set Team Id": set **Team Id**, then call **Rejoin**.
+  - **This Actor's Area**: the Server Object of the area the actor stands in. The ground is cut into squares of the definition's **Area Size** chunks on each side, and the Instance Id is the square's `x,y`. The component checks every half second and, when the actor crosses into another area, joins that area's object and lets go of the old one. For a type that keeps [a record per entity](../keep-a-record-per-entity.md#pick-the-object), the actor also needs a **Crowdy Entity** component, since its id names the actor's record. Needs a game session, which gives the chunk size. In C++ the mode is `ECrowdyServerObjectInstanceMode::ThisActorsArea`.
   - **From Server Value**: the Instance Id is a variable of another Server Object, followed as it changes. Set **Source Definition**, **Source Instance** (the enum `ECrowdyServerObjectSourceInstance`: **Instance Id**, with **Source Instance Id**, or **Signed-In Player**) and **Source Variable**, a String or an integer. While the variable is empty the component waits ("Waiting for TeamId"), and when it changes the component joins the new one. See [Guild Halls](../examples/guild-halls-and-arenas.md#guild-halls).
 
 ![The Crowdy Server Object component: Definition CSO_VillageBeacon, Instance Mode Instance Id, Instance Id oakford](/img/unreal-sdk/server-object-component.png)
@@ -106,4 +107,5 @@ The statuses are the ones from C++; see [Status](../from-cpp/get-a-server-object
 - [Create a Server Object type](../create-a-type.md): the asset these nodes come from
 - [Access, members and timers](../access-members-and-timers.md): Only One Instance, members and teams
 - [Guild halls and arena lobbies](../examples/guild-halls-and-arenas.md): the component's From Server Value mode
+- [Keep a record per entity](../keep-a-record-per-entity.md): the component's This Actor's Area mode, for a crowd
 - [Troubleshooting](../troubleshooting.md): a Server Object that stays in Connecting or Fails

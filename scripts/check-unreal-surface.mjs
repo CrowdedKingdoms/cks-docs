@@ -25,7 +25,7 @@
 // counted there only. Entries with editor_module set are listed in their own section
 // because they are usually allowlisted wholesale (reason `editor`).
 //
-// scripts/unreal-surface-allowlist.json names symbols that are deliberately not
+// docs-unreal-sdk/reference/surface-allowlist.json names symbols that are deliberately not
 // documented. Three outcomes: 0 = nothing missing, 1 = something is missing (or
 // --report, which prints and exits 0), 3 = could not run.
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
@@ -36,7 +36,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repo = resolve(here, '..');
 
 const SURFACE = 'static/helpers/unreal-sdk/sdk-surface.json';
-const ALLOWLIST = 'scripts/unreal-surface-allowlist.json';
+const ALLOWLIST = 'docs-unreal-sdk/reference/surface-allowlist.json';
 const DOCS = 'docs-unreal-sdk';
 const REASONS = new Set(['internal', 'deprecated', 'mass', 'editor']);
 

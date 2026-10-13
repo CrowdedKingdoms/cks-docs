@@ -16,7 +16,7 @@ Every piece of networked state in the SDK lives on one of two planes. The view p
 **Plane B, the truth plane (your server code).** Gameplay state the game must be able to trust: hit points, stats, inventory, currency, anything a client could benefit from lying about. The server owns it: your app's code on [ck-exec](/exec/intro) holds it, and a client asks that code for a change, which it decides and confirms. This is the only place a rule is enforced.
 
 :::caution[The SDK reaches ck-exec through Server Objects.]
-The SDK's own truth-plane API (Game Model containers and attributes, `CrowdyModel` markers, Crowdy Effects, invoke policies and sessions) was built on the game API's legacy game-model engine, which ck-exec replaced. The game API no longer serves it, so do not build on it: since v2.18.0 the SDK marks it deprecated and every call to it fails at once, and a later release removes it. Its replacement is [Server Objects](../exec/overview.md), from Blueprint or C++. See [Move from Game Models](../exec/move-from-game-models.md).
+The SDK once had its own truth-plane API (Game Model containers and attributes, `CrowdyModel` markers, Crowdy Effects, invoke policies and sessions), built on the game API's legacy game-model engine, which ck-exec replaced. The game API no longer serves it and the SDK has removed it. Its replacement is [Server Objects](../exec/overview.md), from Blueprint or C++. See [Move from Game Models](../exec/move-from-game-models.md).
 :::
 
 :::note[The elected host is a convention, not an enforcement point.]
@@ -64,7 +64,7 @@ The table below is a guide, not a rule book. Each row names the mechanism that f
 ## Gotchas
 
 - Low latency is not a reason to move a value to the view plane. Predict locally if you must, but let the server's confirmed value overwrite the prediction.
-- The Blueprint **Crowdy Replication** dropdown's **Server Owned** choice marks a legacy Game Model attribute, which no server reads any more. Use **Replicated** for view state, and keep trusted values in your server code.
+- The Blueprint **Crowdy Replication** dropdown offers only **None** and **Replicated**. **Replicated** is for view state; keep trusted values in your server code.
 
 ## Related
 

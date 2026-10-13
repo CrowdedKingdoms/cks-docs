@@ -1,0 +1,9 @@
+{
+  "label": "Examples",
+  "position": 12,
+  "link": {
+    "type": "generated-index",
+    "title": "Crowds with Mass Examples",
+    "description": "A worked example in Oakford, step by step: a market night where the square fills with players, drawn as crowd rows, with poses, actions, a near tier for the players close by, crowd data of your own and the raiders' health read from the server. It uses what the other pages explain; it is not a separate feature."
+  }
+}
