@@ -37,6 +37,18 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-13 (rate card: rows written by compute modules are no longer priced)
+
+- **Writes by compute modules are charged by the byte only.** The rate card's
+  `wasm_db_rows_written` row (40¢ per million rows, no allowance) is gone from every
+  environment; writes go on being charged as `wasm_write_bytes`, 25¢ per decimal GB above
+  the 1 GB each app gets a month. Nothing changes in the API or the SDKs: the dimension
+  disappears from `billingRateCard` and from new hourly statements, and `setBillingRate`
+  refuses the name, as it refuses the counts retired on 2026-09-06. The
+  [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html) and the
+  [Pricing page](https://crowdedkingdoms.com/pricing.html) say so. See
+  [the shared environment](/management-api/shared-environment#free-tier).
+
 ## 2026-10-12 (Unreal SDK v2.19.0: Game Models removed; crowds with Mass, records per entity, the terms and age prompt)
 
 The release after Server Objects removes the SDK's Game Model API, which is breaking for every
