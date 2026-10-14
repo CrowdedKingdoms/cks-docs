@@ -273,6 +273,9 @@ requires the identity session token and returns `SCOPE_MISSING` for an app token
   `exchangePortalCode` — the player has no access, the app revoked it, or the app
   suspended it until a time. None asks the player to buy anything; see
   [Error codes](/overview/error-codes).
+- `ACCOUNT_BLOCKED` (with `extensions.blockedUntil`, null for a block with no end)
+  on any of them, and on every other request — Crowded Kingdoms blocked the
+  account on the whole platform. Show it; retrying will not help.
 - `FORBIDDEN` (message prefixed **`CONSENT_REQUIRED`**) on
   `createPortalAuthorizationCode` — the user has not authorized this untrusted app
   yet. Call `authorizeApp` (after `portalConsent`) first. See
