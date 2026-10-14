@@ -85,8 +85,8 @@ fn plant(ctx: &Ctx, at: ChunkPos, player: u64) -> Result<()> {
 | `ctx.permissions().revoke(grid, player, keys)` | `permissions.write` | Revokes the named keys, or all of them. |
 | `ctx.access().get(player)` | `access.read` | The player's access to the app (`status`, `tier`, `expires_at`, `suspended_until`), or `None`. |
 | `ctx.access().grant(player, tier)` | `access.write` | Grants access, on one of the app's tiers when named. |
-| `ctx.access().revoke(player)` | `access.write` | Revokes access, as `revokeAppAccess` does: the player's sessions end at once. |
-| `ctx.access().suspend(player, seconds)` / `unsuspend(player)` | `access.write` | A ban that lifts by itself, 1 second to 365 days: the player's sessions end at once, and signing in is refused with `ACCESS_SUSPENDED` until then. Returns when it ends. |
+| `ctx.access().revoke(player)` | `access.write` | Revokes access, as `revokeAppAccess` does: the player's realtime and ck-exec sessions end at once (code `4403`), their mods in the app stop, and their calls into the app are refused. |
+| `ctx.access().suspend(player, seconds)` / `unsuspend(player)` | `access.write` | A ban that lifts by itself, 1 second to 365 days, with the same cut as a revoke; signing in is refused with `ACCESS_SUSPENDED` until then. Returns when it ends. |
 
 Grid and access changes reach every Game API server within a moment. The realtime layer holds a
 grid decision for up to 15 seconds; suspensions and revocations end the player's sessions there at

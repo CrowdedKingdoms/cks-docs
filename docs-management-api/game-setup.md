@@ -174,17 +174,32 @@ For premium tiers, or for apps that opted out of open‑by‑default, the admin 
 mutation { grantAppAccess(input: { appId: "APP_ID", userId: "PLAYER_USER_ID", tierId: "TIER_ID" }) { appUserAccessId status } }
 ```
 
+When you change what a tier grants, `resyncTierGridPermissions(appId)` re-applies each player's tier keys on the app's default world grid. It only adds keys: a key the tier no longer carries stays until you revoke it.
+
+The grant propagates to the Game API automatically (the matching grid permissions are provisioned server‑side via replica‑sync), so the player is authorized end to end — again with no direct database access.
+
+### Revoking, suspending and banning
+
 Revoke a player's access with `revokeAppAccess(appId, userId)`. For a ban that lifts by itself, suspend it instead:
 
 ```graphql
 mutation { suspendAppAccess(appId: "APP_ID", userId: "PLAYER_USER_ID", until: "2026-11-01T00:00:00Z") { suspendedUntil } }
 ```
 
-`until` is at most 365 days away; `unsuspendAppAccess(appId, userId)` lifts it early. Revoking or suspending ends the player's sessions at once, and signing in is refused with `ACCESS_REVOKED` or `ACCESS_SUSPENDED` (which carries `suspendedUntil`) until it is lifted; a player with no access to an app with no free tier gets `ACCESS_NOT_GRANTED`. None of these tells the player to buy anything. Granting, revoking and suspending require **`manage_access_tiers`**, and your app's [ck-exec](/exec/world-and-platform-data) code can do the same with the `access.write` scope.
+`until` is at most 365 days away; `unsuspendAppAccess(appId, userId)` lifts it early. Granting, revoking and suspending require **`manage_access_tiers`**, and your app's [ck-exec](/exec/world-and-platform-data) code can do the same with the `access.write` scope.
 
-When you change what a tier grants, `resyncTierGridPermissions(appId)` re-applies each player's tier keys on the app's default world grid. It only adds keys: a key the tier no longer carries stays until you revoke it.
+Revoking or suspending cuts everything the player does in your app, at once:
 
-The grant propagates to the Game API automatically (the matching grid permissions are provisioned server‑side via replica‑sync), so the player is authorized end to end — again with no direct database access.
+- Their gameplay tokens for the app stop working, and their realtime connection is dropped. Channel messages stop reaching them and theirs stop reaching the channel.
+- Their [ck-exec](/exec/connect-from-a-game#when-the-gateway-refuses) connections to your app close with code `4403`, and their mods in your app stop until the suspension ends or you restore them.
+- Signing in to the app is refused with `ACCESS_REVOKED`, or `ACCESS_SUSPENDED` with `suspendedUntil`. So are their other calls into the app: purchases, model calls, joining a channel or a team, and the like. Your server code's `players.features` answers no features for them and `players.check_permission` answers false.
+
+What is the player's own stays readable: their wallet, receipts and their own input logs. A member of your organization keeps their developer access. A grant that expires is cut the same way within a minute, but it is not a sanction: the player can buy or be granted access again. A suspension lapses by itself; lifting either restores nothing live, and the player connects again. None of these codes tells the player to buy anything, and a player with no access to an app with no free tier gets `ACCESS_NOT_GRANTED`.
+
+To keep a player out of one channel or team without touching their access to the app, ban them from it: `banChannelMember(groupId, userId, reason)` or `banTeamMember(...)`, with the group's **`manage_members`** permission. They are removed, the channel stops reaching them, and joining, requesting to join and being added are refused with `GROUP_MEMBER_BANNED` until `unbanChannelMember` / `unbanTeamMember`. Leaving or being removed does not lift a ban.
+
+Crowded Kingdoms can also block an account across the whole platform, every app and Crowd Altar. Its requests and sign-in are then refused with `ACCOUNT_BLOCKED` (with `blockedUntil` for a timed block; Crowd Altar's sign-in answers `FORBIDDEN` with a message naming the block). Your game shows the refusal; there is nothing for it to do.
+
 
 ---
 

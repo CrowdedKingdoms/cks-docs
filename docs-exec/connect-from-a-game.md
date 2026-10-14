@@ -198,6 +198,13 @@ time.
 | `HTTP 401` with the reason, no socket | the connect token is refused | `Denied`, with the reason | `Unavailable` | `Denied` (with the reason when the transport can read it; the bundled libcurl transport reports the status only) | `Denied`, with the reason |
 | `HTTP 429` with the reason, no socket | the player already holds 16 sessions to the app through this gateway, or the gateway is full | `Unavailable`, with the reason | `Unavailable` | `Unavailable` | `Unavailable`, with the reason |
 | socket opened, then closed `4401` | a host before ck-exec 0.10.0 refused the token | `Denied` | `Denied` | `Denied` | `Denied` |
+| an open socket closed `4403` with the reason | what the connection rests on ended: the player's access was revoked, suspended or expired, they signed out or withdrew the app's authorization, or the account was blocked (ck-exec 0.16) | final: no reconnect, pending calls fail `Denied`, `onAccessEnded` hears the reason (CrowdyJS 18.10.0) | the same | final: no reconnect, pending calls fail `Denied`, the access-ended listener hears the reason (CrowdyCPP 0.63.0) | `Unavailable`, then a reconnect that is refused `Denied` (until it vendors CrowdyCPP 0.63.0) |
+
+After a `4403` the host refuses, for 90 seconds, the connect tokens the cut covers that were
+minted before it (`HTTP 401`, "access ended"), even if the player has access again by then:
+mint a new one. An
+SDK before CrowdyJS 18.10.0 or CrowdyCPP 0.63.0 treats a `4403` as a lost connection and its
+reconnect is refused.
 
 A browser cannot read the status of a WebSocket upgrade it was refused, so there a refused
 token looks like any failed connection. Before CrowdyJS 18.1.0, CrowdyCPP 0.55.0 and CrowdyPy

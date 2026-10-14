@@ -1,0 +1,63 @@
+---
+id: account-block
+title: AccountBlock
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A platform-wide block on an account, set by a super-admin. While it holds, every sign-in and every authenticated request is refused with ACCOUNT&#x005F;BLOCKED, on CK and on Crowd Altar, and every session, realtime connection and ck-exec socket the account had was ended when it was set. The last block stays readable after it is lifted or lapses.
+
+
+```graphql
+type AccountBlock {
+  userId: BigInt!
+  blocked: Boolean!
+  blockedAt: DateTime
+  blockedUntil: DateTime
+  reason: String
+  blockedBy: BigInt
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountBlock.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The account.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountBlock.<b>blocked</b></code>](#blocked)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#blocked\} 
+Whether the block holds now.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountBlock.<b>blockedAt</b></code>](#blocked-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#blocked-at\} 
+When the last block was set; null if the account was never blocked.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountBlock.<b>blockedUntil</b></code>](#blocked-until)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#blocked-until\} 
+When it lapses (or was lifted); null while it lasts until lifted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountBlock.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Why, as the super-admin wrote it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountBlock.<b>blockedBy</b></code>](#blocked-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#blocked-by\} 
+The super-admin who set it.
+
+
+
+
+### Returned By
+
+[`accountBlock`](/reference/graphql/operations/queries/account-block.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`blockAccount`](/reference/graphql/operations/mutations/block-account.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`unblockAccount`](/reference/graphql/operations/mutations/unblock-account.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
