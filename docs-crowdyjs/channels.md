@@ -53,7 +53,32 @@ const members = await game.channels.members(channel.groupId);
 
 Other methods mirror the GraphQL surface: `list`, `get`, `roles`, `policy`,
 `update`, `remove`, `requestToJoin`, `leave`, `addMember`, `removeMember`,
-`setMemberRoles`, `createRole`, `updateRole`, `deleteRole`, and `setPolicy`.
+`ban`, `unban`, `setMemberRoles`, `createRole`, `updateRole`, `deleteRole`, and
+`setPolicy`.
+
+### Ban a member
+
+A ban keeps someone out of the channel until it is lifted: they are removed, the channel's
+messages stop reaching them and theirs stop reaching it, and joining, requesting to join or
+being added fails with `GROUP_MEMBER_BANNED`. Leaving or being removed does not lift it. It
+takes the channel's `manage_members` permission (CrowdyJS 18.10.0, and the Game API release
+after v2.43.1).
+
+```ts
+import { groupMemberBannedOf } from '@crowdedkingdoms/crowdyjs';
+
+await game.channels.ban(channel.groupId, '2048', 'spamming trade chat');
+await game.channels.unban(channel.groupId, '2048');
+
+try {
+  await game.channels.join(channel.groupId);
+} catch (err) {
+  if (groupMemberBannedOf(err)) showMessage('You are banned from this channel.');
+}
+```
+
+A player whose access to the app is revoked or suspended loses every channel at once; see
+[revoking, suspending and banning](/management-api/game-setup#revoking-suspending-and-banning).
 
 ## Send and receive messages
 

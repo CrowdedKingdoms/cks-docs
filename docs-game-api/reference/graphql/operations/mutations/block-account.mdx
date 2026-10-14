@@ -1,0 +1,49 @@
+---
+id: block-account
+title: blockAccount
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+ADMIN/DESTRUCTIVE: blocks an account platform-wide. Every session and app token it holds is revoked, its realtime sessions and ck-exec sockets (developer sessions too) end in every datacenter, its mods stop, and every later sign-in and request, on CK and on Crowd Altar, is refused with ACCOUNT&#x005F;BLOCKED until `until` (or until unblockAccount when absent). Not yourself, not a super-admin. Requires a super-admin bearer game token.
+
+
+```graphql
+blockAccount(
+  userId: BigInt!
+  reason: String!
+  until: DateTime
+): AccountBlock!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>blockAccount.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+Target user id (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>blockAccount.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Why (1 to 500 characters). Kept on the account; shown to super-admins, not to the account.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>blockAccount.<b>until</b></code>](#until)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#until\} 
+When the block lapses by itself (ISO-8601, in the future). Absent: until unblockAccount.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AccountBlock</b></code>](/reference/graphql/types/objects/account-block.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A platform-wide block on an account, set by a super-admin. While it holds, every sign-in and every authenticated request is refused with ACCOUNT&#x005F;BLOCKED, on CK and on Crowd Altar, and every session, realtime connection and ck-exec socket the account had was ended when it was set. The last block stays readable after it is lifted or lapses.

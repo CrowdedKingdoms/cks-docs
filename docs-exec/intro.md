@@ -182,6 +182,14 @@ A browser sees only a failed connection; what each SDK reports is in
 [connect from a game](connect-from-a-game#when-the-gateway-refuses). (Hosts before ck-exec 0.10.0
 opened the socket and then closed it with code `4401`, which the SDKs report as `Denied`.)
 
+When what a connection rests on ends while it is open, the host closes it with code `4403` and
+the reason (ck-exec 0.16): the app revoked or suspended the player's access, their grant
+expired, they signed out (that session, or everywhere, as changing the password does), they
+withdrew the app's authorization, Crowded Kingdoms blocked the account, or, for a developer's
+connection, they left the organization. It is final: do not reconnect. For 90 seconds the host
+also refuses the connect tokens that cut covers if they were minted before it (`HTTP 401`,
+"access ended"); after that `execConnect` refuses for as long as the cause lasts.
+
 ### The wire protocol
 
 One binary WebSocket message per frame, little endian. `str8` is a one-byte length and UTF-8
