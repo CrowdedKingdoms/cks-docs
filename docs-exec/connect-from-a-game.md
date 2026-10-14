@@ -172,7 +172,7 @@ about 15. A game can see it:
 | `BAD_REQUEST` | `nodeType` is not 1–64 letters, digits, `-` or `_`, or `key` is longer than 256 characters | Fix the arguments |
 | `NOT_FOUND` | With `nodeType`: the app has no deployed version, or its active version has no node type of that name | Deploy it, or fix the name |
 | `CONFLICT` | The app lives in another datacenter than this game API's | Call the endpoint `mintAppToken` and `gameClientBootstrap` return for the app |
-| `INTERNAL_SERVER_ERROR`, `httpStatus` 503 | ck-exec is not available on this environment, no host is live, or no manager answered within 15 seconds ("no execution manager leader reachable"); or the app already runs 1,024 instances and the call would start another ([instances](operations#call-limits)) | Retry with backoff. At the instance ceiling, wait for idle instances to stop |
+| `INTERNAL_SERVER_ERROR`, `httpStatus` 503 | ck-exec is not available on this environment, no host is live, or no manager answered within 15 seconds ("no execution manager leader reachable"); or the app already runs as many instances as its limit allows, or the player's own calls already hold 64 of them (ck-exec 0.17), and the call would start another ([instances](operations#call-limits)) | Retry with backoff. At the instance ceiling, wait for idle instances to stop |
 
 ## Where the connect token goes
 
@@ -198,7 +198,7 @@ time.
 | `HTTP 401` with the reason, no socket | the connect token is refused | `Denied`, with the reason | `Unavailable` | `Denied` (with the reason when the transport can read it; the bundled libcurl transport reports the status only) | `Denied`, with the reason |
 | `HTTP 429` with the reason, no socket | the player already holds 16 sessions to the app through this gateway, or the gateway is full | `Unavailable`, with the reason | `Unavailable` | `Unavailable` | `Unavailable`, with the reason |
 | socket opened, then closed `4401` | a host before ck-exec 0.10.0 refused the token | `Denied` | `Denied` | `Denied` | `Denied` |
-| an open socket closed `4403` with the reason | what the connection rests on ended: the player's access was revoked, suspended or expired, they signed out or withdrew the app's authorization, or the account was blocked (ck-exec 0.16) | final: no reconnect, pending calls fail `Denied`, `onAccessEnded` hears the reason (CrowdyJS 18.10.0) | the same | final: no reconnect, pending calls fail `Denied`, the access-ended listener hears the reason (CrowdyCPP 0.63.0) | `Unavailable`, then a reconnect that is refused `Denied` (until it vendors CrowdyCPP 0.63.0) |
+| an open socket closed `4403` with the reason | what the connection rests on ended: the player's access was revoked, suspended or expired, they signed out or withdrew the app's authorization, or the account was blocked (ck-exec 0.16) | final: no reconnect, pending calls fail `Denied`, `onAccessEnded` hears the reason (CrowdyJS 18.10.0) | the same | final: no reconnect, pending calls fail `Denied`, the access-ended listener hears the reason (CrowdyCPP 0.63.0) | final: no reconnect, pending calls fail `Denied`, `on_access_ended` hears the reason (CrowdyPy 0.11.0) |
 
 After a `4403` the host refuses, for 90 seconds, the connect tokens the cut covers that were
 minted before it (`HTTP 401`, "access ended"), even if the player has access again by then:

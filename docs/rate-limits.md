@@ -33,8 +33,11 @@ long to wait. The limit is kept per host, so a player connected to hubs on two h
 120 on each, and calls between instances don't count.
 
 A player also holds at most **16 connections** to one app through a host; the 17th is
-answered `HTTP 429` before any socket opens. An app runs at most **1,024 instances** at
-once, mods included, and a call that would start another is answered `Unavailable`. A text
+answered `HTTP 429` before any socket opens. An app runs as many instances at once as its
+organization's funding allows (**16** while it cannot be charged, **16,384** once it can),
+mods included, and a call that would start another is answered `Unavailable`. One player's
+own calls hold at most **64** of them at once (ck-exec 0.17); past it their next new key is
+answered `Unavailable` while other players still place. A text
 message closes the connection, because the protocol is binary. See
 [call limits](/exec/operations#call-limits).
 
