@@ -198,7 +198,7 @@ What is the player's own stays readable: their wallet, receipts and their own in
 
 To keep a player out of one channel or team without touching their access to the app, ban them from it: `banChannelMember(groupId, userId, reason)` or `banTeamMember(...)`, with the group's **`manage_members`** permission. They are removed, the channel stops reaching them, and joining, requesting to join and being added are refused with `GROUP_MEMBER_BANNED` until `unbanChannelMember` / `unbanTeamMember`. Leaving or being removed does not lift a ban.
 
-Crowded Kingdoms can also block an account across the whole platform, every app and Crowd Altar. Its requests and sign-in are then refused with `ACCOUNT_BLOCKED` (with `blockedUntil` for a timed block). Your game shows the refusal; there is nothing for it to do.
+Crowded Kingdoms can also block an account across the whole platform, every app and Crowd Altar. Its requests and sign-in are then refused with `ACCOUNT_BLOCKED` (with `blockedUntil` for a timed block; Crowd Altar's sign-in answers `FORBIDDEN` with a message naming the block). Your game shows the refusal; there is nothing for it to do.
 
 
 ---

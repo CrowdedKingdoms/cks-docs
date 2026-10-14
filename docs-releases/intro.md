@@ -37,13 +37,15 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
-## 2026-10-13 (dev: suspending, revoking or blocking a player cuts every access path, and channel and team bans; replication server v0.39.0, Game API v2.44.0, ck-exec 0.16.0, CrowdyJS 18.10.0, CrowdyCPP 0.63.0)
+## 2026-10-13 (dev: suspending, revoking or blocking a player cuts every access path, and channel and team bans; replication server v0.39.0, Game API v2.44.1, ck-exec 0.16.0, CrowdyJS 18.10.0, CrowdyCPP 0.63.0)
 
 - **A suspension or a revoke now cuts everything the player does in the app.** Before, it
   ended their gameplay tokens and refused signing in, but an open ck-exec connection stayed
   open, a channel kept delivering to and from them, their mods kept running, and some calls
   into the app still answered. Now their realtime connection is dropped and channel messages
-  stop in both directions, their ck-exec connections close with code `4403`, their mods in the
+  stop in both directions (a channel send that still reaches a realtime server is refused with
+  `UNAUTHORIZED`; a ranged one used to answer `INVALID_APP_ID`), their ck-exec connections close
+  with code `4403`, their mods in the
   app stop, and their other calls into the app (purchases, model calls, joining a channel or
   team, your server code's `players.features` and `players.check_permission`) are refused with
   `ACCESS_REVOKED` or `ACCESS_SUSPENDED`. Their wallet, receipts and own input logs stay
@@ -57,8 +59,9 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
   being removed does not lift it.
 - **Account blocks.** Crowded Kingdoms can block an account on the whole platform. Its
   requests, and signing in (after the password check), are refused with
-  [`ACCOUNT_BLOCKED`](/overview/error-codes), on every app and on Crowd Altar;
-  `extensions.blockedUntil` says when a timed block lapses. Show it; retrying will not help.
+  [`ACCOUNT_BLOCKED`](/overview/error-codes) on every app; `extensions.blockedUntil` says when a
+  timed block lapses. Crowd Altar refuses its sign-in too, with `FORBIDDEN` and a message that
+  names the block. Show it; retrying will not help.
 - **ck-exec 0.16.0.** A host closes a connection with code `4403` and the reason when what it
   rests on ends: the player's access, their session (signing out, everywhere too, or
   withdrawing the app's authorization), the account, or a developer's place in the
@@ -74,7 +77,8 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 - **Hub voxel writes no longer wait for the list of realtime servers.** A hub's
   `world.set_voxels` paid about 430 ms whenever it wrote more than two seconds after its last
   write, while the Game API read the list of realtime servers it announces writes to. The list
-  is now refreshed in the background.
+  is now refreshed in the background: on dev a hub's 16-voxel write takes about 15 ms (p50 14 ms
+  in `or` and 19 ms in `va`, against 435 and 437 before).
 - **`rollbackVoxelUpdates` respects a closed wilderness.** When the app's wilderness is closed,
   an applied rollback that would write any chunk of closed, unclaimed wilderness is refused
   (403) before it writes anything. A dry run is unchanged.
