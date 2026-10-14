@@ -73,7 +73,10 @@ The full method set mirrors the GraphQL surface:
   `roles(groupId)`, `policy(appId)`.
 - **Team lifecycle:** `create`, `update`, `remove`, `setPolicy`.
 - **Membership:** `join`, `requestToJoin`, `leave`, `addMember`, `removeMember`,
-  `setMemberRoles`.
+  `ban`, `unban`, `setMemberRoles`. A ban (the team's `manage_members` permission,
+  CrowdyJS 18.10.0) removes the member and refuses joining, requesting to join and
+  being added with `GROUP_MEMBER_BANNED` (`groupMemberBannedOf(err)`) until `unban`;
+  leaving or being removed does not lift it.
 - **Roles:** `createRole`, `updateRole`, `deleteRole`.
 
 Setting the per-app team policy (`setPolicy`) requires the `manage_apps`
