@@ -197,6 +197,114 @@ type GraphQLServer {
   updatedAt: DateTime!
 }
 
+"""
+A free or purchasable access tier for an app, bundling a price and the set of runtime permission keys that granted users receive.
+"""
+type AppAccessTier {
+  """Unique numeric id of the tier (primary key)."""
+  tierId: BigInt!
+  """Numeric id of the app this tier belongs to."""
+  appId: BigInt!
+  """Display name of the tier (e.g. "Free", "Pro")."""
+  name: String!
+  """
+  Sort order for displaying tiers (ascending); lower values appear first.
+  """
+  tierOrder: Float!
+  """True if the tier has no purchase cost."""
+  isFree: Boolean!
+  """
+  True if this is the app default tier (used for open-by-default / self-service grants). At most one default per app is expected.
+  """
+  isDefault: Boolean!
+  """
+  Price in the smallest currency unit (cents) for paid tiers; null for free tiers.
+  """
+  priceCents: BigInt
+  """ISO 4217 currency code for priceCents (e.g. "usd"); defaults to "usd"."""
+  currency: String
+  """
+  Billing cadence for recurring tiers (e.g. "month", "year"); null for one-time or free tiers.
+  """
+  billingPeriod: String
+  """Optional marketing description of what the tier includes."""
+  description: String
+  """
+  Runtime permission keys granted to users on this tier (a subset of runtimePermissions), e.g. "access", "teleport", "update_voxel_data", "use_voice_chat", "use_video_chat" (webcam; not granted by default).
+  """
+  permissionKeys: [String!]!
+  """
+  Tier lifecycle: "active" or "archived" (soft-deleted via archiveAccessTier). Defaults to "active".
+  """
+  status: String!
+  """Timestamp when the tier was created."""
+  createdAt: DateTime!
+  """Timestamp when the tier was last updated."""
+  updatedAt: DateTime!
+}
+
+"""
+A user's entitlement to a specific app: whether (and via which tier) they may access it. At most one row per (app, user).
+"""
+type AppUserAccess {
+  """Unique numeric id of this access record (primary key)."""
+  appUserAccessId: BigInt!
+  """Numeric id of the app this access applies to."""
+  appId: BigInt!
+  """Numeric id of the user this access belongs to."""
+  userId: BigInt!
+  """
+  Numeric id of the access tier granting this access; null if access was granted without a specific tier.
+  """
+  tierId: BigInt
+  """
+  Entitlement lifecycle: "active" (currently entitled) or "revoked" (access removed). Only active, non-expired rows grant runtime access. Defaults to "active".
+  """
+  status: String!
+  """
+  Who granted this access: the granting admin's numeric user id (as a string), or "system" for automatic/free-tier grants.
+  """
+  grantedBy: String!
+  """
+  External billing subscription id (e.g. Stripe/PayPal) backing a paid grant; null for free or manual grants.
+  """
+  subscriptionId: String
+  """
+  Optional expiry timestamp; access is treated as inactive once it has passed. Null means the grant does not expire.
+  """
+  expiresAt: DateTime
+  """
+  A timed suspension: while this time is in the future the player holds no access (a gameplay token is refused with ACCESS_SUSPENDED and realtime sessions end), and access returns by itself once it passes. Null when the player is not suspended. Set with suspendAppAccess, cleared with unsuspendAppAccess.
+  """
+  suspendedUntil: DateTime
+  """Timestamp when the access record was first created."""
+  createdAt: DateTime!
+  """
+  Timestamp when the access record was last updated (e.g. re-granted or revoked).
+  """
+  updatedAt: DateTime!
+  """
+  The user this access record belongs to. Null if the user could not be loaded.
+  """
+  user: User
+  """
+  The access tier granted by this record. Null if no tier is associated (tierId is null) or the tier could not be loaded.
+  """
+  tier: AppAccessTier
+}
+
+"""
+Org member eligible for app access grants. Scoped to the app org; requires manage_access_tiers.
+"""
+type AppGrantMemberCandidate {
+  """Numeric id of the candidate user (use with grantAppAccess)."""
+  userId: BigInt!
+  """Email of the candidate, if known."""
+  email: String
+  """Gamertag / display handle of the candidate, if set."""
+  gamertag: String
+}
+
 type User {
   """Unique user id and primary key. BigInt serialized as a decimal string."""
   userId: BigInt!
@@ -357,114 +465,6 @@ type UsersConnection {
   Total matching records across all pages, when known (null for sources that do not compute a total).
   """
   totalCount: Int
-}
-
-"""
-A free or purchasable access tier for an app, bundling a price and the set of runtime permission keys that granted users receive.
-"""
-type AppAccessTier {
-  """Unique numeric id of the tier (primary key)."""
-  tierId: BigInt!
-  """Numeric id of the app this tier belongs to."""
-  appId: BigInt!
-  """Display name of the tier (e.g. "Free", "Pro")."""
-  name: String!
-  """
-  Sort order for displaying tiers (ascending); lower values appear first.
-  """
-  tierOrder: Float!
-  """True if the tier has no purchase cost."""
-  isFree: Boolean!
-  """
-  True if this is the app default tier (used for open-by-default / self-service grants). At most one default per app is expected.
-  """
-  isDefault: Boolean!
-  """
-  Price in the smallest currency unit (cents) for paid tiers; null for free tiers.
-  """
-  priceCents: BigInt
-  """ISO 4217 currency code for priceCents (e.g. "usd"); defaults to "usd"."""
-  currency: String
-  """
-  Billing cadence for recurring tiers (e.g. "month", "year"); null for one-time or free tiers.
-  """
-  billingPeriod: String
-  """Optional marketing description of what the tier includes."""
-  description: String
-  """
-  Runtime permission keys granted to users on this tier (a subset of runtimePermissions), e.g. "access", "teleport", "update_voxel_data", "use_voice_chat", "use_video_chat" (webcam; not granted by default).
-  """
-  permissionKeys: [String!]!
-  """
-  Tier lifecycle: "active" or "archived" (soft-deleted via archiveAccessTier). Defaults to "active".
-  """
-  status: String!
-  """Timestamp when the tier was created."""
-  createdAt: DateTime!
-  """Timestamp when the tier was last updated."""
-  updatedAt: DateTime!
-}
-
-"""
-A user's entitlement to a specific app: whether (and via which tier) they may access it. At most one row per (app, user).
-"""
-type AppUserAccess {
-  """Unique numeric id of this access record (primary key)."""
-  appUserAccessId: BigInt!
-  """Numeric id of the app this access applies to."""
-  appId: BigInt!
-  """Numeric id of the user this access belongs to."""
-  userId: BigInt!
-  """
-  Numeric id of the access tier granting this access; null if access was granted without a specific tier.
-  """
-  tierId: BigInt
-  """
-  Entitlement lifecycle: "active" (currently entitled) or "revoked" (access removed). Only active, non-expired rows grant runtime access. Defaults to "active".
-  """
-  status: String!
-  """
-  Who granted this access: the granting admin's numeric user id (as a string), or "system" for automatic/free-tier grants.
-  """
-  grantedBy: String!
-  """
-  External billing subscription id (e.g. Stripe/PayPal) backing a paid grant; null for free or manual grants.
-  """
-  subscriptionId: String
-  """
-  Optional expiry timestamp; access is treated as inactive once it has passed. Null means the grant does not expire.
-  """
-  expiresAt: DateTime
-  """
-  A timed suspension: while this time is in the future the player holds no access (a gameplay token is refused with ACCESS_SUSPENDED and realtime sessions end), and access returns by itself once it passes. Null when the player is not suspended. Set with suspendAppAccess, cleared with unsuspendAppAccess.
-  """
-  suspendedUntil: DateTime
-  """Timestamp when the access record was first created."""
-  createdAt: DateTime!
-  """
-  Timestamp when the access record was last updated (e.g. re-granted or revoked).
-  """
-  updatedAt: DateTime!
-  """
-  The user this access record belongs to. Null if the user could not be loaded.
-  """
-  user: User
-  """
-  The access tier granted by this record. Null if no tier is associated (tierId is null) or the tier could not be loaded.
-  """
-  tier: AppAccessTier
-}
-
-"""
-Org member eligible for app access grants. Scoped to the app org; requires manage_access_tiers.
-"""
-type AppGrantMemberCandidate {
-  """Numeric id of the candidate user (use with grantAppAccess)."""
-  userId: BigInt!
-  """Email of the candidate, if known."""
-  email: String
-  """Gamertag / display handle of the candidate, if set."""
-  gamertag: String
 }
 
 """An edge in a AppUserAccess connection."""

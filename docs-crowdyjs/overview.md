@@ -548,6 +548,13 @@ await actor.sendToActor('0123456789abcdef0123456789abcdef', 'aGVsbG8=', {
 
 `CrowdyGraphQLError` preserves GraphQL errors, including `path` and `extensions.code`.
 
+Helpers read the refusals a game shows the player: `accessRefusalOf(err)` (`ACCESS_NOT_GRANTED`,
+`ACCESS_REVOKED`, `ACCESS_SUSPENDED` with `suspendedUntil`), `accountBlockedOf(err)`
+(`ACCOUNT_BLOCKED`, with `blockedUntil` for a timed block; CrowdyJS 18.10.0),
+`groupMemberBannedOf(err)` (`GROUP_MEMBER_BANNED`), `appPausedOf(err)` and `actorExistsOf(err)`.
+An `ExecConnection` whose player's access or session ends is closed for good with
+`EXEC_CLOSE_ACCESS_ENDED` (4403); `onAccessEnded(listener)` hears the reason.
+
 Driving the Game API or realtime surface with an identity session token instead of an app-scoped token fails with the realtime `RealtimeConnectionEvent` codes `APP_TOKEN_REQUIRED` / `APP_SCOPE_MISMATCH`; an app token whose TTL elapsed mid-session yields the `UdpErrorCode` `TOKEN_EXPIRED`. Minting a portal code for an untrusted app without consent surfaces as `PortalConsentRequiredError` (or a `FORBIDDEN`/`CONSENT_REQUIRED` GraphQL error when calling the API directly). See [Error codes](/overview/error-codes).
 
 ## Low-level GraphQL access

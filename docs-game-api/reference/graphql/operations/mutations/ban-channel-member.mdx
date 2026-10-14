@@ -1,0 +1,49 @@
+---
+id: ban-channel-member
+title: banChannelMember
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Ban a user from a channel: their membership (or a new row, for someone not yet in it) becomes 'banned', their roles go, Buddy stops routing the channel to and from them, and joining, requesting to join and being added are refused with GROUP&#x005F;MEMBER&#x005F;BANNED until unbanChannelMember. Leaving or removing does not lift a ban. Requires the 'manage&#x005F;members' channel permission (app admins bypass). Never the channel's owner, never yourself.
+
+
+```graphql
+banChannelMember(
+  groupId: BigInt!
+  userId: BigInt!
+  reason: String
+): GroupMember!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>banChannelMember.<b>groupId</b></code>](#group-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#group-id\} 
+The channel to ban the user from.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>banChannelMember.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+The user to ban.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>banChannelMember.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#reason\} 
+Why, for the channel managers (at most 500 characters). Not shown to the banned user.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>GroupMember</b></code>](/reference/graphql/types/objects/group-member.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A user's membership in a group, including the roles assigned to them.
