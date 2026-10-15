@@ -35,6 +35,9 @@ agent's policy.
   request and frees its share of the server's reads. A message's `body` is standard
   base64: `decode_base64` gives the bytes. See
   [Input logging](/replication-api/input-logging).
+- **Bans** (`client.channels.ban` / `unban`, `client.teams.ban` / `unban`, 0.11.0) need
+  Game API v2.44.0 or later, and the final `4403` close needs ck-exec 0.16 hosts; an older
+  host never sends it.
 - The full list of what each release needs from the server is in the repository's
   [compatibility notes](https://github.com/CrowdedKingdoms/CrowdyPy/blob/dev/docs/compatibility.md).
 

@@ -185,7 +185,13 @@ Since ck-exec 0.11 two more limits keep one player from filling what everyone sh
   its concurrency, and mods count too. Past either limit nothing new of the app is placed until
   some stop, whoever asks: a call to a hub key that is not running is answered `Unavailable` with
   a message naming the limit, and `execConnect` with a `nodeType` and `key` that would place one
-  fails. Running instances are never stopped for it. An idle instance stops after its
+  fails. Running instances are never stopped for it. Within that, **one player's own calls hold
+  at most 64 instances of the app at once** (ck-exec 0.17): hubs their calls or subscriptions
+  place at new keys, or an `execConnect` placing one beside them. Past it nothing more starts
+  for that player, `Unavailable` naming the bound, while every other player still places; the
+  root hub, spoke replicas and what your own instances place count against nobody. A stopped
+  instance that holds no snapshot is forgotten after 10 minutes, so the next call to its key
+  places it under a new instance id. An idle instance stops after its
   `evict_after_ms` (5 minutes by default), so keep the keys a game creates bounded, for example
   one hub per match rather than per action; small per-player hubs (a type may declare 1 to
   512 MB) fit far more instances into the same memory.
