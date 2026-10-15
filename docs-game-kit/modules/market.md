@@ -28,8 +28,10 @@ It is [not a ledger](../economy).
 | `trade { with }`, `offer { trade, bundle }`, `accept { trade }`, `decline { trade }`, `trades` | the two players | An offer is held at once and clears both acceptances; both accepting the last offers settles it; `finished`, `not_ready`, `forbidden` |
 
 A change that needs a player's hub that did not answer is refused `unavailable`; the kit's
-clients send it again with its `action_id`, and it finishes what it began. A hold the market never
-heard back about is given back after a minute, and its reference is refused (`expired`) after that.
+clients send it again with its `action_id`, and the market asks again by the same reference, so
+the change runs once (the same `action_id` with other arguments is refused `conflict`). A hold the
+market never heard back about is given back after a minute, and a resend after that is a new
+change. A market's key is at most 48 bytes.
 
 ## Topics
 

@@ -37,7 +37,7 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
-## 2026-10-15 (dev: the economy; ckx-sdk 0.12.0, CrowdyJS 18.13.0, CrowdyCPP 0.66.0, CrowdyPy 0.14.0, ckx-kit 0.5.0)
+## 2026-10-15 (dev: the economy; ckx-sdk 0.12.1, CrowdyJS 18.13.0, CrowdyCPP 0.66.0, CrowdyPy 0.14.0, ckx-kit 0.5.0)
 
 - **The economy, in hub state and not a ledger.** Two starters: `player`, one hub per player
   (inventory with mail for overflow, soft currencies, crafting, loot with pity, idle production,
@@ -51,6 +51,11 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
   protocol](/game-kit/protocol#refusals-carry-a-code)).
 - `ckx_sdk::kit::econ` (ckx-sdk 0.12.0) has the pieces: items, wallets, holds, references
   answered once, recipes, loot, production, vendors, an order book, levels, achievements, quests.
+  0.12.1, the version the kit publishes, gives references their own bound (128 bytes); the
+  market makes every reference from its own key and a counter, never from a client's action id
+  (see [how it stays consistent](/game-kit/economy#how-it-stays-consistent)).
+- The open [dev kit](/exec/develop-locally) carries ckx-sdk 0.12.1 and the `player` and `market`
+  templates (kit 0.5.0).
 
 ## 2026-10-15 (dev: the genre starters; ckx-sdk 0.11.0, CrowdyJS 18.12.0, CrowdyCPP 0.65.0, CrowdyPy 0.13.0, ckx-kit 0.4.0)
 

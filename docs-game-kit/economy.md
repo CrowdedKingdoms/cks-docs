@@ -50,8 +50,15 @@ For those, use a ledger outside the kit.
   hubs (a market, a session that pays out) change it through endpoints only the app's hubs and
   developers may call, each answered once by its reference.
 - **A change that needed another hub that did not answer is refused `unavailable`** and keeps no
-  receipt. The kit's clients send it again with the same `action_id`, and it finishes what it
-  began. A hold the market asked for and never heard back about is given back after a minute.
+  receipt. The kit's clients send it again with the same `action_id` and arguments, and it
+  finishes what it began, run once; the same `action_id` with other arguments is refused
+  `conflict`. A hold the market asked for and never heard back about is given back after a
+  minute, and a resend after that is a new change.
+- **References belong to the hub that moves the goods.** A player's hub answers a reference it
+  has seen with its first answer, so a hub that moves goods (the market, or one of your own)
+  makes each reference from its own key and a counter, never from what a client sent: a
+  reference a client can choose lets it get an old answer for a new change, such as a hold that
+  holds nothing. A reference is at most 128 bytes; item ids and currencies at most 64.
 - **Items that do not fit wait in the mail**: what another hub delivers always arrives, and the
   player moves it into their inventory with `takeMail` once they make room.
 - **Developers can set things right**: `grant` and `deposit` on a player's hub, from a
