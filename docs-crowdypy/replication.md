@@ -74,6 +74,8 @@ await game.udp.send_channel_audio(channel_id, my_uuid, packetizer.packetize(opus
   always comes back once; other spatial messages come back only while your actor is in range.
 - Idle players on different servers see each other at the first full update after joining
   (replication v0.37.0), so the default keyframe and heartbeat cadence is enough.
+  That update is when an idle actor first appears. Updates after that arrive at the
+  send rate, including for a player on another server.
 
 ## A game loop
 
