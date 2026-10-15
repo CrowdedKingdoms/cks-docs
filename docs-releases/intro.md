@@ -37,6 +37,23 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-15 (dev: the genre starters; ckx-sdk 0.11.0, CrowdyJS 18.12.0, CrowdyCPP 0.65.0, CrowdyPy 0.13.0, ckx-kit 0.4.0)
+
+- **Nine genre starters.** `leaderboard` (boards hubs submit to, seasons on a schedule), `deck`
+  (card tables with private hands), `tactics` (grid battles in phases), `director` (waves, towers,
+  a boss), `minigame` (duels of hidden throws), `instance` (a party's private run: seeded floors,
+  permadeath, expiry, depth to a leaderboard), `arena` (classes and abilities in real time),
+  `racing` (`race` and `ball`) and `territory` (`territory` and `zone`). Every SDK's kit gains a
+  module for each: `leaderboards`, `tables`, `tactics`, `encounters`, `minigames`, `instances`,
+  `arenas`, `racing` and `territory`. See [the starters](/game-kit/starters) and [genres and the
+  kit](/game-kit/genres).
+- **ckx-sdk 0.11.0** adds the pieces they are made of (`kit::play`, `kit::sim`, `kit::ai`, with a
+  movement warden for reported positions) and `kit::args_or_default`; a debug build refuses a kit
+  message body that names a header field (`v`, `epoch`, `seq`, `kind`).
+- **A build may take 10 minutes** (it was 5): a build compiles its crates one after another,
+  and the whole starter pack is thirteen. See [builds](/exec/builds#limits).
+- The open [dev kit](/exec/develop-locally) carries ckx-sdk 0.11.0 (kit 0.4.0).
+
 ## 2026-10-15 (dev: the Game Kit on ck-exec; ckx-sdk 0.10.0, CrowdyJS 18.11.0, CrowdyCPP 0.64.0, CrowdyPy 0.12.0, ckx-kit 0.3.0)
 
 - **The Game Kit.** `ckx_sdk::kit` (ckx-sdk 0.10.0) is the server half of a game kit whose

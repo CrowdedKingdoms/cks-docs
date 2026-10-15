@@ -16,7 +16,8 @@ session.
 
 ## Starter packs
 
-`execStarters(appId)` returns four crates and a manifest that deploys them as one app:
+`execStarters(appId)` returns thirteen crates and a manifest that deploys them as one app, fifteen
+node types (`racing` and `territory` each serve two):
 
 | Crate | Node type | What it does | Replaces |
 |---|---|---|---|
@@ -24,6 +25,15 @@ session.
 | `matchmaker` | `matchmaker` | A rating queue for each key (`ranked`, `casual`). The rating window widens the longer a player waits. Every player in a proposed match must accept, and then the queue reserves a `session` for them. | `matchmaking` |
 | `session` | `session` | One game from lobby to result: a host, ready checks, turns with a time limit, points the hub decides, and a winner. | `match-engine` |
 | `npc-mobs` | `npcs` | One area's mobs and NPCs, keyed `x,z`, moved on a timer and shown to nearby players as realtime actors. Mobs chase, go home past their leash, take hits the hub referees, and respawn. NPCs walk routes and talk. | `mob-engine`, `npc-engine` |
+| `leaderboard` | `leaderboard` | A board other hubs submit to, ranked by the hub, with seasons on a schedule. | `board-engine` |
+| `deck` | `deck` | A card table with true hidden information: hands only their player reads. | `deck-engine` |
+| `tactics` | `tactics` | A grid battle in phases against the hub's units. | `tms-battle` |
+| `director` | `director` | Waves down a lane, towers that may not cut it, a boss with phases. | `director` |
+| `minigame` | `minigame` | A duel of hidden throws, revealed together. | `minigame` |
+| `instance` | `instance` | A party's private run: seeded floors, permadeath, expiry, depth to a leaderboard. | `instance-engine` |
+| `arena` | `arena` | Classes and abilities in real time, with a movement warden for reported positions. | `abilities-engine`, `movement-warden` |
+| `racing` | `race`, `ball` | Races (gates, laps, splits, a ghost) and ball games (possession, goals). | `racing`, `possession` |
+| `territory` | `territory`, `zone` | Control points captured by standing on them, and a shrinking circle. | `territory` |
 
 ```graphql
 query {
@@ -53,9 +63,9 @@ and their refusals carry a `kit:<code>:` code. The SDKs' Game Kit drives them wi
 clients, and its `topology` composes, builds and deploys them for you: see the [Game
 Kit](/game-kit/intro).
 
-The other legacy templates (abilities, boards, decks, instances, markets, minigames, the
-movement warden, possession, racing, territory) have no starter yet. Each is a hub or two with the
-same pieces these four use: timers, calls between hubs, topics, realtime actors and typed state.
+The genre starters' endpoints and topics are on the Game Kit's [starters page](/game-kit/starters)
+(ckx-sdk 0.11.0). The markets (`market-engine`) have no starter yet: the economy starters come next,
+with items and currency in hub state.
 
 ## Building
 
@@ -135,7 +145,7 @@ the same rules, with its own dependency list, and runs in browsers rather than o
 | Crates in a build | 16 |
 | Files in a crate | 64 |
 | Source in a build | 2 MB |
-| Build time | 5 minutes |
+| Build time | 10 minutes for the whole build: its crates compile one after another, about 25 seconds each, so the full starter pack takes about five |
 | Module size | 16 MB |
 | At once | One build per app, and one per person across every app, on each API instance; eight waiting per instance |
 | Kept | 7 days, with their modules |

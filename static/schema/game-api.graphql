@@ -7877,7 +7877,7 @@ type Query {
     appId: BigInt!
   ): ExecAppStatus! @requiresPermission(scope: "app", permission: "view_compute_diagnostics", scopeArg: "appId")
   """
-  The starter packs, which replace the compute templates: a world tick (the root hub: clock, weather, resource nodes, liveops events), a matchmaker, game sessions (lobby, host, turns, scores) and an NPC and mob engine, as ckx-sdk crates to pass to `execBuild` and a manifest for `execDeploy`. Requires the org 'manage_compute' permission.
+  The starter packs, which replace the compute templates: ckx-sdk hub crates for a root world, matchmaking, game sessions, NPCs and mobs, and game genres (leaderboards, cards, tactics, waves, duels, private runs, arenas, races, territory), to pass to `execBuild`, with a manifest for `execDeploy`. `starters` has one entry per node type, so a crate that serves two types appears twice: build it once. Requires the org 'manage_compute' permission.
   """
   execStarters(
     """The app they are for."""
