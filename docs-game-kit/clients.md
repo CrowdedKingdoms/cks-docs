@@ -97,6 +97,45 @@ The blocking client (`crowdypy.sync`) has the same kit with blocking calls; run 
 on a thread there. `decode_kit_actor_state` and `kit_actor_lanes` read the actors hubs show. For a
 developer's kit: `client.kit(app_id, developer=True)` on the identity client.
 
+## The genre modules
+
+One module per [genre starter](starters#leaderboard-crate-leaderboard), the same in each SDK
+(CrowdyJS 18.12.0, CrowdyCPP 0.65.0, CrowdyPy 0.13.0). Each handle mirrors its hub's topic
+(`view`; `table` and `battle` where the topic is named so) and sends every change with an action id.
+
+| Module | Type | CrowdyJS | CrowdyCPP | CrowdyPy |
+|---|---|---|---|---|
+| Leaderboards | `leaderboard` | `kit.leaderboards.board(name)` | `leaderboards().board(name)` | `kit.leaderboards.board(name)` |
+| Card tables | `deck` | `kit.tables.table(key)`: `table`, `hand` | `tables().table(key)` | `kit.tables.table(key)` (`pass_`) |
+| Grid battles | `tactics` | `kit.tactics.battle(key)` | `tactics().battle(key)` | `kit.tactics.battle(key)` |
+| Waves and bosses | `director` | `kit.encounters.encounter(key)` | `encounters().encounter(key)` | `kit.encounters.encounter(key)` |
+| Duels | `minigame` | `kit.minigames.duel(key)`: `throw` | `minigames().duel(key)`: `throwHand` | `kit.minigames.duel(key)`: `throw` |
+| Private runs | `instance` | `kit.instances.run(key)` | `instances().run(key)` | `kit.instances.run(key)` |
+| Arenas | `arena` | `kit.arenas.arena(key)` | `arenas().arena(key)` | `kit.arenas.arena(key)` |
+| Races and ball games | `race`, `ball` | `kit.racing.race(key)`, `.ball(key)` | `racing().race(key)`, `.ball(key)` | `kit.racing.race(key)`, `.ball(key)` (`pass_`) |
+| Control points and circles | `territory`, `zone` | `kit.territory.map(key)`, `.zone(key)` | `territory().map(key)`, `.zone(key)` | `kit.territory.map(key)`, `.zone(key)` |
+
+```ts
+// A duel, then a private run that ranks the party on a leaderboard.
+const duel = kit.minigames.duel(tableId);
+duel.view.subscribe((d) => render(d)); // who has thrown, never what, until the reveal
+await duel.watch();
+await duel.join();
+await duel.throw('rock');
+
+const run = kit.instances.run(runId);
+await run.watch();
+await run.open({ seed: 7 });
+await run.invite(friendId);
+const line = await run.enter(); // the hub resolves the room
+const deepest = await kit.leaderboards.board('deepest').top({ limit: 10 });
+```
+
+Positions are the hub's to keep. `arenas`, `racing` and the ball game take `move` / `pos` reports
+a few times a second and answer the position the movement warden kept; they go without an action
+id, because the next report replaces a lost one. Each report the warden refuses is a `violation`
+event; an arena removes a player after a run of them (`remove_after_strikes`, a `removed` event).
+
 ## Under every module
 
 - **One connection, paced.** `kit.runtime` (`runtime()` in C++) holds the kit's connection and

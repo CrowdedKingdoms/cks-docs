@@ -23,9 +23,20 @@ const { version, buildId } = await dev.topology.deploy(plan);
   (`seed_b64`, the starter's JSON config), limits, scopes, `client`. It refuses what the manager
   would refuse (an undefined parent or callee, replicas on a hub, an unknown scope) and more crates
   than one build takes (16).
-- **`deploy(plan)`** builds the plan's crates (about a minute and a half for the four starters),
-  waits, and deploys the manifest with the build. A failed build's log ends the error.
+- **`deploy(plan)`** builds the plan's crates (about a minute and a half for the four first
+  starters), waits, and deploys the manifest with the build. A failed build's log ends the error.
 - **`kitManifestProblems(manifest)`** checks a manifest of your own the same way.
+
+A genre starter takes its config from its seed. A private run that posts its depth to a
+leaderboard, for instance, brings the `leaderboard` type it calls and names the board:
+
+```ts
+const runConfig = { floors: 3, rooms_per_floor: 4, board: 'deepest' };
+const plan = await dev.topology.plan(['instance'], {
+  overrides: { instance: { seed_b64: btoa(JSON.stringify(runConfig)) } },
+});
+// plan.types: world, instance, leaderboard
+```
 
 CrowdyCPP's `topology()` blocks (`plan(...).problems`, `deploy(plan)` with `ok` and `error`);
 CrowdyPy's is async like the rest of its client.
@@ -40,9 +51,12 @@ something else and tell the kit (`nodes: { session: 'duel' }`).
 
 ## What the starters need
 
-- **A compute toolchain with ckx-sdk 0.10.0** on the environment you deploy to: the starters and
-  `ckx_sdk::kit` come with it.
-- **The `world.read` scope** for `npcs`, which reads where players are. The planned manifest
-  carries it.
-- **Players in the world** for an area's mobs and pets: an area sees the players whose actors
-  are in it, so a player who is not in the world is refused with `not_in_area`.
+- **A compute toolchain with the starters** on the environment you deploy to: ckx-sdk 0.10.0 for
+  the world, matchmaking, session and npcs starters, 0.11.0 for the genre starters. The starters
+  and `ckx_sdk::kit` come with it.
+- **The `world.read` scope** for `npcs`, `territory` and `zone`, which read where players are. The
+  planned manifest carries it. An `instance` with a `volume` also needs `grids.write` and
+  `permissions.write`, which you add in its overrides.
+- **Players in the world** for an area's mobs and pets, a control point and a circle: these hubs
+  see the players whose actors are in the world near them, so a player who is not in the world is
+  refused with `not_in_area` by an area and never counted on a point or in a circle.
