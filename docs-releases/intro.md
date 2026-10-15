@@ -50,6 +50,8 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 - **ckx-sdk 0.11.0** adds the pieces they are made of (`kit::play`, `kit::sim`, `kit::ai`, with a
   movement warden for reported positions) and `kit::args_or_default`; a debug build refuses a kit
   message body that names a header field (`v`, `epoch`, `seq`, `kind`).
+- **A build may take 10 minutes** (it was 5): a build compiles its crates one after another,
+  and the whole starter pack is thirteen. See [builds](/exec/builds#limits).
 - The open [dev kit](/exec/develop-locally) carries ckx-sdk 0.11.0 (kit 0.4.0).
 
 ## 2026-10-15 (dev: the Game Kit on ck-exec; ckx-sdk 0.10.0, CrowdyJS 18.11.0, CrowdyCPP 0.64.0, CrowdyPy 0.12.0, ckx-kit 0.3.0)

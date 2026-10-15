@@ -145,7 +145,7 @@ the same rules, with its own dependency list, and runs in browsers rather than o
 | Crates in a build | 16 |
 | Files in a crate | 64 |
 | Source in a build | 2 MB |
-| Build time | 5 minutes |
+| Build time | 10 minutes for the whole build: its crates compile one after another, about 25 seconds each, so the full starter pack takes about five |
 | Module size | 16 MB |
 | At once | One build per app, and one per person across every app, on each API instance; eight waiting per instance |
 | Kept | 7 days, with their modules |
