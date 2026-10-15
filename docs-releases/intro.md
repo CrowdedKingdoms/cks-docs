@@ -37,6 +37,31 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-14 (dev: a sanction reaches a player in a paused app, one player's share of an app's instances, Crowd Altar answers `ACCOUNT_BLOCKED`; replication server v0.40.1, Game API v2.45.0, ck-exec 0.17.0, CrowdyPy 0.11.0, Crowd Altar v1.10.2)
+
+- **A sanction reaches a player in a paused app.** A paused app keeps its rule for players
+  whose access stands: their sends are answered `APP_PAUSED` and they still receive. A player
+  whose access is revoked, expired or suspended now stops receiving channel traffic there too,
+  as in any other app; their sends still answer `APP_PAUSED` first (replication server
+  v0.40.1).
+- **A sanction lifted within seconds stays lifted.** After a suspension, revoke or block, the
+  server looks again ten seconds later and ends any token minted since. If the sanction was
+  lifted inside those ten seconds (unsuspended, granted again, unblocked), that second look now
+  leaves the player alone; before, it ended the token they minted after being let back in
+  (Game API v2.45.0).
+- **One player's share of an app's ck-exec instances.** Hubs placed for one player's own calls
+  (a call or subscription to a new key, or `execConnect` placing one beside them) count against
+  that player, at most 64 at once. Past it their next new key is answered `Unavailable`
+  naming the bound, while every other player still places. The root hub and spoke replicas
+  count against nobody, and a stopped instance that holds no snapshot is forgotten after
+  10 minutes (ck-exec 0.17.0). See [instances](/exec/operations#call-limits).
+- **Crowd Altar's sign-in answers `ACCOUNT_BLOCKED`** for a blocked account, with
+  `extensions.blockedUntil` for a timed block: the refusal ck-api gives (Crowd Altar v1.10.2).
+  It answered `FORBIDDEN` before.
+- **CrowdyPy 0.11.0** catches up with CrowdyCPP 0.63.0: `client.channels.ban` / `unban` and
+  `client.teams.ban` / `unban`; `account_blocked_of` and `group_member_banned_of` read the
+  refusals; a ck-exec connection closed `4403` is final, and `on_access_ended` hears why.
+
 ## 2026-10-13 (dev: suspending, revoking or blocking a player cuts every access path, and channel and team bans; replication server v0.39.0, Game API v2.44.1, ck-exec 0.16.0, CrowdyJS 18.10.0, CrowdyCPP 0.63.0)
 
 - **A suspension or a revoke now cuts everything the player does in the app.** Before, it
