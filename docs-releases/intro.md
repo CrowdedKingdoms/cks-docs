@@ -37,6 +37,24 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-15 (dev: the Game Kit on ck-exec; ckx-sdk 0.10.0, CrowdyJS 18.11.0, CrowdyCPP 0.64.0, CrowdyPy 0.12.0, ckx-kit 0.3.0)
+
+- **The Game Kit.** `ckx_sdk::kit` (ckx-sdk 0.10.0) is the server half of a game kit whose
+  client half is in every SDK: CrowdyJS's `client.kit(appId)`, CrowdyCPP's `makeKit` and
+  CrowdyPy's `client.kit(app_id)` gain typed clients for the starter hubs (`world`,
+  `matchmaking`, `sessions`, `npcs`), `topology` to compose, build and deploy them, and the
+  conventions `spectate`, `emotes` and `shards`. See the [Game Kit](/game-kit/intro).
+- **The starter hubs speak the kit protocol.** Their topics carry numbered `snapshot` and
+  `delta` messages a client mirrors and resyncs, their changes take an `action_id` they answer
+  once, and their refusals carry a `kit:<code>:` code. Their earlier endpoints and topics are
+  unchanged. The matchmaker matches parties whole, and the areas keep players' pets. See [the
+  protocol](/game-kit/protocol) and [the starters](/game-kit/starters).
+- **Exec connections reconnect with jitter** in every SDK, and CrowdyCPP's `call` takes a
+  per-call timeout. **A CrowdyJS fix:** a `number` of 2^32 or more in a call's arguments went
+  out as a float, which a hub's integer field refuses (timestamps, player ids); it goes out as a
+  64-bit integer now (CrowdyJS 18.11.0).
+- The open [dev kit](/exec/develop-locally) carries ckx-sdk 0.10.0 (kit 0.3.0).
+
 ## 2026-10-14 (dev: a sanction reaches a player in a paused app, one player's share of an app's instances, Crowd Altar answers `ACCOUNT_BLOCKED`; replication server v0.40.1, Game API v2.45.0, ck-exec 0.17.0, CrowdyPy 0.11.0, Crowd Altar v1.10.2)
 
 - **A sanction reaches a player in a paused app.** A paused app keeps its rule for players

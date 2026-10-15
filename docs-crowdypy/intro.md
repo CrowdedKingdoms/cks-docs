@@ -28,7 +28,7 @@ and Python takes in about two million verified notifications a second.
 
 - **Async first, blocking too.** `crowdypy.AsyncCrowdyClient` is the asyncio
   client. `crowdypy.sync.CrowdyClient` has the same methods without `await`.
-- **The whole CrowdyJS surface.** Every domain, the World Stores, the Game Kit,
+- **The whole CrowdyJS surface.** Every domain, the World Stores, the [Game Kit](/game-kit/intro),
   the ck-exec gateway, GraphQL subscriptions and the headless Crowdy Studio.
   See [Compatibility and parity](/crowdypy/compatibility).
 - **One wheel per platform.** It is a `cp312-abi3` wheel for CPython 3.12 and

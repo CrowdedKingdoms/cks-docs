@@ -49,6 +49,10 @@ into a numpy structured array.
 
 ## The Game Kit
 
-`client.kit(app_id)` adds the social helpers (parties, guilds, chat), the
-engine pose format with `engine_lanes()` for native lane filters, the engine
-event parsers, and `run_optimistic_action`.
+`client.kit(app_id)` is the [Game Kit](/game-kit/intro): typed clients for the
+ck-exec starter hubs (`kit.world`, `kit.matchmaking`, `kit.sessions`, `kit.npcs`,
+`kit.topology`), the client conventions (`kit.spectate`, `kit.emotes`,
+`kit.shards`) and the social helpers (parties, guilds, chat). Beside the World
+Stores, `decode_kit_actor_state` and `kit_actor_lanes` read the mobs, NPCs, pets
+and balls hubs show; the engine pose format with `engine_lanes()`, the event
+parsers and `run_optimistic_action` are there too (CrowdyPy 0.12.0).
