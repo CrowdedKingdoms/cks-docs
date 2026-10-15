@@ -15,7 +15,7 @@
 - [Full SDL](https://docs.crowdedkingdoms.com/schema/game-api.graphql) - the complete unified schema; start here.
 - [Management-surface SDL](https://docs.crowdedkingdoms.com/schema/management-api.graphql) - the same schema filtered to identity/orgs/apps/billing, for reading that surface alone.
 - [CrowdyJS SDL](https://docs.crowdedkingdoms.com/schema/crowdyjs.graphql)
-- Production serves no GraphQL playground and does not answer introspection; read the SDL above. The API is https://ck.prod.crowdedkingdoms.com/graphql. Crowded Kingdoms' dev and test environments are internal (staff and approved partners only) and refuse other accounts with TIER_ACCESS_REQUIRED.
+- Production serves no GraphiQL and does not answer introspection; read the SDL above. The API is https://ck.prod.crowdedkingdoms.com/graphql. Crowded Kingdoms' dev and test environments are internal (staff and approved partners only) and refuse other accounts with TIER_ACCESS_REQUIRED.
 
 ## Conventions (read before calling)
 
