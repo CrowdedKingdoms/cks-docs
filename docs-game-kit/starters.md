@@ -5,7 +5,7 @@ title: The starter hubs
 
 # The starter hubs
 
-Thirteen hub crates, each one `src/lib.rs` against `ckx-sdk`, for fifteen node types that deploy
+Fifteen hub crates, each one `src/lib.rs` against `ckx-sdk`, for seventeen node types that deploy
 together as one app (`kit.topology.plan` picks the ones a game needs). Their manifest:
 
 ```json
@@ -26,7 +26,9 @@ together as one app (`kit.topology.plan` picks the ones a game needs). Their man
     "race": {"kind": "hub", "parent": "world", "crate": "racing", "client": true, "calls": ["leaderboard"]},
     "ball": {"kind": "hub", "parent": "world", "crate": "racing", "client": true},
     "territory": {"kind": "hub", "parent": "world", "crate": "territory", "client": true, "scopes": ["world.read"]},
-    "zone": {"kind": "hub", "parent": "world", "crate": "territory", "client": true, "scopes": ["world.read"]}
+    "zone": {"kind": "hub", "parent": "world", "crate": "territory", "client": true, "scopes": ["world.read"]},
+    "player": {"kind": "hub", "parent": "world", "crate": "player", "client": true},
+    "market": {"kind": "hub", "parent": "world", "crate": "market", "client": true, "calls": ["player"]}
   }
 }
 ```
@@ -34,7 +36,8 @@ together as one app (`kit.topology.plan` picks the ones a game needs). Their man
 `racing` and `territory` each serve two types: a type runs as the one its seed's `mode` names
 (`{"mode": "ball", ...}`), or as the one its name is, so a type named something else needs a seed
 with its `mode`. The world, matchmaking, session and npcs starters came first (ckx-sdk 0.10.0);
-the genre starters need ckx-sdk 0.11.0 in the tier's compute toolchain.
+the genre starters need ckx-sdk 0.11.0 in the tier's compute toolchain, and the economy's
+`player` and `market` 0.12.0.
 
 A type's spawn seed (`seed_b64`), when it has one, is the starter's JSON config: the session's
 turn time, the matchmaker's windows, the world's nodes. Every starter speaks [the kit
@@ -60,6 +63,8 @@ Each starter has a page with its endpoints, topics, config and its module in eac
 | `arena` | `arena` | `arenas` | [Arenas](modules/arenas) |
 | `racing` | `race`, `ball` | `racing` | [Races and ball games](modules/racing) |
 | `territory` | `territory`, `zone` | `territory` | [Control points and circles](modules/territory) |
+| `player` | `player` (keyed by the player's id) | `player`, `inventory`, `wallet`, `progression`, `achievements`, `quests`, `crafting`, `loot`, `production` | [The player's hub](modules/player) |
+| `market` | `market` | `shops`, `market`, `trades` | [Markets](modules/market) |
 
 The legacy compute templates each starter replaces are listed on the [builds](/exec/builds#starter-packs)
 page.

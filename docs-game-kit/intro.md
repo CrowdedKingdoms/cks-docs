@@ -15,8 +15,8 @@ two halves that speak one protocol.
   events; matchmaking queues with parties; game sessions from lobby to result; areas of mobs,
   NPCs and players' pets; and the genre starters (0.11.0): leaderboards, card tables, grid
   battles, waves and bosses, duels, private runs, arenas, races and ball games, control points
-  and shrinking circles. Each starter is an ordinary hub crate: read it, copy it, replace its
-  rules with your game's.
+  and shrinking circles; and the economy (0.12.0): each player's own hub and markets. Each
+  starter is an ordinary hub crate: read it, copy it, replace its rules with your game's.
 - **The client half** is the `kit` of each SDK: [CrowdyJS](/crowdyjs/intro)'s `client.kit(appId)`,
   [CrowdyCPP](/crowdycpp/intro)'s `makeKit(client, appId)` and [CrowdyPy](/crowdypy/intro)'s
   `client.kit(app_id)`. Each has the same modules, so a CrowdyJS player and a CrowdyPy bot play the
@@ -37,6 +37,8 @@ two halves that speak one protocol.
 | [`arenas`](modules/arenas) | `arena`, keyed by arena | Classes and abilities in real time, every hit refereed |
 | [`racing`](modules/racing) | `racing`: `race` and `ball` | Gates, laps, splits and a ghost; a ball game with possession and goals |
 | [`territory`](modules/territory) | `territory`: `territory` and `zone` | Control points captured by standing on them; a shrinking circle |
+| [`player`](modules/player) and its views (`inventory`, `wallet`, `progression`, `achievements`, `quests`, `crafting`, `loot`, `production`) | `player`, keyed by player | What a player owns and did: items, soft currency, crafting, loot with pity, idle production, levels, achievements, quests with tutorials; [not a ledger](economy) |
+| [`shops`, `market`, `trades`](modules/market) | `market`, keyed by market | Vendors that restock, order books, trades between two players, with escrow in each player's own hub |
 | `topology` | all of them | Composing a manifest from the starters, checking it, building and deploying it |
 | `spectate`, `emotes`, `shards` | none | Client conventions: a viewer's heartbeat, emotes as a client event, shard keys as the hubs compute them |
 | `social` | none | Parties, guilds and chat over the platform's teams and channels |
@@ -76,5 +78,6 @@ ck-exec's own record of the starter hubs.
    topics keep their names; under other type names, tell the kit (`nodes: { session: 'duel' }`).
 
 The starter hubs need a compute toolchain with ckx-sdk 0.10.0 on the environment you deploy to,
-and the genre starters 0.11.0, which the platform provides. [Genres and the kit](genres) says
+the genre starters 0.11.0 and the economy 0.12.0, which the platform provides. Read [the
+economy and its limits](economy) before you put anything of value in it. [Genres and the kit](genres) says
 which starters a kind of game begins from.
