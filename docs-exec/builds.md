@@ -41,13 +41,20 @@ Their endpoints:
 | `world` | `state` | anyone | The clock, weather, active modifiers, resource nodes and events |
 | `world` | `harvest { node }` | players | Takes one from a resource node (twice a second at most) |
 | `world` | `schedule { name, start_ms, end_ms, modifiers }`, `cancel { name }` | developers | Liveops events. Modifiers multiply where events overlap; the NPC engine reads `aggro` |
-| `matchmaker` | `join { rating }`, `leave`, `accept`, `decline`, `status` | players | Your own place in the queue: `queued`, `proposed`, then `matched` with the session key |
+| `matchmaker` | `join { rating, party?, leader? }`, `leave`, `accept`, `decline`, `status` | players | Your own place in the queue: `party` (while a party forms), `queued`, `proposed`, then `matched` with the session key. A party is matched whole |
 | `session` | `join`, `leave`, `ready { ready }`, `start` (host), `act { points }` (whoever's turn it is), `state` | players | The game. `points_for` in the crate is the rule to replace with yours |
 | `session` | `configure { .. }` | the host in the lobby, or developers | Player counts, turn time, target score, rounds |
 | `npcs` | `state`, `attack { mob }`, `talk { npc }` | players | Mobs and NPCs, public properties only. A hit needs the player near the mob; the damage is the hub's |
+| `npcs` | `adopt { species, name }`, `rename`, `summon`, `dismiss`, `release` `{ pet }`, `pets` | players | Pets that follow their owner while summoned; `pets` answers the caller's, with their bond |
+
+Since ckx-sdk 0.10.0 the starters speak the [Game Kit protocol](/game-kit/protocol): their topics
+carry numbered snapshot and delta messages, their changes take an `action_id` they answer once,
+and their refusals carry a `kit:<code>:` code. The SDKs' Game Kit drives them with typed
+clients, and its `topology` composes, builds and deploys them for you: see the [Game
+Kit](/game-kit/intro).
 
 The other legacy templates (abilities, boards, decks, instances, markets, minigames, the
-movement warden, possession, racing, territory) have no starter. Each is a hub or two with the
+movement warden, possession, racing, territory) have no starter yet. Each is a hub or two with the
 same pieces these four use: timers, calls between hubs, topics, realtime actors and typed state.
 
 ## Building
@@ -226,6 +233,6 @@ mobs and NPCs this way.
 | `computeTemplates`, `computeDeployTemplate` | `execStarters`, then `execBuild` and `execDeploy` |
 | `computeDeployVersion` (compiled on the server) | `execBuild`, then `execDeploy` with the `buildId` |
 | Game-model schemas: container types, typed properties, `visibility` | `ckx_sdk::model` in a hub |
-| The Game Kit (`client.kit(appId).deploy`) | The starter packs |
+| The Game Kit (`client.kit(appId).deploy`) | The starter packs, and the new [Game Kit](/game-kit/intro)'s `kit.topology.deploy` |
 | `playerComputeDeploy` (players' server code) | [Mods](mods): `execModBuild`, then `execModDeploy` |
 | `playerComputeDeploy` with the CLIENT target (players' browser code) | [CLIENT halves](client-halves): `execModClientBuild`, then `execModClientDeploy` |
