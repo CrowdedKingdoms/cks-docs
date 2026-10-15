@@ -49,7 +49,9 @@ CrowdyJS wraps both in `client.portal`. See
 
 ### 1. Subscribe to notifications (WebSocket)
 
-Open a WebSocket with the `graphql-transport-ws` subprotocol and send
+Open a WebSocket with the `graphql-transport-ws` subprotocol (the legacy
+`subscriptions-transport-ws` protocol, subprotocol `graphql-ws`, is not
+accepted: such a socket is closed with code 4406) and send
 `connection_init` with your **app-scoped token** **and the `appId` you are
 playing**. The realtime session is app-scoped: the Game API only delivers that
 app's spatial notifications, **rejects** a subscription that arrives without an

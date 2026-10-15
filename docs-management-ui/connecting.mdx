@@ -20,7 +20,7 @@ Build and test against production, using the hosts in **[Connecting game clients
 | GraphQL API (management and game) | `https://ck.prod.crowdedkingdoms.com/graphql` |
 | Shared Game API (WebSocket) | `wss://ck.prod.crowdedkingdoms.com/graphql` |
 
-**All shared-platform apps** use the same Game API host, scoped by `appId`. Production serves no GraphQL playground and does not answer introspection: use the published [schema](pathname:///schema/game-api.graphql) with the GraphQL client of your choice.
+**All shared-platform apps** use the same Game API host, scoped by `appId`. Production serves no GraphiQL and does not answer introspection: use the published [schema](pathname:///schema/game-api.graphql) with the GraphQL client of your choice.
 
 Read `platformConfig.sharedGameApiUrl` or your app's `gameApiUrl` rather than hard-coding a host. Crowded Kingdoms' `dev` and `test` environments are internal and refuse outside accounts with `TIER_ACCESS_REQUIRED`.
 
@@ -101,7 +101,7 @@ Keep tokens secret; rotation and least-privilege labels are your responsibility.
 1. Confirm `app.runtimeStatus` is **`active`** (query `app` or `appRuntimeState` — see [Shared environment & billing](/management-api/shared-environment)).
 2. **Sign in** on the management API for the identity session token.
 3. **`mintAppToken(appId)`** → app-scoped token and game URLs.
-4. Call the shared Game API playground or run `{ __typename }` with `Authorization: Bearer <app-scoped token>`.
+4. Run `{ __typename }` against the shared Game API with `Authorization: Bearer <app-scoped token>`.
 5. For realtime: **`connectUdpProxy`** → `connected: true`; then actor updates or subscriptions (see [Connecting game clients → Verify connectivity](/management-ui/client-integration#verify-connectivity-smoke-checklist)).
 
 If `runtimeStatus` is not `active`, check wallet balance, spend caps, or subscription state before debugging client code.
