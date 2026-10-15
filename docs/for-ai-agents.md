@@ -38,7 +38,7 @@ pass `httpUrl` / `wsUrl` explicitly if you are not on production.
 - Management API SDL: [`/schema/management-api.graphql`](pathname:///schema/management-api.graphql)
 - Game API SDL: [`/schema/game-api.graphql`](pathname:///schema/game-api.graphql)
 - CrowdyJS SDL: [`/schema/crowdyjs.graphql`](pathname:///schema/crowdyjs.graphql)
-- Production serves no GraphQL playground and does not answer introspection: read the SDL above.
+- Production serves no GraphiQL and does not answer introspection: read the SDL above.
 - Unreal SDK: [For AI agents (Unreal SDK)](/unreal-sdk/for-ai-agents) and the drop-in [`/helpers/unreal-sdk/AGENTS.md`](pathname:///helpers/unreal-sdk/AGENTS.md).
 
 Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
