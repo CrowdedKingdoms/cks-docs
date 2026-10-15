@@ -85,3 +85,8 @@ Some refusals carry more (0.8.0): `access_refusal_of(error)` reads `ACCESS_REVOK
 `actor_exists_of(error)` reads `ACTOR_EXISTS` and whether the actor is already yours; and
 `app_paused_of(error)` reads `APP_PAUSED` and its reason. A paused app still mints:
 check `is_app_paused(token.runtime_gate)` and tell the player the world is paused.
+From 0.11.0, `account_blocked_of(error)` reads `ACCOUNT_BLOCKED` and when a timed block
+lifts, and `group_member_banned_of(error)` reads `GROUP_MEMBER_BANNED` from joining a
+channel or team you are banned from. A ck-exec connection that the server closes with
+`4403` ("access ended") does not reconnect: pending calls fail `Denied`, and the
+listener you gave `on_access_ended` hears the reason.
