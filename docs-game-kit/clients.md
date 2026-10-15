@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 title: The clients
 ---
 
@@ -99,7 +99,7 @@ developer's kit: `client.kit(app_id, developer=True)` on the identity client.
 
 ## The genre modules
 
-One module per [genre starter](starters#leaderboard-crate-leaderboard), the same in each SDK
+One module per genre starter (each has [its page](starters#the-starters-and-their-modules)), the same in each SDK
 (CrowdyJS 18.12.0, CrowdyCPP 0.65.0, CrowdyPy 0.13.0). Each handle mirrors its hub's topic
 (`view`; `table` and `battle` where the topic is named so) and sends every change with an action id.
 

@@ -24,19 +24,19 @@ two halves that speak one protocol.
 
 | Client module | Starter hub (crate, node type) | What it is for |
 |---|---|---|
-| `world` | `world-tick`, the root `world` | Day and night, weather, resource nodes that deplete and grow back, liveops events whose modifiers other hubs read |
-| `matchmaking` | `matchmaker`, keyed by queue name | Rating windows that widen as players wait, proposals every player must accept, parties matched whole |
-| `sessions` | `session`, keyed by session | A lobby, ready checks, a host, turns with a time limit, scores and a winner the hub decides |
-| `npcs` | `npc-mobs`, `npcs` keyed by area | Mobs that wander, chase and leash, NPCs on routes, pets that follow their owner; shown to players as server-driven actors |
-| `leaderboards` | `leaderboard`, keyed by board | Ranks only hubs and developers submit to; seasons on a schedule |
-| `tables` | `deck`, keyed by table | Cards with hands only their player reads |
-| `tactics` | `tactics`, keyed by battle | Grid battles in phases against the hub's units |
-| `encounters` | `director`, keyed by encounter | Waves down a lane, towers, a boss with phases |
-| `minigames` | `minigame`, keyed by table | Duels of hidden throws, revealed together |
-| `instances` | `instance`, keyed by run | A party's private run: seeded floors, permadeath, expiry |
-| `arenas` | `arena`, keyed by arena | Classes and abilities in real time, every hit refereed |
-| `racing` | `racing`: `race` and `ball` | Gates, laps, splits and a ghost; a ball game with possession and goals |
-| `territory` | `territory`: `territory` and `zone` | Control points captured by standing on them; a shrinking circle |
+| [`world`](modules/world) | `world-tick`, the root `world` | Day and night, weather, resource nodes that deplete and grow back, liveops events whose modifiers other hubs read |
+| [`matchmaking`](modules/matchmaking) | `matchmaker`, keyed by queue name | Rating windows that widen as players wait, proposals every player must accept, parties matched whole |
+| [`sessions`](modules/sessions) | `session`, keyed by session | A lobby, ready checks, a host, turns with a time limit, scores and a winner the hub decides |
+| [`npcs`](modules/npcs) | `npc-mobs`, `npcs` keyed by area | Mobs that wander, chase and leash, NPCs on routes, pets that follow their owner; shown to players as server-driven actors |
+| [`leaderboards`](modules/leaderboards) | `leaderboard`, keyed by board | Ranks only hubs and developers submit to; seasons on a schedule |
+| [`tables`](modules/tables) | `deck`, keyed by table | Cards with hands only their player reads |
+| [`tactics`](modules/tactics) | `tactics`, keyed by battle | Grid battles in phases against the hub's units |
+| [`encounters`](modules/encounters) | `director`, keyed by encounter | Waves down a lane, towers, a boss with phases |
+| [`minigames`](modules/minigames) | `minigame`, keyed by table | Duels of hidden throws, revealed together |
+| [`instances`](modules/instances) | `instance`, keyed by run | A party's private run: seeded floors, permadeath, expiry |
+| [`arenas`](modules/arenas) | `arena`, keyed by arena | Classes and abilities in real time, every hit refereed |
+| [`racing`](modules/racing) | `racing`: `race` and `ball` | Gates, laps, splits and a ghost; a ball game with possession and goals |
+| [`territory`](modules/territory) | `territory`: `territory` and `zone` | Control points captured by standing on them; a shrinking circle |
 | `topology` | all of them | Composing a manifest from the starters, checking it, building and deploying it |
 | `spectate`, `emotes`, `shards` | none | Client conventions: a viewer's heartbeat, emotes as a client event, shard keys as the hubs compute them |
 | `social` | none | Parties, guilds and chat over the platform's teams and channels |
