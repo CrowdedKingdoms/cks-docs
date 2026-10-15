@@ -37,13 +37,13 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
-## 2026-10-14 (dev: a sanction reaches a player in a paused app, one player's share of an app's instances, Crowd Altar answers `ACCOUNT_BLOCKED`; replication server v0.40.0, Game API v2.45.0, ck-exec 0.17.0, CrowdyPy 0.11.0, Crowd Altar v1.10.2)
+## 2026-10-14 (dev: a sanction reaches a player in a paused app, one player's share of an app's instances, Crowd Altar answers `ACCOUNT_BLOCKED`; replication server v0.40.1, Game API v2.45.0, ck-exec 0.17.0, CrowdyPy 0.11.0, Crowd Altar v1.10.2)
 
 - **A sanction reaches a player in a paused app.** A paused app keeps its rule for players
   whose access stands: their sends are answered `APP_PAUSED` and they still receive. A player
   whose access is revoked, expired or suspended now stops receiving channel traffic there too,
   as in any other app; their sends still answer `APP_PAUSED` first (replication server
-  v0.40.0).
+  v0.40.1).
 - **A sanction lifted within seconds stays lifted.** After a suspension, revoke or block, the
   server looks again ten seconds later and ends any token minted since. If the sanction was
   lifted inside those ten seconds (unsuspended, granted again, unblocked), that second look now
