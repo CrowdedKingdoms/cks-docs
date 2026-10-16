@@ -30,19 +30,19 @@ type HostedGameUpload {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>HostedGameUpload.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#path\} 
+#### [<code style={{ fontWeight: 'normal' }}>HostedGameUpload.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #path */} 
 The manifest path this URL is for.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>HostedGameUpload.<b>url</b></code>](#url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#url\} 
+#### [<code style={{ fontWeight: 'normal' }}>HostedGameUpload.<b>url</b></code>](#url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #url */} 
 Presigned S3 URL; valid until BeginGamePublishResult.expiresAt.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>HostedGameUpload.<b>method</b></code>](#method)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#method\} 
+#### [<code style={{ fontWeight: 'normal' }}>HostedGameUpload.<b>method</b></code>](#method)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #method */} 
 Always PUT.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>HostedGameUpload.<b>headers</b></code>](#headers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[HostedGameUploadHeader!]!</b></code>](/reference/graphql/types/objects/hosted-game-upload-header.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#headers\} 
+#### [<code style={{ fontWeight: 'normal' }}>HostedGameUpload.<b>headers</b></code>](#headers)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[HostedGameUploadHeader!]!</b></code>](/reference/graphql/types/objects/hosted-game-upload-header.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #headers */} 
 Headers the PUT must carry exactly (content type, SHA-256 checksum, staging tag, cache-control). S3 refuses a body whose digest differs.
 
 

@@ -28,11 +28,11 @@ enum CrowdyStudioProjectSource {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProjectSource.<b>STUDIO</b></code>](#studio) \{#studio\} 
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProjectSource.<b>STUDIO</b></code>](#studio) {/* #studio */} 
 Files live in Crowdy Studio and are written with the crowdyStudioProject&#x002A; file mutations under the project revision.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProjectSource.<b>GITHUB</b></code>](#github) \{#github\} 
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioProjectSource.<b>GITHUB</b></code>](#github) {/* #github */} 
 The bound repository is the working tree. `files` is a server-maintained mirror of the rust under the layout roots at githubSha; writes go through crowdyStudioGitHubPutFile / DeleteFile with expectedCommitSha, and the Studio file mutations refuse with GITHUB&#x005F;BOUND&#x005F;USE&#x005F;CONTENTS.
 
 
