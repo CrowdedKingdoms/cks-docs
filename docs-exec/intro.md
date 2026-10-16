@@ -49,19 +49,20 @@ A deploy is a manifest plus the modules it names:
 | `parent` | The type that owns this one. Every type but the root has one. |
 | `digest` | SHA-256 of the module, hex. |
 | `client` | Players may call this type and subscribe to its topics. |
-| `calls` | Types this type may call and subscribe to; `*` for any. |
+| `calls` | Types this type may call and subscribe to; `*` for any. A call or subscription to a type not listed is `Denied`, and the message names the caller type and the target (`may not call`). |
 | `persist_every_ms` | Hubs: snapshot interval, 5,000 to 60,000 (default 30,000). |
 | `evict_after_ms` | How long an unused instance keeps running (default 5 minutes, at most 30). |
 | `replicas`, `concurrency` | Spokes: replicas kept running (default 1, at most 64), and calls each serves at once (default 16, at most 256). |
 | `max_replicas` | Spokes: scale between `replicas` and this many, at most 64. The platform adds replicas once calls have waited at them for 2 seconds, and takes one away once they have been nearly idle for 30 seconds; calls go to the replica where the fewest wait. Without it, always `replicas`. |
-| `memory_mb` | Memory per instance in MB: default 64, at most 512. |
+| `memory_mb` | Memory per instance in MB: default 64, at most 512. Leaving it out of a later deploy uses 64 again on the next start of that type. An instance already running keeps the previous limit until it restarts. The same is true of the other limits. |
 | `fuel_per_call` | Fuel for one call: default 50,000,000, from 1,000,000 to 1,000,000,000. |
 | `mailbox` | Calls that may wait at one instance: default 1,024, at most 4,096. Past it, a call is answered `Busy`. |
-| `deadline_ms` | Time for one call in milliseconds: default 2,000, from 10 to 10,000. |
+| `deadline_ms` | How long the handler itself may run, in milliseconds: default 2,000, from 10 to 10,000. Passing it crashes the instance: it restarts from its last snapshot, and unsaved changes are lost. A player call also has its own wait of 5 seconds, which covers time in the mailbox and time spent placing the instance. If that expires first, the caller gets `DeadlineExceeded` and the instance keeps running. |
 | `seed_b64` | Bytes every new instance of the type is spawned with; the root hub's seed is its app's starting state. |
 | `scopes` | The platform data the type's instances may use: `players.read`, `players.write`, `world.read`, `world.write`, `grids.read`, `grids.write`, `permissions.write`, `access.read`, `access.write`. None by default; see [world and platform data](world-and-platform-data). |
 
-A limit outside its range is brought into it, not refused. `execDeploy` refuses a manifest with
+A limit outside its range is brought into it, not refused. A manifest whose only type is the
+root hub is valid. `execDeploy` refuses a manifest with
 `BAD_REQUEST`, naming every problem, when:
 
 - a type's name is not 1–64 letters, digits, `-` or `_`;
@@ -107,6 +108,13 @@ impl Hub for Counter {
 
 ckx_sdk::export_hub!(Counter);
 ```
+
+## A spoke
+
+A spoke is stateless. `Spoke` is `start` and `handle`; it has no snapshot, no timers and no
+subscriptions. A spoke that sets a timer gets `timers are for hubs`. Its key is empty, and
+`ctx.call` to it uses an empty key: the host picks the replica. Export it with
+`ckx_sdk::export_spoke!`.
 
 `call.caller` says who is calling: a player (`Caller::Player(user_id)`), another instance, or
 the platform. The platform sets it; a handler can trust it for authorization. A hub calls
@@ -215,13 +223,16 @@ spoke's: the host picks a replica.
 | `Busy` | 2 | Refused before the handler ran: the instance's mailbox is full, or the player's call limit ("rate limited", saying when to retry). Retry with backoff. |
 | `Moved` | 3 | The instance moved. Retry; a fresh `execConnect` may pick a closer host. |
 | `NotFound` | 4 | No such type in the app's active version. |
-| `DeadlineExceeded` | 5 | No reply in time. |
-| `Denied` | 6 | Players may not call that type, the method is reserved, or the app or type is switched off or paused by billing (the message says which, and why). |
+| `DeadlineExceeded` | 5 | No reply in time. If the handler passed the type's `deadline_ms`, the instance restarts from its last snapshot and unsaved changes are lost. If the caller's own wait expired while the call was still queued or the instance was still being placed, the instance keeps running. |
+| `Denied` | 6 | Players may not call that type, the method or topic is reserved, or (from a host before the pause and switch statuses) the app or type is switched off or paused. The message says which. |
 | `RateLimited` | 7 | The root hub's rate limit. |
 | `Unavailable` | 8 | The platform could not place or reach the instance, for example the app is at its instance or memory limit, or a new version is not ready on that host yet (the message says why). See below for when it is safe to retry. |
 | `Internal` | 9 | A platform fault. |
 | `Trapped` | 10 | The handler crashed; the instance restarts from its last snapshot. |
 | `BadRequest` | 11 | A malformed frame or request. |
+| `AppPaused` | 12 | The app is paused by billing. The message names the cause, and `execConnect` sends the same fact as `APP_PAUSED` with `extensions.reason`. Not retried. An older host still answers `Denied`. |
+| `AppDisabled` | 13 | The whole app is switched off. `execConnect` sends `APP_DISABLED`. Not retried. An older host still answers `Denied`. |
+| `TypeDisabled` | 14 | This node type is switched off. `execConnect` sends `TYPE_DISABLED`. Not retried. An older host still answers `Denied`. |
 
 ### Did the handler run?
 
@@ -230,14 +241,18 @@ What a status says about whether your handler ran, for a player's call and an in
 
 - **It ran:** `Ok`, `AppError`, `Trapped` (it crashed; its state since the last snapshot is
   lost, what it sent stays sent) and `Internal`.
-- **It did not run:** `Busy`, `RateLimited`, `Denied`, `NotFound`, `BadRequest`, and an
-  `Unavailable` refused before the call was sent (placement: the app's instance or memory
-  limit, no host free, a start that failed; or a new version not ready on that host yet). These
-  are safe to retry.
+- **It did not run:** `Busy`, `RateLimited`, `Denied`, `AppPaused`, `AppDisabled`,
+  `TypeDisabled`, `NotFound`, `BadRequest`, and an `Unavailable` refused before the call was
+  sent (placement: the app's instance or memory limit, no host free, a start that failed; or a
+  new version not ready on that host yet). These are safe to retry, except a pause or a switch,
+  which stays refused until the cause is gone.
 - **Unknown:** an `Unavailable` after the call was sent (the link to the host running it was
-  lost, or that host went away) and `DeadlineExceeded`. The handler may have run, and the
+  lost, or that host went away) and a `DeadlineExceeded` from the caller's own wait (the call
+  was still queued, or the instance was still being placed). The handler may have run, and the
   platform may already have sent the call once more, so a handler that must not run twice should
-  take a request id and remember it.
+  take a request id and remember it. A `DeadlineExceeded` from the handler's own `deadline_ms`
+  is the other kind: the handler was running, the instance crashed, and it restarts from its
+  last snapshot.
 
 The platform resends a call answered `Moved`, or answered `Unavailable` by the host it was
 relayed to, at most twice before you hear anything; a one-way `send` is never resent. Only the
