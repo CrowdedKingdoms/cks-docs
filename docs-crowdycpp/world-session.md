@@ -38,6 +38,8 @@ thread that reads them — so reads are plain snapshots with no locking.
   `sendHeartbeat` replaces the full update so presence never lapses. Since
   replication v0.37.0 two idle players on different servers see each other at the
   first keyframe after joining (3 s with these defaults); no faster cadence is needed.
+  That keyframe is when an idle actor first appears. Updates after that arrive at the
+  send rate, including for a player on another server.
 - **Chunk moves send immediately**: `moveTo(chunk)` does not wait for the
   next send slot — crossing a chunk boundary should never lag.
 - **Acks**: your own updates echo back from the server; `lastAck()` exposes

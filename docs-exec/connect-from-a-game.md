@@ -17,6 +17,9 @@ and encode payloads as MessagePack. The player's session must be the **app-scope
 app you connect to, which is what hosted sign-in gives a game. See
 [session vs app-scoped tokens](/crowdyjs/readme#authentication-session-vs-app-scoped-tokens).
 
+The [Game Kit](/game-kit/intro) builds on this connection: one per kit, paced under the gateway's
+limit, with safe resends and mirrored topics, and typed clients for the starter hubs.
+
 ## CrowdyJS
 
 ```ts
@@ -55,7 +58,9 @@ exec.close();
   - `callTimeoutMs` sets how long a call waits for its reply (default 10 seconds); a single
     call can pass `{ timeoutMs }`.
   - `reconnect: false` turns off recovery.
-  - `decode: { useBigInt64: true }` decodes 64-bit integers above 2^53 exactly.
+  - `decode: { useBigInt64: true }` decodes 64-bit integers above 2^53 exactly. A `number` of
+    2^32 or more in the arguments goes out as a 64-bit integer, as a hub's integer field takes
+    it (CrowdyJS 18.11.0; before, it went out as a float, which such a field refuses).
   - `WebSocket` supplies an implementation where there is no global one: in Node before 22,
     pass the `ws` package's.
 - `exec.ping()` measures the round trip to the gateway in milliseconds.
@@ -99,6 +104,12 @@ exec->close();
   they arrive on the thread that calls `poll()`. See the [quick start](/crowdycpp/quick-start).
 - Replies and pushes carry the raw payload. `value()` decodes it from MessagePack into a
   `graphql::Json`, and `graphql::Json::toMsgpack()` / `fromMsgpack()` are available directly.
+- `ExecConnectOptions` holds `callTimeoutMs` (default 10 seconds; `call` and `callRaw` take a
+  per-call `timeoutMs` too, since CrowdyCPP 0.64.0), `openTimeoutMs`, `reconnect`, and the
+  reconnect backoff (`initialReconnectDelayMs`, `maxReconnectDelayMs`).
+- A connection you build over your own `ExecDial` dials only the gateways
+  `execGatewayRefusal` passes once you call `pinGateway(gameApiUrl)`, as `connect` does
+  (CrowdyCPP 0.64.0).
 - The domain works without C++ exceptions, so builds with `CROWDY_NO_EXCEPTIONS` get it too.
 - The WebSocket is the transport you give the client. The bundled one needs libcurl 8.13 or
   later, built with WebSocket support; an engine can inject its own `IWebSocketTransport`.
@@ -131,7 +142,10 @@ await exec_conn.close()
 - Arguments and replies are MessagePack; `call` returns the decoded reply, and `push.value` is
   the decoded push.
 - `crowdypy.sync.CrowdyClient` has the same `exec.connect` without `await`; its connection
-  reads on a thread of its own.
+  reads on a thread of its own, and runs push and reconnect handlers there: a handler that needs
+  to call the hub starts that call on another thread.
+- `call` and `call_raw` take a per-call `timeout` (seconds); `connect` takes `call_timeout`,
+  `open_timeout` and `reconnect`.
 
 ## When the host goes away
 
@@ -139,7 +153,9 @@ A host can restart, and an instance can move to another host. Both SDKs recover 
 unless reconnecting is turned off.
 
 - When the socket closes unexpectedly, the connection asks `execConnect` for a host again,
-  with backoff of up to 5 seconds. It then renews every subscription and resends a call that
+  with backoff of up to 5 seconds. Each wait is half its backoff plus up to as much again at
+  random (CrowdyJS 18.11.0, CrowdyCPP 0.64.0, CrowdyPy 0.12.0), so the players of a host that
+  went away do not all dial at once. It then renews every subscription and resends a call that
   was waiting for its reply, once. `onReconnect` listeners get the new host.
 - When a reply is `Moved`, the connection dials again and repeats the call once.
 - Pushes published while the connection was down are not replayed, because topics are not a

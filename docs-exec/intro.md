@@ -59,7 +59,7 @@ A deploy is a manifest plus the modules it names:
 | `mailbox` | Calls that may wait at one instance: default 1,024, at most 4,096. Past it, a call is answered `Busy`. |
 | `deadline_ms` | Time for one call in milliseconds: default 2,000, from 10 to 10,000. |
 | `seed_b64` | Bytes every new instance of the type is spawned with; the root hub's seed is its app's starting state. |
-| `scopes` | The platform data the type's instances may use: `players.read`, `players.write`, `world.read`, `world.write`, `grids.read`, `permissions.write`. None by default; see [world and platform data](world-and-platform-data). |
+| `scopes` | The platform data the type's instances may use: `players.read`, `players.write`, `world.read`, `world.write`, `grids.read`, `grids.write`, `permissions.write`, `access.read`, `access.write`. None by default; see [world and platform data](world-and-platform-data). |
 
 A limit outside its range is brought into it, not refused. `execDeploy` refuses a manifest with
 `BAD_REQUEST`, naming every problem, when:

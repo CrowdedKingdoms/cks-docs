@@ -475,7 +475,7 @@ CrowdyJS the API's code is `CrowdyGraphQLError.code`.
 | | |
 |---|---|
 | CLIENT halves | One per mod, so at most 8 on a grid |
-| A build | One crate: 64 files, 2 MB of source, 5 minutes |
+| A build | One crate: 64 files, 2 MB of source, 10 minutes |
 | At once | One build per player in the app, server or CLIENT, and one per person across every app, on each API instance |
 | Kept | Builds for 7 days |
 | Module size | 512 KiB, after metering and optimizing |

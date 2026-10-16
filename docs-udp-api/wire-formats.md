@@ -379,7 +379,9 @@ When the player is actively moving you already send `ACTOR_UPDATE_REQUEST`s, whi
 - The server validates it like any spatial message (session + HMAC), then refreshes **only the sender's own actor presence and session** — there is **no fan-out** (other players are not notified) and no permission gate. It is purely a keep-alive.
 - It carries no game state, so it is much cheaper than a full actor update for an idle actor.
 
-**Cross-server presence is automatic.** You only ever talk to your own server; you never address other servers. The server itself keeps your actor visible to players on **other servers and other worker cores** on a server-controlled cadence. As long as you keep your local actor alive (via actor updates while moving, or `CLIENT_ACTOR_HEARTBEAT` while idle), remote players continue to see you — no special client action is required.
+**Cross-server presence is automatic.** You only ever talk to your own server; you never address other servers. **Presence** is the registration that your actor is alive in a chunk. The server keeps that registration current on other servers and other worker cores. An `ACTOR_UPDATE_REQUEST` while the actor is moving, or a `CLIENT_ACTOR_HEARTBEAT` while it is idle, is what keeps the registration from going stale. A heartbeat still does not fan out: other players are not notified by it.
+
+**Replication is each spatial message.** It is delivered at the rate you send it. The Buddy a recipient is connected to does not thin that stream. The only thinning is the `distance` and `decay rate` on the message.
 
 A reasonable client policy: send `ACTOR_UPDATE_REQUEST` as the actor moves, and when idle send a `CLIENT_ACTOR_HEARTBEAT` every couple of seconds (comfortably under the staleness window) so presence never lapses.
 
@@ -582,6 +584,9 @@ Semantics, stated as contract:
 ## Distance Field
 
 - The distance for replication is in chunk units and clamped to the 0-8 range by Chebyshev distance.
+- A ring is the Chebyshev distance from the sender's chunk on that message. The same chunk is ring 1 for a sender in a neighboring chunk and ring 8 for a sender eight chunks away.
+- Decay starts at ring 1. The sender's own chunk is not thinned. With `NONE` or `EXPONENTIAL`, an adjacent chunk receives every update. `LINEAR_50`, `LINEAR_25`, `LINEAR_10`, and `LINEAR_5` can thin ring 1; the table below is how often each ring is included.
+- Which Buddy the recipient is connected to does not change either rule. `serverWithLeastClients` places by load.
 - How games implement chunks is up to them. Within the game they can represent anything.
 - Game designers should design their game around the fact that the server only replicates messages to 8 chunks distant.
 - Game designers should take into account the available decay algorithms when determining how widely to space their actors in their chunks.
