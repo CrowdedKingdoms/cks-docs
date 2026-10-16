@@ -56,6 +56,12 @@ const SERVER_OBJECT_NODES: { [classPath: string]: { title: (member: string, asse
     "/Script/CrowdyExecNodes.CrowdyK2Node_ServerVariableChanged": { title: (m, a) => `On ${m} Changed (${a})`, pure: false },
     "/Script/CrowdyExecNodes.CrowdyK2Node_CallServerFunction": { title: (m, a) => `Call ${m} (${a})`, pure: false },
     "/Script/CrowdyExecNodes.CrowdyK2Node_GetServerState": { title: (_m, a) => `Get Server State (${a})`, pure: true },
+    "/Script/CrowdyExecNodes.CrowdyK2Node_ServerMessageReceived": { title: (m, a) => `On ${m} Received (${a})`, pure: false },
+};
+
+// Delegates whose editor name is a DisplayName rather than the property name, keyed "Class::Member" as the text names them.
+const DELEGATE_DISPLAY_NAMES: { [classAndMember: string]: string } = {
+    "CrowdyServerObject::RecordsUpdated": "On Records Updated",
 };
 const CALL_SERVER_FUNCTION_NODE = "/Script/CrowdyExecNodes.CrowdyK2Node_CallServerFunction";
 
@@ -211,7 +217,9 @@ class CrowdyAddDelegateParser extends NodeParser {
     public parse(data: ParsingNodeData): NodeControl {
         const ref = data.lines.find(l => l.trim().startsWith("DelegateReference="));
         const member = ref && /MemberName="([^"]+)"/.exec(ref);
-        data.node.title = member ? `Bind Event to ${identifierDisplayName(member[1])}` : data.node.title;
+        const owner = classShortName(ref ? /MemberParent="([^"]*)"/.exec(ref)?.[1] : undefined);
+        const named = member && owner ? DELEGATE_DISPLAY_NAMES[`${owner}::${member[1]}`] : undefined;
+        data.node.title = member ? `Bind Event to ${named || identifierDisplayName(member[1])}` : data.node.title;
         data.node.backgroundColor = Constants.DEFAULT_FUNC_BACKGROUND_COLOR;
         return new HeadedNodeControl(data.node, IconLibrary.FUNCTION);
     }

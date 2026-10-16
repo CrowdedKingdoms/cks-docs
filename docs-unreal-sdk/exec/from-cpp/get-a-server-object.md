@@ -27,6 +27,8 @@ The beacon acquires its Server Object in `BeginPlay`, with itself as the owner a
 
 Instance Ids are case-sensitive: `oakford` and `Oakford` are two Server Objects.
 
+A [Server Function Library](../server-function-libraries.md) has no Instance Id and no values to follow, so a game does not acquire it: it calls its functions with `CallLibraryFunction`, which holds the library for you. See [Call a Server Function Library](./call-a-library.md).
+
 You can acquire before the player has signed in. The Server Object waits in **Connecting** until the connection opens, and the subsystem keeps trying to open it while any Server Object needs one.
 
 ## One object, many owners
@@ -80,6 +82,7 @@ For a group's shared object that only its members read, see **Members** under [R
 ## Sign-out, shutdown and dropped connections
 
 - **Sign-out.** When the player signs out, every Server Object fails with `The player signed out`, and every call still waiting finishes as `Canceled`. After the player signs in again, acquire them again.
+- **Access ended.** When the player's access to the game ends (suspended, revoked, expired, signed out by the platform, or the account blocked), every Server Object fails with `Your access ended: ` followed by the reason, every call in flight or made later finishes as `AccessEnded`, and nothing reconnects. Show the reason from `UCrowdyGameSession::OnAccessEnded` and return the player to sign in; after a successful sign-in, acquire them again. See [When access ends](../troubleshooting.md#when-access-ends).
 - **Shutdown.** When the game instance shuts down, every Server Object is released quietly: no status change, no value change, and calls still waiting do not run their completion.
 - **A dropped connection.** The SDK reconnects by itself and starts watching again. Changes made while it was gone are not replayed, so it reads the variables again and reports whatever differs as one change. Your code sees at most one extra change event.
 

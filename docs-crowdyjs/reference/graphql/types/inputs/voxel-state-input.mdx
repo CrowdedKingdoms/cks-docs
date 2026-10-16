@@ -29,15 +29,15 @@ input VoxelStateInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelStateInput.<b>voxelCoord</b></code>](#voxel-coord)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinatesInput!</b></code>](/reference/graphql/types/inputs/voxel-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> \{#voxel-coord\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelStateInput.<b>voxelCoord</b></code>](#voxel-coord)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>VoxelCoordinatesInput!</b></code>](/reference/graphql/types/inputs/voxel-coordinates-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #voxel-coord */} 
 Voxel position within the chunk. App-defined: any signed 16-bit integer per axis; a position outside the 16x16x16 dense grid lives only in voxel states.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelStateInput.<b>voxelType</b></code>](#voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#voxel-type\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelStateInput.<b>voxelType</b></code>](#voxel-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #voxel-type */} 
 Voxel type id to set at this position. App-defined: any signed 16-bit integer (-32768 to 32767). The dense grid stores 0-255; a wider type lives in this voxel state.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>VoxelStateInput.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#state\} 
+#### [<code style={{ fontWeight: 'normal' }}>VoxelStateInput.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #state */} 
 BASE64-encoded binary state blob for this voxel, at most 1 KiB decoded; omit/null for no extra state.
 
 

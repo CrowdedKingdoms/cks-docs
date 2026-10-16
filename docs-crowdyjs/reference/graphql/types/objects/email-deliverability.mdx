@@ -31,23 +31,23 @@ type EmailDeliverability {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>EmailDeliverability.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#email\} 
+#### [<code style={{ fontWeight: 'normal' }}>EmailDeliverability.<b>email</b></code>](#email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #email */} 
 
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EmailDeliverability.<b>sendable</b></code>](#sendable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sendable\} 
+#### [<code style={{ fontWeight: 'normal' }}>EmailDeliverability.<b>sendable</b></code>](#sendable)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #sendable */} 
 Whether a send to this address would be attempted right now. False for a permanent bounce, a complaint, or a transient bounce inside its 24-hour cool-off.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EmailDeliverability.<b>suppressedDomain</b></code>](#suppressed-domain)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#suppressed-domain\} 
+#### [<code style={{ fontWeight: 'normal' }}>EmailDeliverability.<b>suppressedDomain</b></code>](#suppressed-domain)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #suppressed-domain */} 
 Whether this address is refused before SES is consulted at all, because its domain is in EMAIL&#x005F;SUPPRESS&#x005F;DOMAINS.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EmailDeliverability.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EmailStatusRecord</b></code>](/reference/graphql/types/objects/email-status-record.mdx) <Badge class="badge badge--secondary " text="object"/> \{#status\} 
+#### [<code style={{ fontWeight: 'normal' }}>EmailDeliverability.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>EmailStatusRecord</b></code>](/reference/graphql/types/objects/email-status-record.mdx) <Badge class="badge badge--secondary " text="object"/> {/* #status */} 
 Null means SES has never reported anything about this address, which is treated as sendable.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>EmailDeliverability.<b>events</b></code>](#events)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[EmailEventRecord!]!</b></code>](/reference/graphql/types/objects/email-event-record.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#events\} 
+#### [<code style={{ fontWeight: 'normal' }}>EmailDeliverability.<b>events</b></code>](#events)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[EmailEventRecord!]!</b></code>](/reference/graphql/types/objects/email-event-record.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #events */} 
 Most recent events first.
 
 

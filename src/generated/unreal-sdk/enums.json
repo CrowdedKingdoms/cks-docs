@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-10T20:35:53Z",
-  "sdk_version": "2.18.0",
+  "generated_from": "2026-10-16T18:01:58Z",
+  "sdk_version": "2.20.0",
   "table": "enums",
   "columns": [
     {
@@ -112,7 +112,8 @@
         "AlreadyMember",
         "NotMember",
         "NetworkError",
-        "ServerError"
+        "ServerError",
+        "Banned"
       ],
       "module": "CrowdyNet",
       "header": "FCrowdyChannelError.h",
@@ -257,7 +258,8 @@
         "AlreadyMember",
         "NotMember",
         "NetworkError",
-        "ServerError"
+        "ServerError",
+        "Banned"
       ],
       "module": "CrowdyNet",
       "header": "FCrowdyTeamError.h",
@@ -417,6 +419,43 @@
       "module": "CrowdyReplication",
       "header": "CrowdyEntityComponent.h",
       "page": "runtime/entity-component",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyAccessState",
+      "name": "ECrowdyAccessState",
+      "values": [
+        "None",
+        "Active",
+        "Suspended",
+        "Expired",
+        "Revoked"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyAccountTypes.h",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyAccountErrorCode",
+      "name": "ECrowdyAccountErrorCode",
+      "values": [
+        "Unknown",
+        "NotSignedIn",
+        "WrongPassword",
+        "PasswordAlreadySet",
+        "NoPassword",
+        "NameTaken",
+        "NotFound",
+        "RateLimited",
+        "NetworkError",
+        "ServerError"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyAccountTypes.h",
+      "page": "services/authentication",
       "editor": false,
       "allowlist": ""
     },
@@ -618,7 +657,9 @@
         "Denied",
         "ServerCrashed",
         "BadRequest",
-        "Canceled"
+        "Canceled",
+        "Paused",
+        "AccessEnded"
       ],
       "module": "CrowdyExec",
       "header": "CrowdyServerObjectTypes.h",
@@ -647,7 +688,8 @@
         "Players",
         "Members",
         "Leader",
-        "ServerOnly"
+        "ServerOnly",
+        "DevelopersOnly"
       ],
       "module": "CrowdyExec",
       "header": "CrowdyServerObjectDefinition.h",
@@ -709,6 +751,19 @@
       ],
       "module": "CrowdyExec",
       "header": "CrowdyServerObjectComponent.h",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyServerObjectKind",
+      "name": "ECrowdyServerObjectKind",
+      "values": [
+        "ServerObject",
+        "FunctionLibrary"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
       "page": "guides/whats-changed",
       "editor": false,
       "allowlist": ""

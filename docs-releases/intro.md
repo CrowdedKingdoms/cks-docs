@@ -37,6 +37,190 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-16 (Unreal SDK v2.20.0: Server Objects ask for platform data and set server limits, and send and hear messages; Server Function Libraries and Can Call Any Type; refusals say why; Restart; account settings and player names)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-16-sdk-v2200).
+
+**After updating, run Generate Server Code on every Server Object type with a timer, On Player
+Joined, On Player Left or Remove Members Who Leave before you deploy.** Their generated code changed,
+and until it is regenerated Server Compute marks them Out of date and refuses to deploy the project.
+
+- **A Server Object type can ask for more platform data.** Its definition's new **Platform Data**
+  settings declare the ck-exec scopes `players.read`, `players.write`, `world.read`, `world.write`,
+  `grids.read`, `grids.write`, `permissions.write`, `access.read` and `access.write`; Deploy warns about calls into a scope the type does not ask
+  for, and a type whose functions are all **Server Only** with nothing visible to players deploys
+  with `client: false`. See [Platform data](/unreal-sdk/exec/access-members-and-timers#platform-data).
+- **A refusal by the platform says why.** A call or read refused because a type is switched off or
+  an app is paused by billing, or one the platform could not place, carries the platform's message
+  in `Reason`, and a failed connection gives `execConnect`'s reason.
+- **A Server Object type can set its own server limits.** Its definition's new **Server Limits**
+  settings send `memory_mb`, `deadline_ms`, `fuel_per_call` and `mailbox` when changed from the
+  platform's defaults, and a player's connection waits up to 20 seconds for a call's answer. See
+  [Every setting](/unreal-sdk/exec/create-a-type#every-setting).
+- **Server Compute restarts a type.** A **Restart** button and `-op=restart` move a type's running
+  Server Objects to the live version (`execRestartType`, ck-exec 0.15); after a deploy the page
+  offers to move what still runs the previous version, shows each type's running count and any
+  instance held back, and the app's use against its instance and memory limits. The SDK vendors
+  CrowdyCPP 0.67.0. See [Restarting a type](/unreal-sdk/exec/deploy-with-server-compute#restarting-a-type).
+- **Call as Developer and Developers Only.** A Server Only function can be called on a live Server
+  Object from the editor or `-op=call`, over `execConnectAsDeveloper`; **Callable By** gains
+  **Developers Only** (`call.developer()` in the generated code). See
+  [Call a function as the developer](/unreal-sdk/exec/deploy-with-server-compute#call-a-function-as-the-developer).
+- **A failed connection made for the root or a Server Function Library names no type** in its
+  failure reason, since that try tells the platform none. See
+  [Waiting is not failing](/unreal-sdk/exec/troubleshooting#waiting-is-not-failing).
+- **Players online.** The root hub Deploy sends is now generated from the SDK's `CSO_PlayersOnline`:
+  it keeps `presence.count` from `on_presence` as a variable players read, and is deployed with
+  `client: true`. **Get Players Online** reads it. See
+  [How many players are online](/unreal-sdk/exec/from-blueprint/read-and-follow-variables#how-many-players-are-online).
+- **A project with no Server Object types can deploy.** Deploy sends the Crowdy SDK's root alone,
+  and the confirm says that removed types keep their saved state. The root is compared like a type,
+  so a later SDK whose root differs makes Server Compute offer a deploy. See
+  [Deploy](/unreal-sdk/exec/deploy-with-server-compute#deploy).
+- **Generate refuses `root` and asks before rewriting your `lib.rs`.** Put your own modules in
+  `logic.rs`. A macro in the `impl` block makes Generate and the Server Code tab copy stubs
+  instead of inserting them, and **Out of date** names the first differing line. See
+  [The Server Code tab](/unreal-sdk/exec/write-server-logic#the-server-code-tab).
+- **Clearer platform data and caller hints.** The scope hint ignores raw strings and tests, **Reads
+  Players** shows ticked and greyed with the reason, and Deploy warns about a Cooldown or Required
+  Feature on a Developers Only or Server Only function. See
+  [Platform data](/unreal-sdk/exec/access-members-and-timers#platform-data).
+- **Call as Developer reaches built-in functions** such as **Add Member**; in `-op=call` inputs, a
+  64-bit integer above 9007199254740991 is written as a string. See
+  [Call a function as the developer](/unreal-sdk/exec/deploy-with-server-compute#call-a-function-as-the-developer).
+- **Limits and restarts compare correctly.** Server limits are compared as the platform applies
+  them, and the offer to move running Server Objects uses the instances read at deploy, by epoch.
+- **A call past its Time per Call restarts the Server Object** from its last save, so changes since
+  the last save are lost. See [Server Limits](/unreal-sdk/exec/create-a-type#every-setting).
+- **Get Players Online waits a minute between asks** when the app has no Crowdy SDK root, and the
+  count arrives once the app is deployed, without restarting the game.
+- **Retries are spread out.** Every Server Object retry and redial wait is stretched by a random
+  amount, up to half again (a failed read's first retry waits 1 to 1.5 seconds, a redial 1 to 1.5
+  seconds up to 30 to 45, a busy call's retries 0.25 to 0.375 seconds, then 0.5 to 0.75), so many
+  players do not retry in step after a restart. See
+  [Waiting is not failing](/unreal-sdk/exec/troubleshooting#waiting-is-not-failing).
+- **A timeout says which side gave up.** **Timeout** now carries a reason that tells the server's
+  own Time per Call limit ("... ran past its Time per Call on the server: ...") from no answer
+  reaching the game within 20 seconds ("The server sent no answer in time; the connection may be
+  slow or lost"). See [Outcomes](/unreal-sdk/exec/troubleshooting#outcomes).
+- **A call to a switched-off or paused server comes back Paused.** The call outcome enum gains
+  **Paused** as its last value: the server, or the type, is switched off or paused by its owner or
+  because the app ran out of funds. Calls refused this way used to be **Denied**; they are now
+  **Paused** and retryable, so a Blueprint Switch on the outcome gains a **Paused** pin and code that
+  only checked Denied should handle Paused too. A read or watch of such a server keeps trying. See
+  [Outcomes](/unreal-sdk/exec/troubleshooting#outcomes).
+- **The Game Session tells you the app is paused.** `UCrowdyGameSession` gains **Is App Paused**,
+  **Get App Paused Reason** and the event **On App Paused Changed**, so a game can show a "the world
+  is paused" message instead of retrying. The realtime log line for the refusal names the code
+  `AppPaused`. See [When the app is paused](/unreal-sdk/services/authentication#when-the-app-is-paused).
+- **The Game Session tells you the player's access ended, and Server Objects stop.** `UCrowdyGameSession`
+  gains the event **On Access Ended** (`Reason`, `BlockedUntil`) and **Has Access Ended**, **Get Access
+  Ended Reason** and **Get Access Blocked Until**. Every Server Object then fails with "Your access
+  ended: " and the reason, calls finish with the new outcome **Access Ended** (not retryable), and
+  nothing reconnects until the player signs in again. See
+  [When the player's access ends](/unreal-sdk/services/authentication#when-the-players-access-ends).
+- **A revoked, suspended or missing access is told so too.** When a sign-in or the background token
+  renewal is refused with `ACCESS_REVOKED`, `ACCESS_SUSPENDED` or `ACCESS_NOT_GRANTED`, **On Access
+  Ended** fires with the server's message, **Blocked Until** carries a suspension's end, and the
+  renewal stops until the next sign-in, also in a game that holds no Server Object. A realtime
+  reconnect refused for an invalid token now asks for a new one at once, so a restored player
+  reconnects instead of failing until the game restarts. See
+  [When the app refuses the player's access](/unreal-sdk/services/authentication#when-the-app-refuses-the-players-access).
+- **A blocked account is told so at sign-in.** Sign-in, register, the magic link, a social sign-in and a
+  restored session fail with the server's message, **On Access Ended** fires with **Blocked Until**,
+  and the app token is not rotated in the background until the next sign-in. See
+  [When the account is blocked](/unreal-sdk/services/authentication#when-the-account-is-blocked).
+- **Ban and unban a channel or team member.** New nodes **Ban Channel Member**, **Unban Channel
+  Member**, **Ban Team Member** and **Unban Team Member**, with matching C++ calls; a ban takes an
+  optional reason of up to 500 characters. A banned user's join, request or add fails with the new
+  error code `Banned`. See [Ban a member](/unreal-sdk/runtime/channels#ban-a-member) and
+  [Ban a member](/unreal-sdk/services/teams#ban-a-member).
+- **On Error shows the error on Channels, Teams, Avatars and sign-in nodes.** **On Success** and
+  **On Error** share one set of pins: the result, `Error` (with its `Code`) and `Message`; the
+  sign-in nodes carry `Result` and `Message`. Existing graphs keep their links. **Breaking in C++:**
+  the pin delegate types are renamed (`FChannelAsyncResult`, `FTeamAsyncResult`, `FAuthAsyncResult` and
+  the rest), so a handler bound with `AddDynamic` takes the added parameters. See [Channels](/unreal-sdk/runtime/channels#the-full-surface).
+- **A Server Object gateway must be on the Game API's own domains.** A new Project Settings entry,
+  **Allowed Exec Gateway Domains** (`AllowedExecGatewayDomains`), lists extra domains for a server
+  you host yourself; a gateway outside both is refused for good. See
+  [Server Object gateway domains](/unreal-sdk/reference/project-settings#server-object-gateway-domains).
+- **Players who left while a Server Object was stopped are cleaned up.** Generated code keeps the
+  connection counts it restored as unconfirmed; a player not heard from within two minutes of a
+  restart is treated as having left. The timer name `crowdy_sessions` is now reserved. See
+  [Players who left while it was stopped](/unreal-sdk/exec/access-members-and-timers#players-who-left-while-it-was-stopped).
+- **A changed timer keeps its old schedule if arming fails,** and an unchanged timer keeps its clock.
+  See [Timers and events](/unreal-sdk/exec/access-members-and-timers#timers-and-events).
+- **The limit on running Server Objects is documented:** 16 at once (and 1 GB) for an app with no
+  funds, 16,384 (and 64 GB) for a funded one. For many players, keep a record per player in one
+  shared object. See [Large groups](/unreal-sdk/exec/access-members-and-timers#large-groups).
+- **A voxel update with more than 1,024 bytes of state is refused when it is sent,** with the reason,
+  instead of being reported queued and then dropped.
+- **Records in Blueprint.** A Server Object that keeps a record per entity gains **Holds Records**,
+  **Num Records**, **Watch Record** and **Stop Watching Record**, and the event **On Records
+  Updated**, which names each changed record's changed variables. **Watch Record** runs after each
+  change of one record and when it is removed. See
+  [From Blueprint](/unreal-sdk/exec/keep-a-record-per-entity#from-blueprint).
+- **Variables added in the asset** (the List form) are read and followed by the typed **Get**,
+  **Get Server State** and **On Changed** nodes, and a new **Get Definition** node gives the asset a
+  Server Object was made from. A widget needs no component: **Get Server Object** with the widget as
+  **Owner**, or a typed node with **Find By Asset**. See
+  [Without the component](/unreal-sdk/exec/from-blueprint/get-a-server-object#without-the-component).
+- **Ping Server Objects.** A new latent node measures the round trip to the platform over the open
+  Server Object connection (**On Success** gives **Round Trip Ms**, **On Failed** a **Reason**); it
+  never opens a connection, and the SDK refuses more than 60 pings every 10 seconds, the most the
+  platform answers. See [Ping the platform](/unreal-sdk/exec/from-blueprint/call-functions#ping-the-platform).
+- **A Call node can give up sooner.** An advanced **Timeout** input (`TimeoutSeconds` in C++) shortens
+  one call's wait; when it runs out the call fails with **Timeout**, not retryable, and the call may
+  still have run on the server. See
+  [Give up sooner](/unreal-sdk/exec/from-blueprint/call-functions#give-up-sooner).
+- **Server Object connection timeouts are settings.** Crowdy Studio's Connection tab has **Call
+  Timeout** (11 to 120 seconds, default 20) and **Open Timeout** (1 to 60 seconds, default 10) under
+  Server Objects, stored in `DefaultGame.ini` and applied from the next Play. See
+  [Server Object timeouts](/unreal-sdk/reference/project-settings#server-object-timeouts).
+- **Server Objects send messages.** A type's definition lists messages (**Server Messages**), and its
+  server code sends one with `messages::send_<name>(&payload)` to everyone listening, once the
+  function that sent it succeeds. A message is an event: not kept, not replayed. **Players Can
+  Listen** (on by default) chooses whether players hear it or only other Server Object types.
+  The editor warns that a message reaches every player who can connect to the type, whoever may read
+  its variables. See [Server messages](/unreal-sdk/exec/create-a-type#server-messages).
+- **Games hear messages.** Blueprint has a typed **On Message Received** node for each message,
+  and **Watch Message** and **Stop Watching Message** by name; C++ has `WatchMessage` and
+  `UnwatchMessage`. A message that arrives while the object reads its values is held and announced
+  once they are current, and one sent while the connection is closed is lost. See
+  [Hear its messages](/unreal-sdk/exec/from-blueprint/hear-server-messages).
+- **A type can listen to another type's messages.** The new **Listen To** list adds the types to the
+  type's `calls`; server code starts and stops listening with `listen::<type>::<message>` and gets an
+  `on_<type>_<message>` handler. A listen takes effect only when its function succeeds. See
+  [Listen to a message](/unreal-sdk/exec/write-server-logic#listen-to-a-message).
+- **Server Function Libraries.** A definition's new **Kind** makes a type that is only functions, like
+  a Blueprint Function Library: it saves nothing between calls, has no Instance Id and is answered by
+  several instances at once (a ck-exec spoke). Its **Scaling** settings, **Min Instances**, **Max
+  Instances** and **Parallel Calls per Instance**, send `replicas`, `max_replicas` and `concurrency`.
+  The editor hides what a library cannot have, Server Compute shows its instances and the deploy
+  names a change of kind. See [Make a Server Function Library](/unreal-sdk/exec/server-function-libraries).
+- **Games call a library.** Blueprint has a **Call** node under **Server Function Libraries** that
+  needs no Target and no Instance Id; C++ has `UCrowdyServerObjectLibrary::CallLibraryFunction`, which
+  runs its `OnDone` exactly once. See
+  [Call a Server Function Library](/unreal-sdk/exec/from-blueprint/call-a-library).
+- **Can Call Any Type.** A check-box on a definition that deploys `calls: ["*"]` and gives the
+  server code `calls::any`, a call to any type by name; the typed helpers still come from the lists.
+  See [Call any type](/unreal-sdk/exec/access-members-and-timers#call-any-type).
+- **Account settings in the game.** Request Password Reset, Resend Confirmation Email, Change
+  Password, Add Password, Sign Out Everywhere and Delete Account, as nodes and on
+  `UCrowdyAuthentication`, with an error `Code` for the refusals worth handling. See
+  [Account settings](/unreal-sdk/services/authentication#account-settings).
+- **Sign-out ends the session on the server**, in the game and in Crowdy Studio, without waiting for
+  the answer. See [Session persistence and sign-out](/unreal-sdk/services/authentication#session-persistence-and-sign-out).
+- **The player's own access, and free access.** Get My Access reads it, also while the app refuses
+  the player; Claim Free Access claims the app's free access after an `ACCESS_NOT_GRANTED` sign-in and
+  finishes that sign-in. See [When the player has no access yet](/unreal-sdk/services/authentication#when-the-player-has-no-access-yet).
+- **Player names.** `UCrowdyPlayers` reads one or up to 100 players' public names and renames the
+  signed-in player. See [Player Names](/unreal-sdk/services/player-names).
+- **Crowdy Studio's Account page** sets your own name and password and signs out everywhere. See
+  [Your account](/unreal-sdk/studio/sign-in#your-account).
+- **Server Compute's Overview** lists the types beside the selected one's details, with search and
+  filters, and **Deploy** is always in the title row. See [Overview](/unreal-sdk/exec/deploy-with-server-compute#overview).
+
 ## 2026-10-15 (dev: the economy; ckx-sdk 0.12.1, CrowdyJS 18.13.0, CrowdyCPP 0.66.0, CrowdyPy 0.14.0, ckx-kit 0.5.0)
 
 - **The economy, in hub state and not a ledger.** Two starters: `player`, one hub per player
@@ -277,7 +461,7 @@ project that still uses it. The release vendors CrowdyCPP 0.57.0 on every tier. 
   [Keep a record per entity](/unreal-sdk/exec/keep-a-record-per-entity).
 - **A Server Object type can read world data.** **Reads World Data** lets its server code ask which
   actors are near a chunk; deploying asks for the `world.read` permission. See
-  [Reads World Data](/unreal-sdk/exec/access-members-and-timers#reads-world-data).
+  [Reads World Data](/unreal-sdk/exec/access-members-and-timers#platform-data).
 
 ## 2026-10-12 (dev, latest: input logging reports what it lost, ends every session and says when to retry; replication server v0.38.1, Game API v2.41.0, CrowdyJS 18.9.0)
 
