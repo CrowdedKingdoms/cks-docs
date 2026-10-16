@@ -29,15 +29,15 @@ type ExecStarterPack {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>ExecStarterPack.<b>manifestJson</b></code>](#manifest-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#manifest-json\} 
+#### [<code style={{ fontWeight: 'normal' }}>ExecStarterPack.<b>manifestJson</b></code>](#manifest-json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #manifest-json */} 
 The manifest for `execDeploy` with the build’s id: the root `world` hub and the types under it, each naming its crate.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ExecStarterPack.<b>starters</b></code>](#starters)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ExecStarter!]!</b></code>](/reference/graphql/types/objects/exec-starter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#starters\} 
+#### [<code style={{ fontWeight: 'normal' }}>ExecStarterPack.<b>starters</b></code>](#starters)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ExecStarter!]!</b></code>](/reference/graphql/types/objects/exec-starter.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #starters */} 
 One entry per node type of the manifest: a crate that serves two types appears twice, so build each crate once.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ExecStarterPack.<b>mod</b></code>](#mod)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ExecStarter</b></code>](/reference/graphql/types/objects/exec-starter.mdx) <Badge class="badge badge--secondary " text="object"/> \{#mod\} 
+#### [<code style={{ fontWeight: 'normal' }}>ExecStarterPack.<b>mod</b></code>](#mod)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ExecStarter</b></code>](/reference/graphql/types/objects/exec-starter.mdx) <Badge class="badge badge--secondary " text="object"/> {/* #mod */} 
 The mod starter: a player’s code on a grid they own, built with `execModBuild` and deployed with `execModDeploy` rather than in the manifest. Null on a toolchain without it.
 
 

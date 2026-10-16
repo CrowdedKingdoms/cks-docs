@@ -2,7 +2,7 @@
 slug: channels
 sidebar_position: 15
 title: Channels
-description: "Named, non-spatial message groups: create and join one, publish raw bytes to every member, receive them, and understand the session channel every client joins and the three kinds of traffic that ride it."
+description: "Named, non-spatial message groups: create and join one, ban a member, publish raw bytes to every member, receive them, and understand the session channel every client joins and the three kinds of traffic that ride it."
 ---
 
 import Tabs from '@theme/Tabs';
@@ -57,6 +57,52 @@ Every connecting client running this asks the server to create the channel. A re
 
 `JoinChannel(ChannelId, ...)` joins an open channel and `RequestToJoinChannel` files a request on a `Request` channel; `LeaveChannel` leaves. The creator is already a member and needs neither, though the local cache (`HasCachedChannels`, `IsPlayerInChannel`) does not show the new channel until `GetMyChannels` has run.
 
+## Ban a member
+
+A manager removes a member for good with `BanChannelMember(ChannelId, UserId, Reason, OnSuccess, OnError)`. It takes the user out of the channel and refuses every later join, request to join and add of that user until a manager lifts the ban with `UnbanChannelMember(ChannelId, UserId, OnSuccess, OnError)`. The caller needs the manage-members permission, and the channel's owner and the caller themselves cannot be banned. A user who is not a member yet can be banned too, and leaving or being removed does not lift a ban.
+
+`Reason` is optional and at most 500 characters. A longer one fails at once with a `PolicyViolation` error, and nothing is sent. Ban answers the member record, whose `Status` is `banned`; unban answers `bWasBanned`, which is false when the user had no ban.
+
+The village's elder bans a member from the `village` channel. `VillageChannelId` is the id the game instance kept when it created the channel.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+A Ban button on the member list calls `BanFromVillageChannel` with the member picked. `HandleChannelBanned` receives the member record, and `HandleChannelBanFailed` the error.
+
+<CppSnippet id="ch-ban" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+**Ban Channel Member** is a latent node with `Channel Id`, `User Id` and `Reason` inputs. The figure bans the user that the `OnBanPressed` event passes in, for a fixed reason. **On Success** carries the member record; **On Error** carries `Error` and `Message`, and the figure opens `Error` with **Break Crowdy Channel Error** to print its `Code` and the `Message`.
+
+<Blueprint src="ch-ban-node" title="OnBanPressed, Get VillageChannelId, Ban Channel Member, Break Crowdy Channel Error, Print String" />
+
+</TabItem>
+</Tabs>
+
+## Handle a ban on join
+
+A banned user's `JoinChannel`, `RequestToJoinChannel`, or a manager's `AddChannelMember` for them, fails with the error code `Banned` in `ECrowdyChannelErrorCode`. The code comes from the server's own error code, not from the message text, so it is safe to branch on. A ban lasts until a manager lifts it, so do not retry: tell the player instead.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+A Join the Village button calls `JoinVillageChannel`. Its failure handler checks the code first.
+
+<CppSnippet id="ch-banned" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+On the **Join Channel** node's **On Error** pin, open `Error` with **Break Crowdy Channel Error** and compare `Code` with **Banned** in a **Branch**; the figure prints the `Message` on the banned branch.
+
+<Blueprint src="ch-banned-join" title="OnJoinVillagePressed, Get VillageChannelId, Join Channel, Break Crowdy Channel Error, Equal (Enum), Branch, Print String" />
+
+</TabItem>
+</Tabs>
+
 ## Publish and receive
 
 `PublishChannelMessage(ChannelId, Payload)` sends raw bytes to every active member except the sender. The caller must already be a member holding `send_messages`; an open channel's default member role grants it. The server caps a channel message payload at 1024 bytes.
@@ -105,25 +151,27 @@ The server does not sign the delivery, and any member with `send_messages` could
 
 Cache and queries, on `UCrowdyChannels`: `HasCachedChannels` (has `GetMyChannels` ever completed), `GetCachedMyChannels` (the memberships, no round trip), `IsPlayerInChannel`, `GetMyChannelById`, `IsInAnyChannel`, `HasPermissionInChannel` (an `ECrowdyChannelPermission`: `SendMessages`, `ManageChannel`, `ManageMembers`, `ManageRoles`, `InviteMembers`), `GetMyChannels`, `GetChannel`, `GetChannels`, `GetChannelMembers`, `GetChannelRoles`, `GetChannelPolicy`, `GetPendingJoinRequests`. `OnMyChannelsCacheChanged` fires when the cached membership list changes.
 
-Mutations: `CreateChannel`, `UpdateChannel`, `DeleteChannel`, `JoinChannel`, `RequestToJoinChannel`, `LeaveChannel`, `AddChannelMember`, `RemoveChannelMember`, `CreateChannelRole`, `UpdateChannelRole`, `DeleteChannelRole`, `SetChannelMemberRoles`, `SetChannelPolicy`.
+Mutations: `CreateChannel`, `UpdateChannel`, `DeleteChannel`, `JoinChannel`, `RequestToJoinChannel`, `LeaveChannel`, `AddChannelMember`, `RemoveChannelMember`, `BanChannelMember`, `UnbanChannelMember`, `CreateChannelRole`, `UpdateChannelRole`, `DeleteChannelRole`, `SetChannelMemberRoles`, `SetChannelPolicy`.
 
-Every query and mutation also exists as a latent Blueprint node with **On Success** and **On Error** pins, one class each: `UCrowdyChannels_GetMyChannels` (**Get My Channels**), `UCrowdyChannels_GetChannel`, `UCrowdyChannels_GetChannels` (**Get All Channels**), `UCrowdyChannels_GetChannelMembers`, `UCrowdyChannels_GetChannelRoles`, `UCrowdyChannels_GetChannelPolicy`, `UCrowdyChannels_GetPendingJoinRequests`, `UCrowdyChannels_CreateChannel`, `UCrowdyChannels_UpdateChannel`, `UCrowdyChannels_DeleteChannel`, `UCrowdyChannels_JoinChannel`, `UCrowdyChannels_RequestToJoinChannel` (**Request to Join Channel**), `UCrowdyChannels_LeaveChannel`, `UCrowdyChannels_AddChannelMember`, `UCrowdyChannels_RemoveChannelMember`, `UCrowdyChannels_SetChannelMemberRoles`, `UCrowdyChannels_CreateChannelRole`, `UCrowdyChannels_UpdateChannelRole`, `UCrowdyChannels_DeleteChannelRole`, `UCrowdyChannels_SetChannelPolicy`. A list result arrives wrapped (`FCrowdyChannelsResult`, `FCrowdyMyChannelsResult`, `FCrowdyChannelMembersResult`, `FCrowdyChannelRolesResult`) so a **Break** node unwraps it. `PublishChannelMessage` has no latent twin; it is a plain call on the subsystem.
+Every query and mutation also exists as a latent Blueprint node with **On Success** and **On Error** pins, one class each: `UCrowdyChannels_GetMyChannels` (**Get My Channels**), `UCrowdyChannels_GetChannel`, `UCrowdyChannels_GetChannels` (**Get All Channels**), `UCrowdyChannels_GetChannelMembers`, `UCrowdyChannels_GetChannelRoles`, `UCrowdyChannels_GetChannelPolicy`, `UCrowdyChannels_GetPendingJoinRequests`, `UCrowdyChannels_CreateChannel`, `UCrowdyChannels_UpdateChannel`, `UCrowdyChannels_DeleteChannel`, `UCrowdyChannels_JoinChannel`, `UCrowdyChannels_RequestToJoinChannel` (**Request to Join Channel**), `UCrowdyChannels_LeaveChannel`, `UCrowdyChannels_AddChannelMember`, `UCrowdyChannels_RemoveChannelMember`, `UCrowdyChannels_BanChannelMember` (**Ban Channel Member**), `UCrowdyChannels_UnbanChannelMember` (**Unban Channel Member**), `UCrowdyChannels_SetChannelMemberRoles`, `UCrowdyChannels_CreateChannelRole`, `UCrowdyChannels_UpdateChannelRole`, `UCrowdyChannels_DeleteChannelRole`, `UCrowdyChannels_SetChannelPolicy`. A list result arrives wrapped (`FCrowdyChannelsResult`, `FCrowdyMyChannelsResult`, `FCrowdyChannelMembersResult`, `FCrowdyChannelRolesResult`) so a **Break** node unwraps it. `PublishChannelMessage` has no latent twin; it is a plain call on the subsystem.
+
+**On Success** and **On Error** of a node share one set of data pins: the result (`Channel`, `Member`, `Channels`, and so on; a node that returns nothing has none), then `Error` and `Message`. On **On Success**, `Error` and `Message` are empty. On **On Error** the result is empty, `Error` is an `FCrowdyChannelError` (break it to read its `Code`) and `Message` is the text to show.
 
 The types:
 
 | Type | Holds |
 |---|---|
 | `FCrowdyChannel` | `ChannelId`, `AppId`, `Name`, `Description`, `OwnerUserId`, `MembershipPolicy`, `Status`, `CreatedAt`. |
-| `FCrowdyChannelMember` | `ChannelMemberId`, `ChannelId`, `UserId`, `Status` (`active`, or `pending` while a request waits), `Roles` sorted by rank, `CreatedAt`. |
+| `FCrowdyChannelMember` | `ChannelMemberId`, `ChannelId`, `UserId`, `Status` (`active`; `pending` while a request waits; `banned` in the answer to a ban), `Roles` sorted by rank, `CreatedAt`. |
 | `FCrowdyChannelMembership` | Your own membership of one channel: `Channel`, `Roles`, the effective `Permissions` across them, `JoinedAt`. |
 | `FCrowdyChannelRole` | `ChannelRoleId`, `ChannelId`, `RoleName`, `Rank`, `bIsSystem`, `Permissions`, `CreatedAt`. Every channel has a non-deletable `leader` role. |
 | `FCrowdyChannelPermissions` | The five flags: `bSendMessages`, `bManageChannel`, `bManageMembers`, `bManageRoles`, `bInviteMembers`. |
 | `FCrowdyChannelPolicy` | `AppId`, `CreationPolicy`, `DefaultMembershipPolicy`, `MaxMembers`, `MaxChannelsPerUser`. |
-| `FCrowdyChannelError` | An `ECrowdyChannelErrorCode` (`Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError`), a best-effort classification, and the `Message` to show. |
+| `FCrowdyChannelError` | An `ECrowdyChannelErrorCode` (`Unknown`, `NotFound`, `Forbidden`, `PolicyViolation`, `AlreadyMember`, `NotMember`, `NetworkError`, `ServerError`, `Banned`) and the `Message` to show. All but `Banned` are a best-effort classification of the message text; `Banned` comes from the server's own error code. |
 
 Every id is an `int64`; the server's ids are 64-bit.
 
-In C++ each call takes a pair of dynamic delegates: a success type shaped for its result (`FOnChannelSuccess` with an `FCrowdyChannel`, `FOnChannelsSuccess` with the array, `FOnChannelMemberSuccess`, `FOnChannelMembersSuccess`, `FOnChannelRoleSuccess`, `FOnChannelRolesSuccess`, `FOnMyChannelsSuccess` with the memberships, `FOnChannelPolicySuccess`, `FOnChannelVoidSuccess` for the calls that return nothing) and `FOnChannelError`. The two events are `FOnMyChannelsCacheChanged` and `FOnChannelMessageReceived`. The latent nodes expose the same shapes as multicast pins (`FChannelAsyncOnSuccess`, `FChannelsAsyncOnSuccess`, `FMyChannelsAsyncOnSuccess`, `FChannelMemberAsyncOnSuccess`, `FChannelMembersAsyncOnSuccess`, `FChannelRoleAsyncOnSuccess`, `FChannelRolesAsyncOnSuccess`, `FChannelPolicyAsyncOnSuccess`, `FChannelVoidAsyncOnSuccess`, and `FChannelAsyncOnError`).
+In C++ each call takes a pair of dynamic delegates: a success type shaped for its result (`FOnChannelSuccess` with an `FCrowdyChannel`, `FOnChannelsSuccess` with the array, `FOnChannelMemberSuccess`, `FOnChannelMembersSuccess`, `FOnChannelRoleSuccess`, `FOnChannelRolesSuccess`, `FOnMyChannelsSuccess` with the memberships, `FOnChannelPolicySuccess`, `FOnChannelVoidSuccess` for the calls that return nothing, `FOnChannelUnbanSuccess` with a `bWasBanned` for an unban) and `FOnChannelError`. The two events are `FOnMyChannelsCacheChanged` and `FOnChannelMessageReceived`. The latent nodes expose the same shapes as multicast pins that also carry `Error` and `Message`: `FChannelAsyncResult`, `FChannelsAsyncResult`, `FMyChannelsAsyncResult`, `FChannelMemberAsyncResult`, `FChannelMembersAsyncResult`, `FChannelRoleAsyncResult`, `FChannelRolesAsyncResult`, `FChannelPolicyAsyncResult`, `FChannelUnbanAsyncResult`, and `FChannelAsyncOnError` for the nodes that return nothing.
 
 ## What rides a channel from the SDK itself
 

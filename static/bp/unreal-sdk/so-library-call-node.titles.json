@@ -1,0 +1,8 @@
+[
+	{
+		"name": "CrowdyK2Node_CallServerFunction_0",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_CallServerFunction",
+		"title": "Call RollLoot (CSO_LootRoller)",
+		"title_drawn": true
+	}
+]

@@ -34,35 +34,35 @@ input UpdateAppInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#name\} 
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>name</b></code>](#name)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #name */} 
 New display name (1-256 chars). Omit to leave unchanged.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#description\} 
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #description */} 
 New short description. Omit to leave unchanged.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>visibility</b></code>](#visibility)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppVisibility</b></code>](/reference/graphql/types/enums/app-visibility.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#visibility\} 
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>visibility</b></code>](#visibility)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppVisibility</b></code>](/reference/graphql/types/enums/app-visibility.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #visibility */} 
 New visibility (PUBLIC/UNLISTED/PRIVATE). Omit to leave unchanged.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppStatus</b></code>](/reference/graphql/types/enums/app-status.mdx) <Badge class="badge badge--secondary " text="enum"/> \{#status\} 
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppStatus</b></code>](/reference/graphql/types/enums/app-status.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #status */} 
 New lifecycle status; set LIVE to publish, or DRAFT/LIVE to restore an archived app. Omit to leave unchanged.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>metadata</b></code>](#metadata)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#metadata\} 
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>metadata</b></code>](#metadata)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #metadata */} 
 New JSON-encoded marketplace metadata string, replacing the existing value (see App.metadata). Omit to leave unchanged.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>wildernessWritesOpen</b></code>](#wilderness-writes-open)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#wilderness-writes-open\} 
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>wildernessWritesOpen</b></code>](#wilderness-writes-open)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #wilderness-writes-open */} 
 Open (true) or close (false) the app's wilderness to voxel and chunk writes: chunks that no grid but the app's world grid covers. Closing refuses every write there, whoever makes it; each game API replica, and each realtime server for a client's direct voxel updates, acts on the change within about 15 seconds. Omit to leave unchanged.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>replayLoggingEnabled</b></code>](#replay-logging-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#replay-logging-enabled\} 
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>replayLoggingEnabled</b></code>](#replay-logging-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #replay-logging-enabled */} 
 Turn replay logging on (true) or off (false): record every client message the realtime servers accept for this app (keep-alives included), kept for the input log's published retention and billed as stored input logs (input&#x005F;log&#x005F;storage&#x005F;byte&#x005F;hours, no free allowance). Turning it ON is refused with INPUT&#x005F;LOG&#x005F;FUNDS&#x005F;NEEDED unless the org's wallet can spend at least the projected cost of keeping one retention period of the app's recent traffic, or the org is billing-exempt; turning it off always succeeds, and what was already recorded goes on billing until it ages out. Recording starts and stops within about 15 seconds. Omit to leave unchanged.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>claimOwnerKeys</b></code>](#claim-owner-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> \{#claim-owner-keys\} 
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>claimOwnerKeys</b></code>](#claim-owner-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #claim-owner-keys */} 
 Grid permission keys a player's claim grants its owner on the claimed grid (at most 8; active grid keys; never a player-code key). An empty list grants none. Applies to claims made from now on. Omit to leave unchanged.
 
 

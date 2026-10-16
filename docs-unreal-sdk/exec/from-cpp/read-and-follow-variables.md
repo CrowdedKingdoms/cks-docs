@@ -2,7 +2,7 @@
 slug: read-and-follow-variables
 sidebar_position: 2
 title: Read and follow its variables
-description: Read a Server Object's variables that players can see from its state struct and react to each change with WatchValues, when the listener runs, what the field names in it are, and what a client can and cannot do with the values.
+description: Read a Server Object's variables that players can see from its state struct and react to each change with WatchValues, when the listener runs, what the field names in it are, and what a client can and cannot do with the values, and GetPlayersOnline for how many players are in the app's world.
 ---
 
 # Read and follow its variables
@@ -47,7 +47,30 @@ if (Oil.HasValue() && bLit.HasValue())
 }
 ```
 
-The same rules hold: the variables players do not see keep their default values on every client.
+The same rules hold: the variables players do not see keep their default values on every client. The typed Blueprint **Get** and **On Changed** nodes read and follow these variables too.
+
+## How many players are online
+
+Every app has one root Server Object, which Server Compute deploys along with your types. It counts the players in the app's world: the number the platform's realtime servers report for your app, in which a player who leaves is still counted for a few minutes, until their session ends.
+
+`UCrowdyServerObjectLibrary::GetPlayersOnline(Owner, Count)` reads it. It returns false, with `Count` 0, until the count first arrives. The first call starts following the root for `Owner`, which keeps it followed until it is destroyed, so calling it every frame is fine:
+
+```cpp
+int32 PlayersOnline = 0;
+if (UCrowdyServerObjectLibrary::GetPlayersOnline(this, PlayersOnline))
+{
+	PlayersText->SetText(FText::AsNumber(PlayersOnline));
+}
+```
+
+To react to each change instead, acquire the root and watch it. `GetPlayersOnlineDefinition()` gives its definition, `CSO_PlayersOnline` in the Crowdy SDK's content, and its State struct is `FCrowdyPlayersOnlineState`. The root has only one instance, so the Instance Id is ignored:
+
+```cpp
+FString Error;
+UCrowdyServerObject* Root = UCrowdyServerObjectLibrary::GetServerObject(this, UCrowdyServerObjectLibrary::GetPlayersOnlineDefinition(), FString(), this, Error);
+```
+
+An app last deployed with an older Crowdy SDK, or never deployed from Server Compute, has no Crowdy SDK root. Deploy once from Server Compute. Until then `GetPlayersOnline` returns false, and the log says why once for each reason in each game instance (so once per Play In Editor client): "This app has no Crowdy SDK root, so Players Online has no count: deploy the app from Server Compute (an app last deployed with an older Crowdy SDK, or by another tool, has none). It is asked again every minute." The root waits and asks again once a minute instead of every few seconds, and once the app is deployed the count arrives without restarting the game.
 
 ## Records
 
@@ -72,6 +95,7 @@ The names the listener receives are the fields' names on the server: the C++ mem
 ## Related
 
 - [Create a Server Object type](../create-a-type.md): choosing which variables players see
+- [Hear its messages](./hear-server-messages.md): the next page, the messages a type sends to everyone listening
 - [Call its functions](./call-functions.md)
 - [Keep a record per entity](../keep-a-record-per-entity.md): a Server Object with a record for each entity of a crowd
 - [Read and follow its variables, from Blueprint](../from-blueprint/read-and-follow-variables.md): **On Changed**, **Watch Variables** and **On Variables Changed**

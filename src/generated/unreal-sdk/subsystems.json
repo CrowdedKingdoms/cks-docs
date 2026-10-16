@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-10T20:35:53Z",
-  "sdk_version": "2.18.0",
+  "generated_from": "2026-10-16T18:01:58Z",
+  "sdk_version": "2.20.0",
   "table": "subsystems",
   "columns": [
     {
@@ -269,6 +269,16 @@
       "page": "guides/whats-changed",
       "editor": false,
       "allowlist": "deprecated"
+    },
+    {
+      "id": "UCrowdyPlayers",
+      "class": "UCrowdyPlayers",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "services/player-names",
+      "editor": false,
+      "allowlist": ""
     },
     {
       "id": "UCrowdyTeams",

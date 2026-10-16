@@ -33,23 +33,23 @@ type PlayerWallet {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>walletId</b></code>](#wallet-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#wallet-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>walletId</b></code>](#wallet-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #wallet-id */} 
 Wallet id.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#user-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
 The owning player user id.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>balanceMicrousd</b></code>](#balance-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-microusd\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>balanceMicrousd</b></code>](#balance-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #balance-microusd */} 
 Current balance in MICRO-USD (1 USD = 1,000,000). The unit of account since 2026-09-11; nothing is rounded. May go negative when accrued usage settles against an empty wallet.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>holdsMicrousd</b></code>](#holds-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#holds-microusd\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>holdsMicrousd</b></code>](#holds-microusd)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #holds-microusd */} 
 Micro-USD held against in-flight request-priced usage (a model turn reserves its worst case before it runs). Spendable = balanceMicrousd - holdsMicrousd.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>balanceCents</b></code>](#balance-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#balance-cents\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>balanceCents</b></code>](#balance-cents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #balance-cents */} 
 :::warning[DEPRECATED]
 
 Derived from balanceMicrousd (truncated toward zero). Read balanceMicrousd.
@@ -59,11 +59,11 @@ Derived from balanceMicrousd (truncated toward zero). Read balanceMicrousd.
 DEPRECATED. balanceMicrousd / 10,000 truncated toward zero.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#currency\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>currency</b></code>](#currency)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #currency */} 
 ISO currency code (lowercase).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>PlayerWallet.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #created-at */} 
 Wallet creation time.
 
 

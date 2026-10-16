@@ -96,6 +96,14 @@ Each running instance of the type persists and stops, without the type being swi
 its next call starts it on the active version from its snapshot. `stopped` counts the instances
 told to stop. It needs `manage_compute` on the app's organization.
 
+A deploy that drops a type does not stop that type's instances. They keep running until they
+have been idle for `evict_after_ms` (5 minutes by default). A pending timer keeps a hub from
+looking idle while players are in the app. `execRestartType` cannot move them after the drop:
+it returns 404 once the type is gone from the active manifest. Calls then get `NotFound`. A hub
+that has a snapshot keeps that snapshot and its instance row; a hub snapshot has no expiry. The
+10-minute forget applies only to a stopped instance with no snapshot, which is how a spoke's
+replicas go away.
+
 ## The kill switch
 
 ```graphql
