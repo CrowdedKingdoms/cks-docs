@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-10T20:35:53Z",
-  "sdk_version": "2.18.0",
+  "generated_from": "2026-10-16T18:01:58Z",
+  "sdk_version": "2.20.0",
   "table": "structs",
   "columns": [
     {
@@ -381,6 +381,26 @@
       "allowlist": ""
     },
     {
+      "id": "FCrowdyAccountError",
+      "name": "FCrowdyAccountError",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyAccountTypes.h",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyAppAccess",
+      "name": "FCrowdyAppAccess",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyAccountTypes.h",
+      "page": "services/authentication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "FCrowdyAppAvatarStateList",
       "name": "FCrowdyAppAvatarStateList",
       "display_name": "",
@@ -467,6 +487,16 @@
       "module": "CrowdyServices",
       "header": "CrowdyTeamsQueryActions.h",
       "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyPlayerProfile",
+      "name": "FCrowdyPlayerProfile",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyAccountTypes.h",
+      "page": "services/player-names",
       "editor": false,
       "allowlist": ""
     },
@@ -691,6 +721,16 @@
       "allowlist": "internal"
     },
     {
+      "id": "FCrowdyPlayersOnlineState",
+      "name": "FCrowdyPlayersOnlineState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "FCrowdyServerCallResult",
       "name": "FCrowdyServerCallResult",
       "display_name": "",
@@ -751,6 +791,16 @@
       "allowlist": ""
     },
     {
+      "id": "FCrowdyServerMessage",
+      "name": "FCrowdyServerMessage",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "FCrowdyServerOpenInputs",
       "name": "FCrowdyServerOpenInputs",
       "display_name": "",
@@ -763,6 +813,16 @@
     {
       "id": "FCrowdyServerRecord",
       "name": "FCrowdyServerRecord",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyServerRecordChange",
+      "name": "FCrowdyServerRecordChange",
       "display_name": "",
       "module": "CrowdyExec",
       "header": "CrowdyServerObjectTypes.h",

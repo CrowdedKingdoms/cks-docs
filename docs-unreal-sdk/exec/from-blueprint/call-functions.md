@@ -1,8 +1,8 @@
 ---
 slug: call-functions
-sidebar_position: 3
+sidebar_position: 4
 title: Call its functions
-description: Call a Server Function from Blueprint with the typed Call node, with a pin for every input and output and On Success and On Failed, feed the village beacon from an overlap event, and call by name with Make Inputs, Set Server Value and Call Server Function.
+description: Call a Server Function from Blueprint with the typed Call node, with a pin for every input and output and On Success and On Failed, feed the village beacon from an overlap event, give up on a call sooner with Timeout, measure the round trip with Ping Server Objects, and call by name with Make Inputs, Set Server Value and Call Server Function.
 ---
 
 # Call its functions
@@ -17,10 +17,10 @@ A client never changes a Server Object's values. It calls one of the Server Func
 
 **Call FeedBeacon** has an execution pin and a pin for each input on the left. On the right it has **Then**, **On Success** and **On Failed**, then a pin for each output. It is a latent node, so it goes in an event graph. **On Success** or **On Failed** runs, one of them and only once, when the server answers.
 
-**Outcome**, **Reason** and **Retryable** are in the node's advanced area: click the small arrow at the bottom of the node to show them. A pin you have already wired stays visible when the area is collapsed.
+**Outcome**, **Reason**, **Retryable** and **Timeout** are in the node's advanced area: click the small arrow at the bottom of the node to show them. **Timeout** is an input, explained in [Give up sooner](#give-up-sooner). A pin you have already wired stays visible when the area is collapsed.
 
 - **On Success** runs with the outputs set. Wire them straight from their pins.
-- **On Failed** runs with **Outcome**, **Reason** and **Retryable**. **Outcome** is one of the [call outcomes](../troubleshooting.md#outcomes). A call the server refuses by a rule in the asset, such as **Callable By**, arrives as **Denied** with the reason to show, and a call inside a **Cooldown** as **Denied** with **Retryable** true; see [What a refused player sees](../access-members-and-timers.md#what-a-refused-player-sees).
+- **On Failed** runs with **Outcome**, **Reason** and **Retryable**. **Outcome** is one of the [call outcomes](../troubleshooting.md#outcomes). A call the server refuses by a rule in the asset, such as **Callable By**, arrives as **Denied** with the reason to show, and a call inside a **Cooldown** as **Denied** with **Retryable** true; see [What a refused player sees](../access-members-and-timers.md#what-a-refused-player-sees). A call to a server, or a type, that is switched off or paused arrives as **Paused** with **Retryable** true, so a Switch on **Outcome** has a **Paused** pin: try again later or show a paused message. A call made after the player's access ended, or still waiting when it did, arrives as **Access Ended**, not retryable, so the Switch has an **Access Ended** pin too: show **Reason** and send the player back to sign in; see [When access ends](../troubleshooting.md#when-access-ends). A call that times out says in **Reason** whether the server's own limit or the connection gave up; see [Timeout](../troubleshooting.md#outcomes).
 - An input you leave alone sends its default from the asset.
 - An input that does not fit its type, such as -1 for a `uint32` or 70,000 for an `int16`, sends nothing: **On Failed** runs as a **Bad Request** and **Reason** names the input.
 
@@ -43,6 +43,23 @@ When the player walks into the beacon, feed it ten units of oil:
 Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
 
 The call needs no **Target**: it uses the beacon's own component.
+
+## Give up sooner
+
+A call waits for the answer as long as the project's **Server Object Call Timeout** allows, 20 seconds unless you changed it; see [Project settings](../../reference/project-settings.md#server-object-timeouts). The advanced **Timeout** pin of a **Call** node, typed or generic, is a limit of its own for that one call, in seconds. It is counted from the call, retries and waiting to send included. It can only shorten the wait: a value above the project's timeout changes nothing, and 0, the default, leaves only the project's.
+
+When it runs out, **On Failed** runs with **Outcome** **Timeout** and **Retryable** false, and **Reason** reads, for a **Timeout** of 5, "No answer within 5 seconds; FeedBeacon may still have run on the server". The server is not told to stop, so the call may still take effect, and an answer that arrives later is not reported. Watch the beacon's oil with **On Oil Changed** before you feed it again.
+
+## Ping the platform
+
+**Ping Server Objects** is a latent node under **Crowdy SDK > Server Objects**. It asks the platform for an answer over the connection the Server Objects already hold and measures how long it took:
+
+- **On Success** runs with **Round Trip Ms**, how long the platform took to answer.
+- **On Failed** runs with **Reason**.
+
+The node is the async action `UCrowdyServerPingAction`, and both of its pins are the delegate `FCrowdyServerPingDone`.
+
+It never opens a connection. With no Server Object connection open, such as before the first Server Object is used, it fails at once with "No Server Object connection is open". The platform answers at most 60 pings every 10 seconds on a connection and drops the rest without a word, so the SDK refuses more than that itself, failing with "Too many pings: the platform answers at most 60 every 10 seconds". Ping on a timer of a second or more, not every frame.
 
 ## By name
 
@@ -72,8 +89,9 @@ Two things to know about the by-name nodes:
 ## Related
 
 - [Call its functions, from C++](../from-cpp/call-functions.md): the same rules, from C++, and what the SDK retries
-- [Read and follow its variables](./read-and-follow-variables.md): the previous page
-- [Pins for every type](./pins-for-every-type.md): the next page, which pin each input and output gets
+- [Hear its messages](./hear-server-messages.md): the previous page
+- [Call a Server Function Library](./call-a-library.md): the next page, the **Call** node of a type with no instance
+- [Pins for every type](./pins-for-every-type.md): which pin each input and output gets
 - [Troubleshooting](../troubleshooting.md#outcomes): every outcome, and the refusals from your server code
 - [Access, members and timers](../access-members-and-timers.md#what-a-refused-player-sees): what a refused player sees
 - [Tip jar: your first Server Object](../examples/tip-jar.md): **Call Tip**, click by click

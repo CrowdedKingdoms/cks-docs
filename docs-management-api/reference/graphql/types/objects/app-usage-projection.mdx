@@ -37,47 +37,47 @@ type AppUsageProjection {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
 App id (as a string).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>currentEgressBytes</b></code>](#current-egress-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#current-egress-bytes\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>currentEgressBytes</b></code>](#current-egress-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #current-egress-bytes */} 
 Egress bytes recorded so far this calendar month (from app&#x005F;monthly&#x005F;egress). Egress only -- bytes the service delivered to clients, measured as wire bytes at the network interface. Ingress is metered separately and does not count toward this figure or the allowance it is compared against.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>currentIngressBytes</b></code>](#current-ingress-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#current-ingress-bytes\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>currentIngressBytes</b></code>](#current-ingress-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #current-ingress-bytes */} 
 Ingress bytes recorded so far this calendar month (from app&#x005F;monthly&#x005F;egress.ingress&#x005F;bytes): bytes clients sent the service over UDP replication and GraphQL, measured on the same basis as egress. Billed once, as aggregate&#x005F;data&#x005F;ingress above its own monthly allowance; never counted toward the egress figure or allowance.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>sufficientData</b></code>](#sufficient-data)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#sufficient-data\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>sufficientData</b></code>](#sufficient-data)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #sufficient-data */} 
 True when at least 3 days have elapsed in the month (projection is meaningful).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>daysElapsed</b></code>](#days-elapsed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#days-elapsed\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>daysElapsed</b></code>](#days-elapsed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #days-elapsed */} 
 Fractional UTC days elapsed since the calendar month started.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>projectedBytes</b></code>](#projected-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#projected-bytes\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>projectedBytes</b></code>](#projected-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #projected-bytes */} 
 Projected end-of-month egress bytes (linear extrapolation), or null when insufficient data.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>freeAllowanceBytes</b></code>](#free-allowance-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#free-allowance-bytes\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>freeAllowanceBytes</b></code>](#free-allowance-bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #free-allowance-bytes */} 
 Per-app free monthly egress allowance in bytes (5 decimal GB).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>projectedPctOfFree</b></code>](#projected-pct-of-free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#projected-pct-of-free\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>projectedPctOfFree</b></code>](#projected-pct-of-free)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #projected-pct-of-free */} 
 Projected usage as a percentage of the free allowance, or null when insufficient data.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>onTrackToExceed</b></code>](#on-track-to-exceed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#on-track-to-exceed\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>onTrackToExceed</b></code>](#on-track-to-exceed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #on-track-to-exceed */} 
 True when projected egress exceeds the free allowance, or null when insufficient data.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>inputLogByteHours</b></code>](#input-log-byte-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#input-log-byte-hours\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>inputLogByteHours</b></code>](#input-log-byte-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #input-log-byte-hours */} 
 Stored input logs this calendar month so far, in byte-hours (input&#x005F;log&#x005F;storage&#x005F;byte&#x005F;hours, which has no free allowance). Recordings keep accruing after replay logging is turned off, until they age out at the end of the retention; 0 when nothing was held this month.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>projectedInputLogByteHours</b></code>](#projected-input-log-byte-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#projected-input-log-byte-hours\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppUsageProjection.<b>projectedInputLogByteHours</b></code>](#projected-input-log-byte-hours)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #projected-input-log-byte-hours */} 
 Projected end-of-month stored input logs in byte-hours (linear extrapolation), or null when insufficient data.
 
 

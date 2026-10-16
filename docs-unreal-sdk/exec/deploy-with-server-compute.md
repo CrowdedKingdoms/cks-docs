@@ -2,7 +2,7 @@
 slug: deploy-with-server-compute
 sidebar_position: 6
 title: Deploy it with Server Compute
-description: Build and deploy a project's Server Object code from the Server Compute page in Crowdy Studio, which types changed since the live version, what a deploy sends and replaces, removing a type, versions and rolling back, switching one type or the whole app off and on, reading logs and following one call, call activity, the Settings tab, and the same operations from the command line for CI.
+description: Build and deploy a project's Server Object code from the Server Compute page in Crowdy Studio, which types changed since the live version, what a deploy sends and replaces, removing a type, versions and rolling back, switching one type or the whole app off and on, restarting a type and moving running Server Objects to a new deploy, the app's use against its limits, calling a Server Only or Developers Only function as the developer, reading logs and following one call, call activity, the Settings tab, and the same operations from the command line for CI.
 ---
 
 # Deploy it with Server Compute
@@ -23,10 +23,12 @@ The header holds the title, the line "Deploy your Server Objects' server code, t
 
 | Badge | Meaning |
 |---|---|
-| **Budget paused** | The app used up its Server Compute budget, so players' calls are refused until it is raised. |
+| **Budget paused** | The app's Server Compute is paused by billing, so players' calls are refused until it is resumed. Hover it for the reason the platform gives, such as `insufficient_funds` or `spend_cap`. |
 | **Switched off** | The app's Server Compute is switched off, so players' calls are refused. A **Switch on** button sits beside the badge. |
 | **Nothing deployed** | The app has no active server code yet. |
 | **Live: version 7** | Version 7 is the app's active server code. |
+
+Beside the badge a small line shows how much of the app's room the Server Objects use in this datacenter, for example "3 of 16 Server Objects · 192 of 1,024 MB": how many are placed against the app's limit, and the memory they reserve (each reserves its type's **Memory per Instance**, see [Server Limits](./create-a-type.md#every-setting)) against the app's memory limit. Both limits come from your organization's funding: an app with no funds can run 16 Server Objects at once within 1 GB, a funded app 16,384 within 64 GB. Past either, no new Server Object starts until some stop, and a call to one that is not running is answered **Unavailable** with the platform's reason. Each running instance of a [Server Function Library](./server-function-libraries.md#scaling) counts as one. The line is missing when the platform does not report it.
 
 Hover a badge for a one-line explanation. **Refresh** reads the app's status, versions, logs and activity again and checks the project's Server Object types. If you change the app in Studio, the header line adds "The project's app has changed since; press Refresh to show it."
 
@@ -34,35 +36,37 @@ The page has five tabs: **Overview**, **Versions**, **Logs**, **Activity** and *
 
 ## Overview
 
-The **Server Object types** card lists every definition asset in the project, sorted by Type Name, and below them any type that is on the server but no longer in the project. Hover a Type Name to see its asset. Each row shows, from left to right, the Type Name, **one badge**, the running switch, and a **...** menu. Under the name are the type's description, if its [definition](./create-a-type.md#every-setting) has one, and a small line with how many functions it has, how many variables are visible to players ("2 variables visible to players"), who can read it ("readable by every player", "readable by its members" or "only its owner can read it") and, once the Activity numbers are in, how many calls it had over the Activity tab's period, for example "1.2k calls in the last hour". The parts are separated by dots.
+The left side lists every definition asset in the project, sorted by Type Name, then any type that is on the server but no longer in the project, each with its Type Name and **one badge**. **Search types** narrows the list by name, and the tabs above it filter it: **All**, **To deploy** (types that are new, changed, running code not recorded here, or removed) and **Problems** (types whose code cannot be built, or with a Server Object the platform holds back). Click a type to show it on the right; the first type is shown when the page opens.
 
-![The Server Compute page: the documentation's five Server Object types with their descriptions, what players can read, and their change badges](/img/unreal-sdk/server-compute-overview.png)
+The right side shows the selected type: its Type Name (hover it to see its asset), its badge, the running switch and a **...** menu, then the type's description, if its [definition](./create-a-type.md#every-setting) has one, and a small line with how many functions it has, how many variables are visible to players ("2 variables visible to players"), who can read it ("readable by every player", "readable by its members", "only its owner can read it", or "closed to players: only server code and developer tools reach it" for [a type players cannot reach](./access-members-and-timers.md#a-type-players-cannot-reach)) and, once the Activity numbers are in, how many calls it had over the Activity tab's period, for example "1.2k calls in the last hour", and how many of its Server Objects are running or starting now ("2 running"). The parts are separated by dots. A [Server Function Library](./server-function-libraries.md) says "Server Function Library" first, and in place of the variables and who can read it says how many instances it runs, "1 to 4 instances" for a Min Instances of 1 and a Max Instances of 4, or "4 instances" when the two are equal. When the platform will not place one of the type's Server Objects, for example after it crashed again and again, a red line under it says which and why: "village is held back: ...". Last, a box says what the badge means for this type, such as "Not live yet. Deploy to add it." or "Changed since version 7: server code. Deploy to make it live."
+
+![The Server Compute page: the deploy strip under the tabs, the documentation's five Server Object types on the left, and the selected type's details on the right](/img/unreal-sdk/server-compute-overview.png)
 
 The badge is the first of these that applies. What stops the type's server code from being built comes first:
 
 | Badge | Meaning |
 |---|---|
 | Needs generating | There is no folder for the type yet, `logic.rs` is missing, or the type uses [My Own File](./write-server-logic.md#use-your-own-logic-file) and no file is chosen or the file is missing. The reason is written under the Type Name. |
-| Out of date | The definition or a struct it uses changed since the code was generated. Regenerate it with **Generate**. |
-| Problem | The definition fails its checks, or its Type Name is `root`, the name of the platform's top-level type. The reason is written under the Type Name. |
+| Out of date | The definition or a struct it uses changed since the code was generated. Regenerate it with **Generate**. The reason names the file and the first line that differs, for example `... no longer matches the definition (line 7: the file has "...", Generate writes "..."); regenerate it with Generate Server Code`; a long line is cut after 80 characters. |
+| Problem | The definition fails its checks, or its Type Name is `root`, the name of the platform's top-level type ("root is the name of the platform's root Server Object type; choose another Type Name"). The reason is written under the Type Name. |
 
 Once the type's code is fine, the badge says how the type compares with the version that is live now:
 
 | Badge | Meaning |
 |---|---|
 | No changes | The live version runs this code with these settings. Hover: "Live in version 7 exactly as it is here". |
-| Changed | The live version runs another revision of the code, or other settings. Hover: "Changed since version 7: server code, save interval. Deploy to make it live." Server code, save interval and idle timeout are the three things it can list. |
+| Changed | The live version runs another revision of the code, or other settings. Hover: "Changed since version 7: server code, save interval. Deploy to make it live." It can list server code, save interval, idle timeout, platform data (the [Platform Data](./access-members-and-timers.md#platform-data) settings), player access (whether [players can reach the type](./access-members-and-timers.md#a-type-players-cannot-reach)), server limits (the [Server Limits](./create-a-type.md#every-setting) settings), kind (the type is a Server Object live and a [Server Function Library](./server-function-libraries.md#switch-kind) here, or the reverse) and scaling (a library's [Scaling](./server-function-libraries.md#scaling) settings). Limits are compared the way the platform applies them: a value out of range counts as the nearest value in range, and a limit written as a string in a manifest from another tool is read as a number, so such a manifest no longer shows "server limits" as changed on every check. |
 | New | The live version does not run this type: "Not live yet. Deploy to add it." |
 | Live code unknown | The live version runs code this project has no record of, for example deployed from another copy of the project. "Deploying replaces it." See [What a deploy records](./write-server-logic.md#what-a-deploy-records). |
 | Ready | The type's server code is fine, but it has not been compared yet, because the app's versions have not been read (you are not signed in, or the read failed). Press **Refresh**. |
 
-A type that the live version runs and the project no longer has gets a **Removed** row instead: its name, a **Removed** badge ("On the server, not in this project"), the running switch, and the line "On the server, not in this project. Your next deploy removes it." Once every definition is gone from the project the line says instead "On the server, not in this project. It keeps running until the project has a type to deploy again, since a deploy needs at least one type. Switch it off here to stop players' calls to it."
+A type that the live version runs and the project no longer has is listed with a **Removed** badge ("On the server, not in this project"); selected, it shows its name, the running switch, and the line "On the server, not in this project. Your next deploy removes it." A project with no types left can still deploy: the deploy sends the Crowdy SDK's own root alone (see [Deploy](#deploy)), which removes every type from the server.
 
 The definition asset's editor shows the same state for its type in the status readout at the right of its toolbar, with **Changed since version 7** and **Not deployed yet** in place of Changed and New; see [The asset editor](./create-a-type.md#the-asset-editor). Its **Deploy** dropdown has an **Open Server Compute** entry that brings you to this page.
 
 The page does not regenerate code for you. Regenerate from the Content Browser or the asset, then open the tab again or press **Refresh**. With no definition assets it says "No Server Object types yet." and "Create a Server Object Definition asset to add one."
 
-Once the app's status is known, a type the live version runs also says **Running** or **Switched off**, with a **Switch off** or **Switch on** button (see [Switching a type or the app off and on](#switching-a-type-or-the-app-off-and-on)). A type that is not live yet has nothing to switch, so it shows neither.
+Once the app's status is known, a type the live version runs also says **Running** or **Switched off**, with a **Switch off** or **Switch on** button (see [Switching a type or the app off and on](#switching-a-type-or-the-app-off-and-on)), and a running one has a **Restart** button before it (see [Restarting a type](#restarting-a-type)). A type that is not live yet has nothing to switch, so it shows neither.
 
 ### Remove a type
 
@@ -80,34 +84,37 @@ The confirm changes with the situation:
 - **What it leaves, and why.** The folder is left alone, and the dialog says "This deletes its definition ... only." followed by the reason, when deleting it could hurt something else: "Another definition has the same Type Name and so the same Server Code folder, which is left as it is."; "Its Type Name is not a valid one, so its Server Code folder may be another type's; it is left as it is."; "Its Server Code folder is not directly inside the project's Server folder, so it is left as it is."; "It has no Server Code folder."; "Its Server Code folder holds server code the Crowdy SDK did not generate, so it is left as it is."; or "Its Server Code folder is, or holds, a link to somewhere else, and deleting it could delete what the link points to; it is left as it is, so delete it by hand." A folder that could not be deleted is reported in red under the tab: "Removed village_beacon's definition, but could not delete its Server Code folder Server/village_beacon. Delete it by hand."
 - **Unsaved code edits.** If the type's code has edits you have not saved, the dialog lists the files: "Its unsaved code edits are lost:".
 - **What it does on the server: nothing yet.** A type that is live keeps running, with players calling it, until your next deploy, which no longer includes it and removes it (the deploy's confirm says "It removes village_beacon, which this project does not have; their Server Objects stop."). Until then it shows as a **Removed** row, where you can still switch it off. A type that was never deployed ("New") says "village_beacon is not live on the server (App 12345 on Dev), so nothing changes there."
-- **The last type.** A deploy needs at least one type, so removing the project's last one cannot take it off the server: the confirm says "village_beacon keeps running on the server (App 12345 on Dev) until the project has a type to deploy again, since a deploy needs at least one type. To stop players' calls to it meanwhile, use Switch off on this page."
+- **The last type.** Removing the project's last type is no different: the next deploy sends the Crowdy SDK's root alone and removes the type from the server. To stop players' calls to it before then, use **Switch off** on this page.
 
 After you confirm, the editor's own delete runs, with its usual check of what still refers to the definition, for example a Blueprint slot holding it; it may ask again, and if you cancel there nothing else happens. If the row went stale (the asset moved, or its Type Name changed since the list was read) nothing is removed and the page says "/Game/Beacon/CSO_VillageBeacon is no longer the definition of village_beacon, so nothing was removed. The list is read again; try once more from it."
 
 ### Deploy
 
-The **Deploy** card says "Builds every type's server code on the server and makes it the app's live version. Players use it at once." and holds the **Deploy** button, a status line, and **Deploy starter pack**.
+**Deploy** sits in the page's title row, beside **Refresh**, so it stays in reach however long the list of types grows. It shows how many types the deploy adds, changes or removes ("Deploy 3"), reads **Up to date** when there is nothing to deploy, and **Working...** while an operation runs. Under the tabs, a strip holds the status line and **Deploy starter pack**; before anything is known it says "Deploy builds every type's server code on the server and makes it the app's live version. Players use it at once."
 
-**Deploy is offered only when something changed.** Once every type's code is fine and the live version is known, the status line says what a deploy would do, and the **Deploy** button is shown only if there is something to do:
+**Deploy is offered only when something changed.** Once every type's code is fine and the live version is known, the status line says what a deploy would do, and **Deploy** is enabled only if there is something to do:
 
 - "Since version 7: 1 changed, 1 new. Deploying sends the project's 2 types." Any of "changed", "new", "running code not recorded here" (the live version runs something this project has no record of) and "removed" can appear, each with its count.
-- "Nothing changed since version 7." The **Deploy** button is not shown at all.
+- "Nothing changed since version 7." **Deploy** reads **Up to date** and cannot be pressed.
 - "Nothing is deployed yet. Deploying sends the project's 2 types." for an app with no active version.
 - "Ready to deploy 2 Server Object types." when the live version could not be compared, for example because it has not been read yet; press **Refresh**.
+- "This project has no Server Object types, so deploying sends only the Crowdy SDK's root (Players Online)." when the project has no types. A project like that can still deploy: the root goes alone, and any type the app ran before is removed.
 
-A change you have just deployed keeps its "Deployed as version 8." line until something changes again, then the summary takes over. A failed or half-recorded deploy keeps its message until the next deploy. **Deploy** is disabled while any type is not fine, and the line says what to do: "Fix the 1 type marked Problem first.", "Generate Server Code for 1 type first (right-click the definition in the Content Browser).", or "Create a Server Object Definition asset to deploy."; two definitions with one Type Name show "Two Server Object types are named village_beacon (...) and (...); each needs its own Type Name". A type whose `Server/<Type Name>/` folder holds a crate the SDK did not generate is marked **Problem** with "... holds server code the Crowdy SDK did not generate; choose another Type Name, or move that folder" (see [Generate it](./write-server-logic.md#generate-it)). It is also disabled while another operation runs. The same rules apply to the **Deploy** button in a definition asset editor's toolbar.
+A change you have just deployed keeps its "Deployed as version 8." line until something changes again, then the summary takes over. A failed or half-recorded deploy keeps its message until the next deploy. **Deploy** is disabled while any type is not fine, and the line says what to do: "Fix the 1 type marked Problem first." or "Generate Server Code for 1 type first (right-click the definition in the Content Browser)."; two definitions with one Type Name show "Two Server Object types are named village_beacon (...) and (...); each needs its own Type Name". A type whose `Server/<Type Name>/` folder holds a crate the SDK did not generate is marked **Problem** with "... holds server code the Crowdy SDK did not generate; choose another Type Name, or move that folder" (see [Generate it](./write-server-logic.md#generate-it)). It is also disabled while another operation runs. The same rules apply to the **Deploy** button in a definition asset editor's toolbar.
 
 **Deploy** asks first, in a dialog titled Deploy. The first sentence is always there, then one sentence for each kind of change that applies, naming the types, with what it removes first:
 
 > Deploying replaces the active server code of App 12345 on Dev with this project's 2 Server Object types.
 >
-> It removes tip_jar, which this project does not have; their Server Objects stop.
+> It removes tip_jar, which this project does not have; their Server Objects stop. Their saved state is kept and is used again if you deploy them again.
 >
 > It adds lantern.
 >
 > It changes village_beacon (server code, save interval).
 
-The other one is "It replaces live code this project has no record of in village_beacon." When what the app runs now could not be read, the dialog says "What the app runs now could not be read, so what this changes is not known." instead. Read the list before you answer Yes: it is the difference between what you have here and what players are running.
+A type whose kind changes also gets a sentence of its own, "loot_roller changes from Server Object to Server Function Library: its saved data is kept, unused, and comes back if it becomes a Server Object again." or, the other way, "loot_roller changes from Server Function Library to Server Object: it starts from the saved data it had as a Server Object, if any."
+
+A project with no Server Object types gets "Deploying replaces the active server code of App 12345 on Dev. This project has no Server Object types, so only the Crowdy SDK's root (Players Online) is deployed." as its first sentence. The other one is "It replaces live code this project has no record of in village_beacon." When what the app runs now could not be read, the dialog says "What the app runs now could not be read, so what this changes is not known." instead. Read the list before you answer Yes: it is the difference between what you have here and what players are running.
 
 "It removes" names every type the live version runs that this project does not have, however it got there: a type you removed from the project, one deployed from another copy of the project, or server code deployed another way, such as a crate written by hand and deployed with the platform's API. Deploy cannot send such code, so answering Yes takes it offline. If your app runs code like that, deploy it the same way you deployed it before, not from this page.
 
@@ -117,12 +124,20 @@ If any server code file has edits you have not saved in the asset editor's Serve
 
 and lists the file names. Answer No, save them, and deploy again if you meant to send them.
 
+If the server code calls into platform data its definition does not ask for, the dialog adds "Check before deploying:" and one line for each, such as:
+
+> village_beacon: its server code calls world().set_voxels(), which needs world.write; turn on Changes the World or the platform refuses that call
+
+Answer No, tick the setting in the definition, and deploy again; see [Platform data](./access-members-and-timers.md#platform-data). The check ignores code inside Rust raw strings and inside `#[cfg(test)]` items, so a call that only appears there is not listed.
+
+The same list holds a function that cannot use what it sets: a **Developers Only** or **Server Only** function with a **Cooldown** or a **Required Feature** gets "village_beacon Refill: Cooldown has no effect, since only players' calls are limited." or "village_beacon Refill: Required Feature has no effect, since only players are checked." Only players are limited and checked, so clear the setting, or let players call the function. See [Cooldown](./access-members-and-timers.md#cooldown).
+
 Confirm, and Studio sends the platform:
 
 - the server code of **every** Server Object type in the project, exactly as it is on disk under `Server/<Type Name>/` (a type whose Code Source is My Own File sends that file as its `logic.rs`), and
-- a small crate named `root` that the SDK writes for you. It keeps no state; it is the top-level type every Server Object type sits under on the platform, and you never edit it.
+- a crate named `root` that the SDK generates for you from `CSO_PlayersOnline` in its own content. It is the top-level type every Server Object type sits under on the platform. It keeps one variable, the number of players in the app's world, which **Get Players Online** reads (see [How many players are online](./from-blueprint/read-and-follow-variables.md#how-many-players-are-online)), and you never edit it. An app whose root an older Crowdy SDK deployed keeps no count, and Server Compute offers a deploy until you make one. The root is not shown as a row, but it is tracked like a type: once a deploy from this SDK has recorded it, a later Crowdy SDK whose root code differs makes Server Compute offer a deploy again. An app whose root was deployed by an earlier SDK is compared only after your next deploy. A project with no Server Object types deploys the root alone.
 
-together with an entry for each type saying that players may reach it and giving its **Save Interval Seconds** and **Idle Timeout Seconds** from the definition (the platform's [manifest](/exec/intro#the-manifest)).
+together with an entry for each type saying whether players may reach it and what platform data its server code may use, and giving its **Save Interval Seconds** and **Idle Timeout Seconds** from the definition (the platform's [manifest](/exec/intro#the-manifest)). A Server Function Library's entry is `"kind": "spoke"` with its **Min Instances**, **Max Instances** (only when above Min Instances) and **Parallel Calls per Instance** as `replicas`, `max_replicas` and `concurrency`, and no save interval or idle timeout; a type with **Can Call Any Type** lists `"calls": ["*"]`.
 
 A deploy replaces the app's active server code as a whole; it does not add to it. That is why every type goes together: a type left out of a deploy is a type the app no longer has in its active code, until a deploy or a version that includes it is active. That is also how [removing a type](#remove-a-type) takes effect. For the example world, a project with `CSO_VillageBeacon` and a `CSO_Lantern` sends `village_beacon`, `lantern` and `root` in one deploy, even when only the beacon's `logic.rs` changed.
 
@@ -130,11 +145,15 @@ The status line follows the build: "Sending the server code...", "Waiting for a 
 
 > Deployed as version 7.
 
-Once the deploy succeeds, Studio also records what it sent in each type's `Server/<Type Name>/revisions.json`, which is how the page tells you next time what changed; see [What a deploy records](./write-server-logic.md#what-a-deploy-records). If a record cannot be written the deploy still stands, and the line says so in the warning color: "Deployed as version 7. Its record could not be saved, so its changes cannot be compared: ..." Commit `revisions.json` with the crate.
+Once the deploy succeeds, Studio also records what it sent in each type's `Server/<Type Name>/revisions.json`, and the Crowdy SDK's root in `Server/root/revisions.json`, which is how the page tells you next time what changed; see [What a deploy records](./write-server-logic.md#what-a-deploy-records). If a record cannot be written the deploy still stands, and the line says so in the warning color: "Deployed as version 7. Its record could not be saved, so its changes cannot be compared: ..." Commit each `revisions.json` with the crate, and `Server/root/revisions.json` too.
 
 A **Build output** button appears once a build has output, and opens it in a read-only box. A failed build deploys nothing: the line says "The build failed. See the build output below." and the box opens by itself, usually with a compiler error in a `logic.rs`. Only one operation runs at a time; the buttons are disabled until it ends. The platform limits a build to 16 crates, 64 files per crate, 2 MB of source and 5 minutes; the [builds page](/exec/builds#limits) has the full list. A project over the first three shows the reason on the status line and **Deploy** stays disabled.
 
-A running Server Object keeps its old code until it next starts; see [Operations](/exec/operations#instances-and-versions). Switching its type off and on again moves it at once.
+A running Server Object keeps its old code until it next starts; see [Operations](/exec/operations#instances-and-versions). So after a deploy that changed a type, the card reads the app's Server Objects, and when some of a changed type are still running it adds a line and two buttons:
+
+> 3 running Server Objects of village_beacon still run the previous version until they stop when idle. Move them to the new version now?
+
+**Move now** restarts those types (see [Restarting a type](#restarting-a-type)) without asking again; **Leave them** dismisses the line, and they move when they next start. Which Server Objects ran the previous version is decided from the Server Objects read as the deploy was sent, by their epoch, not from your computer's clock, so a clock that is off does not hide or add any.
 
 ### Deploy starter pack
 
@@ -142,7 +161,7 @@ A running Server Object keeps its old code until it next starts; see [Operations
 
 > Deploying the starter pack replaces the active server code of App 12345 on Dev with the platform's example Server Object types.
 >
-> It removes village_beacon, lantern, which the active version runs, unless the starter pack has a type of the same name; that type then takes over its saved Server Objects.
+> It removes village_beacon, lantern, which the active version runs, unless the starter pack has a type of the same name; that type then takes over its saved Server Objects. Their saved state is kept and is used again if you deploy them again.
 
 The second sentence names what the live version runs, the SDK's `root` left out, and is missing when nothing is live. When what the app runs could not be read, it says "What the app runs now could not be read, so what this removes is not known." instead.
 
@@ -160,13 +179,35 @@ That is a rollback: if version 7 has a bug, make 6 active and players get the ea
 
 ## Switching a type or the app off and on
 
-Each type row on the Overview tab has a **Switch off** button, or **Switch on** once the type is off. Use it when one type is causing trouble and you want it quiet while the rest of the app carries on. Switching off asks first, in a dialog titled "Switch off village_beacon":
+Each type the live version runs has a **Switch off** button on the Overview tab, beside its name when selected, or **Switch on** once the type is off. Use it when one type is causing trouble and you want it quiet while the rest of the app carries on. Switching off asks first, in a dialog titled "Switch off village_beacon":
 
 > Players' calls to village_beacon in App 12345 on Dev are refused until it is switched on again. Its Server Objects are saved and stopped.
 
-Switching on asks nothing. While a type is off, calls to it are refused and reach the client as the `Denied` outcome (see [Troubleshooting](./troubleshooting.md#outcomes)), and nothing of that type runs. Switch it on and its Server Objects start again, from what was saved, the next time a call reaches them. This is also the quick way to make a running Server Object pick up newly deployed code. It is not the same as removing the type in a deploy: the code stays and the state is kept. The buttons are disabled until the app's status has loaded and while another operation runs.
+Switching on asks nothing. While a type is off, calls to it are refused and reach the client as the `Paused` outcome, which is retryable (see [Troubleshooting](./troubleshooting.md#outcomes)), and nothing of that type runs. Switch it on and its Server Objects start again, from what was saved, the next time a call reaches them. It is not the same as removing the type in a deploy: the code stays and the state is kept. To move running Server Objects onto newly deployed code, use **Restart** instead, which refuses no calls. The buttons are disabled until the app's status has loaded and while another operation runs.
 
 When the whole app is switched off, the header badge says so and its **Switch on** button, after asking "Players can call the Server Functions of App 12345 on Dev again.", lets players call the app again. The page cannot switch the whole app off; see [the kill switch](/exec/operations#the-kill-switch) for that.
+
+## Restarting a type
+
+**Restart** on a running type moves its running Server Objects to the live version now. It asks first, in a dialog titled Restart:
+
+> Move village_beacon's running Server Objects on App 12345 on Dev to version 8 now?
+>
+> Each is saved and stopped, and starts again on version 8 at its next call. Players watching one see it read again; a call that arrives while it stops may be answered Unavailable.
+
+Nothing is refused while it happens and no state is lost: each Server Object is saved first and starts again from what was saved. Players watching one see its values read again on the new start, the way they do after a reconnect. The deploy line then says how many it stopped, for example "3 running Server Objects stopped; each starts again on the active version at its next call." Use it after a deploy, from the **Move now** button the deploy strip offers, or whenever a fix should reach Server Objects that are running now rather than when they next stop.
+
+## Call a function as the developer
+
+A [Server Only or Developers Only](./create-a-type.md#callable-by) function has no player to call it, so you run it by hand from the definition asset: select the function in the Server Object panel, and in its Details press **Call as Developer...**. A window titled "Call as Developer" opens with:
+
+- **Instance Id**, the Server Object to call, such as `boss-1`. A type that is **Owner Only** takes its owner's user id, and a type with **Only One Instance** always calls its one Server Object, whatever is typed. It is needed otherwise.
+- the function's inputs, starting from their default values, to fill in;
+- **Call**, and under it the answer: "Ok" and the outputs as JSON, such as `{"total":7}`, or the outcome and the reason, such as "Denied: only members may call Deposit". If the connection itself is refused it says why, for example "Unavailable: could not connect as the developer: start failed: denied: an owner-only Server Object's Instance Id is its owner's user id".
+
+The built-in member functions that only server code may call, such as **Add Member** when **Members From** is **This Object**, can be called this way too. They sit greyed out in the **Built-in** list of the Members panel, and a play button beside the row ("Call as Developer: runs this function on a live Server Object as you, the app's developer") opens the same window.
+
+The call goes to the live app with your Crowdy Studio sign-in, as you: the server code sees `Caller::Developer` with your user id, not a player, and whatever it changes stays changed. It starts the Server Object if it is not running. If the function's inputs change in the definition while the window is open, **Call** says so; close the window and open it again.
 
 ## Logs
 
@@ -187,7 +228,7 @@ The **Activity** tab shows "How players' calls to each Server Function went, bus
 - how many calls: "1.2k calls in the last hour" (or "1 call in the last hour"),
 - "no failures", or "94% succeeded",
 - "usually answers in 12 ms (slowest 1.4 s)",
-- and a badge for each kind of problem there was: **N server errors** (your code answered with an error, or the call failed on the server), **N timed out**, **N refused** (the caller was not allowed) and **N busy** (the server was busy; the caller may try again). Hover a badge for what it counts.
+- and a badge for each kind of problem there was: **N server errors** (your code answered with an error, or the call failed on the server), **N timed out** (a call past its **Time per Call** also restarts that Server Object from its last save, so see [Server Limits](./create-a-type.md#every-setting)), **N refused** (the caller was not allowed) and **N busy** (the server was busy; the caller may try again). Hover a badge for what it counts.
 
 If `FeedBeacon` is slow or refusing, this is where it shows. With no calls it says "No calls yet in this period." The numbers come from [Calls per endpoint](/exec/operations#calls-per-endpoint) on the platform.
 
@@ -211,7 +252,7 @@ It uses Crowdy Studio's saved sign-in and app, so sign in and pick the app in th
 
 | Operation | What it does |
 |---|---|
-| `-op=status` | The app's active version, whether the app is switched off, which types are switched off, and whether its budget is paused. |
+| `-op=status` | The app's active version, whether the app is switched off, which types are switched off, whether its budget is paused and why, and its Server Objects and reserved memory against its limits (`instances`, `instanceLimit`, `reservedMb`, `maxReservedMb`). |
 | `-op=versions` | The versions, newest first. |
 | `-op=changes` | Which types differ from the live version, like the badges on the Overview tab, and whether a deploy would change anything. Read only. |
 | `-op=deploy -yes` | Assembles the project, builds it, waits, deploys it, and records what it sent in each type's `revisions.json`, like **Deploy**. |
@@ -219,10 +260,13 @@ It uses Crowdy Studio's saved sign-in and app, so sign in and pick the app in th
 | `-op=activate -version=6 -yes` | Makes version 6 the active one, like **Make active**. |
 | `-op=disable -type=village_beacon -yes` | Switches one type off. |
 | `-op=enable -type=village_beacon -yes` | Switches it on. |
+| `-op=restart -type=village_beacon -yes` | Moves its running Server Objects to the active version, like **Restart**; the result's `stopped` says how many. |
+| `-op=call -type=village_beacon -fn=Refill -key=village -yes` | Calls a Server Only or Developers Only function as the developer, like **Call as Developer**. `-inputs=` gives its inputs as JSON, or `-inputs=@inputs.json` from a file, since a shell mangles quotes; missing inputs keep their defaults, and a name the function has no input for is refused rather than ignored. `-key=` is needed unless the type has Only One Instance. `-fn=` finds a function by name, the built-in ones such as `AddMember` included. A 64-bit integer above 9007199254740991 must be written as a string, for example `{"Player": "9007199254740993"}`; a larger number written without quotes is refused with "... is above 9007199254740991; write it as a string, for example "9007199254740993"." The result gives `status`, `message` and `reply`, the outputs as JSON. |
+| `-op=instances` | Every Server Object the platform has placed: its type, Instance Id, phase (`idle`, `starting`, `running` or `stopping`), epoch, and `heldBack` when the platform will not place it, with the reason. |
 | `-op=logs` | Recent log lines. Optional `-type=`, `-flow=` and `-limit=`. |
 | `-op=stats` | Call counts per Server Function. Optional `-type=`. |
 
-`-yes` stands in for the confirmation the page asks. `deploy`, `starters`, `activate`, `disable` and `enable` replace or switch the app's live server code, so without `-yes` they refuse with "This replaces or switches the app's live server code; pass -yes to confirm." and send nothing. The read-only operations (`status`, `versions`, `changes`, `logs`, `stats`) do not need it. An unknown `-op` is refused with the list of operations.
+`-yes` stands in for the confirmation the page asks. `deploy`, `starters`, `activate`, `disable`, `enable`, `restart` and `call` replace, switch, restart or run the app's live server code, so without `-yes` they refuse with "This changes the app's live server code or what it holds; pass -yes to confirm." and send nothing. The read-only operations (`status`, `versions`, `changes`, `instances`, `logs`, `stats`) do not need it. A deploy's result also gives `sdkVersion`, the `ckx-sdk` version the platform compiled the server code against, whatever version the crates name; its log line reads "build ... succeeded against ckx-sdk 0.8.0; deploying". An unknown `-op` is refused with the list of operations.
 
 The command's exit code is its own result: 0 when the operation succeeded and 1 when it did not, whatever else the editor logs. It writes one line per step to the log under `LogCrowdyExec`. Add `-out=<file>` to also get the result as one JSON object: `op`, `ok`, `error` and `errorCode` (both empty when it succeeded), and the fields of that operation. A CI job can read it:
 
@@ -243,9 +287,10 @@ A job that runs `-op=deploy` without `-yes` fails with exit code 1 and deploys n
 | `liveVersion` | The live version's number, or 0 when nothing is live. |
 | `types` | One row per type in the project, then one for each type on the server that the project no longer has: `type` (the Type Name), `change`, `what` and `liveRevision`. |
 | `change` | `unchanged`, `changed`, `new`, `unknown` (the live version runs code this project has no record of), `removed` (on the server, not in the project) or `not_compared` (the type's server code is not ready). |
-| `what` | For a changed type, what differs: any of `server code`, `save interval` and `idle timeout`. Otherwise empty. |
+| `what` | For a changed type, what differs: any of `server code`, `save interval`, `idle timeout`, `platform data`, `player access`, `server limits`, `kind` and `scaling`. Otherwise empty. |
 | `liveRevision` | Where the revision the live version runs sits in the type's `revisions.json`, counting from 0 for the newest, or null when there is none. |
 | `problems` | Why the project cannot be deployed yet, one sentence each, as the page shows them. Empty when it can. |
+| `warnings` | What may go wrong after a deploy without stopping it, one sentence each, such as platform data the server code calls into without asking for it. `-op=deploy` writes them too, and both log each as a `warning:` line. |
 | `ready` | True when `problems` is empty. |
 | `hasChanges` | True when a deploy would change what runs (a type is `new`, `changed`, `unknown` or `removed`), and also when `ready` is false, since a type whose code is not ready differs from what a deploy would send once it is. |
 

@@ -45,9 +45,21 @@ Studio stores the signed-in session in a per-user file under your project's `Sav
 Treat the `Saved` folder on a shared macOS or Linux machine as you would a credential file.
 :::
 
+## Your account
+
+The **Account** page, under **Home** in the sidebar, is for the account Studio is signed in with: yours, not a player's. It needs an account sign-in; an organization token has no account of its own, and the page says so. **Refresh** reads your name and email again, and **Web console** opens your account on the web, where sign-in methods and connected apps are managed.
+
+![The Account page: the name card with email, gamertag and disambiguation, then the Password tab](/img/unreal-sdk/studio-account.png)
+
+- **The name card** shows your gamertag, its disambiguation and your user id (with a copy button), and your email. **Edit name** turns it into two fields; **Save** changes both, and a pair another account has is refused.
+- **Password**: pick **I have a password** to change it, with your current password and a new one; your other devices are signed out while Studio stays signed in. Pick **I don't have one yet** to add one to an account made by magic link or social sign-in; it works at once, and a security email goes to your address.
+- **Sessions**: **Sign out everywhere** ends every session of your account, on every device and in every game, Studio's included, and returns Studio to the Sign In page.
+
+What a player can change from inside your game is on [Authentication](../services/authentication.md#account-settings) and [Player Names](../services/player-names.md).
+
 ## Signing out
 
-Press **Sign Out** in the Studio header. It clears the stored session, clears the Web Console's browser session too, and returns you to the Sign In page.
+Press **Sign Out** in the Studio header. It ends the session on the server, clears the stored session, clears the Web Console's browser session too, and returns you to the Sign In page. A token sign-in is only forgotten: the token stays valid, since others may use it.
 
 ## Gotchas
 
