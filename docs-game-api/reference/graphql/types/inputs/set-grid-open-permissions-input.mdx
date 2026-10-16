@@ -29,15 +29,15 @@ input SetGridOpenPermissionsInput {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>SetGridOpenPermissionsInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>SetGridOpenPermissionsInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
 The app (tenant) that owns the grid.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetGridOpenPermissionsInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#grid-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>SetGridOpenPermissionsInput.<b>gridId</b></code>](#grid-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #grid-id */} 
 The grid to open (or close). Not the app's world grid, which is open by default.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>SetGridOpenPermissionsInput.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#permission-keys\} 
+#### [<code style={{ fontWeight: 'normal' }}>SetGridOpenPermissionsInput.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #permission-keys */} 
 The keys every player with active access holds on this grid, capped by its limits. Empty array closes it (players keep only what they are granted directly or through a group). Each must be an active grid permission key, unique, at most 64 chars, and not one of the four player-code keys.
 
 

@@ -31,23 +31,23 @@ type AppComputeBudgetInfo {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#app-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
 The app the allowance belongs to.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>unitsPerMinute</b></code>](#units-per-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#units-per-minute\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>unitsPerMinute</b></code>](#units-per-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #units-per-minute */} 
 Compute units this app may consume per minute.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>enforce</b></code>](#enforce)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#enforce\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>enforce</b></code>](#enforce)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #enforce */} 
 When false the allowance is recorded and nothing is paused (the default). When true, ck-exec pauses the app's code while its last settled minute is over the allowance, and resumes it once a minute is back inside.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>note</b></code>](#note)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#note\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>note</b></code>](#note)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #note */} 
 Why this number was chosen. Recorded because an allowance with no stated basis is a number the next operator cannot safely change.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#updated-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>AppComputeBudgetInfo.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #updated-at */} 
 When the allowance was last written.
 
 
