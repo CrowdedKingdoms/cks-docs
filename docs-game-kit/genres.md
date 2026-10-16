@@ -26,11 +26,14 @@ and every starter is a hub crate to make your own.
 | A sports game | `racing.ball` (`ball`) | A ball the hub moves, possession, passes, shots, goals |
 | A conquest mode or guild war | `territory.map` (`territory`) | Control points captured by standing on them, income, a winning score; the hub reads where players are |
 | A battle royale | `territory.zone` (`zone`), `arenas` | A circle that shrinks and wears down whoever is outside it, beside an arena for the fighting |
+| An RPG | `player`, `arenas`, `instances`, `encounters`, `market` | Each player's levels, items, quests and achievements in their own hub; fights and runs that `grant` rewards; a market to buy, sell and trade |
+| A tycoon or idle game | `player.production`, `market` | Producers that catch up on the time away in one step, crafting chains, an order book for what they make |
+| A cozy or survival game | `world`, `npcs`, `player`, `market` | Gathering and crafting into an inventory with mail for overflow, vendors that restock, trades between friends |
 
 A game usually needs more than one row: an open world with a party-based dungeon is `world`,
 `npcs`, `matchmaking` and `instance` in one manifest, each hub keyed by what it holds (the world,
-an area, a queue, a run). Items, currency, crafting and progression are not here yet: they are the
-kit's next step, kept in hub state.
+an area, a queue, a run, a player). The economy (items, currency, crafting, progression) is kept in
+hub state and is [not a ledger](economy).
 
 ## Writing a hub the kit can follow
 

@@ -37,6 +37,26 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-15 (dev: the economy; ckx-sdk 0.12.1, CrowdyJS 18.13.0, CrowdyCPP 0.66.0, CrowdyPy 0.14.0, ckx-kit 0.5.0)
+
+- **The economy, in hub state and not a ledger.** Two starters: `player`, one hub per player
+  (inventory with mail for overflow, soft currencies, crafting, loot with pity, idle production,
+  levels, achievements, quests with first-session tutorials), and `market` (vendors that restock,
+  order books, trades between two players, with what each puts up held in their own hub). Every
+  SDK's kit gains `player` and its views (`inventory`, `wallet`, `progression`, `achievements`,
+  `quests`, `crafting`, `loot`, `production`) and `shops`, `market` and `trades`. Read [the
+  economy and its limits](/game-kit/economy) before you put anything of value in it.
+- **The refusal code `unavailable`**: a hub could not finish a change because another hub did not
+  answer, and kept no receipt for it. The kits send a call with an action id again (see [the
+  protocol](/game-kit/protocol#refusals-carry-a-code)).
+- `ckx_sdk::kit::econ` (ckx-sdk 0.12.0) has the pieces: items, wallets, holds, references
+  answered once, recipes, loot, production, vendors, an order book, levels, achievements, quests.
+  0.12.1, the version the kit publishes, gives references their own bound (128 bytes); the
+  market makes every reference from its own key and a counter, never from a client's action id
+  (see [how it stays consistent](/game-kit/economy#how-it-stays-consistent)).
+- The open [dev kit](/exec/develop-locally) carries ckx-sdk 0.12.1 and the `player` and `market`
+  templates (kit 0.5.0).
+
 ## 2026-10-15 (dev: the genre starters; ckx-sdk 0.11.0, CrowdyJS 18.12.0, CrowdyCPP 0.65.0, CrowdyPy 0.13.0, ckx-kit 0.4.0)
 
 - **Nine genre starters.** `leaderboard` (boards hubs submit to, seasons on a schedule), `deck`

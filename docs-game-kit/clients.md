@@ -136,6 +136,23 @@ a few times a second and answer the position the movement warden kept; they go w
 id, because the next report replaces a lost one. Each report the warden refuses is a `violation`
 event; an arena removes a player after a run of them (`remove_after_strikes`, a `removed` event).
 
+## The economy modules
+
+The caller's own `player` hub (keyed by their player id, which the kit must know) and markets by
+name (CrowdyJS 18.13.0, CrowdyCPP 0.66.0, CrowdyPy 0.14.0). The economy is [not a
+ledger](economy); see [the player's hub](modules/player) and [markets](modules/market).
+
+| Module | CrowdyJS | CrowdyCPP | CrowdyPy |
+|---|---|---|---|
+| The player's hub | `kit.player`: `watch`, `me`, `rules`, `profileOf`, `onEvent` | `player()` | `kit.player` (`profile_of`, `on_event`) |
+| Inventory, wallet | `kit.inventory` (`items`, `count`, `discard`, `takeMail`), `kit.wallet` (`balances`, `balance`) | `inventory()`, `wallet()` | `kit.inventory` (`take_mail`), `kit.wallet` |
+| Progression, achievements, quests | `kit.progression` (`onLevel`), `kit.achievements` (`list`, `onUnlock`), `kit.quests` (`accept`, `claim`, `step`) | `progression()`, `achievements()`, `quests()` | the same, snake_case |
+| Crafting, loot, production | `kit.crafting.craft`, `kit.loot.open`, `kit.production.collect` | `crafting()`, `loot()`, `production()` | the same |
+| Vendors, order books, trades | `kit.shops.at(key)`, `kit.market.at(key)`, `kit.trades.at(key)` | `shops()`, `market()`, `trades()` `.at(key)` | the same |
+
+A change that needed another hub that did not answer is refused `unavailable`; every SDK sends a
+call with an action id again, and the hub finishes what it began.
+
 ## Under every module
 
 - **One connection, paced.** `kit.runtime` (`runtime()` in C++) holds the kit's connection and

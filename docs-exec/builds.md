@@ -16,8 +16,8 @@ session.
 
 ## Starter packs
 
-`execStarters(appId)` returns thirteen crates and a manifest that deploys them as one app, fifteen
-node types (`racing` and `territory` each serve two):
+`execStarters(appId)` returns fifteen crates and a manifest that deploys them as one app,
+seventeen node types (`racing` and `territory` each serve two):
 
 | Crate | Node type | What it does | Replaces |
 |---|---|---|---|
@@ -34,6 +34,8 @@ node types (`racing` and `territory` each serve two):
 | `arena` | `arena` | Classes and abilities in real time, with a movement warden for reported positions. | `abilities-engine`, `movement-warden` |
 | `racing` | `race`, `ball` | Races (gates, laps, splits, a ghost) and ball games (possession, goals). | `racing`, `possession` |
 | `territory` | `territory`, `zone` | Control points captured by standing on them, and a shrinking circle. | `territory` |
+| `player` | `player` | A player's own hub, keyed by their id: inventory, soft currency, crafting, loot with pity, idle production, levels, achievements, quests. Not a ledger. | `loot`, `production` engines |
+| `market` | `market` | Vendors that restock, order books and trades between players, with escrow in each player's own hub. Not a ledger. | `market-engine` |
 
 ```graphql
 query {
@@ -63,9 +65,9 @@ and their refusals carry a `kit:<code>:` code. The SDKs' Game Kit drives them wi
 clients, and its `topology` composes, builds and deploys them for you: see the [Game
 Kit](/game-kit/intro).
 
-The genre starters' endpoints and topics are on the Game Kit's [starters page](/game-kit/starters)
-(ckx-sdk 0.11.0). The markets (`market-engine`) have no starter yet: the economy starters come next,
-with items and currency in hub state.
+The genre and economy starters' endpoints and topics are on the Game Kit's [starters
+page](/game-kit/starters) (ckx-sdk 0.11.0 and 0.12.0). The economy lives in hub state and is not a
+ledger: read [its limits](/game-kit/economy) first.
 
 ## Building
 
@@ -145,7 +147,7 @@ the same rules, with its own dependency list, and runs in browsers rather than o
 | Crates in a build | 16 |
 | Files in a crate | 64 |
 | Source in a build | 2 MB |
-| Build time | 10 minutes for the whole build: its crates compile one after another, about 25 seconds each, so the full starter pack takes about five |
+| Build time | 10 minutes for the whole build: its crates compile one after another, about 25 seconds each, so the full starter pack (15 crates) takes about six |
 | Module size | 16 MB |
 | At once | One build per app, and one per person across every app, on each API instance; eight waiting per instance |
 | Kept | 7 days, with their modules |

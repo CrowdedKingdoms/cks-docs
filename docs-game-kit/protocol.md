@@ -67,6 +67,7 @@ show the text. The shared codes:
 | `not_your_turn`, `not_member`, `started`, `finished`, `not_ready`, `reserved` | Turn and lobby rules. |
 | `empty`, `out_of_reach`, `expired`, `insufficient` | Resources, reach, time, cost. |
 | `already_done` | The action already ran; its answer was too large to keep. |
+| `unavailable` | Another hub this call needs did not answer, so it did not finish. The hub keeps no answer for it: send it again with the same `action_id`, as the kit's clients do, and it finishes what it began (ckx-sdk 0.12.0). |
 
 A hub may add its own codes (lowercase letters, digits and `_`): the session starter refuses an
 illegal move with `invalid_move`, the area starter a player who is not in it with `not_in_area`.

@@ -57,6 +57,9 @@ something else and tell the kit (`nodes: { session: 'duel' }`).
 - **The `world.read` scope** for `npcs`, `territory` and `zone`, which read where players are. The
   planned manifest carries it. An `instance` with a `volume` also needs `grids.write` and
   `permissions.write`, which you add in its overrides.
+- **The player's id in the kit** for the `player` hub, keyed by it: `playerId` in CrowdyJS's
+  `client.kit()` options (`player_id` in CrowdyPy, `options.runtime.playerId` in CrowdyCPP), or
+  the identity the kit can ask for.
 - **Players in the world** for an area's mobs and pets, a control point and a circle: these hubs
   see the players whose actors are in the world near them, so a player who is not in the world is
   refused with `not_in_area` by an area and never counted on a point or in a circle.
