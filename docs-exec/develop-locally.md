@@ -40,8 +40,15 @@ npx @crowdedkingdoms/ckx-kit build --mod    # the platform's build and checks
 
 `new` takes a template: `mod`, `client` (a mod's CLIENT half), `hub`, `spoke`, or one of the
 [starter packs](builds#starter-packs)' crates (`world-tick`, `matchmaker`, `session`,
-`npc-mobs`). The mod, hub and spoke templates and the starter crates come with their tests. The
+`npc-mobs`, since kit 0.4.0 the genre starters: `leaderboard`, `deck`, `tactics`, `director`,
+`minigame`, `instance`, `arena`, `racing`, `territory`, and since kit 0.5.0 the economy's `player`
+and `market`). The mod, hub and spoke templates and the starter crates come with their tests. The
 crate names the exact SDK version and Rust release this kit matches.
+
+Since `ckx-sdk` 0.10.0 (kit 0.3.0) the starters speak the [Game Kit protocol](/game-kit/protocol),
+through `ckx_sdk::kit`: `Publisher` numbers each topic's messages, `Receipts` answers a resent
+`action_id` once, and `kit::error(code, text)` refuses with a code the SDKs' Game Kit reads. A hub
+of your own that uses them is one the kit's mirrors and calls drive as they drive the starters.
 
 ## Test
 

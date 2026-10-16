@@ -289,6 +289,15 @@ const config: Config = {
     [
       '@docusaurus/plugin-content-docs',
       {
+        id: 'game-kit',
+        path: 'docs-game-kit',
+        routeBasePath: '/game-kit',
+        sidebarPath: './sidebars/gameKit.ts',
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
         id: 'crowdyjs',
         path: 'docs-crowdyjs',
         routeBasePath: '/crowdyjs',
@@ -490,6 +499,12 @@ const config: Config = {
               docsPluginId: 'exec',
               sidebarId: 'sidebar',
               label: 'ck-exec (preview)',
+            },
+            {
+              type: 'docSidebar',
+              docsPluginId: 'game-kit',
+              sidebarId: 'sidebar',
+              label: 'Game Kit (preview)',
             },
           ],
         },
