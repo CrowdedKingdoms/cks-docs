@@ -2,7 +2,7 @@
 slug: keep-a-record-per-entity
 sidebar_position: 7
 title: Keep a record per entity
-description: Give every entity in a crowd its own values on the server with Holds set to A Record per Entity - when to use it instead of one Server Object per entity, the settings (Holds, the audience of each variable, Max Records, Send Changes Every, Area Size, Areas Followed Around a Player, Reads World Data), who receives Everyone, Owner Only and Team Only values and when, This Actor's Area, the Records functions in logic.rs and a census of nearby actors, reading records from Blueprint (Find Record, Get Record Ids, On Records Changed) and from C++, crowd rows that read the same values, sizing, and the limits and reserved names.
+description: Give every entity in a crowd its own values on the server with Holds set to A Record per Entity - when to use it instead of one Server Object per entity, the settings (Holds, the audience of each variable, Max Records, Send Changes Every, Area Size, Areas Followed Around a Player, Reads World Data), who receives Everyone, Owner Only and Team Only values and when, This Actor's Area, the Records functions in logic.rs and a census of nearby actors, reading records from Blueprint (Find Record, Get Record Ids, Watch Record, On Records Changed, On Records Updated) and from C++, crowd rows that read the same values, sizing, and the limits and reserved names.
 ---
 
 # Keep a record per entity
@@ -40,7 +40,9 @@ Make the asset as on [Create a Server Object type](./create-a-type.md), then sel
 | **Team From** | Records | **This Object's Records** | Where a team comes from: **This Object's Records** or **Crowdy Team**. See [Who receives a value](#who-receives-a-value). |
 | **Area Size** | Areas | 4 | The side of one area, in chunks, 1 to 64. See [Pick the object](#pick-the-object). |
 | **Areas Followed Around a Player** | Areas | 1 | How many areas out from a player's own are followed, 0 to 3. 1 follows the 3 by 3 around it. |
-| **Reads World Data** | Access | Off | Lets the server code ask which actors are near a chunk. Deploying asks for the `world.read` permission. |
+| **Reads World Data** | Platform Data | Off | Lets the server code ask which actors are near a chunk. Deploying asks for the `world.read` permission. |
+
+![The raider type with Type Settings selected: Holds set to A Record per Entity, then the Records category (Max Records, Send Changes Every, Team From) and the Areas category (Area Size, Areas Followed Around a Player)](/img/unreal-sdk/server-object-records.png)
 
 **Readable By** must be **Every Player**: who sees which variable is decided per variable, not for the whole object. **Members From** must be **None**, since each record carries its own owner and team. Saving the asset says so when either is wrong.
 
@@ -58,6 +60,8 @@ Every variable of a record has one audience:
 | **Everyone** | Every player who watches the object. |
 | **Owner Only** | The player who owns the record's entity. |
 | **Team Only** | A player whose own record in this object has the same team as this record. |
+
+![Loot selected on the raider type: Variable Name, Variable Type, Visible to Players set to Owner Only and the Default Value](/img/unreal-sdk/server-object-variable-audience.png)
 
 Each record has an **owner**, a player's user id or 0 for none, and a **team**, a string. Your server code sets both. They are not variables of your struct, and no player can set them.
 
@@ -159,6 +163,8 @@ Three things to know about the census:
 
 Put a **Crowdy Server Object** component on the actor, with **Definition** set to the type and **Instance Mode** set to **This Actor's Area**, **Instance Id** or the type's single instance. The actor needs a **Crowdy Entity** component as well: its id names the actor's record. Without one the component fails with "needs a Crowdy Entity component on this actor".
 
+![The Crowdy Server Object component: Definition CSO_Raider and Instance Mode This Actor's Area](/img/unreal-sdk/server-object-component-area.png)
+
 The component reads **its actor's own record**, so the nodes work as they do for any Server Object. The typed **Get** and **On Changed** nodes, **On Variables Changed**, **Get Variables** and **Get Server Value** all give that record's values, and **Changed** runs when one of them changes. See [Read and follow its variables](./from-blueprint/read-and-follow-variables.md).
 
 To reach other entities' records, take the Server Object from the component with **Get Server Object**, and use these nodes on it:
@@ -167,7 +173,26 @@ To reach other entities' records, take the Server Object from the component with
 |---|---|
 | **Find Record** | Takes an **Id** and gives that record's **Values**, its **Owner** and its **Team**. Returns false when there is no such record. Read a variable out of **Values** with **Get Server Value**. |
 | **Get Record Ids** | The id of every record the player can see, in no particular order. |
+| **Holds Records** | True when the type keeps a record per entity rather than one set of variables. |
+| **Num Records** | How many records the object holds now. |
+| **Watch Record** | Takes a **Record Id** and an event (the delegate `FCrowdyServerRecordEvent`). The event runs with the **Object**, the **Record Id** and the **Changed** variables after each change of that record, and when it is removed (**Find Record** is then false). When the record is already current it runs once at once, naming all its variables. Records dropped because the object **Failed** are not reported; **On Status Changed** is. |
+| **Stop Watching Record** | Takes the same **Record Id** and event, and stops that watch. |
 | **On Records Changed** | An event that runs after every read, batch or fetch that changed records, with the **Object**, the ids that are new or changed, and the ids that were removed. |
+| **On Records Updated** | Like **On Records Changed**, but each changed record comes with its changed variables: a list of **Record Id** and **Changed Variables**, then the removed ids. **Changed Variables** is empty when only the record's owner or team changed. |
+
+**Watch Record** works like **Watch Message**: get the Server Object from the component, call **Watch Record** with a **Record Id**, and wire a custom event with the delegate's pins (the **Object**, the **Record Id** and the **Changed** variables) to its **Event**. The figure follows one record, here an id `raider-1` that your server code inserted, and prints its id each time it changes.
+
+<Blueprint src="so-record-watch" title="Event BeginPlay, Get Server Object, Watch Record (raider-1), the OnRaiderRecord event, Print String" />
+
+Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+
+**Stop Watching Record** takes the same **Record Id** and the same event:
+
+<Blueprint src="so-record-unwatch" title="StopWatchingRaider, Get Server Object, Stop Watching Record (raider-1), the OnRaiderRecord event" />
+
+**On Records Updated** is bound from **Begin Play** like any event of the object, with **Bind Event to On Records Updated** on the Server Object. Its event gets the changed records, each with its **Record Id** and **Changed Variables**, and the removed ids. The figure prints how many records changed:
+
+<Blueprint src="so-records-updated" title="Event BeginPlay, Get Server Object, Bind Event to On Records Updated, the OnRecordsUpdated event, Length, Print String" />
 
 **Find By Asset** and the by-name **Watch Variables** read a type of this kind as if it had no records, so they give its defaults. Use the component, or **Find Record**.
 
@@ -212,7 +237,7 @@ void ARoadWatch::HandleRecords(UCrowdyServerObject* Object, TConstArrayView<FStr
 
 The rest of the C++ surface for records:
 
-- `UCrowdyServerObject::FindValues` gives a record's values by id, or the object's own when the id is null. The Blueprint **On Records Changed** is the `RecordsChanged` property, an `FCrowdyServerRecordsChanged`.
+- `UCrowdyServerObject::FindValues` gives a record's values by id, or the object's own when the id is null. The Blueprint **On Records Changed** is the `RecordsChanged` property, an `FCrowdyServerRecordsChanged`, and **On Records Updated** is the `RecordsUpdated` property, an `FCrowdyServerRecordsUpdated` whose `FCrowdyServerRecordChange` entries hold a `RecordId` and its `ChangedVariables`.
 - `UCrowdyServerObjectComponent::ReadsRecord` says whether the component reads its actor's record, and `UCrowdyServerObjectComponent::GetRecordId` gives that record's id.
 - `UCrowdyServerObjectDefinition::GetAreaKey` and the static `UCrowdyServerObjectDefinition::MakeAreaKey` turn a chunk into an area's Instance Id, and `UCrowdyServerObjectDefinition::HasCrowdyTeamRecords` says whether the type keeps records on Crowdy Teams. `UCrowdyServerObjectSubsystem::GetChunkSize` gives the chunk size the game session uses.
 - The settings are typed by `ECrowdyServerObjectHolds`, `ECrowdyServerFieldAudience` (**Everyone**, **Owner Only**, **Team Only**) and `ECrowdyServerTeamSource` (**This Object's Records**, **Crowdy Team**).
@@ -241,7 +266,7 @@ What a player receives is the changed records, times the bytes of each record, t
 
 - **Readable By** must be **Every Player**, and **Members From** must be **None**.
 - A variable's audience is set per variable, and only a variable that is **Visible to Players** can be Owner Only or Team Only. A variable cannot be both. Saving checks both.
-- The function name `changes` and a timer whose name in snake case is `crowdy_flush` are reserved.
+- The function name `changes` and a timer whose name in snake case is `crowdy_flush` or `crowdy_sessions` are reserved.
 - A record's id is 1 to 64 bytes of text with no control characters. Ids that differ only in capitals are different records.
 - A team is at most 64 bytes. With **Team From** on **Crowdy Team** it is a team id in digits or empty, and anything else is refused.
 - A type starts with no records, so a seed must be empty.

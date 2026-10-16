@@ -234,13 +234,13 @@ To see the range at work, set **Damage** to 30 or 0. The server refuses it befor
 Open **Server Compute** and look at the `boss` row on the **Overview** tab while both players are in the fight.
 
 1. Click **Switch off** and confirm "Switch off boss". Its Server Objects are saved and stopped.
-2. Press **F** in either window. The call is refused as **Denied**, and nothing changes for either player. Each window keeps showing the last health it had.
+2. Press **F** in either window. The call is refused as **Paused**, and nothing changes for either player. Each window keeps showing the last health it had.
 3. Click **Switch on**. There is no dialog.
 4. Press **F** again. The boss starts again from what was saved, both windows follow it again, and the next hit lands on the same health it had before you switched off. Nothing is lost and nothing has gone back.
 
 If the boss was defeated when you switched it off, its `Respawn` timer is still pending: it fires once after the type is back, and both windows see the boss return.
 
-A switch like this is also the quick way to move a running boss onto code you have just deployed. See [Switching a type or the app off and on](../deploy-with-server-compute.md#switching-a-type-or-the-app-off-and-on).
+To move a running boss onto code you have just deployed without refusing any hits, press **Restart** on the `boss` row instead: it is saved, stopped and started again on the new code at the next hit, and both windows read it again. See [Restarting a type](../deploy-with-server-compute.md#restarting-a-type).
 
 ## What the player sees when the boss falls
 
@@ -256,6 +256,8 @@ If something does not behave, turn on [`crowdy.exec.trace`](../troubleshooting.m
 - [Guild halls and arena lobbies](./guild-halls-and-arenas.md): members, a registry and a lobby
 - [Access, members and timers](../access-members-and-timers.md): every setting used here
 - [Write its server logic](../write-server-logic.md): where `logic.rs` lives and what the generated code does for you
+- [Server messages](../create-a-type.md#server-messages): announcing the boss's fall with a `BossDefeated` message, heard [from Blueprint](../from-blueprint/hear-server-messages.md) and [from C++](../from-cpp/hear-server-messages.md)
+- [Loot for the Hollow Giant](./hollow-giant-loot.md): a Server Function Library the boss calls when it falls
 - [Deploy it with Server Compute](../deploy-with-server-compute.md): Deploy, versions and the switch
 - [Get a Server Object, from C++](../from-cpp/get-a-server-object.md): the statuses and what a dropped connection does
 - [Troubleshooting](../troubleshooting.md#seeing-what-a-server-object-is-doing): `crowdy.exec.trace`

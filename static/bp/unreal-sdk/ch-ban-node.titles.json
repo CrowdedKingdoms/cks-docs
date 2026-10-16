@@ -1,0 +1,44 @@
+[
+	{
+		"name": "K2Node_CustomEvent_0",
+		"class": "/Script/BlueprintGraph.K2Node_CustomEvent",
+		"title": "OnBanPressed\nCustom Event",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get VillageChannelId",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_AsyncAction_0",
+		"class": "/Script/BlueprintGraph.K2Node_AsyncAction",
+		"title": "Ban Channel Member",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_BreakStruct_0",
+		"class": "/Script/BlueprintGraph.K2Node_BreakStruct",
+		"title": "Break Crowdy Channel Error",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Print String",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_1",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Print String",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_GetEnumeratorNameAsString_1",
+		"class": "/Script/BlueprintGraph.K2Node_GetEnumeratorNameAsString",
+		"title": "Enum to String",
+		"title_drawn": true
+	}
+]

@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-10T20:35:53Z",
-  "sdk_version": "2.18.0",
+  "generated_from": "2026-10-16T18:01:58Z",
+  "sdk_version": "2.20.0",
   "table": "settings",
   "columns": [
     {
@@ -432,6 +432,42 @@
       "category": "Crowdy SDK|Developer|Authentication",
       "config": true,
       "written_by": "you",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::AllowedExecGatewayDomains",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "AllowedExecGatewayDomains",
+      "type": "TArray<FString>",
+      "category": "Crowdy SDK|Developer|Server Objects",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::ServerObjectCallTimeoutSeconds",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "ServerObjectCallTimeoutSeconds",
+      "type": "float",
+      "category": "Crowdy SDK|Developer|Server Objects",
+      "config": true,
+      "written_by": "Config Sync",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::ServerObjectOpenTimeoutSeconds",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "ServerObjectOpenTimeoutSeconds",
+      "type": "float",
+      "category": "Crowdy SDK|Developer|Server Objects",
+      "config": true,
+      "written_by": "Config Sync",
       "module": "CrowdyReplication",
       "editor": false,
       "allowlist": ""

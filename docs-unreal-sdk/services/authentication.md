@@ -2,7 +2,7 @@
 slug: authentication
 sidebar_position: 1
 title: Authentication
-description: "Sign a player in with a password, a magic link, or a social provider, what the SDK hands back, the two tokens it holds for you and why you never see the one that talks to the game, session persistence, sign-out, and linked identities."
+description: "Sign a player in with a password, a magic link, or a social provider, what the SDK hands back, the two tokens it holds for you and why you never see the one that talks to the game, session persistence, sign-out, account settings (password, email, delete, sign out everywhere), linked identities, the player's own access and claiming free access, and what to show when the app is paused, the player's access ends or the account is blocked."
 ---
 
 import Tabs from '@theme/Tabs';
@@ -14,7 +14,7 @@ A player signs in once, at startup, from the Game Instance. Every method, email 
 
 ## When you touch this
 
-Once per project for the sign-in itself, which the [Quickstart](../quickstart.md) already did with a password. Again when you add a sign-in screen (which methods to offer, restoring a saved session), when a player signs out, and when you let a player link a second way to sign in.
+Once per project for the sign-in itself, which the [Quickstart](../quickstart.md) already did with a password. Again when you add a sign-in screen (which methods to offer, restoring a saved session, a forgotten password, free access), when a player signs out, when you build an account settings screen, and when you let a player link a second way to sign in.
 
 ## Two tokens
 
@@ -61,6 +61,8 @@ Password is the right default for a build machine, a bot, or an agent, and for a
 | `GetMyIdentities(OnResult, OnError)`, `BeginLinkIdentity(Provider, OnResult, OnError)`, `UnlinkIdentity(IdentityId, OnResult, OnError)` | Linked sign-in methods; below. |
 | `RecordPlayerConsents(bAcceptLegal, bAttestAgeOfMajority, OnRecorded, OnError)`, `DeclineLegalAcceptance()` | Store the player's agreement and let a held sign-in finish, or fail it. Only for a game that draws its own prompt; [Let the player agree to the terms](#let-the-player-agree-to-the-terms). |
 | `IsLegalAcceptancePending()`, `GetLegalDocuments()` | Whether a sign-in is waiting for the player's agreement; the documents to link, as `FCrowdyLegalDocument` rows (`Title`, `Url`). |
+| `RequestPasswordReset`, `ResendConfirmationEmail`, `ChangePassword`, `AddPassword`, `DeleteAccount`, `SignOutEverywhere` | The player's account settings; [Account settings](#account-settings). |
+| `GetMyAccess(OnResult, OnError)`, `ClaimFreeAccess(OnSuccess, OnError)` | The player's own access to this app, and claiming the app's free access; [When the player has no access yet](#when-the-player-has-no-access-yet). |
 
 Events on `UCrowdyAuthentication`, all Blueprint-assignable: `OnLogin` (`FOnAuthLoginEvent`) and `OnRegister` (`FOnAuthRegisterEvent`) with an `FCrowdyAuthResult`; `OnLoginFailed` (`FOnAuthLoginFailed`) and `OnRegisterFailed` (`FOnAuthRegisterFailed`) with a message; `OnSessionRestored` (`FOnAuthSessionRestored`) and `OnSessionRestoreFailed` (`FOnAuthSessionRestoreFailed`); `OnAppTokenRefreshed` (`FOnAppTokenRefreshed`), with no parameters, after a proactive or reactive rotation; and `OnLegalAcceptanceRequired` (`FOnLegalAcceptanceRequired`) and `OnLegalAcceptanceEnded` (`FOnLegalAcceptanceEnded`), with no parameters, when a sign-in starts and stops waiting for the player to agree to the terms.
 
@@ -78,7 +80,7 @@ The C++ is the `ULanternGameInstance` block on [Player Sign-in](../runtime/playe
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Instance Blueprint, **Event Init** runs the latent **Login** node with `Email` and `Password`; its `On Success` pin carries a `Result` and `On Error` a `Message`.
+In the Game Instance Blueprint, **Event Init** runs the latent **Login** node with `Email` and `Password`; both its `On Success` and `On Error` pins carry a `Result` and a `Message`: `Result` is filled on success, `Message` says why on error. The other sign-in nodes, and **Record Player Consents** (`Message` only), work the same way.
 
 <Blueprint src="auth-login" title="Event Init, Login" />
 
@@ -275,7 +277,92 @@ The Game Instance Blueprint needs a Boolean variable `bCanPlay`. **Event Init** 
 | `GetUserID()` | The signed-in user's id, `int64`. |
 | `GetUUID()`, `GetID()` | This client's actor identity as a string and as an `FGuid`. |
 
-Its two events, `OnOwnerUUIDUpdated` (`FOnOwnerUUIDUpdated`) and `OnHostIDUpdated` (`FOnHostIDUpdated`), announce a new client identity and a change of the elected view-plane host; the host one belongs to [Host election](../runtime/host-authority.md). Everything else on the class, the setters, the token and URL getters, the clear call, and the getter that returns the whole connection-state struct, is written by the SDK and is not for a game to read, display, or log: that struct carries both tokens as fields, so breaking it into a widget is exactly the leak the box above forbids.
+Its events `OnOwnerUUIDUpdated` (`FOnOwnerUUIDUpdated`) and `OnHostIDUpdated` (`FOnHostIDUpdated`) announce a new client identity and a change of the elected view-plane host; the host one belongs to [Host election](../runtime/host-authority.md). The other two, for a paused app and for ended access, are the next two sections. Everything else on the class, the setters, the token and URL getters, the clear call, and the getter that returns the whole connection-state struct, is written by the SDK and is not for a game to read, display, or log: that struct carries both tokens as fields, so breaking it into a widget is exactly the leak the box above forbids.
+
+### When the app is paused
+
+The same class tells your game when the app has been switched off or paused, so you can show a message instead of letting players retry. It is read-only, like the rest, and safe to show:
+
+| Blueprint (C++) | Returns |
+|---|---|
+| **Is App Paused** (`IsAppPaused()`), pure | True while the app is paused. |
+| **Get App Paused Reason** (`GetAppPausedReason()`), pure | Why it is paused, such as "the app is paused" when the realtime server refused the player's updates. |
+| **On App Paused Changed** (`OnAppPausedChanged`, a `FOnCrowdyAppPausedChanged`) | An event with `Paused` and `Reason`, every time the state or its reason changes. |
+
+It turns on when signing in or refreshing the app token reports the app paused (its owner switched it off, or it ran out of funds), or when the realtime server refuses the player's updates because the app is paused. It turns off when a later token answer says the app is active, when the realtime server relays to the player again (or the player's updates go through for 15 seconds), and on sign-out. Bind the event, show a "the world is paused" message while it is on, and take it down when it turns off. [Server Objects](../exec/troubleshooting.md#waiting-is-not-failing) behave the same way: a call comes back **Paused**, and a read waits.
+
+### When the player's access ends
+
+A player's access to the game can end while they play: the platform suspends it, revokes it, lets it expire or signs the player out, or the account is blocked. The Game Session tells your game, so you can say why and send the player back to sign in. It is read-only and safe to show:
+
+| Blueprint (C++) | Returns |
+|---|---|
+| **On Access Ended** (`OnAccessEnded`, a `FOnCrowdyAccessEnded`) | An event with `Reason` and `BlockedUntil`. |
+| **Has Access Ended** (`HasAccessEnded()`), pure | True from the moment access ends until the player signs in again. |
+| **Get Access Ended Reason** (`GetAccessEndedReason()`), pure | Why, in the platform's words. Empty while access has not ended. |
+| **Get Access Blocked Until** (`GetAccessBlockedUntil()`), pure | When a timed block or a suspension ends, as an ISO-8601 time such as `2026-11-01T09:00:00Z`. Empty otherwise, or while it lasts until someone lifts it. |
+
+[Server Objects](../exec/troubleshooting.md#when-access-ends) stop at once. Every one fails with `Your access ended: ` followed by the reason, a call in flight or made later finishes as the outcome **Access Ended**, which is not retryable, and nothing reconnects until the player signs in again. What your game does:
+
+- Bind **On Access Ended** in the Game Instance, before the first sign-in.
+- Show the reason, and **Blocked Until** when it is not empty, then return the player to the sign-in screen.
+- When the end time of a timed block or a suspension is learned after access already ended, the event fires once more with **Blocked Until** filled in. Update the text you showed; do not add a second message.
+- A successful sign-in clears the ended state. A **Crowdy Server Object** component, and a typed node set to **Find By Asset**, then get their Server Object again by themselves. Code that calls `Acquire` itself acquires again.
+
+The Game Instance binds the event in `Init`, next to the sign-in events, and shows the two strings. A shipped game puts them on its sign-in screen.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+<CppSnippet id="access-ended" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+In the Game Instance Blueprint, **Event Init** gets the **Crowdy Game Session** subsystem and runs **Bind Event to On Access Ended**; the bound custom event `OnAccessEnded` receives `Reason` and `BlockedUntil`, and prints each.
+
+<Blueprint src="access-ended-bind" title="Event Init, Crowdy Game Session, Bind Event to On Access Ended, OnAccessEnded, Print String" />
+
+</TabItem>
+</Tabs>
+
+### When the app refuses the player's access
+
+The app itself can refuse a player: it [revoked their access, suspended it until a time](/management-api/game-setup#revoking-suspending-and-banning), or never granted it (or the grant expired). The SDK learns it when it signs the player in or renews the app token, which the server answers with `ACCESS_REVOKED`, `ACCESS_SUSPENDED` or `ACCESS_NOT_GRANTED`. A cut also revokes the player's current token, so the realtime connection is refused when it reconnects; the SDK then asks for a new token at once, which is how a game that holds no Server Object hears of the refusal within seconds, and how a player whose access is restored reconnects without signing in again. The sign-in fails through its usual failure path with the server's message, **On Access Ended** fires with that message, and **Blocked Until** carries the end of a suspension. The SDK then stops renewing the token, since the server would refuse it again. A suspension lifts by itself at that time, and a revoke or a missing grant when the app restores or grants the access; the next sign-in after that goes through and clears the ended state.
+
+### When the account is blocked
+
+A blocked account cannot sign in. **Login**, **Register**, **Magic Link Sign In**, **Social Sign In** and **Restore Session** all fail through their usual failure path (`OnError`, and the failed event) with the server's own message, so your sign-in screen shows why like any other refusal. The block also ends access: **On Access Ended** fires, with **Blocked Until** set when the block has an end. Until the player signs in again, the SDK does not rotate the app token in the background, since the server would refuse it. Once the block is lifted or has run out, the next sign-in goes through and clears the ended state.
+
+### When the player has no access yet
+
+A sign-in refused with `ACCESS_NOT_GRANTED` keeps the player's session, so your sign-in screen can say what to do next rather than only showing the refusal. Two calls on `UCrowdyAuthentication` work in that state, because they use the session rather than a gameplay token:
+
+| Blueprint (C++) | What it does |
+|---|---|
+| **Get My Access** (`GetMyAccess(OnResult, OnError)`) | Reads the player's own access to this app as an `FCrowdyAppAccess`: `State` (**None**, **Active**, **Suspended**, **Expired** or **Revoked**), `TierID`, `ExpiresAt` and `SuspendedUntil` (zero when not set), and `bFreeGrant`, true when the access came from the app's free tier. |
+| **Claim Free Access** (`ClaimFreeAccess(OnSuccess, OnError)`) | Claims the app's free access for the player, then finishes the sign-in that was refused. **On Success** carries the same `Result` as **Login**, and `On Login` fires. |
+
+`GetMyAccess` answers on `FOnAppAccessRead`, and `State` is an `ECrowdyAccessState`. The nodes are `UCrowdyAccount_GetMyAccess`, whose pins are `FAccessAsyncResult` (`Access`, `Error`, `Message`), and `UCrowdyAccount_ClaimFreeAccess`, whose pins are the sign-in nodes' `FAuthAsyncResult` (`Result`, `Message`).
+
+**Claim Free Access** never lifts a revoke: a player whose access was revoked stays refused, and **On Error** says so. It also fails when the app has no free tier. A player who already has access gets a success without a new token. Buying a paid tier happens on the web portal, not in the game.
+
+A Get Free Access button on the sign-in screen, shown when the refusal says the player has no access, is all it takes. `GetFreeAccess` reuses the two handlers every sign-in path on this page binds.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+<CppSnippet id="acct-claim" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+A custom event `OnGetFreeAccessPressed` runs **Claim Free Access**; its **On Error** prints the `Message`. **On Success** needs nothing here, because the **On Login** handlers you already bound run.
+
+<Blueprint src="acct-claim" title="OnGetFreeAccessPressed, Claim Free Access" />
+
+</TabItem>
+</Tabs>
 
 ## Session persistence and sign-out
 
@@ -307,8 +394,95 @@ A returning player should type nothing. The Game Instance calls `RestoreSession(
 :::
 
 :::warning[Sign out with Logout on the Crowdy SDK Subsystem, not ClearSavedSession alone.]
-`Logout()` clears the saved session, clears the connection state, scrubs both bearers from the shared API client, and closes the realtime connection, then broadcasts `OnLogout`. `ClearSavedSession()` only deletes the on-disk credential; called alone during a live session it leaves the in-memory tokens and the open connection signed in as the player who just left.
+`Logout()` first tells the server to end the session, which also ends every gameplay token made from it, without waiting for the answer, so sign-out works offline too. It then clears the saved session, clears the connection state, scrubs both bearers from the shared API client, and closes the realtime connection, and broadcasts `OnLogout`. `ClearSavedSession()` only deletes the on-disk credential; called alone during a live session it leaves the in-memory tokens and the open connection signed in as the player who just left.
 :::
+
+## Account settings
+
+Six calls on `UCrowdyAuthentication`, each a latent node under **Crowdy SDK, Account**, cover what a settings screen and a sign-in screen need. Every one answers on `FOnAccountDone` (no parameters) or `FOnAccountError`, which carries an `FCrowdyAccountError` (`Code`, `Message`) and the `Message` again; on the nodes, **On Success** and **On Error** share the `Error` and `Message` pins, filled only on error.
+
+| Blueprint (C++) | Needs | What it does |
+|---|---|---|
+| **Request Password Reset** (`RequestPasswordReset(Email, ...)`) | Nothing: works signed out | Emails a link to set a new password. It succeeds whether or not the address has an account, so an address cannot be probed. |
+| **Resend Confirmation Email** (`ResendConfirmationEmail(Email, ...)`) | Nothing | Sends the address confirmation again, answering the same way. |
+| **Change Password** (`ChangePassword(CurrentPassword, NewPassword, ...)`) | A sign-in | Changes the password and signs the player out on their other devices; this one stays signed in. |
+| **Add Password** (`AddPassword(NewPassword, ...)`) | A sign-in, and an account with no password | Adds a password to an account made by magic link or social sign-in, which then signs in with it too. A security email goes to the account's address. |
+| **Sign Out Everywhere** (`SignOutEverywhere(...)`) | A sign-in | Ends every session of the account on every device and in every game, then signs out here as `Logout` does. |
+| **Delete Account** (`DeleteAccount(...)`) | A sign-in | Deletes the player's account: their personal data is removed and every session ends. The SDK then signs out here. It cannot be undone, so ask the player to confirm in your own dialog first. |
+
+The reset link and the confirmation link finish in the browser; there is nothing more to call from the game.
+
+Should you bind a node from C++: they are `UCrowdyAccount_RequestPasswordReset`, `UCrowdyAccount_ResendConfirmationEmail`, `UCrowdyAccount_ChangePassword`, `UCrowdyAccount_AddPassword`, `UCrowdyAccount_SignOutEverywhere` and `UCrowdyAccount_DeleteAccount`, whose pins are `FAccountAsyncResult` (`Error`, `Message`).
+
+`FCrowdyAccountError::Code` (`ECrowdyAccountErrorCode`) names the refusals worth handling on their own:
+
+| Code | Means | What to show |
+|---|---|---|
+| **Wrong Password** | The current password was wrong | Ask again |
+| **No Password** | Change Password on an account that has none | Offer **Add Password** |
+| **Password Already Set** | Add Password on an account that has one | Offer **Change Password** |
+| **Not Signed In** | The call needs a sign-in and there is none, or the session ended | The sign-in screen |
+| **Rate Limited** | Too many tries in a short time | Ask the player to wait |
+| **Network Error**, **Server Error**, **Unknown** | Anything else | The `Message` |
+
+The same error type, with **Name Taken** and **Not Found**, comes back from the player names calls on [Player Names](./player-names.md).
+
+### Forgot password
+
+A Forgot Password link on the sign-in screen sends the reset email to the address the player typed.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+<CppSnippet id="acct-forgot" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+A custom event `OnForgotPasswordPressed` with an `Email` parameter runs **Request Password Reset**; **On Success** prints a message that holds whether or not the address has an account.
+
+<Blueprint src="acct-forgot" title="OnForgotPasswordPressed, Request Password Reset" />
+
+</TabItem>
+</Tabs>
+
+### Change or add a password
+
+A settings screen calls **Change Password** with the current and the new password. An account made by magic link or social sign-in has no password to change, and is refused with **No Password**; show **Add Password** for it instead.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+<CppSnippet id="acct-password" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+A custom event `OnChangePasswordPressed` runs **Change Password**. **On Error** breaks the `Error`, compares its `Code` with **No Password**, and only on a match prints the hint to add one.
+
+<Blueprint src="acct-password" title="OnChangePasswordPressed, Change Password, No Password" />
+
+</TabItem>
+</Tabs>
+
+### Delete the account
+
+Stores that list a game with accounts expect the player to be able to delete their account from inside it. **Delete Account** runs only from the confirm button of your own "are you sure" dialog; the SDK draws none.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+<CppSnippet id="acct-delete" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+A custom event `OnDeleteAccountConfirmed` runs **Delete Account**; **On Success** prints that the account is gone and **On Error** prints the `Message`. The SDK has signed out by the time **On Success** runs.
+
+<Blueprint src="acct-delete" title="OnDeleteAccountConfirmed, Delete Account" />
+
+</TabItem>
+</Tabs>
 
 ## Linked identities
 
@@ -325,6 +499,7 @@ Expect the refusal in a UI that lists identities with a remove button; do not tr
 - `Register` on an existing address is a refusal, `EMAIL_ALREADY_REGISTERED`; offer Login instead.
 - The link and social flows need the player to reach a browser or inbox while the game runs; on a machine that cannot, use a password.
 - `OnAppTokenRefreshed` fires on every rotation. You rarely need it; the connection is re-armed for you.
+- **Delete Account** and **Sign Out Everywhere** end this session too: the SDK signs out, and the player signs in again to play.
 - Studio's own sign-in is the same account and the same methods; [Signing In](../studio/sign-in.md).
 
 ## Related
@@ -333,4 +508,5 @@ Expect the refusal in a UI that lists identities with a remove button; do not tr
 - [Connection and reconnect](../runtime/connection-and-reconnect.md): the realtime connection the sign-in requests.
 - [Sessions and presence](../concepts/sessions-and-presence.md): the other meanings of the word session.
 - [Teams](../services/teams.md) and [Avatars](../services/avatars.md): services that need a signed-in player.
+- [Player Names](./player-names.md): nametags, rosters, and letting the player choose a name.
 - [Sign in on the Management API](/management-api/authentication): the calls at the GraphQL level.
