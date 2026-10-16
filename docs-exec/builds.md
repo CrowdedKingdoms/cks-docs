@@ -16,7 +16,8 @@ session.
 
 ## Starter packs
 
-`execStarters(appId)` returns four crates and a manifest that deploys them as one app:
+`execStarters(appId)` returns fifteen crates and a manifest that deploys them as one app,
+seventeen node types (`racing` and `territory` each serve two):
 
 | Crate | Node type | What it does | Replaces |
 |---|---|---|---|
@@ -24,6 +25,17 @@ session.
 | `matchmaker` | `matchmaker` | A rating queue for each key (`ranked`, `casual`). The rating window widens the longer a player waits. Every player in a proposed match must accept, and then the queue reserves a `session` for them. | `matchmaking` |
 | `session` | `session` | One game from lobby to result: a host, ready checks, turns with a time limit, points the hub decides, and a winner. | `match-engine` |
 | `npc-mobs` | `npcs` | One area's mobs and NPCs, keyed `x,z`, moved on a timer and shown to nearby players as realtime actors. Mobs chase, go home past their leash, take hits the hub referees, and respawn. NPCs walk routes and talk. | `mob-engine`, `npc-engine` |
+| `leaderboard` | `leaderboard` | A board other hubs submit to, ranked by the hub, with seasons on a schedule. | `board-engine` |
+| `deck` | `deck` | A card table with true hidden information: hands only their player reads. | `deck-engine` |
+| `tactics` | `tactics` | A grid battle in phases against the hub's units. | `tms-battle` |
+| `director` | `director` | Waves down a lane, towers that may not cut it, a boss with phases. | `director` |
+| `minigame` | `minigame` | A duel of hidden throws, revealed together. | `minigame` |
+| `instance` | `instance` | A party's private run: seeded floors, permadeath, expiry, depth to a leaderboard. | `instance-engine` |
+| `arena` | `arena` | Classes and abilities in real time, with a movement warden for reported positions. | `abilities-engine`, `movement-warden` |
+| `racing` | `race`, `ball` | Races (gates, laps, splits, a ghost) and ball games (possession, goals). | `racing`, `possession` |
+| `territory` | `territory`, `zone` | Control points captured by standing on them, and a shrinking circle. | `territory` |
+| `player` | `player` | A player's own hub, keyed by their id: inventory, soft currency, crafting, loot with pity, idle production, levels, achievements, quests. Not a ledger. | `loot`, `production` engines |
+| `market` | `market` | Vendors that restock, order books and trades between players, with escrow in each player's own hub. Not a ledger. | `market-engine` |
 
 ```graphql
 query {
@@ -41,14 +53,21 @@ Their endpoints:
 | `world` | `state` | anyone | The clock, weather, active modifiers, resource nodes and events |
 | `world` | `harvest { node }` | players | Takes one from a resource node (twice a second at most) |
 | `world` | `schedule { name, start_ms, end_ms, modifiers }`, `cancel { name }` | developers | Liveops events. Modifiers multiply where events overlap; the NPC engine reads `aggro` |
-| `matchmaker` | `join { rating }`, `leave`, `accept`, `decline`, `status` | players | Your own place in the queue: `queued`, `proposed`, then `matched` with the session key |
+| `matchmaker` | `join { rating, party?, leader? }`, `leave`, `accept`, `decline`, `status` | players | Your own place in the queue: `party` (while a party forms), `queued`, `proposed`, then `matched` with the session key. A party is matched whole |
 | `session` | `join`, `leave`, `ready { ready }`, `start` (host), `act { points }` (whoever's turn it is), `state` | players | The game. `points_for` in the crate is the rule to replace with yours |
 | `session` | `configure { .. }` | the host in the lobby, or developers | Player counts, turn time, target score, rounds |
 | `npcs` | `state`, `attack { mob }`, `talk { npc }` | players | Mobs and NPCs, public properties only. A hit needs the player near the mob; the damage is the hub's |
+| `npcs` | `adopt { species, name }`, `rename`, `summon`, `dismiss`, `release` `{ pet }`, `pets` | players | Pets that follow their owner while summoned; `pets` answers the caller's, with their bond |
 
-The other legacy templates (abilities, boards, decks, instances, markets, minigames, the
-movement warden, possession, racing, territory) have no starter. Each is a hub or two with the
-same pieces these four use: timers, calls between hubs, topics, realtime actors and typed state.
+Since ckx-sdk 0.10.0 the starters speak the [Game Kit protocol](/game-kit/protocol): their topics
+carry numbered snapshot and delta messages, their changes take an `action_id` they answer once,
+and their refusals carry a `kit:<code>:` code. The SDKs' Game Kit drives them with typed
+clients, and its `topology` composes, builds and deploys them for you: see the [Game
+Kit](/game-kit/intro).
+
+The genre and economy starters' endpoints and topics are on the Game Kit's [starters
+page](/game-kit/starters) (ckx-sdk 0.11.0 and 0.12.0). The economy lives in hub state and is not a
+ledger: read [its limits](/game-kit/economy) first.
 
 ## Building
 
@@ -128,7 +147,7 @@ the same rules, with its own dependency list, and runs in browsers rather than o
 | Crates in a build | 16 |
 | Files in a crate | 64 |
 | Source in a build | 2 MB |
-| Build time | 5 minutes |
+| Build time | 10 minutes for the whole build: its crates compile one after another, about 25 seconds each, so the full starter pack (15 crates) takes about six |
 | Module size | 16 MB |
 | At once | One build per app, and one per person across every app, on each API instance; eight waiting per instance |
 | Kept | 7 days, with their modules |
@@ -226,6 +245,6 @@ mobs and NPCs this way.
 | `computeTemplates`, `computeDeployTemplate` | `execStarters`, then `execBuild` and `execDeploy` |
 | `computeDeployVersion` (compiled on the server) | `execBuild`, then `execDeploy` with the `buildId` |
 | Game-model schemas: container types, typed properties, `visibility` | `ckx_sdk::model` in a hub |
-| The Game Kit (`client.kit(appId).deploy`) | The starter packs |
+| The Game Kit (`client.kit(appId).deploy`) | The starter packs, and the new [Game Kit](/game-kit/intro)'s `kit.topology.deploy` |
 | `playerComputeDeploy` (players' server code) | [Mods](mods): `execModBuild`, then `execModDeploy` |
 | `playerComputeDeploy` with the CLIENT target (players' browser code) | [CLIENT halves](client-halves): `execModClientBuild`, then `execModClientDeploy` |

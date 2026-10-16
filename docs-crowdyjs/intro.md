@@ -12,6 +12,7 @@ portable C++ and replicates natively over UDP.)
 
 - **Management API** — authentication, profiles, app routing reads (`client.apps`), and public platform config (`client.platform`).
 - **Game API** — world synchronization, teleport, the GraphQL UDP proxy (browsers), [channels](/crowdyjs/channels) & [teams](/crowdyjs/teams), connections to your server code on [ck-exec](/exec/connect-from-a-game) (`client.exec`), and Replication API server assignment.
+- **[Game Kit](/game-kit/intro)** — `client.kit(appId)`: typed clients for ck-exec's starter hubs (the world, matchmaking, sessions, areas of mobs and pets), their deployment, and parties, guilds and chat.
 - **Agentic Crowdy Studio (allowlisted)** — the DeepSeek Harness agent running
   in the player's browser beside the Studio editor (`dsh` mount option,
   CrowdyJS **16**), metered per request through the Game API's model endpoint

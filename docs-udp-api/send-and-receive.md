@@ -28,7 +28,7 @@ This registers your chunk position and validates your token.
 
 - Prefer authenticated messages until your session is stable.
 - Re-send actor updates about every **4 s** — actors not updated for **~5 s** may be evicted.
-- When the actor is **idle** (not moving), keep it alive cheaply with a `CLIENT_ACTOR_HEARTBEAT` (type `26`) instead of a full actor update — it refreshes only your own actor's presence (no fan-out). See **[Actor presence and heartbeats](/replication-api/wire-formats#actor-presence-and-heartbeats)**. Cross-server visibility is maintained by the server automatically; you only ever talk to your own server.
+- When the actor is **idle** (not moving), keep it alive cheaply with a `CLIENT_ACTOR_HEARTBEAT` (type `26`) instead of a full actor update — it refreshes only your own actor's presence (no fan-out). **Cross-server presence** is maintained by the server; you only ever talk to your own server. Each update still arrives at the rate you send it, thinned only by that message's distance and decay. See **[Actor presence and heartbeats](/replication-api/wire-formats#actor-presence-and-heartbeats)**.
 - Any client traffic at least every **60 s** — silence beyond **~120 s** may evict the session.
 
 Beyond broadcast spatial traffic you can also send **direct actor-to-actor
