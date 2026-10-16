@@ -24,7 +24,7 @@ Config Sync writes the selected app's ids and endpoints into your project's sett
 The rows are **App ID**, **Org ID**, **Game API HTTP URL**, **Game API WS URL**, and a read-only **Shared origin**, which comes from the backend selector on the Sign In page rather than from the app.
 
 :::tip[A running Play in Editor session picks the change up without a restart.]
-Sync pushes the new values into any running PIE or standalone session; a fresh Play always reads them. The **Connection** tab works differently: its three UDP knobs are written the moment you change them, with no Sync button.
+Sync pushes the new values into any running PIE or standalone session; a fresh Play always reads them. The **Connection** tab works differently: its UDP knobs and its Server Object timeouts are written the moment you change them, with no Sync button. The UDP knobs reach a running session at once; the Server Object timeouts apply from the next Play.
 :::
 
 ## What Config Sync writes, and what you own
@@ -46,6 +46,15 @@ All of it lands on one settings class, `UCrowdySDKDeveloperSettings`, which you 
 | `UDPProtocol` | The Connection tab. |
 | `UDPTimeoutSeconds` | The Connection tab (6 to 120 seconds). |
 | `HostPollIntervalSeconds` | The Connection tab (1 to 60 seconds). |
+| `ServerObjectCallTimeoutSeconds` | The Connection tab, under Server Objects, as **Call Timeout** (11 to 120 seconds, default 20). |
+| `ServerObjectOpenTimeoutSeconds` | The Connection tab, under Server Objects, as **Open Timeout** (1 to 60 seconds, default 10). |
+
+Under a **Server Objects** heading, the Connection tab holds two timeouts for [Server Object](../exec/overview.md) connections:
+
+- **Call Timeout** is how long a Server Object call waits for the platform's answer before it fails with a `Timeout`. It runs from 11 to 120 seconds, 20 by default, and stays above the longest **Time per Call** a type may have (10 seconds), so a call the server is allowed to finish is not given up on. A **Call** node's **Timeout** can shorten it for one call; see [Give up sooner](../exec/from-blueprint/call-functions.md#give-up-sooner).
+- **Open Timeout** is how long opening the Server Object connection waits before the attempt fails, from 1 to 60 seconds, 10 by default.
+
+Both apply from the next Play, and to the editor's developer connections. A dropped Server Object connection is always reopened, and has no setting.
 
 **Owned by you** (editable in Project Settings):
 

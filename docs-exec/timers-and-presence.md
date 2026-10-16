@@ -37,7 +37,7 @@ fn on_timer(&mut self, ctx: &Ctx, name: &str) -> Result<()> {
 
 - `ctx.timer_after(name, ms)` runs `on_timer` once; `ctx.timer_every(name, ms)` repeats, first
   one period from now. Setting a name again replaces that timer, so the name is its dedupe key.
-  `ctx.cancel_timer(name)` removes it and `ctx.timers()` lists what is pending.
+  `ctx.cancel_timer(name)` returns whether that timer was set. `ctx.timers()` returns each pending name and when it is next due, in Unix milliseconds.
 - Timers are kept in the hub's snapshot, so they survive restarts and moves.
 - They fire only while the hub runs. One that came due while it was stopped fires **once**
   when it starts again; a repeating timer does not replay the periods it missed, and continues
@@ -109,11 +109,17 @@ A hub may subscribe to a topic of any type its manifest entry lists in `calls`, 
 other instance runs. Subscriptions are kept in the snapshot and renewed whenever the hub starts
 again; `ctx.unsubscribe` ends one. A hub may hold 256. Spokes do not subscribe.
 
+A topic name is 1 to 255 bytes and must not start with `$`. `$` is reserved for the platform
+(`$session`, timers, and the rest). `state` is not reserved. A player subscribing to a `$` topic
+is `Denied`, and the message says topics starting with `$` are the platform's.
+
 ## Sessions
 
 `on_session` tells a hub when a player's connection subscribes to its first topic on the hub,
 and when that connection unsubscribes from its last one or closes. It counts connections, not
-players: a player connected twice joins twice.
+players: a player connected twice joins twice. It is a live call at that moment, not a record.
+`Left` is not delivered if the hub is already stopped or the type is switched off, and `Joined`
+is not replayed when the hub starts again.
 
 ## Presence
 

@@ -29,15 +29,15 @@ enum DatacenterServingStatus {
 
 ### Values
 
-#### [<code style={{ fontWeight: 'normal' }}>DatacenterServingStatus.<b>SERVING</b></code>](#serving) \{#serving\} 
+#### [<code style={{ fontWeight: 'normal' }}>DatacenterServingStatus.<b>SERVING</b></code>](#serving) {/* #serving */} 
 At least one instance in that datacenter has heartbeated within the freshness window and is not draining.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DatacenterServingStatus.<b>NOT&#x005F;SERVING</b></code>](#not-serving) \{#not-serving\} 
+#### [<code style={{ fontWeight: 'normal' }}>DatacenterServingStatus.<b>NOT&#x005F;SERVING</b></code>](#not-serving) {/* #not-serving */} 
 The signal was readable and reported no instance able to take a client there. An app placed here would be created and stored correctly, and its players would be told the app is temporarily offline until an instance returns.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>DatacenterServingStatus.<b>UNKNOWN</b></code>](#unknown) \{#unknown\} 
+#### [<code style={{ fontWeight: 'normal' }}>DatacenterServingStatus.<b>UNKNOWN</b></code>](#unknown) {/* #unknown */} 
 The liveness signal itself could not be read or trusted. Must NOT be presented as an outage: a fleet-wide heartbeat failure once made every datacenter look dead while all of them were fine, and healthy players were told their app was offline.
 
 

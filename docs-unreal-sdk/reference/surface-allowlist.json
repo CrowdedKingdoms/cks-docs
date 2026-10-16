@@ -4063,6 +4063,11 @@
     "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
   },
   {
+    "id": "FCrowdyCppReplication::IsAppPausedErrorCode",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API. A game reads the paused state on UCrowdyGameSession."
+  },
+  {
     "id": "FCrowdyCppReplication::Make",
     "reason": "internal",
     "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
@@ -4568,6 +4573,11 @@
     "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
   },
   {
+    "id": "CrowdyCppIsAccessRefusalCode",
+    "reason": "internal",
+    "note": "How the SDK recognises a refusal of the player's access in a sign-in or token answer; a game binds On Access Ended on the game session instead."
+  },
+  {
     "id": "FCrowdyCppClient::CreateExecConnection",
     "reason": "internal",
     "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
@@ -4663,6 +4673,66 @@
     "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
   },
   {
+    "id": "FCrowdyNativeExecConnection::GetRefusal",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport. A refused gateway reaches the game as the Server Object's failure reason."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::IsRefusedForGood",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport. A refused gateway reaches the game as the Server Object's failure reason."
+  },
+  {
+    "id": "CrowdyServerObjectDetail::IsSwitchedOffText",
+    "reason": "internal",
+    "note": "How the SDK recognises the platform's switched-off and paused texts; a game sees the Paused call outcome and the reason."
+  },
+  {
+    "id": "UCrowdyServerObjectSubsystem::NextJitter",
+    "reason": "internal",
+    "note": "The random stretch the subsystem gives every retry and redial wait; documented as behaviour in troubleshooting, not called by a game."
+  },
+  {
+    "id": "UCrowdyServerObjectSubsystem::NotePlayersOnlineReason",
+    "reason": "internal",
+    "note": "Remembers which Players Online warning this game instance already printed; called by Get Players Online."
+  },
+  {
+    "id": "UCrowdyGameSession::SetAppPaused",
+    "reason": "internal",
+    "note": "Set by the SDK from the app token's runtime gate and the realtime server; a game reads Is App Paused and On App Paused Changed."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::GetOnlyInstanceId",
+    "reason": "internal",
+    "note": "The Instance Id the SDK reaches a type with Only One Instance by; a game acquires such a type without giving one."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::HasOnlyOneInstance",
+    "reason": "internal",
+    "note": "Whether the SDK needs no Instance Id to reach a type: Only One Instance is ticked or the type is a Server Function Library; a game ticks the setting or sets Kind, and calls a library by its definition."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::IsReachableByPlayers",
+    "reason": "internal",
+    "note": "Whether players can do anything with a type, used by deploy to close it and by acquire to refuse it; the effect is documented on create-a-type."
+  },
+  {
+    "id": "UCrowdyServerObjectLink::KeepWhileOwnerLives",
+    "reason": "internal",
+    "note": "Set by Get Players Online so the root's Link lives as long as the object that asked; a game calls Get Players Online."
+  },
+  {
+    "id": "UCrowdyServerObjectLink::KeepsWhileOwnerLives",
+    "reason": "internal",
+    "note": "Set by Get Players Online so the root's Link lives as long as the object that asked; a game calls Get Players Online."
+  },
+  {
+    "id": "UCrowdyMassServerValuesLibrary::GetServerBoolValue",
+    "reason": "internal",
+    "note": "The bool path GetServerValueAs uses, since a record bool may be a bitfield; a game calls GetServerValueAs."
+  },
+  {
     "id": "FCrowdyNativeExecConnection::Close",
     "reason": "internal",
     "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
@@ -4701,6 +4771,46 @@
     "id": "FCrowdyNativeExecConnection::Unsubscribe",
     "reason": "internal",
     "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reaches the server through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::OnAccessEnded",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game hears the end of access through the game session's On Access Ended."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::IsAccessEnded",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reads Has Access Ended on the game session."
+  },
+  {
+    "id": "FCrowdyNativeExecConnection::GetAccessEndedReason",
+    "reason": "internal",
+    "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reads Get Access Ended Reason on the game session."
+  },
+  {
+    "id": "UCrowdyGameSession::SetAccessEnded",
+    "reason": "internal",
+    "note": "Set by the SDK when ck-exec ends the player's access or the account is blocked; a game reads Has Access Ended and binds On Access Ended."
+  },
+  {
+    "id": "UCrowdyGameSession::ClearAccessEnded",
+    "reason": "internal",
+    "note": "Cleared by the SDK when the player signs in again; a game signs the player in rather than clearing it."
+  },
+  {
+    "id": "FCrowdyChannelError::FromFailure",
+    "reason": "internal",
+    "note": "How the SDK classifies a failed channel call from the server's message and error code; a game reads the error's Code and Message."
+  },
+  {
+    "id": "FCrowdyTeamError::FromFailure",
+    "reason": "internal",
+    "note": "How the SDK classifies a failed team call from the server's message and error code; a game reads the error's Code and Message."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::IsFunctionLibrary",
+    "reason": "internal",
+    "note": "Whether a definition's Kind is Server Function Library, read by the editor and the subsystem; a game sets Kind and calls the library by its definition."
   },
   {
     "id": "FCrowdyNativeExecOptions",
@@ -4891,6 +5001,26 @@
     "id": "UCrowdyServerObject::GetVariableBindings",
     "reason": "internal",
     "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FRecordEventWatcher",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObject::FRecordEventWatcher::Watches",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdySDKDeveloperSettings::GetServerObjectCallTimeoutMs",
+    "reason": "internal",
+    "note": "Reads the Server Object Call Timeout setting in milliseconds, clamped to its range, for the SDK's own use; a game reads and sets the setting itself."
+  },
+  {
+    "id": "UCrowdySDKDeveloperSettings::GetServerObjectOpenTimeoutMs",
+    "reason": "internal",
+    "note": "Reads the Server Object Open Timeout setting in milliseconds, clamped to its range, for the SDK's own use; a game reads and sets the setting itself."
   },
   {
     "id": "UCrowdyServerObject::ToVariableNames",
@@ -6841,5 +6971,210 @@
     "id": "UCrowdyMassServerRecordsSubsystem::FindClassRecords",
     "reason": "internal",
     "note": "Bookkeeping for event handlers and server values on rows; use RegisterEventHandler and UCrowdyMassServerValuesLibrary instead."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::BindServerMessage",
+    "reason": "internal",
+    "note": "A helper the typed Server Object nodes call (BlueprintInternalUseOnly); the documented nodes are the typed Get, On Changed, On Received and Call nodes and the by-name nodes."
+  },
+  {
+    "id": "UCrowdyServerObjectLibrary::UnbindServerMessage",
+    "reason": "internal",
+    "note": "A helper the typed Server Object nodes call (BlueprintInternalUseOnly); the documented nodes are the typed Get, On Changed, On Received and Call nodes and the by-name nodes."
+  },
+  {
+    "id": "FCrowdyServerMessageBindings",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FMessageTopic",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerMessage::GetPayloadListName",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerMessage::GetPayloadStruct",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerMessage::GetTopic",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerMessage::InitializePayload",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerMessageBindings::Bind",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerMessageBindings::Follow",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerMessageBindings::HasLiveHandler",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerMessageBindings::Notify",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerMessageBindings::Num",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerMessageBindings::Reset",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerMessageBindings::Unbind",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerMessageBindings::UnbindHandler",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "FCrowdyServerMessageBindings::Unfollow",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObject::GetMessageBindings",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObject::FMessageTopic::IsWanted",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectComponent::GetMessageBindings",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::FindMessage",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::FindMessageByTopic",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::HasPlayerMessages",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::HasRestrictedReaders",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "UCrowdyServerObjectLink::GetMessageBindings",
+    "reason": "internal",
+    "note": "Server Object plumbing behind the documented nodes and C++ API: baked field tables, message and variable bindings, keys and links the SDK keeps for you; not an API a game calls."
+  },
+  {
+    "id": "CrowdyExecNodesSpawn::SpawnServerMessageReceived",
+    "reason": "editor",
+    "note": "Editor-only Blueprint node authoring helpers for the typed Server Object nodes; not runtime SDK surface."
+  },
+  {
+    "id": "FCrowdyCppClient::ChangePassword",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::DeleteMyAccount",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::LogoutAllDevices",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::RequestPasswordReset",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::ResendConfirmationEmail",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::UpdateGamertag",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyCppClient::SetInitialPassword",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal vendored client/bridge implementation types and helpers (CrowdyCpp is read-only, vendored); not documented API."
+  },
+  {
+    "id": "FCrowdyAccountError::FromFailure",
+    "reason": "internal",
+    "note": "Builds the error from a refused call; a game reads Code and Message, which are on authentication."
+  },
+  {
+    "id": "FCrowdyAppAccess::FromJson",
+    "reason": "internal",
+    "note": "Reads the access record the server answered; the struct and its fields are on authentication."
+  },
+  {
+    "id": "FCrowdyPlayerProfile::ParseFromJson",
+    "reason": "internal",
+    "note": "Reads a profile the server answered; the struct and its fields are on player-names."
+  },
+  {
+    "id": "UCrowdyAccountAction",
+    "reason": "internal",
+    "note": "The abstract parent of the account nodes, holding their shared pins; a game uses the nodes, which are on authentication."
+  },
+  {
+    "id": "UCrowdyAccountAction::HandleDone",
+    "reason": "internal",
+    "note": "The abstract parent of the account nodes, holding their shared pins; a game uses the nodes, which are on authentication."
+  },
+  {
+    "id": "UCrowdyAccountAction::HandleError",
+    "reason": "internal",
+    "note": "The abstract parent of the account nodes, holding their shared pins; a game uses the nodes, which are on authentication."
+  },
+  {
+    "id": "UCrowdyAccountAction::Send",
+    "reason": "internal",
+    "note": "The abstract parent of the account nodes, holding their shared pins; a game uses the nodes, which are on authentication."
+  },
+  {
+    "id": "UCrowdyAuthentication::EndServerSession",
+    "reason": "internal",
+    "note": "Called by Logout on the Crowdy SDK Subsystem to end the session on the server; a game signs out with Logout, which is on authentication."
   }
 ]

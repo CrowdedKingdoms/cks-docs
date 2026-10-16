@@ -32,7 +32,9 @@ Type a variable's name in the graph's palette or in the menu that opens when you
 
 Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph. The figure shows the four nodes for `Oil`; `bLit` has a **Get** and an **On bLit Changed** of its own, as the palette shows.
 
-There is one **Get** and one **On Changed** for each variable and one **Call** for each function of the asset. Only variables ticked **Visible to Players** are offered, since a **Server Only** variable never reaches a player. There is also a generic **Call Server Function** under **Server Objects**, with a **Function** dropdown that lists every function of every asset, for when you would rather pick than type.
+There is one **Get** and one **On Changed** for each variable and one **Call** for each function of the asset, and one **On Received** for each message players can listen to; see [Hear its messages](./hear-server-messages.md). Only variables ticked **Visible to Players** are offered, since a **Server Only** variable never reaches a player. There is also a generic **Call Server Function** under **Server Objects**, with a **Function** dropdown that lists every function of every asset, for when you would rather pick than type.
+
+A [Server Function Library](../server-function-libraries.md) is different: it has no values and no instance, so its only nodes are **Call** nodes, under **Server Function Libraries** in the palette, and they need no **Target**; see [Call a Server Function Library](./call-a-library.md).
 
 There is no bookkeeping to do. A Server Object is one shared object that the SDK keeps current. **Get** reads that object's current value directly, never a copy you have to refresh. **On Changed** follows it, so you do not keep a variable holding the last value, compare it, or unbind anything. Rename or retype a variable in the asset and the nodes follow; see [When the asset changes](./pins-for-every-type.md#when-the-asset-changes).
 
@@ -68,6 +70,8 @@ The typed nodes take **Self** as the default **Target**, so the simplest way to 
 
 The component joins at Begin Play and lets go at End Play. The Server Object is given back a few seconds after its last holder lets go, so a beacon that is destroyed and placed again straight away keeps its values. See [Get a Server Object](../from-cpp/get-a-server-object.md#one-object-many-owners).
 
+When the player's access to the game ends, the Server Object fails and its **Get Failure Reason** says why. After the player signs in again, the component, like a typed node set to **Find By Asset**, gets its Server Object again on its own; you do not call **Rejoin**. Show the reason from **On Access Ended**, which [Authentication](../../services/authentication.md#when-the-players-access-ends) covers.
+
 If you change **Definition** or **Instance Id** in a graph after the actor has begun play, call **Rejoin** on the component. It also tries again after a failure. While the component is joining, Rejoin does nothing, so calling it from the component's own **On Status Changed** cannot loop.
 
 ### Its events and nodes
@@ -82,7 +86,7 @@ If you change **Definition** or **Instance Id** in a graph after the actor has b
 
 ## Without the component
 
-The component is a convenience over the same nodes. You can use them from any Blueprint, such as a widget that shows the beacon's oil without owning it. These nodes, and **Set Server Value** and **Get Server Value**, are in the function library `UCrowdyServerObjectLibrary`:
+The component is a convenience over the same nodes. You can use them from any Blueprint, such as a widget that shows the beacon's oil without owning it. A widget needs no component for this: either use a typed node with **Find By Asset**, or call **Get Server Object** with the widget as the **Owner** and connect the result to the typed nodes' **Target**. These nodes, and **Set Server Value** and **Get Server Value**, are in the function library `UCrowdyServerObjectLibrary`:
 
 - **Get Server Object**: takes a **Definition**, an **Instance Id** and an **Owner** (which defaults to the Blueprint itself), and returns the Server Object, or None with **Error** saying why. Owners that ask for the same one share it. It is held until the owner is destroyed.
 - **Release Server Object**: stops one owner holding it, for an owner that lives on after it stops needing it, such as a widget that is reused.
@@ -95,6 +99,7 @@ On the Server Object itself:
 | **Get Status** | Connecting, Ready, Failed or Released. See [Status](../from-cpp/get-a-server-object.md#status). |
 | **Get Failure Reason** | Why it Failed, or what it is waiting for. |
 | **Get Instance Id** | The Instance Id it was joined with. |
+| **Get Definition** | The definition asset the object was made from, to pass to nodes that take one. A pure node. |
 | **On Status Changed** | An event that runs when the status changes. |
 
 The statuses are the ones from C++; see [Status](../from-cpp/get-a-server-object.md#status).

@@ -17,7 +17,7 @@ The **login session** is your signed-in identity. The **session channel** is a t
 
 There is no heartbeat call. While a client's UDP connection is up and it is replicating an actor in the app, that client is present. The server knows a client by the actor updates it sends: a client with no fresh actor is at no position on the map and receives no spatial event. A headless or API-only client, a test bot with no UDP connection, or a menu-only flow has no actor to be present with.
 
-Server code hears presence too: on [ck-exec](/exec/intro), the app's root hub is told who entered or left the app's world. See [presence](/exec/timers-and-presence#presence).
+Server code hears presence too: on [ck-exec](/exec/intro), the app's root hub is told who entered or left the app's world. See [presence](/exec/timers-and-presence#presence). The root the Unreal SDK deploys keeps the count, which a game reads with **Get Players Online**; see [How many players are online](../exec/from-blueprint/read-and-follow-variables.md#how-many-players-are-online).
 
 ## The session channel
 

@@ -35,39 +35,39 @@ type ExecBuild {
 
 ### Fields
 
-#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>buildId</b></code>](#build-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#build-id\} 
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>buildId</b></code>](#build-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #build-id */} 
 The build’s id: for `execBuildStatus` and `execDeploy`, or for a player’s builds `execModBuildStatus` with `execModDeploy` (server) or `execModClientDeploy` (CLIENT half).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#status\} 
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #status */} 
 `queued`, `building`, `succeeded` or `failed`.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#kind\} 
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #kind */} 
 What it builds: `exec` for ck-exec modules, `client` for the CLIENT half of a mod (`execModClientBuild`).
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>log</b></code>](#log)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#log\} 
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>log</b></code>](#log)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #log */} 
 The compiler’s output once the build finishes, at most 64 KB (the end is kept). Its first line names the toolchain the build ran with.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>sdkVersion</b></code>](#sdk-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#sdk-version\} 
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>sdkVersion</b></code>](#sdk-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #sdk-version */} 
 The SDK version the build compiled against, from the toolchain of the API instance that ran it: `ckx-sdk` for a ck-exec build, `crowdy-client-sdk` for a CLIENT half. A crate’s own version requirement for the SDK is not what decides this. Null until the build starts, and for builds from before it was recorded.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> \{#created-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #created-at */} 
 When the build was requested.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>startedAt</b></code>](#started-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#started-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>startedAt</b></code>](#started-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #started-at */} 
 When it started compiling.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>finishedAt</b></code>](#finished-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> \{#finished-at\} 
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>finishedAt</b></code>](#finished-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #finished-at */} 
 When it finished.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>artifacts</b></code>](#artifacts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ExecBuildArtifact!]!</b></code>](/reference/graphql/types/objects/exec-build-artifact.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> \{#artifacts\} 
+#### [<code style={{ fontWeight: 'normal' }}>ExecBuild.<b>artifacts</b></code>](#artifacts)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ExecBuildArtifact!]!</b></code>](/reference/graphql/types/objects/exec-build-artifact.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #artifacts */} 
 The modules built so far, one per crate.
 
 
