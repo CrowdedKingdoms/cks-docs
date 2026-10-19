@@ -37,6 +37,34 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-26 (Unreal SDK v2.21.0: the Game Kit starters as Server Object types; parties, chat, emotes and spectating; deploys in parts; driving the editor from a shell; CrowdyCPP 0.73.0)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-26-sdk-v2210).
+
+**After updating, run Generate Server Code once on every Server Object type before you deploy**
+(the **Generate** button on Server Compute does all of them): generated crates now pin ckx-sdk
+0.12.1, and Server Compute refuses to deploy a crate generated before. **In C++, a handler bound
+to the Call Server Function action's On Success or On Failed needs a new last parameter,
+`FName Code`.**
+
+- **The Game Kit starters are Server Object types.** **Add starter** on Server Compute adds any of
+  the platform's seventeen [Game Kit](/game-kit/intro) starters to a project as an ordinary type,
+  used with the nodes a game already knows, with **Find Match**, kit actors drawn as your own
+  classes, and the position reporter on the Crowdy Server Object component. A starter's refusal
+  reads **Refused** with a **Code**. See [Use the Game Kit starters](/unreal-sdk/exec/use-game-kit-starters).
+- **Parties, guilds, chat rooms, emotes and spectating**, as the Game Kit's other clients do them.
+  See [Play together](/unreal-sdk/services/play-together).
+- **Deploys go in parts and reuse unchanged code.** A large project is built in parts instead of
+  refused, an unchanged crate is not built again, and a deploy stops the types it removes. See
+  [A deploy in parts](/unreal-sdk/exec/deploy-with-server-compute#a-deploy-in-parts).
+- **Drive the editor, Server Compute and Crowdy Studio from a shell**, for scripts and coding
+  agents. See [For AI agents](/unreal-sdk/for-ai-agents#drive-the-editor-without-a-window).
+- **Sign-in:** **On Login** now fires for every failed restore, `No saved session found`
+  included, and a logout or **Clear Saved Session** cancels a sign-in under way. See
+  [What's Changed](/unreal-sdk/guides/whats-changed#sign-in).
+- **CrowdyCPP 0.73.0** on every tier, and **On Send Refused** for a realtime send the server
+  refused. See [When the server refuses a send](/unreal-sdk/runtime/connection-and-reconnect#when-the-server-refuses-a-send).
+
 ## 2026-10-25 (dev and test: an org token of a switched-off organization; Game API v2.57.1)
 
 - **A switched-off organization is told so on dev and test.** An org token whose

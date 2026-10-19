@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-16T18:01:58Z",
-  "sdk_version": "2.20.0",
+  "generated_from": "2026-10-26T18:47:52Z",
+  "sdk_version": "2.21.0",
   "table": "settings",
   "columns": [
     {
@@ -468,6 +468,30 @@
       "category": "Crowdy SDK|Developer|Server Objects",
       "config": true,
       "written_by": "Config Sync",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::GameKitWorld",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "GameKitWorld",
+      "type": "FSoftObjectPath",
+      "category": "Crowdy SDK|Developer|Server Objects",
+      "config": true,
+      "written_by": "you",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdySDKDeveloperSettings::GameKitActorStarters",
+      "class": "UCrowdySDKDeveloperSettings",
+      "property": "GameKitActorStarters",
+      "type": "TArray<FSoftObjectPath>",
+      "category": "Crowdy SDK|Developer|Server Objects",
+      "config": true,
+      "written_by": "you",
       "module": "CrowdyReplication",
       "editor": false,
       "allowlist": ""

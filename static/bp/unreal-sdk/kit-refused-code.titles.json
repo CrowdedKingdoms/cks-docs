@@ -1,0 +1,44 @@
+[
+	{
+		"name": "K2Node_InputKey_0",
+		"class": "/Script/BlueprintGraph.K2Node_InputKey",
+		"title": "S",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_CallServerFunction_0",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_CallServerFunction",
+		"title": "Call Start (CSO_Kit_Session)",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_EnumEquality_0",
+		"class": "/Script/BlueprintGraph.K2Node_EnumEquality",
+		"title": "==",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_IfThenElse_0",
+		"class": "/Script/BlueprintGraph.K2Node_IfThenElse",
+		"title": "Branch",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Print String",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_1",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Print String",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_2",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "•",
+		"title_drawn": true
+	}
+]

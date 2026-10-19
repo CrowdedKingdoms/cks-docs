@@ -106,7 +106,7 @@ Traces and overlaps against the crowd find candidates through a spatial grid fir
 | **Spatial Grid Cell Size** (`SpatialGridCellSize`) | 1600 cm | Smaller cells give fewer candidates but make a long trace visit more cells. |
 | **Spatial Grid Entity Bounds Radius** (`SpatialGridEntityBoundsRadius`) | 250 cm | The radius used to place an entity in the grid. Exact mesh bounds still decide hits. |
 | **Spatial Grid Trace Query Radius** (`SpatialGridTraceQueryRadius`) | 0 cm | Extra radius around a ray when collecting cells. |
-| **Spatial Grid Max Ray Cells** (`SpatialGridMaxRayCells`) | 4096 | The most cells one trace or overlap visits, and the most one entity may cover. |
+| **Spatial Grid Max Ray Cells** (`SpatialGridMaxRayCells`) | 4096 | The most cells one trace or overlap visits, and the most one entity may cover. A straight trace longer than this, or a sweep whose radius or end points are not finite or are out of range, is not answered from the grid: it tests every tracked entity instead, which is slower but finds far entities it used to miss. |
 | **Spatial Grid Max Entity Sweep Radius** (`SpatialGridMaxEntitySweepRadius`) | 12800 cm | Ceiling on the radius one position update may claim, so a forged jump cannot cover unbounded cells. |
 | **Enable Trace Instance Cache** (`bEnableTraceInstanceCache`) | off | Cache each entity's visual instance lookup, at a small memory cost per entity. |
 | **Enable Physics Asset Trace Metadata Cache** (`bEnablePhysicsAssetTraceMetadataCache`) | off | Cache trace metadata per mesh and physics asset pair. Turn it off while you edit physics assets live. |

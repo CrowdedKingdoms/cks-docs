@@ -8,9 +8,9 @@ Drop into a project root, or paste into CLAUDE.md / .cursorrules.
   voice, from C++ or Blueprint.
 - Two planes. Crowdy State is client-owned, fast, UDP, for what players see.
 - The truth plane is the app's server code on ck-exec, for anything a cheater would want
-  to lie about. The SDK does not wrap ck-exec yet (C++ calls it through CrowdyCPP's
-  client.exec()), and the game API no longer serves the SDK's own Game Model API: do not
-  build on it.
+  to lie about: Server Object types, each a definition asset plus Rust under Server/, used
+  from C++ or Blueprint. The game API no longer serves the SDK's old Game Model API: do
+  not build on it.
 - Markers in UPROPERTY/UFUNCTION meta declare state and events; an entity is a
   UCrowdyEntityComponent.
 
@@ -36,7 +36,8 @@ Drop into a project root, or paste into CLAUDE.md / .cursorrules.
   spatial event.
   https://docs.crowdedkingdoms.com/unreal-sdk/concepts/sessions-and-presence
 - Never hand-type the app id, org id, environment or API URLs into Project Settings or
-  DefaultGame.ini. Config Sync writes them and silently overwrites what you typed.
+  DefaultGame.ini. Config Sync writes them and silently overwrites what you typed; from
+  a shell, -run=CrowdyStudio -op=sync -app=<id> -yes writes the same.
   https://docs.crowdedkingdoms.com/unreal-sdk/studio/config-sync
 - A world subsystem null-checks GetGameInstance() in Initialize(): it is null in the
   transient world at engine start.
@@ -105,6 +106,23 @@ CROWDY_EVENT(Flicker)
 - Do not copy the plugin's CoreRedirects into the project's DefaultEngine.ini.
 - Do not leave crowdy.serialize.trace or any .scopes CVar on; they cost CPU per message.
 
+## WITHOUT THE EDITOR WINDOW
+
+`UnrealEditor-Cmd.exe <Project>.uproject -run=<CrowdyServerCompute|CrowdyStudio> -op=<op>
+[-out=result.json]`. Exit 0 is success; a change needs -yes (without it the op only says
+what it would do); close the editor first or it saves over what an op wrote. No -op
+lists every op.
+- App: CrowdyStudio `apps`, `createapp -org= -name= -slug= -datacenter= -yes`,
+  `sync -app=<id> -yes`. CrowdyServerCompute `whoami` checks sign-in (a person signs in
+  to Crowdy Studio once per machine).
+- A type: `exporttype -spec=t.json` (a template), `newtype -spec=@t.json`,
+  `edittype -type=T -spec=@t.json -yes`, then `generate -type=T`, then write
+  Server/<T>/src/logic.rs (yours; Generate owns lib.rs, types.rs, Cargo.toml), then
+  `deploy -yes`, `call -type=T -fn=F -key=K -inputs=@in.json -yes`, `logs`.
+  Game Kit starters: `addstarter -starter=<name>`. Also `removetype`, `renametype`,
+  `restart`; CrowdyStudio `features`, `teams`, `creategrid`, `grantgrid`.
+  https://docs.crowdedkingdoms.com/unreal-sdk/for-ai-agents#drive-the-editor-without-a-window
+
 ## TEST WITHOUT A SECOND CLIENT
 
 https://docs.crowdedkingdoms.com/unreal-sdk/guides/testing-locally
@@ -116,6 +134,7 @@ https://docs.crowdedkingdoms.com/unreal-sdk/guides/testing-locally
 - Trace gates, off by default, warnings always print: `crowdy.rpc.trace`,
   `crowdy.state.trace`, `crowdy.entity.trace`, `crowdy.net.trace`. Full table:
   https://docs.crowdedkingdoms.com/unreal-sdk/reference/console-cvars
+- Headless: `crowdy.auth.signin.file <json>`, then poll `crowdy.auth.status`.
 - Build the editor target with Engine/Build/BatchFiles/Build.bat and read the log to
   `Link ...dll` and `Result: Succeeded`.
 

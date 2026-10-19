@@ -2,7 +2,7 @@
 slug: config-sync
 sidebar_position: 4
 title: Config Sync
-description: What Config Sync writes into your project, which settings it owns versus the ones you edit, and where they land on disk.
+description: What Config Sync writes into your project, which settings it owns versus the ones you edit, where they land on disk, and how to list apps, create one and sync from the command line, along with the command line's operations for access features, teams, channels and grids.
 ---
 
 # Config Sync
@@ -26,6 +26,84 @@ The rows are **App ID**, **Org ID**, **Game API HTTP URL**, **Game API WS URL**,
 :::tip[A running Play in Editor session picks the change up without a restart.]
 Sync pushes the new values into any running PIE or standalone session; a fresh Play always reads them. The **Connection** tab works differently: its UDP knobs and its Server Object timeouts are written the moment you change them, with no Sync button. The UDP knobs reach a running session at once; the Server Object timeouts apply from the next Play.
 :::
+
+## Sync from the command line
+
+For a script or a coding agent, the same steps run without the editor window. [Sign in](./sign-in.md) to Crowdy Studio on the machine once; the commands use that sign-in, and no token goes on the command line:
+
+```text
+UnrealEditor-Cmd.exe Oakford.uproject -run=CrowdyStudio -op=apps
+```
+
+| Operation | What it does |
+|---|---|
+| `-op=apps` | Reads, and changes nothing. The account's organizations and their apps, each with its id, name, slug, datacenter, status and whether it is archived; the datacenters an app can be placed in; who is signed in; and the project's current Network settings. |
+| `-op=createapp -org=<id> -name="My Game" -slug=my-game -datacenter=<code> [-description="..."] -yes` | Creates an app, as the Create app sheet on the Project page does, and prints the new app's id. The organization must be one of the account's, and the datacenter one of the codes `-op=apps` lists, written with the same capitals. The datacenter cannot be changed later. |
+| `-op=sync -app=<id> -yes` | Writes the app's id, its organization and its game endpoints into `Config/DefaultGame.ini`, exactly what **Sync to project** writes. `Environment` and the shared origin stay as they are. An app the project is already synced to succeeds without `-yes` and changes nothing. A write that fails, for example because the file is read only, fails the operation. |
+
+`createapp` and `sync` only say what they would do, and exit with code 1, until you pass `-yes`. Add `-out=<file>` to get the result as JSON. The sign-in token is never printed.
+
+`sync -yes` refuses while an Unreal Editor is running, since the editor holds its own copy of the settings and would write it over the synced app. Close the editor first, or pass `-editoropen` to write anyway.
+
+A typical run on a new project:
+
+```text
+UnrealEditor-Cmd.exe Oakford.uproject -run=CrowdyStudio -op=apps -out=Saved/apps.json
+UnrealEditor-Cmd.exe Oakford.uproject -run=CrowdyStudio -op=createapp -org=1234 -name="Oakford" -slug=oakford -datacenter=<code> -yes
+UnrealEditor-Cmd.exe Oakford.uproject -run=CrowdyStudio -op=sync -app=<the new id> -yes
+```
+
+The [Server Compute](../exec/deploy-with-server-compute.md#from-the-command-line) operations then use the app you synced; its `-op=whoami` checks the sign-in and the app.
+
+The command line never changes which app Crowdy Studio opens on in the editor.
+
+### Access, teams, channels and grids
+
+The same commandlet does what the Access, Teams, Channels and Grid pages do, so a script can set up an app without the editor window. Every operation below follows the same rules:
+
+- It runs against `-app=<id>`, or against the app the project is synced to when you leave `-app` out. The result says which app it used.
+- It needs `-yes` to change anything. Without it, it says what it would do, changes nothing and exits with code 1.
+- When nothing would change, it succeeds and the result says `changed:false`.
+- After a write it reads the result back from the server to check it, and fails if the server does not hold what was written.
+- A list of values is written with commas and no spaces: `-keys=a,b`. Quotes are not needed (the engine drops them from a value with no spaces). A list with a space after a comma, `-keys=a, b`, is refused rather than cut short.
+
+**Access.** See [The Access page](./overview.md#the-access-page). A feature key is 1 to 64 letters, digits, `_`, `-` and `.`.
+
+| Operation | What it does |
+|---|---|
+| `-op=features` | Reads, and changes nothing. The app's feature keys. |
+| `-op=definefeature -key=<key> [-description="..."] -yes` | Defines a feature key, like **Define feature**. |
+| `-op=grantfeature -tier=<id> -key=<key> -yes` | Grants the feature to an access tier, like **Grant**. The key must be defined first. Needs `manage_apps`. |
+| `-op=revokefeature -tier=<id> -key=<key> -yes` | Takes it away again, like **Revoke**. The same rules. |
+
+**Teams and channels.** See [Teams and Channels](./teams-and-channels.md#from-the-command-line). These need a sign-in with your account, not an organization token. `-kind=` is `team` or `channel`, `-group=` the team's or channel's id, and `-user=` a user id.
+
+| Operation | What it does |
+|---|---|
+| `-op=teams`, `-op=channels` | Read the app's teams or channels. |
+| `-op=groupdetail -kind=team -group=<id>` | Reads one team or channel, with its members and their roles. |
+| `-op=createteam -name="Oakford Guild" [-description="..."] [-policy=<policy>] -yes` | Creates a team. `-policy=` is `open`, `request`, `invite` or `admin`. |
+| `-op=createchannel -name=oakford-chat [-description="..."] [-policy=<policy>] [-memberscansend=<true or false>] -yes` | Creates a channel. |
+| `-op=updategroup -kind= -group= [-name=] [-description=] [-policy=] -yes` | Changes a team or channel. |
+| `-op=deletegroup -kind= -group= -yes` | Deletes it, with its members and roles. This cannot be undone. |
+| `-op=addmember`, `-op=removemember` with `-kind= -group= -user= -yes` | Adds a user to a team or channel, or removes them. |
+| `-op=setroles -kind= -group= -user= -roles=1,2 -yes` | Sets a member's roles by role id. `-noroles` in place of `-roles=` clears them. |
+| `-op=createrole -kind= -group= -name= [-perms=manage_members,invite_members] [-rank=] -yes` | Creates a custom role. A team role can grant `manage_group`, `manage_members`, `manage_roles` and `invite_members`; a channel role can also grant `send_messages`, which decides who may post. `-op=updaterole` and `-op=deleterole` change and delete one. |
+| `-op=setteampolicy`, `-op=setchannelpolicy` | Write the app-wide policy, like **Set Policy**. They take `-creation=` (`admin`, `member` or `anyone`), `-membership=`, `-maxmembers=` and `-maxgroupsperuser=`, all optional, and `-yes`. 0 for a maximum means unlimited. |
+
+Creating a team or channel whose name already exists succeeds with `changed:false` when the existing one matches what you asked for, and fails naming the differences when it does not.
+
+**Grids.** See [Grids](./grids.md#from-the-command-line). Corners and regions are chunk coordinates written `x,y,z`, with no spaces.
+
+| Operation | What it does |
+|---|---|
+| `-op=grids -low=x,y,z -high=x,y,z [-user=]` | Reads the grids a region touches, like **Scan for grids**. |
+| `-op=creategrid -corner1=x,y,z -corner2=x,y,z -yes` | Creates a grid, like **Create grid**. A grid cannot be deleted from the command line. |
+| `-op=grantgrid -grid= -user= -keys=a,b -yes` | Grants permission keys on a grid to a user. Give `-group=` and an optional `-role=` in place of `-user=` to grant them to a team or channel; the group must be one of the app's teams or channels. |
+| `-op=revokegrid -grid= -user= -keys=a,b -yes` | Takes keys away again, with `-group=` in place of `-user=` for a group. `-all` in place of `-keys=` takes all of them. Checked by reading the keys back. |
+| `-op=gridlimits -grid= -keys=a,b -yes` | Sets the grid's permission whitelist. `-nolimit` in place of `-keys=` removes the limit. |
+| `-op=gridgrants -grid= -group=` | Reads a group's grants on a grid. |
+| `-op=gridpermissions -grid= [-user=]` | Reads the permissions a user has on a grid. |
 
 ## What Config Sync writes, and what you own
 
@@ -102,7 +180,8 @@ If you prefer a guided path, the **Setup Wizard** page walks through the same st
 - The Configuration tab writes on **Sync to project**. The Connection tab writes on every edit.
 - The shared origin is not per app. Change it on the Sign In page's backend selector, then sync.
 - A PIE session that was already running picks up a sync; a packaged build needs the new `DefaultGame.ini` cooked in.
-- An organization token is enough to run Config Sync. It is not enough to author teams, channels, or grids.
+- An organization token is enough to run Config Sync. It is not enough to author teams, channels, or grids, from the pages or from the command line.
+- A Studio sign-in with an organization token is cleared only when the server rejects the token. A network error no longer signs you out.
 
 ## Related
 
