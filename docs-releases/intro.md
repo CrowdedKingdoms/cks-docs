@@ -42,7 +42,7 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 - **A browser client sends app-defined spatial messages.** `client.udp.sendGenericSpatial`
   (CrowdyJS 18.15.0) sends `GENERIC_SPATIAL_1` (opcode 140) on the binary relay, so a browser,
   a CrowdyCPP or Unreal client and a CrowdyPy client exchange them both ways. There is no
-  GraphQL mutation for it; see [the realtime overview](/crowdyjs/overview). CrowdyPy 0.15.0
+  GraphQL mutation for it; see [the SDK guide](/crowdyjs/readme). CrowdyPy 0.15.0
   sends it from `client.udp` too (`send_generic_spatial`).
 - **A voxel edit that waits for the server.** `setVoxel({ optimistic: false })` in CrowdyJS,
   `ChunkStore::setVoxel(..., optimistic = false)` in CrowdyCPP 0.67.4 and
