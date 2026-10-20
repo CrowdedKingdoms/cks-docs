@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-OPERATOR ONLY. The metered rate card for a scope: every priced dimension with its unit, price and hourly free allowance. SHARED is organization usage billed to the org wallet as "shared&#x005F;usage"; PLAYER is player compute billed to the player wallet as "usage&#x005F;debit". A dimension priced at 0 is metered but not charged. Read-only. Customers read the same rates through `meteredRateCard`, which is public and omits the operator note.
+OPERATOR ONLY. The metered rate card for a scope: every priced dimension with its unit, price, free allowance and the period that allowance resets on. SHARED is organization usage charged to the org wallet as "shared&#x005F;usage"; PLAYER is a player's own metered usage charged to the player wallet as "usage&#x005F;debit". A dimension priced at 0 is metered but not charged. Read-only. Customers read the same rates through `meteredRateCard`, which is public and omits the operator note.
 
 
 ```graphql
@@ -36,4 +36,4 @@ Which card to read.
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>RateCardEntryType</b></code>](/reference/graphql/types/objects/rate-card-entry-type.mdx) <Badge class="badge badge--secondary " text="object"/> 
-One priced dimension: its rate and, where it has one, its hourly free allowance. A dimension with a price of 0 is metered but not charged.
+One priced dimension: its rate and, where it has one, its free allowance and the period that allowance resets on. A dimension with a price of 0 is metered but not charged.

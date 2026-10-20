@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-One player-wallet ledger entry: top-ups, hourly usage debits, auto-recharges, refunds, and adjustments. Usage debits carry the app and reference the hour's charge row, whose snapshot splits platform vs studio-markup components.
+One player-wallet ledger entry: top-ups, usage debits, auto-recharges, refunds, purchases, payouts and adjustments. A usage debit carries the app and charges what one dimension's running total for its period now costs beyond what was already charged, the app's markup included, so a period can bring several debits as its usage arrives; its description names the dimension and the period.
 
 
 ```graphql
@@ -79,7 +79,7 @@ DEPRECATED. balanceAfterMicrousd / 10,000 truncated toward zero.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>transactionType</b></code>](#transaction-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #transaction-type */} 
-What produced this entry. The complete set of values this API writes: "topup" (credit from a completed checkout, positive), "auto&#x005F;recharge" (off-session automatic recharge, positive), "payout&#x005F;credit" (marketplace seller payout, positive), "refund" (marketplace refund returned to the buyer, positive), "usage&#x005F;debit" (hourly player-compute metered charge for one closed clock hour, negative), "purchase" (marketplace purchase, negative), "adjustment" (operator or dispute-clawback correction, signed).
+What produced this entry. The complete set of values this API writes: "topup" (credit from a completed checkout, positive), "auto&#x005F;recharge" (off-session automatic recharge, positive), "payout&#x005F;credit" (marketplace seller payout, positive), "refund" (marketplace refund returned to the buyer, positive), "usage&#x005F;debit" (metered player usage in one app: the increase in what one dimension's period total costs since the last debit for it, markup included, negative), "purchase" (marketplace purchase, negative), "adjustment" (operator or dispute-clawback correction, signed).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>description</b></code>](#description)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #description */} 
@@ -87,7 +87,7 @@ Human description.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>referenceId</b></code>](#reference-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #reference-id */} 
-External reference (checkout/PaymentIntent id).
+External reference: the checkout or PaymentIntent id of a top-up, or for a usage debit the ledger charge it settles ("charge:&#x003C;chargeId&#x003E;:&#x003C;n&#x003E;", the n-th debit of that charge).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>PlayerWalletTransaction.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
