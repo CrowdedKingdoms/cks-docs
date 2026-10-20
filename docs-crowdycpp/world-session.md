@@ -95,7 +95,9 @@ the realtime stream:
 - **Realtime merge**: inbound voxel notifications are applied to the cache
   automatically.
 - **Optimistic edits**: `setVoxel` applies locally, replicates over UDP, and
-  marks the chunk for durable write-back.
+  marks the chunk for durable write-back. `setVoxel(..., optimistic = false)`
+  (0.67.4) changes nothing and marks nothing: the edit is applied when the
+  server's echo of it arrives.
 - **Worldgen write-back**: chunks the server has never stored can be
   generated client-side (`seed` / `insertGenerated`) and persisted so the
   world stays identical for everyone — write-back is throttled (default one
