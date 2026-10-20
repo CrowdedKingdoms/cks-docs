@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-One posted player usage charge: a (player, app, closed clock hour) row. amountCents = platformCents + markupCents — players see what the platform charges and what the studio adds (06 §4). The UNIQUE hour key makes the billing tick idempotent.
+One player usage charge from the hourly cents-era billing: a (player, app, closed clock hour) row. The lossless ledger, on by default, replaced that billing and writes no rows here, so the list ends where the ledger took over; usage since is in playerWalletTransactions as "usage&#x005F;debit" entries. amountCents = platformCents + markupCents: what the platform charged and what the studio added.
 
 
 ```graphql
