@@ -75,9 +75,14 @@
   "engines": {
     "node": ">=20.0"
   },
-  "//overrides": "Security overrides (2026-10-19), build-time only. tinypool ^2.1.2 (GHSA-5gmw-xhrv-c9v3, GHSA-85c8-ppgw-ccpr): @docusaurus/core 3.10.2 asks for ^1.0.2 and its 4.0 canaries for ^2.1.2, with the same Tinypool options, run() and destroy(). serialize-javascript ^7.0.5: copy-webpack-plugin and css-minimizer-webpack-plugin ask for ^6; 7 keeps the API and needs Node 20. Drop each when Docusaurus asks for the fixed version itself.",
+  "//overrides": "Security overrides (2026-10-19), build-time only. tinypool ^2.1.2 (GHSA-5gmw-xhrv-c9v3, GHSA-85c8-ppgw-ccpr): @docusaurus/core 3.10.2 asks for ^1.0.2 and its 4.0 canaries for ^2.1.2, with the same Tinypool options, run() and destroy(). serialize-javascript ^7.0.5: copy-webpack-plugin and css-minimizer-webpack-plugin ask for ^6; 7 keeps the API and needs Node 20. Drop each when Docusaurus asks for the fixed version itself. Added 2026-10-20: uuid ^11.1.1 under sockjs only (GHSA-w5hq-g745-h8pq; sockjs 0.3.24 asks for ^8 and calls require('uuid').v4, which 11 keeps in CommonJS). postcss-selector-parser ^7.1.6 (GHSA-rj75-hqrm-r3gf): cssnano-preset-default 6 and postcss-discard-unused ask for ^6; the built CSS is byte-identical. @graphql-tools/utils ^12.0.1 (GHSA-7mx3-vvmw-hjmv): @graphql-markdown/types and graphql-file-loader ask for ^11; check:generated passes on 12. Drop each when its parents ask for the fixed version.",
   "overrides": {
     "tinypool": "^2.1.2",
-    "serialize-javascript": "^7.0.5"
+    "serialize-javascript": "^7.0.5",
+    "sockjs": {
+      "uuid": "^11.1.1"
+    },
+    "postcss-selector-parser": "^7.1.6",
+    "@graphql-tools/utils": "^12.0.1"
   }
 }
