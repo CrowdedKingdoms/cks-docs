@@ -64,11 +64,11 @@ Required when a unit change also changes the money. Restating 19c per GiB as 1.7
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>freePerHour</b></code>](#free-per-hour)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #free-per-hour */} 
-New hourly free allowance in raw metric units, as a BigInt decimal string. Must be &#x003E;= 0. Omit to leave the allowance unchanged.
+New hourly free allowance in raw metric units, as a BigInt decimal string. Must be &#x003E;= 0. Omit to leave the allowance unchanged. Like a price, it applies from a dimension's next period where a period has already been charged.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>freeUnits</b></code>](#free-units)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #free-units */} 
-New free allowance in raw metric units per freePeriod, as a BigInt decimal string. Must be &#x003E;= 0. Leaves the period as it is unless freePeriod is also given. Not combinable with freePerHour, which is the older spelling of freeUnits with freePeriod HOUR.
+New free allowance in raw metric units per freePeriod, as a BigInt decimal string. Must be &#x003E;= 0. Leaves the period as it is unless freePeriod is also given. Not combinable with freePerHour, which is the older spelling of freeUnits with freePeriod HOUR. Like a price, it applies from a dimension's next period where a period has already been charged.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>freePeriod</b></code>](#free-period)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AllowancePeriod</b></code>](/reference/graphql/types/enums/allowance-period.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #free-period */} 
@@ -76,7 +76,7 @@ New period for the free allowance. Leaves the units as they are unless freeUnits
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>freePerMonth</b></code>](#free-per-month)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #free-per-month */} 
-New monthly free allowance in raw metric units, as a BigInt decimal string. Must be &#x003E;= 0. On the PLAYER card with metric player&#x005F;wasm&#x005F;compute&#x005F;units this is the pooled monthly TRIAL BUDGET per (player, app) — the only sanctioned way to change it on a live tier. Omit to leave it unchanged.
+New monthly free allowance in raw metric units, as a BigInt decimal string. Must be &#x003E;= 0. On the PLAYER card with metric player&#x005F;wasm&#x005F;compute&#x005F;units this is the pooled monthly TRIAL BUDGET per (player, app) — the only sanctioned way to change it on a live tier. Omit to leave it unchanged. Like a price, it applies from a dimension's next period where a period has already been charged.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetRateCardInput.<b>priceBands</b></code>](#price-bands)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[RateCardBandInput!]</b></code>](/reference/graphql/types/inputs/rate-card-band-input.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="input"/> {/* #price-bands */} 
