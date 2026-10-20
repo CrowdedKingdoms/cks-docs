@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Which rate card. SHARED prices organization metered usage for shared-environment apps (billed hourly to the org wallet as "shared&#x005F;usage"). PLAYER prices player compute (billed hourly to the player wallet as "usage&#x005F;debit").
+Which rate card. SHARED prices an organization's metered usage in shared-environment apps, charged to the org wallet as "shared&#x005F;usage" entries. PLAYER prices a player's own metered usage (mod compute, egress, model storage and player-paid model tokens), charged to the player wallet as "usage&#x005F;debit" entries with the app's markup added. Both settle about once a minute: each (payer, dimension, period) is charged what its running total now costs beyond what was already charged for it.
 
 
 ```graphql
