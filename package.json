@@ -74,5 +74,10 @@
   },
   "engines": {
     "node": ">=20.0"
+  },
+  "//overrides": "Security overrides (2026-10-19), build-time only. tinypool ^2.1.2 (GHSA-5gmw-xhrv-c9v3, GHSA-85c8-ppgw-ccpr): @docusaurus/core 3.10.2 asks for ^1.0.2 and its 4.0 canaries for ^2.1.2, with the same Tinypool options, run() and destroy(). serialize-javascript ^7.0.5: copy-webpack-plugin and css-minimizer-webpack-plugin ask for ^6; 7 keeps the API and needs Node 20. Drop each when Docusaurus asks for the fixed version itself.",
+  "overrides": {
+    "tinypool": "^2.1.2",
+    "serialize-javascript": "^7.0.5"
   }
 }
