@@ -37,6 +37,19 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-20 (dev: a browser sends opcode 140, and a voxel edit that waits for the server; CrowdyJS 18.15.0, CrowdyCPP 0.67.4, CrowdyPy 0.15.0)
+
+- **A browser client sends app-defined spatial messages.** `client.udp.sendGenericSpatial`
+  (CrowdyJS 18.15.0) sends `GENERIC_SPATIAL_1` (opcode 140) on the binary relay, so a browser,
+  a CrowdyCPP or Unreal client and a CrowdyPy client exchange them both ways. There is no
+  GraphQL mutation for it; see [the SDK guide](/crowdyjs/readme). CrowdyPy 0.15.0
+  sends it from `client.udp` too (`send_generic_spatial`).
+- **A voxel edit that waits for the server.** `setVoxel({ optimistic: false })` in CrowdyJS,
+  `ChunkStore::setVoxel(..., optimistic = false)` in CrowdyCPP 0.67.4 and
+  `chunks.set_voxel(..., optimistic=False)` in CrowdyPy 0.15.0 change nothing locally until the
+  server's echo of the edit arrives, so the cache holds only what the server accepted.
+- CrowdyCPP's CI now builds and tests the optional Opus wrapper (`-DCROWDY_WITH_OPUS=ON`).
+
 ## 2026-10-16 (Unreal SDK v2.20.0: Server Objects ask for platform data and set server limits, and send and hear messages; Server Function Libraries and Can Call Any Type; refusals say why; Restart; account settings and player names)
 
 Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-16-sdk-v2200).
