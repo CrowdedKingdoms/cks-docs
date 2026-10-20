@@ -197,7 +197,9 @@ The client-side source of truth for chunks and voxels:
 - Realtime `voxelUpdate` notifications merge into the cache automatically:
   dense grid write, typed state decode, revision bump, `onChunkChanged`.
 - `setVoxel(...)` applies locally first (optimistic) and replicates over the
-  UDP path with your typed voxel state.
+  UDP path with your typed voxel state. With `optimistic: false` nothing changes
+  locally until the server's echo of the edit arrives, which the store then
+  applies, so the cache holds only what the server accepted.
 - **Deterministic worldgen write-back**: chunks the server has never stored
   are handed to your `onMissing(coord)` hook; returned grids are seeded
   locally and persisted through a throttled write-back queue (one chunk per
