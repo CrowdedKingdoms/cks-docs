@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Dev only. The organization's org-managed player settings: whether it may sign its own players in, its cap, sign-in rate and sign-in lifetimes, and how many players it holds. Requires manage&#x005F;players on the org (super-admins and operators bypass).
+The organization's org-managed player settings: whether it may sign its own players in, its cap, sign-in rate and sign-in lifetimes, how many players it holds, and whether it has accepted the current Org-Managed Players Addendum. Requires manage&#x005F;players on the org (super-admins and operators bypass).
 
 
 ```graphql
@@ -28,7 +28,7 @@ orgManagedPlayerSettings(
 ### Arguments
 
 #### [<code style={{ fontWeight: 'normal' }}>orgManagedPlayerSettings.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
-
+The organization (BigInt as a decimal string).
 
 
 
@@ -36,4 +36,4 @@ orgManagedPlayerSettings(
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>OrgManagedPlayerSettings</b></code>](/reference/graphql/types/objects/org-managed-player-settings.mdx) <Badge class="badge badge--secondary " text="object"/> 
-An organization's org-managed player settings. Set by a Crowded Kingdoms operator; the org reads them.
+An organization's org-managed player settings, and where it stands on the Org-Managed Players Addendum. A Crowded Kingdoms operator sets the settings; an admin of the organization accepts the addendum.

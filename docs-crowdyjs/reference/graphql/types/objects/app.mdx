@@ -189,7 +189,7 @@ The organization that owns this app. Null if the owning org cannot be found.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>managedPlayerModsEnabled</b></code>](#managed-player-mods-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #managed-player-mods-enabled */} 
-Whether the organization lets its org-managed players build and run mods (and use the Studio agent) in this app, paying for their mod compute, egress, storage and model tokens itself. False by default, and false wherever org-managed players are off (they are on dev only). Set with setAppManagedPlayerMods (manage&#x005F;billing). Players with a Crowded Kingdoms account are unaffected.
+Whether the organization lets its org-managed players build and run mods (and use the Studio agent) in this app, paying for their mod compute, egress, storage and model tokens itself. False by default, and false on a tier that does not serve org-managed players. Set with setAppManagedPlayerMods (manage&#x005F;billing). Players with a Crowded Kingdoms account are unaffected.
 
 
 

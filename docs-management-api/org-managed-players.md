@@ -5,11 +5,6 @@ title: Org-managed players
 
 # Org-managed players
 
-:::caution Preview
-Org-managed players are not available in production yet. This page describes them ahead of
-release; until then every field on it answers `FEATURE_DISABLED` in production.
-:::
-
 If your studio already runs its own player accounts, your players should not have to type a
 Crowded Kingdoms password inside your game. With **org-managed players**, your organization
 vouches for its own players and Crowded Kingdoms gives each one its own app token. Your players
@@ -42,6 +37,30 @@ differently.
 A Crowded Kingdoms operator turns org-managed players on for your organization and sets its
 limits. Your org admins with the `manage_players` permission (any `admin` holds it) see them on
 the **Players** tab of your organization in Studio, or read them with `orgManagedPlayerSettings`.
+
+## Before the first sign-in: accept the addendum
+
+An admin of your organization accepts the
+[Org-Managed Players Addendum](https://crowdedkingdoms.com/managed-players-addendum.html) once,
+in Studio: your organization's **Players** tab, **Terms**. It supplements the API Terms for the
+players you sign in yourself: your organization provides the terms its players play under,
+answers for their age and conduct, keeps its org tokens and signing keys secure, and pays for
+everything they use.
+
+Until your organization has accepted the current version, every sign-in (both options), every
+refresh of a managed player's token and `provisionManagedPlayers` answer
+`ORG_LEGAL_ACCEPTANCE_REQUIRED`. Neither the player nor your server can fix that: tell the
+player sign-in is unavailable and do not retry. Reading, renaming, disabling, signing out and
+deleting your players keep working.
+
+Only an admin of your organization accepts, by your organization's own grant: Crowded Kingdoms
+staff cannot accept it for you. Studio offers the acceptance to whoever may make it. In GraphQL,
+`orgManagedPlayerSettings` reports `termsVersion`, `termsUrl`, `termsAccepted`, the latest
+acceptance and `viewerMayAcceptTerms`, and `acceptManagedPlayerTerms(orgId, version)` records
+it with an admin's session; a version that is not the current one answers `CONFLICT`. The SDKs
+do not wrap the acceptance. If the addendum is revised in a way you must accept again, its
+version changes, `termsAccepted` turns false, and sign-ins stop until an admin accepts the new
+version.
 
 ## Option 1: an org token from your server
 
@@ -164,7 +183,8 @@ const access = await game.portal.exchangeManagedPlayerAssertion({ appId: APP_ID,
 Each sign-in lasts `sessionTtlSeconds` (default and maximum: your organization's settings,
 24 hours and 7 days unless an operator changed them). Until then the device refreshes its app
 token as usual (`refreshGameplayToken` in CrowdyJS, `refreshAppToken` in GraphQL); after it, the
-refresh is refused and the device asks you for a new sign-in.
+refresh is refused and the device asks you for a new sign-in. A refresh is also refused, with
+`ORG_LEGAL_ACCEPTANCE_REQUIRED`, while your organization has not accepted the current addendum.
 
 To stop a player:
 
@@ -229,6 +249,7 @@ sign-ins of new players answer `MANAGED_PLAYER_LIMIT`.
 | `extensions.code` | When |
 |---|---|
 | `FEATURE_DISABLED` | Org-managed players are not available here. |
+| `ORG_LEGAL_ACCEPTANCE_REQUIRED` | Your organization has not accepted the current Org-Managed Players Addendum; an admin of it does, in Studio. Sign-ins, refreshes and provisioning answer it. |
 | `ORG_TOKEN_REQUIRED` | `mintManagedPlayerToken` was called without an org token. |
 | `ORG_TOKEN_NOT_ALLOWED` | An org token was sent to a field it cannot call, or from a browser (an `Origin` header). |
 | `FORBIDDEN` | Org-managed players are not switched on for your organization (an operator does that), the org token lacks the scope, or the app is another organization's. |
