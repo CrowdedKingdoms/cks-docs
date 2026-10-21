@@ -23,6 +23,8 @@ input UpdateOrgTokenInput {
   label: String
   expiresAt: DateTime
   isActive: Boolean
+  scopes: [String!]
+  appIds: [BigInt!]
 }
 ```
 
@@ -39,6 +41,14 @@ New expiry timestamp; omit to leave unchanged.
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateOrgTokenInput.<b>isActive</b></code>](#is-active)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #is-active */} 
 Set false to deactivate the token; omit to leave unchanged. Revoked tokens cannot be re-minted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateOrgTokenInput.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #scopes */} 
+Replace the token's scopes ('players:mint', 'players:manage'); omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateOrgTokenInput.<b>appIds</b></code>](#app-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-ids */} 
+Replace the apps the token is limited to; an empty list means every app of the organization. Omit to leave unchanged.
 
 
 

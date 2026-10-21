@@ -1,0 +1,53 @@
+---
+id: mint-managed-player-token-input
+title: MintManagedPlayerTokenInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input MintManagedPlayerTokenInput {
+  appId: BigInt!
+  externalId: String!
+  gamertag: String
+  sessionTtlSeconds: Int
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>MintManagedPlayerTokenInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app to play: one of the org token's organization's apps.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>MintManagedPlayerTokenInput.<b>externalId</b></code>](#external-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #external-id */} 
+The id your organization knows the player by (1-256 characters, no control characters). Use your own stable account id, not an email address. The first sign-in creates the player.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>MintManagedPlayerTokenInput.<b>gamertag</b></code>](#gamertag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #gamertag */} 
+Display name (at most 64 characters). Set when the player is created; later sign-ins leave it (rename with updateManagedPlayer).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>MintManagedPlayerTokenInput.<b>sessionTtlSeconds</b></code>](#session-ttl-seconds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #session-ttl-seconds */} 
+How long this sign-in lasts, in seconds (default and maximum: the org's settings). The app token refreshes (refreshAppToken) until then; after it, sign the player in again.
+
+
+
+
+### Member Of
+
+[`mintManagedPlayerToken`](/reference/graphql/operations/mutations/mint-managed-player-token.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

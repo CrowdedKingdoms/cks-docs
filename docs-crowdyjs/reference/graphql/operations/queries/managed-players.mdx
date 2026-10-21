@@ -1,0 +1,54 @@
+---
+id: managed-players
+title: managedPlayers
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The organization's managed players, by user id. `search` matches the start of the external id (exactly) or of the gamertag (any case). An org token with players:manage, or an org admin with manage&#x005F;players.
+
+
+```graphql
+managedPlayers(
+  orgId: BigInt!
+  search: String
+  first: Int
+  after: String
+): ManagedPlayersPage!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>managedPlayers.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+The organization (BigInt as a decimal string). With an org token, the token's own.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>managedPlayers.<b>search</b></code>](#search)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #search */} 
+Matches the start of an externalId (exactly) or of a gamertag (any case).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>managedPlayers.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #first */} 
+Page size, 1-200 (default 50).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>managedPlayers.<b>after</b></code>](#after)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #after */} 
+The previous page’s nextCursor.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ManagedPlayersPage</b></code>](/reference/graphql/types/objects/managed-players-page.mdx) <Badge class="badge badge--secondary " text="object"/> 
+One page of an org’s managed players, by user id.

@@ -1,0 +1,72 @@
+---
+id: managed-player
+title: ManagedPlayer
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A player an organization signs in itself (an org-managed player): a Crowded Kingdoms user with no email, password or wallet, known to the org by its own id.
+
+
+```graphql
+type ManagedPlayer {
+  userId: BigInt!
+  orgId: BigInt!
+  externalId: String!
+  gamertag: String
+  disambiguation: String
+  disabled: Boolean!
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ManagedPlayer.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The player’s Crowded Kingdoms user id (BigInt as a decimal string): what hubs, channels and other players see.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManagedPlayer.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+The organization the player belongs to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManagedPlayer.<b>externalId</b></code>](#external-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #external-id */} 
+The id the organization knows the player by (its own account id), unique within the org.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManagedPlayer.<b>gamertag</b></code>](#gamertag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #gamertag */} 
+Display name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManagedPlayer.<b>disambiguation</b></code>](#disambiguation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #disambiguation */} 
+Disambiguation shown beside the gamertag, if the org set one.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManagedPlayer.<b>disabled</b></code>](#disabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #disabled */} 
+Whether the player is disabled: it cannot sign in, and its sessions were ended when it was disabled. An org disables and enables with updateManagedPlayer; a platform block also reads as disabled and only an operator lifts it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ManagedPlayer.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #created-at */} 
+When the player was first signed in or provisioned.
+
+
+
+
+### Returned By
+
+[`managedPlayer`](/reference/graphql/operations/queries/managed-player.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`updateManagedPlayer`](/reference/graphql/operations/mutations/update-managed-player.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+
+### Member Of
+
+[`ManagedPlayersPage`](/reference/graphql/types/objects/managed-players-page.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`ProvisionManagedPlayersResult`](/reference/graphql/types/objects/provision-managed-players-result.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
