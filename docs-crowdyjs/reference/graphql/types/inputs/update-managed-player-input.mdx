@@ -1,0 +1,58 @@
+---
+id: update-managed-player-input
+title: UpdateManagedPlayerInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input UpdateManagedPlayerInput {
+  orgId: BigInt!
+  externalId: String!
+  gamertag: String
+  disambiguation: String
+  disabled: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateManagedPlayerInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateManagedPlayerInput.<b>externalId</b></code>](#external-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #external-id */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateManagedPlayerInput.<b>gamertag</b></code>](#gamertag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #gamertag */} 
+New display name.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateManagedPlayerInput.<b>disambiguation</b></code>](#disambiguation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #disambiguation */} 
+New disambiguation (at most 128 characters).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateManagedPlayerInput.<b>disabled</b></code>](#disabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #disabled */} 
+True disables the player (no sign-in; every session ends now, Buddy and ck-exec included). False enables a player the org disabled.
+
+
+
+
+### Member Of
+
+[`updateManagedPlayer`](/reference/graphql/operations/mutations/update-managed-player.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

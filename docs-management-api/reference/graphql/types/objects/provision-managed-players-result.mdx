@@ -1,0 +1,48 @@
+---
+id: provision-managed-players-result
+title: ProvisionManagedPlayersResult
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What provisionManagedPlayers did: the players, in the order asked, created or already there.
+
+
+```graphql
+type ProvisionManagedPlayersResult {
+  created: Int!
+  existing: Int!
+  players: [ManagedPlayer!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ProvisionManagedPlayersResult.<b>created</b></code>](#created)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #created */} 
+Players this call created.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProvisionManagedPlayersResult.<b>existing</b></code>](#existing)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #existing */} 
+Players that already existed and were left as they were.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProvisionManagedPlayersResult.<b>players</b></code>](#players)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ManagedPlayer!]!</b></code>](/reference/graphql/types/objects/managed-player.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #players */} 
+
+
+
+
+
+### Returned By
+
+[`provisionManagedPlayers`](/reference/graphql/operations/mutations/provision-managed-players.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

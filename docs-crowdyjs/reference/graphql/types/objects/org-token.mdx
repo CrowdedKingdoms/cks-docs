@@ -23,8 +23,10 @@ type OrgToken {
   orgTokenId: BigInt!
   orgId: BigInt!
   label: String
-  environmentId: String
-  kind: String!
+  scopes: [String!]!
+  appIds: [BigInt!]
+  environmentId: String @deprecated
+  kind: String! @deprecated
   isActive: Boolean!
   expiresAt: DateTime
   lastUsedAt: DateTime
@@ -49,11 +51,31 @@ Organization that owns this token (BigInt as string).
 Optional human-readable label.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #environment-id */} 
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>scopes</b></code>](#scopes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #scopes */} 
+What the token may do: 'players:mint' (sign the org's managed players in, mintManagedPlayerToken) and 'players:manage' (provision, list, rename, disable, sign out and delete them). A token with no scope can do nothing. Org tokens authenticate on dev only for now.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>appIds</b></code>](#app-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-ids */} 
+The apps the token may sign players in to; null means every app of the organization.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>environmentId</b></code>](#environment-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #environment-id */} 
+:::warning[DEPRECATED]
+
+Environment-bound service tokens were retired with dedicated environments; always null.
+
+:::
+
 For 'service' tokens, the environment id (UUID) the token is scoped to; null for user-minted tokens.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #kind */} 
+#### [<code style={{ fontWeight: 'normal' }}>OrgToken.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--deprecated" text="deprecated"/> <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #kind */} 
+:::warning[DEPRECATED]
+
+Service tokens were retired; every org token is 'user&#x005F;minted'. Read `scopes` for what a token may do.
+
+:::
+
 'user&#x005F;minted' (human-created) or 'service' (minted by the control plane for per-tenant game-apis).
 
 
