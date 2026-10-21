@@ -1,0 +1,43 @@
+---
+id: exchange-managed-player-assertion-input
+title: ExchangeManagedPlayerAssertionInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input ExchangeManagedPlayerAssertionInput {
+  appId: BigInt!
+  assertion: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ExchangeManagedPlayerAssertionInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app to play.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExchangeManagedPlayerAssertionInput.<b>assertion</b></code>](#assertion)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #assertion */} 
+The compact JWS your organization signed for this player (header alg EdDSA, ES256 or RS256 with a registered kid; claims iss, aud, sub, iat, exp at most 300 s after iat, a fresh jti, and optionally gamertag). Use each once.
+
+
+
+
+### Member Of
+
+[`exchangeManagedPlayerAssertion`](/reference/graphql/operations/mutations/exchange-managed-player-assertion.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

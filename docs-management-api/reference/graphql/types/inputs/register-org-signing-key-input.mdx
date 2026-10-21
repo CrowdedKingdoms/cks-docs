@@ -1,0 +1,73 @@
+---
+id: register-org-signing-key-input
+title: RegisterOrgSigningKeyInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input RegisterOrgSigningKeyInput {
+  orgId: BigInt!
+  kid: String!
+  algorithm: String!
+  publicJwk: String!
+  issuer: String!
+  audience: String
+  appIds: [BigInt!]
+  label: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>RegisterOrgSigningKeyInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RegisterOrgSigningKeyInput.<b>kid</b></code>](#kid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #kid */} 
+The key id your assertions name in their header (1-128 characters), unique among the org’s active keys.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RegisterOrgSigningKeyInput.<b>algorithm</b></code>](#algorithm)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #algorithm */} 
+'EdDSA' (Ed25519), 'ES256' (P-256) or 'RS256' (RSA, 2048 bits or more).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RegisterOrgSigningKeyInput.<b>publicJwk</b></code>](#public-jwk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #public-jwk */} 
+The PUBLIC key as a JWK (a JSON object). A JWK with private members is refused.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RegisterOrgSigningKeyInput.<b>issuer</b></code>](#issuer)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #issuer */} 
+The `iss` your assertions carry (for example your sign-in service’s URL).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RegisterOrgSigningKeyInput.<b>audience</b></code>](#audience)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #audience */} 
+The `aud` your assertions carry, when your identity provider sets its own (for example its client id). Omit to require `ck:app:<appId>`.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RegisterOrgSigningKeyInput.<b>appIds</b></code>](#app-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-ids */} 
+Limit the key to these apps of the organization; omit for every app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RegisterOrgSigningKeyInput.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #label */} 
+
+
+
+
+
+### Member Of
+
+[`registerOrgSigningKey`](/reference/graphql/operations/mutations/register-org-signing-key.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

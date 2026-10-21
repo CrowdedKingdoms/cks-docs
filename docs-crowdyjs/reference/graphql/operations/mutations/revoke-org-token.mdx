@@ -15,13 +15,14 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Permanently deactivates an org token so it can no longer authenticate. Requires the 'manage&#x005F;tokens' permission on the token's org (super admins bypass). DESTRUCTIVE and irreversible; the secret cannot be reactivated. Returns false if the token does not exist.
+Permanently deactivates an org token so it can no longer authenticate. With `endSessions: true` it also signs out every managed player session the token signed in (their app tokens, realtime and ck-exec connections end now); without it those sessions run until they lapse. Requires the 'manage&#x005F;tokens' permission on the token's org (super admins bypass). DESTRUCTIVE and irreversible; the secret cannot be reactivated. Returns false if the token does not exist.
 
 
 ```graphql
 revokeOrgToken(
   orgTokenId: BigInt!
   idempotencyKey: String
+  endSessions: Boolean
 ): Boolean!
 ```
 
@@ -34,6 +35,10 @@ Org token id (BigInt as string).
 
 #### [<code style={{ fontWeight: 'normal' }}>revokeOrgToken.<b>idempotencyKey</b></code>](#idempotency-key)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #idempotency-key */} 
 Optional idempotency key. Recommended for retries: replaying with the same key and identical arguments returns the first result instead of re-applying; the same key with different arguments returns IDEMPOTENCY&#x005F;CONFLICT. Keys expire after 24h.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>revokeOrgToken.<b>endSessions</b></code>](#end-sessions)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #end-sessions */} 
+Also end every managed player session this token signed in. Default false.
 
 
 

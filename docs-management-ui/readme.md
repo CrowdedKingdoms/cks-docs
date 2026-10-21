@@ -69,4 +69,8 @@ You see the tab with the organization's `manage_compute` or `view_compute_diagno
 
 The portal uses the **Management API**. Game clients and dedicated servers use the **Game API** and **Replication API** with **app-scoped tokens** after authenticating; see [CrowdyJS](/crowdyjs/intro) for browser games and [Connecting game clients](/management-ui/client-integration) for the production hosts.
 
-For custom studio backends, use org tokens and the [Management API GraphQL reference](/management-api/reference/graphql-overview) alongside [Shared environment & billing](/management-api/shared-environment).
+For custom studio backends, sign in with an account your studio holds and use the [Management API GraphQL reference](/management-api/reference/graphql-overview) alongside [Shared environment & billing](/management-api/shared-environment). Org tokens (your organization's **API Credentials** tab) are for one thing today: signing in and managing your [org-managed players](/management-api/org-managed-players) from your server.
+
+## Players
+
+Where org-managed players are switched on for your organization, the organization's **Players** tab shows the **Org-Managed Players Addendum**, which an admin of the organization accepts once before any of its players can sign in (anyone else sees that an admin must), lists its players (search, disable, sign out, delete), provisions new ones in bulk once the addendum is accepted, and registers the keys your sign-in service signs player assertions with. The **API Credentials** tab gives a new org token its scopes (`players:mint`, `players:manage`) and app list, and each app's **Usage & Billing** tab has the switch that lets your organization pay for its managed players' mods. You see the tab with the organization's `manage_players` permission. See [Org-managed players](/management-api/org-managed-players).

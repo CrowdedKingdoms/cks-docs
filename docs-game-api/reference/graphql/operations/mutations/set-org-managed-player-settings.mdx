@@ -1,0 +1,39 @@
+---
+id: set-org-managed-player-settings
+title: setOrgManagedPlayerSettings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR ONLY. Enable or disable an organization's org-managed players and set its limits. Disabling refuses new sign-ins; sessions already running last until they lapse (end them with endManagedPlayerSessions). Enabling does not accept the addendum: an admin of the organization does that (acceptManagedPlayerTerms).
+
+
+```graphql
+setOrgManagedPlayerSettings(
+  input: SetOrgManagedPlayerSettingsInput!
+): OrgManagedPlayerSettings!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setOrgManagedPlayerSettings.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetOrgManagedPlayerSettingsInput!</b></code>](/reference/graphql/types/inputs/set-org-managed-player-settings-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>OrgManagedPlayerSettings</b></code>](/reference/graphql/types/objects/org-managed-player-settings.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An organization's org-managed player settings, and where it stands on the Org-Managed Players Addendum. A Crowded Kingdoms operator sets the settings; an admin of the organization accepts the addendum.

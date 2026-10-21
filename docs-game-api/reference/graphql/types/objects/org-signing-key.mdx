@@ -1,0 +1,88 @@
+---
+id: org-signing-key
+title: OrgSigningKey
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The public half of a key an organization signs its players' sign-in assertions with (exchangeManagedPlayerAssertion). Only public keys are stored.
+
+
+```graphql
+type OrgSigningKey {
+  keyId: BigInt!
+  orgId: BigInt!
+  kid: String!
+  algorithm: String!
+  publicJwk: String!
+  issuer: String!
+  audience: String
+  appIds: [BigInt!]
+  label: String
+  createdAt: DateTime!
+  revokedAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgSigningKey.<b>keyId</b></code>](#key-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #key-id */} 
+The key’s id here.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgSigningKey.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgSigningKey.<b>kid</b></code>](#kid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #kid */} 
+The `kid` an assertion’s header names to pick this key.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgSigningKey.<b>algorithm</b></code>](#algorithm)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #algorithm */} 
+'EdDSA', 'ES256' or 'RS256'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgSigningKey.<b>publicJwk</b></code>](#public-jwk)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #public-jwk */} 
+The public key, as a JWK (JSON).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgSigningKey.<b>issuer</b></code>](#issuer)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #issuer */} 
+The `iss` an assertion must carry.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgSigningKey.<b>audience</b></code>](#audience)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #audience */} 
+The `aud` an assertion must include; null means `ck:app:<appId>` for the app it signs in to.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgSigningKey.<b>appIds</b></code>](#app-ids)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[BigInt!]</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-ids */} 
+The apps the key signs players in to; null means every app of the organization.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgSigningKey.<b>label</b></code>](#label)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #label */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgSigningKey.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #created-at */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgSigningKey.<b>revokedAt</b></code>](#revoked-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #revoked-at */} 
+When the key was revoked; a revoked key verifies nothing.
+
+
+
+
+### Returned By
+
+[`orgSigningKeys`](/reference/graphql/operations/queries/org-signing-keys.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`registerOrgSigningKey`](/reference/graphql/operations/mutations/register-org-signing-key.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
