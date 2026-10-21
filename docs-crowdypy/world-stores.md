@@ -32,7 +32,7 @@ states = pose.decode_many(snapshot.state_offsets, snapshot.state_data)  # numpy,
 |---|---|
 | `session.self` | your actor: join, set or patch state, send-on-change with keyframes and heartbeats |
 | `session.actors` | everyone else, with staleness, sample history, join, leave and update callbacks, native lanes filtered by `state[offset] & mask == value`, and `snapshot()` columns |
-| `session.chunks` | voxels: real-time merge, optimistic `set_voxel`, `ensure_around` and `hydrate` from the Game API, write-back with retries, and an `on_missing` world-generation hook. A 16×16×16 helper: an edit its one-byte grid cannot hold (a type outside 0-255, a position outside 0-15) is kept in `overlay(chunk)` (0.8.0) |
+| `session.chunks` | voxels: real-time merge, optimistic `set_voxel` (`optimistic=False` applies an edit only when the server's echo arrives, 0.15.0), `ensure_around` and `hydrate` from the Game API, write-back with retries, and an `on_missing` world-generation hook. A 16×16×16 helper: an edit its one-byte grid cannot hold (a type outside 0-255, a position outside 0-15) is kept in `overlay(chunk)` (0.8.0) |
 | `session.errors`, `direct_inbox`, `channel_inbox`, `events` | errors attributed to your sends, inboxes and the event router |
 | `session.host`, `save`, `avatar` | host election, save state and avatar state, run from the session's timers |
 
