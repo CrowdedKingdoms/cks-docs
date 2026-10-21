@@ -10,6 +10,7 @@
   ],
   "include": {
     "Mutation": [
+      "acceptManagedPlayerTerms",
       "admitAppCode",
       "archiveAccessTier",
       "archiveApp",

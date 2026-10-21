@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-An organization's org-managed player settings. Set by a Crowded Kingdoms operator; the org reads them.
+An organization's org-managed player settings, and where it stands on the Org-Managed Players Addendum. A Crowded Kingdoms operator sets the settings; an admin of the organization accepts the addendum.
 
 
 ```graphql
@@ -27,6 +27,13 @@ type OrgManagedPlayerSettings {
   mintsPerMinute: Int!
   defaultSessionTtlSeconds: Int!
   maxSessionTtlSeconds: Int!
+  termsVersion: String!
+  termsUrl: String!
+  termsAccepted: Boolean!
+  termsAcceptedVersion: String
+  termsAcceptedAt: DateTime
+  termsAcceptedByUserId: BigInt
+  viewerMayAcceptTerms: Boolean!
 }
 ```
 
@@ -61,8 +68,36 @@ How long one sign-in lasts (seconds) when the org does not ask for less: app tok
 The longest sign-in the org may ask for (seconds).
 
 
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>termsVersion</b></code>](#terms-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #terms-version */} 
+The current version of the Org-Managed Players Addendum, which an admin of the organization accepts (acceptManagedPlayerTerms) before its players are created or signed in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>termsUrl</b></code>](#terms-url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #terms-url */} 
+Where the current addendum is published.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>termsAccepted</b></code>](#terms-accepted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #terms-accepted */} 
+Whether the organization has accepted the current version. Until it has, its managed players are neither created nor signed in and their app tokens do not refresh (ORG&#x005F;LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>termsAcceptedVersion</b></code>](#terms-accepted-version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #terms-accepted-version */} 
+The version the organization accepted most recently, or null if it never accepted one.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>termsAcceptedAt</b></code>](#terms-accepted-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #terms-accepted-at */} 
+When it accepted that version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>termsAcceptedByUserId</b></code>](#terms-accepted-by-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #terms-accepted-by-user-id */} 
+The user id of the admin who accepted that version.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>viewerMayAcceptTerms</b></code>](#viewer-may-accept-terms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #viewer-may-accept-terms */} 
+Whether the signed-in user may accept the addendum for this organization: an admin of it, by the organization's own grant (a super admin's or an operator's access does not count).
+
+
 
 
 ### Returned By
 
-[`orgManagedPlayerSettings`](/reference/graphql/operations/queries/org-managed-player-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setOrgManagedPlayerSettings`](/reference/graphql/operations/mutations/set-org-managed-player-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+[`acceptManagedPlayerTerms`](/reference/graphql/operations/mutations/accept-managed-player-terms.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`orgManagedPlayerSettings`](/reference/graphql/operations/queries/org-managed-player-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setOrgManagedPlayerSettings`](/reference/graphql/operations/mutations/set-org-managed-player-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Dev only. Exchange an assertion your organization signed for one of its players for that player's app-scoped gameplay token (the same token mintManagedPlayerToken returns). Public: the signature is the credential, so a game client calls it directly, from a browser on your registered origin or natively. The assertion must name a registered, active key (header kid) and carry iss and aud as registered (aud defaults to ck:app:&#x003C;appId&#x003E;), sub (your id for the player), iat, exp at most 300 seconds after iat, and a jti never used before for this app; optionally gamertag. The player is created on its first sign-in. Refusals are ASSERTION&#x005F;REJECTED with extensions.reason.
+Exchange an assertion your organization signed for one of its players for that player's app-scoped gameplay token (the same token mintManagedPlayerToken returns). Public: the signature is the credential, so a game client calls it directly, from a browser on your registered origin or natively. The assertion must name a registered, active key (header kid) and carry iss and aud as registered (aud defaults to ck:app:&#x003C;appId&#x003E;), sub (your id for the player), iat, exp at most 300 seconds after iat, and a jti never used before for this app; optionally gamertag. The player is created on its first sign-in. Refusals are ASSERTION&#x005F;REJECTED with extensions.reason; a valid assertion is refused with ORG&#x005F;LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED until an admin of the organization has accepted the current Org-Managed Players Addendum.
 
 
 ```graphql
