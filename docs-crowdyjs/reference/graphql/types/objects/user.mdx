@@ -29,12 +29,12 @@ type User {
   createdAt: DateTime!
   grantEarlyAccess: Boolean
   grantEarlyAccessOverride: Boolean
-  orgId: BigInt
   externalId: String
   userType: String
   isSuperAdmin: Boolean
   isOperator: Boolean
   hasPassword: Boolean
+  orgId: BigInt
   permissionsForOrg(
     orgId: BigInt!
   ): [String!]
@@ -80,16 +80,12 @@ Whether the user qualifies for early access through normal eligibility (the free
 Admin override forcing early access on/off regardless of normal eligibility (set via `setEarlyAccessOverride`). Private: null unless the caller is this user, a super-admin or an operator.
 
 
-#### [<code style={{ fontWeight: 'normal' }}>User.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
-Organization the user belongs to, or null. BigInt serialized as a decimal string. Private: null unless the caller is this user, a super-admin or an operator.
-
-
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>externalId</b></code>](#external-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #external-id */} 
-External identity-provider id for federated accounts, or null. Private: null unless the caller is this user, a super-admin or an operator.
+The id an organization knows an org-managed player by (its own account id), or null for every other account. Private: null unless the caller is this user, a super-admin or an operator.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>userType</b></code>](#user-type)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #user-type */} 
-Account type, e.g. "direct" or "deleted". Private: null unless the caller is this user, a super-admin or an operator.
+Account type: "direct" (a Crowded Kingdoms account), "org&#x005F;managed" (a player an organization signs in itself; no email, password or wallet) or "deleted". Private: null unless the caller is this user, a super-admin or an operator.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>isSuperAdmin</b></code>](#is-super-admin)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #is-super-admin */} 
@@ -102,6 +98,10 @@ Company-employee flag that grants access to control-plane / operator features. I
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>hasPassword</b></code>](#has-password)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #has-password */} 
 Whether this account has a password set. Studio reads it to say "set a password" only to accounts that have none (magic-link and OAuth sign-ups); it used to say so to everyone. The hash itself never leaves the process. Private: null unless the caller is this user, a super-admin or an operator.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+The organization an org-managed player belongs to (BigInt serialized as a decimal string), or null for every other account. Private: null unless the caller is this user, a super-admin or an operator.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>User.<b>permissionsForOrg</b></code>](#permissions-for-org)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #permissions-for-org */} 
