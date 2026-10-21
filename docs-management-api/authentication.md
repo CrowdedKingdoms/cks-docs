@@ -45,6 +45,10 @@ indistinguishable, to the platform and to the player, from a phishing page.
 There is no unauthenticated shortcut. Automated clients should `register` an
 account they hold the password to.
 
+If your studio runs its own player accounts, your players need not have Crowded Kingdoms
+accounts at all: your organization can sign them in itself (preview) — see
+[Org-managed players](/management-api/org-managed-players).
+
 The session token is a **management-plane** credential. It is **not valid for
 gameplay**: to play, mint a short-lived **app-scoped token** from it — see
 [Portals & app-scoped tokens](/management-api/portals-and-app-tokens) and

@@ -1,0 +1,68 @@
+---
+id: org-managed-player-settings
+title: OrgManagedPlayerSettings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An organization's org-managed player settings. Set by a Crowded Kingdoms operator; the org reads them.
+
+
+```graphql
+type OrgManagedPlayerSettings {
+  orgId: BigInt!
+  enabled: Boolean!
+  maxPlayers: BigInt!
+  playerCount: BigInt!
+  mintsPerMinute: Int!
+  defaultSessionTtlSeconds: Int!
+  maxSessionTtlSeconds: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #enabled */} 
+Whether the org may sign its own players in (mintManagedPlayerToken, exchangeManagedPlayerAssertion).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>maxPlayers</b></code>](#max-players)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #max-players */} 
+How many managed players the org may hold.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>playerCount</b></code>](#player-count)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #player-count */} 
+How many managed players it holds now.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>mintsPerMinute</b></code>](#mints-per-minute)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #mints-per-minute */} 
+Sign-ins a minute, fleet-wide.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>defaultSessionTtlSeconds</b></code>](#default-session-ttl-seconds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #default-session-ttl-seconds */} 
+How long one sign-in lasts (seconds) when the org does not ask for less: app tokens refresh until then.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>OrgManagedPlayerSettings.<b>maxSessionTtlSeconds</b></code>](#max-session-ttl-seconds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #max-session-ttl-seconds */} 
+The longest sign-in the org may ask for (seconds).
+
+
+
+
+### Returned By
+
+[`orgManagedPlayerSettings`](/reference/graphql/operations/queries/org-managed-player-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
