@@ -7129,6 +7129,9 @@ type Query {
     The organization (BigInt as a decimal string). With an org token, the token's own.
     """
     orgId: BigInt!
+    """
+    Matches the start of an externalId (exactly) or of a gamertag (any case).
+    """
     search: String
     """Page size, 1-200 (default 50)."""
     first: Int
@@ -7143,16 +7146,23 @@ type Query {
     The organization (BigInt as a decimal string). With an org token, the token's own.
     """
     orgId: BigInt!
+    """The id your organization knows the player by."""
     externalId: String!
   ): ManagedPlayer
   """
   Dev only. The organization's org-managed player settings: whether it may sign its own players in, its cap, sign-in rate and sign-in lifetimes, and how many players it holds. Requires manage_players on the org (super-admins and operators bypass).
   """
-  orgManagedPlayerSettings(orgId: BigInt!): OrgManagedPlayerSettings!
+  orgManagedPlayerSettings(
+    """The organization (BigInt as a decimal string)."""
+    orgId: BigInt!
+  ): OrgManagedPlayerSettings!
   """
   Dev only. The organization's signing keys for player assertions, newest first, revoked ones included. Requires manage_players on the org.
   """
-  orgSigningKeys(orgId: BigInt!): [OrgSigningKey!]!
+  orgSigningKeys(
+    """The organization (BigInt as a decimal string)."""
+    orgId: BigInt!
+  ): [OrgSigningKey!]!
   """
   A hosted third-party game by slug, or null when the slug is unclaimed. PUBLIC: the first-party shell at https://<games host>/<slug>/ calls this before sign-in to learn the contentOrigin it frames. Returns DISABLED and TAKEN_DOWN games too (with their status) so the shell can say why. Null when the tier does not host third-party games.
   """
@@ -9171,6 +9181,7 @@ type Mutation {
     The organization (BigInt as a decimal string). With an org token, the token's own.
     """
     orgId: BigInt!
+    """The id your organization knows the player by."""
     externalId: String!
   ): Boolean!
   """
@@ -9181,6 +9192,7 @@ type Mutation {
     The organization (BigInt as a decimal string). With an org token, the token's own.
     """
     orgId: BigInt!
+    """The id your organization knows the player by."""
     externalId: String!
   ): Boolean!
   """
@@ -9194,7 +9206,12 @@ type Mutation {
   """
   Dev only. Revoke a signing key: assertions it signed are refused from now on (sessions already signed in run until they lapse; end them with endManagedPlayerSessions). False when there was no such active key. Requires manage_players on the org.
   """
-  revokeOrgSigningKey(orgId: BigInt!, keyId: BigInt!): Boolean!
+  revokeOrgSigningKey(
+    """The organization (BigInt as a decimal string)."""
+    orgId: BigInt!
+    """The key to revoke (OrgSigningKey.keyId)."""
+    keyId: BigInt!
+  ): Boolean!
   """
   Dev only. Exchange an assertion your organization signed for one of its players for that player's app-scoped gameplay token (the same token mintManagedPlayerToken returns). Public: the signature is the credential, so a game client calls it directly, from a browser on your registered origin or natively. The assertion must name a registered, active key (header kid) and carry iss and aud as registered (aud defaults to ck:app:<appId>), sub (your id for the player), iat, exp at most 300 seconds after iat, and a jti never used before for this app; optionally gamertag. The player is created on its first sign-in. Refusals are ASSERTION_REJECTED with extensions.reason.
   """
@@ -9202,7 +9219,14 @@ type Mutation {
   """
   Dev only. Let the organization's org-managed players build and run mods (and use the Studio agent) in this app, or stop them. The organization pays for what they use: their mod compute and egress as its own compute, their project storage as the app's, their model tokens from the org wallet. Turning it off pauses their mods within a minute and refuses new builds. Requires manage_billing on the app's organization. Returns the new setting.
   """
-  setAppManagedPlayerMods(appId: BigInt!, enabled: Boolean!): Boolean! @requiresPermission(scope: "app", permission: "manage_billing", scopeArg: "appId")
+  setAppManagedPlayerMods(
+    """An app of your organization (BigInt as a decimal string)."""
+    appId: BigInt!
+    """
+    True: the organization pays for its managed players' mods in this app. False: their mods are refused and switched off.
+    """
+    enabled: Boolean!
+  ): Boolean! @requiresPermission(scope: "app", permission: "manage_billing", scopeArg: "appId")
   """
   Claim the hosting slug for an app (idempotent; the same app re-claiming its slug is a no-op, a different slug MOVES the game). Registers https://<games host>/<slug>/ and https://<slug>.<content host> as the app's redirect URIs and sets launch_url to the former. Requires manage_apps on the app and a SESSION token. Refuses a slug that is not a DNS label, is reserved, or belongs to another app (HOSTED_SLUG_UNAVAILABLE), and answers CONTENT_HOSTING_DISABLED on a tier without a content CDN.
   """
