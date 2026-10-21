@@ -20,6 +20,10 @@ confined to that one app.
   app. Used as the Bearer against that app's Game API + realtime surface. A
   compromised or third-party game only ever sees a token for its own app.
 
+> **Your studio runs its own accounts?** Your organization can sign its players in itself and
+> hand each device its app token, with no Crowded Kingdoms sign-in at all (preview) — see
+> [Org-managed players](/management-api/org-managed-players).
+
 > **A game hosted on Crowdy Games** takes the same browser flow; the SDK routes it
 > through the first-party shell that frames the game. See
 > [Hosting on Crowdy Games](/management-api/hosting-on-crowdy-games).

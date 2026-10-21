@@ -1,0 +1,43 @@
+---
+id: provision-managed-players-input
+title: ProvisionManagedPlayersInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input ProvisionManagedPlayersInput {
+  orgId: BigInt!
+  players: [ManagedPlayerSpecInput!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ProvisionManagedPlayersInput.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+The organization (an org token's own, if one is used).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ProvisionManagedPlayersInput.<b>players</b></code>](#players)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[ManagedPlayerSpecInput!]!</b></code>](/reference/graphql/types/inputs/managed-player-spec-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #players */} 
+The players to create, at most 500. One that exists is left as it is.
+
+
+
+
+### Member Of
+
+[`provisionManagedPlayers`](/reference/graphql/operations/mutations/provision-managed-players.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
