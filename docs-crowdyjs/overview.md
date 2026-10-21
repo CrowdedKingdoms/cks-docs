@@ -447,6 +447,12 @@ client.realtime.onStatus((status) => {
 `genericSpatial` (CrowdyJS 18.7.0) receives `GENERIC_SPATIAL_1` (opcode 140), the long
 spatial message your game defines the payload of. It arrives on the binary relay only
 (`realtime.binaryTransport: true`): the GraphQL `udpNotifications` union has no member for it.
+`client.udp.sendGenericSpatial({ appId, chunk, uuid, payload })` (CrowdyJS 18.15.0) sends one,
+also on the binary relay only, since there is no GraphQL mutation for it: off the relay it
+throws `CrowdyRealtimeError` with `code: 'BINARY_RELAY_UNAVAILABLE'` and `retryable: false`,
+and sends nothing. The payload is base64 and at most 1,123 bytes decoded; `distance` defaults
+to 8 and `decayRate` to 0. CrowdyCPP's `Connection::sendGenericSpatial` and CrowdyPy's
+`client.udp.send_generic_spatial` send the same message.
 A `genericError` with `errorCode` 33 (`APP_PAUSED`) means the app is paused (its organization
 has no funds, reached a spend cap, or its subscription lapsed) and nothing will be delivered
 until the owner fixes it; `gameClientBootstrap(appId).runtimeGate` says why.

@@ -24,8 +24,8 @@ that token. The handler names `subscribe` accepts are `actor_update`,
 
 **Sends** on `client.udp` cover actor updates, voxel updates, audio and video
 packets (`send_video_frame` fragments a whole frame), text, client events,
-single-actor messages and channel publishes. Generic spatial messages and idle
-heartbeats are on `client.udp.connection`. Each send returns its sequence
+single-actor messages, channel publishes and, since 0.15.0, generic spatial messages
+(`send_generic_spatial`, opcode 140). Idle heartbeats are on `client.udp.connection`. Each send returns its sequence
 number, and each `*_and_wait` variant resolves with the server's echo or raises
 on timeout. Sends are bundled into
 `MESSAGE_BUNDLE` datagrams; `flush_sends()` sends the pending bundle now.
