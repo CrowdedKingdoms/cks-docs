@@ -30,6 +30,7 @@
 - [Guide](https://docs.crowdedkingdoms.com/management-api/readme)
 - [GraphQL reference (operations & types)](https://docs.crowdedkingdoms.com/management-api/reference/graphql-overview)
 - [Management API best practices](https://docs.crowdedkingdoms.com/management-api/best-practices) · [Shared environment](https://docs.crowdedkingdoms.com/management-api/shared-environment) · [Game setup](https://docs.crowdedkingdoms.com/management-api/game-setup)
+- [Org-managed players: an organization signs its own players in (org tokens, signed assertions, the Org-Managed Players Addendum)](https://docs.crowdedkingdoms.com/management-api/org-managed-players)
 
 ## Game surface (world data + realtime UDP proxy) — same endpoint
 
