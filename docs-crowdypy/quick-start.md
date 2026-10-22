@@ -87,6 +87,12 @@ Some refusals carry more (0.8.0): `access_refusal_of(error)` reads `ACCESS_REVOK
 check `is_app_paused(token.runtime_gate)` and tell the player the world is paused.
 From 0.11.0, `account_blocked_of(error)` reads `ACCOUNT_BLOCKED` and when a timed block
 lifts, and `group_member_banned_of(error)` reads `GROUP_MEMBER_BANNED` from joining a
-channel or team you are banned from. A ck-exec connection that the server closes with
+channel or team you are banned from. For [org-managed players](/management-api/org-managed-players):
+
+- From 0.16.0, `assertion_rejected_of(error)` reads `ASSERTION_REJECTED` and the failed
+  check, and `managed_player_not_allowed_of(error)` reads `MANAGED_PLAYER_NOT_ALLOWED`.
+- From 0.17.0, `org_legal_acceptance_required_of(error)` reads `ORG_LEGAL_ACCEPTANCE_REQUIRED`:
+  the player's organization has not accepted the Org-Managed Players Addendum, which only an
+  admin of the organization can fix, in Studio. A ck-exec connection that the server closes with
 `4403` ("access ended") does not reconnect: pending calls fail `Denied`, and the
 listener you gave `on_access_ended` hears the reason.
