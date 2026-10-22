@@ -73,7 +73,7 @@ are namespaced by audience:
 | Audience | Sub-clients | Notes |
 |---|---|---|
 | **Game-client** (browser-safe) | `auth`, `users`, `udp`, `world(...)`, `chunks`, `voxels`, `actors`, `avatars`, `state`, `teleport`, `host`, `channels`, `teams`, `exec`, `inputLog`, `serverStatus`, `crowdyStudio`, `crowdyStudioGitHub` | Safe to drive from an untrusted browser with the documented token and server policy. `auth`/`users` use the identity **session token**; world, Studio, and realtime surfaces require an **app-scoped token**. The Studio agent pane (`dsh` option) reaches the model through the metered REST endpoint with that token and separately requires `use_studio_agent`. |
-| **Studio-admin** (token whose user holds `manage_apps`) | `organizations`, `apps`, `appAccess`, `billing`, `payments`, `quotas`, `usage`, `sharedEnvironment`, `gameApps` ([grids](grids)) — also grouped under `client.admin.*` | Privileged org/app administration. Requires a user with the `manage_apps` permission (or an org token). Not end-user-safe — see the note below. Dedicated `environments` were removed in v13. |
+| **Studio-admin** (token whose user holds `manage_apps`) | `organizations`, `managedPlayers`, `apps`, `appAccess`, `billing`, `payments`, `quotas`, `usage`, `sharedEnvironment`, `gameApps` ([grids](grids)) — also grouped under `client.admin.*` | Privileged org/app administration. Requires a user with the `manage_apps` permission (or an org token). Not end-user-safe — see the note below. Dedicated `environments` were removed in v13. `managedPlayers` (18.16.0, `manage_players`) administers an organization's [org-managed players](/management-api/org-managed-players); its `settings` say whether the organization has accepted the Org-Managed Players Addendum. |
 
 The SDK never relaxes server-side authorization — exposing an operation just
 gives you a typed wrapper; the caller still needs the right token and permission.
@@ -182,6 +182,11 @@ needed. See [Terms and age of majority](/management-api/portals-and-app-tokens#t
   (redirect-URI allow-list, client type, launch URL) with
   `portal.setAppClientSettings({ appId, redirectUris, clientType, launchUrl })`.
 - `portal.refresh()` — silent same-app token rotation before expiry.
+- `portal.adoptAppToken(response)` and `portal.exchangeManagedPlayerAssertion({ appId, assertion })`
+  (18.16.0) — the device's side of [org-managed players](/management-api/org-managed-players):
+  store the app token the player's organization minted on its server (an org token, `cko_…`, is
+  refused), or trade an assertion the organization signed. Until the organization has accepted the
+  Org-Managed Players Addendum, both and their refreshes answer `ORG_LEGAL_ACCEPTANCE_REQUIRED`.
 
 **Hosted sign-in** (a game on its own domain) is two calls on one client:
 
@@ -558,6 +563,14 @@ Helpers read the refusals a game shows the player: `accessRefusalOf(err)` (`ACCE
 `ACCESS_REVOKED`, `ACCESS_SUSPENDED` with `suspendedUntil`), `accountBlockedOf(err)`
 (`ACCOUNT_BLOCKED`, with `blockedUntil` for a timed block; CrowdyJS 18.10.0),
 `groupMemberBannedOf(err)` (`GROUP_MEMBER_BANNED`), `appPausedOf(err)` and `actorExistsOf(err)`.
+For [org-managed players](/management-api/org-managed-players): `assertionRejectedOf(err)`
+(`ASSERTION_REJECTED`, with the failed check in `reason`) and `managedPlayerNotAllowedOf(err)`
+(`MANAGED_PLAYER_NOT_ALLOWED`: no wallet, or mods the organization has not switched on) from 18.16.0,
+and `orgLegalAcceptanceRequiredOf(err)` (`ORG_LEGAL_ACCEPTANCE_REQUIRED`: the player's organization
+has not accepted the Org-Managed Players Addendum) from 18.17.0. Neither the player nor a retry fixes
+the last one: an admin of the organization accepts the addendum in Studio.
+`isLegalAcceptanceRequiredError` is the player's own clickwrap, and since 18.17.0 it no longer matches
+the organization's code.
 An `ExecConnection` whose player's access or session ends is closed for good with
 `EXEC_CLOSE_ACCESS_ENDED` (4403); `onAccessEnded(listener)` hears the reason.
 

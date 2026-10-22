@@ -38,6 +38,12 @@ agent's policy.
 - **Bans** (`client.channels.ban` / `unban`, `client.teams.ban` / `unban`, 0.11.0) need
   Game API v2.44.0 or later, and the final `4403` close needs ck-exec 0.16 hosts; an older
   host never sends it.
+- **Org-managed players** (`client.managed_players`, `portal.adopt_app_token`,
+  `portal.exchange_managed_player_assertion`, 0.16.0) need Game API v2.53.0 or later on any
+  environment (v2.52.x served them on dev only), and the organization's acceptance of the
+  Org-Managed Players Addendum. The addendum fields on `managed_players.settings` and
+  `org_legal_acceptance_required_of` are 0.17.0. See
+  [Org-managed players](/management-api/org-managed-players).
 - The full list of what each release needs from the server is in the repository's
   [compatibility notes](https://github.com/CrowdedKingdoms/CrowdyPy/blob/dev/docs/compatibility.md).
 
