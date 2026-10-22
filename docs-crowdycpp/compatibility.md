@@ -25,6 +25,12 @@ deployments:
   while the client's timeout still applies. A message's `body` is standard base64:
   `crowdy::core::base64Decode` (`crowdy/core/base64.hpp`) gives the bytes. See
   [Input logging](/replication-api/input-logging).
+- **Org-managed players** (`admin().managedPlayers()`, `portal().adoptAppToken`,
+  `portal().exchangeManagedPlayerAssertion`, 0.68.0) need Game API v2.53.0 or later on any
+  environment (v2.52.x served them on dev only), and the organization's acceptance of the
+  Org-Managed Players Addendum. The addendum fields on `managedPlayers().settings()` and
+  `graphql::orgLegalAcceptanceRequiredOf` are 0.69.0. See
+  [Org-managed players](/management-api/org-managed-players).
 
 ## CrowdyJS parity
 

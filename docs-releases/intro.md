@@ -37,6 +37,54 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-21 (every environment: org-managed players, behind the Org-Managed Players Addendum; Game API v2.53.0, CrowdyJS 18.17.0, CrowdyCPP 0.69.0, CrowdyPy 0.17.0)
+
+- **Org-managed players.** An organization that runs its own player accounts signs its
+  players in itself, so they never type a Crowded Kingdoms password in its game and Crowded
+  Kingdoms holds no email or password for them. There are two routes:
+  - its server mints a player's app token with an org token (`mintManagedPlayerToken`,
+    scope `players:mint`);
+  - its sign-in service signs a short assertion, with a key registered through
+    `registerOrgSigningKey`, which the player's device trades with
+    `exchangeManagedPlayerAssertion`.
+
+  The device plays with an ordinary app token. A managed player has no wallet and plays
+  only its organization's apps. The organization administers them with `managedPlayers`,
+  `managedPlayer`, `provisionManagedPlayers` (up to 500 a call), `updateManagedPlayer`,
+  `endManagedPlayerSessions`, `deleteManagedPlayer` and `orgManagedPlayerSettings`. See
+  [Org-managed players](/management-api/org-managed-players).
+- **The Org-Managed Players Addendum.** Before an organization's players are created or
+  signed in, an admin of the organization accepts the
+  [addendum](https://crowdedkingdoms.com/managed-players-addendum.html) once, in Studio (the
+  organization's **Players** tab). Until then sign-ins, token refreshes and provisioning
+  answer `ORG_LEGAL_ACCEPTANCE_REQUIRED`. `orgManagedPlayerSettings` reports `termsVersion`,
+  `termsUrl`, `termsAccepted` and `viewerMayAcceptTerms`, and
+  `acceptManagedPlayerTerms(orgId, version)` records the acceptance.
+- **Off until switched on.** Crowded Kingdoms switches org-managed players on per
+  organization; ask at hello@crowdedkingdoms.com.
+- **Org tokens can sign players in.** `createOrgToken` takes `scopes` (`players:mint`,
+  `players:manage`) and `appIds`. A secret starts with `cko_` and is shown once, and a request
+  that sends one with an `Origin` header is refused (`ORG_TOKEN_NOT_ALLOWED`).
+  `revokeOrgToken(orgTokenId, endSessions: true)` also ends the sessions the token signed in.
+- **Mods your organization pays for.** `setAppManagedPlayerMods(appId, enabled)`
+  (`manage_billing`) is read back as `App.managedPlayerModsEnabled`. Where it is on, managed
+  players' mods, project storage and Studio agent use are billed to the organization.
+- **New error codes:** `ORG_LEGAL_ACCEPTANCE_REQUIRED`, `ORG_TOKEN_REQUIRED`,
+  `ORG_TOKEN_NOT_ALLOWED`, `ASSERTION_REJECTED` (with `extensions.reason`),
+  `MANAGED_PLAYER_LIMIT`, `MANAGED_PLAYER_NOT_ALLOWED` and `FEATURE_DISABLED`. See
+  [Error codes](/overview/error-codes).
+- **SDKs.** CrowdyJS 18.16.0 and 18.17.0, CrowdyCPP 0.68.0 and 0.69.0, and CrowdyPy 0.16.0 and
+  0.17.0 carry all of this. In CrowdyJS that is `portal.adoptAppToken`,
+  `portal.exchangeManagedPlayerAssertion`, `client.managedPlayers`, `assertionRejectedOf`,
+  `managedPlayerNotAllowedOf` and `orgLegalAcceptanceRequiredOf`. None wraps the org-token mint
+  or the addendum's acceptance: the first belongs on the organization's server, the second to a
+  person in Studio.
+- **Fix:** CrowdyJS `isLegalAcceptanceRequiredError` and CrowdyPy
+  `is_legal_acceptance_required_error` no longer read the organization's refusal as the
+  player's own clickwrap.
+- Dev had a first version earlier the same day (Game API v2.52.x, CrowdyJS 18.16.0) without
+  the addendum; test and production got both together.
+
 ## 2026-10-20 (dev: a browser sends opcode 140, and a voxel edit that waits for the server; CrowdyJS 18.15.0, CrowdyCPP 0.67.4, CrowdyPy 0.15.0)
 
 - **A browser client sends app-defined spatial messages.** `client.udp.sendGenericSpatial`
