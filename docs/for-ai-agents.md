@@ -62,6 +62,20 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
   [Sign in](/management-api/authentication),
   [Portals & app-scoped tokens](/management-api/portals-and-app-tokens), and
   [Game API → Authentication](/game-api/authentication).
+- **Players of an organization that runs its own accounts (org-managed players):** do not
+  ask them for a Crowded Kingdoms password inside the game. The organization signs them in
+  itself, by one of two routes:
+  - its server mints each player's app token with an **org token**
+    (`mintManagedPlayerToken`, scope `players:mint`). The secret starts with `cko_`, stays on
+    the server, and is refused when a request carries an `Origin` header;
+  - its sign-in service signs a short assertion that the player's device trades with
+    `exchangeManagedPlayerAssertion`.
+
+  Either way the device then plays with an ordinary app-scoped token. Crowded Kingdoms
+  switches the feature on per organization, and an admin of the organization first accepts
+  the [Org-Managed Players Addendum](https://crowdedkingdoms.com/managed-players-addendum.html)
+  in Studio. Until then those calls answer `ORG_LEGAL_ACCEPTANCE_REQUIRED`, which neither the
+  player nor a retry can fix. See [Org-managed players](/management-api/org-managed-players).
 - **`BigInt`** is transmitted as a **decimal string** in both directions (e.g. `"123"`),
   never a JSON number — this avoids precision loss. IDs (`appId`, `orgId`, `userId`) are
   `BigInt`.
