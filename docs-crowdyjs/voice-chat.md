@@ -17,6 +17,10 @@ on the grid under the target chunk. A new app's default tier already carries
 this key. A send without it is refused with `UNAUTHORIZED` (error code 7) on
 the `genericError` / `errors` lane.
 
+If the app has [replay logging](/replication-api/input-logging) on, voice is recorded with
+the player's other inputs unless the app leaves voice and video out
+(`replayLoggingRecordsMedia: false`).
+
 ## Sending: `udp.sendAudioPacket`
 
 The recommended browser payload (used by The Construct and Blocks with Friends):

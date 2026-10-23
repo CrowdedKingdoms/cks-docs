@@ -21,6 +21,10 @@ deliberately (`appAccess.updateTier`); the default world grid and a player's
 self-claimed chunk then follow the tier. A send without it is refused with
 `UNAUTHORIZED` (error code 7) on the `genericError` / `errors` lane.
 
+If the app has [replay logging](/replication-api/input-logging) on, video is recorded with
+the player's other inputs unless the app leaves voice and video out
+(`replayLoggingRecordsMedia: false`).
+
 ## Sending: `udp.sendVideoFrame`
 
 Capture small, encode to JPEG (or WebP), hand the whole frame to the SDK. It

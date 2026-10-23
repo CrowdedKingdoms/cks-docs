@@ -1,0 +1,49 @@
+---
+id: legal-holds
+title: legalHolds
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: legal holds, newest first (at most 500), on one organization or account if given; only the ones that apply now unless includeReleased.
+
+
+```graphql
+legalHolds(
+  orgId: BigInt
+  userId: BigInt
+  includeReleased: Boolean = false
+): [LegalHold!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>legalHolds.<b>orgId</b></code>](#org-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #org-id */} 
+Only holds on this organization (its public id).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>legalHolds.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+Only holds on this account.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>legalHolds.<b>includeReleased</b></code>](#include-released)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #include-released */} 
+Also list released holds.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>LegalHold</b></code>](/reference/graphql/types/objects/legal-hold.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A legal hold an operator set on an organization or on one account. While it applies, deleting a managed player it covers is refused with LEGAL&#x005F;HOLD, a player’s own account deletion closes the account but keeps its content (and preserves its identity) until the hold is released, and no erasure runs. An organization’s hold covers its managed players. A released hold stays readable as the record.
