@@ -192,8 +192,14 @@ To stop a player:
   again.
 - `updateManagedPlayer(input: { orgId, externalId, disabled: true })` signs it out and refuses
   its sign-ins until you enable it again.
-- `deleteManagedPlayer(orgId, externalId)` removes it. The `externalId` is free again, so a
-  later sign-in with it creates a new player.
+- `deleteManagedPlayer(orgId, externalId)` deletes it: its sessions end, and its `externalId`
+  and gamertag are removed from its account. The `externalId` is free again, so a later sign-in
+  with it creates a new player. What the player made or sent is not deleted with it: its
+  projects, libraries and mods, its avatars and saved state, its edits to your worlds, its
+  recorded inputs (until their retention ends) and its usage records stay with the account.
+- **To keep a player's data**, for example while a dispute or a legal matter is open, disable
+  the player instead of deleting it. Disabling ends its access and keeps everything, its
+  `externalId` included.
 - Revoking an org token with `revokeOrgToken(orgTokenId, endSessions: true)` also ends every
   session that token signed in.
 
@@ -229,6 +235,62 @@ you allow it: an org admin with `manage_billing` switches it on per app (Studio:
 - **Off** (the default): all of that is refused with `MANAGED_PLAYER_NOT_ALLOWED`, and their
   running mods are switched off. Players with their own Crowded Kingdoms accounts are not
   affected; they pay for their own mods.
+
+The player also needs the keys on its access tier: the code keys for mods and
+`use_studio_agent` for the agent (see [Permissions](/game-api/permissions)).
+
+## Recorded inputs
+
+When an app has [input logging](/replication-api/input-logging) on, a managed player's inputs
+are recorded like any player's, voice and video included, and kept for the published retention
+(7 days). The player reads its own with its app token: `game.inputLog.sessions(appId)` lists
+its sessions and `game.inputLog.messages(appId, gameTokenId)` pages one (`inputLogSessions` and
+`inputLogMessages` in GraphQL). It never sees another player's. An org admin with `manage_apps`
+on the app reads every session, and each read of another player's inputs is recorded.
+
+A managed player has no Crowded Kingdoms page to read them on: if your players should see their
+recordings, your client shows them. Your privacy notice must tell your players that what they
+send, voice and video included, is recorded (API Terms §6.4a).
+
+## Age and communication
+
+Every managed player must be 18 or older, or the age of majority where they live if that is
+older. Your organization warrants that under the addendum (§2.3); Crowded Kingdoms does not ask
+your players to confirm their age and stores no age or age band for any player.
+
+To limit what a player may do, give it an access tier (`grantAppAccess` with a tier) that leaves
+out what it may not use. The realtime servers check `use_voice_chat` (voice) and
+`use_video_chat` (webcam video) on every send. Nearby text chat and one-to-one actor messages
+need only `access` today, the key that also allows moving, so they cannot be switched off for a
+player on their own. See [Permissions](/game-api/permissions).
+
+## The Construct
+
+[The Construct](https://github.com/CrowdedKingdoms/the-construct) signs players in with hosted
+sign-in, which a managed player cannot use. To sign your own players in, keep your own sign-in
+page, then hand the result to the starter where it finishes a hosted sign-in. In
+`packages/construct/src/platform/network/NetworkManager.ts`, beside
+`completeHostedSignInIfPresent`:
+
+```ts
+/** An org-managed player: adopt the token your backend minted for it. */
+async adoptManagedSignIn(access: AppTokenResponse): Promise<AppRoute> {
+  // With a signed assertion instead:
+  // const access = await this.platform.portal.exchangeManagedPlayerAssertion({ appId, assertion });
+  this.platform.portal.adoptAppToken(access);
+  const route = this.routeFrom(access, String(access.appId));
+  writeScoped(savedRouteBase(), JSON.stringify(route));
+  await this.hydrateUser();
+  return route;
+}
+```
+
+Call it with what your backend returns (`mintManagedPlayerToken`, [Option 1](#option-1-an-org-token-from-your-server))
+instead of sending the player to hosted sign-in, and enter the app with the route as before. The
+org token stays on your server; the page only ever holds the player's app token. The starter's
+token refresh keeps working until the sign-in's length runs out; after that, ask your backend
+for a new sign-in. The in-game Crowdy Studio dock needs the app's managed-player mods switched
+on and the tier keys above.
 
 ## Limits
 
