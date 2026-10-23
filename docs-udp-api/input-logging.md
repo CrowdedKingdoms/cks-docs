@@ -47,8 +47,28 @@ Recording starts shortly after you turn it on and stops shortly after you turn i
 Turning it off deletes nothing already recorded: those inputs stay readable, and **go on being
 billed**, until their [retention](#retention) ends.
 
+### Leave voice and video out
+
+An app that records can leave its players' voice and video out of the recording and keep
+everything else: proximity voice (`sendAudioPacket`), webcam video (`sendVideoPacket`) and
+channel voice (`sendChannelAudio`). In Crowdy Studio it is the **Record voice and video** switch
+under **Replay logging**; with GraphQL:
+
+```graphql
+mutation LeaveOutVoiceAndVideo($appId: BigInt!) {
+  updateApp(appId: $appId, input: { replayLoggingRecordsMedia: false }) {
+    appId
+    replayLoggingRecordsMedia
+  }
+}
+```
+
+It is on (`true`) by default, takes effect shortly after you change it, and deletes nothing
+already recorded. Voice and video are usually most of what an app records, so leaving them out
+also cuts what recording costs.
+
 **Tell your players first.** Recorded inputs can contain personal data: chat, voice and
-video, as well as movement and actions. Before you turn recording on, give your players any
+video (unless you leave them out), as well as movement and actions. Before you turn recording on, give your players any
 notice, and get any consent, that the law where they live requires.
 
 ## What is recorded

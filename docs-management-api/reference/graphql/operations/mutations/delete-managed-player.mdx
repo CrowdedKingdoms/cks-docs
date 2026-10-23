@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Delete a managed player: its sessions end and its row is anonymized, as an account deletion is. Signing the same external id in again creates a new player. False when there was no such player. An org token with players:manage, or an org admin with manage&#x005F;players.
+Delete a managed player, as an account deletion is: its sessions end, its externalId and gamertag are removed, and its player-side content is erased within minutes (Crowdy Studio projects, libraries and agent sessions, mods, actors, avatars and saved state, access grants, grid claims, team and channel memberships). Usage and billing records stay; world edits stay, under the account’s now anonymous id; recorded inputs age out with the input log’s retention. Refused with LEGAL&#x005F;HOLD while a legal hold covers the player or the organization: disable it instead (updateManagedPlayer), which keeps everything. Signing the same external id in again creates a new player. False when there was no such player. An org token with players:manage, or an org admin with manage&#x005F;players.
 
 
 ```graphql

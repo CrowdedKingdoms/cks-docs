@@ -1,0 +1,88 @@
+---
+id: account-erasure
+title: AccountErasure
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An account erasure: what deleting an account erases (its player-side content) and where that stands. Usage, billing, audit and legal records stay, and so does everything the account owns as a developer.
+
+
+```graphql
+type AccountErasure {
+  userId: BigInt!
+  status: String!
+  reason: String!
+  requestedBy: String
+  requestedAt: DateTime!
+  completedAt: DateTime
+  apps: Int!
+  appsDone: Int!
+  lastError: String
+  summary: String
+  preservedIdentity: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountErasure.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The deleted account.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountErasure.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #status */} 
+PENDING (apps still to do), RUNNING (finishing), DONE, FAILED (the finish threw; it is retried) or DEFERRED&#x005F;HOLD (a legal hold applies; nothing is erased until it is released).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountErasure.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 
+Why it was asked for: SELF&#x005F;DELETE (the player deleted its own account), MANAGED&#x005F;DELETE (its organization deleted it) or OPERATOR.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountErasure.<b>requestedBy</b></code>](#requested-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #requested-by */} 
+Who asked: user:&#x003C;id&#x003E;, org&#x005F;token:&#x003C;id&#x003E; or operator:&#x003C;id&#x003E;.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountErasure.<b>requestedAt</b></code>](#requested-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #requested-at */} 
+When it was asked for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountErasure.<b>completedAt</b></code>](#completed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #completed-at */} 
+When it finished, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountErasure.<b>apps</b></code>](#apps)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #apps */} 
+Apps the account had content in.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountErasure.<b>appsDone</b></code>](#apps-done)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #apps-done */} 
+Of those, the apps already erased.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountErasure.<b>lastError</b></code>](#last-error)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #last-error */} 
+The last error, from the finish or from an app, or null.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountErasure.<b>summary</b></code>](#summary)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #summary */} 
+What was erased, as JSON: rows removed per table, summed over the apps, and the account-wide rows.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AccountErasure.<b>preservedIdentity</b></code>](#preserved-identity)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #preserved-identity */} 
+OPERATOR ONLY. While a legal hold defers the erasure, what the account row said before it was blanked (email, gamertag, external id, organization), as JSON; null otherwise.
+
+
+
+
+### Returned By
+
+[`accountErasure`](/reference/graphql/operations/queries/account-erasure.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`requestAccountErasure`](/reference/graphql/operations/mutations/request-account-erasure.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

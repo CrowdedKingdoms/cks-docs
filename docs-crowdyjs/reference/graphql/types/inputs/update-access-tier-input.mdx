@@ -31,6 +31,7 @@ input UpdateAccessTierInput {
   stripePriceId: String
   paypalPlanId: String
   permissionKeys: [String!]
+  applyCommunicationDefaults: Boolean
 }
 ```
 
@@ -79,6 +80,10 @@ External PayPal plan id to associate (billing integration).
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateAccessTierInput.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #permission-keys */} 
 Replacement set of runtime permission keys for the tier (must be valid runtimePermissions). When provided, replaces the existing set entirely.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAccessTierInput.<b>applyCommunicationDefaults</b></code>](#apply-communication-defaults)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #apply-communication-defaults */} 
+With permissionKeys: when true (the default) and the new set grants access, it also grants use&#x005F;text&#x005F;chat and use&#x005F;direct&#x005F;messages, whether or not permissionKeys names them. Pass false to set exactly permissionKeys, for example to take text chat away. Ignored without permissionKeys.
 
 
 
