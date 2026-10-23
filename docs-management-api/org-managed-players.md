@@ -192,14 +192,18 @@ To stop a player:
   again.
 - `updateManagedPlayer(input: { orgId, externalId, disabled: true })` signs it out and refuses
   its sign-ins until you enable it again.
-- `deleteManagedPlayer(orgId, externalId)` deletes it: its sessions end, and its `externalId`
-  and gamertag are removed from its account. The `externalId` is free again, so a later sign-in
-  with it creates a new player. What the player made or sent is not deleted with it: its
-  projects, libraries and mods, its avatars and saved state, its edits to your worlds, its
-  recorded inputs (until their retention ends) and its usage records stay with the account.
+- `deleteManagedPlayer(orgId, externalId)` deletes it: its sessions end, its `externalId` and
+  gamertag are removed from its account, and within minutes its content in your apps is erased:
+  its projects, libraries and mods, its actors, avatars and saved state, its access, and its team
+  and channel memberships (a team or channel it created that others are in stays, without an
+  owner). Its edits to your worlds stay, under the account's id, and so do its recorded inputs
+  until their retention ends and its usage records. The `externalId` is free again, so a later
+  sign-in with it creates a new player.
 - **To keep a player's data**, for example while a dispute or a legal matter is open, disable
   the player instead of deleting it. Disabling ends its access and keeps everything, its
-  `externalId` included.
+  `externalId` included. While a legal hold covers your organization or the player,
+  `deleteManagedPlayer` is refused with `LEGAL_HOLD`; disabling still works. A Crowded Kingdoms
+  operator sets and releases holds.
 - Revoking an org token with `revokeOrgToken(orgTokenId, endSessions: true)` also ends every
   session that token signed in.
 
@@ -242,15 +246,16 @@ The player also needs the keys on its access tier: the code keys for mods and
 ## Recorded inputs
 
 When an app has [input logging](/replication-api/input-logging) on, a managed player's inputs
-are recorded like any player's, voice and video included, and kept for the published retention
-(7 days). The player reads its own with its app token: `game.inputLog.sessions(appId)` lists
+are recorded like any player's, voice and video included unless the app leaves them out
+(`updateApp(appId, input: { replayLoggingRecordsMedia: false })`), and kept for the published
+retention (7 days). The player reads its own with its app token: `game.inputLog.sessions(appId)` lists
 its sessions and `game.inputLog.messages(appId, gameTokenId)` pages one (`inputLogSessions` and
 `inputLogMessages` in GraphQL). It never sees another player's. An org admin with `manage_apps`
 on the app reads every session, and each read of another player's inputs is recorded.
 
 A managed player has no Crowded Kingdoms page to read them on: if your players should see their
-recordings, your client shows them. Your privacy notice must tell your players that what they
-send, voice and video included, is recorded (API Terms §6.4a).
+recordings, your client shows them. Your privacy notice must tell your players what is
+recorded, voice and video included unless you leave them out (API Terms §6.4a).
 
 ## Age and communication
 
@@ -259,10 +264,11 @@ older. Your organization warrants that under the addendum (§2.3); Crowded Kingd
 your players to confirm their age and stores no age or age band for any player.
 
 To limit what a player may do, give it an access tier (`grantAppAccess` with a tier) that leaves
-out what it may not use. The realtime servers check `use_voice_chat` (voice) and
-`use_video_chat` (webcam video) on every send. Nearby text chat and one-to-one actor messages
-need only `access` today, the key that also allows moving, so they cannot be switched off for a
-player on their own. See [Permissions](/game-api/permissions).
+out what it may not use. The realtime servers check `use_voice_chat` (voice), `use_video_chat`
+(webcam video), `use_text_chat` (nearby text and channel messages) and `use_direct_messages`
+(messages to one player) on every send. A tier that grants `access` has the last two unless you
+leave them out: pass `applyCommunicationDefaults: false` with the tier's `permissionKeys`. See
+[Permissions](/game-api/permissions).
 
 ## The Construct
 
@@ -320,5 +326,6 @@ sign-ins of new players answer `MANAGED_PLAYER_LIMIT`.
 | `MANAGED_PLAYER_LIMIT` | Your organization is at its player cap. |
 | `MANAGED_PLAYER_NOT_ALLOWED` | A managed player asked for a wallet, or for mods where your organization has not switched them on. |
 | `ACCOUNT_BLOCKED` | The player is disabled. |
+| `LEGAL_HOLD` | A legal hold covers your organization or the player, so `deleteManagedPlayer` is refused (409). Disable the player instead. |
 
 See [Error codes](/overview/error-codes) for every code.
