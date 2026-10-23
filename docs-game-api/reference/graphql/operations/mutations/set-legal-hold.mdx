@@ -1,0 +1,39 @@
+---
+id: set-legal-hold
+title: setLegalHold
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: put an organization (and its managed players) or one account under a legal hold. While it applies, deleting a managed player it covers is refused with LEGAL&#x005F;HOLD, a player’s own deletion closes the account but keeps its content and preserves its identity, and no erasure runs.
+
+
+```graphql
+setLegalHold(
+  input: SetLegalHoldInput!
+): LegalHold!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setLegalHold.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetLegalHoldInput!</b></code>](/reference/graphql/types/inputs/set-legal-hold-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+What to hold, and why.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>LegalHold</b></code>](/reference/graphql/types/objects/legal-hold.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A legal hold an operator set on an organization or on one account. While it applies, deleting a managed player it covers is refused with LEGAL&#x005F;HOLD, a player’s own account deletion closes the account but keeps its content (and preserves its identity) until the hold is released, and no erasure runs. An organization’s hold covers its managed players. A released hold stays readable as the record.
