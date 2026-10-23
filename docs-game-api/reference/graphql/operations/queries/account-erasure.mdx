@@ -1,0 +1,39 @@
+---
+id: account-erasure
+title: accountErasure
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: where the erasure of a deleted account stands (what deleting it erases, app by app), or null if none was asked for. While a legal hold defers it, preservedIdentity carries what the account row said before it was blanked.
+
+
+```graphql
+accountErasure(
+  userId: BigInt!
+): AccountErasure
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>accountErasure.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The deleted account.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AccountErasure</b></code>](/reference/graphql/types/objects/account-erasure.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An account erasure: what deleting an account erases (its player-side content) and where that stands. Usage, billing, audit and legal records stay, and so does everything the account owns as a developer.

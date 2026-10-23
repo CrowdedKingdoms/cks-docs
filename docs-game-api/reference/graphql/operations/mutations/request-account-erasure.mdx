@@ -1,0 +1,39 @@
+---
+id: request-account-erasure
+title: requestAccountErasure
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR: erase the player-side content of a deleted account, as a deletion does: one deleted before account erasure existed (2026-10-23), or one whose erasure stopped after its retries (its attempts start again). Refused for an account that is not deleted. A legal hold defers it.
+
+
+```graphql
+requestAccountErasure(
+  userId: BigInt!
+): AccountErasure!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>requestAccountErasure.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The deleted account to erase.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AccountErasure</b></code>](/reference/graphql/types/objects/account-erasure.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An account erasure: what deleting an account erases (its player-side content) and where that stands. Usage, billing, audit and legal records stay, and so does everything the account owns as a developer.

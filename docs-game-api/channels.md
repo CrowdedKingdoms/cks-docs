@@ -191,9 +191,11 @@ mutation {
 
 - The payload is **opaque** to the server — encode whatever your app needs
   (chat text, a compact binary event, etc.).
-- The sender must be an active member holding `send_messages`; otherwise the
-  message is rejected (a `GenericErrorResponse` with `UNAUTHORIZED` is returned
-  on `udpNotifications`).
+- The sender must be an active member holding `send_messages`, and its access
+  tier for the channel's app must grant `use_text_chat` (every tier that grants
+  `access` does unless the app took it away; see
+  [Permissions](permissions)); otherwise the message is rejected (a
+  `GenericErrorResponse` with `UNAUTHORIZED` is returned on `udpNotifications`).
 - The sender does **not** receive an echo of its own message.
 
 Every other active member receives a `ChannelMessageNotification` on the shared
