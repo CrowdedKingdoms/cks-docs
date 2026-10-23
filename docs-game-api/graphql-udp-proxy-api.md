@@ -262,6 +262,16 @@ sendActorUpdate (seq=2, state) ──▶  UDP ACTOR_UPDATE_REQUEST ──▶
   must move themselves — see the [Replication API](/replication-api/operations).)
 - Error responses (e.g., invalid token, unknown app) arrive as
   `GenericErrorResponse` on the subscription.
+- **Send back the `cks_ga` cookie.** Your proxy session lives on one API server
+  behind the load balancer, so your subscription's WebSocket and your HTTP
+  `send*` mutations must reach the same server, or the error responses and
+  echoes for those sends never arrive on your subscription. The load balancer
+  sets a `cks_ga` cookie on its first response (`HttpOnly; Secure;
+  SameSite=None`) and routes every request that carries it to the same server:
+  return it on every HTTP request and on the WebSocket upgrade. CrowdyJS and
+  CrowdyPy do this for you, in the browser and in Node or Python. A browser sends
+  it on requests made with credentials included, where it accepts the cookie. A
+  client that sends no cookie is kept on one server by its IP address.
 - **A paused app is refused, and says so.** If an app's organization has no
   funds, reached a spend cap, or its subscription lapsed (see
   [Shared environment & billing](/management-api/shared-environment#what-access-denied-means)),
