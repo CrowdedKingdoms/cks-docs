@@ -27,6 +27,7 @@ input CreateAccessTierInput {
   isDefault: Boolean
   description: String
   permissionKeys: [String!]
+  applyCommunicationDefaults: Boolean
 }
 ```
 
@@ -59,6 +60,10 @@ Optional marketing description of the tier.
 
 #### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>permissionKeys</b></code>](#permission-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #permission-keys */} 
 Optional runtime permission keys to grant on this tier (must be valid runtimePermissions). Defaults to ["access"] when omitted.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CreateAccessTierInput.<b>applyCommunicationDefaults</b></code>](#apply-communication-defaults)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #apply-communication-defaults */} 
+When true (the default) and the tier grants access, it also grants use&#x005F;text&#x005F;chat and use&#x005F;direct&#x005F;messages, whether or not permissionKeys names them: without them the realtime servers refuse the tier’s text chat and direct messages. Pass false to grant exactly permissionKeys, for example a tier without text chat.
 
 
 

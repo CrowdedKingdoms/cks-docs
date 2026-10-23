@@ -42,7 +42,8 @@ To keep the common case effortless, a **new app is open by default**:
 
 - Creating an app provisions a **default tier** that grants the explicit legacy
   gameplay allowlist (`access`, `teleport`, `update_voxel_data`,
-  `use_voice_chat`).
+  `use_voice_chat`) and the two communication keys (`use_text_chat`,
+  `use_direct_messages`).
 - The app gets a **default grid that spans the whole world**, and any player you
   grant app access is automatically granted those same legacy keys on that
   grid.
@@ -51,6 +52,12 @@ The four code keys (`write_server_code`, `run_server_code`,
 `write_client_code`, `run_client_code`) are deliberately excluded. Adding new
 runtime keys does not widen the default tier/grid automatically; server/client
 code remains opt-in.
+
+The communication keys are the one exception: any tier that grants `access` also
+grants `use_text_chat` and `use_direct_messages`, whether or not its
+`permissionKeys` name them, unless you create or update it with
+`applyCommunicationDefaults: false`. Pass `false` to take text chat or direct
+messages away from a tier. Both keys are app-level only: grids never carry them.
 
 :::caution[Editing a tier does not reach players who already joined]
 The automatic grid grant above happens **once, when the player is first given app
@@ -93,6 +100,8 @@ Grid and tier permissions use these runtime keys:
 | `teleport` | Teleporting within the app (wire enforcement may depend on the client path) |
 | `update_voxel_data` | Editing voxels (building) |
 | `use_voice_chat` | Voice audio |
+| `use_text_chat` | Nearby text (`sendTextPacket`, opcode 136) and channel messages (`sendChannelMessage`, `sendRangedChannelMessage`; opcodes 17 and 32). In every tier that grants `access` unless you pass `applyCommunicationDefaults: false`. Bit index **10**; app-level only (`appliesToGrid` false). |
+| `use_direct_messages` | Messages to one player (`sendSingleActorMessage`, opcode 142). In every tier that grants `access` unless you pass `applyCommunicationDefaults: false`. Bit index **11**; app-level only. |
 | `use_video_chat` | Webcam video (`sendVideoPacket` / wire opcode 143). **Opt-in:** not in a new app's default tier, because every receiver in range pays the egress for every frame — grant it on a tier deliberately. Bit index **9**; `appliesToApp` and `appliesToGrid` both true. |
 | `write_server_code` | Authoring/deploying server code in owned grids |
 | `run_server_code` | Running admitted server code in owned grids |
@@ -151,8 +160,10 @@ The realtime layer (the Buddy replication servers) checks permissions on **every
 spatial message — this is always on. A message is accepted only if the sender has
 active app access whose tier holds the needed key **and** the target chunk is
 inside a grid where the sender holds that key. A player without `access` to a
-region can't act there, building requires `update_voxel_data`, and voice requires
-`use_voice_chat`; anything else is rejected with `UNAUTHORIZED`. Building is
+region can't act there, building requires `update_voxel_data`, voice requires
+`use_voice_chat`, text and channel messages require `use_text_chat` on the app, and
+messages to one player require `use_direct_messages` on the app; anything else is
+rejected with `UNAUTHORIZED`. Building is
 checked against the chunk's **most specific** covering grid only (the smallest
 box; of equal boxes, the lowest `gridId`), and against the app's
 [wilderness](grids-and-permissions#wilderness) setting when that grid is the
