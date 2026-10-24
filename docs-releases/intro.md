@@ -37,6 +37,27 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-24 (dev: a session's first message is no longer lost; replication server v0.42.0, CrowdyJS 18.20.0, CrowdyCPP 0.72.0, CrowdyPy 0.20.0)
+
+- **The first message of a session, and the first into a new region, wait instead of
+  failing.** A message that reaches Buddy before your session is ready, or before the
+  permissions of a region you just entered have loaded, is held and processed once they
+  are, for up to about two seconds. Until now the first was dropped and the second refused
+  `UNAUTHORIZED`, so the first send after connecting, reconnecting or moving to another
+  server was lost and clients sent a warm-up message first. They no longer need to.
+  `UNAUTHORIZED` now means the permission is missing, or could not be confirmed in time.
+  See [Error codes](/overview/error-codes).
+- **The SDKs retry a session's first awaited send once.** Against an older replication
+  server, the first `*AndWait` / `*_and_wait` send of each session (the first connect, a
+  reconnect, or a move) is sent again, with a fresh sequence number, when it is refused
+  `UNAUTHORIZED` or, for actor and voxel updates, when its echo times out. Audio, text and
+  event sends succeed by timing out, so their timeout is never retried; in CrowdyJS a send
+  whose `sequenceNumber` you chose is not retried either.
+- **CrowdyJS times an awaited send's echo from when the send was accepted.** Opening the
+  proxy session or the binary relay on the first send no longer shortens the wait.
+  `client.realtime.expectSequence()` and `sessionEpoch()` are new; CrowdyCPP adds
+  `Connection::sessionEpoch()`.
+
 ## 2026-10-21 (every environment: org-managed players, behind the Org-Managed Players Addendum; Game API v2.53.0, CrowdyJS 18.17.0, CrowdyCPP 0.69.0, CrowdyPy 0.17.0)
 
 - **Org-managed players.** An organization that runs its own player accounts signs its
