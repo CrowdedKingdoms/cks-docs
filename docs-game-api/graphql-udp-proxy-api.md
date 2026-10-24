@@ -272,6 +272,14 @@ sendActorUpdate (seq=2, state) ──▶  UDP ACTOR_UPDATE_REQUEST ──▶
   CrowdyPy do this for you, in the browser and in Node or Python. A browser sends
   it on requests made with credentials included, where it accepts the cookie. A
   client that sends no cookie is kept on one server by its IP address.
+- **Move when your server drains.** Before an API server is updated or retired,
+  it sends a `RealtimeConnectionEvent` with `status: 'draining'` and
+  `code: 'SERVER_DRAINING'` on your subscription and answers your requests with
+  the `cks_ga` cookie expired (`Max-Age=0`). The server still works at that
+  moment: drop the cookie, then reconnect your subscription and send your next
+  request, so both land together on a server that is staying. A client that
+  keeps its own cookie jar must honour the expiry rather than send the old value
+  again. CrowdyJS, CrowdyCPP and CrowdyPy do all of this for you.
 - **A paused app is refused, and says so.** If an app's organization has no
   funds, reached a spend cap, or its subscription lapsed (see
   [Shared environment & billing](/management-api/shared-environment#what-access-denied-means)),
