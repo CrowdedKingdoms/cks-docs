@@ -244,7 +244,7 @@ Correlate to the request that caused it by `sequenceNumber`.
 | `UNKNOWN_ERROR` | Unspecified server error. | Retry; report if persistent. |
 | `INVALID_TOKEN` | The token is malformed, revoked, or not a valid app-scoped gameplay token. | Mint a fresh app-scoped token (`mintAppToken` / `exchangePortalCode`, or `refreshAppToken` for the same app); the identity session token is not valid here. |
 | `APP_NOT_FOUND` | No app matches the supplied `appId`. | Verify `appId`. |
-| `UNAUTHORIZED` | Missing the runtime/grid permission for this action. | May be **transient** on first entry to a new region while grid permissions load — retry shortly; otherwise obtain the permission. |
+| `UNAUTHORIZED` | Missing the runtime/grid permission for this action. | From replication server v0.42.0 a first message into a new region waits for its permissions instead of being refused, so this means the permission is missing, or could not be confirmed within about two seconds: retry once, then obtain the permission. Older servers could send it transiently on first entry to a region. |
 | `GAME_TOKEN_WRONG_SIZE` | The token is not the expected length. | Send the exact 64-character **app-scoped** token from `mintAppToken` / `exchangePortalCode` (no trimming/re-encoding). |
 | `INVALID_REQUEST` | The message was malformed or failed validation. | Check the message shape / arguments. |
 | `INVALID_APP_ID` | `appId` was missing, zero, or invalid — **or** the token is not scoped to the packet's app (app-scoped token confinement). | Supply a valid `appId`, and use the token minted for that app. |

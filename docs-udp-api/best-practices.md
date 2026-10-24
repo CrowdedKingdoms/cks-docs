@@ -39,8 +39,12 @@ Full sequence: [Authenticate and assign](/replication-api/authenticate-and-assig
   target chunk.
 - A failed HMAC or bad token can be **dropped with no NAK**. Do not treat
   silence as ordinary packet loss.
-- `UNAUTHORIZED` (code 7) on a brand-new chunk can be transient while
-  permissions load; retry for several seconds before re-assigning.
+- `UNAUTHORIZED` (code 7) means the permission is missing. From replication
+  server v0.42.0 the first message into a brand-new chunk waits for the chunk's
+  permissions to load instead of being refused, so a refusal there is real
+  unless they could not be loaded within about two seconds: retry once, then
+  treat the permission as missing. Older servers refused that first message
+  while the permissions loaded.
 
 ## Gameplay authority
 
