@@ -166,6 +166,13 @@ request/confirm flows CrowdyCPP offers the same convenience CrowdyJS's
   you only when your actor is near the target chunk, so its echo is not an
   acknowledgment; only errors correlate. A clean timeout therefore means *accepted*.
 - `waitForSequence` — the low-level primitive: wait on any sequence + uuid.
+- The first awaited send of a session (the first connect and each reassignment;
+  `Connection::sessionEpoch()` counts them) is retried once with a fresh
+  sequence when it is refused `Unauthorized` or, for actor and voxel updates,
+  when its echo times out: how a replication server older than v0.42.0 answers
+  a session's first message. A text send's clean timeout is its success and is
+  never retried (CrowdyCPP 0.72.0). From v0.42.0 the server holds that first
+  message until the session is ready, so the retry does not fire.
 
 `sendVideoFrame` returns the number of fragments sent; like audio, its echo
 reaches you only when your actor is near the chunk, so only a correlated
