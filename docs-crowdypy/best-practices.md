@@ -16,9 +16,11 @@ title: Best practices
 - **One game client per app.** Point it at the minted `game_api_url` with
   `discovery_url` set, and let `refresh_gameplay_token()` keep its token
   current. The UDP connection keeps its server across a refresh.
-- **Warm up the first chunk.** Right after connecting, the server may refuse
-  spatial sends until it has loaded your grid permissions. Send an actor update
-  and wait for its echo before you rely on sends being accepted.
+- **No warm-up send.** The replication server (v0.42.0 and later) holds your
+  first message until your session and the chunk's permissions are ready, and
+  `*_and_wait` retries a session's first awaited send once against an older
+  server (CrowdyPy 0.20.0). A plain send right after connecting can still be
+  lost on an older server.
 - **Use the World Stores for game state.** `session.tick()` applies everything
   natively and never waits on the network. Run it from your loop with
   `session.run()` or your own scheduler.

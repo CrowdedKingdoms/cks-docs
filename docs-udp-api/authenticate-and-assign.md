@@ -140,8 +140,12 @@ datagram you send afterward is **silently dropped with no reply**.
 
 :::
 
-If your first spatial messages are dropped, confirm the query returned without
-`errors`, call `serverWithLeastClients` again, and wait before retrying UDP.
+From replication server v0.42.0, Buddy holds a datagram that arrives before your
+session is installed and processes it once the session is ready, for up to about two
+seconds, so you can send as soon as the query returns. If your first spatial
+messages are still dropped, the session was never installed: confirm the query
+returned without `errors`, call `serverWithLeastClients` again, and wait before
+retrying UDP.
 
 ### Choosing an address
 
