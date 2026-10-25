@@ -173,6 +173,12 @@ request/confirm flows CrowdyCPP offers the same convenience CrowdyJS's
   a session's first message. A text send's clean timeout is its success and is
   never retried (CrowdyCPP 0.72.0). From v0.42.0 the server holds that first
   message until the session is ready, so the retry does not fire.
+- An actor or voxel update still waiting for its echo when the connection is
+  reassigned is resent once, with a fresh sequence, as soon as the new session
+  is connected, rather than at its timeout: its echo went to the session the
+  connection left. That is the send's one retry; text is never resent
+  (CrowdyCPP 0.73.0). `WaitOutcome::sessionChanged` is set when the wait ended
+  that way and the resend could not be sent.
 
 `sendVideoFrame` returns the number of fragments sent; like audio, its echo
 reaches you only when your actor is near the chunk, so only a correlated
