@@ -20,7 +20,9 @@ title: Best practices
   first message until your session and the chunk's permissions are ready, and
   `*_and_wait` retries a session's first awaited send once against an older
   server (CrowdyPy 0.20.0). A plain send right after connecting can still be
-  lost on an older server.
+  lost on an older server. An awaited actor or voxel update still waiting when
+  the connection is reassigned is resent as soon as the new session is
+  connected, rather than at its timeout (CrowdyPy 0.21.0).
 - **Use the World Stores for game state.** `session.tick()` applies everything
   natively and never waits on the network. Run it from your loop with
   `session.run()` or your own scheduler.
