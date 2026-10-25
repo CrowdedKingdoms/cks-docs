@@ -279,7 +279,11 @@ sendActorUpdate (seq=2, state) ──▶  UDP ACTOR_UPDATE_REQUEST ──▶
   moment: drop the cookie, then reconnect your subscription and send your next
   request, so both land together on a server that is staying. A client that
   keeps its own cookie jar must honour the expiry rather than send the old value
-  again. CrowdyJS, CrowdyCPP and CrowdyPy do all of this for you.
+  again. CrowdyJS, CrowdyCPP and CrowdyPy do all of this for you. Your first send
+  after the move starts a new session on the new server, which holds it until the
+  session is ready (replication server v0.42.0), and the SDKs retry the first
+  awaited send of a session once against an older server, so nothing is lost
+  across the move.
 - **A paused app is refused, and says so.** If an app's organization has no
   funds, reached a spend cap, or its subscription lapsed (see
   [Shared environment & billing](/management-api/shared-environment#what-access-denied-means)),

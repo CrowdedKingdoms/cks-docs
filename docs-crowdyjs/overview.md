@@ -482,7 +482,7 @@ const response = await client.udp.sendActorUpdateAndWait({
 console.log(response.__typename, response.sequenceNumber);
 ```
 
-The `AndWait` variants allocate a `sequenceNumber` when missing and wait for a matching notification or `GenericErrorResponse`.
+The `AndWait` variants allocate a `sequenceNumber` when missing and wait for a matching notification or `GenericErrorResponse`, timing the wait from when the send was accepted. The first awaited send of each session (the first connect, a reconnect, or a move to another server) is retried once with a fresh `sequenceNumber` if it is refused `UNAUTHORIZED` or, for actor and voxel updates, times out: how a replication server older than v0.42.0 answers a session's first message. A send whose `sequenceNumber` you chose is not retried, and neither is the timeout of an audio, text or event send, which is how those succeed (CrowdyJS 18.20.0).
 
 To message a single actor directly (delivered only to that actor, not broadcast), use `sendSingleActorMessage`. It is fire-and-forget -- the sender gets no echo, so there is no `AndWait` variant:
 
