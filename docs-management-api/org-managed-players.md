@@ -112,7 +112,10 @@ CrowdyCPP: `client.portal().adoptAppToken(response)`. CrowdyPy:
 
 `externalId` should be your own stable account id, not an email address: 1 to 256 characters,
 no control characters. `gamertag` (at most 64 characters) is set when the player is created;
-rename it later with `updateManagedPlayer`.
+rename it later with `updateManagedPlayer`. A gamertag or disambiguation may not contain
+control, line-break or bidirectional-formatting characters (such as U+202E, the right-to-left
+override), because other players see them; letters in any script and emoji are fine. The same
+rule holds for every account's gamertag, not only managed players'.
 
 ## Option 2: a signed assertion
 
