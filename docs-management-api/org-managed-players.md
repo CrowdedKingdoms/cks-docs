@@ -330,5 +330,6 @@ sign-ins of new players answer `MANAGED_PLAYER_LIMIT`.
 | `MANAGED_PLAYER_NOT_ALLOWED` | A managed player asked for a wallet, or for mods where your organization has not switched them on. |
 | `ACCOUNT_BLOCKED` | The player is disabled. |
 | `LEGAL_HOLD` | A legal hold covers your organization or the player, so `deleteManagedPlayer` is refused (409). Disable the player instead. |
+| `TIER_ACCESS_REQUIRED` | Only on `dev` and `test`, Crowded Kingdoms' internal environments: none of your organization's members may use that environment. A managed player's own requests there also answer it while your organization's managed players are switched off. Production never returns it. |
 
 See [Error codes](/overview/error-codes) for every code.

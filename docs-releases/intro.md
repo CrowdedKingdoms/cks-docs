@@ -37,6 +37,17 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-25 (dev and test: an org token of a switched-off organization; Game API v2.57.1)
+
+- **A switched-off organization is told so on dev and test.** An org token whose
+  organization's managed players are switched off was refused `TIER_ACCESS_REQUIRED` there,
+  which read as a missing grant. It now gets what production always answered: sign-ins and
+  `provisionManagedPlayers` are refused `FORBIDDEN` ("not enabled", which an operator
+  changes), and reading, renaming, signing out and deleting your players work. On those
+  environments `TIER_ACCESS_REQUIRED` now means only that none of your organization's members
+  may use the environment. Production is unchanged. See
+  [Org-managed players](/management-api/org-managed-players#errors).
+
 ## 2026-10-25 (dev: names other players see, and a send in flight during a move; Game API v2.57.0, CrowdyJS 18.21.0, CrowdyCPP 0.73.0, CrowdyPy 0.21.0)
 
 - **Gamertags and disambiguations refuse layout-changing characters.** `updateGamertag`,
