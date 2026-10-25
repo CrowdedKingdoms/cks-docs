@@ -40,11 +40,11 @@ input UpdateManagedPlayerInput {
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateManagedPlayerInput.<b>gamertag</b></code>](#gamertag)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #gamertag */} 
-New display name.
+New display name (at most 64 characters, none of them control, line-break or bidirectional-formatting characters).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateManagedPlayerInput.<b>disambiguation</b></code>](#disambiguation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #disambiguation */} 
-New disambiguation (at most 128 characters).
+New disambiguation (at most 128 characters, the same characters refused as in the display name).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateManagedPlayerInput.<b>disabled</b></code>](#disabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #disabled */} 

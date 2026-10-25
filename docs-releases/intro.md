@@ -37,6 +37,22 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-25 (dev: names other players see, and a send in flight during a move; Game API v2.57.0, CrowdyJS 18.21.0, CrowdyCPP 0.73.0, CrowdyPy 0.21.0)
+
+- **Gamertags and disambiguations refuse layout-changing characters.** `updateGamertag`,
+  `register`, the org-managed player inputs and a managed assertion's `gamertag` claim
+  refuse a name with a control character (a newline or a tab, for example), the line or
+  paragraph separator, or a bidirectional formatting character such as U+202E, the
+  right-to-left override. Other players see the name, and those characters change how the
+  text around it is laid out. Letters in any script and emoji are fine. `register` also
+  refuses a gamertag longer than 64 characters, as `updateGamertag` always did. The refusal
+  is a `BAD_REQUEST` naming the field.
+- **An awaited send in flight during a move is resent at once.** An actor or voxel update
+  still waiting for its echo when the client reconnects or moves to another server is
+  resent, with a fresh sequence number, as soon as the new session is up, instead of after
+  its timeout. That is still the send's one retry; audio, text and event sends are never
+  resent.
+
 ## 2026-10-24 (dev: a session's first message is no longer lost; replication server v0.42.0, CrowdyJS 18.20.0, CrowdyCPP 0.72.0, CrowdyPy 0.20.0)
 
 - **The first message of a session, and the first into a new region, wait instead of
