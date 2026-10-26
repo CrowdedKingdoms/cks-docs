@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-16T18:01:58Z",
-  "sdk_version": "2.20.0",
+  "generated_from": "2026-10-26T18:47:52Z",
+  "sdk_version": "2.21.0",
   "table": "structs",
   "columns": [
     {
@@ -181,6 +181,16 @@
       "allowlist": ""
     },
     {
+      "id": "FCrowdyKitActorState",
+      "name": "FCrowdyKitActorState",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "FCrowdyKitActorState.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "FCrowdySelectIDAsHost",
       "name": "FCrowdySelectIDAsHost",
       "display_name": "",
@@ -189,6 +199,16 @@
       "page": "",
       "editor": false,
       "allowlist": "internal"
+    },
+    {
+      "id": "FCrowdySendRefusal",
+      "name": "FCrowdySendRefusal",
+      "display_name": "",
+      "module": "CrowdyNet",
+      "header": "CrowdyCppReplicationSubsystem.h",
+      "page": "runtime/connection-and-reconnect",
+      "editor": false,
+      "allowlist": ""
     },
     {
       "id": "FCrowdyTeam",
@@ -461,6 +481,16 @@
       "allowlist": ""
     },
     {
+      "id": "FCrowdyKitGroup",
+      "name": "FCrowdyKitGroup",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyKitSocial.h",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "FCrowdyLegalDocument",
       "name": "FCrowdyLegalDocument",
       "display_name": "",
@@ -719,6 +749,1616 @@
       "page": "",
       "editor": false,
       "allowlist": "internal"
+    },
+    {
+      "id": "FCrowdyKitAcceptTradeReply",
+      "name": "FCrowdyKitAcceptTradeReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitAchievement",
+      "name": "FCrowdyKitAchievement",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitAchievementDef",
+      "name": "FCrowdyKitAchievementDef",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitAdoptInputs",
+      "name": "FCrowdyKitAdoptInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitAdoptReply",
+      "name": "FCrowdyKitAdoptReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitAreaMember",
+      "name": "FCrowdyKitAreaMember",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitAreaMembers",
+      "name": "FCrowdyKitAreaMembers",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitAreaState",
+      "name": "FCrowdyKitAreaState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitArenaBlast",
+      "name": "FCrowdyKitArenaBlast",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitArenaCastInputs",
+      "name": "FCrowdyKitArenaCastInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitArenaCastReply",
+      "name": "FCrowdyKitArenaCastReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitArenaEvent",
+      "name": "FCrowdyKitArenaEvent",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitArenaFighter",
+      "name": "FCrowdyKitArenaFighter",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitArenaJoinInputs",
+      "name": "FCrowdyKitArenaJoinInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitArenaMoveInputs",
+      "name": "FCrowdyKitArenaMoveInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitArenaShot",
+      "name": "FCrowdyKitArenaShot",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitArenaState",
+      "name": "FCrowdyKitArenaState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitAttackInputs",
+      "name": "FCrowdyKitAttackInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitAttackReply",
+      "name": "FCrowdyKitAttackReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBall",
+      "name": "FCrowdyKitBall",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBallEvent",
+      "name": "FCrowdyKitBallEvent",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBallJoinInputs",
+      "name": "FCrowdyKitBallJoinInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBallPassInputs",
+      "name": "FCrowdyKitBallPassInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBallPlayer",
+      "name": "FCrowdyKitBallPlayer",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBallState",
+      "name": "FCrowdyKitBallState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBoardAroundInputs",
+      "name": "FCrowdyKitBoardAroundInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBoardConfig",
+      "name": "FCrowdyKitBoardConfig",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBoardPageInputs",
+      "name": "FCrowdyKitBoardPageInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBoardPlace",
+      "name": "FCrowdyKitBoardPlace",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBoardPlaces",
+      "name": "FCrowdyKitBoardPlaces",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBoardRollReply",
+      "name": "FCrowdyKitBoardRollReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBoardSeason",
+      "name": "FCrowdyKitBoardSeason",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBoardSubmitInputs",
+      "name": "FCrowdyKitBoardSubmitInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBoardSubmitReply",
+      "name": "FCrowdyKitBoardSubmitReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBoardView",
+      "name": "FCrowdyKitBoardView",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBook",
+      "name": "FCrowdyKitBook",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBookInputs",
+      "name": "FCrowdyKitBookInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitBundle",
+      "name": "FCrowdyKitBundle",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitCancelEventInputs",
+      "name": "FCrowdyKitCancelEventInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitCancelEventReply",
+      "name": "FCrowdyKitCancelEventReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitCancelOrderInputs",
+      "name": "FCrowdyKitCancelOrderInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitCard",
+      "name": "FCrowdyKitCard",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitCraftInputs",
+      "name": "FCrowdyKitCraftInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitCraftReply",
+      "name": "FCrowdyKitCraftReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDeckHand",
+      "name": "FCrowdyKitDeckHand",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDeckPlayed",
+      "name": "FCrowdyKitDeckPlayed",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDeckPlayInputs",
+      "name": "FCrowdyKitDeckPlayInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDeckPlayReply",
+      "name": "FCrowdyKitDeckPlayReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDeckState",
+      "name": "FCrowdyKitDeckState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDepositInputs",
+      "name": "FCrowdyKitDepositInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDirectorBuildInputs",
+      "name": "FCrowdyKitDirectorBuildInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDirectorBuildReply",
+      "name": "FCrowdyKitDirectorBuildReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDirectorEnemy",
+      "name": "FCrowdyKitDirectorEnemy",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDirectorEvent",
+      "name": "FCrowdyKitDirectorEvent",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDirectorHitInputs",
+      "name": "FCrowdyKitDirectorHitInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDirectorHitReply",
+      "name": "FCrowdyKitDirectorHitReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDirectorState",
+      "name": "FCrowdyKitDirectorState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDirectorTower",
+      "name": "FCrowdyKitDirectorTower",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitDiscardInputs",
+      "name": "FCrowdyKitDiscardInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitEarned",
+      "name": "FCrowdyKitEarned",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitGrantInputs",
+      "name": "FCrowdyKitGrantInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitGridCell",
+      "name": "FCrowdyKitGridCell",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitGroundPosition",
+      "name": "FCrowdyKitGroundPosition",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitHarvestInputs",
+      "name": "FCrowdyKitHarvestInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitHarvestReply",
+      "name": "FCrowdyKitHarvestReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitInstanceDescendReply",
+      "name": "FCrowdyKitInstanceDescendReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitInstanceEnterReply",
+      "name": "FCrowdyKitInstanceEnterReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitInstanceInviteInputs",
+      "name": "FCrowdyKitInstanceInviteInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitInstanceMember",
+      "name": "FCrowdyKitInstanceMember",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitInstanceOpenInputs",
+      "name": "FCrowdyKitInstanceOpenInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitInstanceOpenReply",
+      "name": "FCrowdyKitInstanceOpenReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitInstanceRoom",
+      "name": "FCrowdyKitInstanceRoom",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitInstanceState",
+      "name": "FCrowdyKitInstanceState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitInventory",
+      "name": "FCrowdyKitInventory",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitItemDef",
+      "name": "FCrowdyKitItemDef",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitLootEntry",
+      "name": "FCrowdyKitLootEntry",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitLootRoll",
+      "name": "FCrowdyKitLootRoll",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitLootTable",
+      "name": "FCrowdyKitLootTable",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitMarketState",
+      "name": "FCrowdyKitMarketState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitMatchJoinInputs",
+      "name": "FCrowdyKitMatchJoinInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitMatchmakerConfig",
+      "name": "FCrowdyKitMatchmakerConfig",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitMatchPlace",
+      "name": "FCrowdyKitMatchPlace",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitMatchProgress",
+      "name": "FCrowdyKitMatchProgress",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitMatch.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitMinigameJoinReply",
+      "name": "FCrowdyKitMinigameJoinReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitMinigameReveal",
+      "name": "FCrowdyKitMinigameReveal",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitMinigameSeat",
+      "name": "FCrowdyKitMinigameSeat",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitMinigameState",
+      "name": "FCrowdyKitMinigameState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitMinigameThrowInputs",
+      "name": "FCrowdyKitMinigameThrowInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitMinigameThrowReply",
+      "name": "FCrowdyKitMinigameThrowReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitObjective",
+      "name": "FCrowdyKitObjective",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitOpenLootInputs",
+      "name": "FCrowdyKitOpenLootInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitOpenLootReply",
+      "name": "FCrowdyKitOpenLootReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitOpenTradeInputs",
+      "name": "FCrowdyKitOpenTradeInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitOrder",
+      "name": "FCrowdyKitOrder",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitOrderInputs",
+      "name": "FCrowdyKitOrderInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitOrders",
+      "name": "FCrowdyKitOrders",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitOwnerValue",
+      "name": "FCrowdyKitOwnerValue",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectDefinition.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitPetInputs",
+      "name": "FCrowdyKitPetInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitPlacedOrder",
+      "name": "FCrowdyKitPlacedOrder",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitPlayerMe",
+      "name": "FCrowdyKitPlayerMe",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitPlayerProfile",
+      "name": "FCrowdyKitPlayerProfile",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitPlayerRules",
+      "name": "FCrowdyKitPlayerRules",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitPlayerState",
+      "name": "FCrowdyKitPlayerState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitPriceLevel",
+      "name": "FCrowdyKitPriceLevel",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitProducer",
+      "name": "FCrowdyKitProducer",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitProduction",
+      "name": "FCrowdyKitProduction",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitProgress",
+      "name": "FCrowdyKitProgress",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitQuest",
+      "name": "FCrowdyKitQuest",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitQuestDef",
+      "name": "FCrowdyKitQuestDef",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitQuestInputs",
+      "name": "FCrowdyKitQuestInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitQueueCounts",
+      "name": "FCrowdyKitQueueCounts",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitQuote",
+      "name": "FCrowdyKitQuote",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitRaceEvent",
+      "name": "FCrowdyKitRaceEvent",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitRaceGate",
+      "name": "FCrowdyKitRaceGate",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitRaceGhost",
+      "name": "FCrowdyKitRaceGhost",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitRaceGhostFrame",
+      "name": "FCrowdyKitRaceGhostFrame",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitRacer",
+      "name": "FCrowdyKitRacer",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitRaceResult",
+      "name": "FCrowdyKitRaceResult",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitRaceState",
+      "name": "FCrowdyKitRaceState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitRecipe",
+      "name": "FCrowdyKitRecipe",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitRecordInputs",
+      "name": "FCrowdyKitRecordInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitRenamePetInputs",
+      "name": "FCrowdyKitRenamePetInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitSessionActInputs",
+      "name": "FCrowdyKitSessionActInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitSessionActReply",
+      "name": "FCrowdyKitSessionActReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitSessionConfig",
+      "name": "FCrowdyKitSessionConfig",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitSessionMove",
+      "name": "FCrowdyKitSessionMove",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitSessionReadyInputs",
+      "name": "FCrowdyKitSessionReadyInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitSessionReadyReply",
+      "name": "FCrowdyKitSessionReadyReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitSessionState",
+      "name": "FCrowdyKitSessionState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitShopInputs",
+      "name": "FCrowdyKitShopInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitStack",
+      "name": "FCrowdyKitStack",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitStepInputs",
+      "name": "FCrowdyKitStepInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTacticsAttackInputs",
+      "name": "FCrowdyKitTacticsAttackInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTacticsAttackReply",
+      "name": "FCrowdyKitTacticsAttackReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTacticsMoveInputs",
+      "name": "FCrowdyKitTacticsMoveInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTacticsState",
+      "name": "FCrowdyKitTacticsState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTacticsStats",
+      "name": "FCrowdyKitTacticsStats",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTacticsUnit",
+      "name": "FCrowdyKitTacticsUnit",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTalkInputs",
+      "name": "FCrowdyKitTalkInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTerritoryEvent",
+      "name": "FCrowdyKitTerritoryEvent",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTerritoryJoinInputs",
+      "name": "FCrowdyKitTerritoryJoinInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTerritoryPoint",
+      "name": "FCrowdyKitTerritoryPoint",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTerritoryState",
+      "name": "FCrowdyKitTerritoryState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTrade",
+      "name": "FCrowdyKitTrade",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTradeInputs",
+      "name": "FCrowdyKitTradeInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTradeOfferInputs",
+      "name": "FCrowdyKitTradeOfferInputs",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTradeReply",
+      "name": "FCrowdyKitTradeReply",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTrades",
+      "name": "FCrowdyKitTrades",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitTradeSide",
+      "name": "FCrowdyKitTradeSide",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitVendor",
+      "name": "FCrowdyKitVendor",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitVendorOffer",
+      "name": "FCrowdyKitVendorOffer",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitVendors",
+      "name": "FCrowdyKitVendors",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitWallet",
+      "name": "FCrowdyKitWallet",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitWorldConditions",
+      "name": "FCrowdyKitWorldConditions",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitWorldEvent",
+      "name": "FCrowdyKitWorldEvent",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitWorldNode",
+      "name": "FCrowdyKitWorldNode",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitWorldView",
+      "name": "FCrowdyKitWorldView",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitZoneCenter",
+      "name": "FCrowdyKitZoneCenter",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitZoneEvent",
+      "name": "FCrowdyKitZoneEvent",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitZonePlayer",
+      "name": "FCrowdyKitZonePlayer",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyKitZoneState",
+      "name": "FCrowdyKitZoneState",
+      "display_name": "",
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
     },
     {
       "id": "FCrowdyPlayersOnlineState",

@@ -66,6 +66,8 @@ In Cards view, each class is an expandable card with an **RPC FUNCTIONS** sectio
 
 In Table view the same data is one flat table: type, name, routing or notify, flags, id.
 
+To read the baked registry from the console instead, type `crowdy.registry.dump` in a non-shipping build. It logs every entry the cook baked in, one line each: the structs and their layout hashes, the CrowdyState properties, and the CrowdyEvent functions, with their ids. See [Console variables and commands](../reference/console-cvars.md).
+
 ### When to press Rebuild
 
 - After you add or change a `CrowdyEvent` receiver, or its recipient, channel, or other routing key.

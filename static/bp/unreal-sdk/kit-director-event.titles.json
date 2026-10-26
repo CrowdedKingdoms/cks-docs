@@ -1,0 +1,44 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event BeginPlay",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_ServerMessageReceived_0",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_ServerMessageReceived",
+		"title": "On EncounterEvent Received (CSO_Kit_Director)",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_IfThenElse_0",
+		"class": "/Script/BlueprintGraph.K2Node_IfThenElse",
+		"title": "Branch",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_SwitchEnum_0",
+		"class": "/Script/BlueprintGraph.K2Node_SwitchEnum",
+		"title": "Switch on ECrowdyKitDirectorEventType",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "+",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_1",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Print String",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_2",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "•",
+		"title_drawn": true
+	}
+]

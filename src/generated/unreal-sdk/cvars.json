@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-16T18:01:58Z",
-  "sdk_version": "2.20.0",
+  "generated_from": "2026-10-26T18:47:52Z",
+  "sdk_version": "2.21.0",
   "table": "cvars",
   "columns": [
     {
@@ -245,6 +245,50 @@
       "allowlist": ""
     },
     {
+      "id": "crowdy.kit.emotes.burst",
+      "name": "crowdy.kit.emotes.burst",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "How many inbound emotes may arrive at once before the per-second budget applies (default 16).",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.kit.emotes.maxpersecond",
+      "name": "crowdy.kit.emotes.maxpersecond",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "How many inbound emotes per second are read, shared by every sender (default 64). Emotes over the budget are dropped before they are parsed.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.kit.emotes.persender.burst",
+      "name": "crowdy.kit.emotes.persender.burst",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "How many inbound emotes one sender may send at once before its per-second budget applies (default 4).",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.kit.emotes.persender.maxpersecond",
+      "name": "crowdy.kit.emotes.persender.maxpersecond",
+      "kind": "variable",
+      "role": "behaviour",
+      "trace": false,
+      "help": "How many inbound emotes per second are read from one sender (default 4). The shared budget still caps all senders together.",
+      "module": "CrowdyReplication",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "crowdy.mass.anim.dump",
       "name": "crowdy.mass.anim.dump",
       "kind": "variable",
@@ -404,7 +448,7 @@
       "kind": "variable",
       "role": "behaviour",
       "trace": false,
-      "help": "Sends an SDK query again, up to 3 times with backoff, when the platform refuses it and says to retry (blame PLATFORM, retryable). 0 hands every refusal straight to the caller.",
+      "help": "Sends an SDK query, a password sign-in or an app-token mint or refresh again, up to 3 times with backoff, when the platform refuses it and says to retry (blame PLATFORM, retryable). 0 hands every refusal straight to the caller.",
       "module": "CrowdyCppBridge",
       "editor": false,
       "allowlist": ""
@@ -482,6 +526,39 @@
       "role": "command",
       "trace": false,
       "help": "Shows the consent prompt over the game viewport without recording anything; Accept and Decline only close it.",
+      "module": "CrowdyServices",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.auth.signin.file",
+      "name": "crowdy.auth.signin.file",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Signs in with the password account in a JSON file, {\"email\": \"...\", \"password\": \"...\"}, for headless smoke tests. For test accounts and development builds only: the password sits in that file, so keep it out of source control. Never type a password as a console argument, which the console logs. Args: <path to the file>.",
+      "module": "CrowdyServices",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.auth.signout",
+      "name": "crowdy.auth.signout",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Signs the player out through the SDK's normal logout.",
+      "module": "CrowdyServices",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.auth.status",
+      "name": "crowdy.auth.status",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Prints whether this game instance is signed in, the user id, whether the app token is set and when it expires, and whether the app is paused. Never prints a token.",
       "module": "CrowdyServices",
       "editor": false,
       "allowlist": ""
@@ -648,6 +725,17 @@
       "trace": false,
       "help": "Prints the network router's subscription table: every payload key and opcode, with the struct behind it where one is registered, and every subscriber by role.",
       "module": "CrowdyNet",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "crowdy.registry.dump",
+      "name": "crowdy.registry.dump",
+      "kind": "command",
+      "role": "command",
+      "trace": false,
+      "help": "Logs every entry of the baked registry, one line each: persistent and singleton structs, layout hashes, CrowdyState properties and CrowdyEvent functions with their ids.",
+      "module": "CrowdyReplication",
       "editor": false,
       "allowlist": ""
     },

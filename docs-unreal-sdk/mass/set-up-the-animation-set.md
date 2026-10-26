@@ -182,6 +182,8 @@ CrowdyMassAnimSet DA_LanternPlayerAnims: Sync Actions Into Bank appended 4 slot(
 
 For `Wave` and `Cheer` that is two new slots each, four in all, and both rows moved. The button writes to the bank asset, so it runs only when you press it.
 
+The same function can be called from an editor Python script or a Blueprint editor utility, for a batch of sets or a build step. In Python it is `anim_set.sync_actions_into_bank()`, on the loaded set. It follows the same four rules and logs the same line. It refuses while a game or a Play in Editor world is running, so stop Play first.
+
 ## Gaits
 
 A gait is locomotion selected by speed. The animation pass smooths each row's 2D velocity into one speed and picks the gait whose band contains it. Selection is local to each observer. Nothing on the sending side changes, and no gait is ever replicated.

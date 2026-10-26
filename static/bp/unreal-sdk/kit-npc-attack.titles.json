@@ -1,0 +1,62 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event ActorOnClicked",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get CrowdyKitActor",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_VariableGet_1",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get KitActor",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_BreakStruct_0",
+		"class": "/Script/BlueprintGraph.K2Node_BreakStruct",
+		"title": "Break Crowdy Kit Actor State",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Get Server Object",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_CallServerFunction_0",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_CallServerFunction",
+		"title": "Call Attack (CSO_Kit_Npcs)",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_1",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Print String",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_2",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Print String",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_3",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "•",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_4",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "•",
+		"title_drawn": true
+	}
+]

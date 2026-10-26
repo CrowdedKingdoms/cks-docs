@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-16T18:01:58Z",
-  "sdk_version": "2.20.0",
+  "generated_from": "2026-10-26T18:47:52Z",
+  "sdk_version": "2.21.0",
   "table": "async-actions",
   "columns": [
     {
@@ -897,6 +897,244 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyKitSocial_AcceptIntoGuild",
+      "node": [
+        "Accept Into Guild"
+      ],
+      "factories": [
+        "AcceptIntoGuild"
+      ],
+      "class": "UCrowdyKitSocial_AcceptIntoGuild",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial_ClaimGuildTerritory",
+      "node": [
+        "Claim Guild Territory"
+      ],
+      "factories": [
+        "ClaimGuildTerritory"
+      ],
+      "class": "UCrowdyKitSocial_ClaimGuildTerritory",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial_CreateGuild",
+      "node": [
+        "Create Guild"
+      ],
+      "factories": [
+        "CreateGuild"
+      ],
+      "class": "UCrowdyKitSocial_CreateGuild",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial_CreateParty",
+      "node": [
+        "Create Party"
+      ],
+      "factories": [
+        "CreateParty"
+      ],
+      "class": "UCrowdyKitSocial_CreateParty",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial_FindGuild",
+      "node": [
+        "Find Guild"
+      ],
+      "factories": [
+        "FindGuild"
+      ],
+      "class": "UCrowdyKitSocial_FindGuild",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial_FindOrCreateChatRoom",
+      "node": [
+        "Find Or Create Chat Room"
+      ],
+      "factories": [
+        "FindOrCreateChatRoom"
+      ],
+      "class": "UCrowdyKitSocial_FindOrCreateChatRoom",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial_FindParty",
+      "node": [
+        "Find Party"
+      ],
+      "factories": [
+        "FindParty"
+      ],
+      "class": "UCrowdyKitSocial_FindParty",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial_GetGuildRoster",
+      "node": [
+        "Get Guild Roster"
+      ],
+      "factories": [
+        "GetGuildRoster"
+      ],
+      "class": "UCrowdyKitSocial_GetGuildRoster",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial_GetPartyMembers",
+      "node": [
+        "Get Party Members"
+      ],
+      "factories": [
+        "GetPartyMembers"
+      ],
+      "class": "UCrowdyKitSocial_GetPartyMembers",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial_InviteToParty",
+      "node": [
+        "Invite To Party"
+      ],
+      "factories": [
+        "InviteToParty"
+      ],
+      "class": "UCrowdyKitSocial_InviteToParty",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial_JoinGuild",
+      "node": [
+        "Join Guild"
+      ],
+      "factories": [
+        "JoinGuild"
+      ],
+      "class": "UCrowdyKitSocial_JoinGuild",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial_JoinParty",
+      "node": [
+        "Join Party"
+      ],
+      "factories": [
+        "JoinParty"
+      ],
+      "class": "UCrowdyKitSocial_JoinParty",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial_LeaveParty",
+      "node": [
+        "Leave Party"
+      ],
+      "factories": [
+        "LeaveParty"
+      ],
+      "class": "UCrowdyKitSocial_LeaveParty",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial_PromoteInGuild",
+      "node": [
+        "Promote In Guild"
+      ],
+      "factories": [
+        "PromoteInGuild"
+      ],
+      "class": "UCrowdyKitSocial_PromoteInGuild",
+      "pins": [],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocialGroupAction",
+      "node": [],
+      "factories": [],
+      "class": "UCrowdyKitSocialGroupAction",
+      "pins": [
+        "Completed",
+        "Failed"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocialMembersAction",
+      "node": [],
+      "factories": [],
+      "class": "UCrowdyKitSocialMembersAction",
+      "pins": [
+        "Completed",
+        "Failed"
+      ],
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyPlayers_GetPlayerName",
       "node": [
         "Get Player Name"
@@ -1343,6 +1581,26 @@
       ],
       "module": "CrowdyServices",
       "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyFindMatchAction",
+      "node": [
+        "Find Match"
+      ],
+      "factories": [
+        "FindMatch"
+      ],
+      "class": "UCrowdyFindMatchAction",
+      "pins": [
+        "Queued",
+        "Proposed",
+        "Matched",
+        "Failed"
+      ],
+      "module": "CrowdyExec",
+      "page": "",
       "editor": false,
       "allowlist": ""
     },
