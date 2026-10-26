@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-16T18:01:58Z",
-  "sdk_version": "2.20.0",
+  "generated_from": "2026-10-26T18:47:52Z",
+  "sdk_version": "2.21.0",
   "table": "subsystems",
   "columns": [
     {
@@ -66,7 +66,7 @@
       "base": "UGameInstanceSubsystem",
       "outer": "GameInstance",
       "module": "CrowdyNet",
-      "page": "",
+      "page": "runtime/connection-and-reconnect",
       "editor": false,
       "allowlist": "internal"
     },
@@ -181,6 +181,26 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyKitActorSubsystem",
+      "class": "UCrowdyKitActorSubsystem",
+      "base": "UWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyReplication",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitEmotes",
+      "class": "UCrowdyKitEmotes",
+      "base": "UWorldSubsystem",
+      "outer": "World",
+      "module": "CrowdyReplication",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyReplicatedGameInstanceSubsystem",
       "class": "UCrowdyReplicatedGameInstanceSubsystem",
       "base": "UGameInstanceSubsystem",
@@ -257,6 +277,16 @@
       "outer": "World",
       "module": "CrowdyServices",
       "page": "services/host-election",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocial",
+      "class": "UCrowdyKitSocial",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "page": "services/play-together",
       "editor": false,
       "allowlist": ""
     },

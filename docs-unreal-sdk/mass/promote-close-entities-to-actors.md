@@ -146,7 +146,7 @@ Select the `NearTier` component in the shell, or any Crowdy Mass Near Tier compo
 | **Action Blend in Seconds** | 0.1 | How long an action blends in. An action picked up already running gets no blend. |
 | **Action Blend Out Seconds** | 0.1 | How long an action blends out. |
 | **Drive Owner Transform** | on | Moves the near tier actor to the entity's transform every frame. Leave it on. |
-| **Apply Trace Collision** | on | Lets the entity's trace collision setting decide the actor's collision object type and channel responses, so a row and a near tier actor answer traces the same way. |
+| **Apply Trace Collision** | on | Lets the entity's trace collision setting decide the actor's collision object type and channel responses, so a row and a near tier actor answer traces the same way. The promoted shell takes that collision only on its character mesh and on components tagged `CrowdyTraceCollision`; a held weapon, a hat or other decoration is left as authored and cannot be hit. Tag a hand-made hit box with `CrowdyTraceCollision` to keep it hittable. |
 
 **Drive Owner Transform** is what keeps a near tier actor with its entity. Nothing else moves a near tier actor after it is placed, so turning it off leaves the actor standing where it was born while the entity walks away. Turn it off only for an actor that moves itself from somewhere else and wants only the animation inputs.
 

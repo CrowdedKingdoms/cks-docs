@@ -148,6 +148,7 @@ Assign a hit zone table once, and every Crowdy Mass trace fills **Hit Zone Name*
 ## Gotchas
 
 - **Nothing is traceable without the trace collision trait.** An entity with no trace collision never blocks a trace and never passes a filter. A config the SDK derives for you has it. A config you author yourself must include the **Crowdy Mass Trace Collision** trait, or the whole crowd stays untraceable and looks like a trace that is aimed wrong. The log names the fix once.
+- **A very long or malformed trace is slower, not wrong.** A trace whose sweep radius or end points are not finite or are out of range, or a straight trace longer than the grid's **Spatial Grid Max Ray Cells** (see [Turn Mass on for a map](../turn-mass-on-for-a-map.md)), is no longer answered partly from the grid. It tests every tracked entity, which costs more but finds far entities the grid used to miss.
 - **Targets exist in a play session only.** The Mass subsystem is created in Play In Editor and in a game, not in the editor world, and only when the map profile selects the **Crowdy Mass Rendering Backend**. On an actor pool map the trace and target nodes find nothing.
 
 ## Related

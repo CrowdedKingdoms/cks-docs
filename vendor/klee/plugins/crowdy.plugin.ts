@@ -11,6 +11,8 @@ import { ParsingNodeData } from "../src/parser/parsing-node-data";
 import { CallFunctionNodeParser } from "../src/parser/node-parsers/call-function-node.parser";
 import { CustomEventNodeParser } from "../src/parser/node-parsers/custom-event-node.parser";
 import { StructNodeParser } from "../src/parser/node-parsers/struct-node.parser";
+import { SwitchEnumNodeParser } from "../src/parser/node-parsers/switch-enum-node.parser";
+import { SwitchEnumNode } from "../src/data/nodes/switch-enum.node";
 import { CallFunctionNode } from "../src/data/nodes/call-function.node";
 import { StructNode } from "../src/data/nodes/struct.node";
 import { PinProperty } from "../src/data/pin/pin-property";
@@ -33,6 +35,7 @@ const ENGINE_FUNCTION_NAMES: { [memberName: string]: string } = {
     "BuildString_Int": "Build String (Integer)",
     "GetTransform": "Get Actor Transform",
     "RemoveFromParent": "Remove from Parent",
+    "EqualEqual_StrStr": "===",
 };
 
 // Engine functions whose display name differs by owning class, keyed "Class::Member" as the text names them.
@@ -250,6 +253,18 @@ class CrowdyBreakStructParser extends StructNodeParser {
     }
 }
 
+// Switch on <Enum>: the text gives the enum as /Script/CoreUObject.Enum'/Script/Module.EName', from which upstream reads
+// the class ("Switch on Enum"); the editor draws the enum's own name ("Switch on ECrowdyKitDirectorEventType").
+class CrowdySwitchEnumParser extends SwitchEnumNodeParser {
+    public parse(data: ParsingNodeData): NodeControl {
+        this.parseProperties(data);
+        const path = (data.node as SwitchEnumNode).enum || "";
+        data.node.title = `Switch on ${path.replace(/'$/, "").split(/[.']/).pop() || ""}`.trim();
+        data.node.backgroundColor = Constants.LIGHT_GREEN;
+        return new FoldableHeadedNodeControl(data.node, IconLibrary.SWITCH);
+    }
+}
+
 // Enum to String: a pure node with a full header (its sibling Enum to Name is the compact one).
 class CrowdyEnumToStringParser extends NodeParser {
     constructor() {
@@ -403,6 +418,7 @@ export const CrowdyPlugin: NodeParserPlugin = {
             "/Script/BlueprintGraph.K2Node_BreakStruct": () => new CrowdyBreakStructParser(),
             "/Script/BlueprintGraph.K2Node_GetEnumeratorNameAsString": () => new CrowdyEnumToStringParser(),
             "/Script/BlueprintGraph.K2Node_EnumEquality": () => new CrowdyEnumEqualityParser(),
+            "/Script/BlueprintGraph.K2Node_SwitchEnum": () => new CrowdySwitchEnumParser(),
             "/Script/CrowdyMassNodes.CrowdyK2Node_CallCrowdyEventOnEntity": () => new CrowdyEntityEventNodeParser("Call", false),
             "/Script/CrowdyMassNodes.CrowdyK2Node_ReceiveCrowdyEventOnEntity": () => new CrowdyEntityEventNodeParser("Receive", true),
             "/Script/CrowdyMassNodes.CrowdyK2Node_ReceiveServerValuesChangedOnEntity": () => new CrowdyReceiveServerValuesChangedParser(),

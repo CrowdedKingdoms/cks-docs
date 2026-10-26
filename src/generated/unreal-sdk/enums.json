@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-16T18:01:58Z",
-  "sdk_version": "2.20.0",
+  "generated_from": "2026-10-26T18:47:52Z",
+  "sdk_version": "2.21.0",
   "table": "enums",
   "columns": [
     {
@@ -474,6 +474,22 @@
       "allowlist": ""
     },
     {
+      "id": "ECrowdyKitChatResult",
+      "name": "ECrowdyKitChatResult",
+      "values": [
+        "Sent",
+        "EmptyText",
+        "TooLong",
+        "NoChannel",
+        "NotConnected"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyKitSocial.h",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "ECrowdyUILayer",
       "name": "ECrowdyUILayer",
       "values": [
@@ -645,6 +661,497 @@
       "allowlist": "internal"
     },
     {
+      "id": "ECrowdyKitAreaMemberType",
+      "name": "ECrowdyKitAreaMemberType",
+      "values": [
+        "Mob",
+        "Npc",
+        "Pet"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitArenaEventType",
+      "name": "ECrowdyKitArenaEventType",
+      "values": [
+        "Cast",
+        "Impact",
+        "Kill",
+        "Respawn",
+        "Violation",
+        "Removed",
+        "Finished"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitArenaPhase",
+      "name": "ECrowdyKitArenaPhase",
+      "values": [
+        "Waiting",
+        "Running",
+        "Finished"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitBallEventType",
+      "name": "ECrowdyKitBallEventType",
+      "values": [
+        "Claimed",
+        "Passed",
+        "Shot",
+        "Goal",
+        "Violation",
+        "Left",
+        "Removed",
+        "Finished"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitBallPhase",
+      "name": "ECrowdyKitBallPhase",
+      "values": [
+        "Lobby",
+        "Playing",
+        "Finished"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitBallTeam",
+      "name": "ECrowdyKitBallTeam",
+      "values": [
+        "Red",
+        "Blue"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitBoardKeep",
+      "name": "ECrowdyKitBoardKeep",
+      "values": [
+        "Best",
+        "Sum",
+        "Latest"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitBoardOrder",
+      "name": "ECrowdyKitBoardOrder",
+      "values": [
+        "High",
+        "Low"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitCardSuit",
+      "name": "ECrowdyKitCardSuit",
+      "values": [
+        "Spades",
+        "Hearts",
+        "Diamonds",
+        "Clubs"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitDeckAction",
+      "name": "ECrowdyKitDeckAction",
+      "values": [
+        "Play",
+        "Draw",
+        "Pass",
+        "Timeout"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitDeckPhase",
+      "name": "ECrowdyKitDeckPhase",
+      "values": [
+        "Lobby",
+        "Playing",
+        "Finished"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitDirectorEventType",
+      "name": "ECrowdyKitDirectorEventType",
+      "values": [
+        "WaveStarted",
+        "WaveCleared",
+        "BossPhase",
+        "Won",
+        "Lost"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitDirectorPhase",
+      "name": "ECrowdyKitDirectorPhase",
+      "values": [
+        "Lobby",
+        "Running",
+        "Won",
+        "Lost"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitInstancePhase",
+      "name": "ECrowdyKitInstancePhase",
+      "values": [
+        "Unopened",
+        "Running",
+        "Cleared",
+        "Wiped",
+        "Abandoned",
+        "Expired"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitInstanceRoomKind",
+      "name": "ECrowdyKitInstanceRoomKind",
+      "values": [
+        "Fight",
+        "Treasure",
+        "Rest",
+        "Boss"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitMatchStage",
+      "name": "ECrowdyKitMatchStage",
+      "values": [
+        "Queued",
+        "Proposed",
+        "Matched",
+        "Failed"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitMatch.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitMatchState",
+      "name": "ECrowdyKitMatchState",
+      "values": [
+        "Idle",
+        "Party",
+        "Queued",
+        "Proposed",
+        "Matched"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitMinigamePhase",
+      "name": "ECrowdyKitMinigamePhase",
+      "values": [
+        "Waiting",
+        "Playing",
+        "Finished"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitOrderSide",
+      "name": "ECrowdyKitOrderSide",
+      "values": [
+        "Buy",
+        "Sell"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitQuestState",
+      "name": "ECrowdyKitQuestState",
+      "values": [
+        "Locked",
+        "Available",
+        "Active",
+        "Complete",
+        "Done"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitRaceEventType",
+      "name": "ECrowdyKitRaceEventType",
+      "values": [
+        "Go",
+        "Timing",
+        "Violation",
+        "Retired",
+        "Finished"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitRacePhase",
+      "name": "ECrowdyKitRacePhase",
+      "values": [
+        "Lobby",
+        "Countdown",
+        "Racing",
+        "Finished"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitRaceStage",
+      "name": "ECrowdyKitRaceStage",
+      "values": [
+        "Started",
+        "Checkpoint",
+        "Lap",
+        "Finished"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitSessionPhase",
+      "name": "ECrowdyKitSessionPhase",
+      "values": [
+        "Lobby",
+        "Playing",
+        "Finished"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitTacticsPhase",
+      "name": "ECrowdyKitTacticsPhase",
+      "values": [
+        "Lobby",
+        "Players",
+        "Enemies",
+        "Won",
+        "Lost"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitTacticsTeam",
+      "name": "ECrowdyKitTacticsTeam",
+      "values": [
+        "Players",
+        "Enemies"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitTerritoryEventType",
+      "name": "ECrowdyKitTerritoryEventType",
+      "values": [
+        "Captured",
+        "Income",
+        "Won"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitTerritoryPhase",
+      "name": "ECrowdyKitTerritoryPhase",
+      "values": [
+        "Open",
+        "Won"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitTradeState",
+      "name": "ECrowdyKitTradeState",
+      "values": [
+        "Open",
+        "Settling",
+        "Done",
+        "Cancelled"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitWeather",
+      "name": "ECrowdyKitWeather",
+      "values": [
+        "Clear",
+        "Rain",
+        "Storm",
+        "Fog"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitZoneEventType",
+      "name": "ECrowdyKitZoneEventType",
+      "values": [
+        "Warning",
+        "Shrinking",
+        "Settled",
+        "Final",
+        "Eliminated",
+        "Won"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyKitZonePhase",
+      "name": "ECrowdyKitZonePhase",
+      "values": [
+        "Lobby",
+        "Running",
+        "Finished"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyGameKitTypes.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyPositionReport",
+      "name": "ECrowdyPositionReport",
+      "values": [
+        "PlayerPawn",
+        "ThisActor",
+        "Off"
+      ],
+      "module": "CrowdyExec",
+      "header": "CrowdyServerObjectComponent.h",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "ECrowdyServerCallOutcome",
       "name": "ECrowdyServerCallOutcome",
       "values": [
@@ -659,7 +1166,8 @@
         "BadRequest",
         "Canceled",
         "Paused",
-        "AccessEnded"
+        "AccessEnded",
+        "Refused"
       ],
       "module": "CrowdyExec",
       "header": "CrowdyServerObjectTypes.h",

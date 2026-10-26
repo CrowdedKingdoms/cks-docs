@@ -31,7 +31,7 @@ The folder is `Server/<Type Name>/` in your project, next to the `.uproject` fil
 
 | File | What it holds | Written |
 |---|---|---|
-| `Cargo.toml` | The crate's name, its two dependencies, `ckx-sdk` and `serde`, and the definition asset it was generated for. | Every time |
+| `Cargo.toml` | The crate's name, its two dependencies, `ckx-sdk` (pinned to `0.12.1`; it was `0.7.0`, so a crate generated earlier must be generated again before Deploy takes it) and `serde`, and the definition asset it was generated for. | Every time |
 | `src/types.rs` | A Rust struct for every struct the definition uses and a Rust enum for every enum, with the same fields and the same defaults as in Unreal. | Every time |
 | `src/lib.rs` | The glue between the platform and your code, and the `Functions` trait listing your Server Functions. | Every time |
 | `src/logic.rs` | Your code: what each Server Function does. | Once, only when it does not exist, and only when [Code Source](#use-your-own-logic-file) is Generated |

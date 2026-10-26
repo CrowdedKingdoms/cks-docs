@@ -4,6 +4,6 @@
   "link": {
     "type": "generated-index",
     "title": "Player Services",
-    "description": "Sign-in and account settings, player names, teams, avatars, voice, host election and the optional UI hooks."
+    "description": "Sign-in and account settings, player names, teams, playing together with parties, chat, emotes and spectating, avatars, voice, host election and the optional UI hooks."
   }
 }

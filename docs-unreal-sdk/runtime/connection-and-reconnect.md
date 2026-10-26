@@ -75,6 +75,14 @@ In the Game Instance Blueprint, from **Event Init**, a **Crowdy SDK Subsystem** 
 </TabItem>
 </Tabs>
 
+## When the server refuses a send
+
+A send leaves this client before the server judges it, so a refusal arrives later, on its own. **On Send Refused** on the realtime subsystem (`UCrowdyCppReplicationSubsystem::OnSendRefused`; in Blueprint, **Get Game Instance**, **Get Subsystem (Crowdy Cpp Replication Subsystem)**, **Bind Event to On Send Refused**) fires on the game thread for each one (an `FOnCrowdySendRefused`), with an `FCrowdySendRefusal`: the **Code** and **Code Name**, whether it was a channel message and its **Channel Id**, the **Message Type**, **What** was refused in words and a **Remedy**. The same line goes to the log as a Warning. C++ that reads the bridge's own send errors can turn one into the same struct with `UCrowdyCppReplicationSubsystem::DescribeSendRefusal(Error, OutRefusal)`, which returns false when the server's error names no send this client has on record.
+
+The usual one is **Unauthorized** for a permission the player's access tier does not grant. The permissions belong to each access tier of the app: `use_text_chat` for channel messages (party and guild chat, chat rooms, reliable CrowdyEvents such as Multicast events, and CrowdyState sent on a channel) and proximity text, and `use_direct_messages` for a message to one actor (an Owning Client or Host event, and CrowdyState only its owner reads); without them the server refuses every such send from that tier's players. The tiers an app had when these permissions arrived were given both; check a tier's permissions on the web console when its players' sends are refused. A refused channel message can also mean the player is not a member with the send messages permission, and the remedy says both.
+
+The server names a refused send only by a one-byte sequence number, so on a busy connection a refusal can be put down to the wrong send. Show it to the player or the log; do not undo game state because of it.
+
 ## Bundled sends
 
 Outbound replication messages of one network pass are packed into bundle datagrams. `crowdy.net.send.bundle` (default 1) controls it; 0 sends one datagram per message, a diagnostic switch rather than a setting a shipping build needs. The variable is read when a connection opens, so flipping it takes effect on the next connect, not on the live socket.

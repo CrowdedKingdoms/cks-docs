@@ -1,0 +1,50 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event Construct",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Get Server Object",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_0",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get SessionId",
+		"title_drawn": false
+	},
+	{
+		"name": "CrowdyK2Node_ServerVariableChanged_0",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_ServerVariableChanged",
+		"title": "On Turn Changed (CSO_Kit_Session)",
+		"title_drawn": true
+	},
+	{
+		"name": "CrowdyK2Node_ServerVariableChanged_1",
+		"class": "/Script/CrowdyExecNodes.CrowdyK2Node_ServerVariableChanged",
+		"title": "On Phase Changed (CSO_Kit_Session)",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_VariableGet_1",
+		"class": "/Script/BlueprintGraph.K2Node_VariableGet",
+		"title": "Get PlayButton",
+		"title_drawn": false
+	},
+	{
+		"name": "K2Node_CallFunction_1",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Is My Turn",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_2",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Set Is Enabled\nTarget is Widget",
+		"title_drawn": true
+	}
+]
