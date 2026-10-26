@@ -37,6 +37,28 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-26 (dev: a deploy stops the node types it drops, and takes their switches with them; ck-exec 0.19.0, Game API v2.58.0, CrowdyJS 18.22.0, CrowdyCPP 0.74.0, CrowdyPy 0.22.0)
+
+- **A deploy or a rollback stops the node types it drops.** When `execDeploy` or
+  `execActivateVersion` makes active a version without a type, that type's running instances
+  are persisted and stopped at once, timers or not. Before, a hub with a pending timer kept
+  running for as long as players were in the app, held its memory against the app's limits,
+  and could not be stopped: `execRestartType` refuses a type the active version doesn't have.
+  Each keeps its saved state, so a later version that deploys the type again starts its hubs from
+  it. Instances left running this way before the release stop on their own once it is out
+  (ck-exec 0.19.0). See [instances and versions](/exec/operations#instances-and-versions).
+- **A dropped type takes its switch with it.** A type switched off with `execSetEnabled` when a
+  deploy or a rollback drops it leaves `disabledTypes` too. A version that deploys a type of
+  that name again starts it switched on. Before, it came back switched off, and the switch
+  could not be cleared while the type was gone (ck-exec 0.19.0). See
+  [the kill switch](/exec/operations#the-kill-switch).
+- **`ExecInstance.orphaned`** is true for an instance whose type the active version no longer
+  deploys, and null from an older manager (Game API v2.58.0). CrowdyJS 18.22.0's
+  `exec.instances`, CrowdyCPP 0.74.0's `exec().instances` and CrowdyPy 0.22.0's
+  `exec.instances` return it. Each needs Game API v2.58.0, which an older API refuses to select.
+  If your tooling stopped a type's instances itself before deploying it away, it no longer
+  needs to.
+
 ## 2026-10-26 (Unreal SDK v2.21.0: the Game Kit starters as Server Object types; parties, chat, emotes and spectating; deploys in parts; driving the editor from a shell; CrowdyCPP 0.73.0)
 
 Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-26-sdk-v2210).
