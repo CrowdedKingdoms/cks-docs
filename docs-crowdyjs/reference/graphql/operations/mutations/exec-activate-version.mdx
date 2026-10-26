@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Make an earlier ck-exec version active again, a rollback. Running instances pick it up when they next start, as after a deploy. Requires the org 'manage&#x005F;compute' permission.
+Make an earlier ck-exec version active again, a rollback. As after a deploy, running instances of the types it keeps pick it up when they next start, and those of a type it lacks are persisted and stopped at once; a type it lacks leaves the switched-off list. Requires the org 'manage&#x005F;compute' permission.
 
 
 ```graphql
