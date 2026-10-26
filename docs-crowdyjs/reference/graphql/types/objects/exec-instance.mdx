@@ -29,6 +29,7 @@ type ExecInstance {
   epoch: Int!
   sinceMs: Float!
   heldBack: String
+  orphaned: Boolean
 }
 ```
 
@@ -69,6 +70,10 @@ Milliseconds since it entered this phase.
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecInstance.<b>heldBack</b></code>](#held-back)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #held-back */} 
 Why the manager will not place it right now (a crash loop, a failed start), when it will not.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ExecInstance.<b>orphaned</b></code>](#orphaned)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #orphaned */} 
+Its node type is not in the app’s active version: a deploy or a rollback dropped the type and stopped the instance. It keeps its saved state, which a version that deploys the type again starts it from. Never true for a mod. Null from a manager older than ck-exec 0.19.
 
 
 

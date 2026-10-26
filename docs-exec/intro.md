@@ -151,10 +151,12 @@ These hold for [mods](mods) too, within a mod's own limits.
 
 `execDeploy` takes the manifest as JSON and each module the app has not uploaded before (base64
 with its digest), or the id of a build whose modules the manifest names, and makes the new
-version active. Running instances pick it up when they next start; a hub whose timer is pending
-doesn't go idle while players are in the app, so switch its type off and on to move it at once
-(see [operations](operations)). It needs the organization's `manage_compute` permission. Moving
-a game off the compute modules: [port a compute module](port-a-compute-module).
+version active. Running instances of the types it keeps pick it up when they next start; a hub
+whose timer is pending doesn't go idle while players are in the app, so restart its type
+(`execRestartType`) to move it at once. The instances of a type the new version drops are
+persisted and stopped right away, and the type leaves the switched-off list (see
+[operations](operations#instances-and-versions)). It needs the organization's `manage_compute`
+permission. Moving a game off the compute modules: [port a compute module](port-a-compute-module).
 
 ```graphql
 mutation {

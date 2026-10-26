@@ -105,7 +105,7 @@ On the **Join Channel** node's **On Error** pin, open `Error` with **Break Crowd
 
 ## Publish and receive
 
-`PublishChannelMessage(ChannelId, Payload)` sends raw bytes to every active member except the sender. The caller must already be a member holding `send_messages`; an open channel's default member role grants it. The server caps a channel message payload at 1024 bytes.
+`PublishChannelMessage(ChannelId, Payload)` sends raw bytes to every active member except the sender. The caller must already be a member holding `send_messages`; an open channel's default member role grants it. The server caps a channel message payload at 1024 bytes. `PublishChannelMessageAs(ChannelId, SenderUuid, Payload)` sends under a sender id you choose, as the Game Kit's chat does, since the session's own id is empty until the player's entity resolves; a receiver sees that id, which proves nothing. `CanPublishChannelMessage()` is true once the game session exists and the realtime connection is routing.
 
 :::warning[Publishing is unacknowledged UDP: no ordering, no delivery guarantee, and the caller is never told if it was dropped.]
 It is the right tool for a notice, not for a value. Put anything that must be right on every client in a state property, or in your server code if it is truth.
@@ -194,3 +194,4 @@ A `Multicast` CrowdyEvent is encoded into a channel payload and published over t
 - [Replicated subsystems](./replicated-subsystems.md): deltas over the session channel.
 - [Connection and reconnect](./connection-and-reconnect.md): when the channel bootstrap runs.
 - [Teams and channels in Studio](../studio/teams-and-channels.md): authoring channels without code.
+- [Play together](../services/play-together.md): chat rooms and party chat as text, with Send Chat and On Chat Message.

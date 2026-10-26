@@ -74,15 +74,17 @@ When a host drops lines over its rate, the log gets one warning line saying how 
 | `epoch` | Rises each time it's placed. |
 | `sinceMs` | How long it has been in this phase. |
 | `heldBack` | Why it isn't being placed right now, when it isn't. Either it crashed five times within a minute, and is placed again as those crashes age out, or its last start failed, and it's retried after 5 seconds. |
+| `orphaned` | True when the active version doesn't deploy its node type: a deploy or a rollback dropped the type and stopped the instance, which keeps its saved state (see below). Null from a manager older than ck-exec 0.19. |
 
 `execVersions(appId)` lists every deploy, newest first, and marks the active one. Its
 `manifestJson` is that version's manifest: each node type's kind, parent, client access, calls,
 scopes and limits, with a spawn seed shown as its size (`seed_bytes`).
 `execActivateVersion(appId, version)` makes an earlier one active again, which is a rollback.
-Running instances pick it up when they next start, just as they do after a deploy. A hub stops
-when it has been idle for its eviction window or the app has been empty that long, and one whose
-timer is pending doesn't go idle while players are in, so a deploy alone can leave hubs on the
-old version for a long time. To move a type's running instances now (ck-exec 0.15), restart it:
+Running instances of the types it keeps pick it up when they next start, just as they do after a
+deploy. A hub stops when it has been idle for its eviction window or the app has been empty that
+long, and one whose timer is pending doesn't go idle while players are in, so a deploy alone can
+leave hubs on the old version for a long time. To move a type's running instances now (ck-exec
+0.15), restart it:
 
 ```graphql
 mutation {
@@ -96,13 +98,15 @@ Each running instance of the type persists and stops, without the type being swi
 its next call starts it on the active version from its snapshot. `stopped` counts the instances
 told to stop. It needs `manage_compute` on the app's organization.
 
-A deploy that drops a type does not stop that type's instances. They keep running until they
-have been idle for `evict_after_ms` (5 minutes by default). A pending timer keeps a hub from
-looking idle while players are in the app. `execRestartType` cannot move them after the drop:
-it returns 404 once the type is gone from the active manifest. Calls then get `NotFound`. A hub
-that has a snapshot keeps that snapshot and its instance row; a hub snapshot has no expiry. The
-10-minute forget applies only to a stopped instance with no snapshot, which is how a spoke's
-replicas go away.
+A deploy or a rollback that drops a type stops that type's running instances at once (ck-exec
+0.19), timers or not: each is persisted and stopped as a restart would do, so code you no
+longer deploy holds none of your app's instance or memory limit. There is nothing left to
+restart, and `execRestartType` answers `NOT_FOUND` for a type the active version doesn't have.
+Calls to the type then get `NotFound`. `execInstances` keeps listing those instances with
+`orphaned: true`. A hub that has a snapshot keeps that snapshot and its instance row; a hub
+snapshot has no expiry. So a later version that deploys a type of the same name starts its hubs
+from what they saved. The 10-minute forget applies only to a stopped instance with no snapshot,
+which is how a spoke's replicas go away.
 
 ## The kill switch
 
@@ -125,6 +129,11 @@ Without `nodeType`, the whole app is switched off. While a type is off:
 
 With the whole app off, players aren't given a host at all. Switch it on again and instances
 start as they're called. `execAppStatus(appId)` shows the switches.
+
+A type's switch lasts as long as the active version deploys the type. A deploy or a rollback
+that drops a switched-off type drops its switch too (ck-exec 0.19), so `disabledTypes` only ever
+names types of the active version. A later version that deploys a type of that name starts it
+switched on.
 
 ## Calls per endpoint
 

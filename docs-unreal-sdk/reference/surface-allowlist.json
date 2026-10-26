@@ -2,6 +2,44 @@
   {
     "_comment": "Symbols from static/helpers/unreal-sdk/sdk-surface.json that check-unreal-surface.mjs must not report as undocumented. Each real entry is {\"id\": \"<surface id, e.g. UCrowdyTeams::GetMyTeamById or UCrowdySDKDeveloperSettings::AppId>\", \"reason\": \"internal|deprecated|mass|editor\", \"note\": \"<why a reader does not need it>\"}. A settings class id covers every property of that class. Entries without an id, like this one, are ignored."
   },
+  { "id": "FKitEventRequest", "reason": "internal", "note": "The wire form of a Game Kit client event such as an emote; Send Emote builds and sends it." },
+  { "id": "FBeat", "reason": "internal", "note": "One viewer beat of the Crowdy Spectator component as it goes out; the component sends it." },
+  { "id": "FCore", "reason": "internal", "note": "The Crowdy Spectator component's beat cadence, public so headless tests can drive it without a world." },
+  { "id": "CrowdyMassNearTier::ShouldCarryTraceCollision", "reason": "internal", "note": "The promoted shell's rule for which components take trace collision; the CrowdyTraceCollision tag it reads is documented on Promote close entities to actors." },
+  { "id": "FHeldMessage", "reason": "internal", "note": "A Server Object's private record of a message held until the reads before it end; nothing outside the class sees it." },
+  { "id": "FCore::IsOwingBeat", "reason": "internal", "note": "The Crowdy Spectator component's beat cadence, public so headless tests can drive it without a world." },
+  { "id": "FCore::IsRunning", "reason": "internal", "note": "The Crowdy Spectator component's beat cadence; Is Spectating reads it." },
+  { "id": "FCore::Pulse", "reason": "internal", "note": "The Crowdy Spectator component's beat cadence, public so headless tests can drive it without a world." },
+  { "id": "FCore::Start", "reason": "internal", "note": "The Crowdy Spectator component's beat cadence; Start Spectating calls it." },
+  { "id": "FCore::Stop", "reason": "internal", "note": "The Crowdy Spectator component's beat cadence; Stop Spectating calls it." },
+  { "id": "FCore::Watch", "reason": "internal", "note": "The Crowdy Spectator component's beat cadence, public so headless tests can drive it without a world." },
+  { "id": "CrowdySpectator::ClampDistance", "reason": "internal", "note": "How the Crowdy Spectator component reads its Distance; the page states the range." },
+  { "id": "CrowdySpectator::ClampInterval", "reason": "internal", "note": "How the Crowdy Spectator component reads its Interval; the page states the floor." },
+  { "id": "CrowdySpectator::CountsAsSent", "reason": "internal", "note": "Whether a viewer beat went out, so a dropped one is sent again." },
+  { "id": "CrowdySpectator::FillBeatMessage", "reason": "internal", "note": "Writes a viewer beat's actor update; the component sends it." },
+  { "id": "CrowdySpectator::ViewerUuid", "reason": "internal", "note": "The id the Crowdy Spectator component beats under, the one the player's own pawn takes." },
+  { "id": "CrowdyKitEvent::HasBareState", "reason": "internal", "note": "Which client event types carry the Game Kit's own body rather than a CrowdyEvent's; the decoder asks it." },
+  { "id": "FCrowdyTypeIDGenerator::EventTypeIDFromHash", "reason": "internal", "note": "Keeps generated event ids off the Game Kit's emote number; What's Changed describes the effect." },
+  { "id": "FCrowdyTypeIDGenerator::GenerateEventFromStruct", "reason": "internal", "note": "Keeps generated event ids off the Game Kit's emote number; What's Changed describes the effect." },
+  { "id": "FCrowdyTypeIDGenerator::IsReservedTypeID", "reason": "internal", "note": "Keeps generated event ids off the Game Kit's emote number; What's Changed describes the effect." },
+  { "id": "FCrowdyTypeIDGenerator::TypeIDFromHash", "reason": "internal", "note": "The plain mapping of a name's hash to a type id, which every struct but an event's still takes." },
+  { "id": "UEventPayloadRegistry::ResolveEventID", "reason": "internal", "note": "Picks an event struct's id from its ID Override or its generated id; What's Changed describes the refusals." },
+  { "id": "UCrowdyActorTracker::FindWireId", "reason": "internal", "note": "The id text an actor arrived under, which Send Emote puts in an emote's target." },
+  { "id": "UCrowdyKitEmotes::DecodeEmoteBody", "reason": "internal", "note": "Reads the Game Kit's emote body; On Emote gives what it read." },
+  { "id": "UCrowdyKitEmotes::EncodeEmoteBody", "reason": "internal", "note": "Writes the Game Kit's emote body; Send Emote sends it." },
+  { "id": "UCrowdyKitEmotes::FillEmoteRequest", "reason": "internal", "note": "Builds an emote's client event; Send Emote sends it." },
+  { "id": "UCrowdyKitEmotes::HandleDelivery", "reason": "internal", "note": "The emote subscription's handler, public so headless tests can feed it." },
+  { "id": "FEmoteSenderBucket", "reason": "internal", "note": "One sender's emote rate bucket; the page gives the per-sender limit and its CVars." },
+  { "id": "UCrowdyKitEmotes::ReceiveEmote", "reason": "internal", "note": "Reads an inbound emote and fires On Emote, public so headless tests can feed it." },
+  { "id": "UCrowdyKitSocial::CheckChat", "reason": "internal", "note": "Send Chat's verdict before a send, public so headless tests can check every refusal; the page lists the results." },
+  { "id": "UCrowdyKitSocial::HandleChannelMessage", "reason": "internal", "note": "The channel delegate's handler behind On Chat Message." },
+  { "id": "UCrowdyKitSocial::ResolveChannelGroup", "reason": "internal", "note": "Names the group of a chat message's channel for On Chat Message." },
+  { "id": "UCrowdyKitSocial::SenderUuidFor", "reason": "internal", "note": "The sender id Send Chat puts on a message." },
+  { "id": "UCrowdyKitSocialGroupAction::Run", "reason": "internal", "note": "Each Game Kit Social node's own call on the subsystem." },
+  { "id": "UCrowdyKitSocialMembersAction::Run", "reason": "internal", "note": "Each Game Kit Social node's own call on the subsystem." },
+  { "id": "EKitOutcome", "reason": "internal", "note": "Private to UCrowdyKitSocial: what a finished pair call changed." },
+  { "id": "EKitRoute", "reason": "internal", "note": "Private to UCrowdyKitSocial: which API a step goes to." },
+  { "id": "FKitStep", "reason": "internal", "note": "Private to UCrowdyKitSocial: one step of a pair call." },
   {
     "id": "ACrowdyPlayerDerivedTestPawn",
     "reason": "internal",
@@ -3543,6 +3581,11 @@
     "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
   },
   {
+    "id": "CrowdyStudioAuth::GetSignedInIdentity",
+    "reason": "editor",
+    "note": "Editor-only: who is signed in to Crowdy Studio, which the Server Compute commandlet's -op=whoami reports; not runtime SDK surface."
+  },
+  {
     "id": "CrowdyStudioRegistry::HasRebuildHook",
     "reason": "editor",
     "note": "Editor-only Crowdy Studio sync/registry implementation; not runtime SDK surface."
@@ -4708,6 +4751,31 @@
     "note": "The Instance Id the SDK reaches a type with Only One Instance by; a game acquires such a type without giving one."
   },
   {
+    "id": "FCrowdyKitMatchSearch::Tick",
+    "reason": "internal",
+    "note": "The search's next step, run by the ticker the search registers for itself; public so the SDK's tests can step it, a game never calls it."
+  },
+  {
+    "id": "ENext",
+    "reason": "internal",
+    "note": "The search's private record of which call it sends next."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::HasKitCollection",
+    "reason": "internal",
+    "note": "Whether a Game Kit starter's Collection Topic members are its records, which the object reads; a game sees it as Holds Records, documented on use-game-kit-starters."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::IsKeyedByPlayer",
+    "reason": "internal",
+    "note": "Whether a Game Kit starter's Instance Id is a player's user id, which Acquire and the object read; its setting Keyed By Player is documented on use-game-kit-starters."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::GetRecordStruct",
+    "reason": "internal",
+    "note": "The struct each record fills, the Record Struct for a starter with a collection and the State for every other type, which the codec bakes; a game sets Record Struct in the definition."
+  },
+  {
     "id": "UCrowdyServerObjectDefinition::HasOnlyOneInstance",
     "reason": "internal",
     "note": "Whether the SDK needs no Instance Id to reach a type: Only One Instance is ticked or the type is a Server Function Library; a game ticks the setting or sets Kind, and calls a library by its definition."
@@ -4786,6 +4854,71 @@
     "id": "FCrowdyNativeExecConnection::GetAccessEndedReason",
     "reason": "internal",
     "note": "The native connection Server Objects ride on, in CrowdyCppBridge; a game reads Get Access Ended Reason on the game session."
+  },
+  {
+    "id": "FCrowdyNativeKit",
+    "reason": "internal",
+    "note": "The native Game Kit client a Game Kit starter's Server Object rides on, in CrowdyCppBridge; a game uses a starter through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeKitReply",
+    "reason": "internal",
+    "note": "The native Game Kit client a Game Kit starter's Server Object rides on, in CrowdyCppBridge; a game uses a starter through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeKit::Call",
+    "reason": "internal",
+    "note": "The native Game Kit client a Game Kit starter's Server Object rides on, in CrowdyCppBridge; a game calls a starter's functions with the typed Call."
+  },
+  {
+    "id": "FCrowdyNativeKit::CanceledMessage",
+    "reason": "internal",
+    "note": "The native Game Kit client a Game Kit starter's Server Object rides on, in CrowdyCppBridge; a game uses a starter through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeKit::Close",
+    "reason": "internal",
+    "note": "The native Game Kit client a Game Kit starter's Server Object rides on, in CrowdyCppBridge; the Server Object subsystem closes it with its connection."
+  },
+  {
+    "id": "FCrowdyNativeKit::IsClosed",
+    "reason": "internal",
+    "note": "The native Game Kit client a Game Kit starter's Server Object rides on, in CrowdyCppBridge; a game uses a starter through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyNativeKit::NumSubscriptions",
+    "reason": "internal",
+    "note": "The native Game Kit client a Game Kit starter's Server Object rides on, in CrowdyCppBridge; a count the SDK's tests read."
+  },
+  {
+    "id": "FCrowdyNativeKit::SetPlayerId",
+    "reason": "internal",
+    "note": "The native Game Kit client a Game Kit starter's Server Object rides on, in CrowdyCppBridge; the Server Object subsystem sets it at sign-in."
+  },
+  {
+    "id": "FCrowdyNativeKit::Subscribe",
+    "reason": "internal",
+    "note": "The native Game Kit client a Game Kit starter's Server Object rides on, in CrowdyCppBridge; a game follows a starter's values with On Changed."
+  },
+  {
+    "id": "FCrowdyNativeKit::Unsubscribe",
+    "reason": "internal",
+    "note": "The native Game Kit client a Game Kit starter's Server Object rides on, in CrowdyCppBridge; a game uses a starter through Server Objects, never this transport."
+  },
+  {
+    "id": "FCrowdyCppClient::CreateGameKit",
+    "reason": "internal",
+    "note": "CrowdyCppBridge internal: the Server Object subsystem makes the Game Kit client with its connection."
+  },
+  {
+    "id": "UCrowdyServerObjectSubsystem::GetKit",
+    "reason": "internal",
+    "note": "The Game Kit client a starter's Server Object rides on; a game uses a starter through Get Server Object and the typed nodes."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::IsGameKitStarter",
+    "reason": "internal",
+    "note": "Whether the definition's Code Source is Game Kit Starter, which the Details panel shows; read by the SDK's runtime and editor."
   },
   {
     "id": "UCrowdyGameSession::SetAccessEnded",
@@ -5286,6 +5419,11 @@
     "id": "UCrowdySDKDeveloperSettings::MakeClientConfig",
     "reason": "internal",
     "note": "Builds the shared API client's configuration from the settings; the settings themselves are documented on the Project Settings page."
+  },
+  {
+    "id": "CrowdyExecCodegen::TEXT",
+    "reason": "editor",
+    "note": "The exporter reads the ckx-sdk version constant's TEXT() initializer as a function; the pin it holds is documented on Write server logic."
   },
   {
     "id": "CrowdyExecCodegen::AddLogicStubs",
@@ -7176,5 +7314,85 @@
     "id": "UCrowdyAuthentication::EndServerSession",
     "reason": "internal",
     "note": "Called by Logout on the Crowdy SDK Subsystem to end the session on the server; a game signs out with Logout, which is on authentication."
+  },
+  {
+    "id": "FCrowdyNativeKitActorState",
+    "reason": "internal",
+    "note": "The bridge's decoded form of a kit actor's realtime state; the SDK turns it into FCrowdyKitActorState, which is the Kit Actor a game reads."
+  },
+  {
+    "id": "CrowdyNativeKit::DecodeActorState",
+    "reason": "internal",
+    "note": "Decodes a kit actor's realtime bytes inside the SDK's actor tracking; a game reads the decoded Kit Actor on the Crowdy Kit Actor component."
+  },
+  {
+    "id": "UCrowdyServerObjectDefinition::SyncGameKitActorStarters",
+    "reason": "editor",
+    "note": "Editor-only: keeps the Game Kit Actor Starters project setting in step with a definition's Kit Actors as it is saved; the page describes the setting."
+  },
+  {
+    "id": "FCrowdyKitActorState::Decode",
+    "reason": "internal",
+    "note": "Reads a kit actor's realtime bytes for the SDK's actor tracking; a game reads the Kit Actor it produces."
+  },
+  {
+    "id": "FCrowdyKitActorState::FromNative",
+    "reason": "internal",
+    "note": "Converts the bridge's decoded state into a Kit Actor inside the SDK; a game never builds one."
+  },
+  {
+    "id": "FCrowdyKitActorState::HasSameFacts",
+    "reason": "internal",
+    "note": "How the SDK decides whether to run On Kit Actor Changed (anything but where it is changes); a game listens to the event."
+  },
+  {
+    "id": "FCrowdyKitActorState::ReadInstanceId",
+    "reason": "internal",
+    "note": "Reads the Instance Id out of a realtime actor id for the SDK; a game reads the Instance Id field of the Kit Actor."
+  },
+  {
+    "id": "CrowdyKitActorClasses::Reset",
+    "reason": "internal",
+    "note": "The SDK fills the class of each kind from the starters' Kit Actors; a game sets the classes in the definition, as the page says."
+  },
+  {
+    "id": "CrowdyKitActorClasses::Resolve",
+    "reason": "internal",
+    "note": "The SDK looks up the class a kit actor is drawn as; a game sets the classes in the definition's Kit Actors."
+  },
+  {
+    "id": "CrowdyKitActorClasses::Set",
+    "reason": "internal",
+    "note": "The SDK fills the class of each kind from the starters' Kit Actors; a game sets the classes in the definition, as the page says."
+  },
+  {
+    "id": "UCrowdyActorTracker::IsKitActorUpdate",
+    "reason": "internal",
+    "note": "The tracker's check of whether an update is a starter's actor, so the kit actor subsystem takes it; nothing for a game to call."
+  },
+  {
+    "id": "UCrowdyKitActorComponent::ApplyKitActor",
+    "reason": "internal",
+    "note": "Called by the SDK to give the component its Kit Actor; a game reads the Kit Actor and binds On Kit Actor Changed."
+  },
+  {
+    "id": "UCrowdyKitActorComponent::GetKitKey",
+    "reason": "internal",
+    "note": "The key the SDK knows a kit actor by, for its own lookups; a game reads the Kit Actor and its Instance Id."
+  },
+  {
+    "id": "UCrowdyKitActorSubsystem::FindKitActor",
+    "reason": "internal",
+    "note": "The SDK's lookup of a kit actor by its key; a game lists the kit actors it sees with Get Kit Actors."
+  },
+  {
+    "id": "UCrowdyKitActorSubsystem::Forget",
+    "reason": "internal",
+    "note": "The SDK drops a kit actor that left or timed out; nothing for a game to call."
+  },
+  {
+    "id": "UCrowdyKitActorSubsystem::TakeUpdates",
+    "reason": "internal",
+    "note": "The tracker hands the subsystem each batch of kit actor updates on the game thread; nothing for a game to call."
   }
 ]

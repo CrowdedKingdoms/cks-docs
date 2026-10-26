@@ -45,7 +45,7 @@ The whole app is switched off (`execSetEnabled` without a node type).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>disabledTypes</b></code>](#disabled-types)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #disabled-types */} 
-Node types switched off one by one.
+Node types of the active version switched off one by one. A deploy or a rollback that drops a type drops its switch too, so a version that deploys the type again starts it switched on.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>ExecAppStatus.<b>budgetPaused</b></code>](#budget-paused)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #budget-paused */} 
