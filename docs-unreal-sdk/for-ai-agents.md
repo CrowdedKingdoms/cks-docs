@@ -2,7 +2,7 @@
 slug: for-ai-agents
 sidebar_position: 90
 title: For AI Agents
-description: "The fastest correct path for a coding agent working in an Unreal project that uses the Crowdy SDK: where each kind of state goes, the marker vocabulary with one example each, what breaks silently in a cooked build, the settings never to hand-edit, and the console variables for testing alone."
+description: "The fastest correct path for a coding agent working in an Unreal project that uses the Crowdy SDK: where each kind of state goes, the marker vocabulary with one example each, what breaks silently in a cooked build, the settings never to hand-edit, how to do from a shell what the editor's Server Compute and Crowdy Studio pages do, and the console variables for testing alone."
 ---
 
 # For AI Agents
@@ -70,6 +70,48 @@ Config Sync in Crowdy Studio writes the Network category of `UCrowdySDKDeveloper
 
 Do not copy the plugin's `[CoreRedirects]` into the project's `DefaultEngine.ini` either; `Plugins/CrowdySDK/Config/DefaultCrowdySDK.ini` already carries them. [Packaging](./guides/packaging.md#6-coreredirects-ship-with-the-plugin).
 
+## Drive the editor without a window
+
+An agent cannot press editor buttons. Two commandlets do what the Server Compute panel and Crowdy Studio's Project page do, from a shell:
+
+```
+UnrealEditor-Cmd.exe <Project>.uproject -run=CrowdyServerCompute -op=<op> [switches] [-out=result.json]
+UnrealEditor-Cmd.exe <Project>.uproject -run=CrowdyStudio -op=<op> [switches] [-out=result.json]
+```
+
+Exit code 0 is success, 1 is a refusal or a failure, and `-out=` writes the result as JSON (`ok`, `error`, and the op's own fields). An op that changes the project or the app needs `-yes`; without it the op says what it would do and changes nothing. A commandlet run with an unknown or no `-op` prints every op it has.
+
+Close the Unreal Editor first. It holds the project's Server Object types and settings in memory and saves its own copy over what an op wrote, so an op that writes the project refuses while an editor runs unless you pass `-editoropen`.
+
+| Step | Op | Owning section |
+|---|---|---|
+| Check the sign-in and the project's app | `-run=CrowdyServerCompute -op=whoami` | [From the command line](./exec/deploy-with-server-compute.md#from-the-command-line) |
+| List organizations, apps and datacenters | `-run=CrowdyStudio -op=apps` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
+| Create an app | `-run=CrowdyStudio -op=createapp -org=<id> -name="My Game" -slug=my-game -datacenter=<code> -yes` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
+| Point the project at an app | `-run=CrowdyStudio -op=sync -app=<id> -yes` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
+| Add Game Kit starters | `-op=addstarter -starter=<name>` | [Add a starter](./exec/use-game-kit-starters.md#add-a-starter) |
+| Define a Server Object type | `-op=exporttype -spec=type.json` (a template), `-op=newtype -spec=@type.json`, `-op=edittype -type=T -spec=@type.json -yes` | [Define a type from a file](./exec/deploy-with-server-compute.md#define-a-type-from-a-file) |
+| Generate its server code | `-op=generate -type=T`, or `-op=generate -yes` for every type that is out of date | [From the command line](./exec/deploy-with-server-compute.md#from-the-command-line) |
+| Remove or rename a type | `-op=removetype -type=T -yes`, `-op=renametype -type=T -to=/Game/Path/NewName -yes` (without `-yes` they only say what they would do) | [From the command line](./exec/deploy-with-server-compute.md#from-the-command-line) |
+| Write its logic | Edit `Server/<Type Name>/src/logic.rs` | [Write logic.rs](./exec/write-server-logic.md#write-logicrs) |
+| Deploy, call and read back | `-op=deploy -yes`, `-op=call -type=T -fn=F -key=K -inputs=@in.json -yes`, `-op=logs [-level=errors]`, `-op=instances` | [From the command line](./exec/deploy-with-server-compute.md#from-the-command-line) |
+| Move running Server Objects to the new deploy | `-op=restart -type=T -yes`, or `-op=restart -yes` for every type with an instance on older code | [From the command line](./exec/deploy-with-server-compute.md#from-the-command-line) |
+| Set up access features, teams, channels and grids | `-run=CrowdyStudio -op=features`, `-op=definefeature`, `-op=createteam`, `-op=createchannel`, `-op=creategrid`, `-op=grantgrid` and more (comma lists without spaces: `-keys=a,b`) | [Access, teams, channels and grids](./studio/config-sync.md#access-teams-channels-and-grids) |
+
+`-op=generate` reports, per type, the functions `logic.rs` is missing and the ones it defines that the type no longer has, so the next edit is known. `-op=batch -ops=<file>` runs many ops in one editor start.
+
+Who owns which file:
+
+| File | Owner |
+|---|---|
+| `Server/<Type Name>/src/logic.rs`, and any `src/logic/<name>.rs` it declares with `mod <name>;` | You |
+| `Cargo.toml`, `src/lib.rs`, `src/types.rs` in the same folder | Generate rewrites them; never edit |
+| `Server/<Type Name>/revisions.json` | Server Compute: every kept deploy's code in full, so a restore is a copy |
+| `GameKitWorld`, `GameKitActorStarters`, `PreloadedEntityClasses` and the map profiles in `Config/DefaultGame.ini` | You |
+| The Network settings in `Config/DefaultGame.ini` | Config Sync, or `-run=CrowdyStudio -op=sync` |
+
+Two things still need a person. Crowdy Studio's sign-in is once per machine and again when it expires; `-op=whoami` says whether it is there. The Blueprint-only editors (the Crowdy Replication variable panel, Crowdy Replicates events) have no text form; write the [C++ markers](#the-marker-vocabulary) instead. The `sbx.*` console commands exist only in the SDK's own Sandbox project, not in yours.
+
 ## Testing without a second client
 
 Both switches are off by default. Turn them back off before testing real two-client routing. [Testing locally](./guides/testing-locally.md).
@@ -78,6 +120,8 @@ Both switches are off by default. Turn them back off before testing real two-cli
 |---|---|---|
 | `crowdy.rpc.loopback 1` | A sent `CrowdyEvent` is also delivered to your own receive path, once; a call made from inside the replayed body does not loop again | [Single-client RPC loopback](./guides/testing-locally.md#single-client-rpc-loopback) |
 | `crowdy.state.loopback 1` | A state delta for an owned entity is decoded onto a lazily spawned local mirror (`RemoteProxy` role, its own NetID), so `OnRep` fires with one client. The mirror's trace line always says `(targeted)`; that label is cosmetic | [Single-client Crowdy State loopback](./guides/testing-locally.md#single-client-crowdy-state-loopback) |
+
+For a headless smoke test in a development build, `crowdy.auth.signin.file <path>` signs in a test account from a JSON file (`{"email": "...", "password": "..."}`; never type a password on a console line), and `crowdy.auth.status` reports `SignedIn=true` once it has finished: poll it before player-side commands. [Sign in from the console](./guides/testing-locally.md#sign-in-from-the-console).
 
 ## Trace console variables
 

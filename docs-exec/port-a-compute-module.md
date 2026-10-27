@@ -104,8 +104,9 @@ const outcome = await titanCall<{ success?: boolean; health?: number; killed?: b
   is a new instance. A hub that must be the only one refuses other keys in `spawn`.
 - **Deploys and running hubs.** A running hub keeps the version it started with until it stops,
   and a hub whose timer is pending doesn't go idle while players are in the app. To move it at
-  once, switch its type off and on (`execSetEnabled`, see [operations](operations)): it persists,
-  stops, and starts again on the new version from its snapshot.
+  once, restart its type (`execRestartType`, see [operations](operations#instances-and-versions)):
+  it persists, stops, and starts again on the new version from its snapshot, and its calls are
+  not refused meanwhile. A deploy that drops a type stops that type's hubs itself.
 - **Changing the world.** A hub restored from a snapshot may meet a world definition that
   changed since. Titan Assault's `load` adds what is new, drops what is gone, and takes fixed
   properties (kind, maximum HP) from the definition while keeping positions and damage.

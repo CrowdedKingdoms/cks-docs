@@ -70,6 +70,8 @@ FString Error;
 UCrowdyServerObject* Root = UCrowdyServerObjectLibrary::GetServerObject(this, UCrowdyServerObjectLibrary::GetPlayersOnlineDefinition(), FString(), this, Error);
 ```
 
+A project with the Game Kit's `world` starter has `world` as its root instead. `GetPlayersOnline` then reads the `Online` field of the world's `FCrowdyKitWorldConditions`, from the definition the **Game Kit World** project setting names; `UCrowdyServerObjectLibrary::GetGameKitWorldDefinition()` gives that definition, or null when the setting is empty or names no Game Kit starter. `FCrowdyKitWorldConditions` has a `bHasOnline` flag beside `Online`: when the world's snapshot carries no player count, as a world deployed from the platform's own starter pack does not, `GetPlayersOnline` returns false, with 0, for good, and the log says why once. See [The world becomes the app's root](../use-game-kit-starters.md#the-world-becomes-the-apps-root).
+
 An app last deployed with an older Crowdy SDK, or never deployed from Server Compute, has no Crowdy SDK root. Deploy once from Server Compute. Until then `GetPlayersOnline` returns false, and the log says why once for each reason in each game instance (so once per Play In Editor client): "This app has no Crowdy SDK root, so Players Online has no count: deploy the app from Server Compute (an app last deployed with an older Crowdy SDK, or by another tool, has none). It is asked again every minute." The root waits and asks again once a minute instead of every few seconds, and once the app is deployed the count arrives without restarting the game.
 
 ## Records

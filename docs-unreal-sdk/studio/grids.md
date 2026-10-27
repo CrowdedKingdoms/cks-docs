@@ -65,6 +65,10 @@ Once a scan result is selected:
 A group grant references a team by id. Create the team first; see [Teams and Channels](./teams-and-channels.md). Deleting a team revokes every grid grant it conferred.
 :::
 
+## From the command line
+
+A script can scan for grids, create one, grant and revoke keys for a user or a team, set a grid's whitelist, and read the grants and effective permissions, all without the editor window. Every change needs `-yes`. The operations are listed under [Access, teams, channels and grids](./config-sync.md#access-teams-channels-and-grids) on the Config Sync page.
+
 ## Gotchas
 
 - There is no list of all grids. Scan a region to find them, and scan again after you create one.

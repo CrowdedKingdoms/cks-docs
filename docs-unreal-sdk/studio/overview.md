@@ -76,6 +76,8 @@ The sidebar on the left lists the pages. A toggle at the top folds it to icons (
 
 The page loads its lists the first time you open it for the selected app, not when Studio starts. Press **Refresh** to read them again. Features work with a sign-in with your account or with an organization token. A Server Object function uses them through [Required Feature](../exec/access-members-and-timers.md#required-feature).
 
+From a script, `-op=features`, `-op=definefeature`, `-op=grantfeature` and `-op=revokefeature` do the same work; see [Access, teams, channels and grids](./config-sync.md#access-teams-channels-and-grids).
+
 ## Signing in
 
 Sign in with your account: email and password, a sign-in link sent by email, or a social provider. That gives you full authoring. An organization token gives management-only access: it can browse apps and run Config Sync, but not author teams, channels or grids. See [Signing In](./sign-in.md).

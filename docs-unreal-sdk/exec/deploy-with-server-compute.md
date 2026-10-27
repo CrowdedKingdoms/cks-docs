@@ -2,7 +2,7 @@
 slug: deploy-with-server-compute
 sidebar_position: 6
 title: Deploy it with Server Compute
-description: Build and deploy a project's Server Object code from the Server Compute page in Crowdy Studio, which types changed since the live version, what a deploy sends and replaces, removing a type, versions and rolling back, switching one type or the whole app off and on, restarting a type and moving running Server Objects to a new deploy, the app's use against its limits, calling a Server Only or Developers Only function as the developer, reading logs and following one call, call activity, the Settings tab, and the same operations from the command line for CI.
+description: Build and deploy a project's Server Object code from the Server Compute page in Crowdy Studio, which types changed since the live version, what a deploy sends and replaces, a deploy built in several parts and server code reused by its digest, adding a Game Kit starter, removing a type, versions and rolling back, switching one type or the whole app off and on, restarting a type and moving running Server Objects to a new deploy, the app's use against its limits, calling a Server Only or Developers Only function as the developer, reading logs and following one call, call activity, the Settings tab, and the same operations from the command line for CI, including generating server code, checking the sign-in, defining a Server Object type from a JSON file, and removing, renaming or restarting types.
 ---
 
 # Deploy it with Server Compute
@@ -40,7 +40,7 @@ The left side lists every definition asset in the project, sorted by Type Name, 
 
 The right side shows the selected type: its Type Name (hover it to see its asset), its badge, the running switch and a **...** menu, then the type's description, if its [definition](./create-a-type.md#every-setting) has one, and a small line with how many functions it has, how many variables are visible to players ("2 variables visible to players"), who can read it ("readable by every player", "readable by its members", "only its owner can read it", or "closed to players: only server code and developer tools reach it" for [a type players cannot reach](./access-members-and-timers.md#a-type-players-cannot-reach)) and, once the Activity numbers are in, how many calls it had over the Activity tab's period, for example "1.2k calls in the last hour", and how many of its Server Objects are running or starting now ("2 running"). The parts are separated by dots. A [Server Function Library](./server-function-libraries.md) says "Server Function Library" first, and in place of the variables and who can read it says how many instances it runs, "1 to 4 instances" for a Min Instances of 1 and a Max Instances of 4, or "4 instances" when the two are equal. When the platform will not place one of the type's Server Objects, for example after it crashed again and again, a red line under it says which and why: "village is held back: ...". Last, a box says what the badge means for this type, such as "Not live yet. Deploy to add it." or "Changed since version 7: server code. Deploy to make it live."
 
-![The Server Compute page: the deploy strip under the tabs, the documentation's five Server Object types on the left, and the selected type's details on the right](/img/unreal-sdk/server-compute-overview.png)
+![The Server Compute page: the deploy strip under the tabs with Add starter and Deploy starter pack, five of the project's Server Object types on the left, and the selected type's details on the right](/img/unreal-sdk/server-compute-overview.png)
 
 The badge is the first of these that applies. What stops the type's server code from being built comes first:
 
@@ -48,14 +48,14 @@ The badge is the first of these that applies. What stops the type's server code 
 |---|---|
 | Needs generating | There is no folder for the type yet, `logic.rs` is missing, or the type uses [My Own File](./write-server-logic.md#use-your-own-logic-file) and no file is chosen or the file is missing. The reason is written under the Type Name. |
 | Out of date | The definition or a struct it uses changed since the code was generated. Regenerate it with **Generate**. The reason names the file and the first line that differs, for example `... no longer matches the definition (line 7: the file has "...", Generate writes "..."); regenerate it with Generate Server Code`; a long line is cut after 80 characters. |
-| Problem | The definition fails its checks, or its Type Name is `root`, the name of the platform's top-level type ("root is the name of the platform's root Server Object type; choose another Type Name"). The reason is written under the Type Name. |
+| Problem | The definition fails its checks, or its Type Name is `root`, the name of the platform's top-level type ("root is the name of the platform's root Server Object type; choose another Type Name"), or starts with `ck_staged_`, which is kept for the stand-ins of [a deploy in parts](#a-deploy-in-parts) ("Type Names starting ck_staged_ are kept for the stand-ins a deploy in parts stores its builds with; choose another Type Name"). The reason is written under the Type Name. |
 
 Once the type's code is fine, the badge says how the type compares with the version that is live now:
 
 | Badge | Meaning |
 |---|---|
 | No changes | The live version runs this code with these settings. Hover: "Live in version 7 exactly as it is here". |
-| Changed | The live version runs another revision of the code, or other settings. Hover: "Changed since version 7: server code, save interval. Deploy to make it live." It can list server code, save interval, idle timeout, platform data (the [Platform Data](./access-members-and-timers.md#platform-data) settings), player access (whether [players can reach the type](./access-members-and-timers.md#a-type-players-cannot-reach)), server limits (the [Server Limits](./create-a-type.md#every-setting) settings), kind (the type is a Server Object live and a [Server Function Library](./server-function-libraries.md#switch-kind) here, or the reverse) and scaling (a library's [Scaling](./server-function-libraries.md#scaling) settings). Limits are compared the way the platform applies them: a value out of range counts as the nearest value in range, and a limit written as a string in a manifest from another tool is read as a number, so such a manifest no longer shows "server limits" as changed on every check. |
+| Changed | The live version runs another revision of the code, or other settings. Hover: "Changed since version 7: server code, save interval. Deploy to make it live." It can list server code, save interval, idle timeout, platform data (the [Platform Data](./access-members-and-timers.md#platform-data) settings), player access (whether [players can reach the type](./access-members-and-timers.md#a-type-players-cannot-reach)), server limits (the [Server Limits](./create-a-type.md#every-setting) settings), kind (the type is a Server Object live and a [Server Function Library](./server-function-libraries.md#switch-kind) here, or the reverse), scaling (a library's [Scaling](./server-function-libraries.md#scaling) settings), and, for a [Game Kit starter](./use-game-kit-starters.md#change-a-starter), config and parent. Limits are compared the way the platform applies them: a value out of range counts as the nearest value in range, and a limit written as a string in a manifest from another tool is read as a number, so such a manifest no longer shows "server limits" as changed on every check. |
 | New | The live version does not run this type: "Not live yet. Deploy to add it." |
 | Live code unknown | The live version runs code this project has no record of, for example deployed from another copy of the project. "Deploying replaces it." See [What a deploy records](./write-server-logic.md#what-a-deploy-records). |
 | Ready | The type's server code is fine, but it has not been compared yet, because the app's versions have not been read (you are not signed in, or the read failed). Press **Refresh**. |
@@ -88,9 +88,13 @@ The confirm changes with the situation:
 
 After you confirm, the editor's own delete runs, with its usual check of what still refers to the definition, for example a Blueprint slot holding it; it may ask again, and if you cancel there nothing else happens. If the row went stale (the asset moved, or its Type Name changed since the list was read) nothing is removed and the page says "/Game/Beacon/CSO_VillageBeacon is no longer the definition of village_beacon, so nothing was removed. The list is read again; try once more from it."
 
+For a build server or a script, `-op=removetype` does the same from the command line; see [From the command line](#from-the-command-line).
+
 ### Deploy
 
-**Deploy** sits in the page's title row, beside **Refresh**, so it stays in reach however long the list of types grows. It shows how many types the deploy adds, changes or removes ("Deploy 3"), reads **Up to date** when there is nothing to deploy, and **Working...** while an operation runs. Under the tabs, a strip holds the status line and **Deploy starter pack**; before anything is known it says "Deploy builds every type's server code on the server and makes it the app's live version. Players use it at once."
+**Deploy** sits in the page's title row, beside **Refresh**, so it stays in reach however long the list of types grows. It shows how many types the deploy adds, changes or removes ("Deploy 3"), reads **Up to date** when there is nothing to deploy, and **Working...** while an operation runs. Under the tabs, a strip holds the status line, **Add starter** (see [Use the Game Kit starters](./use-game-kit-starters.md#add-a-starter)) and **Deploy starter pack**; before anything is known it says "Deploy builds every type's server code on the server and makes it the app's live version. Players use it at once."
+
+**Generate** sits between **Refresh** and **Deploy**. It reads "Generate 3" while 3 types are out of date or have no server code yet, and it is enabled only then, and only while no other operation runs. Game Kit starters are not counted, and neither are types that need you, such as a [My Own File](./write-server-logic.md#use-your-own-logic-file) type with no Logic File. Its tooltip reads "Generates the server code of every type that is out of date or has none yet, asking what a single Generate asks, then saves the definitions it changed." It generates those types one after another through the same Generate as a definition's own button, so it asks each question that Generate asks (see [Generate it](./write-server-logic.md#generate-it)), and a cancel stops the run. It then saves the definitions it changed, refreshes, and shows a notice of what was written and what was not, and why.
 
 **Deploy is offered only when something changed.** Once every type's code is fine and the live version is known, the status line says what a deploy would do, and **Deploy** is enabled only if there is something to do:
 
@@ -124,6 +128,8 @@ If any server code file has edits you have not saved in the asset editor's Serve
 
 and lists the file names. Answer No, save them, and deploy again if you meant to send them.
 
+When the server code of some types is exactly what an earlier deploy to this app sent, the dialog adds "The server code of lantern, village_beacon is as it was deployed before, so it is not built again." When the deploy is built in parts, it adds "The server code is built in 2 parts. Each part but the last is first stored by a version that runs what runs now, so the version history gains 1 more version."; see [A deploy in parts](#a-deploy-in-parts).
+
 If the server code calls into platform data its definition does not ask for, the dialog adds "Check before deploying:" and one line for each, such as:
 
 > village_beacon: its server code calls world().set_voxels(), which needs world.write; turn on Changes the World or the platform refuses that call
@@ -135,25 +141,43 @@ The same list holds a function that cannot use what it sets: a **Developers Only
 Confirm, and Studio sends the platform:
 
 - the server code of **every** Server Object type in the project, exactly as it is on disk under `Server/<Type Name>/` (a type whose Code Source is My Own File sends that file as its `logic.rs`), and
-- a crate named `root` that the SDK generates for you from `CSO_PlayersOnline` in its own content. It is the top-level type every Server Object type sits under on the platform. It keeps one variable, the number of players in the app's world, which **Get Players Online** reads (see [How many players are online](./from-blueprint/read-and-follow-variables.md#how-many-players-are-online)), and you never edit it. An app whose root an older Crowdy SDK deployed keeps no count, and Server Compute offers a deploy until you make one. The root is not shown as a row, but it is tracked like a type: once a deploy from this SDK has recorded it, a later Crowdy SDK whose root code differs makes Server Compute offer a deploy again. An app whose root was deployed by an earlier SDK is compared only after your next deploy. A project with no Server Object types deploys the root alone.
+- a crate named `root` that the SDK generates for you from `CSO_PlayersOnline` in its own content. It is the top-level type every Server Object type sits under on the platform. It keeps one variable, the number of players in the app's world, which **Get Players Online** reads (see [How many players are online](./from-blueprint/read-and-follow-variables.md#how-many-players-are-online)), and you never edit it. An app whose root an older Crowdy SDK deployed keeps no count, and Server Compute offers a deploy until you make one. The root is not shown as a row, but it is tracked like a type: once a deploy from this SDK has recorded it, a later Crowdy SDK whose root code differs makes Server Compute offer a deploy again. An app whose root was deployed by an earlier SDK is compared only after your next deploy. A project with no Server Object types deploys the root alone. A project with the Game Kit's `world` starter does not send this crate: `world` is the root instead, and every other type runs under it; see [The world becomes the app's root](./use-game-kit-starters.md#the-world-becomes-the-apps-root).
 
 together with an entry for each type saying whether players may reach it and what platform data its server code may use, and giving its **Save Interval Seconds** and **Idle Timeout Seconds** from the definition (the platform's [manifest](/exec/intro#the-manifest)). A Server Function Library's entry is `"kind": "spoke"` with its **Min Instances**, **Max Instances** (only when above Min Instances) and **Parallel Calls per Instance** as `replicas`, `max_replicas` and `concurrency`, and no save interval or idle timeout; a type with **Can Call Any Type** lists `"calls": ["*"]`.
 
-A deploy replaces the app's active server code as a whole; it does not add to it. That is why every type goes together: a type left out of a deploy is a type the app no longer has in its active code, until a deploy or a version that includes it is active. That is also how [removing a type](#remove-a-type) takes effect. For the example world, a project with `CSO_VillageBeacon` and a `CSO_Lantern` sends `village_beacon`, `lantern` and `root` in one deploy, even when only the beacon's `logic.rs` changed.
+A deploy replaces the app's active server code as a whole; it does not add to it. That is why every type goes together: a type left out of a deploy is a type the app no longer has in its active code, until a deploy or a version that includes it is active. That is also how [removing a type](#remove-a-type) takes effect. For the example world, a project with `CSO_VillageBeacon` and a `CSO_Lantern` sends `village_beacon`, `lantern` and `root` in one deploy, even when only the beacon's `logic.rs` changed. Only the beacon is built, though: see [Server code that is not built again](#server-code-that-is-not-built-again).
 
-The status line follows the build: "Sending the server code...", "Waiting for a builder... 4 s", "Building on the server... 12 s", "Deploying...", and finally:
+The status line follows the build: "Sending the server code...", "Waiting for a builder... 4 s", "Building on the server... 12 s", "Deploying...", and finally the line below. A deploy built in parts says which part it is on, "Part 1 of 2: building on the server... 12 s", and one with nothing to build goes straight to "Deploying...".
 
 > Deployed as version 7.
 
 Once the deploy succeeds, Studio also records what it sent in each type's `Server/<Type Name>/revisions.json`, and the Crowdy SDK's root in `Server/root/revisions.json`, which is how the page tells you next time what changed; see [What a deploy records](./write-server-logic.md#what-a-deploy-records). If a record cannot be written the deploy still stands, and the line says so in the warning color: "Deployed as version 7. Its record could not be saved, so its changes cannot be compared: ..." Commit each `revisions.json` with the crate, and `Server/root/revisions.json` too.
 
-A **Build output** button appears once a build has output, and opens it in a read-only box. A failed build deploys nothing: the line says "The build failed. See the build output below." and the box opens by itself, usually with a compiler error in a `logic.rs`. Only one operation runs at a time; the buttons are disabled until it ends. The platform limits a build to 16 crates, 64 files per crate, 2 MB of source and 5 minutes; the [builds page](/exec/builds#limits) has the full list. A project over the first three shows the reason on the status line and **Deploy** stays disabled.
+A **Build output** button appears once a build has output, and opens it in a read-only box. A failed build deploys nothing: the line says "The build failed. See the build output below." and the box opens by itself, usually with a compiler error in a `logic.rs`. Only one operation runs at a time; the buttons are disabled until it ends.
+
+Each type's server code, its crate, may have at most 64 files and 2 MB of source; the [builds page](/exec/builds#limits) has the platform's full list. A project with a crate over either shows the reason on the status line, such as "village_beacon's server code has 70 files; each type's server code can have at most 64" or "village_beacon's server code is 2.10 MB; one build takes at most 2 MB of source", and **Deploy** stays disabled. A deploy with more crates or more source than one build takes is not refused for it: it is [built in parts](#a-deploy-in-parts).
 
 A running Server Object keeps its old code until it next starts; see [Operations](/exec/operations#instances-and-versions). So after a deploy that changed a type, the card reads the app's Server Objects, and when some of a changed type are still running it adds a line and two buttons:
 
 > 3 running Server Objects of village_beacon still run the previous version until they stop when idle. Move them to the new version now?
 
 **Move now** restarts those types (see [Restarting a type](#restarting-a-type)) without asking again; **Leave them** dismisses the line, and they move when they next start. Which Server Objects ran the previous version is decided from the Server Objects read as the deploy was sent, by their epoch, not from your computer's clock, so a clock that is off does not hide or add any.
+
+### Server code that is not built again
+
+A type's server code is not built again when its files are exactly those of a revision in its `revisions.json` that this app already holds, because one of the app's versions ran it. The deploy names that module by its digest instead, and the confirm says "The server code of lantern is as it was deployed before, so it is not built again." So a deploy that changed one type's code builds that one crate, a change of settings alone, such as a save interval, builds none, and a deploy with nothing to build sends no build at all. This needs the app's versions, so when they could not be read every crate is built. **Deploy** on the page always reuses what it can. To build every type's server code again, including types whose code did not change, so they pick up the platform's current SDK and toolchain, open the drop-down arrow beside **Deploy** and pick **Rebuild All and Deploy**. It is available even when there is nothing to deploy, and it asks to confirm first. The command line's `-op=deploy -rebuild` does the same, and both follow one rule.
+
+### A deploy in parts
+
+The platform builds at most 16 crates and 2 MB of source at a time. A deploy with more, such as a project with many types or with the [Game Kit starters](./use-game-kit-starters.md), is built in several parts, in order, each at most 16 crates and 2 MB. It still becomes one version, and what players run changes once:
+
+1. **Every part is built first.** A part that fails deploys nothing, and nothing on the app changes.
+2. **Each part but the last is stored.** The platform keeps a build's modules only once a version has used them, so each of those parts is deployed in a staging version: the types that run now, unchanged, plus a stand-in type for each of its crates, named `ck_staged_` and the crate's name, which nothing calls and players cannot reach. The version that was active is then made active again at once. Before the first of these, the versions are read again, and if the app's active version changed since the deploy started, it stops: "The app's active version is version 9, not version 8 as when the deploy started, so nothing was deployed; refresh, then deploy again".
+3. **The deploy itself** names the stored and reused modules by their digest, with the last part's build, and its version runs no stand-in.
+
+So the [Versions](#versions) tab gains one version per extra part, before the deploy's own. The confirm says how many parts there are and how many more versions they add. On an app with nothing deployed there is nothing to make active again, so a staging version stays active until the deploy.
+
+If storing a part fails, the line says "Built, but storing the builds failed: " followed by the platform's words and what is active now, such as "Version 8 is active again, as before the deploy." A deploy in parts needs to know what runs now, so when the app's versions could not be read it refuses before building anything: "This deploy is built in parts, each first stored by a version that runs what runs now, and what runs now could not be read; refresh, then deploy again".
 
 ### Deploy starter pack
 
@@ -195,7 +219,7 @@ When the whole app is switched off, the header badge says so and its **Switch on
 >
 > Each is saved and stopped, and starts again on version 8 at its next call. Players watching one see it read again; a call that arrives while it stops may be answered Unavailable.
 
-Nothing is refused while it happens and no state is lost: each Server Object is saved first and starts again from what was saved. Players watching one see its values read again on the new start, the way they do after a reconnect. The deploy line then says how many it stopped, for example "3 running Server Objects stopped; each starts again on the active version at its next call." Use it after a deploy, from the **Move now** button the deploy strip offers, or whenever a fix should reach Server Objects that are running now rather than when they next stop.
+Nothing is refused while it happens and no state is lost: each Server Object is saved first and starts again from what was saved. Players watching one see its values read again on the new start, the way they do after a reconnect. The deploy line then says how many it stopped, for example "3 running Server Objects stopped; each starts again on the active version at its next call." Use it after a deploy, from the **Move now** button the deploy strip offers, or whenever a fix should reach Server Objects that are running now rather than when they next stop. From the command line, `-op=restart` with no `-type` restarts every type that still has an instance on older code; see [From the command line](#from-the-command-line).
 
 ## Call a function as the developer
 
@@ -253,20 +277,35 @@ It uses Crowdy Studio's saved sign-in and app, so sign in and pick the app in th
 | Operation | What it does |
 |---|---|
 | `-op=status` | The app's active version, whether the app is switched off, which types are switched off, whether its budget is paused and why, and its Server Objects and reserved memory against its limits (`instances`, `instanceLimit`, `reservedMb`, `maxReservedMb`). |
+| `-op=whoami` | Whether the machine is ready: `signedIn`, `scope` (`session` for a Studio sign-in, `organizationToken` for an organization token), `userId`, `appId`, `orgId` and `environment`. No token is read into the output. Without a sign-in it fails with "Sign in to Crowdy Studio on this machine", and without an app with "Choose the app in Crowdy Studio and press Sync"; both can be in one message. |
 | `-op=versions` | The versions, newest first. |
 | `-op=changes` | Which types differ from the live version, like the badges on the Overview tab, and whether a deploy would change anything. Read only. |
-| `-op=deploy -yes` | Assembles the project, builds it, waits, deploys it, and records what it sent in each type's `revisions.json`, like **Deploy**. |
-| `-op=starters -yes` | Builds and deploys the starter pack, like **Deploy starter pack**. |
+| `-op=deploy -yes` | Assembles the project, builds what changed, in [parts](#a-deploy-in-parts) when it needs more than one build, waits, deploys it, and records what it sent in each type's `revisions.json`, like **Deploy**. `-batch=N` puts at most N crates in a build, 1 to 16 (16 unless given). `-rebuild` builds every crate instead of [reusing](#server-code-that-is-not-built-again) what the app already holds, as **Rebuild All and Deploy** does. See [The deploy's result](#the-deploys-result). |
+| `-op=starters -yes` | Builds and deploys the starter pack, like **Deploy starter pack**. It takes `-batch=N` too. |
+| `-op=addstarter -starter=session` | Adds a Game Kit starter, and the starters it needs, to the project, like **Add starter**: their crates under `Server/` and their definitions under `/Game/ServerObjects/GameKit/`. `-starter=` is one of the seventeen: `world`, `matchmaker`, `session`, `leaderboard`, `player`, `market`, `npcs`, `minigame`, `tactics`, `director`, `instance`, `territory`, `zone`, `deck`, `arena`, `race` or `ball`. `-config=` sets the named starter's **Config**, as JSON or `@` and a file, like `-inputs=`. The result's `added` lists them. See [Use the Game Kit starters](./use-game-kit-starters.md#add-a-starter). |
+| `-op=removestarter -starter=world -yes` | Removes a Game Kit starter from the project with every starter that runs under it or calls it: their definitions, their `Server/` folders with any edits, and the **Game Kit World** setting when it named one. The result's `removed` lists them. See [Remove starters](./use-game-kit-starters.md#remove-starters). |
+| `-op=generate [-type=village_beacon] [-yes]` | Generates server code, like **Generate** (see [Generate it](./write-server-logic.md#generate-it)). Without `-type` it generates every type that is out of date or has no server code. A type that needs you (a My Own File type with no Logic File, or a missing one) and a type with a problem are listed under `skipped` and do not fail the run. With `-type`, it generates that one type even when it is up to date; an unknown name fails and lists the types. A question a single Generate would ask refuses that type, and the question is the reason, unless you pass `-yes`. `-yes` answers only the safe questions: keep the old List value names on the server, move the old Type Name folder to the new one (not when the type's own Logic File is inside it), and add empty versions of the missing functions. It never accepts dropping values that saved instances hold, rewriting `lib.rs` lines it would remove, or a move when both folders exist. See [The generate result](#the-generate-result). |
+| `-op=exporttype`, `-op=newtype`, `-op=edittype` | Read a type's settings as a file, create a type from one, and change a type from one. See [Define a type from a file](#define-a-type-from-a-file). |
+| `-op=removetype -type=village_beacon [-yes]` | Removes an ordinary type the way **Remove from project...** does (see [Remove a type](#remove-a-type)). It refuses a Game Kit starter (use `-op=removestarter`), a definition outside `/Game/`, and a definition that other assets use, naming them. A redirector that is still in use is named too: "fix up redirectors in the Content Browser first". It deletes the definition asset and then, only if the asset is really gone, the type's Server Code folder when the SDK generated it, any unused redirectors to the asset, and the type's Game Kit World and Actor Starters settings. Without `-yes` it says what it would remove, changes nothing and exits 1. |
+| `-op=renametype -type=village_beacon -to=/Game/Beacon/CSO_Beacon [-yes]` | Moves or renames the definition asset the way the Content Browser does, which leaves a redirector. The type's Server Code folder follows it, and its Game Kit settings move with it. The Type Name does not change: a changed Type Name is a new type, which `-op=edittype` refuses. It refuses a definition or a target outside `/Game/`, and a target that is taken. Without `-yes` it says what it would do and changes nothing. |
 | `-op=activate -version=6 -yes` | Makes version 6 the active one, like **Make active**. |
 | `-op=disable -type=village_beacon -yes` | Switches one type off. |
-| `-op=enable -type=village_beacon -yes` | Switches it on. |
+| `-op=enable -type=village_beacon -yes` | Switches it on. Without `-type`, `-op=enable -yes` switches the whole app back on, as the app's **Switch on** does. `-op=disable` still needs `-type`: switching the whole app off stays an action of the page. |
 | `-op=restart -type=village_beacon -yes` | Moves its running Server Objects to the active version, like **Restart**; the result's `stopped` says how many. |
-| `-op=call -type=village_beacon -fn=Refill -key=village -yes` | Calls a Server Only or Developers Only function as the developer, like **Call as Developer**. `-inputs=` gives its inputs as JSON, or `-inputs=@inputs.json` from a file, since a shell mangles quotes; missing inputs keep their defaults, and a name the function has no input for is refused rather than ignored. `-key=` is needed unless the type has Only One Instance. `-fn=` finds a function by name, the built-in ones such as `AddMember` included. A 64-bit integer above 9007199254740991 must be written as a string, for example `{"Player": "9007199254740993"}`; a larger number written without quotes is refused with "... is above 9007199254740991; write it as a string, for example "9007199254740993"." The result gives `status`, `message` and `reply`, the outputs as JSON. |
+| `-op=restart [-yes]` | With no `-type`, restarts every type that has an instance running code older than the active version. Each instance is compared with the version that was active when it started, and an instance that started within a minute of the deploy counts as old too. It stops every running or starting instance of those types, the ones already on the active version included. Without `-yes` it lists each such type's instances that it would stop (Instance Id, phase and age), changes nothing and exits 1. After a rollback (`-op=activate` to an older version) it refuses and asks for `-type=`. |
+| `-op=call -type=village_beacon -fn=Refill -key=village -yes` | Calls a Server Only or Developers Only function as the developer, like **Call as Developer**. `-inputs=` gives its inputs as JSON, or `-inputs=@inputs.json` from a file, since a shell mangles quotes (a relative path is read from the folder the command runs in; a path with a space goes in quotes with its `@`, as in `-inputs="@C:\My Game\inputs.json"`, or with the quotes after the `@`, as in `-inputs=@"C:\My Game\inputs.json"`, where the whole path is read; `-config=` and `-bundle=` take the same forms); missing inputs keep their defaults, and a name the function has no input for is refused rather than ignored. `-key=` is needed unless the type has Only One Instance. `-fn=` finds a function by name, the built-in ones such as `AddMember` included, and the Developers Only functions of a [Game Kit starter](./use-game-kit-starters.md#functions-only-a-developer-calls), such as the matchmaker's `Configure`. A 64-bit integer above 9007199254740991 must be written as a string, for example `{"Player": "9007199254740993"}`; a larger number written without quotes is refused with "... is above 9007199254740991; write it as a string, for example "9007199254740993"." The result gives `status`, `message` and `reply`, the outputs as JSON. A Game Kit starter's function that takes a `Ref`, such as the player's **Grant**, gets a fresh one when `-inputs=` leaves it out, and the result gives it as `ref`. |
+| `-op=grant -player=101910912345678 -bundle=@reward.json -yes` | Gives one player in-game soft currency and items through the [player starter](./use-game-kit-starters.md#functions-only-a-developer-calls)'s **Grant**, never real money. `-bundle=` is an `FCrowdyKitBundle` as JSON or `@` and a file, such as `{"Currency": {"gold": 100}, "Items": {"wood": 5}}`; `-xp=N` adds experience; `-ref=R` sends a `Ref` of your own, else a fresh one is made; `-type=` names the player starter when its Type Name is not `player`. The result gives `ref`, `status`, `message` and `reply`, what the grant earned the player. |
+| `-op=deposit -player=101910912345678 -bundle=@restore.json -yes` | Puts soft currency and items into one player's hub through **Deposit**, counting nothing toward quests or achievements, such as to give back what a bug took. It takes `-bundle=`, `-ref=` and `-type=` as `grant` does. |
 | `-op=instances` | Every Server Object the platform has placed: its type, Instance Id, phase (`idle`, `starting`, `running` or `stopping`), epoch, and `heldBack` when the platform will not place it, with the reason. |
-| `-op=logs` | Recent log lines. Optional `-type=`, `-flow=` and `-limit=`. |
-| `-op=stats` | Call counts per Server Function. Optional `-type=`. |
+| `-op=logs` | Recent log lines. Optional `-type=`, `-flow=` and `-limit=`. `-level=all`, `info`, `warnings` or `errors` filters by level, like the Logs tab's choices. `-before=<id>` pages back: pass the previous page's `nextBefore`. |
+| `-op=stats` | Call counts per Server Function. Optional `-type=`. `-window=hour`, `day` or `week` picks the period, like the Activity tab's. |
+| `-op=batch -ops=<file>` | Runs the operations in a file, one per line, in this one editor start. See [Several operations in one start](#several-operations-in-one-start). |
 
-`-yes` stands in for the confirmation the page asks. `deploy`, `starters`, `activate`, `disable`, `enable`, `restart` and `call` replace, switch, restart or run the app's live server code, so without `-yes` they refuse with "This changes the app's live server code or what it holds; pass -yes to confirm." and send nothing. The read-only operations (`status`, `versions`, `changes`, `instances`, `logs`, `stats`) do not need it. A deploy's result also gives `sdkVersion`, the `ckx-sdk` version the platform compiled the server code against, whatever version the crates name; its log line reads "build ... succeeded against ckx-sdk 0.8.0; deploying". An unknown `-op` is refused with the list of operations.
+`-yes` stands in for the confirmation the page asks. `deploy`, `starters`, `activate`, `disable`, `enable`, `restart`, `call`, `grant` and `deposit` replace, switch, restart or run the app's live server code, so without `-yes` they refuse with "This changes the app's live server code or what it holds; pass -yes to confirm." and send nothing. The read-only operations (`status`, `versions`, `changes`, `instances`, `logs`, `stats`) do not need it. `addstarter` changes only the project and needs neither `-yes` nor a sign-in. `removestarter` changes only the project too, but deletes the starters' code with any edits, so without `-yes` it names what it would remove and refuses, for example "This deletes session, matchmaker, world: their definitions and server code, edits included; pass -yes to confirm." An unknown `-op` is refused with the list of operations. `generate` and `newtype` change only the project and need no `-yes`; `edittype`, `removetype` and `renametype` change it only with `-yes`.
+
+**Close the Unreal Editor first.** An operation that writes the project (`generate`, `newtype`, `edittype` with `-yes`, `addstarter`, `removestarter`, `removetype` and `renametype` with `-yes`) refuses while an Unreal Editor is running: "An Unreal Editor is running. Close it first: it holds this project's Server Object types in memory and would save its own copy over what this op writes. Pass -editoropen to write anyway." `-editoropen` writes anyway.
+
+**A read-only `Config/DefaultGame.ini`.** The Game Kit World and Game Kit Actor Starters settings live in that file. When `removetype`, `renametype`, `addstarter` or `removestarter`, or **Remove from project...** on the page, would change them and the file is read-only, as a file checked in to source control can be, it refuses before changing anything: "...DefaultGame.ini is read-only (checked in?), and this changes the Game Kit settings it holds; make it writable, then run again; nothing was changed". The engine would otherwise keep the change in memory only and lose it when the editor closes.
 
 The command's exit code is its own result: 0 when the operation succeeded and 1 when it did not, whatever else the editor logs. It writes one line per step to the log under `LogCrowdyExec`. Add `-out=<file>` to also get the result as one JSON object: `op`, `ok`, `error` and `errorCode` (both empty when it succeeded), and the fields of that operation. A CI job can read it:
 
@@ -276,7 +315,44 @@ UnrealEditor-Cmd.exe Oakford.uproject -run=CrowdyServerCompute -op=deploy -yes -
 
 A job that runs `-op=deploy` without `-yes` fails with exit code 1 and deploys nothing, so add it once you are sure the job should replace the app's server code.
 
-`-op=deploy` refuses, as the page does, when a type's server code is not ready (it needs generating, is out of date, or has a problem), and says why. Regenerate and commit the server code before the job runs; a `Server/` folder that no longer matches its definition asset fails the job instead of deploying old code. Unlike the page, the command knows nothing about unsaved edits in an open editor; it sends what is on disk. It also does not check whether anything changed: it deploys what is on disk every time, so ask `-op=changes` first if the job should skip a deploy that would change nothing.
+`-op=deploy` refuses, as the page does, when a type's server code is not ready (it needs generating, is out of date, or has a problem), and says why. Regenerate and commit the server code before the job runs; a `Server/` folder that no longer matches its definition asset fails the job instead of deploying old code. Unlike the page, the command knows nothing about unsaved edits in an open editor; it sends what is on disk. It also does not check whether anything changed: it deploys what is on disk every time, as a new version, even when every crate is reused and nothing is built, so ask `-op=changes` first if the job should skip a deploy that would change nothing.
+
+### Several operations in one start
+
+Starting the editor takes most of the time of a short operation. `-op=batch` runs several in one start:
+
+```text
+UnrealEditor-Cmd.exe Oakford.uproject -run=CrowdyServerCompute -op=batch -ops=Saved/ops.txt
+```
+
+Each line of the file is the complete argument list one run of that operation would take. Blank lines and lines that start with `#` are skipped:
+
+```text
+# read first
+-op=status -out=Saved/status.json
+-op=changes -out=Saved/changes.json
+-op=call -type=leaderboard -fn=Submit -key=weekly -inputs="@Saved/score.json" -yes -out=Saved/submit.json
+```
+
+The operations run in order. Each one connects on its own, has its own time limit, and writes its own `-out` file exactly as it would alone. The batch stops at the first operation that fails, and the operations after it write nothing; put `-batchcontinue` on a line to go on after that line fails. The exit code is 1 if any operation failed and 0 otherwise. The log has one line per operation, such as "Server Compute batch: 2/3 -op=changes ok". A line cannot be `-op=batch`, and a file with such a line, or with no operations, runs nothing.
+
+### The deploy's result
+
+`-op=deploy` logs what it builds and what it reuses, such as "building 3 pieces of server code in 1 build; 15 unchanged, named by their digest", then each build as it goes ("build 1 of 2: ... queued", "build ... succeeded against ckx-sdk 0.12.1 after 41 s"), "every build succeeded; deploying", and "deployed as version 9, now the app's active server code", which names the staging versions after it when there were any. With `-out=<file>` the JSON result adds:
+
+| Field | What it holds |
+|---|---|
+| `version` | The version the deploy made. |
+| `builds` | Every build sent, in order, each with `buildId`, `buildStatus`, `buildLog`, `sdkVersion` and its `artifacts`. Empty when nothing was built. |
+| `buildId`, `buildStatus`, `buildLog`, `sdkVersion` | The last build's, as before builds were split. `sdkVersion` is the `ckx-sdk` version the platform compiled the server code against, whatever version the crates name. |
+| `reused` | Each crate that was not built again: `crate` and the `digest` it was named by. |
+| `artifacts` | Every crate's module in this deploy, built or reused: `crate`, `digest` and `sizeBytes`. |
+| `stagedVersions` | The staging versions a [deploy in parts](#a-deploy-in-parts) made, oldest first. Empty for a deploy in one part. |
+| `restoredVersion` | The version made active again after the last staging version, or 0 when none was. |
+| `stoppedRemoved` | The live types this deploy removes whose running Server Objects it stopped just before deploying. The platform would otherwise leave them running, holding memory, and once a type is gone nothing can restart it by name. Their saved state is kept. A player call that reaches one of those types in the second or two before the deploy lands starts it again, and that one stays running until it is idle long enough to be put away. |
+| `stopRemovedFailed` | `type: why` for each removed type whose Server Objects could not be stopped. The deploy still goes ahead; those Server Objects stay running until they are idle long enough to be put away, and one that keeps itself busy, such as with a timer, stays running. |
+
+A failed deploy fills the same fields as far as it got, and its `error` says what is active now, for example "... Version 8 is active again, as before the deploy." A build that failed gives "The build ... failed, so nothing was deployed; its log is above and in buildLog".
 
 ### Changes and records
 
@@ -287,7 +363,7 @@ A job that runs `-op=deploy` without `-yes` fails with exit code 1 and deploys n
 | `liveVersion` | The live version's number, or 0 when nothing is live. |
 | `types` | One row per type in the project, then one for each type on the server that the project no longer has: `type` (the Type Name), `change`, `what` and `liveRevision`. |
 | `change` | `unchanged`, `changed`, `new`, `unknown` (the live version runs code this project has no record of), `removed` (on the server, not in the project) or `not_compared` (the type's server code is not ready). |
-| `what` | For a changed type, what differs: any of `server code`, `save interval`, `idle timeout`, `platform data`, `player access`, `server limits`, `kind` and `scaling`. Otherwise empty. |
+| `what` | For a changed type, what differs: any of `server code`, `save interval`, `idle timeout`, `platform data`, `player access`, `server limits`, `kind`, `scaling`, and for a Game Kit starter `config` and `parent`. Otherwise empty. |
 | `liveRevision` | Where the revision the live version runs sits in the type's `revisions.json`, counting from 0 for the newest, or null when there is none. |
 | `problems` | Why the project cannot be deployed yet, one sentence each, as the page shows them. Empty when it can. |
 | `warnings` | What may go wrong after a deploy without stopping it, one sentence each, such as platform data the server code calls into without asking for it. `-op=deploy` writes them too, and both log each as a `warning:` line. |
@@ -298,14 +374,92 @@ A job that should deploy only when something changed can run `-op=changes`, stop
 
 `-op=deploy` writes each type's `revisions.json` after the deploy succeeds and logs "recorded the deployed revision of 2 types". A record that cannot be written does not fail the job: the deploy stands, the log warns "the deploy record was not saved for ...", and the JSON result lists each one under `recordErrors` (an empty list when all were saved). A job that builds the project's server code in CI should commit the changed `revisions.json` files afterwards, so the next `-op=changes` and everyone's Overview tab agree with what is live. `-op=starters` records nothing.
 
+### The generate result
+
+`-op=generate` logs one line per type. With `-out=<file>` the JSON result adds:
+
+| Field | What it holds |
+|---|---|
+| `generated` | The types it generated. |
+| `refused` | The types it did not generate because a question a single Generate would ask was not answered by `-yes`: `type` and `reason`, the question itself. |
+| `skipped` | The types it left alone because they need you (a My Own File type with no Logic File, or a missing one) or have a problem. These do not fail the run. |
+| `notes` | Other lines about what the run did or did not do. |
+| `saved` | The definitions it saved. Generating can change a definition, for example by adding List Value Names entries. |
+| `logicGaps` | Per type, what `logic.rs` still needs: `logicFile` (the file), `missing` (functions to write), `leftover` (functions the file defines that the type no longer has) and `stubsAdded` (empty versions it added). |
+
+The exit code is 1 if anything was refused or the save failed. A job can generate, then read `logicGaps` to see which functions to write next.
+
+### Define a type from a file
+
+A Server Object type is a definition asset you normally fill in with the Details panel. From the command line you write the same settings as a JSON file, a **spec**, and create or change the type from it. `-op=exporttype` shows what a spec looks like.
+
+A spec holds the settings the Details panel shows, under their C++ property names: `TypeName`, `Functions`, `bOnlyOneInstance`, `StateForm`, `StateList` and so on, exactly as `-op=exporttype` writes them. What the bake rebuilds on its own, such as the baked field tables, is not in a spec.
+
+- **Keys are matched with their capitals.** `typename` is not `TypeName`.
+- **An enum is its value name** as the editor writes it, such as `"List"` for a StateForm or `"Every"` for a timer. A struct or enum asset is its path, such as `/Script/MyGame.MyState`, and `null` is none.
+- **`CanCall` and `ListenTo` are Type Names,** not asset paths.
+- **A 64-bit integer is a string,** such as `"9007199254740993"`.
+- **A List is an array of variables.** `StateList`, `ParamsList`, `ReplyList` and `PayloadList` each hold objects with `Name`, `Type`, `TypeObject` (for Enum, Struct and object kinds), `Containers` (at most 2), `KeyType` and `KeyTypeObject` (for a map), `Id`, `MetaData` and `Default`. `ClampMin` and `ClampMax` in `MetaData` are a variable's Value Range.
+
+A spec is refused whole, and nothing changes, when it has any problem: an unknown or wrongly capitalised key, a value of the wrong kind or outside its range, a path that does not load, control characters in a name or text, a Logic File outside the project or not a `.rs` file, or a problem the bake finds. Every problem is listed in `errors` of the result, not only the first.
+
+For example, a tip jar with a Total and the last tipper, both visible to players, an `AddTip` function and a timer, saved as `tip_jar.json`:
+
+```json
+{
+  "TypeName": "tip_jar",
+  "bOnlyOneInstance": true,
+  "StateForm": "List",
+  "StateList": [
+    { "Name": "Total", "Type": "Int64" },
+    { "Name": "LastTipper", "Type": "String" }
+  ],
+  "WatchedFields": ["Total", "LastTipper"],
+  "Functions": [
+    {
+      "Name": "AddTip",
+      "ParamsForm": "List",
+      "ParamsList": [
+        { "Name": "Amount", "Type": "Int32", "MetaData": { "ClampMin": "1", "ClampMax": "100" } }
+      ],
+      "ReplyForm": "List",
+      "ReplyList": [
+        { "Name": "Total", "Type": "Int64" }
+      ]
+    }
+  ],
+  "Timers": [
+    { "Name": "Hourly", "Repeat": "Every", "Seconds": 3600 }
+  ]
+}
+```
+
+Create the type, then generate its server code:
+
+```text
+UnrealEditor-Cmd.exe Oakford.uproject -run=CrowdyServerCompute -op=newtype -spec=@tip_jar.json
+UnrealEditor-Cmd.exe Oakford.uproject -run=CrowdyServerCompute -op=generate -type=tip_jar
+```
+
+The operations:
+
+| Operation | What it does |
+|---|---|
+| `-op=exporttype [-type=T] [-spec=<file>]` | Reads the type's settings. The spec is under `definition` in the `-out` result; with `-spec=<file>` it also writes the bare spec to that file. Without `-type` it exports a new type's defaults, as a template to fill in. |
+| `-op=newtype -spec=<json or @file> [-path=/Game/...]` | Creates a definition asset `CSO_<Type Name in PascalCase>`, so `tip_jar` becomes `CSO_TipJar`, in `-path` (`/Game/ServerObjects` unless given; it must start with `/Game/`). A setting the spec leaves out keeps its default. It refuses a Type Name that any type in the project already has, in any capitals, and a Code Source of Game Kit Starter: add a starter with `-op=addstarter`. When another type already holds the asset name (`tip__jar` and `tip_jar` both make `CSO_TipJar`), the refusal names that type and suggests `-path=` to put the new asset somewhere else. |
+| `-op=edittype -type=T -spec=<json or @file> [-yes]` | Replaces the type's settings with the spec's. The spec must hold every top-level setting, so start from `-op=exporttype`; a partial spec cannot empty `Functions` by leaving it out. Settings inside a nested object may be left out. Without `-yes` it changes nothing: it reports `changed` (what would differ) and `renamedListValues`, and exits 1, except that a spec identical to the type succeeds with `changed` empty. With `-yes` it saves the definition, and if the save fails it puts the type back as it was. |
+
+`edittype` refuses a changed Type Name, because to the server a new name is a new type (see [After you change the definition](./write-server-logic.md#after-you-change-the-definition)), and a switch to or from a Code Source of Game Kit Starter. `newtype`, and `edittype` with `-yes`, write the project, so they refuse while an editor runs, as described above. The next step after either is `-op=generate -type=T`.
+
 ## Be careful on a shared app
 
-A deploy replaces the app's active server code for every player and every teammate on that app at once, and there is no separate staging step. Use an app of your own for experiments, keep `Server/` in version control so a deploy can be repeated, and know how to make the previous version active before you deploy.
+A deploy replaces the app's active server code for every player and every teammate on that app at once, and there is no separate step to try it first: the staging versions of [a deploy in parts](#a-deploy-in-parts) run what was already live and are not a preview. Use an app of your own for experiments, keep `Server/` in version control so a deploy can be repeated, and know how to make the previous version active before you deploy.
 
 ## Related
 
 - [Write its server logic](./write-server-logic.md)
 - [Create a Server Object type](./create-a-type.md)
+- [Use the Game Kit starters](./use-game-kit-starters.md): Add starter, world as the root, and removing starters
 - [Call its functions, from Blueprint](./from-blueprint/call-functions.md) and [from C++](./from-cpp/call-functions.md)
 - [Troubleshooting](./troubleshooting.md): outcomes, refusals and `crowdy.exec.trace`
 - [Unreal and ck-exec names](./unreal-and-ck-exec-names.md)
