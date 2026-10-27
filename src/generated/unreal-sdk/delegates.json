@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-16T18:01:58Z",
-  "sdk_version": "2.20.0",
+  "generated_from": "2026-10-26T18:47:52Z",
+  "sdk_version": "2.21.0",
   "table": "delegates",
   "columns": [
     {
@@ -142,6 +142,17 @@
       "category": "CrowdySDK|Authentication",
       "module": "CrowdySDK",
       "page": "studio/config-sync",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyCppReplicationSubsystem::OnSendRefused",
+      "owner": "UCrowdyCppReplicationSubsystem",
+      "name": "OnSendRefused",
+      "type": "FOnCrowdySendRefused",
+      "category": "Crowdy|Realtime",
+      "module": "CrowdyNet",
+      "page": "runtime/connection-and-reconnect",
       "editor": false,
       "allowlist": ""
     },
@@ -318,6 +329,28 @@
       "category": "Crowdy SDK|Entity Subsystem|Events",
       "module": "CrowdyReplication",
       "page": "runtime/ownership-transfer",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitActorComponent::OnKitActorChanged",
+      "owner": "UCrowdyKitActorComponent",
+      "name": "OnKitActorChanged",
+      "type": "FOnCrowdyKitActorChanged",
+      "category": "Crowdy SDK|Game Kit",
+      "module": "CrowdyReplication",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitEmotes::OnEmote",
+      "owner": "UCrowdyKitEmotes",
+      "name": "OnEmote",
+      "type": "FCrowdyKitOnEmote",
+      "category": "Crowdy|Game Kit|Emotes",
+      "module": "CrowdyReplication",
+      "page": "services/play-together",
       "editor": false,
       "allowlist": ""
     },
@@ -1455,6 +1488,61 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyKitSocial::OnChatMessage",
+      "owner": "UCrowdyKitSocial",
+      "name": "OnChatMessage",
+      "type": "FOnCrowdyKitChatMessage",
+      "category": "Crowdy|Game Kit|Social",
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocialGroupAction::Completed",
+      "owner": "UCrowdyKitSocialGroupAction",
+      "name": "Completed",
+      "type": "FCrowdyKitGroupAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocialGroupAction::Failed",
+      "owner": "UCrowdyKitSocialGroupAction",
+      "name": "Failed",
+      "type": "FCrowdyKitGroupAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocialMembersAction::Completed",
+      "owner": "UCrowdyKitSocialMembersAction",
+      "name": "Completed",
+      "type": "FCrowdyKitMembersAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyKitSocialMembersAction::Failed",
+      "owner": "UCrowdyKitSocialMembersAction",
+      "name": "Failed",
+      "type": "FCrowdyKitMembersAsyncResult",
+      "category": "",
+      "module": "CrowdyServices",
+      "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyPlayers_GetPlayerName::OnError",
       "owner": "UCrowdyPlayers_GetPlayerName",
       "name": "OnError",
@@ -2016,6 +2104,50 @@
       "allowlist": ""
     },
     {
+      "id": "UCrowdyFindMatchAction::Failed",
+      "owner": "UCrowdyFindMatchAction",
+      "name": "Failed",
+      "type": "FCrowdyFindMatchUpdate",
+      "category": "",
+      "module": "CrowdyExec",
+      "page": "guides/whats-changed",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyFindMatchAction::Matched",
+      "owner": "UCrowdyFindMatchAction",
+      "name": "Matched",
+      "type": "FCrowdyFindMatchUpdate",
+      "category": "",
+      "module": "CrowdyExec",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyFindMatchAction::Proposed",
+      "owner": "UCrowdyFindMatchAction",
+      "name": "Proposed",
+      "type": "FCrowdyFindMatchUpdate",
+      "category": "",
+      "module": "CrowdyExec",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyFindMatchAction::Queued",
+      "owner": "UCrowdyFindMatchAction",
+      "name": "Queued",
+      "type": "FCrowdyFindMatchUpdate",
+      "category": "",
+      "module": "CrowdyExec",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
       "id": "UCrowdyServerCallAction::OnFailed",
       "owner": "UCrowdyServerCallAction",
       "name": "OnFailed",
@@ -2065,6 +2197,17 @@
       "name": "StatusChanged",
       "type": "FCrowdyServerStatusChanged",
       "category": "Crowdy SDK|Server Objects",
+      "module": "CrowdyExec",
+      "page": "",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyServerObjectComponent::OnPositionKept",
+      "owner": "UCrowdyServerObjectComponent",
+      "name": "OnPositionKept",
+      "type": "FOnCrowdyPositionKept",
+      "category": "Server Object|Position",
       "module": "CrowdyExec",
       "page": "",
       "editor": false,

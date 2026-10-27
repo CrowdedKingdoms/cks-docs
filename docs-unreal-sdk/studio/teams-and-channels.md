@@ -65,13 +65,17 @@ Select a team or channel row and the detail view opens beneath the list. It is t
 
 **Members.** Add a member by user id, remove one, and see who is in. A pending join request shows **Approve** and **Reject**; an active member shows **Remove**. Select a member to edit their roles.
 
-**Roles.** A role is a named, ranked permission set you assign to members. Create one with a name, a rank (higher is more senior), and a fixed checklist of four permissions: **Manage members**, **Manage roles**, **Manage group**, **Send messages**. A role badged `system` (the leader role, for example) is read-only; a `custom` role can be edited and deleted.
+**Roles.** A role is a named, ranked permission set you assign to members. Create one with a name, a rank (higher is more senior), and a checklist of the permissions its kind of group has. A team's are **Manage Team**, **Manage Members**, **Manage Roles** and **Invite Members**; a channel's are **Send Messages**, **Manage Channel**, **Manage Members**, **Manage Roles** and **Invite Members**. A role badged `system` (the leader role, for example) is read-only; a `custom` role can be edited and deleted.
 
 :::note[Group roles are membership permissions, not gameplay permissions.]
-The four keys above decide who may manage the team or channel and who may send on it. The spatial permission keys a grid checks (see [Grids](./grids.md)) are a separate catalog. A team can be granted grid permissions, but the two lists never mix.
+The keys above decide who may manage the team or channel, who may invite to it and who may send on a channel. The spatial permission keys a grid checks (see [Grids](./grids.md)) are a separate catalog. A team can be granted grid permissions, but the two lists never mix.
 :::
 
 **Danger zone.** Delete the whole team or channel. Deleting a team removes all its members and roles and revokes any grid grants it conferred, and it cannot be undone.
+
+## From the command line
+
+A script can do the same work without the editor window: create and delete teams and channels, add and remove members, set roles, and write the policies. It needs a sign-in with your account, and every change needs `-yes`. The operations are listed under [Access, teams, channels and grids](./config-sync.md#access-teams-channels-and-grids) on the Config Sync page.
 
 ## What a policy is
 

@@ -2,7 +2,7 @@
 slug: call-functions
 sidebar_position: 4
 title: Call its functions
-description: Call a Server Function from Blueprint with the typed Call node, with a pin for every input and output and On Success and On Failed, feed the village beacon from an overlap event, give up on a call sooner with Timeout, measure the round trip with Ping Server Objects, and call by name with Make Inputs, Set Server Value and Call Server Function.
+description: Call a Server Function from Blueprint with the typed Call node, with a pin for every input and output and On Success and On Failed, the advanced Code pin for a Game Kit starter's refusal, feed the village beacon from an overlap event, give up on a call sooner with Timeout, measure the round trip with Ping Server Objects, and call by name with Make Inputs, Set Server Value and Call Server Function.
 ---
 
 # Call its functions
@@ -17,10 +17,10 @@ A client never changes a Server Object's values. It calls one of the Server Func
 
 **Call FeedBeacon** has an execution pin and a pin for each input on the left. On the right it has **Then**, **On Success** and **On Failed**, then a pin for each output. It is a latent node, so it goes in an event graph. **On Success** or **On Failed** runs, one of them and only once, when the server answers.
 
-**Outcome**, **Reason**, **Retryable** and **Timeout** are in the node's advanced area: click the small arrow at the bottom of the node to show them. **Timeout** is an input, explained in [Give up sooner](#give-up-sooner). A pin you have already wired stays visible when the area is collapsed.
+**Outcome**, **Reason**, **Retryable**, **Code** and **Timeout** are in the node's advanced area: click the small arrow at the bottom of the node to show them. **Timeout** is an input, explained in [Give up sooner](#give-up-sooner). **Code** is an output that only a [Game Kit starter](../use-game-kit-starters.md#refusals-and-their-codes) fills, with its refusal code, such as `full`; it is None for every other type. A pin you have already wired stays visible when the area is collapsed.
 
 - **On Success** runs with the outputs set. Wire them straight from their pins.
-- **On Failed** runs with **Outcome**, **Reason** and **Retryable**. **Outcome** is one of the [call outcomes](../troubleshooting.md#outcomes). A call the server refuses by a rule in the asset, such as **Callable By**, arrives as **Denied** with the reason to show, and a call inside a **Cooldown** as **Denied** with **Retryable** true; see [What a refused player sees](../access-members-and-timers.md#what-a-refused-player-sees). A call to a server, or a type, that is switched off or paused arrives as **Paused** with **Retryable** true, so a Switch on **Outcome** has a **Paused** pin: try again later or show a paused message. A call made after the player's access ended, or still waiting when it did, arrives as **Access Ended**, not retryable, so the Switch has an **Access Ended** pin too: show **Reason** and send the player back to sign in; see [When access ends](../troubleshooting.md#when-access-ends). A call that times out says in **Reason** whether the server's own limit or the connection gave up; see [Timeout](../troubleshooting.md#outcomes).
+- **On Failed** runs with **Outcome**, **Reason**, **Retryable** and **Code**. **Outcome** is one of the [call outcomes](../troubleshooting.md#outcomes). A call the server refuses by a rule in the asset, such as **Callable By**, arrives as **Denied** with the reason to show, and a call inside a **Cooldown** as **Denied** with **Retryable** true; see [What a refused player sees](../access-members-and-timers.md#what-a-refused-player-sees). A call to a server, or a type, that is switched off or paused arrives as **Paused** with **Retryable** true, so a Switch on **Outcome** has a **Paused** pin: try again later or show a paused message. A Game Kit starter's refusal for a reason of the game's, such as a full match, arrives as **Refused** with its **Code**, so the Switch has a **Refused** pin too. A call made after the player's access ended, or still waiting when it did, arrives as **Access Ended**, not retryable, so the Switch has an **Access Ended** pin too: show **Reason** and send the player back to sign in; see [When access ends](../troubleshooting.md#when-access-ends). A call that times out says in **Reason** whether the server's own limit or the connection gave up; see [Timeout](../troubleshooting.md#outcomes).
 - An input you leave alone sends its default from the asset.
 - An input that does not fit its type, such as -1 for a `uint32` or 70,000 for an `int16`, sends nothing: **On Failed** runs as a **Bad Request** and **Reason** names the input.
 
@@ -46,7 +46,7 @@ The call needs no **Target**: it uses the beacon's own component.
 
 ## Give up sooner
 
-A call waits for the answer as long as the project's **Server Object Call Timeout** allows, 20 seconds unless you changed it; see [Project settings](../../reference/project-settings.md#server-object-timeouts). The advanced **Timeout** pin of a **Call** node, typed or generic, is a limit of its own for that one call, in seconds. It is counted from the call, retries and waiting to send included. It can only shorten the wait: a value above the project's timeout changes nothing, and 0, the default, leaves only the project's.
+A call waits for the answer as long as the project's **Server Object Call Timeout** allows, 20 seconds unless you changed it; see [Project settings](../../reference/project-settings.md#server-object-timeouts). The advanced **Timeout** pin of a **Call** node, typed or generic, is a limit of its own for that one call, in seconds. It is counted from the call, retries and waiting to send included. It can only shorten the wait: a value above the project's timeout changes nothing, and 0, the default, leaves only the project's. When the function has an input named **Timeout** of its own, the typed **Call** node labels its limit pin **Call Timeout** so the two do not clash; otherwise the pin is **Timeout**. A graph saved with either label keeps its links.
 
 When it runs out, **On Failed** runs with **Outcome** **Timeout** and **Retryable** false, and **Reason** reads, for a **Timeout** of 5, "No answer within 5 seconds; FeedBeacon may still have run on the server". The server is not told to stop, so the call may still take effect, and an answer that arrives later is not reported. Watch the beacon's oil with **On Oil Changed** before you feed it again.
 
@@ -63,7 +63,7 @@ It never opens a connection. With no Server Object connection open, such as befo
 
 ## By name
 
-The generic **Call Server Function** under **Server Objects** has a **Function** dropdown that lists every function of every asset, for when you would rather pick than type. Its pins are laid out like a **Call** node's, with **Outcome**, **Reason** and **Retryable** in the advanced area. The nodes below work by name and by type instead, for a graph that calls whichever function it is told to.
+The generic **Call Server Function** under **Server Objects** has a **Function** dropdown that lists every function of every asset, for when you would rather pick than type. Its pins are laid out like a **Call** node's, with **Outcome**, **Reason**, **Retryable** and **Code** in the advanced area. The nodes below work by name and by type instead, for a graph that calls whichever function it is told to.
 
 ### Feed the beacon by name
 
@@ -77,7 +77,7 @@ The generic **Call Server Function** under **Server Objects** has a **Function**
 
 The figure is steps 1 to 4 only: it has no trigger event, no **Is Valid** and nothing on **On Success** or **On Failed**, and it reads the Server Object from a component variable named `Beacon`. Add your own trigger and the **Is Valid**, and wire step 5.
 
-**Call Server Function** here is the one with no **Function** dropdown, found under **Crowdy SDK > Server Objects**; it takes a Server Object and Inputs. It is latent like the typed one, and its **On Success** and **On Failed** behave the same. Both are the delegate `FCrowdyServerCallDone`, which carries **Outputs**, **Outcome**, **Reason** and **Retryable**.
+**Call Server Function** here is the one with no **Function** dropdown, found under **Crowdy SDK > Server Objects**; it takes a Server Object and Inputs. It is latent like the typed one, and its **On Success** and **On Failed** behave the same. Both are the delegate `FCrowdyServerCallDone`, which carries **Outputs**, **Outcome**, **Reason**, **Retryable** and **Code**; a C++ handler bound to them takes all five, see [Bind the Blueprint call in C++](../from-cpp/call-functions.md#bind-the-blueprint-call-in-c).
 
 **Make Inputs** returns a function's Inputs with their default values, and is empty when the function takes none.
 
@@ -92,6 +92,7 @@ Two things to know about the by-name nodes:
 - [Hear its messages](./hear-server-messages.md): the previous page
 - [Call a Server Function Library](./call-a-library.md): the next page, the **Call** node of a type with no instance
 - [Pins for every type](./pins-for-every-type.md): which pin each input and output gets
+- [Use the Game Kit starters](../use-game-kit-starters.md): the **Refused** outcome and its **Code**
 - [Troubleshooting](../troubleshooting.md#outcomes): every outcome, and the refusals from your server code
 - [Access, members and timers](../access-members-and-timers.md#what-a-refused-player-sees): what a refused player sees
 - [Tip jar: your first Server Object](../examples/tip-jar.md): **Call Tip**, click by click

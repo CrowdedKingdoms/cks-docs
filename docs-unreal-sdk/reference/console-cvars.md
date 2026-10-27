@@ -9,11 +9,11 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Console Variables
 
-This page lists 46 `crowdy.*` console entries. They come in three kinds: trace gates that turn on
+This page lists 51 `crowdy.*` console entries. They come in three kinds: trace gates that turn on
 informational logging for one area, behavior switches that change what the SDK does, and diagnostic
 commands that run once and hold no stored value. A row badged **Editor only** exists only in the editor
-process. Four of the diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`,
-`crowdy.mass.derive`, `crowdy.mass.state.verdict`) and every other `crowdy.mass.*` entry are compiled out of
+process. Five of the diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`,
+`crowdy.registry.dump`, `crowdy.mass.derive`, `crowdy.mass.state.verdict`) and every other `crowdy.mass.*` entry are compiled out of
 a Shipping build and are absent there rather than silent; every other row ships in Development and Shipping.
 
 ## When you land here
@@ -51,7 +51,7 @@ bearer token, a pattern worth copying in your own logging around Studio calls.
 
 ## Behavior switches
 
-These change what the SDK does rather than what it logs. None of the 20 exist only in the editor.
+These change what the SDK does rather than what it logs. None of the 24 exist only in the editor.
 
 <SurfaceTable
   table="cvars"
@@ -74,7 +74,13 @@ On by default, it asks for HTTP/2 on the SDK's own requests (falling back to HTT
 :::
 
 :::note[`crowdy.net.retry.busy` resends a refusal the platform blames on itself before the caller ever sees `Failed`.]
-On by default. An SDK query resends on any platform-blamed retryable refusal except `WRONG_DATACENTER` and `APP_UNAVAILABLE`. At most 3 retries, with the server's suggested wait when it names one or a doubling local wait otherwise. Turn it off (`0`) only to compare against the un-retried behavior; leave it on for a shipping build.
+On by default. An SDK query resends on any platform-blamed retryable refusal except `WRONG_DATACENTER` and `APP_UNAVAILABLE`. At most 3 retries, with the server's suggested wait when it names one or a doubling local wait otherwise. Password sign-in, the app token mint and the app token refresh are retried the same way when the platform answers that it is busy, and a retried request is dropped if the account's token changed meanwhile. Registration, link and social completion, password changes, email sends, logout and account deletion are never retried. Turn it off (`0`) only to compare against the un-retried behavior; leave it on for a shipping build.
+:::
+
+:::note[`crowdy.kit.emotes.*` cap the emotes a client will read, per sender and across all senders.]
+Each sender has its own small budget, and every emote also has to fit one budget shared across all senders. `crowdy.kit.emotes.persender.maxpersecond` (default 4) is how fast one sender's budget refills; `crowdy.kit.emotes.persender.burst` (default 4) is the most it holds. The per-sender budget is checked first, so one player flooding emotes runs out of their own budget and no longer uses up the shared one. An emote the shared budget drops costs its sender nothing. A client tracks at most 256 senders, and when that is full the sender that has been silent longest is forgotten.
+
+The shared budget exists because a sender id is only what the sender claims. `crowdy.kit.emotes.maxpersecond` (default 64) is how fast it refills; `crowdy.kit.emotes.burst` (default 16) is the most it holds. An emote over either budget is dropped before it is read, with one Warning in the log. A peer that forges a player's id can use up that player's per-sender budget, which costs that player nothing but their own emotes. Raise the numbers only if a busy scene legitimately sends more emotes than that. See [Send an emote](../services/play-together.md#send-an-emote).
 :::
 
 :::warning[Leave `crowdy.rpc.allowObjectLoad` off in production.]
@@ -94,10 +100,12 @@ measurement against the same build, not a fix for anything.
 
 ## Diagnostic commands
 
-Seven commands with no stored value. Only `crowdy.rpc.dumpfn` and `crowdy.mass.derive` take arguments and
-print usage without them; every other command acts as soon as you run it. Four are compiled out of a Shipping
-build: `crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`, `crowdy.mass.derive` and
-`crowdy.mass.state.verdict`.
+Eight commands with no stored value. Only `crowdy.rpc.dumpfn` and `crowdy.mass.derive` take arguments and
+print usage without them; every other command acts as soon as you run it. Five are compiled out of a Shipping
+build: `crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`, `crowdy.registry.dump`, `crowdy.mass.derive` and
+`crowdy.mass.state.verdict`. `crowdy.registry.dump` logs every entry the cook baked into the registry, one
+line each: the structs and their layout hashes, the CrowdyState properties, and the CrowdyEvent functions,
+with their ids. It is the console version of the Registry page (see [Inspector and Registry](../studio/inspector-and-registry.md)).
 
 <SurfaceTable
   table="cvars"
@@ -106,6 +114,7 @@ build: `crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`, `crowdy.mass.de
   notes={{
     "crowdy.rpc.dumpfn": "Not in Shipping",
     "crowdy.state.heartbeat.advisories": "Not in Shipping",
+    "crowdy.registry.dump": "Not in Shipping",
     "crowdy.mass.derive": "Not in Shipping",
     "crowdy.mass.state.verdict": "Not in Shipping",
     "crowdy.cpp.selftest": "Every build",
@@ -116,6 +125,8 @@ build: `crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`, `crowdy.mass.de
 
 :::tip[`crowdy.rpc.dumpfn` and `crowdy.state.heartbeat.advisories` print structured text you can paste directly into a bug report.]
 :::
+
+The development-build sign-in commands `crowdy.auth.signin.file`, `crowdy.auth.status` and `crowdy.auth.signout` are described under [Sign in from the console](../guides/testing-locally.md#sign-in-from-the-console).
 
 `crowdy.cpp.selftest` and `crowdy.net.routes` carry no build guard, so they exist in every build including
 Shipping; the four diagnostics above do not, and a Shipping console answers them with an unknown command.

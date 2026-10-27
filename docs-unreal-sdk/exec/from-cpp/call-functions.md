@@ -2,7 +2,7 @@
 slug: call-functions
 sidebar_position: 4
 title: Call its functions
-description: Call a Server Function with UCrowdyServerObject::Call, with a struct or with inputs added in the asset, and what the SDK retries for you. The call outcomes and the refusals that come from your own server code are on the troubleshooting page.
+description: Call a Server Function with UCrowdyServerObject::Call, with a struct or with inputs added in the asset, what the SDK retries for you, a Game Kit starter's refusal Code, and binding a C++ handler to the Blueprint call's FCrowdyServerCallDone, which has five parameters. The call outcomes and the refusals that come from your own server code are on the troubleshooting page.
 ---
 
 # Call its functions
@@ -23,7 +23,7 @@ When the local player walks into the beacon, the beacon offers it ten units of o
 
 - **Function**: the function's **Name** on the definition, `FeedBeacon` here.
 - **Params**: an `FInstancedStruct` holding the function's Input Struct, made with `FInstancedStruct::Make`. For a function with no inputs, pass an empty `FInstancedStruct()`. A function whose inputs are added in the asset takes an `FInstancedPropertyBag` instead; see [below](#call-one-with-inputs-added-in-the-asset).
-- **OnDone**: runs once with an `FCrowdyServerCallResult`, on the game thread. It holds the `Outcome`, the `Reply` on success (empty for a function with no outputs), a `Reason` sentence for anything but success, and `bRetryable`, which says calling again later may succeed.
+- **OnDone**: runs once with an `FCrowdyServerCallResult`, on the game thread. It holds the `Outcome`, the `Reply` on success (empty for a function with no outputs), a `Reason` sentence for anything but success, `bRetryable`, which says calling again later may succeed, and `Code`, an `FName` that only a [Game Kit starter](../use-game-kit-starters.md#refusals-and-their-codes) fills with its refusal code, such as `full` with the outcome `Refused`, and is `None` otherwise.
 
 Things worth knowing before you rely on it:
 
@@ -90,6 +90,23 @@ Objects->Ping([](bool bOk, float RoundTripMs, const FString& Reason)
 
 It never opens a connection. With no Server Object connection open it fails at once, and OnDone runs before `Ping` returns, with "No Server Object connection is open". The platform answers at most 60 pings every 10 seconds on a connection and drops the rest without a word, so the SDK refuses more than that itself, with "Too many pings: the platform answers at most 60 every 10 seconds". Ping on a timer of a second or more, not every frame. From Blueprint it is the **Ping Server Objects** node.
 
+## Bind the Blueprint call in C++
+
+`Call` with a lambda is the way to call from C++. Code that uses the Blueprint node's action instead, `UCrowdyServerCallAction::CallServerFunction`, binds its **On Success** and **On Failed** pins with `AddDynamic`. Both are the dynamic delegate `FCrowdyServerCallDone`, declared in `CrowdyServerObjectLibrary.h`, and it has five parameters: the outputs, the outcome, the reason, whether calling again may succeed, and a Game Kit starter's refusal code. The handler is a `UFUNCTION` that takes all five:
+
+```cpp
+UFUNCTION()
+void HandleFeedFailed(const FInstancedStruct& Outputs, ECrowdyServerCallOutcome Outcome, const FString& Reason, bool bRetryable, FName Code);
+```
+
+```cpp
+UCrowdyServerCallAction* Feed = UCrowdyServerCallAction::CallServerFunction(this, Beacon, TEXT("FeedBeacon"), FInstancedStruct::Make(Params));
+Feed->OnFailed.AddDynamic(this, &AVillageBeacon::HandleFeedFailed);
+Feed->Activate();
+```
+
+The delegate had four parameters before the `FName Code` was added, so a handler written for it, without `Code`, no longer compiles: add the parameter. `Code` is `None` for every type but a [Game Kit starter](../use-game-kit-starters.md#refusals-and-their-codes).
+
 ## Outcomes
 
 `Outcome` is an `ECrowdyServerCallOutcome`. Every outcome, what it means and what to do about it, and the refusals that come from the server code generated for the type, are on [Troubleshooting](../troubleshooting.md#outcomes).
@@ -100,5 +117,6 @@ It never opens a connection. With no Server Object connection open it fails at o
 - [Get a Server Object](./get-a-server-object.md#status)
 - [Call its functions, from Blueprint](../from-blueprint/call-functions.md): the **Call** node and **Call Server Function**
 - [Call a Server Function Library](./call-a-library.md): the next page, a type with no instance to hold
+- [Use the Game Kit starters](../use-game-kit-starters.md): the **Refused** outcome and its `Code`
 - [Troubleshooting](../troubleshooting.md#outcomes): every outcome, and the refusals from your server code
 - [ck-exec operations](/exec/operations): logs, including a crashed call's

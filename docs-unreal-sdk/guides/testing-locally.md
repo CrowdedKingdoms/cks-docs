@@ -90,6 +90,22 @@ Once both clients are running, confirm the setup actually worked before you trus
 each client should report a different local player identity, and exactly one client should be the elected
 host.
 
+## Sign in from the console
+
+A headless smoke test has no sign-in screen to click through. Three console commands sign a test account in and out from the command line. They exist in development builds and are not in Test or Shipping builds. Each acts on the world it is typed in, so with several PIE clients, type it in the right client.
+
+- `crowdy.auth.signin.file <path>` signs in with a test account read from a JSON file, through the normal Login. The file holds the account's email and password:
+
+  ```json
+  {"email": "tester@example.com", "password": "the-test-password"}
+  ```
+
+  It logs only the outcome and the user id. Keep that file out of source control, and never type a password on the console line itself: the console logs what you type.
+- `crowdy.auth.status` logs whether you are signed in, the user id, whether an app token is set and when it expires, and the pause state. It never prints a token.
+- `crowdy.auth.signout` is the normal logout.
+
+In a headless run, sign in, then poll `crowdy.auth.status` until it reports `SignedIn=true` before you run any player-side command. Sign-in finishes after the command returns, so a command typed straight after it can run while you are still signed out. See [Authentication](../services/authentication.md).
+
 ## Trace console variables
 
 Each SDK area exposes a `crowdy.<area>.trace` console variable that adds informational logging for that
@@ -145,6 +161,7 @@ See [Map profile](../runtime/map-profile.md) before you dig further into traces.
 
 - [Console variables](../reference/console-cvars.md): the full table of trace and behavior console
   variables.
+- [Authentication](../services/authentication.md): the sign-in the console commands go through.
 - [Log categories](../reference/log-categories.md): each module's log category and its trace console
   variable.
 - [Crowdy State](../runtime/crowdy-state.md): the concepts behind the deltas state loopback mirrors.
