@@ -211,11 +211,11 @@ Config Sync points the project at an app; a map profile decides what the SDK doe
 
 The C++ steps build three small things. Step 0 is the Game Instance, `LanternGameInstance.h` and `LanternGameInstance.cpp`. Step 1 is your player, `LanternPlayer.h` and `LanternPlayer.cpp`, with a Game Mode, `LanternGameMode.h` and `LanternGameMode.cpp`, that spawns it at the right moment. Steps 3 to 5 build one actor, `ALantern`, in `Lantern.h` and `Lantern.cpp`: step 3 gives you both files, each later step is what you add to them, and the finished actor is at the end of the page. The first comment line of each block names the file it goes in. The usual boilerplate is left out so the SDK parts stand out: add `#pragma once`, `#include "CoreMinimal.h"`, and the base class include (`GameFramework/Actor.h`, `GameFramework/Character.h`, `GameFramework/GameModeBase.h`, `Components/ActorComponent.h`, or `Engine/GameInstance.h`) at the top of each header yourself. Everything else, including the `.generated.h` line, is in the block.
 
-The Blueprint steps build the same three things: a Game Instance Blueprint, a Character Blueprint with a Game Mode Blueprint, and one Actor Blueprint for the lantern. The lantern needs two components before you start: a **Sphere Collision** (the trigger a player walks into) and a **Point Light** named `Light`, the thing every lantern graph drives. Every Blueprint figure can be panned with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+The Blueprint steps build the same things with one difference: the sign-in lives in the Game Mode Blueprint, not in a Game Instance, so there is a Game Mode Blueprint, a Character Blueprint, and one Actor Blueprint for the lantern. The lantern needs two components before you start: a **Sphere Collision** (the trigger a player walks into) and a **Point Light** named `Light`, the thing every lantern graph drives. Every Blueprint figure can be panned with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
 
 ## 0. Sign the player in
 
-Nothing connects by itself. The SDK requests its realtime connection only after a player signs in, so the game signs the player in once, at startup, from its Game Instance: call `Login` (or `Register` for a new account) on the Crowdy SDK subsystem and wait for two events: **On Login** (the account is signed in) and then **On UDP Connection Success** (the realtime connection is up). Every entity, event, and property below depends on that connection.
+Nothing connects by itself. The SDK requests its realtime connection only after a player signs in, so the game signs the player in once, at startup (from its Game Instance in C++, from its Game Mode in Blueprint): call `Login` (or `Register` for a new account) on the Crowdy SDK subsystem and wait for two events: **On Login** (the account is signed in) and then **On UDP Connection Success** (the realtime connection is up). Every entity, event, and property below depends on that connection.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -280,12 +280,16 @@ Email=you@example.com
 Password=your-test-password
 ```
 
+A package ships `DefaultGame.ini`, so remove these two lines before you package the game.
+
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-Create a Blueprint with **Game Instance** as its parent class and make it the project's Game Instance under **Project Settings, Maps & Modes, Game Instance Class**. In its event graph the **Init** event runs once at startup; the **Login** node is latent, with **On Success** and **On Error** pins. Fill in a test account.
+Create a Blueprint with **Game Mode Base** as its parent class and make it the project's default under **Project Settings, Maps & Modes, Default Modes, Default GameMode**, or set it as the test map's Game Mode Override in World Settings. In its event graph, **Event BeginPlay** gets the **Crowdy Authentication** subsystem and branches on its **Is Signed In**, so a map the player travels to later does not sign in again; when it is false, the latent **Login** node runs, with **On Success** and **On Error** pins. Fill in a test account.
 
 [Blueprint snippet: qs-login, see /bp/unreal-sdk/qs-login.txt]
+
+Sign in from the Game Mode, not from a Game Instance Blueprint's **Event Init**: that event runs before the SDK's subsystems exist, so **Login** would fail at once. [Authentication](./services/authentication.md#signing-in) says why.
 
 </TabItem>
 </Tabs>
@@ -394,11 +398,11 @@ void ALanternGameMode::HandleConnected()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-Three Blueprints, two of them settings only.
+One more Blueprint, the Character, and the Game Mode from step 0.
 
 1. **The Character.** Open the template's `BP_ThirdPersonCharacter`, or your own Character that already moves; a new Blueprint with **Character** as its parent has no body and no input, so do not start from one. In the Components panel click **Add** and choose **Crowdy Entity Component**. In its Details panel, under **Crowdy SDK, Entity Component**, set **Mode** to **Dynamic**, **Identity Policy** to **Player Derived**, and **Ownership** to **Local Client**. Two rows appear once Mode is Dynamic, **State Executor** and **Auto Register**: leave the executor at None and Auto Register ticked; a third, **Host Override**, appears once Ownership is Local Client: leave it at Allow. Add a **Point Light** named `Torch` while you are there; a later page drives it.
-2. **The Game Mode.** Create a Blueprint with **Game Mode Base** as its parent class. Set **Default Pawn Class** to your Character and tick **Start Players as Spectators** under **Game Mode**. Make it the project's default under **Project Settings, Maps & Modes, Default Modes, Default GameMode**.
-3. **The spawn.** In the Game Mode's event graph, from **Event BeginPlay**, get the **Crowdy SDK Subsystem** and **Bind Event to On UDP Connection Success** to a custom event `OnConnected` (the same **Bind Event** shape the [Authentication](./services/authentication.md#after-sign-in) page uses for On Login). `OnConnected` calls **Restart Player** with **Get Player Controller** (index 0) on its New Player pin. The Game Instance from step 0 is unchanged.
+2. **The Game Mode.** Open the Game Mode Blueprint from step 0. Set **Default Pawn Class** to your Character and tick **Start Players as Spectators** under **Game Mode**.
+3. **The spawn.** In the same Game Mode's event graph, from **Event BeginPlay**, get the **Crowdy SDK Subsystem** and **Bind Event to On UDP Connection Success** to a custom event `OnConnected` (the same **Bind Event** shape the [Authentication](./services/authentication.md#after-sign-in) page uses for On Login). A graph has one **Event BeginPlay** and step 0 already uses it, so run the event into a **Sequence** node: the bind on its first pin, the sign-in from step 0 on its second. `OnConnected` calls **Restart Player** with **Get Player Controller** (index 0) on its New Player pin. In a map the player travels to later, the connection is already up and On UDP Connection Success does not fire again, so on a third Sequence pin check **Get UDP Connection State** and, when it is **Connected**, call **Restart Player** the same way.
 
 ![The entity component's Details panel at its defaults: change Mode, Identity Policy, and Ownership](/img/unreal-sdk/entity-mode-identity.png)
 
@@ -1906,7 +1910,7 @@ Once per project, at startup, before any entity, event, or property.
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-The Game Instance signs in from `Init`: bind **On Login** and **On UDP Connection Success** on the Crowdy SDK Subsystem, then call `Login` with an email and password read from `Config/DefaultGame.ini`. The first handler reports the sign-in; the second fires when the connection is up.
+The Game Instance signs in from `Init`, after `Super::Init()` has created its subsystems: bind **On Login** and **On UDP Connection Success** on the Crowdy SDK Subsystem, then call `Login` with an email and password read from `Config/DefaultGame.ini`. The first handler reports the sign-in; the second fires when the connection is up.
 
 ```cpp
 // LanternGameInstance.h
@@ -1969,12 +1973,13 @@ Password=your-test-password
 ```
 
 :::caution[A test account belongs in a config file or a pin default, never in shipped code.]
+A package stages `Config/DefaultGame.ini`, so an account written there ships with the game. Remove the `Email` and `Password` lines before you package, and sign players in from your own sign-in screen instead.
 :::
 
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-Create a Widget Blueprint with two **Editable Text Box** widgets and a **Button**, and two String variables, `Email` and `Password`, each set from its box's **On Text Committed**. The button's **On Clicked** calls a custom event `SignIn`, whose graph reads the two variables into the latent **Login** node and removes the widget from its parent on `On Success`. Add the widget to the viewport from your Game Instance or level Blueprint at startup.
+Create a Widget Blueprint with two **Editable Text Box** widgets and a **Button**, and two String variables, `Email` and `Password`, each set from its box's **On Text Committed**. The button's **On Clicked** calls a custom event `SignIn`, whose graph reads the two variables into the latent **Login** node and removes the widget from its parent on `On Success`. Add the widget to the viewport from your Game Mode's **Event BeginPlay** or a level Blueprint at startup, not from a Game Instance's **Event Init**, which runs before the SDK's subsystems exist ([why](../services/authentication.md#signing-in)).
 
 [Blueprint snippet: signin-widget, see /bp/unreal-sdk/signin-widget.txt]
 
@@ -4029,7 +4034,7 @@ void ULanternGameInstance::HandleVillageChannelCreated(FCrowdyChannel Channel)
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Instance Blueprint, at **Event Init** a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Connection Success**, whose custom event `OnConnected` calls **Create Channel**, a latent node with `Name`, `Description`, `Membership Policy`, and `Members Can Send` inputs and **On Success** (a `Channel` struct) and **On Error** pins. Binding to the connection is what keeps the create after sign-in; at Init there is no token yet and it would answer on **On Error**. To keep the id, drag a **Break Crowdy Channel** off the `Channel` pin on the success branch and set an Integer64 variable `VillageChannelId` from `Channel Id`.
+In the Game Mode Blueprint, at **Event BeginPlay** a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Connection Success**, whose custom event `OnConnected` calls **Create Channel**, a latent node with `Name`, `Description`, `Membership Policy`, and `Members Can Send` inputs and **On Success** (a `Channel` struct) and **On Error** pins. Binding to the connection is what keeps the create after sign-in; at BeginPlay there may be no token yet and the create would answer on **On Error**. The Game Mode belongs to one map, so keep the id in a variable on the Game Instance if the next map needs it. (Do not start from the Game Instance's **Event Init**: it runs before the SDK's subsystems exist, see [Authentication](../services/authentication.md#signing-in).) To keep the id, drag a **Break Crowdy Channel** off the `Channel` pin on the success branch and set an Integer64 variable `VillageChannelId` from `Channel Id`.
 
 [Blueprint snippet: ch-create, see /bp/unreal-sdk/ch-create.txt]
 
@@ -4336,7 +4341,7 @@ The connection belongs to the transport and recovers on its own. Asking the UI t
 
 ## Reacting to a drop
 
-There is no reconnect code to write. The SDK asks for the connection again itself, and the game hears two events: **On UDP Timed Out** when a re-assignment failed and the SDK is opening the connection again, and **On UDP Connection Success** when it is back. Bind both once, in your Game Instance's `Init`, and do the visible thing in each.
+There is no reconnect code to write. The SDK asks for the connection again itself, and the game hears two events: **On UDP Timed Out** when a re-assignment failed and the SDK is opening the connection again, and **On UDP Connection Success** when it is back. Bind both once, in your Game Instance's `Init` after `Super::Init()` in C++ or from your Game Mode's Event BeginPlay in Blueprint, and do the visible thing in each.
 
 :::note[Do not call RequestUDPAccess from the timeout handler.]
 The SDK calls it itself as soon as the event has been broadcast. A second request from the game is a second reconnect in flight for the same client.
@@ -4389,7 +4394,7 @@ void ULanternGameInstance::HandleConnectionRestored()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Instance Blueprint, from **Event Init**, a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Timed Out** and then **Bind Event to On UDP Connection Success**; the custom events `OnConnectionLost` and `OnConnectionRestored` are theirs. Dimming every lantern needs a loop, which is more than a six-node figure shows, so the graph binds the events and stops.
+In the Game Mode Blueprint, from **Event BeginPlay**, a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Timed Out** and then **Bind Event to On UDP Connection Success**; the custom events `OnConnectionLost` and `OnConnectionRestored` are theirs. Dimming every lantern needs a loop, which is more than a six-node figure shows, so the graph binds the events and stops.
 
 [Blueprint snippet: conn-events, see /bp/unreal-sdk/conn-events.txt]
 
@@ -10002,7 +10007,7 @@ The confirm changes with the situation:
 - **What it deletes.** Everything in the type's `Server/<Type Name>/` folder goes with it: `logic.rs`, the generated files and `revisions.json`, so the type's revision history goes too. Get them back from version control if you need them. A logic file of your own that lives outside that folder is never touched.
 - **What it leaves, and why.** The folder is left alone, and the dialog says "This deletes its definition ... only." followed by the reason, when deleting it could hurt something else: "Another definition has the same Type Name and so the same Server Code folder, which is left as it is."; "Its Type Name is not a valid one, so its Server Code folder may be another type's; it is left as it is."; "Its Server Code folder is not directly inside the project's Server folder, so it is left as it is."; "It has no Server Code folder."; "Its Server Code folder holds server code the Crowdy SDK did not generate, so it is left as it is."; or "Its Server Code folder is, or holds, a link to somewhere else, and deleting it could delete what the link points to; it is left as it is, so delete it by hand." A folder that could not be deleted is reported in red under the tab: "Removed village_beacon's definition, but could not delete its Server Code folder Server/village_beacon. Delete it by hand."
 - **Unsaved code edits.** If the type's code has edits you have not saved, the dialog lists the files: "Its unsaved code edits are lost:".
-- **What it does on the server: nothing yet.** A type that is live keeps running, with players calling it, until your next deploy, which no longer includes it and removes it (the deploy's confirm says "It removes village_beacon, which this project does not have; their Server Objects stop."). Until then it shows as a **Removed** row, where you can still switch it off. A type that was never deployed ("New") says "village_beacon is not live on the server (App 12345 on Dev), so nothing changes there."
+- **What it does on the server: nothing yet.** A type that is live keeps running, with players calling it, until your next deploy, which no longer includes it and removes it (the deploy's confirm says "It removes village_beacon, which this project does not have; their Server Objects stop."). Until then it shows as a **Removed** row, where you can still switch it off. The deploy stops its Server Objects and keeps their saved state, and the type's switch goes with it: a later deploy that adds a type of the same name starts those Server Objects from what they saved, switched on. A type that was never deployed ("New") says "village_beacon is not live on the server (App 12345 on Dev), so nothing changes there."
 - **The last type.** Removing the project's last type is no different: the next deploy sends the Crowdy SDK's root alone and removes the type from the server. To stop players' calls to it before then, use **Switch off** on this page.
 
 After you confirm, the editor's own delete runs, with its usual check of what still refers to the definition, for example a Blueprint slot holding it; it may ask again, and if you cancel there nothing else happens. If the row went stale (the asset moved, or its Type Name changed since the list was read) nothing is removed and the page says "/Game/Beacon/CSO_VillageBeacon is no longer the definition of village_beacon, so nothing was removed. The list is read again; try once more from it."
@@ -10118,7 +10123,7 @@ Every deploy makes a new version. The **Versions** tab lists them newest first: 
 
 > Makes version 6 the active server code of App 12345 on Dev.
 
-That is a rollback: if version 7 has a bug, make 6 active and players get the earlier code, while you fix `logic.rs` and deploy again. It changes no Server Object's saved values. As with a deploy, a running Server Object moves to the code when it next starts. Rolling back to a version older than a definition change can leave Server Objects saved in a newer shape; read [Changing a type later](./create-a-type.md#changing-a-type-later) before you go back across one.
+That is a rollback: if version 7 has a bug, make 6 active and players get the earlier code, while you fix `logic.rs` and deploy again. It changes no Server Object's saved values. As with a deploy, a running Server Object moves to the code when it next starts, and the Server Objects of a type the older version lacks are stopped with their saved state kept. That type's switch goes too, so a type you switched off comes back switched on when a later version runs it again. Rolling back to a version older than a definition change can leave Server Objects saved in a newer shape; read [Changing a type later](./create-a-type.md#changing-a-type-later) before you go back across one.
 
 ## Switching a type or the app off and on
 
@@ -10126,7 +10131,7 @@ Each type the live version runs has a **Switch off** button on the Overview tab,
 
 > Players' calls to village_beacon in App 12345 on Dev are refused until it is switched on again. Its Server Objects are saved and stopped.
 
-Switching on asks nothing. While a type is off, calls to it are refused and reach the client as the `Paused` outcome, which is retryable (see [Troubleshooting](./troubleshooting.md#outcomes)), and nothing of that type runs. Switch it on and its Server Objects start again, from what was saved, the next time a call reaches them. It is not the same as removing the type in a deploy: the code stays and the state is kept. To move running Server Objects onto newly deployed code, use **Restart** instead, which refuses no calls. The buttons are disabled until the app's status has loaded and while another operation runs.
+Switching on asks nothing. While a type is off, calls to it are refused and reach the client as the `Paused` outcome, which is retryable (see [Troubleshooting](./troubleshooting.md#outcomes)), and nothing of that type runs. Switch it on and its Server Objects start again, from what was saved, the next time a call reaches them. It is not the same as removing the type in a deploy: the code stays and the type stays live. To move running Server Objects onto newly deployed code, use **Restart** instead, which refuses no calls. The buttons are disabled until the app's status has loaded and while another operation runs.
 
 When the whole app is switched off, the header badge says so and its **Switch on** button, after asking "Players can call the Server Functions of App 12345 on Dev again.", lets players call the app again. The page cannot switch the whole app off; see [the kill switch](/exec/operations#the-kill-switch) for that.
 
@@ -10215,7 +10220,7 @@ It uses Crowdy Studio's saved sign-in and app, so sign in and pick the app in th
 | `-op=call -type=village_beacon -fn=Refill -key=village -yes` | Calls a Server Only or Developers Only function as the developer, like **Call as Developer**. `-inputs=` gives its inputs as JSON, or `-inputs=@inputs.json` from a file, since a shell mangles quotes (a relative path is read from the folder the command runs in; a path with a space goes in quotes with its `@`, as in `-inputs="@C:\My Game\inputs.json"`, or with the quotes after the `@`, as in `-inputs=@"C:\My Game\inputs.json"`, where the whole path is read; `-config=` and `-bundle=` take the same forms); missing inputs keep their defaults, and a name the function has no input for is refused rather than ignored. `-key=` is needed unless the type has Only One Instance. `-fn=` finds a function by name, the built-in ones such as `AddMember` included, and the Developers Only functions of a [Game Kit starter](./use-game-kit-starters.md#functions-only-a-developer-calls), such as the matchmaker's `Configure`. A 64-bit integer above 9007199254740991 must be written as a string, for example `{"Player": "9007199254740993"}`; a larger number written without quotes is refused with "... is above 9007199254740991; write it as a string, for example "9007199254740993"." The result gives `status`, `message` and `reply`, the outputs as JSON. A Game Kit starter's function that takes a `Ref`, such as the player's **Grant**, gets a fresh one when `-inputs=` leaves it out, and the result gives it as `ref`. |
 | `-op=grant -player=101910912345678 -bundle=@reward.json -yes` | Gives one player in-game soft currency and items through the [player starter](./use-game-kit-starters.md#functions-only-a-developer-calls)'s **Grant**, never real money. `-bundle=` is an `FCrowdyKitBundle` as JSON or `@` and a file, such as `{"Currency": {"gold": 100}, "Items": {"wood": 5}}`; `-xp=N` adds experience; `-ref=R` sends a `Ref` of your own, else a fresh one is made; `-type=` names the player starter when its Type Name is not `player`. The result gives `ref`, `status`, `message` and `reply`, what the grant earned the player. |
 | `-op=deposit -player=101910912345678 -bundle=@restore.json -yes` | Puts soft currency and items into one player's hub through **Deposit**, counting nothing toward quests or achievements, such as to give back what a bug took. It takes `-bundle=`, `-ref=` and `-type=` as `grant` does. |
-| `-op=instances` | Every Server Object the platform has placed: its type, Instance Id, phase (`idle`, `starting`, `running` or `stopping`), epoch, and `heldBack` when the platform will not place it, with the reason. |
+| `-op=instances` | Every Server Object the platform has placed: its type, Instance Id, phase (`idle`, `starting`, `running` or `stopping`), epoch, `heldBack` when the platform will not place it, with the reason, and `orphaned`, true for one whose type the active version no longer deploys (a deploy or a rollback dropped the type and stopped it; it keeps its saved state). |
 | `-op=logs` | Recent log lines. Optional `-type=`, `-flow=` and `-limit=`. `-level=all`, `info`, `warnings` or `errors` filters by level, like the Logs tab's choices. `-before=<id>` pages back: pass the previous page's `nextBefore`. |
 | `-op=stats` | Call counts per Server Function. Optional `-type=`. `-window=hour`, `day` or `week` picks the period, like the Activity tab's. |
 | `-op=batch -ops=<file>` | Runs the operations in a file, one per line, in this one editor start. See [Several operations in one start](#several-operations-in-one-start). |
@@ -10268,8 +10273,6 @@ The operations run in order. Each one connects on its own, has its own time limi
 | `artifacts` | Every crate's module in this deploy, built or reused: `crate`, `digest` and `sizeBytes`. |
 | `stagedVersions` | The staging versions a [deploy in parts](#a-deploy-in-parts) made, oldest first. Empty for a deploy in one part. |
 | `restoredVersion` | The version made active again after the last staging version, or 0 when none was. |
-| `stoppedRemoved` | The live types this deploy removes whose running Server Objects it stopped just before deploying. The platform would otherwise leave them running, holding memory, and once a type is gone nothing can restart it by name. Their saved state is kept. A player call that reaches one of those types in the second or two before the deploy lands starts it again, and that one stays running until it is idle long enough to be put away. |
-| `stopRemovedFailed` | `type: why` for each removed type whose Server Objects could not be stopped. The deploy still goes ahead; those Server Objects stay running until they are idle long enough to be put away, and one that keeps itself busy, such as with a timer, stays running. |
 
 A failed deploy fills the same fields as far as it got, and its `error` says what is active now, for example "... Version 8 is active again, as before the deploy." A build that failed gives "The build ... failed, so nothing was deployed; its log is above and in buildLog".
 
@@ -14298,7 +14301,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/services/authentication
 
 # Authentication
 
-A player signs in once, at startup, from the Game Instance. Every method, email and password, a one-time link by email, a social provider, converges on one pipeline: the sign-in returns an identity session token, the SDK mints a short-lived app-scoped token from it, adopts the app's endpoints, fires a success event, and requests the realtime connection with the app token. Your code picks the method and reacts to the event; the tokens are the SDK's business.
+A player signs in once, at startup: from the Game Instance in C++, from the Game Mode in Blueprint. Every method, email and password, a one-time link by email, a social provider, converges on one pipeline: the sign-in returns an identity session token, the SDK mints a short-lived app-scoped token from it, adopts the app's endpoints, fires a success event, and requests the realtime connection with the app token. Your code picks the method and reacts to the event; the tokens are the SDK's business.
 
 ## When you touch this
 
@@ -14358,7 +14361,7 @@ Events on `UCrowdyAuthentication`, all Blueprint-assignable: `OnLogin` (`FOnAuth
 
 ## Signing in
 
-The Game Instance signs the player in from `Init`, binds the outcome event before it calls, and enables play in the handler. This is the Quickstart's step, on the same `ULanternGameInstance`.
+The game signs the player in at startup, binds the outcome event before it calls, and enables play in the handler. In C++ the Game Instance does it from `Init`; in Blueprint the Game Mode does it from **Event BeginPlay**. This is the Quickstart's step, on the same `ULanternGameInstance` and Game Mode.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -14368,7 +14371,7 @@ The C++ is the `ULanternGameInstance` block on [Player Sign-in](../runtime/playe
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Instance Blueprint, **Event Init** runs the latent **Login** node with `Email` and `Password`; both its `On Success` and `On Error` pins carry a `Result` and a `Message`: `Result` is filled on success, `Message` says why on error. The other sign-in nodes, and **Record Player Consents** (`Message` only), work the same way.
+In the Game Mode Blueprint, **Event BeginPlay** gets the **Crowdy Authentication** subsystem and branches on its **Is Signed In**; only when that is false does it run the latent **Login** node with `Email` and `Password`. Both its `On Success` and `On Error` pins carry a `Result` and a `Message`: `Result` is filled on success, `Message` says why on error. The other sign-in nodes, and **Record Player Consents** (`Message` only), work the same way.
 
 [Blueprint snippet: auth-login, see /bp/unreal-sdk/auth-login.txt]
 
@@ -14377,8 +14380,12 @@ The two literals on the node are placeholders for a test account; a shipped Blue
 </TabItem>
 </Tabs>
 
+:::caution[In Blueprint, start from the Game Mode's Event BeginPlay, not the Game Instance's Event Init.]
+A Blueprint Game Instance's **Event Init** runs before the SDK's subsystems exist. There the subsystem getters return nothing, **Login** and **Restore Session** fail at once, and **Bind Event** binds nothing. The Game Mode's **Event BeginPlay** runs after the Game Instance has finished starting. It runs again in every map, so a graph that signs in checks **Is Signed In** first and skips the call when the player already is. Is Signed In stays false until a sign-in finishes, so open another map only after **On Login**, or the next map signs in a second time. A graph has one Event BeginPlay: if your Game Mode already has one, run the new chain from it through a **Sequence** node, the binds on the first pin and the sign-in on a later one. A C++ Game Instance can use `Init` as the C++ examples do, because the subsystems exist once `Super::Init()` has returned. If your clients join an Unreal listen or dedicated server, a client has no Game Mode: use the local Player Controller's BeginPlay there instead.
+:::
+
 :::caution[Bind your delegates before you start the call.]
-A response can arrive quickly enough to be missed by a handler bound after the call returns. The per-call delegates are bound as arguments, so they are always in place; for the multicast events, bind in `Init` before the first sign-in.
+A response can arrive quickly enough to be missed by a handler bound after the call returns. The per-call delegates are bound as arguments, so they are always in place; for the multicast events, bind before the first sign-in: in `Init` after `Super::Init()` in C++, from the Game Mode's Event BeginPlay in Blueprint.
 :::
 
 In Blueprint, five latent sign-in nodes wrap the rich surface (a sixth, **Record Player Consents** (`UCrowdyAuth_RecordPlayerConsents`), is for a game that draws its own terms screen; its pins are `FRecordPlayerConsentsDelegateOnSuccess` and `FRecordPlayerConsentsDelegateOnError`), each with `On Success` (a `Result`) and `On Error` (a `Message`) pins and no delegate wiring: **Login** (`UCrowdyAuth_Login`), **Register** (`UCrowdyAuth_Register`), **Magic Link Sign In** (`UCrowdyAuth_BeginMagicLinkSignIn`), **Social Sign In** (`UCrowdyAuth_BeginSocialSignIn`), and **Restore Session** (`UCrowdyAuth_RestoreSession`). Their pin delegate types are `FLoginDelegateOnSuccess`, `FLoginDelegateOnError`, `FRegisterDelegateOnSuccess`, `FRegisterDelegateOnFailure`, `FBeginMagicLinkSignInDelegateOnSuccess`, `FBeginMagicLinkSignInDelegateOnError`, `FBeginSocialSignInDelegateOnSuccess`, `FBeginSocialSignInDelegateOnError`, `FRestoreSessionDelegateOnSuccess`, and `FRestoreSessionDelegateOnError`, should you bind one from C++.
@@ -14575,7 +14582,7 @@ void ULanternGameInstance::OnTermsDeclined()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Instance Blueprint, **Event Init** gets the **Crowdy Authentication** subsystem and binds **Bind Event to On Legal Acceptance Required** to a custom event that creates your terms widget and adds it to the viewport, and **Bind Event to On Legal Acceptance Ended** to one that removes it. The widget fills its document list from **Get Legal Documents**, a pure node returning an array of **Crowdy Legal Document** (`Title`, `Url`).
+In the Game Mode Blueprint, **Event BeginPlay** gets the **Crowdy Authentication** subsystem and binds **Bind Event to On Legal Acceptance Required** to a custom event that creates your terms widget and adds it to the viewport, and **Bind Event to On Legal Acceptance Ended** to one that removes it. The widget fills its document list from **Get Legal Documents**, a pure node returning an array of **Crowdy Legal Document** (`Title`, `Url`).
 
 The widget's accept button runs a branch on its two check boxes, and only when both are true calls the latent **Record Player Consents** node with **Accept Legal** and **Attest Age Of Majority** set true. Its **On Error** pin carries a `Message` to show; **On Success** needs nothing, because the held sign-in resumes and reaches the nodes you already wired. The decline button calls **Decline Legal Acceptance** on the Crowdy Authentication subsystem. **Is Legal Acceptance Pending** reads whether a sign-in is waiting right now, for a widget that opens late.
 
@@ -14640,7 +14647,7 @@ void ULanternGameInstance::HandleSignInFailed(FString Message)
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The Game Instance Blueprint needs a Boolean variable `bCanPlay`. **Event Init** gets the **Crowdy Authentication** subsystem and **Bind Event to On Login**; the bound custom event `OnSignedIn` receives the `Result` and sets `bCanPlay` true.
+The Game Mode Blueprint needs a Boolean variable `bCanPlay`. **Event BeginPlay** gets the **Crowdy Authentication** subsystem and **Bind Event to On Login**; the bound custom event `OnSignedIn` receives the `Result` and sets `bCanPlay` true. Each map has its own Game Mode, so in a map the player travels to after signing in, set `bCanPlay` from **Is Signed In** at BeginPlay instead of waiting for an event that already fired.
 
 [Blueprint snippet: auth-events, see /bp/unreal-sdk/auth-events.txt]
 
@@ -14684,12 +14691,12 @@ A player's access to the game can end while they play: the platform suspends it,
 
 [Server Objects](../exec/troubleshooting.md#when-access-ends) stop at once. Every one fails with `Your access ended: ` followed by the reason, a call in flight or made later finishes as the outcome **Access Ended**, which is not retryable, and nothing reconnects until the player signs in again. What your game does:
 
-- Bind **On Access Ended** in the Game Instance, before the first sign-in.
+- Bind **On Access Ended** before the first sign-in: in the Game Instance's `Init` in C++, from the Game Mode's Event BeginPlay in Blueprint.
 - Show the reason, and **Blocked Until** when it is not empty, then return the player to the sign-in screen.
 - When the end time of a timed block or a suspension is learned after access already ended, the event fires once more with **Blocked Until** filled in. Update the text you showed; do not add a second message.
 - A successful sign-in clears the ended state. A **Crowdy Server Object** component, and a typed node set to **Find By Asset**, then get their Server Object again by themselves. Code that calls `Acquire` itself acquires again.
 
-The Game Instance binds the event in `Init`, next to the sign-in events, and shows the two strings. A shipped game puts them on its sign-in screen.
+The game binds the event next to the sign-in events, in the Game Instance's `Init` in C++ and from the Game Mode's Event BeginPlay in Blueprint, and shows the two strings. A shipped game puts them on its sign-in screen.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -14721,7 +14728,7 @@ void ULanternGameInstance::HandleAccessEnded(const FString& Reason, const FStrin
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Instance Blueprint, **Event Init** gets the **Crowdy Game Session** subsystem and runs **Bind Event to On Access Ended**; the bound custom event `OnAccessEnded` receives `Reason` and `BlockedUntil`, and prints each.
+In the Game Mode Blueprint, **Event BeginPlay** gets the **Crowdy Game Session** subsystem and runs **Bind Event to On Access Ended**; the bound custom event `OnAccessEnded` receives `Reason` and `BlockedUntil`, and prints each.
 
 [Blueprint snippet: access-ended-bind, see /bp/unreal-sdk/access-ended-bind.txt]
 
@@ -14790,7 +14797,9 @@ A custom event `OnGetFreeAccessPressed` runs **Claim Free Access**; its **On Err
 
 ### Restore a saved session
 
-A returning player should type nothing. The Game Instance calls `RestoreSession(OnSuccess, OnError)` first, before it shows a sign-in screen or calls `Login`. The call returns `bool`: true means a saved session was found and the restore is under way, and the outcome arrives on the delegates; false means nothing is saved on this machine, `OnError` has already run with `No saved session found`, and `OnSessionRestoreFailed` has already fired, so the error path is the sign-in screen. On success the SDK re-mints the app token from the saved session token, calls `OnSuccess`, and fires `OnSessionRestored`; then, exactly as after a `Login`, it requests the realtime connection with the fresh app token and raises its own `OnLogin` on the Crowdy SDK Subsystem, so the handlers you bound for a first sign-in, `OnLogin` and `OnUDPConnectionSuccess`, run unchanged. A restore that fails after finding a saved session (the token was revoked, the network is down) reaches `OnError` the same way. The Crowdy SDK Subsystem's `OnLogin` also fires, with `bSuccess` false and the message, for every failed restore: the `No saved session found` of a first launch and a restore the player's decline of the terms ended included.
+A returning player should type nothing. The game calls `RestoreSession(OnSuccess, OnError)` first, before it shows a sign-in screen or calls `Login`. The call returns `bool`: true means a saved session was found and the restore is under way, and the outcome arrives on the delegates; false means nothing is saved on this machine, `OnError` has already run with `No saved session found`, and `OnSessionRestoreFailed` has already fired, so the error path is the sign-in screen. On success the SDK re-mints the app token from the saved session token, calls `OnSuccess`, and fires `OnSessionRestored`; then, exactly as after a `Login`, it requests the realtime connection with the fresh app token and raises its own `OnLogin` on the Crowdy SDK Subsystem, so the handlers you bound for a first sign-in, `OnLogin` and `OnUDPConnectionSuccess`, run unchanged. A restore that fails after finding a saved session (the token was revoked, the network is down) reaches `OnError` the same way. The Crowdy SDK Subsystem's `OnLogin` also fires, with `bSuccess` false and the message, for every failed restore: the `No saved session found` of a first launch and a restore the player's decline of the terms ended included.
+
+The saved session lives in the game's `Saved` folder (for a Shipping package, under the Windows user's local app data). Each PIE window inside the editor process keeps its own; every other client using that folder, a PIE client the editor starts as a separate process included, shares one, unless you start it with `-crowdysession=<name>` (letters, digits, `-` and `_`, up to 32 characters), which gives it a session of its own. With no switch the game uses the default session. See [Two packaged or standalone clients](../guides/testing-locally.md#two-packaged-or-standalone-clients); on the tagged v2.21.0 plugin there is no switch.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -14828,7 +14837,7 @@ void ULanternGameInstance::HandleRestoreFailed(FString Message)
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-**Event Init** runs the latent **Restore Session** node, which takes nothing but the world context. Its **On Error** pin is the only place that asks for credentials: the graph runs **Login** with the configured account there, as the Quickstart does, and a game with a sign-in screen creates the widget from [Player Sign-in](../runtime/player-sign-in.md) and adds it to the viewport on that pin instead; a machine with nothing saved reaches it at once. **On Success** carries the `Result`, read for nothing.
+In the Game Mode Blueprint, **Event BeginPlay** gets the **Crowdy Authentication** subsystem and branches on **Is Signed In**; only when that is false does it run the latent **Restore Session** node, which takes nothing but the world context. Its **On Error** pin is the only place that asks for credentials: the graph runs **Login** with the configured account there, as the Quickstart does, and a game with a sign-in screen creates the widget from [Player Sign-in](../runtime/player-sign-in.md) and adds it to the viewport on that pin instead; a machine with nothing saved reaches it at once. **On Success** carries the `Result`, read for nothing.
 
 [Blueprint snippet: auth-restore, see /bp/unreal-sdk/auth-restore.txt]
 
@@ -16617,17 +16626,32 @@ conflates into a single player and a single NetID, so the two windows do not rep
 at all. This is a silent wrong result, not a crash: sign each window in with a different account.
 :::
 
-Each PIE instance now isolates its own session automatically, so one window does not overwrite another
-window's saved sign-in. The only setup left to do by hand is signing the two windows into two different
-accounts.
+Each PIE window inside the editor process keeps its own saved session, so one window does not overwrite another
+window's sign-in. The only setup left to do by hand is signing the two windows into two different accounts.
 
 Run the two clients as separate processes: in Editor Preferences, under Play, uncheck "Run Under One
 Process." Besides matching how a packaged build actually runs, it keeps any per-process editor systems
-(runtime generation, audio devices) from being shared between the two worlds.
+(runtime generation, audio devices) from being shared between the two worlds. The first client still runs in
+the editor with its own session; every client the editor starts as a separate process uses the default
+session, so two clients work, but a third would restore the second one's account. For three or more, run the
+extra ones as packaged clients with `-crowdysession` (below).
 
 Once both clients are running, confirm the setup actually worked before you trust anything else you see:
 each client should report a different local player identity, and exactly one client should be the elected
 host.
+
+### Two packaged or standalone clients
+
+Outside PIE, clients that share a `Saved` folder read the same saved session, so a second client restores the
+first one's account. A Development package keeps `Saved` beside the game, so every copy started from one folder
+shares it; a Shipping package keeps it in the Windows user's local app data, so every Shipping copy that user
+starts shares it, wherever it is. Start each extra client with `-crowdysession=<name>`, for example
+`MyGame.exe -crowdysession=b`: it keeps a session of its own, signs in once, and restores that account on every
+later start with the same name. A name is 1 to 32 letters, digits, `-` or `_`, and case does not matter (`B`
+and `b` are one session). A name that breaks those rules is refused with a warning, and the client gets a
+fallback session that every refused name shares, never the default one. A client started without the switch keeps the default session, so a
+player's existing sign-in is untouched. On the tagged v2.21.0 plugin there is no switch: give each client its
+own `-userdir=<dir>` instead.
 
 ## Sign in from the console
 
@@ -17365,6 +17389,13 @@ You built against the SDK in July, you are updating the plugin to 2.15 or later 
 The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The entries that describe it are kept as history. Do not adopt it: v2.18.0, the release that adds Server Objects, deprecates it, and v2.19.0 removes it, as described under [2026-10-12 (SDK v2.19.0)](#2026-10-12-sdk-v2190). Its replacement is [Server Objects](../exec/overview.md), described under [2026-10-07 (SDK v2.18.0)](#2026-10-07-sdk-v2180); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
 :::
 
+## Unreleased (after v2.21.0)
+
+- **Blueprint sign-in starts from the Game Mode, not the Game Instance's Event Init.** A Blueprint Game Instance's **Event Init** runs before the SDK's subsystems exist, so the earlier Blueprint examples, which signed in and bound events there, failed: **Login** and **Restore Session** reported "subsystem not found" and **Bind Event** bound nothing. The examples now run from the Game Mode's **Event BeginPlay** and check **Is Signed In** first, since BeginPlay runs again in every map. C++ examples, which use `Init` after `Super::Init()`, are unchanged. **What you do:** if your Blueprint Game Instance signs in or binds SDK events in Event Init, move that graph to your Game Mode's Event BeginPlay. See [Signing in](../services/authentication.md#signing-in).
+- **Two packaged clients can sign in as different accounts.** Clients sharing a `Saved` folder (Development copies in one folder, or any Shipping copies of one Windows user) shared one saved session. Start each extra client with `-crowdysession=<name>`, and it keeps a session of its own; with no switch the default session is used, so existing sign-ins still restore. **What you do:** nothing, unless you run several clients from one folder. See [Two packaged or standalone clients](./testing-locally.md#two-packaged-or-standalone-clients).
+- **A deploy leaves a dropped type's Server Objects to the platform.** The platform now stops the Server Objects of a type a deploy or a rollback drops, keeping their saved state, and drops that type's switch, so the SDK no longer restarts those types before it deploys. `-op=deploy`'s result loses `stoppedRemoved` and `stopRemovedFailed`, and `-op=instances` gains `orphaned`, true for a Server Object whose type the active version does not deploy. **What you do:** a script that reads `stoppedRemoved` or `stopRemovedFailed` stops reading them. See [From the command line](../exec/deploy-with-server-compute.md#from-the-command-line).
+- **CrowdyCPP 0.74.0.** The realtime library moves from 0.73.0 to 0.74.0, which reads `orphaned` on each Server Object; the SDK sends and receives as before. **What you do:** nothing.
+
 ## 2026-10-26 (SDK v2.21.0)
 
 :::caution[Updating from 2.20.0: two things to do]
@@ -17823,7 +17854,7 @@ All 164 delegates below fire on the game thread. This is a constant fact about e
 
 ## Gotchas
 
-- A delegate's owner class must be reachable before you can bind it: a game instance subsystem's delegate is safe to bind in `Init`, a world subsystem's needs a valid world first.
+- A delegate's owner class must be reachable before you can bind it: a game instance subsystem's delegate is safe to bind in a C++ Game Instance's `Init` after `Super::Init()`, and in Blueprint from the Game Mode's Event BeginPlay (the Game Instance's Event Init runs before the subsystems exist); a world subsystem's needs a valid world first.
 - Binding twice fires your handler twice. Unbind (`Remove Dynamic` or `RemoveDynamic`) before a re-bind on a path that can run more than once, such as a widget that reconstructs.
 - Two delegates on `AWinAudioDeviceMonitor` exist in the SDK but are not shown here: that actor is private and spawned by the voice subsystem for itself, so a game never has a reference to bind against. See [Voice chat](../services/voice-chat.md).
 
