@@ -37,6 +37,22 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-28 (Unreal SDK v2.21.1: Blueprint sign-in from the Game Mode; a saved session per client; the platform stops removed types; CrowdyCPP 0.74.0)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-28-sdk-v2211).
+
+- **Blueprint sign-in starts from the Game Mode.** A Blueprint Game Instance's Event Init runs
+  before the SDK's subsystems exist, so the earlier Blueprint examples could not sign in. They now
+  run from the Game Mode's Event BeginPlay. See [Signing in](/unreal-sdk/services/authentication#signing-in).
+- **`-crowdysession=<name>`** gives a packaged or standalone client its own saved session, so
+  clients sharing a `Saved` folder can sign in as different accounts. See
+  [Two packaged or standalone clients](/unreal-sdk/guides/testing-locally#two-packaged-or-standalone-clients).
+- **A deploy leaves removed types to the platform.** Server Compute no longer restarts a type before
+  a deploy removes it, since ck-exec 0.19.0 stops it; `-op=deploy`'s result drops `stoppedRemoved`
+  and `stopRemovedFailed`, and `-op=instances` shows `orphaned`. See
+  [From the command line](/unreal-sdk/exec/deploy-with-server-compute#from-the-command-line).
+- **CrowdyCPP 0.74.0.**
+
 ## 2026-10-26 (dev: a deploy stops the node types it drops, and takes their switches with them; ck-exec 0.19.0, Game API v2.58.0, CrowdyJS 18.22.0, CrowdyCPP 0.74.0, CrowdyPy 0.22.0)
 
 - **A deploy or a rollback stops the node types it drops.** When `execDeploy` or

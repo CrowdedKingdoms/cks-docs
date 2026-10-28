@@ -102,8 +102,8 @@ starts shares it, wherever it is. Start each extra client with `-crowdysession=<
 later start with the same name. A name is 1 to 32 letters, digits, `-` or `_`, and case does not matter (`B`
 and `b` are one session). A name that breaks those rules is refused with a warning, and the client gets a
 fallback session that every refused name shares, never the default one. A client started without the switch keeps the default session, so a
-player's existing sign-in is untouched. On the tagged v2.21.0 plugin there is no switch: give each client its
-own `-userdir=<dir>` instead.
+player's existing sign-in is untouched. Before v2.21.1 there is no switch: give each client its own
+`-userdir=<dir>` instead.
 
 ## Sign in from the console
 
