@@ -1,6 +1,6 @@
 {
-  "generated": "2026-10-26T18:47:52Z",
-  "sdk_version": "2.21.0",
+  "generated": "2026-10-28T06:01:26Z",
+  "sdk_version": "2.21.1",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
     {
