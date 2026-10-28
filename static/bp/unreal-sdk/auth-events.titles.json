@@ -1,8 +1,8 @@
 [
 	{
-		"name": "K2Node_Event_0",
+		"name": "K2Node_Event_2",
 		"class": "/Script/BlueprintGraph.K2Node_Event",
-		"title": "Event Init",
+		"title": "Event BeginPlay",
 		"title_drawn": true
 	},
 	{
