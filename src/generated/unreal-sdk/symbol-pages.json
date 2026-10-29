@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-28T06:01:26Z",
-  "sdk_version": "2.21.1",
+  "generated_from": "2026-10-29T06:42:10Z",
+  "sdk_version": "2.21.2",
   "route_base": "/unreal-sdk",
   "pages": {
     "CrowdyAction": "runtime/rpc-events-cpp",
@@ -81,6 +81,7 @@
     "FCrowdyEntityRecord": "runtime/entities-and-spawning",
     "FCrowdyEntitySpawnEvent": "runtime/entities-and-spawning",
     "FCrowdyEventContext": "runtime/recipients-and-routing",
+    "FCrowdyKitActorState": "guides/whats-changed",
     "FCrowdyKitGroup": "services/play-together",
     "FCrowdyLegalDocument": "services/authentication",
     "FCrowdyMyChannelsResult": "runtime/channels",

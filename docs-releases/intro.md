@@ -37,6 +37,24 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-29 (Unreal SDK v2.21.2: cancel a sign-in without signing out; Game Kit fixes)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-29-sdk-v2212).
+
+- **`CancelSignIn` and `IsSignInPending`** stop a sign-in that has not finished (a restore, a
+  password sign-in, an email link or social sign-in waiting for the browser, or one held for the
+  terms) without signing out, so a cancelled restore keeps the saved session. See
+  [Cancel a sign-in](/unreal-sdk/services/authentication#cancel-a-sign-in).
+- **Kit actors:** **Get Kit Actor Count** and **Get Kit Actor** read them without a copy, they are
+  placed by the session's chunk size, and malformed updates are dropped. See
+  [Show a starter's actors](/unreal-sdk/exec/use-game-kit-starters#show-a-starters-actors).
+- **Server Object reads:** a starter's **On Changed** runs once at Ready, another player's Owner
+  Values report no value, and **Get Server State** is not offered where nothing is visible. See
+  [Values only the player reads](/unreal-sdk/exec/use-game-kit-starters#values-only-the-player-reads).
+- **Starters:** Config ids that differ only by case are refused, `-op=call` reaches a starter's
+  read-only player functions, the director publishes less, and the zone's event carries `centerZ`.
+  See [Use the Game Kit starters](/unreal-sdk/exec/use-game-kit-starters).
+
 ## 2026-10-28 (Unreal SDK v2.21.1: Blueprint sign-in from the Game Mode; a saved session per client; the platform stops removed types; CrowdyCPP 0.74.0)
 
 Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-28-sdk-v2211).
