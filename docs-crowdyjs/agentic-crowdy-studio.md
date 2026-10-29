@@ -66,11 +66,20 @@ CrowdyJS 18.23, `@crowdedkingdoms/crowdy-dsh` 0.5 and a page that gives the
 controller a draft store (the Construct framework 0.4 does); otherwise the
 project opens in the mod editor as before.
 
+Studio's **Live code** is the way in. The button, on the app's page in Studio
+once a repository is bound, opens the app's **launch URL** with the app and the
+project in the address, and the game opens the game editor on that project.
+The launch URL is wherever you serve the game: your own deployment, or, while
+you develop, the template's dev server (`LIVE_DRAFT=1 npm run dev`, at
+`http://localhost:5175`). Set it on the app in Studio, under **Settings >
+Sign-in & redirect URIs**; see [Host your game](/build-a-game/host-your-game).
+
 - **A draft, not commits.** The agent and the Files pane edit a draft of the
-  repository that only this player sees. On the hosted game it lives in the
-  player's browser, an overlay over the bound branch; on a game's local dev
-  server it is the checkout. Writes are guarded: a file the player changed
-  since the agent read it fails as stale instead of being overwritten.
+  repository that only this player sees. On your deployed game it lives in the
+  player's browser, an overlay over the bound branch; on the template's local
+  dev server (`LIVE_DRAFT=1`) it is the checkout. Writes are guarded: a file the
+  player changed since the agent read it fails as stale instead of being
+  overwritten.
 - **Previewed in place.** The game reloads its content layer (scenes, the
   content registry, the catalog) from the draft without a page reload. The
   agent calls `preview_status` to learn whether the world took the change and
@@ -89,8 +98,10 @@ project opens in the mod editor as before.
   the mod tools (`draft_test`, `deploy_live`, grid programs) are not offered.
 
 Hosting needs nothing new for a game on the Construct framework: its build
-adds a service worker for the preview that answers only its own `__draft/`
-URLs, and the page's CSP stays as it is.
+adds a service worker for the preview (`construct-draft-sw.js`) that answers
+only its own `__draft/` URLs, and the page's CSP stays as it is. Serve that
+file as JavaScript and do not cache it for long; see
+[Host your game](/build-a-game/host-your-game#construct-draft-swjs).
 
 ## Player workflow
 
@@ -193,6 +204,9 @@ The iframe is same-origin by design (`BroadcastChannel` and OPFS are
 origin-scoped), so its `sandbox="allow-scripts allow-same-origin"` does not
 isolate it from the page; the CSP on the harness path is the control. Serving
 the harness from its own origin is a tracked follow-up.
+
+[Host your game](/build-a-game/host-your-game) lists every header a game's
+host sends, with both policies written out for production.
 
 ## Where the token goes
 

@@ -62,8 +62,9 @@
 
 - [CrowdyJS (browser-first TypeScript SDK) overview](https://docs.crowdedkingdoms.com/crowdyjs/readme)
 - [CrowdyJS best practices](https://docs.crowdedkingdoms.com/crowdyjs/best-practices)
-- [Build player mods in Blocks with Friends](https://docs.crowdedkingdoms.com/build-a-game/bwf-mod-development): in-world Monaco/Rust workflow, server mods on ck-exec and client mods in the browser, author trust, and troubleshooting.
-- [BWF mod authoring helper file](https://docs.crowdedkingdoms.com/helpers/bwf-mod/authoring-checklist.txt) · [Cargo.toml](https://docs.crowdedkingdoms.com/helpers/bwf-mod/Cargo.toml) · [client HUD Rust starter](https://docs.crowdedkingdoms.com/helpers/bwf-mod/client-hud-lib.rs)
+- [Build player mods with Crowdy Studio](https://docs.crowdedkingdoms.com/build-a-game/bwf-mod-development): start from a game you run (The Construct locally, or a game that embeds Studio), the in-world Monaco/Rust workflow, server mods on ck-exec and client mods in the browser, author trust, and troubleshooting.
+- [What a game needs for mods](https://docs.crowdedkingdoms.com/crowdyjs/crowdy-studio-embed#what-a-game-needs-for-mods): the Studio dock, the `/dsh/` harness and its headers, cross-origin isolation for CLIENT mods, the access tier keys and `use_studio_agent`, and Allow Live Modding.
+- [Mod authoring helper file](https://docs.crowdedkingdoms.com/helpers/bwf-mod/authoring-checklist.txt) · [Cargo.toml](https://docs.crowdedkingdoms.com/helpers/bwf-mod/Cargo.toml) · [client HUD Rust starter](https://docs.crowdedkingdoms.com/helpers/bwf-mod/client-hud-lib.rs)
 - CrowdyJS guides: [Channels](https://docs.crowdedkingdoms.com/crowdyjs/channels) · [Teams](https://docs.crowdedkingdoms.com/crowdyjs/teams) · [Grids](https://docs.crowdedkingdoms.com/crowdyjs/grids) · [World Stores (SDK-managed actor/chunk/message state)](https://docs.crowdedkingdoms.com/crowdyjs/stores)
 - [Agentic Crowdy Studio player + CrowdyJS quickstart](https://docs.crowdedkingdoms.com/crowdyjs/agentic-crowdy-studio)
 - [CrowdyCPP (portable C++ SDK with native UDP replication) overview](https://docs.crowdedkingdoms.com/crowdycpp/intro)
