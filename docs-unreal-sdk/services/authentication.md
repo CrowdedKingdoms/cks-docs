@@ -405,6 +405,32 @@ In the Game Mode Blueprint, **Event BeginPlay** gets the **Crowdy Authentication
 `Logout()` first tells the server to end the session, which also ends every gameplay token made from it, without waiting for the answer, so sign-out works offline too. It then clears the saved session, clears the connection state, scrubs both bearers from the shared API client, and closes the realtime connection, and broadcasts `OnLogout`. A sign-in, token mint or refresh still in flight when you log out is cancelled: the caller's own `OnError` gets `Signed out before sign-in finished.`, nothing else fires (not `OnLoginFailed`), and the player is not signed back in when the answer lands. A magic-link or social sign-in still waiting for the browser is stopped too. `ClearSavedSession()` only deletes the on-disk credential; called alone during a live session it leaves the in-memory tokens and the open connection signed in as the player who just left.
 :::
 
+### Cancel a sign-in
+
+A sign-in screen's Cancel or Back button, and a game that travels or quits while a sign-in is still running, call `CancelSignIn()` on `UCrowdyAuthentication` (or on the Crowdy SDK Subsystem). It stops whatever sign-in has not finished: a restore, a password sign-in or registration, an email link or social sign-in waiting for the browser, or one held for the terms. Unlike `Logout`, a cancelled restore keeps the saved session, so it restores again on the next launch. `IsSignInPending()` is true from the moment a sign-in starts until it succeeds, fails or is cancelled; show the Cancel button on it. Once the player is signed in, both are false and `CancelSignIn` does nothing: signing out is `Logout`.
+
+What the caller sees:
+
+- Only the pending call's own `OnError` answers, with `Sign-in cancelled.`: no `OnLoginFailed`, `OnSessionRestoreFailed` or `OnRegisterFailed` fires, as after `Logout`. A browser wait and a sign-in held for the terms answer at once, and the terms prompt closes; a call already on its way to the server answers when its answer lands, and the player is not signed in by it. A game that started the sign-in from the Crowdy SDK Subsystem, which passes no `OnError`, reads `IsSignInPending` instead.
+- A new sign-in (password, registration, email link or social) saves its session as soon as the server accepts it, before the app token is minted, and that replaces any session saved before. Cancelling it after that point ends the new session on the server and deletes it from disk, so the next launch restores nobody rather than an account the player backed out of.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`CancelPendingSignIn` is what the Cancel button calls. The answer arrives on the `HandleSignInFailed` the sign-in itself bound.
+
+<CppSnippet id="auth-cancel" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+The Cancel button's event gets the **Crowdy Authentication** subsystem, branches on **Is Sign in Pending**, and calls **Cancel Sign In** on the true pin.
+
+<Blueprint src="auth-cancel" title="OnCancelSignInPressed, Crowdy Authentication, Is Sign in Pending, Branch, Cancel Sign In" />
+
+</TabItem>
+</Tabs>
+
 ## Account settings
 
 Six calls on `UCrowdyAuthentication`, each a latent node under **Crowdy SDK, Account**, cover what a settings screen and a sign-in screen need. Every one answers on `FOnAccountDone` (no parameters) or `FOnAccountError`, which carries an `FCrowdyAccountError` (`Code`, `Message`) and the `Message` again; on the nodes, **On Success** and **On Error** share the `Error` and `Message` pins, filled only on error.
