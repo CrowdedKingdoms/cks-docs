@@ -1,0 +1,53 @@
+---
+id: crowdy-studio-git-hub-commit
+title: CrowdyStudioGitHubCommit
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The commit a multi-file write created. githubSha is now commitSha; every change in it landed, or none did.
+
+
+```graphql
+type CrowdyStudioGitHubCommit {
+  commitSha: String!
+  parentSha: String!
+  written: [String!]!
+  deleted: [String!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubCommit.<b>commitSha</b></code>](#commit-sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #commit-sha */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubCommit.<b>parentSha</b></code>](#parent-sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #parent-sha */} 
+The expectedCommitSha it builds on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubCommit.<b>written</b></code>](#written)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #written */} 
+Paths created or updated.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubCommit.<b>deleted</b></code>](#deleted)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #deleted */} 
+Paths deleted.
+
+
+
+
+### Returned By
+
+[`crowdyStudioGitHubCommitFiles`](/reference/graphql/operations/mutations/crowdy-studio-git-hub-commit-files.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
