@@ -35,7 +35,7 @@ Grid operations (`createGrid`, `grantGridPermissions`, …) also run on the Game
 ## Typical flow
 
 1. **Sign in** on the Management API for the identity **session token** — email + password (`login` / `register`), magic link, or social. See [Sign in](/management-api/authentication).
-2. **Mint an app-scoped token** for the app you are entering — `mintAppToken` (same-origin/native) or the browser portal flow (cross-origin). Untrusted apps require user consent first; the Overworld (app 1) is trusted and skips it. See [Portals & app-scoped tokens](/management-api/portals-and-app-tokens) (and [Native & non-browser clients](/management-api/native-clients) for Unreal/Unity/desktop/console/mobile).
+2. **Mint an app-scoped token** for the app you are entering — `mintAppToken` (same-origin/native) or the browser portal flow (cross-origin). Untrusted apps require user consent first; the identity hub (app 1) is trusted and skips it. See [Portals & app-scoped tokens](/management-api/portals-and-app-tokens) (and [Native & non-browser clients](/management-api/native-clients) for Unreal/Unity/desktop/console/mobile).
 3. **Use the app token** as the Bearer for all Game API HTTP requests and in the realtime `connection_init` payload. Rotate it with `refreshAppToken` before `expiresAt`.
 
 ## Security notes
