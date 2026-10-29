@@ -314,16 +314,64 @@ target's root:
 
 **Clients must not parse `crowdy.json`.** `crowdyStudioGitHubLayout(appId,
 projectId, commitSha?)` is the only grammar; it returns `{ commitSha, server,
-client, assets, fromFile }`. CrowdyJS 17 and the agent worker read it and no
+client, assets, fromFile, kind }`. CrowdyJS 17 and the agent worker read it and no
 longer carry a parser of their own.
+
+`kind` says what the repository is: `STUDIO_CRATES` for a mod repository (the
+crates above), `CONSTRUCT_GAME` for a game generated from the Construct
+template that has no Studio rust under the layout roots. Crowdy Studio opens
+the second in its game editor ([below](#a-construct-game-the-whole-repository)).
+
+## A Construct game: the whole repository
+
+For a `CONSTRUCT_GAME` repository the working tree is the whole repository,
+not two crates. Two fields serve it; both take the same `appId` and
+`projectId`, resolve the bound repository themselves, and count as **one**
+GitHub operation each against the per-account limit:
+
+```graphql
+query {
+  crowdyStudioGitHubFiles(input: {
+    appId: "42", projectId: "7",
+    paths: ["src/game/content.ts", "model/catalog.mjs"]   # 1 to 100
+    # commitSha: optional, a full 40-hex SHA; the project's githubSha by default
+  }) {
+    commitSha
+    files { path sha size binary content }   # content is null when binary or over 512 KiB
+    missing                                   # requested paths not in the tree
+  }
+}
+
+mutation {
+  crowdyStudioGitHubCommitFiles(input: {
+    appId: "42", projectId: "7",
+    message: "Add a race scene and its pad",
+    expectedCommitSha: "<the project's githubSha>",
+    changes: [
+      { path: "src/scenes/race/RaceScene.ts", content: "..." },
+      { path: "src/game/content.ts", content: "..." },
+      { path: "src/scenes/old/OldScene.ts", delete: true }
+    ]
+  }) { commitSha parentSha written deleted }
+}
+```
+
+`crowdyStudioGitHubCommitFiles` writes every change as **one** commit on the
+bound branch, with your message, and only on top of `expectedCommitSha`: if
+the branch moved, nothing is written and the call answers `GITHUB_STALE_SHA`
+(re-read, rebase your edits, try again). Each file keeps its mode. It takes at
+most 100 changes and 4 MiB of content per commit, and 512 KiB per file. It
+refuses `.github/workflows/` paths (the Studio GitHub App holds no `workflows`
+permission) and deleting `crowdy.json`. On success the project's `githubSha`
+and mirror advance to the new commit in the same step.
 
 ## Which token may call what
 
 | Field | App token (in-game Studio, the agent worker) | Identity session (hosted Studio) |
 |---|---|---|
 | `crowdyStudioGitHubStatus` | yes | yes |
-| `crowdyStudioGitHubLayout`, `Tree`, `File` | yes | yes |
-| `crowdyStudioGitHubPutFile`, `DeleteFile`, `Refresh` | yes | yes |
+| `crowdyStudioGitHubLayout`, `Tree`, `File`, `Files` | yes | yes |
+| `crowdyStudioGitHubPutFile`, `DeleteFile`, `CommitFiles`, `Refresh` | yes | yes |
 | `crowdyStudioGitHubConnectUrl`, `Repos` | no | yes |
 | `crowdyStudioGitHubBind`, `Unbind` | no | yes |
 
@@ -358,7 +406,7 @@ full 40-hex form; abbreviations are refused.
 | `GITHUB_REPO_HAS_FILES` | `PUSH_PROJECT` refused: the branch already has rust under the layout roots | Bind with `TAKE_REPOSITORY`, or use an empty branch |
 | `GITHUB_REPO_EMPTY` | `TAKE_REPOSITORY` refused: nothing under the layout roots to take | Bind with `PUSH_PROJECT` |
 | `GITHUB_LAYOUT_INVALID` | `crowdy.json` on the branch is not a valid layout, or does not fit the project | Fix it on the branch (repo-relative directories; `client` ≠ `server`) and refresh |
-| `GITHUB_PATH_INVALID` | A path was rejected: absolute, `..`, `.git/`, control characters, over 256 bytes, or deleting `crowdy.json` | Send a repo-relative path |
+| `GITHUB_PATH_INVALID` | A path was rejected: absolute, `..`, `.git/`, control characters, over 256 bytes, deleting `crowdy.json`, or a `.github/workflows/` file in a commit | Send a repo-relative path; edit workflows on GitHub |
 | `GITHUB_STALE_SHA` | `expectedCommitSha` (or a blob `sha` you sent) no longer matches the project | Re-read the project, take the new `githubSha`, write again |
 | `GITHUB_BOUND_USE_CONTENTS` | A Studio file mutation was called on a `GITHUB` project | Write with `crowdyStudioGitHubPutFile` / `DeleteFile`; CrowdyJS 17 `saveProject` does this for you |
 | `GITHUB_UPSTREAM` | GitHub answered 5xx, timed out, or hit a secondary rate limit | Retry shortly |

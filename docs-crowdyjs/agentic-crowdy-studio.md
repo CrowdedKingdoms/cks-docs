@@ -57,6 +57,41 @@ file the agent commits is what the editor shows, and a push made from an IDE
 reaches both after one **Refresh**. An unbound project is saved through Studio
 as before.
 
+## The game editor: a Construct game's repository
+
+When the open project is bound to a game generated from the Construct
+template (the API reports its layout `kind` as `CONSTRUCT_GAME`), Studio
+edits **the game itself**, and the agent pane boots in game mode. It needs
+CrowdyJS 18.23, `@crowdedkingdoms/crowdy-dsh` 0.5 and a page that gives the
+controller a draft store (the Construct framework 0.4 does); otherwise the
+project opens in the mod editor as before.
+
+- **A draft, not commits.** The agent and the Files pane edit a draft of the
+  repository that only this player sees. On the hosted game it lives in the
+  player's browser, an overlay over the bound branch; on a game's local dev
+  server it is the checkout. Writes are guarded: a file the player changed
+  since the agent read it fails as stale instead of being overwritten.
+- **Previewed in place.** The game reloads its content layer (scenes, the
+  content registry, the catalog) from the draft without a page reload. The
+  agent calls `preview_status` to learn whether the world took the change and
+  which file and line failed. Code outside that layer still needs a build.
+- **One commit, when asked.** `commit_game_files` asks for approval in the
+  pane, then the page shows the files and the message and the player confirms.
+  The draft lands as one commit through
+  [`crowdyStudioGitHubCommitFiles`](/game-api/crowdy-studio-github#a-construct-game-the-whole-repository).
+  If the branch moved meanwhile, every edit that does not collide is rebased
+  and the rest are listed for the player to settle (keep mine, or take
+  GitHub's).
+- **The game's own guidance.** The agent reads the game's `STUDIO.md` as its
+  instructions and lists the skills the game's playbook marks for the dock.
+  It has the file tools, search, `screenshot`, `game_observe`,
+  `client_logs`, `read_playbook`, `preview_status` and `commit_game_files`;
+  the mod tools (`draft_test`, `deploy_live`, grid programs) are not offered.
+
+Hosting needs nothing new for a game on the Construct framework: its build
+adds a service worker for the preview that answers only its own `__draft/`
+URLs, and the page's CSP stays as it is.
+
 ## Player workflow
 
 1. Open Crowdy Studio on the project and grid you intend to use; the Agent

@@ -270,6 +270,41 @@ session passes its own transport through the `github` option of
 stored in the browser. See
 [Connect your GitHub repo to a Studio project](/game-api/crowdy-studio-github).
 
+### The game editor (18.23+)
+
+A project bound to a Construct game's repository (`layout().kind ===
+'CONSTRUCT_GAME'`) opens the game editor when the embed has a draft store:
+
+```ts
+import {
+  createCrowdyStudioEmbed,
+  GitHubDraftStore,
+  IndexedDbDraftOverlayStorage,
+} from '@crowdedkingdoms/crowdyjs/crowdy-studio';
+
+const storage = new IndexedDbDraftOverlayStorage();
+const studio = createCrowdyStudioEmbed({
+  // ...
+  draftStore: ({ appId, projectId, githubSha }) =>
+    new GitHubDraftStore({
+      transport: client.crowdyStudioGitHub,
+      appId,
+      projectId,
+      baseCommitSha: githubSha,
+      storage,
+    }),
+});
+// A Live code link names the project to open first.
+studio.toggle({ gridId, targetPermissions, projectId });
+```
+
+`GitHubDraftStore` keeps the player's edits in IndexedDB on the game's own
+origin, reads the bound branch in batches (`crowdyStudioGitHubFiles`) and
+commits the draft as one commit (`crowdyStudioGitHubCommitFiles`). Any
+`DraftStore` will do: the Construct framework supplies one over a local dev
+server's checkout. Return `null` for a project the page cannot edit, and it
+opens in the mod editor.
+
 ## Styling and layout contract
 
 - All kit chrome uses `ck-crowdy-studio-embed-*` classes (the agent pane uses
