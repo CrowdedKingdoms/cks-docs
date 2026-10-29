@@ -12,10 +12,10 @@ your own, as [Host your game](/build-a-game/host-your-game) describes.
 
 The hosting API is switched off on every environment. Its mutations
 (`claimGameHosting`, `beginGamePublish`, `completeGamePublish`, `abandonGamePublish`
-and `setHostedGameEnabled`) answer `CONTENT_HOSTING_DISABLED`, and its queries
-(`hostedGame`, `hostedGames`, `myHostedGames` and `hostedGamePublishes`) return `null`
-or an empty list. The fields are still in the schema, so a client that calls them gets
-that answer rather than a validation error.
+and `setHostedGameEnabled`) and the `hostedGamePublishes` query answer
+`CONTENT_HOSTING_DISABLED`, and its other queries (`hostedGame`, `hostedGames` and
+`myHostedGames`) return `null` or an empty list. The fields are still in the schema, so a
+client that calls them gets that answer rather than a validation error.
 
 If your game was published there:
 

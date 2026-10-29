@@ -14,9 +14,9 @@ switched off, and its mutations answer `CONTENT_HOSTING_DISABLED`; see
 
 The SDK surface that wrapped it is still in CrowdyJS, deprecated:
 
-- **`client.hosting`** (`claim`, `beginPublish`, `completePublish`, `abandonPublish` and
-  `setEnabled`) rejects with `CONTENT_HOSTING_DISABLED`, and its reads (`game`, `listed`,
-  `mine` and `publishes`) resolve to `null` or an empty list.
+- **`client.hosting`** (`claim`, `beginPublish`, `completePublish`, `abandonPublish`,
+  `setEnabled` and `publishes`) rejects with `CONTENT_HOSTING_DISABLED`, and its other
+  reads (`game`, `listed` and `mine`) resolve to `null` or an empty list.
 - **`publishDirectory`** and `manifestForDirectory`, from
   `@crowdedkingdoms/crowdyjs/hosting`, cannot publish, because `beginPublish` is refused.
 - **`EmbeddedHost`** (`client.embeddedHost`) bridged sign-in for a game framed by the

@@ -18,7 +18,7 @@ This page is the short version.
 :::info[Crowdy Games is retired]
 Until 2026-10-29 Crowded Kingdoms hosted games on Crowdy Games. That site and its
 content host are gone on every environment, and the platform's hosting API is switched
-off: its mutations answer `CONTENT_HOSTING_DISABLED` and its queries return nothing. A
+off: it answers `CONTENT_HOSTING_DISABLED` or returns nothing. A
 game that was published there is hosted the way this page describes. See the
 [changelog](/releases/intro#2026-10-29-crowdy-games-retired-host-your-game-yourself).
 :::
@@ -54,25 +54,43 @@ The host serves files and runs no code of yours. Your server code runs on ck-exe
 
 ## The headers
 
-Send these on **every** response: HTML, JavaScript, WebAssembly and worker scripts. A
-worker script fetched without them breaks isolation for the page that started it.
+Send these on **every** response, whatever the path: HTML, JavaScript, WebAssembly and
+worker scripts. A worker script fetched without them breaks isolation for the page that
+started it.
 
 | Header | Value | Why |
 |---|---|---|
 | `Cross-Origin-Opener-Policy` | `same-origin` | With the next header, it makes the page cross-origin isolated. |
 | `Cross-Origin-Embedder-Policy` | `credentialless` or `require-corp` | The Construct sends `credentialless`, which loads cross-origin resources without credentials. `require-corp` isolates the page too, but then every cross-origin resource the page loads must opt in with `Cross-Origin-Resource-Policy` or CORS. |
-| `Content-Security-Policy` | [The policy below](#the-content-security-policy) | Limits the page's connections to the API, and keeps its scripts and workers its own. |
 | `Cross-Origin-Resource-Policy` | `same-origin` | Other sites cannot load your files into their pages. |
-| `Permissions-Policy` | `camera=(self), microphone=(self)` | Lets the page ask for the camera and microphone (webcam and voice chat), and denies both to anything embedded. Some hosts deny them by default. |
+| `Access-Control-Allow-Origin` | `null` | The [grid program sandbox](#grid-programhtml) is an opaque origin, so its module scripts are requested with `Origin: null` and need this answer. Your files are your public build, so it exposes nothing. |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` | Other origins learn only your origin, never the full address. |
 | `X-Content-Type-Options` | `nosniff` | The browser uses the declared content type and never guesses one. |
+
+Then one `Content-Security-Policy` and one `Permissions-Policy` per kind of page:
+
+| Path | `Content-Security-Policy` | `Permissions-Policy` |
+|---|---|---|
+| `/` and `/index.html` | [the game's](#the-content-security-policy) | `camera=(self), microphone=(self)` |
+| `/dsh/*` | [the harness's](#dsh-the-agents-harness) | `camera=(self), microphone=(self)` |
+| `/grid-program.html` | [the sandbox's](#grid-programhtml) | `camera=(), microphone=(), geolocation=()` |
+
+`camera=(self), microphone=(self)` lets the page ask for the camera and microphone
+(webcam and voice chat) and denies both to anything embedded; some hosts deny them by
+default.
+
+:::warning[Never set one policy on every path]
+A browser enforces every `Content-Security-Policy` it receives, and many hosts combine
+the headers of every rule a path matches. The game's policy on `/*` therefore reaches
+`/dsh/` as well, and the agent pane does not start. Set each policy on its own paths.
+:::
 
 **Why isolation matters.** A page is cross-origin isolated (`crossOriginIsolated` is
 `true`) only when it sends both of the first two headers. CLIENT mods need it: their
 sandbox talks to the page through a `SharedArrayBuffer`, which browsers give only to an
-isolated page. The Studio agent needs it as well, because the CLIENT drafts it tests run
-in that same sandbox. Without it the game still loads, and players can sign in and play,
-but the CLIENT target is hidden and no grid's CLIENT halves run.
+isolated page. Without it the game still loads, players can sign in and play, and the
+Studio agent still starts, but the CLIENT target is hidden, no grid's CLIENT halves run,
+and the agent cannot try the CLIENT mods it drafts.
 
 ### The Content-Security-Policy
 
@@ -116,9 +134,7 @@ same-origin by design, so this policy is what holds it in.
 
 Give `/dsh/` its own rule at whatever serves it. A host or edge function that stamps one
 policy on every path sends the game's strict policy on `/dsh/` as well, and the pane
-fails with a blank frame and CSP errors in the console. Watch for a host that combines
-the headers of every rule a path matches: two `Content-Security-Policy` values are two
-policies, and the browser enforces both.
+fails with a blank frame and CSP errors in the console.
 
 Files under `/dsh/` that end in `.gz` must reach the browser with **no**
 `Content-Encoding` header, because the harness's worker decompresses
@@ -146,9 +162,15 @@ never let a fallback rewrite replace it with `index.html`.
 ### `grid-program.html`
 
 A game that runs [JS grid programs](/crowdyjs/grid-programs) frames them in a sandbox
-page that has no network at all. The Construct serves `grid-program.html` with headers of
-its own and answers the sandbox's module requests, which arrive with `Origin: null`,
-with `Access-Control-Allow-Origin: null`. See
+page that has no network at all. Serve `grid-program.html` with its own policy, the
+Permissions-Policy in [the table above](#the-headers) and `Referrer-Policy: no-referrer`:
+
+```text
+default-src 'none'; base-uri 'none'; object-src 'none'; form-action 'none'; frame-ancestors 'self'; script-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; worker-src 'none'; frame-src 'none'
+```
+
+The sandbox's module requests arrive with `Origin: null`, which is what the shared
+`Access-Control-Allow-Origin: null` answers. See
 [JS grid programs](https://github.com/CrowdedKingdoms/the-construct/blob/prod/docs/MODDING.md#js-grid-programs)
 in The Construct's modding guide.
 
@@ -200,22 +222,41 @@ gives the headers for Netlify, Vercel, Cloudflare Pages, AWS S3 with CloudFront,
 and Caddy. GitHub Pages cannot set response headers: the game runs there, but
 `crossOriginIsolated` is false, so CLIENT mods are off.
 
-For example, Netlify reads a `_headers` file from the published directory. Put it in
-`public/`, and the build copies it into `dist/`:
+For example, Netlify and Cloudflare Pages read a `_headers` file from the published
+directory. Put it in `public/`, and the build copies it into `dist/`. The shared headers
+go on `/*`, and each policy goes on exact paths, so no path gets two:
 
 ```text
 /*
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: credentialless
   Cross-Origin-Resource-Policy: same-origin
-  Permissions-Policy: camera=(self), microphone=(self)
-  Content-Security-Policy: <the game's policy above>
+  Access-Control-Allow-Origin: null
   Referrer-Policy: strict-origin-when-cross-origin
   X-Content-Type-Options: nosniff
+
+/
+  Content-Security-Policy: <the game's policy>
+  Permissions-Policy: camera=(self), microphone=(self)
+
+/index.html
+  Content-Security-Policy: <the game's policy>
+  Permissions-Policy: camera=(self), microphone=(self)
+
+/dsh/*
+  Content-Security-Policy: <the harness's policy>
+  Permissions-Policy: camera=(self), microphone=(self)
+
+/grid-program.html
+  Content-Security-Policy: <the sandbox's policy>
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+/construct-draft-sw.js
+  Cache-Control: no-cache
 ```
 
-That rule covers the game. Give `/dsh/` [the harness's policy](#dsh-the-agents-harness)
-as well, then fetch `/dsh/index.html` and check that it carries that policy alone.
+Replace each placeholder with the matching line on this page, then fetch
+`/dsh/index.html` and check that it carries the harness's policy alone.
 
 ## Local development and Live code
 

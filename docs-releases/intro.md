@@ -50,9 +50,9 @@ behind it is unchanged. See [Host your game](/build-a-game/host-your-game).
   (Blocks with Friends, Matchstick and others); and the content host, `crowdedcontent.com`,
   that served developers' bundles.
 - **The hosting API is switched off.** `claimGameHosting`, `beginGamePublish`,
-  `completeGamePublish`, `abandonGamePublish` and `setHostedGameEnabled` answer
-  `CONTENT_HOSTING_DISABLED`, and `hostedGame`, `hostedGames`, `myHostedGames` and
-  `hostedGamePublishes` return `null` or an empty list. The fields stay in the schema. The
+  `completeGamePublish`, `abandonGamePublish`, `setHostedGameEnabled` and
+  `hostedGamePublishes` answer `CONTENT_HOSTING_DISABLED`, and `hostedGame`, `hostedGames`
+  and `myHostedGames` return `null` or an empty list. The fields stay in the schema. The
   `HOSTED_*` error codes are retired with them ([error codes](/overview/error-codes)).
   CrowdyJS keeps `client.hosting`, `publishDirectory` and `EmbeddedHost`, deprecated. See
   [Hosting on Crowdy Games (retired)](/management-api/hosting-on-crowdy-games).
