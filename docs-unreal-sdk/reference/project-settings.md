@@ -78,7 +78,7 @@ default no longer applies.
 Two runtime setters on `UCrowdySDKSubsystem` look like a way to configure these values in code, but they
 are session-only overrides, not writes to the settings class: `SetDiscoveryUrl` stores a shared origin for
 the current session and is only read when `Environment` is Custom, and `SetGameApiUrl` stores one Game API
-HTTP endpoint for the session. `ReloadEndpointsFromSettings` is kept for old call sites and does nothing;
+HTTP endpoint for the session. `ReloadEndpointsFromSettings` is deprecated: it is kept so old call sites still compile and does nothing, so remove it from your graphs and code;
 the API client already re-reads both endpoints from the settings on every call.
 
 ### Server Object gateway domains

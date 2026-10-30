@@ -1,0 +1,934 @@
+# Classes and Subsystems
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/subsystems
+
+# Classes and Subsystems
+
+The consumer-facing classes you fetch most, with the module they live in and where to read more. The manifest carries 31 classes tagged as subsystems; 8 are excluded here because they are internal plumbing or deprecated, listed at the bottom of this page for completeness.
+
+## When you come here
+
+You know the shape of what you need (send an event, read a team, elect a host) but not which class owns it, or you want the one-line reminder of what a class you already use is for.
+
+:::note[Every subsystem here initializes automatically. You fetch it, you never create one.]
+:::
+
+<SurfaceTable table="subsystems" notes={{
+  UCrowdySDKSubsystem: "Sign-in, UDP connection, and voice. Sign-in returns the identity session token; the UDP connection uses an app-scoped token minted after sign-in.",
+  UCrowdyAuthentication: "Owns sign-in (email and password, magic link, social), the app-scoped token mint and refresh lifecycle, and encrypted session persistence.",
+  UCrowdyGameSession: "The client's own connection and sign-in state: app id, user id, this client's actor identity, and the elected host.",
+  UCrowdyUDPSubsystem: "Owns the realtime UDP connection: connect, disconnect, and the receive drain that feeds every other plane.",
+  UCrowdyActorManager: "Spawns and destroys the actor for a remote entity and keeps the entity id to actor mapping.",
+  UCrowdyActorPoolSubsystem: "The default rendering backend: draws replicated entities from a pool of reusable actors instead of spawning one per entity.",
+  UCrowdyActorTracker: "Receives remote entities' continuous-state updates, hands them on once a frame, and raises On Remote Entity Appeared, Timed Out and Left for the actor manager and your Blueprints.",
+  UCrowdyAutoRegistry: "Builds the wire-type and CrowdyEvent function registries at startup and on each world init; the event router resolves an incoming call's class and function id through it.",
+  UCrowdyAutoReplicator: "Ticks the continuous-state plane: polls each Dynamic entity's executor on its owner, decides full update, heartbeat or nothing per interval, and sends the snapshot.",
+  UCrowdyEntitySubsystem: "The entity registry and the spawn and destroy path. Also enrolls non-actor participants and drives ownership transfer; FindParticipant looks one up by entity id.",
+  UCrowdyEventRouter: "Routes an incoming CrowdyEvent RPC to the receiving function once it is decoded.",
+  UCrowdyReplicatedGameInstanceSubsystem: "Optional base class that enrolls and unenrolls a game-instance-scoped subsystem for replication automatically.",
+  UCrowdyReplicatedWorldSubsystem: "Optional base class that enrolls and unenrolls a world-scoped subsystem for replication automatically.",
+  UCrowdyStateReplicator: "Ticks the Crowdy State plane: diffs owned entities, sends and receives property deltas; MarkAllStateDirty forces a full resend of every owned entity's state.",
+  UCrowdyVideoFrameReceiver: "Receives raw encoded video frames sent over the SDK's channels and hands them to your decoder.",
+  UCrowdyAvatars: "Player profiles and per-app avatar state; only GetMyAvatars writes the local cache.",
+  UCrowdyChannels: "Create and manage channels, channel membership, and raw channel messages.",
+  UCrowdyHostSubsystem: "Host election and the server-validated host query.",
+  UCrowdyTeams: "Create, join, leave, and query teams and roles at runtime.",
+  UVoiceChatSubsystem: "The voice capture and playback of one map. A world subsystem; use the voice nodes on UCrowdySDKSubsystem, which carry their settings from map to map.",
+  UCrowdyMassEntitySubsystem: "The crowd rows of a map that draws with Mass: targets, traces, events and fields. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
+  UCrowdyMassServerRecordsSubsystem: "The Server Object records of crowd rows, and a callback when one changes. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
+}} notesLabel="What it is for" />
+
+## Fetching a subsystem
+
+How you fetch a subsystem depends on its scope. Game instance subsystems come from the game instance, world subsystems come from the world.
+
+Game instance subsystems:
+
+```cpp
+UCrowdySDKSubsystem* SDK = GetGameInstance()->GetSubsystem<UCrowdySDKSubsystem>();
+UCrowdyTeams* Teams = GetGameInstance()->GetSubsystem<UCrowdyTeams>();
+```
+
+World subsystems:
+
+```cpp
+UCrowdyEntitySubsystem* Entities = GetWorld()->GetSubsystem<UCrowdyEntitySubsystem>();
+```
+
+Blueprint function libraries (`UCrowdyUtilities`, `UCrowdyStateBlueprintLibrary`, `UCrowdyOwnershipTransfer`, `UCrowdyReplicatedSubsystemLibrary`) are static and need no fetch; see [Entities and spawning](../runtime/entities-and-spawning.md), [Marking state from outside the actor](../runtime/crowdy-state.md#marking-state-from-outside-the-actor), [Ownership transfer](../runtime/ownership-transfer.md) and [Replicated subsystems](../runtime/replicated-subsystems.md).
+
+## Excluded from this table
+
+Eight of the manifest's 31 subsystem classes do not appear in the table above:
+
+- `UCrowdyCppClientSubsystem`, `UCrowdyCppReplicationSubsystem`, `UCrowdySDKBridgeSubsystem`, `UCrowdyWorkerThreadsSubsystem`: the vendored CrowdyCPP bridge and its worker threads. The game-facing surface is `UCrowdySDKSubsystem`; see [Connection and reconnect](../runtime/connection-and-reconnect.md).
+- `UCrowdyConnectionMonitor`: the SDK reconnects on its own after a timeout, so starting the monitor adds a second retry loop. What it reports is covered on [Connection and reconnect](../runtime/connection-and-reconnect.md).
+- Two test harnesses in the Mass module that the SDK uses to verify itself. They are not part of the surface a game uses.
+- `UCrowdyPersistenceSubsystem`: superseded by server code on ck-exec; still present and working, and the plugin does not mark it deprecated. It reads the `CrowdyPersistent` and `CrowdySingleton` struct tags. See [What's Changed](../guides/whats-changed.md#persistence) for what still works and what does not get further development.
+
+## Gotchas
+
+- A world subsystem needs a valid world; fetch it after `BeginPlay`, not in a constructor.
+- Read the Outer column for scope; the class name does not always say it (`UCrowdyGameSession` is a game instance subsystem, `UCrowdyHostSubsystem` a world one).
+- `UCrowdySDKDeveloperSettings` looks like it belongs here but is not a subsystem at all; it lives on [Project Settings](./project-settings.md).
+
+## Related
+
+- [Host authority](../runtime/host-authority.md)
+- [Connection and reconnect](../runtime/connection-and-reconnect.md)
+- [What's Changed](../guides/whats-changed.md#persistence)
+
+# Blueprint Async Actions
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/async-actions
+
+# Blueprint Async Actions
+
+A Blueprint async action is a latent node: it keeps running after the graph moves on and fires one of its own exec pins when it finishes. The SDK ships 60 of them, one C++ class each. One, the class behind the typed Call node of a Server Object, has no palette entry of its own, so the table lists the other 59. Every one listed is covered by the pages below, so this table is a lookup, not a gap list.
+
+## When you come here
+
+You have a node open in the graph and want the page that explains its inputs, or you remember a page and want the exact node name to search for in the palette.
+
+The **Blueprint node** column is the title you see in the Blueprint editor, taken from the factory function's display name. The **C++ factory** column is the static function that creates the action, and the **Class** column is the C++ class behind it; you need those only for a `Cast` or a manual `Activate` call from C++, since the whole point of an async action is that Blueprint drives it. **Completion pins** lists the node's output exec pins in order, so you know which ones to wire before you drop the node.
+
+<SurfaceTable table="async-actions" group="page" />
+
+:::note[Every row above links forward. There is nothing left uncovered in this table.]
+Coverage for the 59 listed is complete: every one is mentioned on the page its row links to. A class that later stops matching any page (a rename, a page deleted) reopens as a coverage gap, not a silent removal from this table.
+:::
+
+## Gotchas
+
+- The node's display name, its factory function and its C++ class name can all differ (the **Call Server Function** node is `UCrowdyServerCallAction`); search the palette by the **Blueprint node** column, not the **Class** column.
+- A latent node only fires its completion pins while the graph that called it is still alive. A widget removed from its parent before the call completes never sees the result.
+- An async action with no ID pin operates on whatever the node's own inputs named at spawn time; it does not automatically track a Target that changes after the call starts.
+
+## Related
+
+- [Subsystems](./subsystems.md)
+- [Delegates](./delegates.md)
+- [RPC Events in Blueprint](../runtime/rpc-events-blueprint.md)
+
+# Blueprint Delegates
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/delegates
+
+# Blueprint Delegates
+
+A dynamic multicast delegate is what you bind with **Bind Event to** or **Assign** in Blueprint, or `AddDynamic` in C++. The table below lists the ones a game can bind, grouped by the owner class. It leaves out `UCrowdyConnectionMonitor::OnConnectionStateChanged`, because the SDK reconnects on its own. The voice ones are `OnVoiceMicStateChanged` and `OnVoiceSpeakerTalking` on `UCrowdySDKSubsystem`.
+
+## When you come here
+
+You have a delegate bound and want to know what its parameters mean, or you know roughly what you want to react to and want the class that fires it.
+
+Every delegate below fires on the game thread. This is a constant fact about every dynamic multicast delegate the SDK broadcasts, never a per-delegate choice, so it is stated once here instead of as a column that would read the same value on every row: your handler runs like any other Blueprint event or `UFUNCTION`, with no thread-safety code of your own to write.
+
+<SurfaceTable table="delegates" group="owner" />
+
+:::note[OnConnectionStateChanged is not in the table.]
+`UCrowdyConnectionMonitor::OnConnectionStateChanged` is not part of the documented path: the SDK reconnects on its own, and starting the monitor adds a second retry loop. Binding it to observe the connection state is safe; do not build retry logic on it. See [Connection and reconnect](../runtime/connection-and-reconnect.md).
+:::
+
+## Gotchas
+
+- A delegate's owner class must be reachable before you can bind it: a game instance subsystem's delegate is safe to bind in a C++ Game Instance's `Init` after `Super::Init()`, and in Blueprint from the Game Mode's Event BeginPlay (the Game Instance's Event Init runs before the subsystems exist); a world subsystem's needs a valid world first.
+- Binding twice fires your handler twice. Unbind (`Remove Dynamic` or `RemoveDynamic`) before a re-bind on a path that can run more than once, such as a widget that reconstructs.
+- The voice delegates live on `UCrowdySDKSubsystem`, which stays alive across maps, so you bind them once and they keep firing after a map change. The earlier voice delegates (`OnAudioNotify`, `OnAudioDataGenerated`, `OnAudioDataReceived`, `OnStreamTimeout`) and the audio device monitor's two are gone. See [Voice chat](../services/voice-chat.md).
+
+## Related
+
+- [Subsystems](./subsystems.md)
+- [Async actions](./async-actions.md)
+- [Connection and reconnect](../runtime/connection-and-reconnect.md)
+
+# Console Variables
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/console-cvars
+
+# Console Variables
+
+This page lists 51 `crowdy.*` console entries. They come in three kinds: trace gates that turn on
+informational logging for one area, behavior switches that change what the SDK does, and diagnostic
+commands that run once and hold no stored value. A row badged **Editor only** exists only in the editor
+process. Five of the diagnostic commands (`crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`,
+`crowdy.registry.dump`, `crowdy.mass.derive`, `crowdy.mass.state.verdict`) and every other `crowdy.mass.*` entry are compiled out of
+a Shipping build and are absent there rather than silent; every other row ships in Development and Shipping.
+
+## When you land here
+
+You want to know what a `crowdy.*` name does before you type it, or you are looking for the switch that
+turns on a specific area's logging. For the workflow around them (loopback testing, two-PIE setups), see
+[Testing locally](../guides/testing-locally.md); this page is the lookup table.
+
+## Trace gates
+
+All 19 are off by default. Seventeen turn on that area's informational lines when set to `1`; the two
+`.scopes` entries add Unreal Insights CPU scopes instead and log nothing. Warnings and errors print
+regardless of the setting.
+
+<SurfaceTable table="cvars" filter="role=trace" includeEditor />
+
+:::caution[`crowdy.serialize.trace` and `crowdy.serialize.scopes` are high frequency.]
+They log on every message encode and decode. Leave them off unless you are actively debugging
+serialization.
+:::
+
+:::caution[`crowdy.net.trace` logs every routed send and every received spatial message.]
+Since 2.17.0 it also prints one line per spatial message received ("Received opcode ... for actor ... in chunk
+...") and the transport's totals (datagrams received, verification failures, drops) about once a second. That
+is what tells "the server never sent it" apart from "the client dropped it"; it is too chatty to leave on.
+:::
+
+:::note[`crowdy.serialize.scopes` and `crowdy.state.scopes` are nested CPU trace scopes.]
+Each nests inside a wider enclosing scope, so turning one on shifts the timing you read for that
+enclosing scope too. If you are taking a performance reading, say whether the flag was on.
+:::
+
+`crowdy.studio.trace` and `crowdy.mass.nodes.trace` are editor only. `crowdy.studio.trace` never logs the
+bearer token, a pattern worth copying in your own logging around Studio calls.
+
+## Behavior switches
+
+These change what the SDK does rather than what it logs. None of the 24 exist only in the editor.
+
+<SurfaceTable
+  table="cvars"
+  filter="role=behaviour"
+  notes={{
+    "crowdy.net.receive.maxmessages": "How many inbound replication messages one frame may deliver; whatever is left waits for the next frame. Default 3072.",
+    "crowdy.net.receive.maxdrainms": "How many milliseconds of one frame may be spent delivering inbound messages. Raise the message count first. Default 4.",
+    "crowdy.net.send.bundle": "Pack one network pass's outbound messages into one datagram. Needs a replication server of v0.27.0 or later; against an older one every bundled message is dropped together. Default 1, read when a connection opens.",
+    "crowdy.net.recv.signedbundles": "Tell the replication server this client reads signed inbound bundles, so notifications arrive with one signature per datagram instead of one per member. A server older than v0.30.0 ignores it. Default 1, read when a connection opens.",
+    "crowdy.replication.tracker.maxgatheredupdates": "How many actor updates for already-tracked actors may be gathered before the backlog is discarded; reached only when the world tick is not consuming them. Default 8192.",
+    "crowdy.replication.tracker.maxqueuedupdates": "How many updates for actors not yet on screen may wait for a worker thread before further ones are dropped, counted, and reported once a second; reached only when the worker pool is not draining them. A dropped actor appears on a later update. Default 8192."
+  }}
+  notesLabel="Where the Help cell is empty"
+/>
+
+The notes map above stands in for these six rows because the surface exporter drops a CVar help built from adjacent `TEXT()` literals.
+
+:::warning[Turn `crowdy.net.http2` off if you ship, or collect logs from, a build with logging enabled.]
+On by default, it asks for HTTP/2 on the SDK's own requests (falling back to HTTP/1.1 when the server does not offer it); the game's other HTTP traffic and the engine's `http.CurlAllowHTTP2` are untouched. With HTTP/2, when a request fails at the network level (not a cancel or a timeout), the curl diagnostics the engine logs at `Warning` can include the request headers, bearer token included. A default Shipping build compiles logging out, so most projects never see this; if yours ships or collects logs from a build with logging enabled, set `crowdy.net.http2 0`.
+:::
+
+:::note[`crowdy.net.retry.busy` resends a refusal the platform blames on itself before the caller ever sees `Failed`.]
+On by default. An SDK query resends on any platform-blamed retryable refusal except `WRONG_DATACENTER` and `APP_UNAVAILABLE`. At most 3 retries, with the server's suggested wait when it names one or a doubling local wait otherwise. Password sign-in, the app token mint and the app token refresh are retried the same way when the platform answers that it is busy, and a retried request is dropped if the account's token changed meanwhile. Registration, link and social completion, password changes, email sends, logout and account deletion are never retried. Turn it off (`0`) only to compare against the un-retried behavior; leave it on for a shipping build.
+:::
+
+:::note[`crowdy.kit.emotes.*` cap the emotes a client will read, per sender and across all senders.]
+Each sender has its own small budget, and every emote also has to fit one budget shared across all senders. `crowdy.kit.emotes.persender.maxpersecond` (default 4) is how fast one sender's budget refills; `crowdy.kit.emotes.persender.burst` (default 4) is the most it holds. The per-sender budget is checked first, so one player flooding emotes runs out of their own budget and no longer uses up the shared one. An emote the shared budget drops costs its sender nothing. A client tracks at most 256 senders, and when that is full the sender that has been silent longest is forgotten.
+
+The shared budget exists because a sender id is only what the sender claims. `crowdy.kit.emotes.maxpersecond` (default 64) is how fast it refills; `crowdy.kit.emotes.burst` (default 16) is the most it holds. An emote over either budget is dropped before it is read, with one Warning in the log. A peer that forges a player's id can use up that player's per-sender budget, which costs that player nothing but their own emotes. Raise the numbers only if a busy scene legitimately sends more emotes than that. See [Send an emote](../services/play-together.md#send-an-emote).
+:::
+
+:::warning[Leave `crowdy.rpc.allowObjectLoad` off in production.]
+While it is off, an untrusted peer cannot trigger an arbitrary asset load; an unresolved object or class
+reference in a received RPC is delivered as null instead.
+:::
+
+`crowdy.rpc.loopback` and `crowdy.state.loopback` are not the same switch wearing two names.
+`crowdy.rpc.loopback` delivers a sent event back to your own receive path. `crowdy.state.loopback` cannot
+replay onto the same actor that sent the delta: an owner's own entity drops a non-host-sourced delta, and
+changed-detection on decode sees no change against identical values. Instead it spawns a distinct,
+lazily-created mirror entity and replays deltas onto that, so `CrowdyOnRep` still fires with one PIE
+client. Expect two entities, not one, when you turn it on.
+
+`crowdy.net.receive.poolactorupdates` defaults to `1` (pooling on). Turning it off is for an A/B
+measurement against the same build, not a fix for anything.
+
+## Diagnostic commands
+
+Eight commands with no stored value. Only `crowdy.rpc.dumpfn` and `crowdy.mass.derive` take arguments and
+print usage without them; every other command acts as soon as you run it. Five are compiled out of a Shipping
+build: `crowdy.rpc.dumpfn`, `crowdy.state.heartbeat.advisories`, `crowdy.registry.dump`, `crowdy.mass.derive` and
+`crowdy.mass.state.verdict`. `crowdy.registry.dump` logs every entry the cook baked into the registry, one
+line each: the structs and their layout hashes, the CrowdyState properties, and the CrowdyEvent functions,
+with their ids. It is the console version of the Registry page (see [Inspector and Registry](../studio/inspector-and-registry.md)).
+
+<SurfaceTable
+  table="cvars"
+  filter="role=command"
+  includeEditor
+  notes={{
+    "crowdy.rpc.dumpfn": "Not in Shipping",
+    "crowdy.state.heartbeat.advisories": "Not in Shipping",
+    "crowdy.registry.dump": "Not in Shipping",
+    "crowdy.mass.derive": "Not in Shipping",
+    "crowdy.mass.state.verdict": "Not in Shipping",
+    "crowdy.cpp.selftest": "Every build",
+    "crowdy.net.routes": "Every build"
+  }}
+  notesLabel="Build"
+/>
+
+:::tip[`crowdy.rpc.dumpfn` and `crowdy.state.heartbeat.advisories` print structured text you can paste directly into a bug report.]
+:::
+
+The development-build sign-in commands `crowdy.auth.signin.file`, `crowdy.auth.status` and `crowdy.auth.signout` are described under [Sign in from the console](../guides/testing-locally.md#sign-in-from-the-console).
+
+`crowdy.cpp.selftest` and `crowdy.net.routes` carry no build guard, so they exist in every build including
+Shipping; the four diagnostics above do not, and a Shipping console answers them with an unknown command.
+
+## Gotchas
+
+- Warnings and errors are never gated behind a trace flag. They print under the module's log category no
+  matter what.
+- `crowdy.net.receive.maxdrainms` (4 ms) and `crowdy.net.receive.maxmessages` (3072) bound one frame's
+  receive drain. If drains keep ending on the time budget, delivery is costing more per message than the
+  frame can afford, and raising the count is not the lever.
+
+## Related
+
+- [Log categories](./log-categories.md): the category each trace gate's lines print under.
+- [Project settings](./project-settings.md): the settings-class properties that sit beside these CVars.
+- [Testing locally](../guides/testing-locally.md): loopback and two-PIE workflows built on these switches.
+
+# Project Settings
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/project-settings
+
+# Project Settings
+
+The SDK's settings live on `UCrowdySDKDeveloperSettings`, under **Project Settings, Plugins, Crowdy SDK**.
+It is written to `Config/DefaultGame.ini` under `[/Script/CrowdyReplication.CrowdySDKDeveloperSettings]`.
+None of it is secret; commit the file as usual.
+
+## When you land here
+
+You are looking for a property's name, category, or default, or you want to know whether a value is safe
+to type by hand or gets overwritten the next time you sync.
+
+## UCrowdySDKDeveloperSettings
+
+The **Written by** column tells you which: **Config Sync** properties are read-only in Project Settings and
+come from [Config Sync](../studio/config-sync.md); **you** properties are yours to edit directly.
+`Environment` is an `ECrowdyEnvironment`: **Dev (shared)**, **Test**, **Production**, or **Custom**, which is
+when the Discovery URL is read. Dev, Test, and Production each resolve to a built-in host
+(`ck.dev.crowdedkingdoms.com`, `ck.test.crowdedkingdoms.com`, `ck.prod.crowdedkingdoms.com`); Custom is the
+only value that reads `DiscoveryUrl` from the project. **Choose Production.** Dev and Test are Crowded
+Kingdoms' internal environments: only staff and approved partners can sign in there, and any other account
+is refused with `TIER_ACCESS_REQUIRED`.
+
+<SurfaceTable table="settings" filter="class=UCrowdySDKDeveloperSettings" group="category" />
+
+:::danger[Never hand-type a Config Sync property.]
+The Network category is read-only in the editor on purpose, so Crowdy Studio stays the single source of
+truth. A value pasted into the ini by hand is overwritten by the next sync, and a project whose settings
+drift from its app fails to connect with no obvious error.
+:::
+
+:::warning[`UDPTimeoutSeconds` must stay above the SDK's ping interval.]
+It is set on Crowdy Studio's Project page (Connection) and clamped to 6 to 120 seconds; the ping interval
+is 5 seconds, so the floor already keeps it above. Too low and the SDK would re-assign a server during
+normal traffic instead of only after a real drop.
+:::
+
+:::warning[`bAutoClearPersistentStateOnShutdown` fires only while UDP is still connected.]
+It is not guaranteed at shutdown. For cleanup you can rely on, call `ClearAllState` before logout instead.
+:::
+
+:::info[`bShowConsentPrompt` is on by default.]
+It opens the built-in terms and age prompt when a sign-in needs the player's agreement. Turn it off only if your game draws its own; see [Draw your own prompt](../services/authentication.md#draw-your-own-prompt).
+:::
+
+:::caution[Map profiles decide what the SDK does on each level.]
+These settings point the SDK at an app; `MapProfiles` and `DefaultProfile` decide what it does per map. A
+map with neither runs on the SDK's shipped default profile; a row whose asset does not load leaves the map
+inactive. See [Map profile](../runtime/map-profile.md).
+:::
+
+`IDOverrides` and `ClassIDOverrides` exist only to resolve a startup type-id hash collision. Leave both
+empty until the log reports one; in practice they stay empty for almost every project. A row is the type
+and the id to force: an `FCrowdyIDOverride` holds `Struct` and `Override ID` (0 to 65535) for
+`IDOverrides`; an `FCrowdyClassIDOverride` holds `Entity Class` and `Override ID` (1 or more) for
+`ClassIDOverrides`.
+
+### The default Backend
+
+A project that has never run Config Sync's Backend selector has no `Environment` written to its
+`DefaultGame.ini` yet, so it runs on whatever this SDK build defaults to: the tier the build was released
+for. A build off the `dev` branch defaults to Dev, a `test` build to Test (both internal), and the public
+release defaults to Production; the Discovery URL default follows the same tier. Read the active default from code with the
+static `UCrowdySDKDeveloperSettings::GetReleaseEnvironment()` (C++ only, not exposed to Blueprint). Once you
+pick a Backend on the Sign In page and sync, `DefaultGame.ini` holds that choice from then on and this
+default no longer applies.
+
+### Setting endpoints at runtime
+
+Two runtime setters on `UCrowdySDKSubsystem` look like a way to configure these values in code, but they
+are session-only overrides, not writes to the settings class: `SetDiscoveryUrl` stores a shared origin for
+the current session and is only read when `Environment` is Custom, and `SetGameApiUrl` stores one Game API
+HTTP endpoint for the session. `ReloadEndpointsFromSettings` is deprecated: it is kept so old call sites still compile and does nothing, so remove it from your graphs and code;
+the API client already re-reads both endpoints from the settings on every call.
+
+### Server Object gateway domains
+
+A Server Object connects to the gateway the Game API names. The SDK connects only when that gateway is on the Game API's own domains, so a Game API that points somewhere else cannot receive the player's connect token. If you host the server yourself on a domain of your own, list it under **Project Settings, Crowdy SDK, Server Objects, Allowed Exec Gateway Domains** (`AllowedExecGatewayDomains` in `Config/DefaultGame.ini`, with the other Crowdy SDK settings). An entry such as `example.com` allows that domain and its subdomains. A scheme, a path, a port, a leading dot or `*.` in an entry is ignored, so `https://*.example.com:8443/` counts as `example.com`. An entry that does not read as a domain at all, such as `https://` or `*.`, allows nothing, and the SDK logs a Warning naming it when it checks a gateway outside the Game API's own domains.
+
+A gateway outside both the Game API's own domains and this list is refused for good: every Server Object fails with a reason that starts "Could not open the connection to the server: the Game API named a gateway outside its own domains", and none is retried until you acquire it again (or call Restart). See [Troubleshooting](../exec/troubleshooting.md#what-makes-it-fail).
+
+### Server Object timeouts
+
+Two properties under **Crowdy SDK, Developer, Server Objects** set how long a Server Object connection waits. Like the Network category they are read-only in Project Settings and are edited on Crowdy Studio's Project page, in the **Connection** tab under **Server Objects**; see [Config Sync](../studio/config-sync.md).
+
+- `ServerObjectCallTimeoutSeconds` (**Server Object Call Timeout**) is how long a call waits for the platform's answer before it fails with a `Timeout`: 11 to 120 seconds, 20 by default. It stays above the longest **Time per Call** a type may have, 10 seconds. A **Call** node's **Timeout** can shorten it for one call; see [Give up sooner](../exec/from-blueprint/call-functions.md#give-up-sooner).
+- `ServerObjectOpenTimeoutSeconds` (**Server Object Open Timeout**) is how long opening the connection waits before the attempt fails: 1 to 60 seconds, 10 by default.
+
+Both apply from the next Play, and to the editor's developer connections. A dropped connection is always reopened; there is no setting for that.
+
+## Gotchas
+
+- The class is `Config=Game`. A property you change in code at runtime through the settings object itself
+  does not persist past the session; use the two runtime setters above for a session-only override instead.
+- `MapProfiles` and `DefaultProfile` decide what runs per level; a property here being set correctly does
+  not mean a given map resolved the profile you meant.
+- The baked registry asset is required in a packaged build, but the `BakedRegistry` setting may stay empty:
+  the SDK falls back to the fixed path the cook writes. See [Packaging](../guides/packaging.md).
+
+## Related
+
+- [Config Sync](../studio/config-sync.md): the authoring source for the Network category split.
+- [Map profile](../runtime/map-profile.md): the other half of "make replication work".
+- [Console variables](./console-cvars.md): the CVar surface alongside these settings.
+
+# RPC Metadata Keys
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/rpc-meta-keys
+
+# RPC Metadata Keys
+
+This page lists the metadata you place on a CrowdyEvent receiver to control routing and, for a Blueprint
+custom event, to mark it as RPC-style in the first place.
+
+Come here when you are writing or reviewing a `CrowdyEvent` receiver and need the exact key names, their
+accepted values and defaults, and where each one is legal to place.
+
+In C++ the keys go on the `UFUNCTION(meta=(...))` line of your `_Implementation` function.
+
+```cpp
+UFUNCTION(meta = (CrowdyEvent,
+    CrowdyRecipient = "SpatialMulticast",
+    CrowdyDecay = "Exponential_Decay",
+    CrowdyDistance = "Four_Chunks"))
+void FireWeapon_Implementation(int32 Ammo, FVector Direction);
+CROWDY_EVENT(FireWeapon)
+```
+
+## Keys
+
+The marker that turns a function into a CrowdyEvent receiver:
+
+<SurfaceTable table="meta-keys" filter="key=CrowdyEvent" columns={["key", "symbol", "header"]} />
+
+The routing keys that go alongside it, and the Blueprint-only markers that identify an RPC-style event to
+the compiler:
+
+<SurfaceTable table="meta-keys" filter="owner=CrowdyRpcMetaKeys" columns={["key", "symbol", "header"]} />
+
+The manifest carries the symbol and its header; the accepted values, defaults, and behavior below come from
+reading the header directly, since the manifest has no default or notes field for a meta key.
+
+`CrowdyEvent` takes no value and is required on every receiver. Its legal place is any `UFUNCTION`, whether
+you wrote the C++ by hand or the compiler generated it from a Blueprint custom event marked
+`CrowdyReplicates`. Both a C++ receiver and a generated Blueprint one carry `CrowdyEvent`; only the
+Blueprint one also needs `CrowdyReplicates` sitting next to it, because a Blueprint graph has no other way to
+tell the router this custom event is RPC-style rather than a struct handler.
+
+`CrowdyRecipient` takes an `ECrowdyEventRecipient` name and defaults to `SpatialMulticast`. The enumerators,
+in declared order, are `SpatialMulticast`, `Multicast`, `OwningClient`, and `Host`. See
+[enums](/unreal-sdk/reference/enums) for the full type.
+
+`CrowdyDecay` takes an `ECrowdyDecayRate` name and defaults to `No_Decay`. The enumerators are `No_Decay`,
+`Exponential_Decay`, `Linear_50`, `Linear_25`, `Linear_10`, and `Linear_5`. It applies only to
+`SpatialMulticast`; the SDK reads it unconditionally, but it only changes anything on the spatial send path.
+
+`CrowdyDistance` takes an `ECrowdyReplicationDistance` name and defaults to `Eight_Chunks`, the maximum
+range. It applies only to `SpatialMulticast`, same as `CrowdyDecay`.
+
+`CrowdyChannel` takes a channel name string and defaults to empty, which means the app-wide default session
+channel. It names the channel a `Multicast` event routes over by name rather than id, so the same event
+resolves to the same channel in every environment your app is deployed to.
+
+`CrowdyAction` takes no value. It declares that the receiver's parameters describe a one-shot action, an
+attack swing, a flinch, an emote, rather than a body to run. The Crowdy Mass Rendering Backend plays it as an
+animation action on a receiver that holds the entity as a crowd row rather than a live actor. On the
+actor pool the declaration changes nothing. See
+[Play poses and one-shot actions](../mass/play-poses-and-one-shot-actions.md).
+
+`CrowdyReplicates` takes no value. It marks a Blueprint custom event as RPC-style ("Crowdy Replicates" in
+the Blueprint dropdown), which is what tells the router to bind it through the RPC path rather than as a
+struct handler, and lets the compiler inject the dispatch gate. A C++ receiver never sets this key;
+`CROWDY_EVENT` is the C++ equivalent.
+
+`CrowdyReplicate` is a legacy alias of `CrowdyReplicates`, kept so an older Blueprint asset still resolves.
+It is deliberately not reused by Crowdy State: the same string already means "this is an RPC event," so a
+state property never carries it. See [state metadata keys](./state-meta-keys.md).
+
+:::caution[The receiver must be a real `UFUNCTION`. The `CROWDY_EVENT(Name)` macro only generates the call
+site. It cannot emit the `UFUNCTION`, because UnrealHeaderTool does not expand macros when it scans for
+reflected functions.]
+:::
+
+:::warning[`CrowdyRecipient = "Host"` addresses the elected host. Election is a convention, not an
+enforcement boundary, so do not treat Host-only delivery as a security control.]
+Anyone can hold the host role at some point in a session. If a call must only take effect for a
+server-validated reason, check that reason on the receiving end; do not rely on the recipient filter alone
+to keep an untrusted client from reaching the logic.
+:::
+
+## Gotchas
+
+- `CrowdyDecay` and `CrowdyDistance` are read unconditionally, but neither changes anything outside the
+  `SpatialMulticast` recipient.
+- `CrowdyReplicates` and its legacy alias `CrowdyReplicate` only ever appear on a Blueprint custom event; a
+  C++ receiver never sets them.
+- `CrowdyAction` is a declaration only. The actor pool ignores it; the Crowdy Mass Rendering Backend reads
+  it to play the call as an action on a crowd row. See
+  [Play poses and one-shot actions](../mass/play-poses-and-one-shot-actions.md).
+
+## Related
+
+- [State metadata keys](./state-meta-keys.md)
+- [RPC parameter types](./rpc-types.md)
+- [RPC Events in C++](/unreal-sdk/runtime/rpc-events-cpp)
+- [Enums](./enums.md)
+
+# Crowdy State Metadata Keys
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/state-meta-keys
+
+# Crowdy State Metadata Keys
+
+This page lists the metadata you place on a property to control Crowdy State property replication. For the
+full guide, see [Crowdy State](/unreal-sdk/runtime/crowdy-state).
+
+Come here for the exact key names, their accepted values and defaults, and what a Crowdy State property may
+hold.
+
+In C++ the keys go on the `UPROPERTY(meta=(...))` line. In Blueprint they are set from the variable's
+Details panel through the **Crowdy Replication** dropdown, not typed by hand.
+
+```cpp
+UPROPERTY(meta = (CrowdyState,
+    CrowdyOnRep = "OnRep_Stance",
+    CrowdyOwnerOnly,
+    CrowdyManualDirty,
+    CrowdyHeartbeat))
+uint8 Stance = 0;
+
+UFUNCTION()
+void OnRep_Stance();
+```
+
+## Keys
+
+<SurfaceTable table="meta-keys" filter="owner=CrowdyStateMetaKeys" columns={["key", "symbol", "header"]} />
+
+The manifest carries the symbol and its header; the accepted values, defaults, and behavior below come from
+the header directly.
+
+`CrowdyState` takes no value and is required. It marks the property for Crowdy State; the other four keys
+do nothing without it. Its legal place is any `UPROPERTY`, never a `UFUNCTION` or `UCLASS`.
+
+`CrowdyOnRep` takes the name of a parameterless notify function and has no default. It runs on the receiver
+right after the value is written, and only when the value actually changed: GAS-style, no arguments, no
+previous value. Read the new value off the property itself.
+
+`CrowdyOwnerOnly` takes no value and defaults to off. It is a delivery scope, not secrecy: the property
+ships only to the entity's owning client, over the targeted single-actor path, never on the spatial
+broadcast. This changes who receives the value, not who could intercept it.
+
+`CrowdyManualDirty` takes no value and defaults to off. It skips the automatic per-tick diff; the value
+ships only when you call `MarkStateDirty`. One mark sends exactly the next update, then clears. It is meant
+for a big or expensive property you do not want diffed every tick.
+
+`CrowdyHeartbeat` takes no value and defaults to off in C++. It opts a property into the periodic keyframe
+baseline, so a late-relevant peer gets its current value. On-change replication is unaffected either way: a
+changed property always ships, marked or not, marked properties are simply re-sent while unchanged too. The
+Blueprint "Crowdy Replication" dropdown pre-checks Heartbeat the first time a variable enters Replicated
+mode, as a convenience; the underlying mechanism is the same opt-in metadata either way.
+
+:::note[`CrowdyOwnerOnly`, `CrowdyManualDirty`, and `CrowdyHeartbeat` are presence markers. You add the bare key to turn each on; they take no value. The code tests only whether the key is present, so do not write `= true` -- and `= false` would still count as on. `CrowdyOnRep` is the one key that takes a value, the notify function's name.]
+:::
+
+:::note[`CrowdyState` is deliberately not spelled `CrowdyReplicate`. That string already belongs to the RPC side, as an alias of the Blueprint marker `CrowdyReplicates`. Reusing it here would make one key mean two different systems and break RPC-versus-state discovery. If you came from the RPC metadata keys page expecting the two families to mirror each other by name, they do not, on purpose. See [RPC metadata keys](./rpc-meta-keys.md).]
+:::
+
+## What can be marked
+
+Crowdy State covers plain values and plain structs: numbers, bools, enums, `FName`, `FString`, and USTRUCTs built from those. Object references, containers (`TArray`, `TSet`, `TMap`, including buried inside a struct), and static arrays are rejected at discovery and simply do not replicate. See [Unsupported types](/unreal-sdk/runtime/crowdy-state#rejected) for the full list and the reasons.
+
+A struct type that carries a native net serializer (`FVector_NetQuantize`, `FRotator`, and the rest of the `_NetQuantize` family) quantizes on the wire automatically, with no key to set. See [type-driven quantization](/unreal-sdk/runtime/crowdy-state#accepted).
+
+The Blueprint "Crowdy Replication" dropdown offers **None** and **Replicated**; **Replicated** writes these keys for you. A `CrowdyModel` or `CrowdyContainer` key left on a property from the removed Game Model API does nothing; see [Move from Game Models](../exec/move-from-game-models.md#upgrade-steps).
+
+:::warning[`HasMetaData`-backed discovery helpers, including the one behind this header, answer false in a cooked build, because cooked builds strip metadata. A runtime check routes through the baked registry instead, never through live metadata.]
+:::
+
+## Gotchas
+
+- All five keys go on a `UPROPERTY`; none apply to a `UFUNCTION` or `UCLASS`.
+- `CrowdyHeartbeat` only changes how often an unchanged value is re-sent. A changed value always ships,
+  heartbeat or not.
+- A property is discovered live only in the editor. A packaged build reads the baked rep table, not the
+  metadata on the header.
+
+## Related
+
+- [Crowdy State](/unreal-sdk/runtime/crowdy-state): owner diffing, host precedence, world entities, and the
+  keyframe baseline.
+- [RPC metadata keys](./rpc-meta-keys.md)
+
+# Enums
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/enums
+
+# Enums
+
+The enums you reach for most often when working with entities, RPC events, and Crowdy State properties, described in full below. Every other BlueprintType enum the SDK exposes is in the generated table at the end of this page, so a name you cannot find in the ten sections here is still worth a search there before you open a header.
+
+## ECrowdyEventRecipient
+
+Who runs a CrowdyEvent, and over which transport.
+
+Header: `Core/UDP/Enums/ECrowdyMessageType.h`.
+
+| Value | Meaning |
+| --- | --- |
+| `SpatialMulticast` | Everyone in range runs it, over the spatial path, thinned by decay and distance. The default. |
+| `Multicast` | Every member of the session channel runs it, over the channel transport, at any distance with no decay. |
+| `OwningClient` | Only the client that owns the target entity runs it. |
+| `Host` | Only the elected host runs it. The host may act on any entity it has locally. |
+
+:::note[`SpatialMulticast` is the default recipient. For a full walkthrough of how each value selects its transport, see [Recipients and Routing](/unreal-sdk/runtime/recipients-and-routing).]
+:::
+
+## ECrowdyDecayRate
+
+How delivery probability falls off with distance.
+
+:::tip[Decay applies only to `SpatialMulticast`. It has no effect on the other recipients.]
+:::
+
+| Value |
+| --- |
+| `No_Decay` |
+| `Exponential_Decay` |
+| `Linear_50` |
+| `Linear_25` |
+| `Linear_10` |
+| `Linear_5` |
+
+## ECrowdyReplicationDistance
+
+The maximum distance, in chunks, that a `SpatialMulticast` event travels from the sender.
+
+Values: `None`, `One_Chunk`, `Two_Chunks`, `Three_Chunks`, `Four_Chunks`, `Five_Chunks`, `Six_Chunks`, `Seven_Chunks`, `Eight_Chunks`.
+
+`Eight_Chunks` is the default.
+
+## ECrowdyEntityMode
+
+How an entity replicates. Set it on `UCrowdyEntityComponent`.
+
+Header: `Replication/Components/CrowdyEntityComponent.h`.
+
+| Value | Meaning |
+| --- | --- |
+| `Dynamic` | The continuous state channel streams the executor's snapshot every interval. Use it for movement and anything high frequency. |
+| `Static` | Event only. State travels through `SendEvent` and CrowdyEvent handlers. |
+
+## ECrowdyIdentityPolicy
+
+How an entity gets its `NetID`.
+
+| Value | Meaning |
+| --- | --- |
+| `PlayerDerived` | From the signed in user id. Only valid on the locally controlled player pawn. |
+| `Stable` | Hashed from the actor's level path. Every client computes the same id for a level placed actor. |
+| `Random` | A fresh id each session. Use for runtime spawns. |
+
+## ECrowdyRole
+
+This client's relationship to an entity.
+
+Header: `Data/CrowdyEntityTypes.h`.
+
+| Value | Meaning |
+| --- | --- |
+| `None` | Not registered. |
+| `Owner` | This client simulates the entity and sends its state and events. |
+| `RemoteProxy` | This client receives state and events from the network. |
+| `HostOwned` | Owned by whoever is host. Reassigned on host migration. |
+
+## ECrowdyOwnership
+
+The authority axis for an entity: who owns and simulates it. Set it on `UCrowdyEntityComponent`. It is orthogonal to `ECrowdyEntityMode` and `ECrowdyIdentityPolicy`, and mostly matters for level placed world entities (a runtime host spawn is already owner on the host).
+
+Header: `Replication/Components/CrowdyEntityComponent.h`.
+
+| Value | Meaning |
+| --- | --- |
+| `LocalClient` | This client owns and simulates the entity (`Role=Owner`). The default. |
+| `Host` | Owned by whichever client is currently host (`Role=HostOwned`, no per client owner). Use it for world or AI entities that must share one authority across every client. |
+
+## ECrowdyHostOverride
+
+Whether the elected host may super-user-write a client owned entity's Crowdy State. Set it on `UCrowdyEntityComponent`. Only meaningful when `Ownership` is `LocalClient`.
+
+Header: `Replication/Components/CrowdyEntityComponent.h`.
+
+| Value | Meaning |
+| --- | --- |
+| `Allow` | The host may override this entity's Crowdy State as a super-user, and the owner adopts the correction. The default. |
+| `OwnerOnly` | Only the owning client may change this entity. Even a host-sourced correction is dropped. |
+
+:::note[Host authority on the Crowdy State plane is a precedence-by-convention, not a server-enforced boundary. Keep authoritative or cheat-sensitive state off this plane. See [host authority](/unreal-sdk/runtime/host-authority).]
+:::
+
+## ECrowdyStateHeartbeat
+
+Per entity control over the Crowdy State keyframe heartbeat, the periodic re-send of `CrowdyHeartbeat`-marked properties. Set it on `UCrowdyEntityComponent`. On-change replication is unaffected either way.
+
+Header: `Replication/Components/CrowdyEntityComponent.h`.
+
+| Value | Meaning |
+| --- | --- |
+| `Inherit` | Follow the map profile. Marked properties re-send every `StateKeyframeIntervalSeconds` when the map's keyframe interval is greater than 0. The default. |
+| `Off` | Never emit a keyframe heartbeat for this entity, regardless of its property marks or the map setting. A kill switch for always-active entities. |
+
+## ECrowdyReplicationMode
+
+The mode chosen in the "Crowdy Replication" dropdown on a Blueprint variable's Details panel. Editor only.
+
+Header: `Customizations/CrowdyReplicationMode.h`.
+
+| Value | Meaning |
+| --- | --- |
+| `None` | Not networked by Crowdy. Selecting it scrubs every Crowdy key off the variable. |
+| `Replicated` | Crowdy State: the fast, client-authoritative view plane. Stamps the Crowdy State metadata so the variable flows through the same discovery and bake as a C++ `meta=(CrowdyState)` property. |
+
+:::note[For how to author a replicated variable, see [Crowdy State](/unreal-sdk/runtime/crowdy-state).]
+:::
+
+## Every BlueprintType enum
+
+The ten above are the ones this page explains in prose. The table below is generated from the same manifest that backs the rest of this reference section, grouped by module, and it lists every BlueprintType enum the manifest reports, including ones no page describes in words. Two wire-level enums no Blueprint-callable takes, `ECrowdyMessageType` and `ECrowdyErrorCode`, are BlueprintType in the header but missing from the manifest's enum group in this export, so they are absent below. The manifest carries each enum's name, its enumerator list, and where it lives, but not a meaning for each value, so for the "why" behind a value you still want the sections above or the concept page a row links to.
+
+<SurfaceTable table="enums" group="module" />
+
+Thirteen enums the manifest reports are excluded from the table above: two are deprecated (the persistence pull result and the connection monitor's reconnect state), one is a transport protocol enumeration nothing game-facing selects, and ten belong to another first-party module that rides in the same plugin build and are outside this SDK's own contract. None of them is part of the surface a game calls.
+
+## Gotchas
+
+- The generated table's page column is blank where no other page mentions the enum by name; that is a gap in the docs, not a sign the enum does not exist.
+- A value's meaning lives in the ten prose sections above or on the concept page it links to, never in the generated table, which only has names.
+
+## Related
+
+- [Recipients and routing](../runtime/recipients-and-routing.md)
+- [Entities, identity, and ownership](../concepts/entities-identity-ownership.md)
+- [Crowdy State](../runtime/crowdy-state.md)
+- [Host authority](../runtime/host-authority.md)
+- [SDK surface manifest](./sdk-surface.md): what the generated table above is built from.
+
+# RPC Parameter Types
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/rpc-types
+
+# RPC Parameter Types
+
+Which types a CrowdyEvent function's parameters can use directly, and the hard limits the wire format enforces on top of that. Come here when you are shaping a new event's signature, or a registration failed and you need to know which rule it hit.
+
+:::note[There is no payload struct to declare and nothing to serialize by hand. You pass the values, and the SDK handles the wire form.]
+:::
+
+## Allowed
+
+These types can be used directly as CrowdyEvent parameters.
+
+| Category | Types |
+| --- | --- |
+| Booleans and numbers | `bool`, `uint8`, `int32`, `int64`, `float`, `double` |
+| Text | `FName`, `FString`, `FText` |
+| Enums | any `UENUM` |
+| Structs | any `USTRUCT` built from the allowed types above (a struct that hides a container is rejected; see below) |
+| Object and class references | `UObject*`, `UClass*`, `TSubclassOf<...>`, `TSoftObjectPtr<...>`, `TSoftClassPtr<...>` |
+| Arrays | `TArray<>` of any of the above, including arrays of object references |
+| Sets and maps | `TSet<>` and `TMap<>` of non object element, key, and value types |
+
+A struct's own members are not checked one by one, only for a buried container, so a struct built entirely from allowed leaf types always passes. Unreal's reflection already forbids a container nested inside another container at the parameter declaration, so the container rules below only ever bite one level down: inside a struct, or as a struct-typed array, set, or map element.
+
+## Not allowed
+
+These do not work as CrowdyEvent parameters, each for a specific reason.
+
+| Not allowed | Why |
+| --- | --- |
+| A return value | A CrowdyEvent is one way; it cannot send data back to the caller. |
+| A non const output reference | Same reason. A `const&` input is fine. |
+| `TSet` or `TMap` of object references | Object identity hashing is out of scope. Use a `TArray` of object references instead. |
+| A `USTRUCT` that hides a container (`TArray`, `TSet`, or `TMap`) anywhere inside it, and any `TArray`, `TSet`, or `TMap` whose element, key, or value is such a struct | A buried container's element count has no bound on the wire, so it is rejected at registration to keep a malformed packet from forcing a huge allocation. Pass the container as a top-level parameter instead. This includes `FGameplayTagContainer`, which holds an inner array; pass the tags as a `TArray<FGameplayTag>` parameter. |
+| Delegates and interfaces (`TScriptInterface<>`) | No stable wire form. |
+
+:::caution[A CrowdyEvent is one way. It cannot return a value or write back through a non const output reference. A `const&` input is fine.]
+:::
+
+## How references travel
+
+References are not sent as raw pointers. Each kind resolves to a portable identity on the wire, one of three tags.
+
+| Reference | On the wire |
+| --- | --- |
+| A tracked entity actor | Sent as its entity `NetID`, so it resolves to the matching instance on each client. |
+| An asset or a class | Sent as its object path. |
+| A runtime object that is neither an entity nor an asset | Sent as null, with a warning, because it has no portable identity. |
+
+:::tip[A received object or class reference resolves by finding an already loaded asset. To allow loading missing assets from disk by path, set `crowdy.rpc.allowObjectLoad 1`. It is off by default so an untrusted peer cannot trigger arbitrary loads. See [Console variables](./console-cvars.md).]
+:::
+
+## Reading a value on receipt
+
+A handler reads each parameter by name off the incoming call, never by its position on the wire, through a typed getter: a bool, a name, or a string comes back as is. `GetInt32` never narrows an incoming 64 bit value for you, because the value came from someone else's process; `GetInt64` accepts a 32 bit value widened, which loses nothing. `GetFloat` accepts a double narrowed, because a Blueprint float pin is a double under the hood while a C++ `float` property is not, so this one direction has to happen somewhere. Every getter answers a safe default rather than reinterpreting the bytes when the stored type does not match what you asked for.
+
+## Limits
+
+The manifest that drives the other reference tables on this site does not carry these numbers; they come from the wire format itself.
+
+- A `Multicast` event's payload is capped at 1024 bytes on its reliable channel. An encoded call that would exceed this is dropped loudly at send, never truncated. `SpatialMulticast` has no channel cap of its own, but it still travels in a UDP datagram of at most 1232 bytes including the envelope, so it is a little more room, not an unbounded route.
+- An array, set, or map parameter is capped at 65,536 elements. A forged, out of range count fails before any allocation happens, and the whole call is dropped cleanly rather than driving an unbounded allocation from an untrusted packet.
+- The buried-container check above stops recursing at 8 levels of struct nesting. A struct cannot contain itself by value, so this is a defensive bound, not a limit you can reach by ordinary authoring.
+
+## Gotchas
+
+- A rejected registration for a buried container is a compile-time (editor load time) failure, not a runtime one; move the container to the top level of the parameter list.
+- `TArray` of an object reference is fine; `TSet` and `TMap` of one are not.
+- The 1024 byte cap belongs to `Multicast` alone. Do not size a `SpatialMulticast` payload against it.
+- A getter mismatch fails quietly (a default value, not a crash), so a handler that reads the wrong type from a payload looks like it worked until you check the value.
+
+## Related
+
+- [RPC metadata keys](./rpc-meta-keys.md): the keys that route the event this page's parameters ride on.
+- [RPC events in C++](../runtime/rpc-events-cpp.md): worked examples of declaring and calling an event.
+- [Console variables](./console-cvars.md): `crowdy.rpc.allowObjectLoad` and the rest.
+- [What a state property may be](../runtime/crowdy-state.md#what-a-state-property-may-be): the view plane's own, stricter type rules. Crowdy State rejects containers and object references outright; RPC parameters accept both.
+
+# Log Categories
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/log-categories
+
+# Log Categories
+
+The SDK logs under 12 `LogCrowdy<X>` categories, one or more per module. Two knobs control what you see:
+the category's own log verbosity, which is native Unreal and free, and the paired `crowdy.<area>.trace`
+CVar, which is a one-line switch for that area's extra informational stream. The two are independent: a
+trace CVar gates SDK trace lines that print at `Log` verbosity, and `Log <Category> Verbose` reveals the
+engine-style lower-level lines the module also emits. Raising verbosity never turns a trace gate on; turn
+on both when you need the full picture for one area.
+
+## When you land here
+
+You want to raise verbosity on a category by name, or you are trying to work out why a category's lines
+never show up in a packaged build.
+
+## Reading the table
+
+A row badged **Editor only** belongs to a module that is not in a cooked build. `LogCrowdyEditor` and
+`LogCrowdyStudio` are editor-module categories, present only in the editor process. `LogCrowdyNodes`
+belongs to an `UncookedOnly` module: present in the editor and in an uncooked `-game` launch, absent from
+every cooked build, Development or Shipping alike.
+
+<SurfaceTable
+  table="log-categories"
+  includeEditor
+  notes={{LogCrowdyMass: "Crowds with Mass: entity configs, animation, targets and events. The `crowdy.mass.anim.trace` and `crowdy.mass.neartier.trace` gates add its informational lines.", LogCrowdyReplication: "Entity tracking, actor pool churn, and Crowdy State replication all log under this plain category rather than one of their own; narrow with the trace CVar before you read it."}}
+/>
+
+```text
+Log LogCrowdyRPC Verbose
+```
+
+For a problem that happens before the console is available, pin the verbosity in `DefaultEngine.ini`:
+
+```ini
+[Core.Log]
+LogCrowdyReplication=Verbose
+```
+
+:::note[Warnings and errors are never gated behind a trace CVar.]
+They always print under their module's category regardless of the trace setting. Turning a trace CVar off
+only silences the extra informational lines.
+:::
+
+:::warning[Never log a bearer token or other secret material.]
+`crowdy.studio.trace`'s own logging never includes the bearer token; follow the same rule for any logging
+you add around SDK calls.
+:::
+
+`CKSharedTypes` has no active logging of its own; do not go looking for a `LogCrowdyShared` category, it
+does not exist.
+
+## Gotchas
+
+- `LogCrowdyNodes`, `LogCrowdyEditor`, and `LogCrowdyStudio` are the three categories badged **Editor
+  only** above. None is in a cooked build; `LogCrowdyNodes` is additionally present in an uncooked `-game`
+  launch, where the other two are not.
+- `LogCrowdyCpp` has no paired trace CVar. Its only diagnostic is running `crowdy.cpp.selftest`.
+- A category with two or more paired trace CVars (`LogCrowdyNet`, `LogCrowdyReplication`, `LogCrowdyRPC`,
+  `LogCrowdyServices`) mixes those areas' lines together; narrow with the trace CVar first, then read the
+  category. The two `.scopes` CVars are Insights CPU scopes and write no log line, so they pair with no
+  category.
+- Set a category back to its default verbosity when you are done; leaving several at `Verbose` adds volume
+  that makes the next real problem harder to spot.
+
+## Related
+
+- [Console variables](./console-cvars.md): the `crowdy.<area>.trace` CVars this page's pairing points at.
+- [Testing locally](../guides/testing-locally.md): the workflow that replaces the old debugging and
+  logging guide.
+- [Project settings](./project-settings.md): the settings classes alongside this CVar and log surface.
+
+# SDK Surface Manifest
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/sdk-surface
+
+# SDK Surface Manifest
+
+`sdk-surface.json` is a committed, machine-readable inventory of every reflected symbol the plugin ships: every Blueprint-callable function, delegate, subsystem, struct, enum, setting, console variable, and metadata key, plus a few groups of plain C++ types with no Blueprint exposure at all. Every table elsewhere in this reference section is generated from it. Come here to script against the surface directly, an audit of your own project's usage, a code generation tool, or an agent checking whether a symbol exists before it goes looking through headers, rather than to read a rendered table.
+
+## Where to get it
+
+[`/helpers/unreal-sdk/sdk-surface.json`](pathname:///helpers/unreal-sdk/sdk-surface.json). It ships alongside this site's other machine-readable files and is regenerated as the SDK changes, so a fresh copy always describes a specific SDK release rather than "whatever is newest."
+
+Three fields sit above the groups: `generated`, the export timestamp; `sdk_version`, the SDK release this snapshot describes; and `source_root`, the header directory it was built from. Check `sdk_version` first if something here looks wrong against a copy you pulled yourself.
+
+:::note[If the sdk_version in your own copy does not match this page's, the tables on this site and this page's counts are both describing a different release than yours.]
+Regenerate your understanding from the file you have rather than patching around a mismatch; the groups below can gain or lose rows between releases.
+:::
+
+## The groups
+
+| Group | What it holds |
+| --- | --- |
+| `functions` | Blueprint-callable and pure functions, with their owning class, module, category, and display name. |
+| `delegates` | Blueprint-assignable dynamic multicast delegates, with their owning class and signature type. |
+| `async_actions` | Latent Blueprint nodes: the class, its factory function names (the node's display name is on the matching `functions` entry), and the completion pins it exposes. |
+| `subsystems` | Game Instance and World subsystem classes. |
+| `structs` | BlueprintType `USTRUCT`s. |
+| `enums` | BlueprintType `UENUM`s. |
+| `settings` | Properties on the SDK's developer-settings classes, each marked as one you set or one Config Sync writes for you. |
+| `cvars` | Console variables, split into trace gates, behavior switches, and one-shot commands. |
+| `meta_keys` | The `UFUNCTION`/`UPROPERTY` metadata marker keys: `CrowdyEvent`, `CrowdyState`, and the rest. |
+| `log_categories` | Log categories with their module and header. The trace-variable pairing on the log categories page is derived from `cvars` by the site's table generator, not stored here. |
+| `cpp_types`, `cpp_functions`, `cpp_delegates`, `cpp_macros` | Plain C++ types, methods, delegates, and macros with no Blueprint exposure at all: internal to the plugin, not something a game calls directly. Most of what these four groups report belongs to the vendored networking bridge, the plugin's own wire and JSON helpers, or editor-only tooling. |
+
+The first ten groups are Blueprint's own reflected surface, the one a game actually reaches. The last four exist in the manifest because the export walks the plugin's headers exhaustively, not because a game is meant to build against them.
+
+## How a symbol counts as documented
+
+This documentation set's own completeness check reads every page under the Unreal SDK section and asks, for each symbol in the manifest, whether that symbol's name appears anywhere as a whole word. A row in one of this reference section's generated tables satisfies the check exactly like a paragraph of prose does; the check has no notion of "the one canonical page" for a symbol, only whether it is mentioned somewhere at all.
+
+That also means a name typed once, anywhere, technically counts, so treat the check as a floor, not a guarantee that every symbol got a real explanation. Some symbols the manifest reports are deliberately left off every table and every page: internal plumbing behind a documented subsystem, a class the SDK itself has deprecated, editor-only tooling, a symbol that belongs to a different first-party module riding in the same plugin build rather than to this SDK's own contract. Those are tracked in an exceptions list (`docs-unreal-sdk/reference/surface-allowlist.json` in the documentation repository, not published beside the manifest) alongside the reason, so an absence from this site is either "here, just not in prose" or "excluded, and here is why," never a silent gap.
+
+## Gotchas
+
+- The manifest is exhaustive over the plugin's own headers, with one known exporter gap in this release: two BlueprintType enums with braces inside their bodies (`ECrowdyMessageType`, `ECrowdyErrorCode`) appear only under `cpp_types`, not `enums`. Otherwise a symbol you cannot find in it does not exist in this SDK version; that is an answer, not a reason to grep the source.
+- The four raw C++ groups (`cpp_types`, `cpp_functions`, `cpp_delegates`, `cpp_macros`) are not a promise of a stable public API. They are what the export sees, not what the SDK commits to keeping.
+- A symbol's presence in the manifest says nothing about whether it is a good idea to use. The exceptions list marks deprecated symbols for exactly this reason.
+
+## Related
+
+- [Subsystems](./subsystems.md), [Async actions](./async-actions.md), [Delegates](./delegates.md), [Console variables](./console-cvars.md), [Project settings](./project-settings.md): the generated tables built from this manifest.
+- [RPC metadata keys](./rpc-meta-keys.md), [Crowdy State metadata keys](./state-meta-keys.md): the `meta_keys` group, split by where each key is legal.
+- [Log categories](./log-categories.md): the `log_categories` group.
+- [Enums](./enums.md): the `enums` group.

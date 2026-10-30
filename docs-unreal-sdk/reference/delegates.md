@@ -9,13 +9,13 @@ import SurfaceTable from '@site/src/components/SurfaceTable';
 
 # Blueprint Delegates
 
-A dynamic multicast delegate is what you bind with **Bind Event to** or **Assign** in Blueprint, or `AddDynamic` in C++. The SDK exposes 167 of them; 2 belong to a private actor a game cannot reference and are dropped from this table, and 1 more, `UCrowdyConnectionMonitor::OnConnectionStateChanged`, is left out because the SDK reconnects on its own. So 164 rows render below.
+A dynamic multicast delegate is what you bind with **Bind Event to** or **Assign** in Blueprint, or `AddDynamic` in C++. The table below lists the ones a game can bind, grouped by the owner class. It leaves out `UCrowdyConnectionMonitor::OnConnectionStateChanged`, because the SDK reconnects on its own. The voice ones are `OnVoiceMicStateChanged` and `OnVoiceSpeakerTalking` on `UCrowdySDKSubsystem`.
 
 ## When you come here
 
 You have a delegate bound and want to know what its parameters mean, or you know roughly what you want to react to and want the class that fires it.
 
-All 164 delegates below fire on the game thread. This is a constant fact about every dynamic multicast delegate the SDK broadcasts, never a per-delegate choice, so it is stated once here instead of as a column that would read the same value 164 times: your handler runs like any other Blueprint event or `UFUNCTION`, with no thread-safety code of your own to write.
+Every delegate below fires on the game thread. This is a constant fact about every dynamic multicast delegate the SDK broadcasts, never a per-delegate choice, so it is stated once here instead of as a column that would read the same value on every row: your handler runs like any other Blueprint event or `UFUNCTION`, with no thread-safety code of your own to write.
 
 <SurfaceTable table="delegates" group="owner" />
 
@@ -27,7 +27,7 @@ All 164 delegates below fire on the game thread. This is a constant fact about e
 
 - A delegate's owner class must be reachable before you can bind it: a game instance subsystem's delegate is safe to bind in a C++ Game Instance's `Init` after `Super::Init()`, and in Blueprint from the Game Mode's Event BeginPlay (the Game Instance's Event Init runs before the subsystems exist); a world subsystem's needs a valid world first.
 - Binding twice fires your handler twice. Unbind (`Remove Dynamic` or `RemoveDynamic`) before a re-bind on a path that can run more than once, such as a widget that reconstructs.
-- Two delegates on `AWinAudioDeviceMonitor` exist in the SDK but are not shown here: that actor is private and spawned by the voice subsystem for itself, so a game never has a reference to bind against. See [Voice chat](../services/voice-chat.md).
+- The voice delegates live on `UCrowdySDKSubsystem`, which stays alive across maps, so you bind them once and they keep firing after a map change. The earlier voice delegates (`OnAudioNotify`, `OnAudioDataGenerated`, `OnAudioDataReceived`, `OnStreamTimeout`) and the audio device monitor's two are gone. See [Voice chat](../services/voice-chat.md).
 
 ## Related
 

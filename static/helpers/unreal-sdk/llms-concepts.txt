@@ -1,0 +1,292 @@
+# The Two Planes
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/concepts/two-planes
+
+# The Two Planes
+
+Every piece of networked state in the SDK lives on one of two planes. The view plane is fast and client-owned; the truth plane is server-owned and enforced. Keeping them apart is the one rule the rest of the SDK is built on.
+
+## The split
+
+**Plane A, the view plane (Crowdy State).** Continuous, client-authoritative state that has to move fast: movement, animation, transient effects. The client that owns an entity writes its view state; the SDK ships it to every other client over UDP, through RPC events and property replication. Nothing on this plane is checked by a server. An elected host helps coordinate it, but as a convention, not as an authority.
+
+**Plane B, the truth plane (your server code).** Gameplay state the game must be able to trust: hit points, stats, inventory, currency, anything a client could benefit from lying about. The server owns it: your app's code on [ck-exec](/exec/intro) holds it, and a client asks that code for a change, which it decides and confirms. This is the only place a rule is enforced.
+
+:::caution[The SDK reaches ck-exec through Server Objects.]
+The SDK once had its own truth-plane API (Game Model containers and attributes, `CrowdyModel` markers, Crowdy Effects, invoke policies and sessions), built on the game API's legacy game-model engine, which ck-exec replaced. The game API no longer serves it and the SDK has removed it. Its replacement is [Server Objects](../exec/overview.md), from Blueprint or C++. See [Move from Game Models](../exec/move-from-game-models.md).
+:::
+
+:::note[The elected host is a convention, not an enforcement point.]
+Any client can, in principle, lie about its own view state. The host is a coordinator for shared view-plane logic, not a referee. See [The Host Is a Convention](./host-is-a-convention.md).
+:::
+
+## Where the planes are allowed to touch
+
+A client can ask the server's code to change a truth value, and is told the result. No gameplay value ever flows from the view plane into the truth plane as trusted input: the server's code decides from what it holds, not from what a client says it sees.
+
+## What the split means for your code
+
+Each of these follows from the split above. The page that owns the detail is linked.
+
+1. **If a cheater would want to change it, it belongs on the truth plane.** Hit points, currency, inventory, scores, cooldowns, anything a win depends on. Crowdy State is for what players see: position, animation, a light that is on or off. The low latency of Crowdy State is not a reason to put a trusted value there.
+2. **Never decide gameplay from another client's Crowdy State.** Every client writes its own view state and nothing checks it, so a remote client's health bar, hit flag or score in Crowdy State is a claim, not a fact. Read the trusted value from the server instead. See [Crowdy State](../runtime/crowdy-state.md).
+3. **Change a trusted value by asking, not by writing.** The server's code decides and confirms; there is no client-side write to a trusted value. See [Game API best practices](/game-api/best-practices).
+4. **Expect the confirmed value to arrive a moment later.** Predict locally if you must, and let the confirmed value overwrite the prediction.
+5. **Do not build authority on "I am the host".** The host is an elected client that coordinates view-plane work; it can leave, change, or lie. Anything that must be true for everyone goes through the server's code. See [The Host Is a Convention](./host-is-a-convention.md).
+6. **Every server id is 64-bit.** Store app, user and team ids as `int64` (Blueprint `Integer64`), never as a 32-bit integer or a parsed number; the app id travels as a string.
+7. **A packaged build only knows the markers it was cooked with.** `CrowdyEvent` and `CrowdyState` markers are baked into a registry at cook time; add a marker, cook again, and never read Unreal metadata at runtime in shipped code. See [Packaging](../guides/packaging.md).
+
+## Deciding where a field goes
+
+Ask one question: **can a malicious client benefit from lying about this value?** If yes, it belongs on the truth plane. If no, it is view state.
+
+:::danger[Authoritative or cheat-sensitive state never belongs in Crowdy State.]
+Crowdy State is written by the client that owns the entity and believed by everyone else. A hit-point value there is a hit-point value the owner can set to a million.
+:::
+
+The table below is a guide, not a rule book. Each row names the mechanism that fits.
+
+| State | Plane | Mechanism |
+|---|---|---|
+| Movement | View | Dynamic entity mode: the continuous state channel sends a snapshot every replication interval. |
+| Animation blend state | View | A Crowdy State property (`meta=(CrowdyState)`), diffed and sent on change. |
+| A one-shot effect trigger (a muzzle flash, an impact) | View | An RPC event (`meta=(CrowdyEvent)`), because a trigger is not continuous state. |
+| Hit points | Truth | Your server code, which applies damage and heals. |
+| Inventory | Truth | Your server code. |
+| Currency | Truth | Server code that outlives any one match. |
+| Match score | Truth | A hub for the match, such as the `session` [starter pack](/exec/builds#starter-packs)'s. |
+| Chat | View | An RPC event with the `Multicast` recipient over the session channel. Not gameplay truth. |
+| A cosmetic display name | View | A Crowdy State property. Route it through the avatars service instead if it has to persist. |
+
+## Gotchas
+
+- Low latency is not a reason to move a value to the view plane. Predict locally if you must, but let the server's confirmed value overwrite the prediction.
+- The Blueprint **Crowdy Replication** dropdown offers only **None** and **Replicated**. **Replicated** is for view state; keep trusted values in your server code.
+
+## Related
+
+- [Entities, Identity, and Ownership](./entities-identity-ownership.md): what an entity is and who may write its view state.
+- [The Host Is a Convention](./host-is-a-convention.md): what host election does and does not decide.
+- [Crowdy State](../runtime/crowdy-state.md): the view-plane property system.
+- [ck-exec overview](/exec/intro): where the truth plane's code runs.
+
+# Entities, Identity, and Ownership
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/concepts/entities-identity-ownership
+
+# Entities, Identity, and Ownership
+
+An entity is an actor that other players can see and react to. It carries one `UCrowdyEntityComponent`, which gives it a shared identity, a role on each client, and a place in the entity registry. RPC events and Crowdy State are both built on top of that.
+
+## What an entity is
+
+Add a `UCrowdyEntityComponent` to an actor and it becomes an entity. On every client the entity has:
+
+- a **NetID**, the name every client uses for this one thing;
+- a **role**: `Owner` on the client that simulates it, `RemoteProxy` everywhere else, or `HostOwned` for a world entity the elected host drives;
+- an entry in the entity registry, which is how an event aimed at "this rock" finds the right rock on each machine.
+
+## The NetID
+
+The SDK hands you the NetID as an `FGuid` (`GetNetID()`), which is convenient to compare and store. On the wire it is 32 opaque bytes; the `FGuid` is a derived form. Treat it as an opaque handle: compare it, pass it along, never build one by hand.
+
+:::warning[Never construct a NetID yourself.]
+The wire identity is not an RFC 4122 UUID, and a hand-made `FGuid` does not name anything. Let the identity policy below, or a spawn call, mint it.
+:::
+
+### `FCrowdyActorId`, the wire type
+
+`FGuid` is the convenient face; `FCrowdyActorId` is what actually travels the wire, 32 raw octets rather
+than an RFC 4122 UUID. Build one only through its named constructors: `FromGuid` converts an `FGuid`,
+`FromOctets` and the fallible `TryFromOctets` build from an existing 32-byte view (the fallible one returns
+`bool` instead of asserting), `FromStringOrUnset` and `TryFromString` parse a hex string, and
+`FromAnsiLiteral` builds a compile-time one from a string literal for tests and defaults.
+
+Once you have one, `IsSet()` says whether it names anything, `AsOctets()` gives a read-only view of the 32
+bytes, `AppendTo` and `WriteTo` copy them into a buffer you already own, `ToString()` renders the hex form
+back, and `Reset()` clears it to unset.
+
+## Identity policies
+
+`IdentityPolicy` on the component decides how the NetID is chosen.
+
+- **Stable** (the default). Derived from the actor's placement in the level, so every client computes the same NetID for the same level-placed actor with no spawn message and no hand-typed seed. Use it for anything that already exists when the map loads: props, spawners, doors.
+- **PlayerDerived**. Derived from the signed-in user id. Valid only on the locally controlled player pawn.
+- **Random**. A fresh id each time, with no cross-client agreement. Use it for a purely local actor nobody else needs to address.
+
+An actor you spawn during play through the SDK's spawn call is told its identity by the spawner, so its policy does not matter; the spawn travels to every client carrying the NetID.
+
+:::note[PlayerDerived on anything but the local player's pawn falls back to Random.]
+The SDK logs one warning and the actor gets an id no other client shares. Keep PlayerDerived for the pawn. The identity is read once: at the component's `BeginPlay` when the pawn already has a controller, otherwise inside its first possession, after the pawn's own **Possessed** and **Controller Changed** events, since a pawn spawned during play (`RestartPlayer`, a respawn) is possessed only after `BeginPlay`. The first controller of any kind completes it; an AI controller gets the fallback. A respawn that leaves the earlier pawn alive moves the account id to the new pawn and clears the old one, which stops replicating. Read the id from the component's **On Crowdy Ownership Assigned** or the entity subsystem's `OnEntityRegistered`, never from `BeginPlay` or **Possessed**; **Is Locally Owned** on the pawn is false until the registration.
+:::
+
+![The entity component's Details panel: Mode, Identity Policy, and Ownership](/img/unreal-sdk/entity-mode-identity.png)
+
+### Stable identity in a packaged build
+
+Stable identity prefers the engine's per-placement instance guid, which is saved in the level and is identical on every client. In a cooked build the engine releases that guid before `BeginPlay`, so the SDK snapshots it when the component registers and uses the snapshot. You do not have to do anything, but if you write your own identity code, read placement data at `OnRegister`, never at `BeginPlay`.
+
+:::danger[In a cooked build, read the placement guid at OnRegister, never at BeginPlay.]
+Editor and Play in Editor keep the guid alive and hide the bug; only a packaged build shows it.
+:::
+
+## Owner and proxy
+
+For each entity exactly one client is the authority, and only the authority writes the entity's view state.
+
+`Ownership` on the component chooses the authority for a level-placed actor:
+
+- **Host** (the default): whichever client is currently the elected host owns it (`Role = HostOwned`). Every client shares one authority, which is what a world or AI entity wants.
+- **LocalClient**: this client owns and simulates it (`Role = Owner`).
+
+An entity spawned at runtime is always owned by the client that spawned it, whatever the component says. `Ownership` only applies to level-placed actors that resolve their own identity.
+
+Ask `IsLocallyOwned()` before doing owner work. It is true when this client is the entity's owner, or when the entity is host-owned and this client is the host. A remote proxy never sends state; it receives and plays back.
+
+A player's own avatar has `NetID == OwnerID == the local player id`, and every entity that player spawns carries that id as its `OwnerID`. This is Crowdy ownership and has nothing to do with `AActor::GetOwner()`.
+
+## Example
+
+A lantern post is a lantern that belongs to the level rather than to a player: the [Quickstart](../quickstart.md) lantern with the three settings a level-placed world entity wants. It is event-only, every client derives the same NetID for it, and the elected host is its one authority.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+All three settings are `EditAnywhere`, so a constructor (or the Details panel, or Class Defaults) is where they are set. `ALanternPost` inherits everything else from `ALantern`, so a post flickers and lights like any lantern, and its `IsLocallyOwned()` checks are true on the host alone:
+
+```cpp
+// LanternPost.h
+#include "Lantern.h"
+#include "LanternPost.generated.h"
+
+UCLASS()
+class ALanternPost : public ALantern
+{
+	GENERATED_BODY()
+
+public:
+	ALanternPost();
+};
+
+// LanternPost.cpp
+#include "LanternPost.h"
+
+ALanternPost::ALanternPost()
+{
+	// A level-placed post: event-only, the same NetID on every client, and one shared authority, the elected host.
+	CrowdyEntity->Mode = ECrowdyEntityMode::Static;
+	CrowdyEntity->IdentityPolicy = ECrowdyIdentityPolicy::Stable;
+	CrowdyEntity->Ownership = ECrowdyOwnership::Host;
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+Set Mode, Identity Policy, and Ownership on the component in the Details panel (see the screenshot above). At runtime, `Is Locally Owned` is the question to ask before owner work; on a host-owned post it is true on the elected host and false everywhere else. This graph, in an Actor Blueprint with a **Point Light** named `Light` whose **Visible** box is unticked, lights the post on exactly one client, the host:
+
+[Blueprint snippet: identity-policies, see /bp/unreal-sdk/identity-policies.txt]
+
+Pan the graph with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+
+`Get Mode`, `Get Ownership`, `Get Role`, and `Get Net ID` are the component's pure getters for the resolved identity. There is no getter for Identity Policy; it is a design-time setting only.
+
+</TabItem>
+</Tabs>
+
+## Gotchas
+
+- `IsLocallyOwned()` is the question to ask. Do not compare ids by hand to decide who is in charge.
+- A proxy of a Static entity never exists on its owner; the owner has the real thing, and an event it sends never comes back to it. A Dynamic entity's owner may see its own echoed proxy as well; see [Rendering backends](../runtime/rendering-backends.md).
+- Stable identity depends on level placement. An actor you create in code with Stable set does not agree across clients; spawn it through the SDK instead.
+- Identity Policy has no Blueprint getter. If a graph needs it, it is probably asking the wrong question; ask `Get Role` instead.
+
+## Related
+
+- [The Two Planes](./two-planes.md): which state an owner is allowed to write.
+- [The Host Is a Convention](./host-is-a-convention.md): what host-owned means.
+- [Entities and spawning](../runtime/entities-and-spawning.md): spawning at runtime and receiving spawns.
+
+# Sessions and Presence
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/concepts/sessions-and-presence
+
+# Sessions and Presence
+
+"Session" names several things in this SDK, and none of them is a match. A match, a lobby waiting to become one, a room or a table is kept by your app's server code, and every client reads that record rather than keeping its own.
+
+:::note[One word, three things.]
+The **login session** is your signed-in identity. The **session channel** is a transport every client of the app joins (`__crowdy_session_<appId>`). A **Crowdy Team** is a persistent group with membership and roles. None of them is a match, and being in one does not make a player part of one.
+:::
+
+## Presence is the player's actor
+
+There is no heartbeat call. While a client's UDP connection is up and it is replicating an actor in the app, that client is present. The server knows a client by the actor updates it sends: a client with no fresh actor is at no position on the map and receives no spatial event. A headless or API-only client, a test bot with no UDP connection, or a menu-only flow has no actor to be present with.
+
+Server code hears presence too: on [ck-exec](/exec/intro), the app's root hub is told who entered or left the app's world. See [presence](/exec/timers-and-presence#presence). The root the Unreal SDK deploys keeps the count, which a game reads with **Get Players Online**; see [How many players are online](../exec/from-blueprint/read-and-follow-variables.md#how-many-players-are-online).
+
+## The session channel
+
+The session channel is a shared transport, named `__crowdy_session_<appId>`, that every client of the app joins as soon as it connects. Reliable RPC events ride it. You never have to create it; the runtime creates it on demand, and the Channels page in Crowdy Studio can pre-create it so it is visible right away.
+
+## Matches, lobbies and rooms
+
+A match is state the game must be able to trust (its roster, its host, whose turn it is, the score), so it lives on the [truth plane](./two-planes.md), in your server code. On ck-exec that is a hub for the match: the `session` [starter pack](/exec/builds#starter-packs) keeps one game from lobby to result, with a host, ready checks, turns with a time limit, and a winner.
+
+:::caution[The SDK's Game Model sessions are gone.]
+The SDK's own session API (Create, Join, Leave and End on the Game Model subsystem, and the active session) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it and the SDK has removed it. A match is a [Server Object](../exec/overview.md) (from Blueprint or C++); see [Move from Game Models](../exec/move-from-game-models.md).
+:::
+
+## Gotchas
+
+- A client that never spawns an actor is never present. Spawn the player's pawn once the connection is up.
+- The session channel is not a match and carries no roster. Keep who is playing in your server code.
+
+## Related
+
+- [The Two Planes](./two-planes.md): why the server, not your client, keeps the record of a match.
+- [The Host Is a Convention](./host-is-a-convention.md): what the elected view-plane host does and does not decide.
+- [Channels](../runtime/channels.md): the session channel and named channels.
+
+# The Host Is a Convention
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/concepts/host-is-a-convention
+
+# The Host Is a Convention
+
+One client of your app is elected host. The host is the natural place to run shared, world-level logic on the view plane: driving world entities, spawning things that belong to nobody. It is a convention the SDK helps you follow, not a rule the server enforces.
+
+## Election is a convention, not enforcement
+
+Host election happens server-side, per user, and the SDK tracks the result locally in `UCrowdyHostSubsystem` (`IsHost()`, `GetHostUserID()`, and the `OnHostElected` event). The identity itself lives with your login session, so it survives level travel.
+
+What election does not do is protect anything. Nothing on the view plane is server-checked, so any client can lie about its own view state, host or not. A host check answers "who is this app's coordinator right now", never "is this write allowed".
+
+:::danger[Never gate anything cheat-sensitive on a host check.]
+Neither the client-derived check nor the server-validated one below is an enforcement point. Real enforcement is your server code checking who is asking, on the truth plane. Use host checks to decide who runs shared view-plane logic, and nothing else.
+:::
+
+## Two checks, two costs
+
+**Client-derived, instant.** `Is Crowdy Entity Host` (`UCrowdyUtilities::IsCrowdyEntityHost`) compares the entity's id with the locally known host id. No round trip. Use it for cosmetic and convenience decisions: showing a button, choosing who plays the ambient logic.
+
+**Server-validated, one round trip.** `Is Crowdy Entity Host (Server)`, a latent Blueprint node (`UCrowdyIsEntityHostServer`) with `OnIsHost`, `OnIsNotHost`, and `OnFailed` pins, backed in C++ by `UCrowdyHostSubsystem::CheckEntityIsHost`. For the local player's own entity it asks the server directly; for any other actor it resolves that actor's owner on the server and compares with the elected host. Use it when the answer has to be current before you do something a non-host should not trigger, remembering that the trigger itself is still not enforced.
+
+:::note[OnFailed means "unknown", not "no".]
+`bSuccess == false` from `CheckEntityIsHost`, or the `OnFailed` pin, means the answer could not be determined: no host elected yet, a network error, an unresolved entity. It is not the same as "not the host". Do not treat it as a confident no.
+:::
+
+## Host-owned world entities
+
+A level-placed entity with `Ownership = Host` is `HostOwned`: whichever client is host at the moment owns it, so every client shares one authority for world and AI objects. The host's writes to such an entity are explicit pushes (`MarkStateDirty`, `MarkAllStateDirty`), never a background diff, so an implicit and an explicit write can never race.
+
+A client-owned entity (`Ownership = LocalClient`) has a `HostOverride` policy: `Allow` (the default) lets the host correct that entity's view state as a super-user, `OwnerOnly` refuses even a host correction. This is precedence by convention. It orders who wins on the view plane; it does not make either value trustworthy.
+
+## Gotchas
+
+- Host changes. Bind `OnHostElected` rather than caching the answer at BeginPlay.
+- A host-owned entity is written by explicit pushes. Changing a property and waiting does nothing on it.
+- `HostOverride` is a view-plane tie-breaker. If the value matters, it belongs in your server code and the question does not arise.
+
+## Related
+
+- [Host authority](../runtime/host-authority.md): the calls and nodes, with examples.
+- [Entities, Identity, and Ownership](./entities-identity-ownership.md): owner, proxy, and host-owned roles.
+- [Sessions and Presence](./sessions-and-presence.md): a match's host, a different thing your server code keeps.
+- [The Two Planes](./two-planes.md): where enforcement actually lives.

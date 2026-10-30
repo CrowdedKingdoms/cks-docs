@@ -39,6 +39,20 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-30 (Unreal SDK v2.22.0: voice chat on the shared voice format; no flicks after a hitch; UX fixes)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-30-sdk-v2220).
+
+- **Voice chat rebuilt** on the voice format the CrowdyJS and CrowdyCPP SDKs share: Opus with
+  reordering and loss concealment, no pawn needed, settings kept across maps. **Every player needs
+  2.22.0 or later for voice**: earlier versions cannot hear this one. New: **Get Voice Mic State**,
+  **On Voice Mic State Changed**, **On Voice Speaker Talking**. See [Voice
+  Chat](/unreal-sdk/services/voice-chat).
+- **Remote copies no longer flick away** for a frame after their sender hitches.
+- **Warnings where mistakes used to fail silently**, fewer noisy logs, clearer messages, one
+  **Crowdy SDK** palette category, Studio confirmations, two deprecations, and
+  `-run=CrowdyStudio -op=registry` for checking markers from a shell.
+
 ## 2026-10-29 (Crowdy Games retired: host your game yourself)
 
 **Crowded Kingdoms no longer hosts games. Breaking, with no deprecation window, on every

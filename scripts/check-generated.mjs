@@ -22,7 +22,8 @@
 //   3. reference    static/schema/*.graphql         -> docs-*/reference/graphql/**
 //
 // A fourth, in-repo like 2 and 3 and checked alongside them: the Unreal SDK agent file
-// static/helpers/unreal-sdk/llms-full.txt is a concatenation of docs-unreal-sdk/ pages
+// static/helpers/unreal-sdk/llms-full.txt, its per-section llms-<folder>.txt files and the llms.txt
+// index are concatenations of docs-unreal-sdk/ pages
 // (build-unreal-llms.mjs), and the reference tables under src/generated/unreal-sdk/ are
 // derived from the SDK surface manifest and those same pages (build-unreal-reference.mjs).
 //
@@ -96,7 +97,8 @@ const COPIES = [
 ];
 
 const DERIVED = 'static/schema/management-api.graphql';
-const UNREAL_LLMS = 'static/helpers/unreal-sdk/llms-full.txt';
+const UNREAL_LLMS = ['static/helpers/unreal-sdk/llms.txt', 'static/helpers/unreal-sdk/llms-*.txt'];
+const UNREAL_SURFACE_INDEX = 'static/helpers/unreal-sdk/sdk-surface-index.jsonl';
 const KLEE_NAMES = 'vendor/klee/plugins/crowdy-names.generated.ts';
 const UNREAL_REFERENCE = 'src/generated/unreal-sdk';
 const REFERENCE_PATHS = [
@@ -536,8 +538,8 @@ if (!COPY_ONLY) {
   // in-repo and stale the moment a page is edited without a rebuild. Node only.
   checkGenerator({
     id: 'unreal-llms',
-    describe: 'npm run build:unreal-llms  (static/helpers/unreal-sdk/llms-full.txt)',
-    paths: [UNREAL_LLMS],
+    describe: 'npm run build:unreal-llms  (static/helpers/unreal-sdk/llms.txt and llms-*.txt)',
+    paths: UNREAL_LLMS,
     run: () => runUnrealLlms(),
   });
 
@@ -555,8 +557,8 @@ if (!COPY_ONLY) {
   // regeneration leaves a committed table stale. Node only.
   checkGenerator({
     id: 'unreal-reference',
-    describe: 'npm run build:unreal-reference  (src/generated/unreal-sdk/*.json)',
-    paths: [UNREAL_REFERENCE],
+    describe: 'npm run build:unreal-reference  (src/generated/unreal-sdk/*.json, sdk-surface-index.jsonl)',
+    paths: [UNREAL_REFERENCE, UNREAL_SURFACE_INDEX],
     run: () => runUnrealReference(),
   });
 }

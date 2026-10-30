@@ -1,0 +1,555 @@
+# Get a Server Object
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-blueprint/get-a-server-object
+
+# Get a Server Object
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+Everything on the [C++ pages](../from-cpp/get-a-server-object.md) can be done from Blueprint, and most of it needs no variable, no cast and no setup of your own. Open any Blueprint graph, type the name of a variable or function from a [definition asset](../create-a-type.md), and pick the node that appears. The node reads the variable, tells you when it changes, or calls the function, with a real pin for every value. A Blueprint and a C++ class can use the same Server Object at the same time.
+
+To build one from nothing, following each click, see [Tip jar: your first Server Object](../examples/tip-jar.md).
+
+## The typed nodes
+
+Type a variable's name in the graph's palette or in the menu that opens when you drag off a pin, and the asset offers its nodes under **Server Objects**, then the asset's name. For the village beacon's `CSO_VillageBeacon` the category is **CSO Village Beacon**:
+
+![The Palette filtered to CSO_VillageBeacon, offering Call FeedBeacon, Get bLit, Get Oil, Get Server State, On bLit Changed and On Oil Changed](/img/unreal-sdk/server-object-palette.png)
+
+| Node | What it does |
+|---|---|
+| **Get Oil (CSO_VillageBeacon)** | Reads the variable `Oil`. A pure node: it has no execution pins. |
+| **On Oil Changed (CSO_VillageBeacon)** | Runs when `Oil` changes. |
+| **Call FeedBeacon (CSO_VillageBeacon)** | Calls the function `FeedBeacon`, with a pin for each input and each output. |
+| **Get Server State (CSO_VillageBeacon)** | Every variable of the object at once, one output pin each. |
+
+[Blueprint snippet: so-typed-nodes, see /bp/unreal-sdk/so-typed-nodes.txt]
+
+Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph. The figure shows the four nodes for `Oil`; `bLit` has a **Get** and an **On bLit Changed** of its own, as the palette shows.
+
+There is one **Get** and one **On Changed** for each variable and one **Call** for each function of the asset, and one **On Received** for each message players can listen to; see [Hear its messages](./hear-server-messages.md). Only variables ticked **Visible to Players** are offered, since a **Server Only** variable never reaches a player. There is also a generic **Call Server Function** under **Server Objects**, with a **Function** dropdown that lists every function of every asset, for when you would rather pick than type.
+
+A [Server Function Library](../server-function-libraries.md) is different: it has no values and no instance, so its only nodes are **Call** nodes, under **Server Function Libraries** in the palette, and they need no **Target**; see [Call a Server Function Library](./call-a-library.md).
+
+There is no bookkeeping to do. A Server Object is one shared object that the SDK keeps current. **Get** reads that object's current value directly, never a copy you have to refresh. **On Changed** follows it, so you do not keep a variable holding the last value, compare it, or unbind anything. Rename or retype a variable in the asset and the nodes follow; see [When the asset changes](./pins-for-every-type.md#when-the-asset-changes).
+
+## Where the object comes from
+
+Every typed node needs a Server Object. There are three ways to give it one.
+
+- **Target.** The default. The **Target** pin takes the Server Object, a **Crowdy Server Object** component, or an actor that has a component for that asset. Left empty it is **Self**, so a node in a Blueprint that has the component just works. Anything else cannot be connected to it, and the editor says why.
+- **Find By Asset.** For a widget or other Blueprint with no reference to pass in. Right-click the node and choose **Find By Asset**; the **Target** pin is replaced by the choice of **Instance**, which you can also change in the node's Details.
+  - **Instance Id**: a pin takes the id, such as `oakford`.
+  - **Signed-In Player**: the signed-in player's own object, for an [Owner Only](../from-cpp/get-a-server-object.md#owner-only-types) type.
+  - **Player's Team**: the signed-in player's [Crowdy Team](../access-members-and-timers.md#crowdy-team). A **Team Id** pin picks the team when the player is in several; 0 uses the first.
+
+  In C++ the choice of **Instance** is the enum `ECrowdyServerObjectFind`, with the values `InstanceId`, `SignedInPlayer` and `PlayersTeam`.
+
+  The object is acquired the first time a node of this Blueprint uses it, and held while the Blueprint lives. Right-click the node and choose **Use Target** to go back.
+- **Only One Instance.** A type with [Only One Instance](../access-members-and-timers.md#only-one-instance) has just the one object, so its nodes need neither a Target nor an Instance. Place the node and use it.
+
+## Add the component
+
+The typed nodes take **Self** as the default **Target**, so the simplest way to have a Server Object is an actor with a component. Open the Blueprint actor, click **Add** in the Components panel, and choose **Crowdy Server Object**. In its Details panel, under **Server Object**:
+
+- **Definition**: the definition asset, such as the `CSO_VillageBeacon` from [Create a Server Object type](../create-a-type.md).
+- **Instance Mode**: which Server Object of that type this actor uses. A type with Only One Instance ignores it.
+  - **Instance Id**: the id typed in **Instance Id**. Every actor with the same id shares one Server Object. The beacon uses the village's name, `oakford`.
+  - **Signed-In Player**: the signed-in player's user id. Use it for an [Owner Only](../from-cpp/get-a-server-object.md#owner-only-types) type, so each player gets their own. The component waits for the player to sign in, and joins again after a new sign-in or a new account.
+  - **This Actor**: the actor's placement in the level, which is the same on every player's machine. Only for an actor placed in the level with the component already on it, not one spawned at run time or given the component at run time.
+  - **Player's Team**: the signed-in player's [Crowdy Team](../access-members-and-timers.md#crowdy-team), for a type whose **Members From** is **Crowdy Team**. **Team Id** picks the team; 0 uses the player's only team. The component gets the player's teams if the game has not, and joins again when **On My Teams Changed** runs. A player in several teams fails with "This player is in 2 teams; set Team Id": set **Team Id**, then call **Rejoin**.
+  - **This Actor's Area**: the Server Object of the area the actor stands in. The ground is cut into squares of the definition's **Area Size** chunks on each side, and the Instance Id is the square's `x,y`. The component checks every half second and, when the actor crosses into another area, joins that area's object and lets go of the old one. For a type that keeps [a record per entity](../keep-a-record-per-entity.md#pick-the-object), the actor also needs a **Crowdy Entity** component, since its id names the actor's record. Needs a game session, which gives the chunk size. In C++ the mode is `ECrowdyServerObjectInstanceMode::ThisActorsArea`.
+  - **From Server Value**: the Instance Id is a variable of another Server Object, followed as it changes. Set **Source Definition**, **Source Instance** (the enum `ECrowdyServerObjectSourceInstance`: **Instance Id**, with **Source Instance Id**, or **Signed-In Player**) and **Source Variable**, a String or an integer. While the variable is empty the component waits ("Waiting for TeamId"), and when it changes the component joins the new one. See [Guild Halls](../examples/guild-halls-and-arenas.md#guild-halls).
+
+![The Crowdy Server Object component: Definition CSO_VillageBeacon, Instance Mode Instance Id, Instance Id oakford](/img/unreal-sdk/server-object-component.png)
+
+The component joins at Begin Play and lets go at End Play. The Server Object is given back a few seconds after its last holder lets go, so a beacon that is destroyed and placed again straight away keeps its values. See [Get a Server Object](../from-cpp/get-a-server-object.md#one-object-many-owners).
+
+When the player's access to the game ends, the Server Object fails and its **Get Failure Reason** says why. After the player signs in again, the component, like a typed node set to **Find By Asset**, gets its Server Object again on its own; you do not call **Rejoin**. Show the reason from **On Access Ended**, which [Authentication](../../services/authentication.md#when-the-players-access-ends) covers.
+
+If you change **Definition** or **Instance Id** in a graph after the actor has begun play, call **Rejoin** on the component. It also tries again after a failure. While the component is joining, Rejoin does nothing, so calling it from the component's own **On Status Changed** cannot loop.
+
+### Its events and nodes
+
+| Event or node | What it does |
+|---|---|
+| **On Variables Changed** (event) | Runs after every change of the Variables players can see, and once when they are first read. It gives the Server Object and the names that changed. The delegate is `FCrowdyServerVariablesChanged`. |
+| **On Status Changed** (event) | Runs when the Server Object's status changes. **Object** is None when it could not be joined. The delegate is `FCrowdyServerStatusChanged`, which gives the Server Object and its status. |
+| **Get Server Object** | The Server Object the component holds, or None before it joins one or after it could not. |
+| **Get Failure Reason** | Why there is no usable Server Object, or empty. |
+| **Rejoin** | Joins again. |
+
+## Without the component
+
+The component is a convenience over the same nodes. You can use them from any Blueprint, such as a widget that shows the beacon's oil without owning it. A widget needs no component for this: either use a typed node with **Find By Asset**, or call **Get Server Object** with the widget as the **Owner** and connect the result to the typed nodes' **Target**. These nodes, and **Set Server Value** and **Get Server Value**, are in the function library `UCrowdyServerObjectLibrary`:
+
+- **Get Server Object**: takes a **Definition**, an **Instance Id** and an **Owner** (which defaults to the Blueprint itself), and returns the Server Object, or None with **Error** saying why. Owners that ask for the same one share it. It is held until the owner is destroyed.
+- **Release Server Object**: stops one owner holding it, for an owner that lives on after it stops needing it, such as a widget that is reused.
+- **Get Player Instance Id**: the signed-in player's user id, which is the Instance Id of their own [Owner Only](../from-cpp/get-a-server-object.md#owner-only-types) object. It is empty when nobody is signed in.
+
+On the Server Object itself:
+
+| Node | What it does |
+|---|---|
+| **Get Status** | Connecting, Ready, Failed or Released. See [Status](../from-cpp/get-a-server-object.md#status). |
+| **Get Failure Reason** | Why it Failed, or what it is waiting for. |
+| **Get Instance Id** | The Instance Id it was joined with. |
+| **Get Definition** | The definition asset the object was made from, to pass to nodes that take one. A pure node. |
+| **On Status Changed** | An event that runs when the status changes. |
+
+The statuses are the ones from C++; see [Status](../from-cpp/get-a-server-object.md#status).
+
+## Related
+
+- [Get a Server Object, from C++](../from-cpp/get-a-server-object.md): the same rules, from C++
+- [Read and follow its variables](./read-and-follow-variables.md): the next page, **Get** and **On Changed**
+- [Tip jar: your first Server Object](../examples/tip-jar.md): the component, click by click
+- [Create a Server Object type](../create-a-type.md): the asset these nodes come from
+- [Access, members and timers](../access-members-and-timers.md): Only One Instance, members and teams
+- [Guild halls and arena lobbies](../examples/guild-halls-and-arenas.md): the component's From Server Value mode
+- [Keep a record per entity](../keep-a-record-per-entity.md): the component's This Actor's Area mode, for a crowd
+- [Troubleshooting](../troubleshooting.md): a Server Object that stays in Connecting or Fails
+
+# Read and follow its variables
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-blueprint/read-and-follow-variables
+
+# Read and follow its variables
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+Players see the variables their [definition](../create-a-type.md) marks **Visible to Players**. The typed nodes read them and follow their changes, each with a real pin of the variable's type. The examples use the village beacon, whose `CSO_VillageBeacon` asset has `Oil`, `bLit` and a Server Only `LastFedBy`. Every node here needs a Server Object; see [Get a Server Object](./get-a-server-object.md#where-the-object-comes-from).
+
+## Get a variable
+
+**Get Oil** has one output pin, **Oil**, typed as the variable is. It reads the object's current value each time the node is used. Before the server has sent the values it reads the variable's default from the asset. A **Get** with nothing behind it, such as a **Target** that holds no object for that asset, gives the default too.
+
+To tell a real zero from "the server has not answered yet", use the node's advanced pin, **Oil Is Ready**. It is collapsed by default: click the small arrow at the bottom of the node to show it. It is false until the server has sent this Server Object's values, and true after. A variable that is an optional in C++ has a **Has Value** pin that is always shown, and it is false when the optional is empty or the values have not arrived; see [What the pins are](./pins-for-every-type.md#what-the-pins-are).
+
+**Get Server State** is the same for every visible variable at once, with one advanced **Is Ready** pin that is false until the server has sent the values. It is not offered for a Server Object whose State has no variable visible to players, such as the Game Kit `CSO_Kit_Npcs`; a **Get Server State** already placed on one fails to compile with a message saying so.
+
+The nodes work whether the definition takes its variables from a struct or you [added them in the asset](../create-a-type.md#variables-inputs-and-outputs-or-a-struct) (the List form): **Get**, **Get Server State** and **On Changed** read and follow a variable added in the asset with the same pins.
+
+## Follow a variable
+
+**On Oil Changed** is for an event graph. It has a **Bind** execution pin in, **Then** and **Changed** execution pins out, and the value as an output pin. Wire **Bind** from **Begin Play** once:
+
+```text
+Event BeginPlay -> On Oil Changed (Bind)
+                     Changed -> Set Text (Oil)
+```
+
+- **Changed** runs right away with the current value as soon as the object is ready, and again after every change of that variable, and only of that variable. A Game Kit starter's **On Changed** and **On Variables Changed** run once when it is Ready, not also before: a snapshot pushed while it is still connecting does not announce.
+- Each **On Changed** node you place is its own binding, so you can use the same variable's node more than once in one graph: bind one from **Begin Play** and another from a custom event, and each runs **Changed** once per change.
+- Run the same node's **Bind** again, for example with another **Target**, and it replaces its own binding; it does not run twice. It runs **Changed** once at once with the current value when the object is Ready.
+- There is nothing to unbind. A binding goes away when the Blueprint that owns it is destroyed or the Server Object is given back.
+- Through a component or an actor it follows whatever object that component joins. If the player's team changes and the component joins another team's object, **Changed** runs with the new object's value.
+- A node whose **Bind** is not connected never runs, so the compile gives a warning.
+- Bound to something that is not a Server Object of that asset, nothing is watched and the log says so.
+
+## Show the oil
+
+The village square's beacon, `BP_VillageBeacon`, has a Crowdy Server Object component with **Definition** set to `CSO_VillageBeacon`, **Instance Mode** on **Instance Id**, and **Instance Id** set to `oakford`. In its Event Graph:
+
+1. Add **On Oil Changed (CSO_VillageBeacon)** and wire **Event BeginPlay** into its **Bind**.
+2. From **Changed**, use **Oil**, for example to set a text or a light's intensity. The figure sends it through a conversion to a **Print String**. It runs once when the object is ready, and again after every change, so this one graph covers both.
+3. For the lamp, add **On bLit Changed (CSO_VillageBeacon)** from the **Then** pin of the first node, and wire its **bLit** to **Set Visibility** on the light, `Light` in the figure.
+
+[Blueprint snippet: so-show-oil, see /bp/unreal-sdk/so-show-oil.txt]
+
+Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+
+Anywhere else in the graph, **Get Oil (CSO_VillageBeacon)** gives the current amount. `LastFedBy` is Server Only, so it has no nodes here.
+
+## A widget that shows the oil
+
+A widget has no component, so use **Find By Asset**. In its Event Construct, add **On Oil Changed (CSO_VillageBeacon)**, right-click it, choose **Find By Asset**, leave **Instance** on **Instance Id** and type `oakford` into its **Instance Id** pin. Wire Construct into **Bind**, and **Changed** into **SetText** on the widget's `OilText`, with **To Text** turning the **Oil** into text. The widget holds the beacon while it lives.
+
+[Blueprint snippet: so-widget-oil, see /bp/unreal-sdk/so-widget-oil.txt]
+
+## How many players are online
+
+Every app has one root Server Object, which Server Compute deploys along with your types. It counts the players in the app's world. **Get Players Online** reads that count:
+
+- It takes an **Owner**, the Blueprint itself unless you connect another object, and gives **Players Online** and a return value that is false until the count first arrives.
+- The first call starts following the count, and the owner keeps it followed until the owner is destroyed. So a widget can read it in a binding, or an actor on Tick.
+- The count is the number of players the platform's realtime servers report for your app. A player who leaves is still counted for a few minutes, until their session ends.
+
+The root's definition is `CSO_PlayersOnline`, in the Crowdy SDK's content under **Data**. Use it like any other definition, for example with **Find By Asset** on the **On Changed** node for **PlayersOnline**, to run a graph each time the count changes. Leave the asset as it is: deploying sends the root's server code as the SDK writes it.
+
+A project with the Game Kit's `world` starter has `world` as its root instead, and **Get Players Online** reads the world's `Online` variable, from the definition **Game Kit World** in Project Settings names (`CSO_Kit_World`, set when you add the starter). See [The world becomes the app's root](../use-game-kit-starters.md#the-world-becomes-the-apps-root). If the world's snapshot carries no player count, as a world deployed from the platform's own starter pack does not, **Get Players Online** returns false, with 0, for good, and the log says why once.
+
+An app last deployed with an older Crowdy SDK, or never deployed from Server Compute, has no Crowdy SDK root. Deploy once from Server Compute. Until then **Get Players Online** returns false, and the log says why once for each reason in each game instance (so once per Play In Editor client): "This app has no Crowdy SDK root, so Players Online has no count: deploy the app from Server Compute (an app last deployed with an older Crowdy SDK, or by another tool, has none). It is asked again every minute." The root waits and asks again once a minute instead of every few seconds, and once the app is deployed the count arrives without restarting the game.
+
+## Records
+
+A type whose **Holds** is **A Record per Entity** keeps its variables once for each entity; see [Keep a record per entity](../keep-a-record-per-entity.md). A component on an entity's actor reads that actor's own record, so everything above works unchanged. **Get**, **On Changed**, **On Variables Changed** and **Get Server Value** read the record, and a variable the player may not receive reads its default and never changes.
+
+To read the other records, take the Server Object from the component with **Get Server Object**. On it:
+
+- **Find Record** takes an **Id** and gives that record's **Values**, its **Owner** (a user id, 0 for none) and its **Team**. It returns false when there is no such record. Read a variable out of **Values** with **Get Server Value**.
+- **Get Record Ids** gives the id of every record the player can see, in no particular order.
+- **Holds Records** says whether the type keeps records, and **Num Records** counts them.
+
+A Game Kit starter whose hub keeps a collection, such as the world's resource nodes, holds its members as records too, read with the same nodes on its Server Object; see [Its records](../use-game-kit-starters.md#use-it-from-blueprint-and-c).
+- **Watch Record** takes a **Record Id** and an event (the delegate `FCrowdyServerRecordEvent`), which runs with the **Object**, the **Record Id** and the **Changed** variables after each change of that record and when it is removed (**Find Record** is then false). If the record is already current it also runs once at once, naming all its variables. A watch added from an **On Records Changed** or **On Records Updated** handler gets that catch-up and does not run a second time for the same change. **Stop Watching Record** removes it. Records dropped because the object **Failed** are not reported; **On Status Changed** is.
+- **On Records Changed** is an event. Bind it with **Assign** on the Server Object. It runs after every read, batch or fetch that changed records, with the **Object**, the ids that are new or changed (**Changed Ids**) and the ids that were removed (**Removed Ids**).
+- **On Records Updated** is bound the same way and runs at the same times, but gives a list of **Record Id** with its **Changed Variables**, then the removed ids. **Changed Variables** is empty when only the record's owner or team changed.
+
+Ids are compared with capitals significant. **Find By Asset**, and **Watch Variables** on a Server Object of this kind, read its defaults and not a record: use the component or **Find Record**.
+
+## By name
+
+The typed nodes cover a Server Object whose shape you know. The by-name nodes work by name and by type, for the dynamic cases: a graph that shows any variable by a name in a data table, or one that works for several types. They are the ones every Blueprint had before typed nodes, and they still work.
+
+### Show the oil by name
+
+Select the component and add its **On Variables Changed** event. The event runs once when the Variables are first read and again after each change, so one graph covers both:
+
+1. From **Object**, call **Get Variables**.
+2. Call **Get Server Value** on that, with **Name** set to `Oil`. Its **Value** pin takes the type of whatever you connect to it, here an Integer.
+3. Use the value, for example to set a text or a light's intensity. `bLit` reads the same way, into a Boolean.
+
+**Get Server Value** returns false when the Variables have no value by that name or it is of another type. Names are matched ignoring case, spaces and punctuation, so `Max Health` and `maxhealth` find the same Variable, in the editor and in a packaged game. A C++ `float` Variable reads into a Blueprint Float. A Variable that is **Server Only** is never sent to players, so it always reads its default here.
+
+### The nodes for reading and watching
+
+| Node | What it does |
+|---|---|
+| **Get Variables** | The Variables the server last sent, to read with **Get Server Value**. They hold their defaults until the object is Ready. |
+| **Watch Variables** | Takes an event (the delegate `FCrowdyServerVariablesEvent`) and runs it after every change, with the names that changed. If the Variables are already current it also runs once at once, naming them all. |
+| **Stop Watching Variables** | Removes an event that **Watch Variables** was given. |
+| **Get Members** | The user ids of the members, in the order they joined. Only for a type whose **Members From** is **This Object** with **Show Members to Players** on; empty otherwise. |
+| **Get Member Count** | How many members there are, even when the list is not shown. |
+| **Get Leader** | The leader's user id, or 0 when there is none. |
+| **Is Open For Joining** | Whether **Join** is accepted. |
+| **Is Member** | Whether the signed-in player is a member. |
+| **Is Leader** | Whether the signed-in player is the leader. |
+
+The member nodes answer for a type with [members](../access-members-and-timers.md#members). **Get Members**, **Get Member Count**, **Get Leader** and **Is Open For Joining** are for members the Server Object keeps itself; **Is Member** and **Is Leader** also work for a **Crowdy Team**. With the list shown, **Is Member** and **Is Leader** follow it and the signed-in user id. Otherwise a successful **Join** or **Leave** makes the object read again, and each read sets both.
+
+**On Variables Changed** and **Watch Variables** name a change of these too: `Members`, `MemberCount`, `Leader` and `OpenForJoining`, so a lobby's list refreshes when someone joins.
+
+A widget that only shows the oil by name would call **Get Server Object** in its Construct event, bind **Watch Variables** to a custom event, and read `Oil` there. It needs no component.
+
+Two things to know about the by-name nodes:
+
+- **Set Server Value** and **Get Server Value** work by name and by type. A misspelled name or a wrong type gives false, not an error, so branch on the result while you are wiring a graph. The typed nodes have no such failure: a wrong name or type does not compile.
+- The names **On Variables Changed** and **Watch Variables** give are the ones **Get Server Value** takes, the variable's own name in the asset, even when the definition's **Server Names** gives a Variable a different name on the server.
+
+## Related
+
+- [Read and follow its variables, from C++](../from-cpp/read-and-follow-variables.md): the same rules, from C++
+- [Get a Server Object](./get-a-server-object.md): the previous page, where the object comes from
+- [Hear its messages](./hear-server-messages.md): the next page, the messages a type sends
+- [Pins for every type](./pins-for-every-type.md): which pin each variable type gets
+- [Tip jar: your first Server Object](../examples/tip-jar.md): **On Total Changed**, click by click
+- [Shared boss fight](../examples/shared-boss.md): a health bar, a phase and a respawn message
+- [Raiders on the north road](../examples/raiders-on-the-north-road.md): the same nodes on a record per raider, with values only some players see
+- [Troubleshooting](../troubleshooting.md#a-value-is-not-what-you-expect): when a value is not what you expect
+
+# Hear its messages
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-blueprint/hear-server-messages
+
+# Hear its messages
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+A message is the server telling everyone listening that something happened, such as the Hollow Giant falling. The type's [definition](../create-a-type.md#server-messages) lists its messages, and its [server code](../write-server-logic.md#send-a-message) sends them. A game hears one with a typed node, **On Message Received**, or with **Watch Message** when it has to work by name. Every node here needs a Server Object; see [Get a Server Object](./get-a-server-object.md#where-the-object-comes-from).
+
+A message is an event, not a value. **Received** runs when the server sends the message and not at any other time: not when the object becomes ready, and not for a message sent before the game was listening. To show what is true now, such as whether the boss is defeated, read a variable with **Get** and **On Changed**; see [Read and follow its variables](./read-and-follow-variables.md).
+
+## Hear a message
+
+**On BossDefeated Received (CSO_Boss)** has a **Bind** execution pin in, **Then** and **Received** execution pins out, and one output pin for each value the message carries: `Winner`, an Integer64, and `Hits`, an Integer. Wire **Bind** from **Begin Play** once:
+
+```text
+Event BeginPlay -> On BossDefeated Received (Bind)
+                     Received -> Print String (Winner, Hits)
+```
+
+- **Received** runs once for each message the server sends, with that message's values on the output pins.
+- Each **On Received** node you place is its own binding, so you can use the same message's node more than once in one graph, and each runs **Received** once per message.
+- Run the same node's **Bind** again, for example with another **Target**, and it replaces its own binding; it does not run twice.
+- There is nothing to unbind. A binding goes away when the Blueprint that owns it is destroyed or the Server Object is given back.
+- Through a component or an actor it follows whatever object that component joins.
+- A node whose **Bind** is not connected never runs, so the compile gives a warning. Bound to something that is not a Server Object of that asset, nothing is heard and the log says so.
+- It takes the object the way **On Changed** does: **Target**, the actor's component, or **Find By Asset**; see [Where the object comes from](./get-a-server-object.md#where-the-object-comes-from).
+
+The palette offers a node for each message whose **Players Can Listen** is ticked and whose payload values all have a pin; see [Pins for every type](./pins-for-every-type.md). A message with no values has a node with **Received** and no value pins.
+
+## Announce the fall
+
+The boss actor `BP_Boss` from [Shared boss fight](../examples/shared-boss.md#the-blueprint) has a Crowdy Server Object component with **Definition** set to `CSO_Boss`. In its Event Graph:
+
+1. Add **On BossDefeated Received (CSO_Boss)**. Wire its **Bind** from the **Then** pin of the last **On Changed** node you added, or from **Event BeginPlay** if it is the first.
+2. From **Received**, add a **Print String** that builds the line with **Build String**: the **Winner** pin, " felled the Hollow Giant in ", the **Hits** pin and " hits".
+3. Compile and save.
+
+The figure turns **Winner** into a string first, since it is an Integer64, and builds the line from it.
+
+[Blueprint snippet: so-boss-defeated, see /bp/unreal-sdk/so-boss-defeated.txt]
+
+Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+
+Play with two players, as on that page. When the boss falls, both windows print the line once, with the same **Winner**. A player who joins a moment later sees the boss already **Defeated** through **On Phase Changed**, and prints nothing: the message is gone.
+
+If the node is not in the palette, check that the message is ticked **Players Can Listen** in the asset and that you have saved it. If the graph fails to compile with "heard only by other Server Object types; turn on Players Can Listen", the message was ticked once and is not now. If it says the asset has "no message ... any more", the message was renamed or removed: place the node again from the menu, or give the message its old name back.
+
+## When a message is heard
+
+The game listens to a message while a node or a **Watch Message** wants it and the connection is open. When the last one goes away it stops listening, and it starts again after a dropped connection comes back.
+
+- **A message that arrives while the object is reading its values is held.** It runs after the values are current, so a graph that reads the variables from **Received** sees the state the message followed. At most 32 are held; past that the oldest is dropped and the log warns.
+- **A message is announced only while the Server Object is Ready.** One that arrives while it is Connecting is held until it is.
+- **A message sent while the connection is closed is lost.** Nothing is replayed when it comes back; the game reads the variables again, and **On Changed** reports what differs, but a message is not a value and cannot be read again.
+- **A message in a record type can arrive before the record change it follows.** A type that keeps [a record per entity](../keep-a-record-per-entity.md) sends its records in batches, so a message sent right after a record changed may be heard before that record shows the change. Put what the listener needs into the payload, or read the record when the next batch arrives.
+- **A refused listen is asked again.** If the server refuses to let the game listen to a message, the log warns once with the platform's reason and the game asks again after a wait that grows from 1 second to 30. Nothing else about the Server Object fails.
+- **Every message listened to is a subscription.** A connection allows 256 subscriptions in all, and each subscribe counts against the 120 calls a connection may make every 10 seconds. A game that listens to a few messages on a few Server Objects never gets near either; see [A message never arrives](../troubleshooting.md#a-message-never-arrives).
+
+## By name
+
+The typed nodes cover a message you know. **Watch Message** and **Stop Watching Message** work by name, for a graph that listens to a message from a data table, or to one of several assets. Both are on the Server Object itself, so get it first with **Get Server Object** or from a component.
+
+| Node | What it does |
+|---|---|
+| **Watch Message** | Takes a **Message**, the message's Name, and an event (the delegate `FCrowdyServerMessageEvent`), and runs the event each time the server sends that message. The event gives the **Object**, the **Message** and the **Payload**. |
+| **Stop Watching Message** | Removes an event that **Watch Message** was given. |
+
+Read the values from **Payload** with **Get Server Value**, as you would read the variables:
+
+1. Call **Get Server Object** in the actor's or widget's start event, and from its result call **Watch Message** with **Message** set to `BossDefeated`.
+2. Drag from the **Event** pin and choose **Add Custom Event**, named `OnBossMessage`.
+3. In the event, call **Get Server Value** on **Payload** with **Name** set to `Winner`, into an Integer64, and again for `Hits`.
+
+The first figure is steps 1 and 2: **Watch Message** on the component's Server Object, and the custom event wired to its **Event** pin. The second is step 3, where the event reads both values from its **Payload** and prints the same line as the typed node.
+
+[Blueprint snippet: so-watch-message, see /bp/unreal-sdk/so-watch-message.txt]
+
+[Blueprint snippet: so-message-payload, see /bp/unreal-sdk/so-message-payload.txt]
+
+The same rules hold as for the typed node. Nothing runs for a message sent before you watched. Watching the same event twice runs it once. **Stop Watching Message** removes it, and an event whose Blueprint is destroyed stops running by itself. It takes the same **Message** and the same event that **Watch Message** was given:
+
+[Blueprint snippet: so-unwatch-message, see /bp/unreal-sdk/so-unwatch-message.txt]
+
+Watching a name the definition does not have, or one whose **Players Can Listen** is off, does nothing: the log warns "CSO_Boss has no message named ... so nothing can listen to it", or "... is heard only by other Server Object types; turn on Players Can Listen to hear it in a game", and the event never runs. The by-name nodes check at run time, not when you compile, so test the graph once. **Get Server Value** returns false when **Payload** has no value by that name or of that type; see [By name](./read-and-follow-variables.md#by-name).
+
+## Related
+
+- [Hear its messages, from C++](../from-cpp/hear-server-messages.md): the same rules, from C++
+- [Read and follow its variables](./read-and-follow-variables.md): the previous page, **Get** and **On Changed**
+- [Call its functions](./call-functions.md): the next page
+- [Server messages](../create-a-type.md#server-messages): defining a message and who hears it
+- [Send a message](../write-server-logic.md#send-a-message): what the server code does
+- [Shared boss fight](../examples/shared-boss.md): the boss these nodes announce
+- [Troubleshooting](../troubleshooting.md#a-message-never-arrives): a message that never arrives
+
+# Call its functions
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-blueprint/call-functions
+
+# Call its functions
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+A client never changes a Server Object's values. It calls one of the Server Functions its [definition](../create-a-type.md) lists, and the server decides. The examples use the village beacon's `FeedBeacon` function, which takes an `Oil` amount and answers with the oil the beacon now holds. Every node here needs a Server Object; see [Get a Server Object](./get-a-server-object.md#where-the-object-comes-from).
+
+## The Call node
+
+**Call FeedBeacon** has an execution pin and a pin for each input on the left. On the right it has **Then**, **On Success** and **On Failed**, then a pin for each output. It is a latent node, so it goes in an event graph. **On Success** or **On Failed** runs, one of them and only once, when the server answers.
+
+**Outcome** and **Reason** are shown on the node, after the function's outputs. **Retryable**, **Code** and **Timeout** are in the node's advanced area: click the small arrow at the bottom of the node to show them. **Timeout** is an input, explained in [Give up sooner](#give-up-sooner). **Code** is an output that only a [Game Kit starter](../use-game-kit-starters.md#refusals-and-their-codes) fills, with its refusal code, such as `full`; it is None for every other type. A pin you have already wired stays visible when the area is collapsed.
+
+- **On Success** runs with the outputs set. Wire them straight from their pins.
+- **On Failed** runs with **Outcome**, **Reason**, **Retryable** and **Code**. **Outcome** is one of the [call outcomes](../troubleshooting.md#outcomes). A call the server refuses by a rule in the asset, such as **Callable By**, arrives as **Denied** with the reason to show, and a call inside a **Cooldown** as **Denied** with **Retryable** true; see [What a refused player sees](../access-members-and-timers.md#what-a-refused-player-sees). A call to a server, or a type, that is switched off or paused arrives as **Paused** with **Retryable** true, so a Switch on **Outcome** has a **Paused** pin: try again later or show a paused message. A Game Kit starter's refusal for a reason of the game's, such as a full match, arrives as **Refused** with its **Code**, so the Switch has a **Refused** pin too. A call made after the player's access ended, or still waiting when it did, arrives as **Access Ended**, not retryable, so the Switch has an **Access Ended** pin too: show **Reason** and send the player back to sign in; see [When access ends](../troubleshooting.md#when-access-ends). A call that times out says in **Reason** whether the server's own limit or the connection gave up; see [Timeout](../troubleshooting.md#outcomes).
+- An input you leave alone sends its default from the asset.
+- An input that does not fit its type, such as -1 for a `uint32` or 70,000 for an `int16`, sends nothing: **On Failed** runs as a **Bad Request** and **Reason** names the input.
+
+The beacon's oil changes on the server, not on the client when the call succeeds. **On Oil Changed** shows the new amount to every player watching, the way it does in C++. **Call** reports what the server answered; use **On Changed** to show the state.
+
+When **Members From** is **This Object**, the built-in functions **Join**, **Leave**, **Add Member**, **Remove Member**, **Make Leader** and **Set Open for Joining** are offered as **Call** nodes too.
+
+A busy server is retried for you, up to three tries, and nothing else is; see [What the SDK retries](../from-cpp/call-functions.md#what-the-sdk-retries).
+
+## Feed the beacon
+
+When the player walks into the beacon, feed it ten units of oil:
+
+1. Add **Call FeedBeacon (CSO_VillageBeacon)** and wire the overlap event, **Event ActorBeginOverlap**, into its execution pin.
+2. Set its **Oil** input to 10.
+3. Under **On Success**, use its **Oil** output, the oil the server says the beacon now holds. Under **On Failed**, show **Reason**, or try again later when **Retryable** is true; show both with the arrow at the bottom of the node first. The figure prints the oil, and the reason, with a **Print String** each.
+
+[Blueprint snippet: so-feed-beacon, see /bp/unreal-sdk/so-feed-beacon.txt]
+
+Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+
+The call needs no **Target**: it uses the beacon's own component.
+
+## Give up sooner
+
+A call waits for the answer as long as the project's **Server Object Call Timeout** allows, 20 seconds unless you changed it; see [Project settings](../../reference/project-settings.md#server-object-timeouts). The advanced **Timeout** pin of a **Call** node, typed or generic, is a limit of its own for that one call, in seconds. It is counted from the call, retries and waiting to send included. It can only shorten the wait: a value above the project's timeout changes nothing, and 0, the default, leaves only the project's. When the function has an input named **Timeout** of its own, the typed **Call** node labels its limit pin **Call Timeout** so the two do not clash; otherwise the pin is **Timeout**. A graph saved with either label keeps its links.
+
+When it runs out, **On Failed** runs with **Outcome** **Timeout** and **Retryable** false, and **Reason** reads, for a **Timeout** of 5, "No answer within 5 seconds; FeedBeacon may still have run on the server". The server is not told to stop, so the call may still take effect, and an answer that arrives later is not reported. Watch the beacon's oil with **On Oil Changed** before you feed it again.
+
+## Ping the platform
+
+**Ping Server Objects** is a latent node under **Crowdy SDK > Server Objects**. It asks the platform for an answer over the connection the Server Objects already hold and measures how long it took:
+
+- **On Success** runs with **Round Trip Ms**, how long the platform took to answer.
+- **On Failed** runs with **Reason**.
+
+The node is the async action `UCrowdyServerPingAction`, and both of its pins are the delegate `FCrowdyServerPingDone`.
+
+It never opens a connection. With no Server Object connection open, such as before the first Server Object is used, it fails at once with "No Server Object connection is open". The platform answers at most 60 pings every 10 seconds on a connection and drops the rest without a word, so the SDK refuses more than that itself, failing with "Too many pings: the platform answers at most 60 every 10 seconds". Ping on a timer of a second or more, not every frame.
+
+## By name
+
+The generic **Call Server Function** under **Server Objects** has a **Function** dropdown that lists every function of every asset, for when you would rather pick than type. Its pins are laid out like a **Call** node's, with **Outcome** and **Reason** shown and **Retryable** and **Code** in the advanced area. The nodes below work by name and by type instead, for a graph that calls whichever function it is told to.
+
+### Feed the beacon by name
+
+1. Call **Get Server Object** on the component. Drag the result into **Is Valid** first: it is None until the object joins.
+2. From the Server Object, call **Make Inputs** with **Function** set to `FeedBeacon`. It returns the function's **Inputs** with their default values. It has execution pins: wire it in before **Set Server Value**, and pass its result to both of the next two nodes.
+3. Call **Set Server Value** with those Inputs, **Name** `Oil` and **Value** `10`. It changes the Inputs you pass in and returns true, or false when there is no Input by that name or the type differs.
+4. Call **Call Server Function** with the Server Object, **Function** `FeedBeacon` and those Inputs.
+5. Under **On Success**, call **Get Server Value** on **Outputs** with **Name** `Oil` to read the oil the server says the beacon now holds. Under **On Failed**, show **Reason**, or try again later when **Retryable** is true.
+
+[Blueprint snippet: so-untyped-feed, see /bp/unreal-sdk/so-untyped-feed.txt]
+
+The figure is steps 1 to 4 only: it has no trigger event, no **Is Valid** and nothing on **On Success** or **On Failed**, and it reads the Server Object from a component variable named `Beacon`. Add your own trigger and the **Is Valid**, and wire step 5.
+
+**Call Server Function** here is the one with no **Function** dropdown, found under **Crowdy SDK > Server Objects**; it takes a Server Object and Inputs. It is latent like the typed one, and its **On Success** and **On Failed** behave the same. Both are the delegate `FCrowdyServerCallDone`, which carries **Outputs**, **Outcome**, **Reason**, **Retryable** and **Code**; a C++ handler bound to them takes all five, see [Bind the Blueprint call in C++](../from-cpp/call-functions.md#bind-the-blueprint-call-in-c).
+
+**Make Inputs** returns a function's Inputs with their default values, and is empty when the function takes none.
+
+Two things to know about the by-name nodes:
+
+- **Set Server Value** and **Get Server Value** work by name and by type. A misspelled name or a wrong type gives false, not an error, so branch on the result while you are wiring a graph. The typed nodes have no such failure: a wrong name or type does not compile.
+- For a function with no Inputs, leave the **Inputs** pin of the untyped **Call Server Function** empty.
+
+## Related
+
+- [Call its functions, from C++](../from-cpp/call-functions.md): the same rules, from C++, and what the SDK retries
+- [Hear its messages](./hear-server-messages.md): the previous page
+- [Call a Server Function Library](./call-a-library.md): the next page, the **Call** node of a type with no instance
+- [Pins for every type](./pins-for-every-type.md): which pin each input and output gets
+- [Use the Game Kit starters](../use-game-kit-starters.md): the **Refused** outcome and its **Code**
+- [Troubleshooting](../troubleshooting.md#outcomes): every outcome, and the refusals from your server code
+- [Access, members and timers](../access-members-and-timers.md#what-a-refused-player-sees): what a refused player sees
+- [Tip jar: your first Server Object](../examples/tip-jar.md): **Call Tip**, click by click
+- [Shared boss fight](../examples/shared-boss.md): **Call Hit** with a cooldown and a value range
+
+# Call a Server Function Library
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-blueprint/call-a-library
+
+# Call a Server Function Library
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+A [Server Function Library](../server-function-libraries.md) has functions and nothing else: no variables to read, no messages to hear, and no instance of its own to pick. So from Blueprint it has one kind of node, **Call**, and that node needs no **Target**, no component and no Instance Id. Place it and use it.
+
+## The Call node
+
+Right-click in an event graph, type the function's name or open the category **Server Function Libraries**, then the asset's name, for the loot roller's `CSO_LootRoller` **CSO Loot Roller**, and choose **Call RollLoot**. The node is **Call RollLoot (CSO_LootRoller)**.
+
+[Blueprint snippet: so-library-call-node, see /bp/unreal-sdk/so-library-call-node.txt]
+
+Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+
+It is the same node as the [Call node of a Server Object](./call-functions.md#the-call-node), without its **Target**:
+
+- an execution pin in, and a pin for each input of the function;
+- **Then**, **On Success** and **On Failed**, and a pin for each output;
+- in the advanced area, **Outcome**, **Reason**, **Retryable** and **Timeout** (click the small arrow at the bottom of the node). **Timeout** is the limit of [Give up sooner](./call-functions.md#give-up-sooner).
+
+It is latent, so it goes in an event graph, and **On Success** or **On Failed** runs, one of them and only once, when the server answers. **On Failed** carries the same [outcomes](../troubleshooting.md#outcomes) as any call: **Denied** for a function that is **Server Only** or **Developers Only**, **Bad Request** for an input that does not fit, **Timeout**, **Paused** when the type or app is switched off or paused, and so on.
+
+A library offers only **Call** nodes, one for each function. There is no **Get**, **On Changed** or **On Received**, since a library keeps no values and sends no messages, and no **Get Server State**. If the asset is a Server Object when you place a node and you change its **Kind** later, remove the nodes that no longer apply; see [Switch Kind](../server-function-libraries.md#switch-kind).
+
+## Roll loot from the chest
+
+The chest on the north road, `BP_Chest`, hands out a trinket when a player walks into it. In its Event Graph:
+
+1. Add **Event ActorBeginOverlap**.
+2. Add **Call RollLoot (CSO_LootRoller)** from the menu above and wire the overlap event into its execution pin.
+3. Set its **Seed** pin to 7 and its **Tier** pin to 1.
+4. From **On Success**, add a **Print String** and wire the **Item** output to it. From **On Failed**, add another and wire **Reason**; show it with the arrow at the bottom of the node first. The figure prints the item, and the reason, with a **Print String** each.
+
+[Blueprint snippet: so-chest-roll, see /bp/unreal-sdk/so-chest-roll.txt]
+
+Compile and save, and walk into the chest. The screen prints `SilverRing:t1`. The library keeps nothing, so the same **Seed** and **Tier** give the same item every time; a game that wants variety passes a different **Seed** each time, such as a counter that goes up. Set **Tier** to 5 and the server refuses the call before the function runs, because the input's **Value Range** is 0 to 4: **On Failed** gets the **Outcome** Server Error and the **Reason** `bad_params: Tier must be 0 to 4`.
+
+## What to expect
+
+- **Nothing to acquire first.** A library has no values to read, so it is ready as soon as the connection opens, and a call made before then waits for it.
+- **The first call after the library has been idle can take over a second.** Players see the answer a moment late. A call that goes on past the project's **Server Object Call Timeout**, 20 seconds unless you changed it, ends as **Timeout**.
+- **Calls run side by side.** Two **Call** nodes that run together are two independent calls, and the server may answer them on different instances, in either order. A library has no state, so nothing links them; do not rely on one call's effect being there for the next.
+- **A library changes game truth through a Server Object.** If a roll should give the player the item, the library's server code calls the player's own Server Object and that object changes its values; the game then sees the change with **On Changed** on that object. See [A Server Function Library](../write-server-logic.md#a-server-function-library).
+
+## Related
+
+- [Call a Server Function Library, from C++](../from-cpp/call-a-library.md): the same call, from C++
+- [Call its functions](./call-functions.md): the previous page, the **Call** node of a Server Object
+- [Pins for every type](./pins-for-every-type.md): the next page, which pin each input and output gets
+- [Make a Server Function Library](../server-function-libraries.md): the asset, **Kind** and **Scaling**
+- [Loot for the Hollow Giant](../examples/hollow-giant-loot.md): the loot roller, the chest and the boss
+- [Troubleshooting](../troubleshooting.md#outcomes): every outcome
+
+# Pins for every type
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/exec/from-blueprint/pins-for-every-type
+
+# Pins for every type
+
+:::note
+Server Objects run on [ck-exec](/exec/intro).
+:::
+
+The typed nodes give every value a pin of its own type, so none needs a cast. This page is what the pins are, and what happens to them when the asset changes.
+
+## What the pins are
+
+Every value has a pin of its own type, with no casting.
+
+| In the asset or C++ | Pin |
+|---|---|
+| `bool` | Boolean |
+| `uint8` | Byte |
+| `int32` | Integer |
+| `int64` | Integer64 |
+| `float`, `double` | Float |
+| `FString` | String |
+| `FName` | Name |
+| Enums | The enum |
+| `FVector`, `FRotator`, `FVector2D`, `FQuat`, `FIntPoint`, `FIntVector`, `FLinearColor`, `FColor`, `FDateTime`, `FTimespan`, `FGuid`, `FGameplayTag` | The struct of that name |
+| Soft object and soft class references | A soft reference pin |
+| Your own structs | The struct; right-click its pin and choose **Split Struct Pin** to get a pin for each field |
+| `TArray`, `TSet`, `TMap` | An Array, Set or Map pin |
+| `int8`, `int16`, `uint16` (C++ only) | Integer |
+| `uint32`, `uint64` (C++ only) | Integer64 |
+| `TOptional<T>` (C++ only) | A pin for T, and a **Has Value** pin beside it |
+
+The C++-only types are carried on the nearest pin that holds every value. A value that does not fit, such as a negative Integer64 for a `uint64`, is refused: a **Call** fails through **On Failed** naming the input, and a **Get** logs a warning and reads the default.
+
+An optional input is sent only when its **Has Value** is true; an optional output's **Has Value** says whether the server set it. On a **Get**, an optional's **Has Value** is false when it is empty and also before the server has sent the values.
+
+A variable, input or output whose name is one a node uses for its own pin gets no node, and the Blueprint compile says to rename it. The names are `Team Id`, `Instance Id`, `Value Changed`, `Has Values`, `then`, `execute`, `self`, `Server Function`, `Call Outcome`, `Call Reason`, `Call Retryable`, `On Success`, `On Failed`, and another value's name followed by ` Has Value`. Rename it in the asset; the nodes follow. `Call Outcome`, `Call Reason` and `Call Retryable` are the pins a **Call** node shows as **Outcome**, **Reason** and **Retryable**; **Retryable** is in its advanced area, under the small arrow at the bottom of the node. `Has Values` and another value's name followed by ` Has Value` are the pins the **Get Server State** and **Get Server Variable** nodes label **Is Ready**; the pin is the same, only its label changed.
+
+Two other things have no pin. An Array, Set, Map or optional inside another one cannot be held in a Blueprint, and neither can a C++ struct or enum that is not marked `BlueprintType`. The compile says which variable and why, for example "the struct FRelic is not BlueprintType; mark it BlueprintType", and the node is not offered in the menu until it does. Blueprint structs and enums you made in the editor already work.
+
+### When the asset changes
+
+The nodes follow the asset. Rename a variable or an input that you added in the asset, or a field of a Blueprint struct, and the node keeps it and its wires. Change a type and the pin changes with it; a wire that no longer fits is a compile error, and the message names the pin, so reconnect it or remove it. Remove a variable and the nodes for it say "has no variable Oil any more". A variable you untick from **Visible to Players** fails the same way, and the message tells you to tick it again or remove the node.
+
+## Related
+
+- [Get a Server Object](./get-a-server-object.md)
+- [Read and follow its variables](./read-and-follow-variables.md): the **Get** and **On Changed** pins
+- [Call its functions](./call-functions.md): the input and output pins of a **Call** node
+- [Create a Server Object type](../create-a-type.md#field-types): the types a variable can have
