@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-git-hub-files
+title: crowdyStudioGitHubFiles
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Up to 100 files of the bound repository at one commit (default: githubSha), for one operation against the per-user GitHub budget. A path that is not a file there is listed in missing; a blob that is not UTF-8 text, or is larger than this tier reads, comes back with content null and its sha and size.
+
+
+```graphql
+crowdyStudioGitHubFiles(
+  input: CrowdyStudioGitHubFilesInput!
+): CrowdyStudioGitHubFiles!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioGitHubFiles.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubFilesInput!</b></code>](/reference/graphql/types/inputs/crowdy-studio-git-hub-files-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubFiles</b></code>](/reference/graphql/types/objects/crowdy-studio-git-hub-files.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Several files of the bound repository at one commit, read in one call (one operation against the per-user GitHub budget).

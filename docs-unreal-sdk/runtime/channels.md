@@ -46,9 +46,9 @@ The lantern village creates a `village` channel for lit notices once the connect
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Instance Blueprint, at **Event Init** a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Connection Success**, whose custom event `OnConnected` calls **Create Channel**, a latent node with `Name`, `Description`, `Membership Policy`, and `Members Can Send` inputs and **On Success** (a `Channel` struct) and **On Error** pins. Binding to the connection is what keeps the create after sign-in; at Init there is no token yet and it would answer on **On Error**. To keep the id, drag a **Break Crowdy Channel** off the `Channel` pin on the success branch and set an Integer64 variable `VillageChannelId` from `Channel Id`.
+In the Game Mode Blueprint, at **Event BeginPlay** a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Connection Success**, whose custom event `OnConnected` calls **Create Channel**, a latent node with `Name`, `Description`, `Membership Policy`, and `Members Can Send` inputs and **On Success** (a `Channel` struct) and **On Error** pins. Binding to the connection is what keeps the create after sign-in; at BeginPlay there may be no token yet and the create would answer on **On Error**. The Game Mode belongs to one map, so keep the id in a variable on the Game Instance if the next map needs it. (Do not start from the Game Instance's **Event Init**: it runs before the SDK's subsystems exist, see [Authentication](../services/authentication.md#signing-in).) To keep the id, drag a **Break Crowdy Channel** off the `Channel` pin on the success branch and set an Integer64 variable `VillageChannelId` from `Channel Id`.
 
-<Blueprint src="ch-create" title="Event Init, Crowdy SDK Subsystem, Bind Event to On UDP Connection Success, OnConnected, Create Channel" />
+<Blueprint src="ch-create" title="Event BeginPlay, Crowdy SDK Subsystem, Bind Event to On UDP Connection Success, OnConnected, Create Channel" />
 
 </TabItem>
 </Tabs>

@@ -78,17 +78,32 @@ conflates into a single player and a single NetID, so the two windows do not rep
 at all. This is a silent wrong result, not a crash: sign each window in with a different account.
 :::
 
-Each PIE instance now isolates its own session automatically, so one window does not overwrite another
-window's saved sign-in. The only setup left to do by hand is signing the two windows into two different
-accounts.
+Each PIE window inside the editor process keeps its own saved session, so one window does not overwrite another
+window's sign-in. The only setup left to do by hand is signing the two windows into two different accounts.
 
 Run the two clients as separate processes: in Editor Preferences, under Play, uncheck "Run Under One
 Process." Besides matching how a packaged build actually runs, it keeps any per-process editor systems
-(runtime generation, audio devices) from being shared between the two worlds.
+(runtime generation, audio devices) from being shared between the two worlds. The first client still runs in
+the editor with its own session; every client the editor starts as a separate process uses the default
+session, so two clients work, but a third would restore the second one's account. For three or more, run the
+extra ones as packaged clients with `-crowdysession` (below).
 
 Once both clients are running, confirm the setup actually worked before you trust anything else you see:
 each client should report a different local player identity, and exactly one client should be the elected
 host.
+
+### Two packaged or standalone clients
+
+Outside PIE, clients that share a `Saved` folder read the same saved session, so a second client restores the
+first one's account. A Development package keeps `Saved` beside the game, so every copy started from one folder
+shares it; a Shipping package keeps it in the Windows user's local app data, so every Shipping copy that user
+starts shares it, wherever it is. Start each extra client with `-crowdysession=<name>`, for example
+`MyGame.exe -crowdysession=b`: it keeps a session of its own, signs in once, and restores that account on every
+later start with the same name. A name is 1 to 32 letters, digits, `-` or `_`, and case does not matter (`B`
+and `b` are one session). A name that breaks those rules is refused with a warning, and the client gets a
+fallback session that every refused name shares, never the default one. A client started without the switch keeps the default session, so a
+player's existing sign-in is untouched. Before v2.21.1 there is no switch: give each client its own
+`-userdir=<dir>` instead.
 
 ## Sign in from the console
 

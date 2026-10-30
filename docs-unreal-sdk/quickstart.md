@@ -36,11 +36,11 @@ Config Sync points the project at an app; a map profile decides what the SDK doe
 
 The C++ steps build three small things. Step 0 is the Game Instance, `LanternGameInstance.h` and `LanternGameInstance.cpp`. Step 1 is your player, `LanternPlayer.h` and `LanternPlayer.cpp`, with a Game Mode, `LanternGameMode.h` and `LanternGameMode.cpp`, that spawns it at the right moment. Steps 3 to 5 build one actor, `ALantern`, in `Lantern.h` and `Lantern.cpp`: step 3 gives you both files, each later step is what you add to them, and the finished actor is at the end of the page. The first comment line of each block names the file it goes in. The usual boilerplate is left out so the SDK parts stand out: add `#pragma once`, `#include "CoreMinimal.h"`, and the base class include (`GameFramework/Actor.h`, `GameFramework/Character.h`, `GameFramework/GameModeBase.h`, `Components/ActorComponent.h`, or `Engine/GameInstance.h`) at the top of each header yourself. Everything else, including the `.generated.h` line, is in the block.
 
-The Blueprint steps build the same three things: a Game Instance Blueprint, a Character Blueprint with a Game Mode Blueprint, and one Actor Blueprint for the lantern. The lantern needs two components before you start: a **Sphere Collision** (the trigger a player walks into) and a **Point Light** named `Light`, the thing every lantern graph drives. Every Blueprint figure can be panned with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+The Blueprint steps build the same things with one difference: the sign-in lives in the Game Mode Blueprint, not in a Game Instance, so there is a Game Mode Blueprint, a Character Blueprint, and one Actor Blueprint for the lantern. The lantern needs two components before you start: a **Sphere Collision** (the trigger a player walks into) and a **Point Light** named `Light`, the thing every lantern graph drives. Every Blueprint figure can be panned with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
 
 ## 0. Sign the player in
 
-Nothing connects by itself. The SDK requests its realtime connection only after a player signs in, so the game signs the player in once, at startup, from its Game Instance: call `Login` (or `Register` for a new account) on the Crowdy SDK subsystem and wait for two events: **On Login** (the account is signed in) and then **On UDP Connection Success** (the realtime connection is up). Every entity, event, and property below depends on that connection.
+Nothing connects by itself. The SDK requests its realtime connection only after a player signs in, so the game signs the player in once, at startup (from its Game Instance in C++, from its Game Mode in Blueprint): call `Login` (or `Register` for a new account) on the Crowdy SDK subsystem and wait for two events: **On Login** (the account is signed in) and then **On UDP Connection Success** (the realtime connection is up). Every entity, event, and property below depends on that connection.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -55,12 +55,16 @@ Email=you@example.com
 Password=your-test-password
 ```
 
+A package ships `DefaultGame.ini`, so remove these two lines before you package the game.
+
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-Create a Blueprint with **Game Instance** as its parent class and make it the project's Game Instance under **Project Settings, Maps & Modes, Game Instance Class**. In its event graph the **Init** event runs once at startup; the **Login** node is latent, with **On Success** and **On Error** pins. Fill in a test account.
+Create a Blueprint with **Game Mode Base** as its parent class and make it the project's default under **Project Settings, Maps & Modes, Default Modes, Default GameMode**, or set it as the test map's Game Mode Override in World Settings. In its event graph, **Event BeginPlay** gets the **Crowdy Authentication** subsystem and branches on its **Is Signed In**, so a map the player travels to later does not sign in again; when it is false, the latent **Login** node runs, with **On Success** and **On Error** pins. Fill in a test account.
 
-<Blueprint src="qs-login" title="Init, Login" />
+<Blueprint src="qs-login" title="Event BeginPlay, Crowdy Authentication, Is Signed In, Branch, Login" />
+
+Sign in from the Game Mode, not from a Game Instance Blueprint's **Event Init**: that event runs before the SDK's subsystems exist, so **Login** would fail at once. [Authentication](./services/authentication.md#signing-in) says why.
 
 </TabItem>
 </Tabs>
@@ -92,11 +96,11 @@ Where the account id becomes readable. The engine possesses a pawn spawned durin
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-Three Blueprints, two of them settings only.
+One more Blueprint, the Character, and the Game Mode from step 0.
 
 1. **The Character.** Open the template's `BP_ThirdPersonCharacter`, or your own Character that already moves; a new Blueprint with **Character** as its parent has no body and no input, so do not start from one. In the Components panel click **Add** and choose **Crowdy Entity Component**. In its Details panel, under **Crowdy SDK, Entity Component**, set **Mode** to **Dynamic**, **Identity Policy** to **Player Derived**, and **Ownership** to **Local Client**. Two rows appear once Mode is Dynamic, **State Executor** and **Auto Register**: leave the executor at None and Auto Register ticked; a third, **Host Override**, appears once Ownership is Local Client: leave it at Allow. Add a **Point Light** named `Torch` while you are there; a later page drives it.
-2. **The Game Mode.** Create a Blueprint with **Game Mode Base** as its parent class. Set **Default Pawn Class** to your Character and tick **Start Players as Spectators** under **Game Mode**. Make it the project's default under **Project Settings, Maps & Modes, Default Modes, Default GameMode**.
-3. **The spawn.** In the Game Mode's event graph, from **Event BeginPlay**, get the **Crowdy SDK Subsystem** and **Bind Event to On UDP Connection Success** to a custom event `OnConnected` (the same **Bind Event** shape the [Authentication](./services/authentication.md#after-sign-in) page uses for On Login). `OnConnected` calls **Restart Player** with **Get Player Controller** (index 0) on its New Player pin. The Game Instance from step 0 is unchanged.
+2. **The Game Mode.** Open the Game Mode Blueprint from step 0. Set **Default Pawn Class** to your Character and tick **Start Players as Spectators** under **Game Mode**.
+3. **The spawn.** In the same Game Mode's event graph, from **Event BeginPlay**, get the **Crowdy SDK Subsystem** and **Bind Event to On UDP Connection Success** to a custom event `OnConnected` (the same **Bind Event** shape the [Authentication](./services/authentication.md#after-sign-in) page uses for On Login). A graph has one **Event BeginPlay** and step 0 already uses it, so run the event into a **Sequence** node: the bind on its first pin, the sign-in from step 0 on its second. `OnConnected` calls **Restart Player** with **Get Player Controller** (index 0) on its New Player pin. In a map the player travels to later, the connection is already up and On UDP Connection Success does not fire again, so on a third Sequence pin check **Get UDP Connection State** and, when it is **Connected**, call **Restart Player** the same way.
 
 ![The entity component's Details panel at its defaults: change Mode, Identity Policy, and Ownership](/img/unreal-sdk/entity-mode-identity.png)
 

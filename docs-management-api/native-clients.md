@@ -107,7 +107,7 @@ session token; `playerLegalAcceptance` says whether that is still needed. See
 
 ### B. Native launcher → child game (local handoff)
 
-A native launcher (an Overworld for native games) holds the session and launches
+A native launcher (an identity hub for your native games) holds the session and launches
 child games — each child should get **only** an app token, never the session.
 The launcher mints per child and passes the app token over a **local** channel
 (launch argument, environment variable, stdin, or local IPC):
@@ -119,7 +119,7 @@ launcher (holds SESSION)  --mintAppToken(childAppId)-->  app token
 child game (gets APP TOKEN, never the session)  ->  play
 ```
 
-This mirrors the browser Overworld, but the handoff is a trusted local process
+This mirrors the browser portal flow, but the handoff is a trusted local process
 boundary, so no redirect/PKCE is required.
 
 ### C. Confined / third-party native — OAuth2 PKCE (RFC 8252)
@@ -156,7 +156,7 @@ the hub.
    ```
 
 Untrusted apps require consent first (`portalConsent` → `authorizeApp`); the
-Overworld (app 1) is trusted and skips it. See
+identity hub (app 1) is trusted and skips it. See
 [Consent and the OAuth client registry](/management-api/portals-and-app-tokens#consent-and-the-oauth-client-registry).
 
 ### Which pattern?

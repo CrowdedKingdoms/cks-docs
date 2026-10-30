@@ -1,0 +1,43 @@
+---
+id: crowdy-studio-git-hub-layout-kind
+title: CrowdyStudioGitHubLayoutKind
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What the bound repository is, at one commit. The server decides it from the tree; a client picks its editor from it and does not inspect the tree itself.
+
+
+```graphql
+enum CrowdyStudioGitHubLayoutKind {
+  STUDIO_CRATES
+  CONSTRUCT_GAME
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubLayoutKind.<b>STUDIO&#x005F;CRATES</b></code>](#studio-crates) {/* #studio-crates */} 
+A Studio mod: the SERVER and CLIENT crates sit under the layout roots (or the repository is empty and the project will push them).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubLayoutKind.<b>CONSTRUCT&#x005F;GAME</b></code>](#construct-game) {/* #construct-game */} 
+A game generated from the Construct template, with no Studio rust under the layout roots. The whole repository is the working tree, and the Studio mirror is empty.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioGitHubLayout`](/reference/graphql/types/objects/crowdy-studio-git-hub-layout.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

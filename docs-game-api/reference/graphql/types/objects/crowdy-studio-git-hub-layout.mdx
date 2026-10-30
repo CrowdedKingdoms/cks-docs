@@ -25,6 +25,7 @@ type CrowdyStudioGitHubLayout {
   client: String
   assets: String!
   fromFile: Boolean!
+  kind: CrowdyStudioGitHubLayoutKind!
 }
 ```
 
@@ -49,6 +50,10 @@ Prefix visitors may fetch assets from (no trailing slash).
 
 #### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubLayout.<b>fromFile</b></code>](#from-file)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #from-file */} 
 A crowdy.json exists at the repository root. False means the layout was inferred from the tree.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubLayout.<b>kind</b></code>](#kind)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubLayoutKind!</b></code>](/reference/graphql/types/enums/crowdy-studio-git-hub-layout-kind.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #kind */} 
+STUDIO&#x005F;CRATES for a mod repository, CONSTRUCT&#x005F;GAME for a Construct game with no Studio rust under the layout roots (the same test TAKE&#x005F;REPOSITORY adopts by).
 
 
 
