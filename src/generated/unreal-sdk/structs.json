@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-26T18:47:52Z",
-  "sdk_version": "2.21.0",
+  "generated_from": "2026-10-29T06:42:10Z",
+  "sdk_version": "2.21.2",
   "table": "structs",
   "columns": [
     {
@@ -186,7 +186,7 @@
       "display_name": "",
       "module": "CrowdyNet",
       "header": "FCrowdyKitActorState.h",
-      "page": "",
+      "page": "guides/whats-changed",
       "editor": false,
       "allowlist": ""
     },

@@ -1,0 +1,39 @@
+---
+id: crowdy-studio-git-hub-commit-files
+title: crowdyStudioGitHubCommitFiles
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Write and delete up to 100 files of the bound repository as ONE commit on the bound branch, on top of expectedCommitSha. Refused with GITHUB&#x005F;STALE&#x005F;SHA, writing nothing, when the project or the branch has moved on. Project files under the layout roots move the mirror in the same transaction as githubSha. Workflow files and the deletion of crowdy.json are refused.
+
+
+```graphql
+crowdyStudioGitHubCommitFiles(
+  input: CrowdyStudioGitHubCommitFilesInput!
+): CrowdyStudioGitHubCommit!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>crowdyStudioGitHubCommitFiles.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubCommitFilesInput!</b></code>](/reference/graphql/types/inputs/crowdy-studio-git-hub-commit-files-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CrowdyStudioGitHubCommit</b></code>](/reference/graphql/types/objects/crowdy-studio-git-hub-commit.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The commit a multi-file write created. githubSha is now commitSha; every change in it landed, or none did.

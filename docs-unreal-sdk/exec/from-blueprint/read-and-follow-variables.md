@@ -19,7 +19,7 @@ Players see the variables their [definition](../create-a-type.md) marks **Visibl
 
 To tell a real zero from "the server has not answered yet", use the node's advanced pin, **Oil Has Value**. It is collapsed by default: click the small arrow at the bottom of the node to show it. It is false until the server has sent this Server Object's values, and true after. A variable that is an optional in C++ has a **Has Value** pin that is always shown, and it is false when the optional is empty or the values have not arrived; see [What the pins are](./pins-for-every-type.md#what-the-pins-are).
 
-**Get Server State** is the same for every visible variable at once, with one advanced **Has Values** pin that is false until the server has sent the values.
+**Get Server State** is the same for every visible variable at once, with one advanced **Has Values** pin that is false until the server has sent the values. It is not offered for a Server Object whose State has no variable visible to players, such as the Game Kit `CSO_Kit_Npcs`; a **Get Server State** already placed on one fails to compile with a message saying so.
 
 The nodes work whether the definition takes its variables from a struct or you [added them in the asset](../create-a-type.md#variables-inputs-and-outputs-or-a-struct) (the List form): **Get**, **Get Server State** and **On Changed** read and follow a variable added in the asset with the same pins.
 
@@ -32,7 +32,7 @@ Event BeginPlay -> On Oil Changed (Bind)
                      Changed -> Set Text (Oil)
 ```
 
-- **Changed** runs right away with the current value as soon as the object is ready, and again after every change of that variable, and only of that variable.
+- **Changed** runs right away with the current value as soon as the object is ready, and again after every change of that variable, and only of that variable. A Game Kit starter's **On Changed** and **On Variables Changed** run once when it is Ready, not also before: a snapshot pushed while it is still connecting does not announce.
 - Each **On Changed** node you place is its own binding, so you can use the same variable's node more than once in one graph: bind one from **Begin Play** and another from a custom event, and each runs **Changed** once per change.
 - Run the same node's **Bind** again, for example with another **Target**, and it replaces its own binding; it does not run twice. It runs **Changed** once at once with the current value when the object is Ready.
 - There is nothing to unbind. A binding goes away when the Blueprint that owns it is destroyed or the Server Object is given back.

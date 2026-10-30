@@ -6,8 +6,9 @@ title: Portals & app-scoped tokens
 # Portals & app-scoped tokens
 
 Crowded Kingdoms uses **two kinds of token** so a game never receives a player's
-full identity. An **Overworld** (a hub app — **app 1**, which is trusted) can
-portal players into other games, and each game's stack only ever receives a token
+full identity. The identity session stays where the player signed in (Crowdy
+Studio, for a browser game; your own client or launcher, for a native one), which
+portals the player into a game, and each game's stack only ever receives a token
 confined to that one app.
 
 - **Identity session token** — returned by a **sign-in**: email + password, a
@@ -24,9 +25,10 @@ confined to that one app.
 > hand each device its app token, with no Crowded Kingdoms sign-in at all (preview) — see
 > [Org-managed players](/management-api/org-managed-players).
 
-> **A game hosted on Crowdy Games** takes the same browser flow; the SDK routes it
-> through the first-party shell that frames the game. See
-> [Hosting on Crowdy Games](/management-api/hosting-on-crowdy-games).
+> **Where your game is served does not change sign-in.** Crowded Kingdoms does not host
+> games; a browser game on an origin of its own signs players in with
+> [hosted sign-in](#hosted-sign-in-for-a-game-on-its-own-domain), wherever you host it.
+> See [Host your game](/build-a-game/host-your-game).
 
 ## Sign in first
 
@@ -118,11 +120,10 @@ OAuth2 Authorization Code + PKCE.
 
 **This is the only sign-in a browser game on a non-first-party origin can use**
 (ck-api v1.88.0, 2026-09-08): the direct sign-in mutations answer
-`HOSTED_SIGN_IN_REQUIRED` from any browser origin other than Studio and
-crowdy.games, so a customer's game never collects a password. The hosted page is
-**Crowded Kingdoms Studio's `/authorize`** (`https://studio.<tier>.crowdedkingdoms.com/authorize`;
-the Overworld's old `authorize.html` forwards there). The verifier never leaves
-the game origin and the session never leaves Studio:
+`HOSTED_SIGN_IN_REQUIRED` from any browser origin other than Studio's, so a
+customer's game never collects a password. The hosted page is
+**Crowded Kingdoms Studio's `/authorize`** (`https://studio.<tier>.crowdedkingdoms.com/authorize`).
+The verifier never leaves the game origin and the session never leaves Studio:
 
 1. **Game origin** generates a PKCE verifier + challenge and redirects the player
    to Studio's `/authorize` with `app_id`, `code_challenge`,
@@ -174,10 +175,10 @@ Each app is an OAuth-style client with platform-controlled settings:
 
 | Field | Meaning |
 |---|---|
-| `isTrusted` | First-party apps skip the consent screen. **The Overworld (app 1) is trusted.** Platform-controlled — studio admins cannot set it. |
+| `isTrusted` | First-party apps skip the consent screen. **The identity hub (app 1) is trusted.** Platform-controlled — studio admins cannot set it. |
 | `redirectUris` | Allow-list of redirect URIs for hosted sign-in (origin-matched). **Also the API's CORS allow-list for the app**: a browser on an origin listed here may call the API; one that is not gets no CORS headers. An empty list disallows browser entry. Edit under Studio > Apps > Settings > Sign-in & redirect URIs; honoured on every API instance within ten seconds, no restart. |
 | `clientType` | `"public"` (browser/PKCE, no secret) or `"confidential"` (server-side). |
-| `launchUrl` | Browser destination a player is sent to when they portal into the app. |
+| `launchUrl` | Browser destination a player is sent to when they portal into the app, and the page Studio's **Live code** opens. Set it to wherever you host the game ([Host your game](/build-a-game/host-your-game)); Studio shows it as **Launch URL**. |
 
 **Redirect allow-list.** `createPortalAuthorizationCode` validates the requested
 `redirectUri` against the app's `redirectUris` by **origin**. A mismatch (or an app
@@ -188,8 +189,9 @@ authorization code to an origin the app owner never approved.
 **untrusted** app, the user must have an active authorization grant; otherwise
 `createPortalAuthorizationCode` fails with a `FORBIDDEN` error whose message is
 prefixed **`CONSENT_REQUIRED`** (see [Error codes](/overview/error-codes#consent)).
-The Overworld resolves this by showing a consent screen and recording the grant
-before minting the code:
+The identity origin resolves this by showing a consent screen and recording the
+grant before minting the code; for a browser game, Studio's hosted `/authorize` does
+it:
 
 ```graphql
 # Does the user need to consent before this app can receive a token?
@@ -236,16 +238,17 @@ mutation Disconnect($appId: BigInt!) { revokeAppAuthorization(appId: $appId) }
 
 ## Staying connected: refresh
 
-App tokens expire. To keep playing the **same** app without bouncing back through
-the Overworld, rotate the token before it lapses (re-checks entitlement, revokes
-the old token):
+App tokens expire. To keep playing the **same** app without sending the player
+back through sign-in, rotate the token before it lapses (re-checks entitlement,
+revokes the old token):
 
 ```graphql
 mutation Refresh { refreshAppToken { token expiresAt } }
 ```
 
 Send the current app token as the Bearer. Switching to a **different** app always
-routes back through the Overworld for a fresh per-app token. A refresh refused with
+goes back through the identity origin (hosted sign-in, or your launcher) for a fresh
+per-app token. A refresh refused with
 `LEGAL_ACCEPTANCE_REQUIRED` needs the player's consents first
 ([above](#terms-and-age-of-majority)).
 
