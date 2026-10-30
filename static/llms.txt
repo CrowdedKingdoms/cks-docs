@@ -90,7 +90,7 @@
 
 ## Minecraft
 
-- [Minecraft server](https://docs.crowdedkingdoms.com/minecraft/intro): a Fabric server hosts a shared world that vanilla Java clients join. Install the server jar, set the shared world's seed, and split the world by chunk range.
+- [Minecraft server (in beta)](https://docs.crowdedkingdoms.com/minecraft/intro): a Fabric server hosts one shared world that vanilla Java clients join. Install the server jar, set the fixed seed, and split that world by chunk range.
 
 ## Changelog
 

@@ -529,7 +529,7 @@ const config: Config = {
           docsPluginId: 'minecraft',
           sidebarId: 'sidebar',
           position: 'left',
-          label: 'Minecraft',
+          label: 'Minecraft server (in beta)',
         },
         {
           type: 'dropdown',
@@ -605,7 +605,7 @@ const config: Config = {
         {
           title: 'Games',
           items: [
-            {label: 'Minecraft', to: '/minecraft/intro'},
+            {label: 'Minecraft server (in beta)', to: '/minecraft/intro'},
           ],
         },
         {
