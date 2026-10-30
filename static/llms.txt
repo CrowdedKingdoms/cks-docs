@@ -90,7 +90,7 @@
 
 ## Minecraft
 
-- [Minecraft server](https://docs.crowdedkingdoms.com/minecraft/intro): a Fabric server hosts a shared world that vanilla Java clients join. One server, or several servers splitting the world by chunk range.
+- [Minecraft server](https://docs.crowdedkingdoms.com/minecraft/intro): a Fabric server hosts a shared world that vanilla Java clients join. One server, or several servers splitting the world by chunk range. Players are asked their age before they enter, and a walk of 8 blocks into another server's chunks transfers them there.
 
 ## Changelog
 
