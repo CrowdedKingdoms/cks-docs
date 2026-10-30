@@ -52,7 +52,7 @@ The connection belongs to the transport and recovers on its own. Asking the UI t
 
 ## Reacting to a drop
 
-There is no reconnect code to write. The SDK asks for the connection again itself, and the game hears two events: **On UDP Timed Out** when a re-assignment failed and the SDK is opening the connection again, and **On UDP Connection Success** when it is back. Bind both once, in your Game Instance's `Init`, and do the visible thing in each.
+There is no reconnect code to write. The SDK asks for the connection again itself, and the game hears two events: **On UDP Timed Out** when a re-assignment failed and the SDK is opening the connection again, and **On UDP Connection Success** when it is back. Bind both once, in your Game Instance's `Init` after `Super::Init()` in C++ or from your Game Mode's Event BeginPlay in Blueprint, and do the visible thing in each.
 
 :::note[Do not call RequestUDPAccess from the timeout handler.]
 The SDK calls it itself as soon as the event has been broadcast. A second request from the game is a second reconnect in flight for the same client.
@@ -68,9 +68,9 @@ The lantern village dims every placed lantern while the connection is down and r
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Instance Blueprint, from **Event Init**, a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Timed Out** and then **Bind Event to On UDP Connection Success**; the custom events `OnConnectionLost` and `OnConnectionRestored` are theirs. Dimming every lantern needs a loop, which is more than a six-node figure shows, so the graph binds the events and stops.
+In the Game Mode Blueprint, from **Event BeginPlay**, a **Crowdy SDK Subsystem** getter feeds **Bind Event to On UDP Timed Out** and then **Bind Event to On UDP Connection Success**; the custom events `OnConnectionLost` and `OnConnectionRestored` are theirs. Dimming every lantern needs a loop, which is more than a six-node figure shows, so the graph binds the events and stops.
 
-<Blueprint src="conn-events" title="Event Init, Crowdy SDK Subsystem, Bind Event to On UDP Timed Out, Bind Event to On UDP Connection Success, OnConnectionLost, OnConnectionRestored" />
+<Blueprint src="conn-events" title="Event BeginPlay, Crowdy SDK Subsystem, Bind Event to On UDP Timed Out, Bind Event to On UDP Connection Success, OnConnectionLost, OnConnectionRestored" />
 
 </TabItem>
 </Tabs>

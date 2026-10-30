@@ -34,7 +34,7 @@ Combine all chapters into one shippable game.
 ## Next steps
 
 - Clone [The Construct](https://github.com/CrowdedKingdoms/the-construct) and compare its `PaintScene` with what you built — then replace it with your game (`docs/NEW-GAME-CHECKLIST.md`).
-- Host it as a static site with the headers client mods need (`docs/HOSTING.md` in The Construct).
+- [Host it](/build-a-game/host-your-game) on a static host of your own, with the headers CLIENT mods and the Studio agent need. Crowded Kingdoms does not host games.
 - Extend with chat (`sendTextPacket`), larger palette, or zoom.
 
 ## Related docs

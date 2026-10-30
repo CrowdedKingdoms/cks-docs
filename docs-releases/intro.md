@@ -12,13 +12,15 @@ Game API, Replication API) and SDKs. Newest first.
 The intent is that a breaking change ships with a deprecation window — the field keeps
 working and is marked `@deprecated` in the schema (visible in the
 [reference](/management-api/reference/graphql-overview) and the downloadable SDL) until
-a stated removal date. **Three removals did not get one**, and each is called out in
+a stated removal date. **Four removals did not get one**, and each is called out in
 its own entry rather than left to be discovered: the customer-provisioned
 environment surface on [2026-07-27](#2026-07-27), the dev sign-in bypass on
-[2026-08-20](#2026-08-20), and the game API's legacy engines on
+[2026-08-20](#2026-08-20), the game API's legacy engines on
 [2026-09-28](#2026-09-28-dev-the-legacy-engines-removed) on the dev environment, which test
-followed on 2026-10-04 and production on 2026-10-06. Treat **the published SDL as the
-authority** on what exists today; this page is the record of how it got there.
+followed on 2026-10-04 and production on 2026-10-06, and Crowdy Games hosting on
+[2026-10-29](#2026-10-29-crowdy-games-retired-host-your-game-yourself) on every
+environment. Treat **the published SDL as the authority** on what exists today; this page
+is the record of how it got there.
 
 Older entries describe the game API's legacy engines (game models, automations, compute
 modules and player code), which ck-exec replaced. Their links lead to the matching section
@@ -36,6 +38,75 @@ own CLI is not published either. See
 on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
+
+## 2026-10-29 (Crowdy Games retired: host your game yourself)
+
+**Crowded Kingdoms no longer hosts games. Breaking, with no deprecation window, on every
+environment.** Build your game and serve it from a static host of your own; the platform
+behind it is unchanged. See [Host your game](/build-a-game/host-your-game).
+
+- **Retired:** the games website, `crowdy.games`, on every environment; the Overworld lobby;
+  the first-party shell that framed third-party games; the first-party games served there
+  (Blocks with Friends, Matchstick and others); and the content host, `crowdedcontent.com`,
+  that served developers' bundles.
+- **The hosting API is switched off.** `claimGameHosting`, `beginGamePublish`,
+  `completeGamePublish`, `abandonGamePublish`, `setHostedGameEnabled` and
+  `hostedGamePublishes` answer `CONTENT_HOSTING_DISABLED`, and `hostedGame`, `hostedGames`
+  and `myHostedGames` return `null` or an empty list. The fields stay in the schema. The
+  `HOSTED_*` error codes are retired with them ([error codes](/overview/error-codes)).
+  CrowdyJS keeps `client.hosting`, `publishDirectory` and `EmbeddedHost`, deprecated. See
+  [Hosting on Crowdy Games (retired)](/management-api/hosting-on-crowdy-games).
+- **Host the build yourself**, on any static host that can set response headers: the
+  cross-origin isolation headers, the game's Content-Security-Policy, and a separate policy
+  for the Studio agent's `/dsh/` path. Register your origin under the app's redirect URIs
+  in Studio (also the API's CORS allow-list) and set its launch URL. The Construct's
+  `npm run setup -- --origin https://your.host` registers the origin, and sets it as the
+  launch URL when the app has none; its `npm run publish` is retired. See
+  [Host your game](/build-a-game/host-your-game).
+- **Studio's Live code opens your launch URL**, the one set on the app in Studio under
+  **Settings > Sign-in & redirect URIs**: your own deployment, or, while you develop, the
+  template's dev server (`LIVE_DRAFT=1 npm run dev`, `http://localhost:5175`). See
+  [the game editor](/crowdyjs/agentic-crowdy-studio#the-game-editor-a-construct-games-repository).
+- **Unchanged:** the API; Crowdy Studio; hosted sign-in through Studio's `/authorize` for a
+  game on its own origin; ck-exec world hubs and mods; and the Studio dock and agent
+  embedded in your own game. Mods start from a game you run: The Construct locally, or a
+  game whose developer embeds Studio. See [Build mods with Crowdy
+  Studio](/build-a-game/bwf-mod-development) and [what a game needs for
+  mods](/crowdyjs/crowdy-studio-embed#what-a-game-needs-for-mods).
+
+## 2026-10-29 (Unreal SDK v2.21.2: cancel a sign-in without signing out; Game Kit fixes)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-29-sdk-v2212).
+
+- **`CancelSignIn` and `IsSignInPending`** stop a sign-in that has not finished (a restore, a
+  password sign-in, an email link or social sign-in waiting for the browser, or one held for the
+  terms) without signing out, so a cancelled restore keeps the saved session. See
+  [Cancel a sign-in](/unreal-sdk/services/authentication#cancel-a-sign-in).
+- **Kit actors:** **Get Kit Actor Count** and **Get Kit Actor** read them without a copy, they are
+  placed by the session's chunk size, and malformed updates are dropped. See
+  [Show a starter's actors](/unreal-sdk/exec/use-game-kit-starters#show-a-starters-actors).
+- **Server Object reads:** a starter's **On Changed** runs once at Ready, another player's Owner
+  Values report no value, and **Get Server State** is not offered where nothing is visible. See
+  [Values only the player reads](/unreal-sdk/exec/use-game-kit-starters#values-only-the-player-reads).
+- **Starters:** Config ids that differ only by case are refused, `-op=call` reaches a starter's
+  read-only player functions, the director publishes less, and the zone's event carries `centerZ`.
+  See [Use the Game Kit starters](/unreal-sdk/exec/use-game-kit-starters).
+
+## 2026-10-28 (Unreal SDK v2.21.1: Blueprint sign-in from the Game Mode; a saved session per client; the platform stops removed types; CrowdyCPP 0.74.0)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-28-sdk-v2211).
+
+- **Blueprint sign-in starts from the Game Mode.** A Blueprint Game Instance's Event Init runs
+  before the SDK's subsystems exist, so the earlier Blueprint examples could not sign in. They now
+  run from the Game Mode's Event BeginPlay. See [Signing in](/unreal-sdk/services/authentication#signing-in).
+- **`-crowdysession=<name>`** gives a packaged or standalone client its own saved session, so
+  clients sharing a `Saved` folder can sign in as different accounts. See
+  [Two packaged or standalone clients](/unreal-sdk/guides/testing-locally#two-packaged-or-standalone-clients).
+- **A deploy leaves removed types to the platform.** Server Compute no longer restarts a type before
+  a deploy removes it, since ck-exec 0.19.0 stops it; `-op=deploy`'s result drops `stoppedRemoved`
+  and `stopRemovedFailed`, and `-op=instances` shows `orphaned`. See
+  [From the command line](/unreal-sdk/exec/deploy-with-server-compute#from-the-command-line).
+- **CrowdyCPP 0.74.0.**
 
 ## 2026-10-26 (dev: a deploy stops the node types it drops, and takes their switches with them; ck-exec 0.19.0, Game API v2.58.0, CrowdyJS 18.22.0, CrowdyCPP 0.74.0, CrowdyPy 0.22.0)
 

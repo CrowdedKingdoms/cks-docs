@@ -5,19 +5,51 @@ title: Build mods with Crowdy Studio
 
 # Build mods with Crowdy Studio
 
-Blocks with Friends (BWF) embeds Crowdy Studio for player-authored server and
-client Rust mods. A server mod is a [ck-exec mod](/exec/mods) on your grid; a
-client mod is that mod's [CLIENT half](/exec/client-halves), which runs in each
-visitor's browser. This guide is for a mod developer using the game, not a
-studio operator deploying platform infrastructure.
+Players write mods in Crowdy Studio, inside a running game whose page embeds
+Studio's dock. A mod is written in Rust and has two halves: the server half is a
+[ck-exec mod](/exec/mods) on a grid you own, and the optional client half is
+that mod's [CLIENT half](/exec/client-halves), which runs in each visitor's
+browser. This guide is for a mod developer working in a game, not a studio
+operator deploying platform infrastructure.
+
+## Start from a game you run
+
+Studio runs inside a game, so you need a running game that embeds it. Blocks
+with Friends, the game this guide used to follow, is no longer hosted by
+Crowded Kingdoms. Use either of these:
+
+- **The Construct, on your own machine.** The public template embeds Studio and
+  its agent, and its setup gives you an app you can mod:
+
+  ```bash
+  git clone -b dev https://github.com/CrowdedKingdoms/the-construct.git
+  cd the-construct
+  npm install
+  CONSTRUCT_EMAIL=you@example.com CONSTRUCT_PASSWORD=... \
+    npm run setup -- --org "My studio" --app "My game"
+  ```
+
+  Setup creates your organization and app, a *Constructor* access tier with the
+  code keys and `use_studio_agent` (granted to you), and the app's Studio Agent
+  policy. It prints an app id: copy `.env.example` to `.env.local` and set
+  `VITE_APP_ID` to it. Then run `npm run dev`, open
+  [http://localhost:5175](http://localhost:5175) and sign in. See
+  [the companion repository](/build-a-game/intro#the-companion-repository-the-construct).
+- **A game whose developer hosts it with Crowdy Studio embedded.** The game's
+  access tiers decide who may write mods there. A developer who wants to offer
+  mods reads [what a game needs for
+  mods](/crowdyjs/crowdy-studio-embed#what-a-game-needs-for-mods).
 
 ## Open Crowdy Studio
 
-1. Enter BWF with an app-scoped game token.
+1. Sign in to the game, so it holds an app-scoped game token for you.
 2. Stand inside a grid you own and that grants the code keys:
    `write_server_code` and `run_server_code` for a server mod,
    `write_client_code` and `run_client_code` for a client mod.
-3. Press **M**.
+3. Open Studio the way the game offers it. In The Construct, walk onto the
+   **Claim & Studio** pad and press `E`: you claim the chunk you stand on as a
+   grid of your own, and Studio docks beside the game. `M` toggles it after
+   that.
 4. Open or create a server, client, or full-stack project. You can copy an
    app-provided starter from **Common Files** into either target.
 
@@ -153,7 +185,7 @@ tick_interval_ms = 50   # 16..1000; default 1000
 ```
 
 Inside `on_tick`, `api::pointer_clicks()` drains the mouse clicks the host game
-(the holodeck canvas) collected since the previous call. It is CLIENT-only and
+collected on its canvas since the previous call. It is CLIENT-only and
 lives in the `input` capability group (rate cap 400 calls/s). The value is
 `{ nowMs, buttons, holdingMs, clicks }`: `buttons` is the live `MouseEvent.buttons`
 bitfield (1 = left held), `holdingMs` maps a button index to how long it has been
@@ -208,10 +240,16 @@ module, and a version that can do something new is asked about again. See
 - **Client HUD does not appear:** confirm the visitor consented or trusts
   you, holds `run_client_code` and stands in the grid, and that the mod is
   switched on with its CLIENT half attached.
+- **No CLIENT target in Studio:** the page is not cross-origin isolated. Type
+  `crossOriginIsolated` in the browser console; when it prints `false`, the
+  game's host is not sending the [isolation
+  headers](/build-a-game/host-your-game#the-headers).
 - **Server mod does not answer:** check that it is switched on and that the
   app admits it. A mod that is switched on but not running starts when an
   actor arrives in its grid or a player calls it.
 
 See [Crowdy Studio and mods in the browser](/crowdyjs/player-client-mods) for
-host integration and sandbox details, [mods](/exec/mods) for the server-side
-API, and [CLIENT halves](/exec/client-halves) for the client side.
+host integration and sandbox details, [what a game needs for
+mods](/crowdyjs/crowdy-studio-embed#what-a-game-needs-for-mods) for the game's
+side, [mods](/exec/mods) for the server-side API, and [CLIENT
+halves](/exec/client-halves) for the client side.

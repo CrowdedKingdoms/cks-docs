@@ -10,9 +10,11 @@ in, and runs mods' [CLIENT halves](/exec/client-halves) in the page: code that
 runs **as the visiting player**, sandboxed. A Studio project's SERVER target
 runs on the platform as the grid's ck-exec mod, and its CLIENT target is that
 mod's CLIENT half. This page is the browser side: the sandbox a CLIENT half runs
-in, what the page must serve, and mounting Studio. [CLIENT
-halves](/exec/client-halves) covers building, attaching and serving them, and
-`ExecClientHalves`, which runs every CLIENT half a grid serves.
+in, what the page must serve, and mounting Studio. [What a game needs for
+mods](crowdy-studio-embed#what-a-game-needs-for-mods) is the checklist for
+offering mods at all. [CLIENT halves](/exec/client-halves) covers building,
+attaching and serving them, and `ExecClientHalves`, which runs every CLIENT half
+a grid serves.
 
 CrowdyJS **15.x** can add the policy/permission-allowlisted model-assisted dock
 to the same project UI. Ask/Build/Play never changes the manual draft/live
@@ -71,12 +73,17 @@ by hand. [CLIENT halves](/exec/client-halves#limits) lists the broker's limits.
 
 ### Content security
 
-Serve the app with a `connect-src` CSP that allows only your game-api and
-management-api origins, and host the glue worker as a same-origin asset. The
+Serve the app with a `connect-src` CSP that allows only the API origin and its
+tier's wildcard, and host the glue worker as a same-origin asset. The
 glue worker needs no third-party origins; the broker makes no
 cross-origin requests. Crowdy Studio also loads its Rust-analysis module worker
 and parser/grammar WASM as local assets. It does not add an authoring origin to
 `connect-src`.
+
+The page must also be cross-origin isolated (`crossOriginIsolated` is `true`):
+the glue worker and the page share a `SharedArrayBuffer`, which a browser gives
+only to an isolated page. [Host your game](/build-a-game/host-your-game#the-headers)
+lists the headers that do both, with the policy written out.
 
 ## Presentation hooks
 

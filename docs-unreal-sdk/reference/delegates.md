@@ -25,7 +25,7 @@ All 164 delegates below fire on the game thread. This is a constant fact about e
 
 ## Gotchas
 
-- A delegate's owner class must be reachable before you can bind it: a game instance subsystem's delegate is safe to bind in `Init`, a world subsystem's needs a valid world first.
+- A delegate's owner class must be reachable before you can bind it: a game instance subsystem's delegate is safe to bind in a C++ Game Instance's `Init` after `Super::Init()`, and in Blueprint from the Game Mode's Event BeginPlay (the Game Instance's Event Init runs before the subsystems exist); a world subsystem's needs a valid world first.
 - Binding twice fires your handler twice. Unbind (`Remove Dynamic` or `RemoveDynamic`) before a re-bind on a path that can run more than once, such as a widget that reconstructs.
 - Two delegates on `AWinAudioDeviceMonitor` exist in the SDK but are not shown here: that actor is private and spawned by the voice subsystem for itself, so a game never has a reference to bind against. See [Voice chat](../services/voice-chat.md).
 

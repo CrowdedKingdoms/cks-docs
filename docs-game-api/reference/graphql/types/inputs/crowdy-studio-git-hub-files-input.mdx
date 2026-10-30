@@ -1,0 +1,53 @@
+---
+id: crowdy-studio-git-hub-files-input
+title: CrowdyStudioGitHubFilesInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input CrowdyStudioGitHubFilesInput {
+  appId: BigInt!
+  projectId: String!
+  commitSha: String
+  paths: [String!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFilesInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFilesInput.<b>projectId</b></code>](#project-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #project-id */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFilesInput.<b>commitSha</b></code>](#commit-sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #commit-sha */} 
+Full 40-hex commit to read at. Omitted reads the project githubSha (the mirror commit), never the branch head.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFilesInput.<b>paths</b></code>](#paths)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #paths */} 
+Repo-relative paths, 1 to 100.
+
+
+
+
+### Member Of
+
+[`crowdyStudioGitHubFiles`](/reference/graphql/operations/queries/crowdy-studio-git-hub-files.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

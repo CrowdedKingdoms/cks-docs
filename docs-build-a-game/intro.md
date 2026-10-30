@@ -48,6 +48,10 @@ through World Stores: `src/platform/realtime/WorldStores.ts` (presence, chunks),
 (hosted sign-in, minting, rotation). Read the tutorial for the mechanism and the repository for the
 architecture.
 
+Crowded Kingdoms does not host games. When yours is ready, you build it and serve it from a
+static host of your own; [Host your game](/build-a-game/host-your-game) says what that host must
+send.
+
 ## Prerequisites
 
 - Node.js 20+
@@ -80,6 +84,8 @@ See also [Connecting game clients](/management-ui/client-integration).
 7. [Viewport edge scroll](/build-a-game/07-viewport-edge-scroll) — pan the window
 8. [Collaborative viewport](/build-a-game/08-collaborative-viewport) — push together
 9. [Full game](/build-a-game/09-full-game) — assembly
+10. [Build mods with Crowdy Studio](/build-a-game/bwf-mod-development) — players' mods in a running game
+11. [Host your game](/build-a-game/host-your-game) — serve the build from a host of your own
 
 Reference pages:
 

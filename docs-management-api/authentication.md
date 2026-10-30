@@ -22,7 +22,7 @@ Since **2026-09-08** (ck-api v1.88.0) every sign-in mutation on this page --
 `socialLoginStart`, `socialLoginComplete`, `checkAuthMethod`,
 `requestPasswordReset`, `resetPassword`, `confirmEmail`,
 `resendConfirmationEmail`, and the `/auth/*` REST twins -- is served only to
-**first-party browser origins** (Crowded Kingdoms Studio and crowdy.games) and to
+the **first-party browser origin**, Crowded Kingdoms Studio, and to
 **non-browser callers** (anything that sends no `Origin` header: Node, a CLI,
 Unreal/Unity, CrowdyCPP). From a browser page on any other origin the API
 answers `extensions.code` **`HOSTED_SIGN_IN_REQUIRED`** (403).

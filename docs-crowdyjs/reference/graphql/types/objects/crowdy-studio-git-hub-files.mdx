@@ -1,0 +1,48 @@
+---
+id: crowdy-studio-git-hub-files
+title: CrowdyStudioGitHubFiles
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Several files of the bound repository at one commit, read in one call (one operation against the per-user GitHub budget).
+
+
+```graphql
+type CrowdyStudioGitHubFiles {
+  commitSha: String!
+  files: [CrowdyStudioGitHubFileContent!]!
+  missing: [String!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFiles.<b>commitSha</b></code>](#commit-sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #commit-sha */} 
+Commit the files were read at.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFiles.<b>files</b></code>](#files)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[CrowdyStudioGitHubFileContent!]!</b></code>](/reference/graphql/types/objects/crowdy-studio-git-hub-file-content.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #files */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFiles.<b>missing</b></code>](#missing)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #missing */} 
+Requested paths that are not files at that commit.
+
+
+
+
+### Returned By
+
+[`crowdyStudioGitHubFiles`](/reference/graphql/operations/queries/crowdy-studio-git-hub-files.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

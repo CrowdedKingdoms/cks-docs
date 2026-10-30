@@ -1,8 +1,26 @@
 [
 	{
-		"name": "K2Node_Event_0",
+		"name": "K2Node_Event_2",
 		"class": "/Script/BlueprintGraph.K2Node_Event",
-		"title": "Event Init",
+		"title": "Event BeginPlay",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_GetSubsystem_0",
+		"class": "/Script/BlueprintGraph.K2Node_GetSubsystem",
+		"title": "Crowdy Authentication",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Is Signed In\nTarget is Crowdy Authentication",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_IfThenElse_0",
+		"class": "/Script/BlueprintGraph.K2Node_IfThenElse",
+		"title": "Branch",
 		"title_drawn": true
 	},
 	{
