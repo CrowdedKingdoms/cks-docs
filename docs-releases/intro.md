@@ -39,6 +39,19 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-10-31 (Unreal SDK v2.23.0: nearby text chat; how far voice reaches)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-31-sdk-v2230).
+
+- **Nearby text chat**: **Send Proximity Text** reaches the players within a distance of your pawn's
+  chunk, and **On Proximity Text Received** hands you their lines. Lines are plain UTF-8, shared with
+  CrowdyJS and CrowdyCPP players. See [Nearby Text Chat](/unreal-sdk/services/nearby-text-chat).
+- **Set Voice Chat Distance** keeps voice local, from 0 to 8 chunks; the default stays 8. Voice and
+  text are now addressed to the chunk your pawn stands in. See [Voice
+  Chat](/unreal-sdk/services/voice-chat#how-far-your-voice-reaches).
+- **Audio that is not the microphone**, for C++: `FeedVoicePcm` sends it through the microphone's own
+  gate and encoder.
+
 ## 2026-10-30 (Unreal SDK v2.22.0: voice chat on the shared voice format; no flicks after a hitch; UX fixes)
 
 Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-30-sdk-v2220).

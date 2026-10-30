@@ -5,7 +5,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/intro
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.22**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.23**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
 
 :::note[This guide is written for Unreal Engine 5.8 and a C++ project.]
 Gameplay can be driven entirely from Blueprint, but the plugin itself compiles as C++, so your project needs a C++ target. See [Installation](./installation.md).
@@ -67,9 +67,9 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 ## Step 1: Get the release
 
-Download the `v2.22.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+Download the `v2.23.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
 
-:::note[The release you install must match the version this guide describes (2.22).]
+:::note[The release you install must match the version this guide describes (2.23).]
 :::
 
 ## Step 2: Place the plugin at `Plugins/CrowdySDK`
@@ -16164,6 +16164,8 @@ Everything lives on the **Crowdy SDK Subsystem** (`UCrowdySDKSubsystem`, a Game 
 | **Mute Voice Chat** | `MuteVoiceChat()` | Stops you hearing other players. |
 | **Set Voice Chat Stream Timeout Threshold** | `SetVoiceChatStreamTimeoutThreshold(float InSeconds)` | How long a silent player's stream is kept before it is released. Default 2 seconds; the value is clamped to 0.5 seconds up to 1 hour. |
 | **Toggle Owner Echo** | `ToggleOwnerEcho(bool bEnable)` | Plays your own voice back to you, as other players hear it. |
+| **Set Voice Chat Distance** | `SetVoiceChatDistance(int32 Chunks)` | How far your voice reaches, in chunks around the chunk your pawn stands in: 0 to 8, default 8. |
+| **Get Voice Chat Distance** | `GetVoiceChatDistance()` | The distance last set. |
 | **Get Voice Mic State** | `GetVoiceMicState()` | What your microphone is doing right now. |
 | **On Voice Mic State Changed** | `OnVoiceMicStateChanged` | Fires when that state changes. |
 | **On Voice Speaker Talking** | `OnVoiceSpeakerTalking` | Fires when a player starts or stops talking. |
@@ -16280,6 +16282,43 @@ Event BeginPlay binds a custom event, **OnSpeakerTalking** (with **SpeakerUuid**
 
 The example keeps no list of speakers, so with several people talking the torch follows whichever event arrived last. For a real roster, keep a set keyed by **Speaker Uuid** and add or remove on each event.
 
+## How far your voice reaches
+
+Your voice is addressed to the chunk your pawn stands in and reaches every player whose chunk is within the voice distance of it on each axis. The distance counts whole chunks: 0 is your own chunk only, and 8, the default, is the farthest the server relays. At the default chunk size of 1600 units, a distance of 1 is a 4800-unit square centred on your chunk. See [Recipients and routing](../runtime/recipients-and-routing.md) for how chunk rings work.
+
+Set it once, for example when the player arrives. It is kept across map changes like the other voice settings.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`KeepVoiceNearby` sets the distance to one chunk when the player's pawn is assigned to this client.
+
+```cpp
+// LanternPlayer.h
+void KeepVoiceNearby();
+
+// LanternPlayer.cpp
+#include "Subsystem/CrowdySDKSubsystem.h"
+
+void ALanternPlayer::KeepVoiceNearby()
+{
+	// Only players whose chunk is within one chunk of this pawn's hear it; kept across map changes.
+	GetGameInstance()->GetSubsystem<UCrowdySDKSubsystem>()->SetVoiceChatDistance(1);
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+Event BeginPlay calls **Set Voice Chat Distance** with **Chunks** set to 1.
+
+[Blueprint snippet: voice-distance, see /bp/unreal-sdk/voice-distance.txt]
+
+</TabItem>
+</Tabs>
+
+Nearby text has a distance of its own on every line; see [Nearby Text Chat](./nearby-text-chat.md).
+
 ## Reading the microphone
 
 **Get Voice Mic State** returns one of five values, and **On Voice Mic State Changed** fires with the new one.
@@ -16306,8 +16345,8 @@ Leaving it on means the player hears their own microphone continuously, not just
 
 ## What to expect
 
-- **No pawn needed.** Voice works in any map once the player is connected, with or without a player character. Your voice is sent from the chunk your player stands in, and frames are dropped until the connection is up and your player has an id.
-- **Settings carry across maps.** Whether your microphone is on, play or mute, owner echo, and the timeout all stay as you set them when the next map loads. You do not call anything again after a map change.
+- **Your pawn places your voice.** Each frame is addressed to the chunk your pawn stands in when it is sent, so voice follows the player as they move. Between pawns, during a respawn or as a map ends, it stays where the pawn last stood in that map. Before the map's first pawn, it is addressed to the chunk last given to **Set Player Current Chunk Coordinates** on the game session, which is the origin chunk unless your game sets it. Frames are dropped until the connection is up and your player has an id.
+- **Settings carry across maps.** Whether your microphone is on, play or mute, owner echo, the distance and the timeout all stay as you set them when the next map loads. You do not call anything again after a map change.
 - **A missing microphone is not a failure.** The state reads **No Device**, and voice chat opens the microphone as soon as one is available. On Windows a newly connected microphone is noticed right away; elsewhere voice chat looks again every couple of seconds.
 - **A changed default microphone restarts capture on Windows.** If the player unplugs a headset or picks another default device, voice chat reopens the microphone by itself.
 - **Up to 16 speakers are heard at once.** A seventeenth speaker is not played until one of the others is released.
@@ -16341,11 +16380,20 @@ On `UCrowdySDKSubsystem` the two Blueprint events have delegate types you can bi
 | `IsCapturing()` | True while the state is `Capturing`. |
 | `IsPlaying()` | True while other players' voices are being played, after `PlayVoiceChat()` and before `MuteVoiceChat()`. |
 | `SetOwnerEcho(bool bEnable)` | Plays your own voice back to you, as **Toggle Owner Echo** does. |
+| `SetDistance(int32 Chunks)`, `GetDistance()` | How far your voice reaches in this map, as **Set Voice Chat Distance** sets it for every map. |
+| `FeedVoicePcm(TConstArrayView<int16> Samples)` | Sends 48 kHz mono samples as your voice, through the same silence gate, encoder and send path as the microphone. See [Sending audio that is not the microphone](#sending-audio-that-is-not-the-microphone). |
+| `EndVoiceFeed()` | Ends the talk burst `FeedVoicePcm` started, so listeners see you stop talking. |
 | `GetStats()` | Returns an `FCrowdyVoiceStats` of running counters for this map; see [Watching activity](#watching-activity). |
 | `OnMicStateChanged` | Native multicast delegate (`FOnCrowdyVoiceMicStateChanged`) with the new `ECrowdyVoiceMicState`. Fires on the game thread, and also when the map ends with the microphone open. |
 | `OnSpeakerTalking` | Native multicast delegate (`FOnCrowdyVoiceSpeakerTalking`) with the speaker's actor id as an `FString` and a `bool` for talking. Fires on the game thread. |
 
-The native delegates are bound with `AddUObject` or `AddLambda`, not `AddDynamic`, and a binding on `UVoiceChatSubsystem` is gone when the map is. The subsystem's start, stop, play and mute calls are better made through the nodes, so your settings carry to the next map.
+The native delegates are bound with `AddUObject` or `AddLambda`, not `AddDynamic`, and a binding on `UVoiceChatSubsystem` is gone when the map is. The subsystem's start, stop, play, mute and distance calls are better made through the nodes, so your settings carry to the next map.
+
+### Sending audio that is not the microphone
+
+`FeedVoicePcm` sends audio your code produces, such as a recorded line, a bot's voice or a test tone, exactly as the microphone's audio is sent. Give it 48 kHz mono 16-bit samples in real time: about 960 samples every 20 ms, for example one 20 ms frame per tick of a ticker. A larger push is cut into frames and sent at once, which a listener hears as a burst. Call `EndVoiceFeed` when the sound ends, so listeners see you stop talking.
+
+The feed and the microphone share one stream, so `FeedVoicePcm` answers false and sends nothing while the microphone is starting or capturing, and **Start Voice Chat** ends a fed burst before it opens the microphone. It also answers false in a map with no voice chat. Silence below the gate is skipped, as it is from the microphone.
 
 ## Watching activity
 
@@ -16366,6 +16414,8 @@ On the receiving side the SDK puts each player's packets back in order, decodes 
 - **Capturing** means the microphone is live, not that the player is speaking.
 - **Toggle Owner Echo** true is a one-time check, not a setting to leave on, and it survives map changes.
 - **Set Voice Chat Stream Timeout Threshold** only affects how long a silent stream is kept; it does not mute or cut off active audio. A value outside 0.5 seconds to 1 hour is clamped and logged.
+- **Set Voice Chat Distance** counts chunks from the chunk your pawn stands in, not units from the pawn, and a value outside 0 to 8 is clamped and logged.
+- A player whose access tier lacks `use_voice_chat` has every voice packet refused. The refusal arrives late on the realtime subsystem's **On Send Refused**, with the message type 134; see [Connection and reconnect](../runtime/connection-and-reconnect.md).
 - A packaged Mac game needs `NSMicrophoneUsageDescription` in its Info.plist, and the engine's Mac template does not include it.
 - The old voice events `OnAudioNotify`, `OnAudioDataGenerated`, `OnAudioDataReceived` and `OnStreamTimeout` are gone. Use **On Voice Speaker Talking** for who is talking.
 
@@ -16375,6 +16425,180 @@ On the receiving side the SDK puts each player's packets back in order, decodes 
 - [Connection and reconnect](../runtime/connection-and-reconnect.md): the shared UDP transport voice rides on.
 - [Troubleshooting](../guides/troubleshooting.md): the trace CVar pattern used above.
 - [Blueprint Delegates](../reference/delegates.md): the two voice events in the delegate table.
+
+# Nearby Text Chat
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/services/nearby-text-chat
+
+# Nearby Text Chat
+
+Nearby text chat sends a line of text to every player near your pawn, and hands you every line players near you send. There is no room to join and no list of members: who hears a line is decided by where the players stand, like a voice in a crowd. Like voice, it is a live relay with no server truth; the server keeps no history.
+
+## When you touch this
+
+When your game wants a local chat: players talk to whoever is standing around them, and a player who walks away stops hearing them. For chat with a fixed group wherever its members are, a party or a guild, use a channel instead ([Play Together](./play-together.md), [Channels](../runtime/channels.md)).
+
+## The nodes
+
+Everything lives on the **Crowdy Proximity Chat** subsystem (`UCrowdyProximityChat`, a Game Instance subsystem, category **Crowdy SDK > Proximity Chat**). Your module needs `CrowdyServices` in its Build.cs.
+
+| Blueprint | C++ | Does |
+|---|---|---|
+| **Send Proximity Text** | `SendProximityText(const FString& Text, int32 DistanceChunks)` | Sends Text to every player within Distance Chunks of the chunk your pawn stands in. One exec pin per result. |
+| **On Proximity Text Received** | `OnProximityTextReceived` | Fires with each line another player sends you. |
+| **On Proximity Text Refused** | `OnProximityTextRefused` | Fires when the server refuses one of your lines. |
+| **Describe Proximity Chat Result** | `DescribeProximityChatResult(ECrowdyProximityChatResult Result)` | A sentence for a result, for a log or a status line. |
+
+**Send Proximity Text** checks the line before it sends anything, and leaves on the pin that says how it went:
+
+| Result | Means |
+|---|---|
+| **Sent** | The line left this client. It is not a delivery receipt: the platform sends none. |
+| **Empty Text** | There was nothing to send. |
+| **Too Long** | The line is over 1024 bytes of UTF-8. A character outside plain ASCII takes two to four bytes. |
+| **Not Connected** | The realtime connection is not up yet, or the player has no actor id yet. |
+| **No Position** | There is no local pawn to measure the line's reach from. |
+
+Nothing is sent unless the result is **Sent**.
+
+## How far a line reaches
+
+A line is addressed to the chunk your pawn stands in, and reaches every player whose chunk is within **Distance Chunks** of it on each axis: 0 is your own chunk only, and 8 is the farthest the server relays. A value outside 0 to 8 is clamped. Each player is placed by their own last actor update. At the default chunk size of 1600 units, a distance of 4 reaches a square of nine chunks on a side, 14400 units across, centred on your chunk. [Recipients and routing](../runtime/recipients-and-routing.md) explains chunk rings.
+
+Every line names its own distance, so a game can have a short "say" and a longer "shout".
+
+## Saying a line
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`SayNearby` sends a line to players within four chunks and brightens the torch only when it left.
+
+```cpp
+// LanternPlayer.h
+#include "Subsystem/CrowdyProximityChat.h"
+
+UFUNCTION(BlueprintCallable, Category = "Lantern")
+void SayNearby(const FString& Line);
+
+// LanternPlayer.cpp
+void ALanternPlayer::SayNearby(const FString& Line)
+{
+	// Players within four chunks of this pawn's chunk get the line. Sent means it left this client, not that anyone read it.
+	UCrowdyProximityChat* Chat = GetGameInstance()->GetSubsystem<UCrowdyProximityChat>();
+	if (Chat->SendProximityText(Line, 4) == ECrowdyProximityChatResult::Sent)
+	{
+		Torch->SetIntensity(8000.f);
+	}
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+A custom event, **SayNearby** with a **Line** string, calls **Send Proximity Text** with **Distance Chunks** set to 4. Only the **Sent** pin brightens the torch.
+
+[Blueprint snippet: nearby-text-send, see /bp/unreal-sdk/nearby-text-send.txt]
+
+</TabItem>
+</Tabs>
+
+## Hearing lines
+
+**On Proximity Text Received** gives you one **Crowdy Proximity Text**:
+
+| Field | Is |
+|---|---|
+| **Sender Uuid** | The sender's actor id as text, the same value **On Voice Speaker Talking** gives for that player. |
+| **Sender Entity Id** | The sender's entity id. For a player on this SDK it is their pawn, so **Find Entity** returns the pawn while your client draws it. It is unset when the actor id is not one, for example from a CrowdyJS player. |
+| **Text** | The line exactly as it arrived. |
+
+Your own lines never come back to you; show a line as sent from your own **Sent** pin.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`WatchNearbyText` binds the event with `AddDynamic`. The handler looks the sender's entity up and turns the torch yellow while this client draws the sender, white when it does not.
+
+```cpp
+// LanternPlayer.h
+#include "Subsystem/CrowdyProximityChat.h"
+
+void WatchNearbyText();
+
+UFUNCTION()
+void HandleNearbyText(const FCrowdyProximityText& Message);
+
+// LanternPlayer.cpp
+#include "Replication/Subsystems/CrowdyEntitySubsystem.h"
+
+void ALanternPlayer::WatchNearbyText()
+{
+	UCrowdyProximityChat* Chat = GetGameInstance()->GetSubsystem<UCrowdyProximityChat>();
+	Chat->OnProximityTextReceived.AddDynamic(this, &ALanternPlayer::HandleNearbyText);
+}
+
+void ALanternPlayer::HandleNearbyText(const FCrowdyProximityText& Message)
+{
+	// The sender's entity is its pawn when this client draws it; the text is another player's, so treat it as untrusted.
+	const UCrowdyEntitySubsystem* Entities = GetWorld()->GetSubsystem<UCrowdyEntitySubsystem>();
+	const AActor* Sender = Entities ? Entities->FindEntity(Message.SenderEntityId) : nullptr;
+	Torch->SetLightColor(IsValid(Sender) ? FLinearColor::Yellow : FLinearColor::White);
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+Event BeginPlay binds a custom event, **OnNearbyText** with a **Message**, to **On Proximity Text Received**. The event breaks the message, passes **Sender Entity Id** to **Find Entity**, and sets the torch yellow or white on whether the answer **Is Valid**.
+
+[Blueprint snippet: nearby-text-receive, see /bp/unreal-sdk/nearby-text-receive.txt]
+
+</TabItem>
+</Tabs>
+
+No name travels with a line. To show one, read it from the sender's pawn if your game puts a name there, or look the player up with [Player Names](./player-names.md) once you know who they are.
+
+## Refusals
+
+A line leaves before the server judges it, so a refusal arrives later, on **On Proximity Text Refused**, with the same **Crowdy Send Refusal** that the realtime subsystem's **On Send Refused** carries ([Connection and reconnect](../runtime/connection-and-reconnect.md)). The usual cause is a player whose access tier lacks `use_text_chat`; every tier that grants access has it unless the app was set up otherwise.
+
+The server names a refused send only by a one-byte sequence, so on a busy connection a refusal can name the wrong send, and the same refusal is reported at most once a second. Show it; do not act on it.
+
+## What to expect
+
+- **Lines are not reliable.** A line is one UDP packet with no retry, like a voice frame. Over a healthy connection that is rarely a problem; do not build anything that must arrive on it.
+- **It follows the pawn.** Each line is addressed to the chunk the pawn stands in when it is sent, and a listener who has just moved is placed by their next actor update.
+- **It reaches other SDKs.** A line is plain UTF-8 and nothing else, the same as CrowdyJS's and CrowdyCPP's nearby text, so players on those SDKs in the same app hear it and you hear theirs.
+- **The sender is a claim.** The actor id is the one the sender chose, and the server does not check it against the sender. Treat **Sender Uuid**, **Sender Entity Id** and **Text** as untrusted input: cut long lines and line breaks before you put them on screen, and keep anything authoritative out of chat.
+
+## From C++
+
+The nodes above are `UFUNCTION`s and `UPROPERTY`s on `UCrowdyProximityChat`, so C++ calls them by the names in the table. The types behind them:
+
+| Type | Is |
+|---|---|
+| `FCrowdyProximityText` | The line **On Proximity Text Received** carries: `SenderUuid` (`FString`), `SenderEntityId` (`FGuid`) and `Text` (`FString`). |
+| `ECrowdyProximityChatResult` | The result of `SendProximityText`: `Sent`, `EmptyText`, `TooLong`, `NotConnected`, `NoPosition`. |
+| `FOnCrowdyProximityTextReceived` | The delegate type of `OnProximityTextReceived`, with one `const FCrowdyProximityText&`. Bind it with `AddDynamic`. |
+| `FOnCrowdyProximityTextRefused` | The delegate type of `OnProximityTextRefused`, with one `const FCrowdySendRefusal&`. |
+
+`UCrowdyProximityChat::MaxTextBytes` is the 1024-byte limit, and the static `EntityIdFromSenderUuid(const FString&)` turns an actor id into the entity id it names, the same way the received line's `SenderEntityId` is made.
+
+The chunk a line is addressed to comes from the game session: `UCrowdyGameSession::GetLocalPlayerChunk(const UWorld*)` is the chunk the world's first local player's pawn stands in, or the chunk last set with **Set Player Current Chunk Coordinates** when there is no pawn, and `TryGetLocalPlayerChunk(const UWorld*, FInt64Vector&)` answers false when there is no pawn instead. Voice chat is addressed the same way.
+
+## Gotchas
+
+- **Sent** is not delivery. A line nobody was near enough to hear is still **Sent**.
+- **No Position** means no local pawn. A spectator or a menu with no pawn cannot send nearby text.
+- The 1024-byte limit counts UTF-8 bytes, not characters.
+- Text received is whatever another client sent: any length that fits one packet, with line breaks.
+
+## Related
+
+- [Voice Chat](./voice-chat.md): the voice twin, with a distance of its own.
+- [Play Together](./play-together.md): chat rooms, parties and guilds over channels.
+- [Recipients and routing](../runtime/recipients-and-routing.md): chunk rings and distances.
+- [Connection and reconnect](../runtime/connection-and-reconnect.md): **On Send Refused**.
 
 # Host Election
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/services/host-election
@@ -17538,11 +17762,20 @@ The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, ea
 
 ## When you come here
 
-You built against the SDK in July, you are updating the plugin to 2.15 or later (2.22.0 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), in 2.15.0 the array delegates, in 2.19.0 the removal of the Game Model API (see [its entry](#2026-10-12-sdk-v2190)), and in 2.20.0 the renamed pin delegates of the Channels, Teams, Avatars and sign-in nodes, which a C++ `AddDynamic` handler binds to (see [On Error](#2026-10-16-sdk-v2200)). In 2.21.0, a C++ `AddDynamic` handler bound to the **Call Server Function** action's **On Success** or **On Failed** needs one more parameter, `FName Code` (see [its entry](#2026-10-26-sdk-v2210)). In 2.22.0, voice chat changes its packet format, so every player needs the new SDK version for voice, and a C++ handler bound to `OnAudioNotify` or the other old voice delegates no longer compiles (see [Voice chat](#voice-chat)).
+You built against the SDK in July, you are updating the plugin to 2.15 or later (2.23.0 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), in 2.15.0 the array delegates, in 2.19.0 the removal of the Game Model API (see [its entry](#2026-10-12-sdk-v2190)), and in 2.20.0 the renamed pin delegates of the Channels, Teams, Avatars and sign-in nodes, which a C++ `AddDynamic` handler binds to (see [On Error](#2026-10-16-sdk-v2200)). In 2.21.0, a C++ `AddDynamic` handler bound to the **Call Server Function** action's **On Success** or **On Failed** needs one more parameter, `FName Code` (see [its entry](#2026-10-26-sdk-v2210)). In 2.22.0, voice chat changes its packet format, so every player needs the new SDK version for voice, and a C++ handler bound to `OnAudioNotify` or the other old voice delegates no longer compiles (see [Voice chat](#voice-chat)).
 
 :::caution[The Game Model entries below no longer reach a server, and the API is removed.]
 The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The entries that describe it are kept as history. Do not adopt it: v2.18.0, the release that adds Server Objects, deprecates it, and v2.19.0 removes it, as described under [2026-10-12 (SDK v2.19.0)](#2026-10-12-sdk-v2190). Its replacement is [Server Objects](../exec/overview.md), described under [2026-10-07 (SDK v2.18.0)](#2026-10-07-sdk-v2180); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
 :::
+
+## 2026-10-31 (SDK v2.23.0)
+
+### Nearby text chat and voice distance
+
+- **Nearby text chat.** **Send Proximity Text** on the new **Crowdy Proximity Chat** subsystem sends a line to every player within a distance you give, counted in chunks from the chunk your pawn stands in, and **On Proximity Text Received** hands you every line players near you send, with the sender's actor id and entity id. **On Proximity Text Refused** reports a line the server refused. A line is plain UTF-8, so it reaches CrowdyJS and CrowdyCPP players in the same app. The proximity text message an earlier SDK sent from C++ (`FTextMessageRequest`) now carries the text alone: its `UserID` and `Username` still compile but are not sent. **What you do:** nothing, unless you want local chat. See [Nearby Text Chat](../services/nearby-text-chat.md).
+- **How far your voice reaches.** **Set Voice Chat Distance** and **Get Voice Chat Distance** on the Crowdy SDK subsystem set it from 0 to 8 chunks; the default stays 8, the farthest the server relays, so nothing changes until you set it. **What you do:** set it if voice should stay local. See [How far your voice reaches](../services/voice-chat.md#how-far-your-voice-reaches).
+- **Voice is now sent from where your pawn stands.** Earlier versions addressed every voice frame to the chunk last given to **Set Player Current Chunk Coordinates**, which the SDK never set, so voice reach was measured from the origin chunk. **What you do:** nothing; with a pawn, voice now follows the player.
+- **Audio that is not the microphone, for C++.** `UVoiceChatSubsystem::FeedVoicePcm` sends 48 kHz mono samples as your voice through the microphone's own gate and encoder, and `EndVoiceFeed` ends the burst. **What you do:** nothing, unless you voice a bot or play a recorded line. See [Sending audio that is not the microphone](../services/voice-chat.md#sending-audio-that-is-not-the-microphone).
 
 ## 2026-10-30 (SDK v2.22.0)
 
@@ -18004,6 +18237,7 @@ You know the shape of what you need (send an event, read a team, elect a host) b
   UCrowdyVideoFrameReceiver: "Receives raw encoded video frames sent over the SDK's channels and hands them to your decoder.",
   UCrowdyAvatars: "Player profiles and per-app avatar state; only GetMyAvatars writes the local cache.",
   UCrowdyChannels: "Create and manage channels, channel membership, and raw channel messages.",
+  UCrowdyProximityChat: "Nearby text chat: send a line to the players within a distance of your pawn's chunk, and hear theirs.",
   UCrowdyHostSubsystem: "Host election and the server-validated host query.",
   UCrowdyTeams: "Create, join, leave, and query teams and roles at runtime.",
   UVoiceChatSubsystem: "The voice capture and playback of one map. A world subsystem; use the voice nodes on UCrowdySDKSubsystem, which carry their settings from map to map.",

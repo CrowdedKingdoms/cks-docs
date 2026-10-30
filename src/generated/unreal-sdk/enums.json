@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-10-30T06:52:35Z",
+  "generated_from": "2026-10-30T19:29:04Z",
   "sdk_version": "2.22.0",
   "table": "enums",
   "columns": [
@@ -418,6 +418,22 @@
       "module": "CrowdyServices",
       "header": "CrowdyKitSocial.h",
       "page": "services/play-together",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "ECrowdyProximityChatResult",
+      "name": "ECrowdyProximityChatResult",
+      "values": [
+        "Sent",
+        "EmptyText",
+        "TooLong",
+        "NotConnected",
+        "NoPosition"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyProximityChat.h",
+      "page": "services/nearby-text-chat",
       "editor": false,
       "allowlist": ""
     },

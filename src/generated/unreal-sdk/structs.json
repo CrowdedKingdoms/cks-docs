@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-10-30T06:52:35Z",
+  "generated_from": "2026-10-30T19:29:04Z",
   "sdk_version": "2.22.0",
   "table": "structs",
   "columns": [
@@ -527,6 +527,16 @@
       "module": "CrowdyServices",
       "header": "CrowdyAccountTypes.h",
       "page": "services/player-names",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "FCrowdyProximityText",
+      "name": "FCrowdyProximityText",
+      "display_name": "",
+      "module": "CrowdyServices",
+      "header": "CrowdyProximityChat.h",
+      "page": "services/nearby-text-chat",
       "editor": false,
       "allowlist": ""
     },

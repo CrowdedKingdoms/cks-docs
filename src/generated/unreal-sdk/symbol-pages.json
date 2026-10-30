@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-10-30T06:52:35Z",
+  "generated_from": "2026-10-30T19:29:04Z",
   "sdk_version": "2.22.0",
   "route_base": "/unreal-sdk",
   "pages": {
@@ -34,6 +34,7 @@
     "ECrowdyInputMode": "services/ui-interfaces",
     "ECrowdyKitChatResult": "services/play-together",
     "ECrowdyOwnership": "runtime/entity-component",
+    "ECrowdyProximityChatResult": "services/nearby-text-chat",
     "ECrowdyRole": "runtime/entity-component",
     "ECrowdyServerCallOutcome": "guides/whats-changed",
     "ECrowdyServerFunctionCaller": "guides/whats-changed",
@@ -84,6 +85,7 @@
     "FCrowdyMyTeamsResult": "services/teams",
     "FCrowdyPlayerProfile": "services/player-names",
     "FCrowdyPoolConfig": "runtime/rendering-backends",
+    "FCrowdyProximityText": "services/nearby-text-chat",
     "FCrowdySendRefusal": "runtime/connection-and-reconnect",
     "FCrowdyServerCallResult": "guides/whats-changed",
     "FCrowdyServerListValueName": "guides/whats-changed",
@@ -322,6 +324,9 @@
     "UCrowdyPlayers_SetPlayerName": "services/player-names",
     "UCrowdyPlayers_SetPlayerName::OnError": "services/player-names",
     "UCrowdyPlayers_SetPlayerName::OnSuccess": "services/teams",
+    "UCrowdyProximityChat": "services/nearby-text-chat",
+    "UCrowdyProximityChat::OnProximityTextReceived": "services/nearby-text-chat",
+    "UCrowdyProximityChat::OnProximityTextRefused": "services/nearby-text-chat",
     "UCrowdyReplicatedGameInstanceSubsystem": "runtime/replicated-subsystems",
     "UCrowdyReplicatedWorldSubsystem": "runtime/replicated-subsystems",
     "UCrowdySDKSubsystem": "guides/whats-changed",
