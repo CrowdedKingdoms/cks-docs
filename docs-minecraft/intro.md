@@ -19,10 +19,12 @@ each server's own hostname, and a public server stays `online-mode=true`.
 
 ## One server
 
-You need Java 25, Fabric Loader `0.19.5`, a Fabric server for Minecraft Java 26.3, Fabric API
-`0.161.0+26.3`, and the `crowdedkingdoms-server` jar you were given. Put Fabric API and that
-jar in the server's `mods/` folder. The server jar already includes the avatar pack host, the
-chest menus, and the country-database reader. The published mod release is the client mod.
+You need Java 25, Fabric Loader `0.19.5`, a Fabric server for Minecraft Java 26.3, and Fabric API
+`0.161.0+26.3`. From the
+[mod release](https://github.com/CrowdedKingdoms/cks-minecraft-mod/releases), take
+`crowdedkingdoms-server-<version>.jar` and put it in the server's `mods/` folder next to Fabric
+API. The other jar on that release, `crowdedkingdoms-<version>.jar`, is the client mod. It belongs
+in a player's own `mods` folder. A server that hosts this world does not use it.
 
 1. Accept the [Minecraft EULA](https://aka.ms/MinecraftEULA) in `eula.txt` (`eula=true`). Only the
    account holder may do that.
@@ -37,34 +39,43 @@ chest menus, and the country-database reader. The published mod release is the c
    - `CROWDY_ORG_TOKEN`, the org token.
    - `CROWDY_ID_PEPPER`, 16 or more random characters. Keep it forever. It fixes each player's id.
      Every server of one world uses the same value.
-5. In `config/crowdedkingdoms-server.json`, set the tier, the app id, and the org id.
+5. In `config/crowdedkingdoms-server.json`, name the production app and organization. The server
+   fills the rest in the first time it starts. `origin` has to be set, or a blank one is replaced
+   and the app id you wrote is dropped.
+
+```json
+{
+  "environment": "prod",
+  "environments": {
+    "prod": {
+      "origin": "https://ck.prod.crowdedkingdoms.com",
+      "appId": "",
+      "orgId": ""
+    }
+  },
+  "geoip": {
+    "countryDatabase": "geoip/dbip-country-lite.mmdb"
+  }
+}
+```
 
 Only a whitelisted player gets a Crowded Kingdoms player. Banning a player disables that player.
-Pardoning them enables them again.
+Pardoning them enables them again. If you vet players some other way, set
+`operatorVetsPlayersOutOfBand` to `true` in that same file.
 
-## Age, country, and messages
+## Age and country
 
 The first time a vetted player joins, a chest menu asks the month and year they were born, before
-they get a Crowded Kingdoms player. The month stays on that server, in the world folder.
-Crowded Kingdoms is told the age in whole years. A player under 13 is disconnected and turned
-away each time they return. Until Crowded Kingdoms accepts ages at sign-in, a player under 18 cannot
-enter the shared world, because the organization still answers for its players being 18 or older.
-Staff see the age bracket with `/ck player <name> age`, and ask again with
-`/ck player <name> reask`. The command shows the bracket, not the month.
+they get a Crowded Kingdoms player. A player under 13 is disconnected and turned away each time
+they return.
 
-Put a country database at `geoip.countryDatabase` in `config/crowdedkingdoms-server.json`. Either
+Put a country database at `geoip.countryDatabase`, as in the file above. Either
 [DB-IP IP to Country Lite](https://db-ip.com/db/download/ip-to-country-lite) (CC BY 4.0; credit
 "IP Geolocation by DB-IP", linked to [db-ip.com](https://db-ip.com), where the server is presented)
-or MaxMind GeoLite2 Country works. The server tells Crowded Kingdoms the two-letter country of
-the address the player connected from. It does not send or store that address. There is no proxy
-in front, so that address is the player's.
+or MaxMind GeoLite2 Country works. The path is relative to the server folder, or absolute.
 
-Direct messages and mail between players who are not friends are off for anyone under 18
-(`directMessages.nonFriendsUnder18`). They stay on for players 18 and older. A message passes
-only when both players' switches allow it.
-
-Downloads, the attribution lines, and the config keys are in the mod's
-[server safety note](https://github.com/CrowdedKingdoms/cks-minecraft-mod/blob/dev/docs/server-safety.md).
+Staff commands, which ages can enter, and messages between players who are not friends are in the
+mod's [server safety note](https://github.com/CrowdedKingdoms/cks-minecraft-mod/blob/dev/docs/server-safety.md).
 
 ## Several servers, one world
 
@@ -101,23 +112,5 @@ chunk x 125, which is block x 2000, upward. A bound you leave out is open. The s
 public hostname and the servers reach each other on a private address, set `internal_address` on
 that server to the private host and port.
 
-Players can join either hostname. List the default one first: it runs spawn and the dimensions
-the others do not claim. A player who joins the other hostname is sent to the server that owns
-the spot they last stood, before they spawn.
-
-A player who walks 8 blocks into the other server's chunks is sent there by Minecraft's own
-transfer: a short reconnect, about two seconds, straight to that server's `address`. In the
-example, west sends them at block x 2008, and east sends them back at block x 1991. Standing on
-the line keeps them on the server they connected to. They keep their inventory, health,
-experience, and position, including a horse or boat they are riding and the pets and leashed mobs
-with them. Animals, villagers, dropped items, experience orbs, empty boats and minecarts, and
-armor stands cross on their own. Monsters, projectiles, and TNT stay on the server that was
-ticking them.
-
-Each server draws terrain past its range, from the same seed, and shows player-made blocks copied
-through Crowded Kingdoms. Crops, fluids, furnaces, and mobs run only on the server that owns the
-chunk.
-
-A player is asked their age once. The answer travels in the transfer to the next server. A server
-that has not asked yet lets them in without a Crowded Kingdoms session, asks, then transfers them
-back to itself. `/ck cluster` shows which side they are on.
+Publish that default hostname. A player who walks past the line arrives on the server that runs
+those chunks, and keeps their inventory. `/ck cluster` shows which side they are on.
