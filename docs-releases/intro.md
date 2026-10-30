@@ -12,13 +12,15 @@ Game API, Replication API) and SDKs. Newest first.
 The intent is that a breaking change ships with a deprecation window — the field keeps
 working and is marked `@deprecated` in the schema (visible in the
 [reference](/management-api/reference/graphql-overview) and the downloadable SDL) until
-a stated removal date. **Three removals did not get one**, and each is called out in
+a stated removal date. **Four removals did not get one**, and each is called out in
 its own entry rather than left to be discovered: the customer-provisioned
 environment surface on [2026-07-27](#2026-07-27), the dev sign-in bypass on
-[2026-08-20](#2026-08-20), and the game API's legacy engines on
+[2026-08-20](#2026-08-20), the game API's legacy engines on
 [2026-09-28](#2026-09-28-dev-the-legacy-engines-removed) on the dev environment, which test
-followed on 2026-10-04 and production on 2026-10-06. Treat **the published SDL as the
-authority** on what exists today; this page is the record of how it got there.
+followed on 2026-10-04 and production on 2026-10-06, and Crowdy Games hosting on
+[2026-10-29](#2026-10-29-crowdy-games-retired-host-your-game-yourself) on every
+environment. Treat **the published SDL as the authority** on what exists today; this page
+is the record of how it got there.
 
 Older entries describe the game API's legacy engines (game models, automations, compute
 modules and player code), which ck-exec replaced. Their links lead to the matching section
@@ -36,6 +38,41 @@ own CLI is not published either. See
 on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
+
+## 2026-10-29 (Crowdy Games retired: host your game yourself)
+
+**Crowded Kingdoms no longer hosts games. Breaking, with no deprecation window, on every
+environment.** Build your game and serve it from a static host of your own; the platform
+behind it is unchanged. See [Host your game](/build-a-game/host-your-game).
+
+- **Retired:** the games website, `crowdy.games`, on every environment; the Overworld lobby;
+  the first-party shell that framed third-party games; the first-party games served there
+  (Blocks with Friends, Matchstick and others); and the content host, `crowdedcontent.com`,
+  that served developers' bundles.
+- **The hosting API is switched off.** `claimGameHosting`, `beginGamePublish`,
+  `completeGamePublish`, `abandonGamePublish`, `setHostedGameEnabled` and
+  `hostedGamePublishes` answer `CONTENT_HOSTING_DISABLED`, and `hostedGame`, `hostedGames`
+  and `myHostedGames` return `null` or an empty list. The fields stay in the schema. The
+  `HOSTED_*` error codes are retired with them ([error codes](/overview/error-codes)).
+  CrowdyJS keeps `client.hosting`, `publishDirectory` and `EmbeddedHost`, deprecated. See
+  [Hosting on Crowdy Games (retired)](/management-api/hosting-on-crowdy-games).
+- **Host the build yourself**, on any static host that can set response headers: the
+  cross-origin isolation headers, the game's Content-Security-Policy, and a separate policy
+  for the Studio agent's `/dsh/` path. Register your origin under the app's redirect URIs
+  in Studio (also the API's CORS allow-list) and set its launch URL. The Construct's
+  `npm run setup -- --origin https://your.host` registers the origin, and sets it as the
+  launch URL when the app has none; its `npm run publish` is retired. See
+  [Host your game](/build-a-game/host-your-game).
+- **Studio's Live code opens your launch URL**, the one set on the app in Studio under
+  **Settings > Sign-in & redirect URIs**: your own deployment, or, while you develop, the
+  template's dev server (`LIVE_DRAFT=1 npm run dev`, `http://localhost:5175`). See
+  [the game editor](/crowdyjs/agentic-crowdy-studio#the-game-editor-a-construct-games-repository).
+- **Unchanged:** the API; Crowdy Studio; hosted sign-in through Studio's `/authorize` for a
+  game on its own origin; ck-exec world hubs and mods; and the Studio dock and agent
+  embedded in your own game. Mods start from a game you run: The Construct locally, or a
+  game whose developer embeds Studio. See [Build mods with Crowdy
+  Studio](/build-a-game/bwf-mod-development) and [what a game needs for
+  mods](/crowdyjs/crowdy-studio-embed#what-a-game-needs-for-mods).
 
 ## 2026-10-29 (Unreal SDK v2.21.2: cancel a sign-in without signing out; Game Kit fixes)
 

@@ -5,11 +5,13 @@ title: Embed Crowdy Studio in your game
 
 # Embed Crowdy Studio in your game
 
-CrowdyJS ships the **Crowdy Studio embed kit**: the window chrome that
-proved out in Blocks with Friends, packaged as game-agnostic components. A game
-no longer hand-rolls a dock, fullscreen fallback, focus trap, context drawer,
-or HUD sink around [`mountCrowdyStudio`](player-client-mods#mounting-crowdy-studio) —
-it supplies only what is genuinely game-specific:
+CrowdyJS ships the **Crowdy Studio embed kit**: the window chrome a game puts
+around Studio, packaged as game-agnostic components. The public starter
+[The Construct](https://github.com/CrowdedKingdoms/the-construct) is the
+reference integration. A game no longer hand-rolls a dock, fullscreen fallback,
+focus trap, context drawer, or HUD sink around
+[`mountCrowdyStudio`](player-client-mods#mounting-crowdy-studio) — it supplies
+only what is genuinely game-specific:
 
 - **an entry point** — how a player claims/selects an owned grid and opens the
   studio (keybind, HUD button, build menu);
@@ -72,6 +74,46 @@ public starter [The Construct](https://github.com/CrowdedKingdoms/the-construct)
 (`docs/MODDING.md`), which ships it on by default with a build switch.
 :::
 
+## What a game needs for mods
+
+Players mod a game from inside it, so the game and its app have to offer it.
+The Construct does all of this out of the box (its `npm run setup` and its
+default build). A game of your own needs:
+
+- **The dock.** The page embeds Studio with this kit, and gives players a way
+  to claim or pick a grid they own and open Studio on it (a key, a HUD button,
+  a build menu).
+- **The agent's harness under `/dsh/`.** For the agent pane, the build ships
+  `@crowdedkingdoms/crowdy-dsh`'s `dist/dsh-web/` on the game's own origin, at
+  the path the embed's `dsh.webBase` names
+  ([Shipping the harness](agentic-crowdy-studio#shipping-the-harness)), and the
+  host serves that path with a policy of its own
+  ([Headers](agentic-crowdy-studio#headers)).
+- **Cross-origin isolation, for CLIENT mods.** The host sends
+  `Cross-Origin-Opener-Policy: same-origin` and a
+  `Cross-Origin-Embedder-Policy` on every response, so `crossOriginIsolated` is
+  `true`; without it CLIENT halves cannot run.
+  [Host your game](/build-a-game/host-your-game#the-headers) lists every header.
+- **An access tier with the keys.** A player writes and runs mods with the keys
+  their access tier grants: `write_server_code` and `run_server_code` for
+  SERVER mods, `write_client_code` and `run_client_code` for CLIENT halves. The
+  agent pane appears only for a player whose tier also holds
+  `use_studio_agent`. The Construct's setup creates a *Constructor* tier with
+  all five keys and grants it to you. Visitors who should run CLIENT halves need
+  `run_client_code` on their own tier.
+- **Allow Live Modding.** The agent tests drafts, and deploys live after the
+  player confirms, only while the app's Studio Agent policy is on: the **Allow
+  Live Modding** switch on the app's page in Studio (see
+  [the agent policy](/management-api/agentic-crowdy-studio-policy)). While it is
+  off, the API refuses those calls, and the dock still opens.
+- **Nothing more for SERVER mods.** A SERVER target runs on ck-exec as the
+  grid's [mod](/exec/mods), wherever the game is hosted.
+
+[Crowdy Studio and mods in the browser](player-client-mods) covers the CLIENT
+sandbox and mounting Studio, and [Build mods with Crowdy
+Studio](/build-a-game/bwf-mod-development) is the walkthrough from a player's
+side.
+
 ## Minimal SERVER-only embed (the reverse-tower-defense pattern)
 
 The smallest complete integration is one module: claim the chunk the player is
@@ -103,7 +145,7 @@ const embed = createCrowdyStudioEmbed({
 
 Claim the player's current chunk with the platform
 [`claimGridChunk` mutation](player-client-mods) (the same game-API surface
-Blocks with Friends uses), then open the studio with SERVER-only permissions
+The Construct uses), then open the studio with SERVER-only permissions
 derived from the claim's `effectivePermissionKeys`:
 
 ```ts
@@ -117,12 +159,10 @@ const context: CrowdyStudioEmbedContext = {
       canWrite: claimed.effectivePermissionKeys.includes('write_server_code'),
       canRun: claimed.effectivePermissionKeys.includes('run_server_code'),
     },
-    // D13: never enabled outside BWF, even when the claim grants the keys.
+    // This game offers SERVER mods only, even when the claim grants the CLIENT keys.
     CLIENT: { canWrite: false, canRun: false },
   },
-  permissionsNote:
-    'This game runs SERVER mods only; CLIENT mods are disabled while the ' +
-    'platform client-mod security gates clear.',
+  permissionsNote: 'This game runs SERVER mods only.',
 };
 
 embed.toggle(context);
@@ -172,10 +212,11 @@ If the workers still cannot load, the embed degrades to the file-aware
 textarea workspace rather than failing; deploys remain authoritative
 server-side either way.
 
-## Full-featured embed (the Blocks with Friends reference)
+## Full-featured embed (The Construct)
 
-Blocks with Friends consumes the same kit with every optional surface enabled.
-The additional wiring, all game-supplied:
+The Construct consumes the same kit with every optional surface enabled; its
+`packages/construct/src/platform/studio/StudioService.ts` is the working
+example. The additional wiring, all game-supplied:
 
 ```ts
 import {
@@ -189,14 +230,14 @@ const hud = new CrowdyStudioTextHud();
 const studio = new CrowdyStudioEmbed({
   client: game, // crowdyStudio, exec, playerWallet, crowdyStudioGitHub
   appId,
-  gameName: 'Blocks with Friends',
+  gameName: 'My Game',
   dsh: {
     graphql: game.graphql,
     webBase: `${import.meta.env.BASE_URL}dsh/`, // @crowdedkingdoms/crowdy-dsh dist/dsh-web, copied at build
     graphqlUrl: game.graphqlEndpoint,
     apiOrigin: new URL(game.graphqlEndpoint).origin,
     getToken: () => game.getToken(),
-    persistScope: `bwf/${appId}/${playerUuid}`,
+    persistScope: `${appId}/${playerUuid}`,
   },
   suppressGameplayInput: () => lockPlayerInput(),
   onLayoutChange: () => relayoutHud(),
@@ -206,10 +247,10 @@ studio.open({
   gridId,
   grid,
   targetPermissions, // authoritative effective grid keys, both targets
-  workerUrl: glueWorkerAssetUrl, // CLIENT mods: BWF only, per D13
+  workerUrl: glueWorkerAssetUrl, // CLIENT mods: the same-origin glue worker
   onHostCall: (call) => routeClientHostCall(call), // owner-lawful world reads
   hud,
-  playerHost: bwfPlayerHostAdapter, // observe only -> game_observe
+  playerHost: playerHostAdapter, // observe only -> game_observe
   dshHost: {
     captureFrame: async () => {
       renderer.render(scene, camera); // or preserveDrawingBuffer: true
@@ -225,6 +266,10 @@ agent pane is described in [Agentic Crowdy Studio](agentic-crowdy-studio). The
 kit is chrome — it grants no authority. Deploys, drafts and invokes are
 authorized server-side exactly as before, and a live deploy the agent asks for
 waits for the player to confirm in the pane.
+
+Blocks with Friends, the first game to embed the kit, wires the same options in
+its own source and is a further example of them. Crowded Kingdoms no longer
+hosts it; The Construct is the reference to follow.
 
 ## GitHub repository card (17+)
 

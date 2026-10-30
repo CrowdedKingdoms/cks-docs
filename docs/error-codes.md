@@ -49,7 +49,7 @@ GraphQL responses carry errors in the top-level `errors` array. Each entry has a
 | `PASSWORD_ALREADY_SET` | `setInitialPassword` on an account that already has a password. | Use `changePassword` (which verifies the current one), or `requestPasswordReset`. The session is valid — do not sign the user out. |
 | `PASSWORD_NOT_SET` | `changePassword` on an account with no password to change. | Use `setInitialPassword`, which needs only the session. The session is valid — do not sign the user out. |
 | `PASSWORD_PWNED` | `register` or `setInitialPassword` used a password that appears in a public breach list (Have I Been Pwned). 403. | Choose a different password. The server sends only a SHA-1 prefix (k-anonymity); the password never leaves the API. A HIBP outage fails open so registration is not blocked. |
-| `HOSTED_SIGN_IN_REQUIRED` | A direct sign-in mutation (`login`, `register`, magic link, social, reset…) was called from a browser origin that is not first-party (Studio only; the Crowdy Games host is NOT first-party). 403. | Use hosted sign-in: `client.portal.signIn({ appId, redirectUri })` then `client.portal.handleSignInCallback()`; register your origin under the app's redirect URIs in Studio. Non-browser clients (no `Origin` header) are unaffected. |
+| `HOSTED_SIGN_IN_REQUIRED` | A direct sign-in mutation (`login`, `register`, magic link, social, reset…) was called from a browser origin that is not first-party (Studio is the only first-party origin). 403. | Use hosted sign-in: `client.portal.signIn({ appId, redirectUri })` then `client.portal.handleSignInCallback()`; register your origin under the app's redirect URIs in Studio. Non-browser clients (no `Origin` header) are unaffected. |
 | `LEGAL_ACCEPTANCE_REQUIRED` | The player has not stored the current required legal documents (Game Terms, API Terms, SDK Developer Terms, Free Tier and Billing Basis, Overworld Privacy Policy) and the age-of-majority attestation, so `mintAppToken`, `createPortalAuthorizationCode` and `refreshAppToken` issue no gameplay token. Also a browser `register` without both `acceptLegal` and `attestAgeOfMajority` true, before any account exists. 403. ck-api v2.35.0. | A browser game sends the player back through hosted sign-in (`/authorize` asks for both); retrying a refresh cannot succeed. A native client shows its own two checkboxes, linking each document, then calls `recordPlayerConsents(acceptLegal: true, attestAgeOfMajority: true)` with the session token. `playerLegalAcceptance` says whether that is still needed. See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority). |
 | `ACCESS_REVOKED` | The app revoked this player's access (`revokeAppAccess`), so `mintAppToken`, `refreshAppToken` and `exchangePortalCode` (hosted sign-in) issue no gameplay token for it. 403. ck-api v2.40. Since the release after v2.43.1 the player's live sessions in the app end too, and their other calls into the app answer this code (see [Revoking and suspending](/management-api/game-setup#revoking-suspending-and-banning)). | Tell the player they no longer have access to this game. Do not retry, and do not offer a purchase: the studio decided. |
 | `ACCESS_SUSPENDED` | The app suspended this player's access until a time (`suspendAppAccess`, or the app's own server code). `extensions.suspendedUntil` (ISO-8601) says when it lifts. 403. ck-api v2.40. Since the release after v2.43.1 it is also the answer to the player's other calls into the app while it runs. | Tell the player when they can return. Signing in works again by itself at `suspendedUntil`. |
@@ -79,11 +79,11 @@ GraphQL responses carry errors in the top-level `errors` array. Each entry has a
 | `COOKIE_AUTH_ORIGIN_REFUSED` | A cookie session was offered from a browser origin that is not first-party. 403. | From a customer origin, use a Bearer app token from hosted `/authorize`. Do not send `ck_session`. |
 | `INVALID_CURRENT_PASSWORD` | `changePassword` was given the wrong current password. | Ask again, or offer `requestPasswordReset`. The session is valid — do not sign the user out. |
 | `RATE_LIMITED` | A rate/usage limit was exceeded. | Back off and retry with exponential backoff. |
-| `CONTENT_HOSTING_DISABLED` | Third-party hosting is not configured on this tier (no content CDN). 503. | Host the build yourself ([The Construct HOSTING.md](https://github.com/CrowdedKingdoms/the-construct/blob/prod/docs/HOSTING.md)) or publish on a tier that hosts. |
-| `HOSTED_SLUG_UNAVAILABLE` | The hosting slug is not a DNS label, is reserved (a first-party game or infrastructure name), or is claimed by another app. 409. | Pick another: lower-case letters, digits and hyphens, 1-63 characters, no leading or trailing hyphen. `npm run publish -- --slug <name>`. |
-| `HOSTED_MANIFEST_INVALID` | The publish manifest was refused: a path escapes the bundle, a refused file type, over the file-count or size caps, or no `index.html` at the root. 400. | The message lists every problem; fix the build output and publish again. |
-| `HOSTED_PUBLISH_INCOMPLETE` | `completeGamePublish` found staged objects missing or differing from the manifest. 409. | Upload every presigned URL (the message names the paths) and complete again, or `abandonGamePublish` and start over. |
-| `HOSTED_GAME_TAKEN_DOWN` | An operator took this hosted game down; publishing and re-enabling are refused. 403. | Contact hello@crowdedkingdoms.com. |
+| `CONTENT_HOSTING_DISABLED` | A hosting mutation (`claimGameHosting`, `beginGamePublish`, `completeGamePublish`, `abandonGamePublish`, `setHostedGameEnabled`) was called. Crowdy Games hosting was retired on 2026-10-29, and every environment answers this code. 503. | Do not retry. Host the build yourself: see [Host your game](/build-a-game/host-your-game). |
+| `HOSTED_SLUG_UNAVAILABLE` | **Retired** with Crowdy Games hosting on 2026-10-29; the hosting API answers `CONTENT_HOSTING_DISABLED` instead. It meant the hosting slug was not a DNS label, was reserved, or was claimed by another app. 409. | — |
+| `HOSTED_MANIFEST_INVALID` | **Retired** with Crowdy Games hosting on 2026-10-29. It meant the publish manifest was refused. 400. | — |
+| `HOSTED_PUBLISH_INCOMPLETE` | **Retired** with Crowdy Games hosting on 2026-10-29. It meant `completeGamePublish` found staged files missing or different from the manifest. 409. | — |
+| `HOSTED_GAME_TAKEN_DOWN` | **Retired** with Crowdy Games hosting on 2026-10-29. It meant an operator had taken the hosted game down. 403. | — |
 | `WRONG_DATACENTER` | This app is served from another datacenter. `extensions.gameApiUrl` names where. | Reconnect to `extensions.gameApiUrl` and retry. See [Datacenter routing](/game-api/datacenter-routing). |
 | `APP_UNAVAILABLE` | The app's datacenter has no instance able to serve. **No endpoint is named, on purpose** — do not fall back to a cached one, it is in the datacenter that is down. | Retry. See [Datacenter routing](/game-api/datacenter-routing). |
 | `NO_LOCAL_BUDDY` | You are **on** the app's own datacenter and it has no healthy UDP server. **No endpoint is named, because there is nowhere else to go** — a Buddy elsewhere would make every gameplay write cross a WAN, invisibly, because each write still succeeds. If you called `serverWithLeastClients` on the *wrong* datacenter you get `WRONG_DATACENTER` instead, with an endpoint to move to. | Retry, and report it: this one needs an operator. |
@@ -220,9 +220,10 @@ authorized fails with a `FORBIDDEN` error whose **message is prefixed `CONSENT_R
 ```
 
 `CONSENT_REQUIRED` is **not** a distinct `extensions.code` — it is a `FORBIDDEN` whose
-message carries the marker. Resolve it on the Overworld by checking
+message carries the marker. Resolve it on the identity origin that holds the session (for a
+browser game, Studio's hosted `/authorize` does this) by checking
 `portalConsent(appId) { consentRequired }` and recording approval with `authorizeApp(input:{ appId })`
-before retrying. **Trusted apps** (the Overworld is app 1) skip consent entirely. CrowdyJS
+before retrying. **Trusted apps** (the identity hub, app 1) skip consent entirely. CrowdyJS
 detects this proactively: `client.portal.handleAuthorizeRequest` throws
 `PortalConsentRequiredError` (pass `grantConsent: true` to approve). The requested
 `redirectUri` must also be in the app's `redirectUris` allow-list, or the call is rejected
@@ -249,7 +250,7 @@ Correlate to the request that caused it by `sequenceNumber`.
 | `INVALID_REQUEST` | The message was malformed or failed validation. | Check the message shape / arguments. |
 | `INVALID_APP_ID` | `appId` was missing, zero, or invalid — **or** the token is not scoped to the packet's app (app-scoped token confinement). | Supply a valid `appId`, and use the token minted for that app. |
 | `USER_NOT_AUTHENTICATED` | No session on the server for this client. | Open the UDP proxy (`connectUdpProxy`) or complete the native token handshake first. |
-| `TOKEN_EXPIRED` | The app-scoped gameplay token's TTL elapsed mid-session. | Refresh the app token (same app: `refreshAppToken`) before it lapses, or re-portal through the Overworld for a fresh one, then re-authorize the session. |
+| `TOKEN_EXPIRED` | The app-scoped gameplay token's TTL elapsed mid-session. | Refresh the app token (same app: `refreshAppToken`) before it lapses, or sign the player in again for a fresh one, then re-authorize the session. |
 | `APP_PAUSED` (33) | The app's runtime gate is not active (no funds, a spend cap, a lapsed subscription), so nothing is delivered for it. Sent in answer to a send, at most once every few seconds per session. Replication v0.37.0. | Tell the player the world is paused; `gameClientBootstrap.runtimeGate` (or the mint's `runtimeGate`) carries the reason. The server re-checks with backoff and serves the session again once the owner fixes it, without a reconnect. |
 
 The full enum (including login-validation codes that never appear on the UDP wire) is in
@@ -266,7 +267,7 @@ per-message error):
 |---|---|---|
 | `AUTH_REQUIRED` | The subscription opened without a valid bearer token. | Send the token in the `connection_init` payload. |
 | `APP_ID_REQUIRED` | The subscription was app-agnostic. | Scope the subscription to one `appId` (run one client per app). |
-| `APP_TOKEN_REQUIRED` | The subscription presented an identity session token, not an app-scoped gameplay token. | Obtain a token scoped to this app (portal in via the Overworld, or `mintAppToken`) and use it for gameplay. |
+| `APP_TOKEN_REQUIRED` | The subscription presented an identity session token, not an app-scoped gameplay token. | Obtain a token scoped to this app (hosted sign-in or the portal flow, or `mintAppToken`) and use it for gameplay. |
 | `APP_SCOPE_MISMATCH` | The token is scoped to a different app than the subscription's `appId`. | Use the token minted for the app you are subscribing to. |
 | `UDP_PROXY_CONNECTION_FAILED` | The server could not open the upstream UDP proxy session. | Inspect `retryable`; back off and retry if `true`. |
 

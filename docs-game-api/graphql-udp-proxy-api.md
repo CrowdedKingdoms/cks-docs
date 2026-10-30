@@ -39,7 +39,7 @@ mutation Enter($appId: BigInt!) {
 
 App tokens expire (default ~30 min) — call `refreshAppToken` (with the app token
 as the Bearer) before `expiresAt`. Browser games that run at a **different origin**
-from your hub/Overworld use the OAuth2 Authorization-Code + PKCE flow
+from the page that holds the session use the OAuth2 Authorization-Code + PKCE flow
 (`createPortalAuthorizationCode` → `exchangePortalCode`) instead of a direct mint.
 CrowdyJS wraps both in `client.portal`. See
 **[Portals & app-scoped tokens](/management-api/portals-and-app-tokens)** and
