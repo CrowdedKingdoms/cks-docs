@@ -1,5 +1,5 @@
 {
-  "generated_from": "2026-10-30T06:52:35Z",
+  "generated_from": "2026-10-30T19:29:04Z",
   "sdk_version": "2.22.0",
   "table": "delegates",
   "columns": [
@@ -1627,6 +1627,28 @@
       "category": "",
       "module": "CrowdyServices",
       "page": "services/teams",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyProximityChat::OnProximityTextReceived",
+      "owner": "UCrowdyProximityChat",
+      "name": "OnProximityTextReceived",
+      "type": "FOnCrowdyProximityTextReceived",
+      "category": "Crowdy SDK|Proximity Chat",
+      "module": "CrowdyServices",
+      "page": "services/nearby-text-chat",
+      "editor": false,
+      "allowlist": ""
+    },
+    {
+      "id": "UCrowdyProximityChat::OnProximityTextRefused",
+      "owner": "UCrowdyProximityChat",
+      "name": "OnProximityTextRefused",
+      "type": "FOnCrowdyProximityTextRefused",
+      "category": "Crowdy SDK|Proximity Chat",
+      "module": "CrowdyServices",
+      "page": "services/nearby-text-chat",
       "editor": false,
       "allowlist": ""
     },

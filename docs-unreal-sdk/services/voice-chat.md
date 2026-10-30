@@ -2,7 +2,7 @@
 slug: voice-chat
 sidebar_position: 4
 title: Voice Chat
-description: "Turn on the built-in voice channel: open your microphone, hear other players, see who is talking and what the microphone is doing, test with owner echo, what changes across maps, devices and platforms, and why every player needs the same SDK version."
+description: "Turn on the built-in voice channel: open your microphone, hear other players, set how far your voice reaches, see who is talking and what the microphone is doing, test with owner echo, send audio that is not the microphone, what changes across maps, devices and platforms, and why every player needs the same SDK version."
 ---
 
 import Tabs from '@theme/Tabs';
@@ -32,6 +32,8 @@ Everything lives on the **Crowdy SDK Subsystem** (`UCrowdySDKSubsystem`, a Game 
 | **Mute Voice Chat** | `MuteVoiceChat()` | Stops you hearing other players. |
 | **Set Voice Chat Stream Timeout Threshold** | `SetVoiceChatStreamTimeoutThreshold(float InSeconds)` | How long a silent player's stream is kept before it is released. Default 2 seconds; the value is clamped to 0.5 seconds up to 1 hour. |
 | **Toggle Owner Echo** | `ToggleOwnerEcho(bool bEnable)` | Plays your own voice back to you, as other players hear it. |
+| **Set Voice Chat Distance** | `SetVoiceChatDistance(int32 Chunks)` | How far your voice reaches, in chunks around the chunk your pawn stands in: 0 to 8, default 8. |
+| **Get Voice Chat Distance** | `GetVoiceChatDistance()` | The distance last set. |
 | **Get Voice Mic State** | `GetVoiceMicState()` | What your microphone is doing right now. |
 | **On Voice Mic State Changed** | `OnVoiceMicStateChanged` | Fires when that state changes. |
 | **On Voice Speaker Talking** | `OnVoiceSpeakerTalking` | Fires when a player starts or stops talking. |
@@ -86,6 +88,31 @@ Event BeginPlay binds a custom event, **OnSpeakerTalking** (with **SpeakerUuid**
 
 The example keeps no list of speakers, so with several people talking the torch follows whichever event arrived last. For a real roster, keep a set keyed by **Speaker Uuid** and add or remove on each event.
 
+## How far your voice reaches
+
+Your voice is addressed to the chunk your pawn stands in and reaches every player whose chunk is within the voice distance of it on each axis. The distance counts whole chunks: 0 is your own chunk only, and 8, the default, is the farthest the server relays. At the default chunk size of 1600 units, a distance of 1 is a 4800-unit square centred on your chunk. See [Recipients and routing](../runtime/recipients-and-routing.md) for how chunk rings work.
+
+Set it once, for example when the player arrives. It is kept across map changes like the other voice settings.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`KeepVoiceNearby` sets the distance to one chunk when the player's pawn is assigned to this client.
+
+<CppSnippet id="voice-distance" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+Event BeginPlay calls **Set Voice Chat Distance** with **Chunks** set to 1.
+
+<Blueprint src="voice-distance" title="Event BeginPlay, Crowdy SDK Subsystem, Set Voice Chat Distance" />
+
+</TabItem>
+</Tabs>
+
+Nearby text has a distance of its own on every line; see [Nearby Text Chat](./nearby-text-chat.md).
+
 ## Reading the microphone
 
 **Get Voice Mic State** returns one of five values, and **On Voice Mic State Changed** fires with the new one.
@@ -112,8 +139,8 @@ Leaving it on means the player hears their own microphone continuously, not just
 
 ## What to expect
 
-- **No pawn needed.** Voice works in any map once the player is connected, with or without a player character. Your voice is sent from the chunk your player stands in, and frames are dropped until the connection is up and your player has an id.
-- **Settings carry across maps.** Whether your microphone is on, play or mute, owner echo, and the timeout all stay as you set them when the next map loads. You do not call anything again after a map change.
+- **Your pawn places your voice.** Each frame is addressed to the chunk your pawn stands in when it is sent, so voice follows the player as they move. Between pawns, during a respawn or as a map ends, it stays where the pawn last stood in that map. Before the map's first pawn, it is addressed to the chunk last given to **Set Player Current Chunk Coordinates** on the game session, which is the origin chunk unless your game sets it. Frames are dropped until the connection is up and your player has an id.
+- **Settings carry across maps.** Whether your microphone is on, play or mute, owner echo, the distance and the timeout all stay as you set them when the next map loads. You do not call anything again after a map change.
 - **A missing microphone is not a failure.** The state reads **No Device**, and voice chat opens the microphone as soon as one is available. On Windows a newly connected microphone is noticed right away; elsewhere voice chat looks again every couple of seconds.
 - **A changed default microphone restarts capture on Windows.** If the player unplugs a headset or picks another default device, voice chat reopens the microphone by itself.
 - **Up to 16 speakers are heard at once.** A seventeenth speaker is not played until one of the others is released.
@@ -147,11 +174,20 @@ On `UCrowdySDKSubsystem` the two Blueprint events have delegate types you can bi
 | `IsCapturing()` | True while the state is `Capturing`. |
 | `IsPlaying()` | True while other players' voices are being played, after `PlayVoiceChat()` and before `MuteVoiceChat()`. |
 | `SetOwnerEcho(bool bEnable)` | Plays your own voice back to you, as **Toggle Owner Echo** does. |
+| `SetDistance(int32 Chunks)`, `GetDistance()` | How far your voice reaches in this map, as **Set Voice Chat Distance** sets it for every map. |
+| `FeedVoicePcm(TConstArrayView<int16> Samples)` | Sends 48 kHz mono samples as your voice, through the same silence gate, encoder and send path as the microphone. See [Sending audio that is not the microphone](#sending-audio-that-is-not-the-microphone). |
+| `EndVoiceFeed()` | Ends the talk burst `FeedVoicePcm` started, so listeners see you stop talking. |
 | `GetStats()` | Returns an `FCrowdyVoiceStats` of running counters for this map; see [Watching activity](#watching-activity). |
 | `OnMicStateChanged` | Native multicast delegate (`FOnCrowdyVoiceMicStateChanged`) with the new `ECrowdyVoiceMicState`. Fires on the game thread, and also when the map ends with the microphone open. |
 | `OnSpeakerTalking` | Native multicast delegate (`FOnCrowdyVoiceSpeakerTalking`) with the speaker's actor id as an `FString` and a `bool` for talking. Fires on the game thread. |
 
-The native delegates are bound with `AddUObject` or `AddLambda`, not `AddDynamic`, and a binding on `UVoiceChatSubsystem` is gone when the map is. The subsystem's start, stop, play and mute calls are better made through the nodes, so your settings carry to the next map.
+The native delegates are bound with `AddUObject` or `AddLambda`, not `AddDynamic`, and a binding on `UVoiceChatSubsystem` is gone when the map is. The subsystem's start, stop, play, mute and distance calls are better made through the nodes, so your settings carry to the next map.
+
+### Sending audio that is not the microphone
+
+`FeedVoicePcm` sends audio your code produces, such as a recorded line, a bot's voice or a test tone, exactly as the microphone's audio is sent. Give it 48 kHz mono 16-bit samples in real time: about 960 samples every 20 ms, for example one 20 ms frame per tick of a ticker. A larger push is cut into frames and sent at once, which a listener hears as a burst. Call `EndVoiceFeed` when the sound ends, so listeners see you stop talking.
+
+The feed and the microphone share one stream, so `FeedVoicePcm` answers false and sends nothing while the microphone is starting or capturing, and **Start Voice Chat** ends a fed burst before it opens the microphone. It also answers false in a map with no voice chat. Silence below the gate is skipped, as it is from the microphone.
 
 ## Watching activity
 
@@ -172,6 +208,8 @@ On the receiving side the SDK puts each player's packets back in order, decodes 
 - **Capturing** means the microphone is live, not that the player is speaking.
 - **Toggle Owner Echo** true is a one-time check, not a setting to leave on, and it survives map changes.
 - **Set Voice Chat Stream Timeout Threshold** only affects how long a silent stream is kept; it does not mute or cut off active audio. A value outside 0.5 seconds to 1 hour is clamped and logged.
+- **Set Voice Chat Distance** counts chunks from the chunk your pawn stands in, not units from the pawn, and a value outside 0 to 8 is clamped and logged.
+- A player whose access tier lacks `use_voice_chat` has every voice packet refused. The refusal arrives late on the realtime subsystem's **On Send Refused**, with the message type 134; see [Connection and reconnect](../runtime/connection-and-reconnect.md).
 - A packaged Mac game needs `NSMicrophoneUsageDescription` in its Info.plist, and the engine's Mac template does not include it.
 - The old voice events `OnAudioNotify`, `OnAudioDataGenerated`, `OnAudioDataReceived` and `OnStreamTimeout` are gone. Use **On Voice Speaker Talking** for who is talking.
 

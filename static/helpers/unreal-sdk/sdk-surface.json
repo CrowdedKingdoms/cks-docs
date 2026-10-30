@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-30T06:52:35Z",
+  "generated": "2026-10-30T19:29:04Z",
   "sdk_version": "2.22.0",
   "source_root": "Plugins/CrowdySDK/Source",
   "functions": [
@@ -7423,6 +7423,46 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyProximityChat::DescribeProximityChatResult",
+      "class": "UCrowdyProximityChat",
+      "name": "DescribeProximityChatResult",
+      "display_name": "Describe Proximity Chat Result",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "public_header": true,
+      "callable": false,
+      "pure": true,
+      "static": true,
+      "return_type": "FString",
+      "category": "Crowdy SDK|Proximity Chat",
+      "specifiers": [
+        "BlueprintPure"
+      ],
+      "meta": {},
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyProximityChat::SendProximityText",
+      "class": "UCrowdyProximityChat",
+      "name": "SendProximityText",
+      "display_name": "Send Proximity Text",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "public_header": true,
+      "callable": true,
+      "pure": false,
+      "static": false,
+      "return_type": "ECrowdyProximityChatResult",
+      "category": "Crowdy SDK|Proximity Chat",
+      "specifiers": [
+        "BlueprintCallable"
+      ],
+      "meta": {
+        "ExpandEnumAsExecs": "ReturnValue"
+      },
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyReplicatedEventLibrary::CrowdyDispatchReplicatedEvent",
       "class": "UCrowdyReplicatedEventLibrary",
       "name": "CrowdyDispatchReplicatedEvent",
@@ -7624,6 +7664,25 @@
       "meta": {
         "DisplayName": "Get UDP Connection State"
       },
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdySDKSubsystem::GetVoiceChatDistance",
+      "class": "UCrowdySDKSubsystem",
+      "name": "GetVoiceChatDistance",
+      "display_name": "Get Voice Chat Distance",
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "public_header": true,
+      "callable": false,
+      "pure": true,
+      "static": false,
+      "return_type": "int32",
+      "category": "Crowdy SDK|Voice",
+      "specifiers": [
+        "BlueprintPure"
+      ],
+      "meta": {},
       "editor_module": false
     },
     {
@@ -7966,6 +8025,25 @@
         "DeprecatedFunction": true,
         "DeprecationMessage": "Use Set Game Api Url for the gameplay endpoint, or Set Discovery Url for the shared origin."
       },
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdySDKSubsystem::SetVoiceChatDistance",
+      "class": "UCrowdySDKSubsystem",
+      "name": "SetVoiceChatDistance",
+      "display_name": "Set Voice Chat Distance",
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "public_header": true,
+      "callable": true,
+      "pure": false,
+      "static": false,
+      "return_type": "void",
+      "category": "Crowdy SDK|Voice",
+      "specifiers": [
+        "BlueprintCallable"
+      ],
+      "meta": {},
       "editor_module": false
     },
     {
@@ -12468,6 +12546,26 @@
       "category": ""
     },
     {
+      "id": "UCrowdyProximityChat::OnProximityTextReceived",
+      "class": "UCrowdyProximityChat",
+      "name": "OnProximityTextReceived",
+      "type": "FOnCrowdyProximityTextReceived",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "public_header": true,
+      "category": "Crowdy SDK|Proximity Chat"
+    },
+    {
+      "id": "UCrowdyProximityChat::OnProximityTextRefused",
+      "class": "UCrowdyProximityChat",
+      "name": "OnProximityTextRefused",
+      "type": "FOnCrowdyProximityTextRefused",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "public_header": true,
+      "category": "Crowdy SDK|Proximity Chat"
+    },
+    {
       "id": "UCrowdySDKSubsystem::OnCrowdyHUDReady",
       "class": "UCrowdySDKSubsystem",
       "name": "OnCrowdyHUDReady",
@@ -14746,6 +14844,16 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyProximityChat",
+      "class": "UCrowdyProximityChat",
+      "base": "UGameInstanceSubsystem",
+      "outer": "GameInstance",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "public_header": true,
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyReplicatedGameInstanceSubsystem",
       "class": "UCrowdyReplicatedGameInstanceSubsystem",
       "base": "UGameInstanceSubsystem",
@@ -16413,6 +16521,13 @@
       "meta": {}
     },
     {
+      "id": "FCrowdyProximityText",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "public_header": true,
+      "meta": {}
+    },
+    {
       "id": "FCrowdyRemoteIdentityFragment",
       "module": "CrowdyMass",
       "header": "CrowdyMass/Public/Fragments/CrowdyMassFragments.h",
@@ -17361,6 +17476,19 @@
         "PlayerPawn",
         "ThisActor",
         "Off"
+      ]
+    },
+    {
+      "id": "ECrowdyProximityChatResult",
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "public_header": true,
+      "values": [
+        "Sent",
+        "EmptyText",
+        "TooLong",
+        "NotConnected",
+        "NoPosition"
       ]
     },
     {
@@ -21243,6 +21371,27 @@
       ],
       "module": "CrowdyExec",
       "header": "CrowdyExec/Public/CrowdyServerObjectComponent.h",
+      "editor_module": false
+    },
+    {
+      "id": "ECrowdyProximityChatResult",
+      "name": "ECrowdyProximityChatResult",
+      "kind": "enum",
+      "scope": "",
+      "reflected": "UENUM",
+      "blueprint_type": true,
+      "template": false,
+      "bases": [],
+      "fields": [],
+      "enumerators": [
+        "Sent",
+        "EmptyText",
+        "TooLong",
+        "NotConnected",
+        "NoPosition"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
       "editor_module": false
     },
     {
@@ -37740,6 +37889,40 @@
       "editor_module": false
     },
     {
+      "id": "FCrowdyProximityText",
+      "name": "FCrowdyProximityText",
+      "kind": "struct",
+      "scope": "",
+      "reflected": "USTRUCT",
+      "blueprint_type": true,
+      "template": false,
+      "bases": [],
+      "fields": [
+        {
+          "name": "SenderUuid",
+          "type": "FString",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "SenderEntityId",
+          "type": "FGuid",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "Text",
+          "type": "FString",
+          "static": false,
+          "uproperty": true
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "editor_module": false
+    },
+    {
       "id": "FCrowdyPullStateLatentAction",
       "name": "FCrowdyPullStateLatentAction",
       "kind": "class",
@@ -40240,8 +40423,20 @@
           "uproperty": false
         },
         {
+          "name": "MaxDistanceChunks",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        },
+        {
           "name": "StreamTimeoutSeconds",
           "type": "float",
+          "static": false,
+          "uproperty": false
+        },
+        {
+          "name": "DistanceChunks",
+          "type": "int32",
           "static": false,
           "uproperty": false
         },
@@ -42774,18 +42969,6 @@
         "ICrowdyMessage"
       ],
       "fields": [
-        {
-          "name": "UserID",
-          "type": "int64",
-          "static": false,
-          "uproperty": false
-        },
-        {
-          "name": "Username",
-          "type": "FString",
-          "static": false,
-          "uproperty": false
-        },
         {
           "name": "Message",
           "type": "FString",
@@ -47787,6 +47970,42 @@
       "enumerators": [],
       "module": "CrowdyServices",
       "header": "CrowdyServices/Public/Subsystem/AsyncActions/CrowdyPlayersActions.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyProximityChat",
+      "name": "UCrowdyProximityChat",
+      "kind": "class",
+      "scope": "",
+      "reflected": "UCLASS",
+      "blueprint_type": false,
+      "template": false,
+      "bases": [
+        "UGameInstanceSubsystem"
+      ],
+      "fields": [
+        {
+          "name": "MaxTextBytes",
+          "type": "int32",
+          "static": true,
+          "uproperty": false
+        },
+        {
+          "name": "OnProximityTextReceived",
+          "type": "FOnCrowdyProximityTextReceived",
+          "static": false,
+          "uproperty": true
+        },
+        {
+          "name": "OnProximityTextRefused",
+          "type": "FOnCrowdyProximityTextRefused",
+          "static": false,
+          "uproperty": true
+        }
+      ],
+      "enumerators": [],
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
       "editor_module": false
     },
     {
@@ -67532,6 +67751,29 @@
       "editor_module": false
     },
     {
+      "id": "FCrowdyVoiceSettings::ClampDistance",
+      "owner": "FCrowdyVoiceSettings",
+      "owner_kind": "struct",
+      "name": "ClampDistance",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "int32 ClampDistance(const int32 Chunks)",
+      "return_type": "int32",
+      "params": "const int32 Chunks",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/CrowdyVoiceSettings.h",
+      "editor_module": false
+    },
+    {
       "id": "FCrowdyVoiceSettings::ClampStreamTimeout",
       "owner": "FCrowdyVoiceSettings",
       "owner_kind": "struct",
@@ -79515,6 +79757,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyGameSession::GetLocalPlayerChunk",
+      "owner": "UCrowdyGameSession",
+      "owner_kind": "class",
+      "name": "GetLocalPlayerChunk",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "FInt64Vector GetLocalPlayerChunk(const UWorld* World) const",
+      "return_type": "FInt64Vector",
+      "params": "const UWorld* World",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Subsystem/CrowdyGameSession.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyGameSession::GetPlayerCurrentChunkCoordinates",
       "owner": "UCrowdyGameSession",
       "owner_kind": "class",
@@ -80177,6 +80442,29 @@
       "ufunction": true,
       "deprecated": false,
       "blueprint": true,
+      "module": "CrowdyNet",
+      "header": "CrowdyNet/Public/Subsystem/CrowdyGameSession.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyGameSession::TryGetLocalPlayerChunk",
+      "owner": "UCrowdyGameSession",
+      "owner_kind": "class",
+      "name": "TryGetLocalPlayerChunk",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool TryGetLocalPlayerChunk(const UWorld* World, FInt64Vector& OutChunk) const",
+      "return_type": "bool",
+      "params": "const UWorld* World, FInt64Vector& OutChunk",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
       "module": "CrowdyNet",
       "header": "CrowdyNet/Public/Subsystem/CrowdyGameSession.h",
       "editor_module": false
@@ -88140,6 +88428,167 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdyProximityChat::CheckText",
+      "owner": "UCrowdyProximityChat",
+      "owner_kind": "class",
+      "name": "CheckText",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "ECrowdyProximityChatResult CheckText(const FString& Text, bool bConnected, bool bHasPosition)",
+      "return_type": "ECrowdyProximityChatResult",
+      "params": "const FString& Text, bool bConnected, bool bHasPosition",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyProximityChat::DescribeProximityChatResult",
+      "owner": "UCrowdyProximityChat",
+      "owner_kind": "class",
+      "name": "DescribeProximityChatResult",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "FString DescribeProximityChatResult(ECrowdyProximityChatResult Result)",
+      "return_type": "FString",
+      "params": "ECrowdyProximityChatResult Result",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyProximityChat::EnsureSubscription",
+      "owner": "UCrowdyProximityChat",
+      "owner_kind": "class",
+      "name": "EnsureSubscription",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void EnsureSubscription()",
+      "return_type": "void",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyProximityChat::EntityIdFromSenderUuid",
+      "owner": "UCrowdyProximityChat",
+      "owner_kind": "class",
+      "name": "EntityIdFromSenderUuid",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "FGuid EntityIdFromSenderUuid(const FString& SenderUuid)",
+      "return_type": "FGuid",
+      "params": "const FString& SenderUuid",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyProximityChat::IsTextRefusal",
+      "owner": "UCrowdyProximityChat",
+      "owner_kind": "class",
+      "name": "IsTextRefusal",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool IsTextRefusal(const FCrowdySendRefusal& Refusal)",
+      "return_type": "bool",
+      "params": "const FCrowdySendRefusal& Refusal",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyProximityChat::ReadReceivedText",
+      "owner": "UCrowdyProximityChat",
+      "owner_kind": "class",
+      "name": "ReadReceivedText",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool ReadReceivedText(const FTextMessageNotification& Notification, const FCrowdyActorId& LocalSenderId, FCrowdyProximityText& OutMessage)",
+      "return_type": "bool",
+      "params": "const FTextMessageNotification& Notification, const FCrowdyActorId& LocalSenderId, FCrowdyProximityText& OutMessage",
+      "access": "public",
+      "static": true,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdyProximityChat::SendProximityText",
+      "owner": "UCrowdyProximityChat",
+      "owner_kind": "class",
+      "name": "SendProximityText",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "ECrowdyProximityChatResult SendProximityText(const FString& Text, int32 DistanceChunks)",
+      "return_type": "ECrowdyProximityChatResult",
+      "params": "const FString& Text, int32 DistanceChunks",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdyRenderingBackend::ActivateInstance",
       "owner": "UCrowdyRenderingBackend",
       "owner_kind": "class",
@@ -89175,6 +89624,29 @@
       "editor_module": false
     },
     {
+      "id": "UCrowdySDKSubsystem::GetVoiceChatDistance",
+      "owner": "UCrowdySDKSubsystem",
+      "owner_kind": "class",
+      "name": "GetVoiceChatDistance",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "int32 GetVoiceChatDistance() const",
+      "return_type": "int32",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
+      "blueprint": true,
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UCrowdySDKSubsystem::GetVoiceMicState",
       "owner": "UCrowdySDKSubsystem",
       "owner_kind": "class",
@@ -89583,6 +90055,29 @@
       "template": false,
       "ufunction": true,
       "deprecated": true,
+      "blueprint": true,
+      "module": "CrowdySDK",
+      "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UCrowdySDKSubsystem::SetVoiceChatDistance",
+      "owner": "UCrowdySDKSubsystem",
+      "owner_kind": "class",
+      "name": "SetVoiceChatDistance",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void SetVoiceChatDistance(int32 Chunks)",
+      "return_type": "void",
+      "params": "int32 Chunks",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": true,
+      "deprecated": false,
       "blueprint": true,
       "module": "CrowdySDK",
       "header": "CrowdySDK/Public/Subsystem/CrowdySDKSubsystem.h",
@@ -97524,6 +98019,75 @@
       "editor_module": false
     },
     {
+      "id": "UVoiceChatSubsystem::EndVoiceFeed",
+      "owner": "UVoiceChatSubsystem",
+      "owner_kind": "class",
+      "name": "EndVoiceFeed",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void EndVoiceFeed()",
+      "return_type": "void",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/VoiceChatSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UVoiceChatSubsystem::FeedVoicePcm",
+      "owner": "UVoiceChatSubsystem",
+      "owner_kind": "class",
+      "name": "FeedVoicePcm",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "bool FeedVoicePcm(TConstArrayView<int16> Samples)",
+      "return_type": "bool",
+      "params": "TConstArrayView<int16> Samples",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/VoiceChatSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UVoiceChatSubsystem::GetDistance",
+      "owner": "UVoiceChatSubsystem",
+      "owner_kind": "class",
+      "name": "GetDistance",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "int32 GetDistance() const",
+      "return_type": "int32",
+      "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": true,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/VoiceChatSubsystem.h",
+      "editor_module": false
+    },
+    {
       "id": "UVoiceChatSubsystem::GetMicState",
       "owner": "UVoiceChatSubsystem",
       "owner_kind": "class",
@@ -97648,6 +98212,29 @@
       "signature": "void PlayVoiceChat()",
       "return_type": "void",
       "params": "",
+      "access": "public",
+      "static": false,
+      "virtual": false,
+      "pure_virtual": false,
+      "const": false,
+      "template": false,
+      "ufunction": false,
+      "deprecated": false,
+      "blueprint": false,
+      "module": "CrowdyVoice",
+      "header": "CrowdyVoice/Public/Core/Audio/VoiceChat/VoiceChatSubsystem.h",
+      "editor_module": false
+    },
+    {
+      "id": "UVoiceChatSubsystem::SetDistance",
+      "owner": "UVoiceChatSubsystem",
+      "owner_kind": "class",
+      "name": "SetDistance",
+      "test_helper": false,
+      "implementation": false,
+      "signature": "void SetDistance(int32 Chunks)",
+      "return_type": "void",
+      "params": "int32 Chunks",
       "access": "public",
       "static": false,
       "virtual": false,
@@ -99187,6 +99774,34 @@
       ],
       "module": "CrowdyExec",
       "header": "CrowdyExec/Public/CrowdyServerObjectComponent.h"
+    },
+    {
+      "id": "FOnCrowdyProximityTextReceived",
+      "name": "FOnCrowdyProximityTextReceived",
+      "owner": "",
+      "dynamic": true,
+      "multicast": true,
+      "return_value": false,
+      "params": [
+        "const FCrowdyProximityText&",
+        "Message"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h"
+    },
+    {
+      "id": "FOnCrowdyProximityTextRefused",
+      "name": "FOnCrowdyProximityTextRefused",
+      "owner": "",
+      "dynamic": true,
+      "multicast": true,
+      "return_value": false,
+      "params": [
+        "const FCrowdySendRefusal&",
+        "Refusal"
+      ],
+      "module": "CrowdyServices",
+      "header": "CrowdyServices/Public/Subsystem/CrowdyProximityChat.h"
     },
     {
       "id": "FOnCrowdySendRefused",
