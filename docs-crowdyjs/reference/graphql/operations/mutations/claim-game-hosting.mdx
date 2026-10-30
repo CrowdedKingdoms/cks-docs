@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Claim the hosting slug for an app (idempotent; the same app re-claiming its slug is a no-op, a different slug MOVES the game). Registers https://&#x003C;games host&#x003E;/&#x003C;slug&#x003E;/ and https://&#x003C;slug&#x003E;.&#x003C;content host&#x003E; as the app's redirect URIs and sets launch&#x005F;url to the former. Requires manage&#x005F;apps on the app and a SESSION token. Refuses a slug that is not a DNS label, is reserved, or belongs to another app (HOSTED&#x005F;SLUG&#x005F;UNAVAILABLE), and answers CONTENT&#x005F;HOSTING&#x005F;DISABLED on a tier without a content CDN.
+RETIRED 2026-10-29: Crowded Kingdoms no longer hosts games and every tier runs with hosting off, so this answers CONTENT&#x005F;HOSTING&#x005F;DISABLED. Host your build on your own origin. Claim the hosting slug for an app (idempotent; the same app re-claiming its slug is a no-op, a different slug MOVES the game). Registers https://&#x003C;games host&#x003E;/&#x003C;slug&#x003E;/ and https://&#x003C;slug&#x003E;.&#x003C;content host&#x003E; as the app's redirect URIs and sets launch&#x005F;url to the former. Requires manage&#x005F;apps on the app and a SESSION token. Refuses a slug that is not a DNS label, is reserved, or belongs to another app (HOSTED&#x005F;SLUG&#x005F;UNAVAILABLE), and answers CONTENT&#x005F;HOSTING&#x005F;DISABLED on a tier without a content CDN.
 
 
 ```graphql
