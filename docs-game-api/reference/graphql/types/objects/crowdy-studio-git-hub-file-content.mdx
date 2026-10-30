@@ -1,0 +1,58 @@
+---
+id: crowdy-studio-git-hub-file-content
+title: CrowdyStudioGitHubFileContent
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One file of a batched read. content is null when the blob is not UTF-8 text or is larger than this tier reads; size and sha are always set.
+
+
+```graphql
+type CrowdyStudioGitHubFileContent {
+  path: String!
+  sha: String!
+  size: Int!
+  binary: Boolean!
+  content: String
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFileContent.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #path */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFileContent.<b>sha</b></code>](#sha)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #sha */} 
+Blob SHA at the commit read.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFileContent.<b>size</b></code>](#size)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #size */} 
+Blob size in bytes.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFileContent.<b>binary</b></code>](#binary)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #binary */} 
+The blob is not valid UTF-8 text (or contains NUL).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubFileContent.<b>content</b></code>](#content)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #content */} 
+UTF-8 content, or null when binary or over the size cap.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioGitHubFiles`](/reference/graphql/types/objects/crowdy-studio-git-hub-files.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

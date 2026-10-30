@@ -1,7 +1,7 @@
-BWF PLAYER-MOD AUTHORING CHECKLIST
+PLAYER-MOD AUTHORING CHECKLIST
 
 INPUTS
-- appId: BWF app id
+- appId: the app id of the game you are modding
 - gridId: a grid currently owned by the author
 - name: lowercase crate-style module name, unique in the grid
   (a mod's name is 1-48 lowercase letters, digits, - or _)

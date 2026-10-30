@@ -21,7 +21,7 @@ Once per project, at startup, before any entity, event, or property.
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-The Game Instance signs in from `Init`: bind **On Login** and **On UDP Connection Success** on the Crowdy SDK Subsystem, then call `Login` with an email and password read from `Config/DefaultGame.ini`. The first handler reports the sign-in; the second fires when the connection is up.
+The Game Instance signs in from `Init`, after `Super::Init()` has created its subsystems: bind **On Login** and **On UDP Connection Success** on the Crowdy SDK Subsystem, then call `Login` with an email and password read from `Config/DefaultGame.ini`. The first handler reports the sign-in; the second fires when the connection is up.
 
 <CppSnippet id="qs-login" />
 
@@ -34,12 +34,13 @@ Password=your-test-password
 ```
 
 :::caution[A test account belongs in a config file or a pin default, never in shipped code.]
+A package stages `Config/DefaultGame.ini`, so an account written there ships with the game. Remove the `Email` and `Password` lines before you package, and sign players in from your own sign-in screen instead.
 :::
 
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-Create a Widget Blueprint with two **Editable Text Box** widgets and a **Button**, and two String variables, `Email` and `Password`, each set from its box's **On Text Committed**. The button's **On Clicked** calls a custom event `SignIn`, whose graph reads the two variables into the latent **Login** node and removes the widget from its parent on `On Success`. Add the widget to the viewport from your Game Instance or level Blueprint at startup.
+Create a Widget Blueprint with two **Editable Text Box** widgets and a **Button**, and two String variables, `Email` and `Password`, each set from its box's **On Text Committed**. The button's **On Clicked** calls a custom event `SignIn`, whose graph reads the two variables into the latent **Login** node and removes the widget from its parent on `On Success`. Add the widget to the viewport from your Game Mode's **Event BeginPlay** or a level Blueprint at startup, not from a Game Instance's **Event Init**, which runs before the SDK's subsystems exist ([why](../services/authentication.md#signing-in)).
 
 <Blueprint src="signin-widget" title="SignIn, Get Email, Get Password, Login, Remove from Parent" />
 

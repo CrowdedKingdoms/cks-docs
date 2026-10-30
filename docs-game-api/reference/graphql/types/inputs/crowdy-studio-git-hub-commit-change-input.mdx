@@ -1,0 +1,48 @@
+---
+id: crowdy-studio-git-hub-commit-change-input
+title: CrowdyStudioGitHubCommitChangeInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+No description
+
+
+```graphql
+input CrowdyStudioGitHubCommitChangeInput {
+  path: String!
+  content: String
+  delete: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubCommitChangeInput.<b>path</b></code>](#path)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #path */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubCommitChangeInput.<b>content</b></code>](#content)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #content */} 
+New UTF-8 content. Required unless delete is true.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CrowdyStudioGitHubCommitChangeInput.<b>delete</b></code>](#delete)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #delete */} 
+Remove the path instead of writing it.
+
+
+
+
+### Member Of
+
+[`CrowdyStudioGitHubCommitFilesInput`](/reference/graphql/types/inputs/crowdy-studio-git-hub-commit-files-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

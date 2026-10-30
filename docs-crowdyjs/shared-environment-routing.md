@@ -29,7 +29,7 @@ import {
   createCrowdyClient,
 } from '@crowdedkingdoms/crowdyjs';
 
-// Identity client (Overworld/hub origin): holds the session token.
+// Identity client (the origin that signs the player in): holds the session token.
 const base = createCrowdyClient({
   httpUrl: 'https://ck.prod.crowdedkingdoms.com/graphql',
   tokenStore: new BrowserLocalStorageTokenStore('crowdyjs:session'),

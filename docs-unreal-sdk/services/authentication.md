@@ -10,7 +10,7 @@ import TabItem from '@theme/TabItem';
 
 # Authentication
 
-A player signs in once, at startup, from the Game Instance. Every method, email and password, a one-time link by email, a social provider, converges on one pipeline: the sign-in returns an identity session token, the SDK mints a short-lived app-scoped token from it, adopts the app's endpoints, fires a success event, and requests the realtime connection with the app token. Your code picks the method and reacts to the event; the tokens are the SDK's business.
+A player signs in once, at startup: from the Game Instance in C++, from the Game Mode in Blueprint. Every method, email and password, a one-time link by email, a social provider, converges on one pipeline: the sign-in returns an identity session token, the SDK mints a short-lived app-scoped token from it, adopts the app's endpoints, fires a success event, and requests the realtime connection with the app token. Your code picks the method and reacts to the event; the tokens are the SDK's business.
 
 ## When you touch this
 
@@ -70,7 +70,7 @@ Events on `UCrowdyAuthentication`, all Blueprint-assignable: `OnLogin` (`FOnAuth
 
 ## Signing in
 
-The Game Instance signs the player in from `Init`, binds the outcome event before it calls, and enables play in the handler. This is the Quickstart's step, on the same `ULanternGameInstance`.
+The game signs the player in at startup, binds the outcome event before it calls, and enables play in the handler. In C++ the Game Instance does it from `Init`; in Blueprint the Game Mode does it from **Event BeginPlay**. This is the Quickstart's step, on the same `ULanternGameInstance` and Game Mode.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -80,17 +80,21 @@ The C++ is the `ULanternGameInstance` block on [Player Sign-in](../runtime/playe
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Instance Blueprint, **Event Init** runs the latent **Login** node with `Email` and `Password`; both its `On Success` and `On Error` pins carry a `Result` and a `Message`: `Result` is filled on success, `Message` says why on error. The other sign-in nodes, and **Record Player Consents** (`Message` only), work the same way.
+In the Game Mode Blueprint, **Event BeginPlay** gets the **Crowdy Authentication** subsystem and branches on its **Is Signed In**; only when that is false does it run the latent **Login** node with `Email` and `Password`. Both its `On Success` and `On Error` pins carry a `Result` and a `Message`: `Result` is filled on success, `Message` says why on error. The other sign-in nodes, and **Record Player Consents** (`Message` only), work the same way.
 
-<Blueprint src="auth-login" title="Event Init, Login" />
+<Blueprint src="auth-login" title="Event BeginPlay, Crowdy Authentication, Is Signed In, Branch, Login" />
 
 The two literals on the node are placeholders for a test account; a shipped Blueprint reads them from a widget, as [Player Sign-in](../runtime/player-sign-in.md) does.
 
 </TabItem>
 </Tabs>
 
+:::caution[In Blueprint, start from the Game Mode's Event BeginPlay, not the Game Instance's Event Init.]
+A Blueprint Game Instance's **Event Init** runs before the SDK's subsystems exist. There the subsystem getters return nothing, **Login** and **Restore Session** fail at once, and **Bind Event** binds nothing. The Game Mode's **Event BeginPlay** runs after the Game Instance has finished starting. It runs again in every map, so a graph that signs in checks **Is Signed In** first and skips the call when the player already is. Is Signed In stays false until a sign-in finishes, so open another map only after **On Login**, or the next map signs in a second time. A graph has one Event BeginPlay: if your Game Mode already has one, run the new chain from it through a **Sequence** node, the binds on the first pin and the sign-in on a later one. A C++ Game Instance can use `Init` as the C++ examples do, because the subsystems exist once `Super::Init()` has returned. If your clients join an Unreal listen or dedicated server, a client has no Game Mode: use the local Player Controller's BeginPlay there instead.
+:::
+
 :::caution[Bind your delegates before you start the call.]
-A response can arrive quickly enough to be missed by a handler bound after the call returns. The per-call delegates are bound as arguments, so they are always in place; for the multicast events, bind in `Init` before the first sign-in.
+A response can arrive quickly enough to be missed by a handler bound after the call returns. The per-call delegates are bound as arguments, so they are always in place; for the multicast events, bind before the first sign-in: in `Init` after `Super::Init()` in C++, from the Game Mode's Event BeginPlay in Blueprint.
 :::
 
 In Blueprint, five latent sign-in nodes wrap the rich surface (a sixth, **Record Player Consents** (`UCrowdyAuth_RecordPlayerConsents`), is for a game that draws its own terms screen; its pins are `FRecordPlayerConsentsDelegateOnSuccess` and `FRecordPlayerConsentsDelegateOnError`), each with `On Success` (a `Result`) and `On Error` (a `Message`) pins and no delegate wiring: **Login** (`UCrowdyAuth_Login`), **Register** (`UCrowdyAuth_Register`), **Magic Link Sign In** (`UCrowdyAuth_BeginMagicLinkSignIn`), **Social Sign In** (`UCrowdyAuth_BeginSocialSignIn`), and **Restore Session** (`UCrowdyAuth_RestoreSession`). Their pin delegate types are `FLoginDelegateOnSuccess`, `FLoginDelegateOnError`, `FRegisterDelegateOnSuccess`, `FRegisterDelegateOnFailure`, `FBeginMagicLinkSignInDelegateOnSuccess`, `FBeginMagicLinkSignInDelegateOnError`, `FBeginSocialSignInDelegateOnSuccess`, `FBeginSocialSignInDelegateOnError`, `FRestoreSessionDelegateOnSuccess`, and `FRestoreSessionDelegateOnError`, should you bind one from C++.
@@ -233,7 +237,7 @@ void ULanternGameInstance::OnTermsDeclined()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Instance Blueprint, **Event Init** gets the **Crowdy Authentication** subsystem and binds **Bind Event to On Legal Acceptance Required** to a custom event that creates your terms widget and adds it to the viewport, and **Bind Event to On Legal Acceptance Ended** to one that removes it. The widget fills its document list from **Get Legal Documents**, a pure node returning an array of **Crowdy Legal Document** (`Title`, `Url`).
+In the Game Mode Blueprint, **Event BeginPlay** gets the **Crowdy Authentication** subsystem and binds **Bind Event to On Legal Acceptance Required** to a custom event that creates your terms widget and adds it to the viewport, and **Bind Event to On Legal Acceptance Ended** to one that removes it. The widget fills its document list from **Get Legal Documents**, a pure node returning an array of **Crowdy Legal Document** (`Title`, `Url`).
 
 The widget's accept button runs a branch on its two check boxes, and only when both are true calls the latent **Record Player Consents** node with **Accept Legal** and **Attest Age Of Majority** set true. Its **On Error** pin carries a `Message` to show; **On Success** needs nothing, because the held sign-in resumes and reaches the nodes you already wired. The decline button calls **Decline Legal Acceptance** on the Crowdy Authentication subsystem. **Is Legal Acceptance Pending** reads whether a sign-in is waiting right now, for a widget that opens late.
 
@@ -262,9 +266,9 @@ The events are also where a game enables play. `WatchAuthEvents` binds `OnLogin`
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-The Game Instance Blueprint needs a Boolean variable `bCanPlay`. **Event Init** gets the **Crowdy Authentication** subsystem and **Bind Event to On Login**; the bound custom event `OnSignedIn` receives the `Result` and sets `bCanPlay` true.
+The Game Mode Blueprint needs a Boolean variable `bCanPlay`. **Event BeginPlay** gets the **Crowdy Authentication** subsystem and **Bind Event to On Login**; the bound custom event `OnSignedIn` receives the `Result` and sets `bCanPlay` true. Each map has its own Game Mode, so in a map the player travels to after signing in, set `bCanPlay` from **Is Signed In** at BeginPlay instead of waiting for an event that already fired.
 
-<Blueprint src="auth-events" title="Event Init, Crowdy Authentication, Bind Event to On Login, OnSignedIn, Set bCanPlay" />
+<Blueprint src="auth-events" title="Event BeginPlay, Crowdy Authentication, Bind Event to On Login, OnSignedIn, Set bCanPlay" />
 
 </TabItem>
 </Tabs>
@@ -306,12 +310,12 @@ A player's access to the game can end while they play: the platform suspends it,
 
 [Server Objects](../exec/troubleshooting.md#when-access-ends) stop at once. Every one fails with `Your access ended: ` followed by the reason, a call in flight or made later finishes as the outcome **Access Ended**, which is not retryable, and nothing reconnects until the player signs in again. What your game does:
 
-- Bind **On Access Ended** in the Game Instance, before the first sign-in.
+- Bind **On Access Ended** before the first sign-in: in the Game Instance's `Init` in C++, from the Game Mode's Event BeginPlay in Blueprint.
 - Show the reason, and **Blocked Until** when it is not empty, then return the player to the sign-in screen.
 - When the end time of a timed block or a suspension is learned after access already ended, the event fires once more with **Blocked Until** filled in. Update the text you showed; do not add a second message.
 - A successful sign-in clears the ended state. A **Crowdy Server Object** component, and a typed node set to **Find By Asset**, then get their Server Object again by themselves. Code that calls `Acquire` itself acquires again.
 
-The Game Instance binds the event in `Init`, next to the sign-in events, and shows the two strings. A shipped game puts them on its sign-in screen.
+The game binds the event next to the sign-in events, in the Game Instance's `Init` in C++ and from the Game Mode's Event BeginPlay in Blueprint, and shows the two strings. A shipped game puts them on its sign-in screen.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -321,9 +325,9 @@ The Game Instance binds the event in `Init`, next to the sign-in events, and sho
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-In the Game Instance Blueprint, **Event Init** gets the **Crowdy Game Session** subsystem and runs **Bind Event to On Access Ended**; the bound custom event `OnAccessEnded` receives `Reason` and `BlockedUntil`, and prints each.
+In the Game Mode Blueprint, **Event BeginPlay** gets the **Crowdy Game Session** subsystem and runs **Bind Event to On Access Ended**; the bound custom event `OnAccessEnded` receives `Reason` and `BlockedUntil`, and prints each.
 
-<Blueprint src="access-ended-bind" title="Event Init, Crowdy Game Session, Bind Event to On Access Ended, OnAccessEnded, Print String" />
+<Blueprint src="access-ended-bind" title="Event BeginPlay, Crowdy Game Session, Bind Event to On Access Ended, OnAccessEnded, Print String" />
 
 </TabItem>
 </Tabs>
@@ -372,7 +376,9 @@ A custom event `OnGetFreeAccessPressed` runs **Claim Free Access**; its **On Err
 
 ### Restore a saved session
 
-A returning player should type nothing. The Game Instance calls `RestoreSession(OnSuccess, OnError)` first, before it shows a sign-in screen or calls `Login`. The call returns `bool`: true means a saved session was found and the restore is under way, and the outcome arrives on the delegates; false means nothing is saved on this machine, `OnError` has already run with `No saved session found`, and `OnSessionRestoreFailed` has already fired, so the error path is the sign-in screen. On success the SDK re-mints the app token from the saved session token, calls `OnSuccess`, and fires `OnSessionRestored`; then, exactly as after a `Login`, it requests the realtime connection with the fresh app token and raises its own `OnLogin` on the Crowdy SDK Subsystem, so the handlers you bound for a first sign-in, `OnLogin` and `OnUDPConnectionSuccess`, run unchanged. A restore that fails after finding a saved session (the token was revoked, the network is down) reaches `OnError` the same way. The Crowdy SDK Subsystem's `OnLogin` also fires, with `bSuccess` false and the message, for every failed restore: the `No saved session found` of a first launch and a restore the player's decline of the terms ended included.
+A returning player should type nothing. The game calls `RestoreSession(OnSuccess, OnError)` first, before it shows a sign-in screen or calls `Login`. The call returns `bool`: true means a saved session was found and the restore is under way, and the outcome arrives on the delegates; false means nothing is saved on this machine, `OnError` has already run with `No saved session found`, and `OnSessionRestoreFailed` has already fired, so the error path is the sign-in screen. On success the SDK re-mints the app token from the saved session token, calls `OnSuccess`, and fires `OnSessionRestored`; then, exactly as after a `Login`, it requests the realtime connection with the fresh app token and raises its own `OnLogin` on the Crowdy SDK Subsystem, so the handlers you bound for a first sign-in, `OnLogin` and `OnUDPConnectionSuccess`, run unchanged. A restore that fails after finding a saved session (the token was revoked, the network is down) reaches `OnError` the same way. The Crowdy SDK Subsystem's `OnLogin` also fires, with `bSuccess` false and the message, for every failed restore: the `No saved session found` of a first launch and a restore the player's decline of the terms ended included.
+
+The saved session lives in the game's `Saved` folder (for a Shipping package, under the Windows user's local app data). Each PIE window inside the editor process keeps its own; every other client using that folder, a PIE client the editor starts as a separate process included, shares one, unless you start it with `-crowdysession=<name>` (letters, digits, `-` and `_`, up to 32 characters), which gives it a session of its own. With no switch the game uses the default session. See [Two packaged or standalone clients](../guides/testing-locally.md#two-packaged-or-standalone-clients); before v2.21.1 there is no switch.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -384,9 +390,9 @@ A returning player should type nothing. The Game Instance calls `RestoreSession(
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-**Event Init** runs the latent **Restore Session** node, which takes nothing but the world context. Its **On Error** pin is the only place that asks for credentials: the graph runs **Login** with the configured account there, as the Quickstart does, and a game with a sign-in screen creates the widget from [Player Sign-in](../runtime/player-sign-in.md) and adds it to the viewport on that pin instead; a machine with nothing saved reaches it at once. **On Success** carries the `Result`, read for nothing.
+In the Game Mode Blueprint, **Event BeginPlay** gets the **Crowdy Authentication** subsystem and branches on **Is Signed In**; only when that is false does it run the latent **Restore Session** node, which takes nothing but the world context. Its **On Error** pin is the only place that asks for credentials: the graph runs **Login** with the configured account there, as the Quickstart does, and a game with a sign-in screen creates the widget from [Player Sign-in](../runtime/player-sign-in.md) and adds it to the viewport on that pin instead; a machine with nothing saved reaches it at once. **On Success** carries the `Result`, read for nothing.
 
-<Blueprint src="auth-restore" title="Event Init, Restore Session, Login" />
+<Blueprint src="auth-restore" title="Event BeginPlay, Crowdy Authentication, Is Signed In, Branch, Restore Session, Login" />
 
 </TabItem>
 </Tabs>
@@ -398,6 +404,32 @@ A returning player should type nothing. The Game Instance calls `RestoreSession(
 :::warning[Sign out with Logout on the Crowdy SDK Subsystem, not ClearSavedSession alone.]
 `Logout()` first tells the server to end the session, which also ends every gameplay token made from it, without waiting for the answer, so sign-out works offline too. It then clears the saved session, clears the connection state, scrubs both bearers from the shared API client, and closes the realtime connection, and broadcasts `OnLogout`. A sign-in, token mint or refresh still in flight when you log out is cancelled: the caller's own `OnError` gets `Signed out before sign-in finished.`, nothing else fires (not `OnLoginFailed`), and the player is not signed back in when the answer lands. A magic-link or social sign-in still waiting for the browser is stopped too. `ClearSavedSession()` only deletes the on-disk credential; called alone during a live session it leaves the in-memory tokens and the open connection signed in as the player who just left.
 :::
+
+### Cancel a sign-in
+
+A sign-in screen's Cancel or Back button, and a game that travels or quits while a sign-in is still running, call `CancelSignIn()` on `UCrowdyAuthentication` (or on the Crowdy SDK Subsystem). It stops whatever sign-in has not finished: a restore, a password sign-in or registration, an email link or social sign-in waiting for the browser, or one held for the terms. Unlike `Logout`, a cancelled restore keeps the saved session, so it restores again on the next launch. `IsSignInPending()` is true from the moment a sign-in starts until it succeeds, fails or is cancelled; show the Cancel button on it. Once the player is signed in, both are false and `CancelSignIn` does nothing: signing out is `Logout`.
+
+What the caller sees:
+
+- Only the pending call's own `OnError` answers, with `Sign-in cancelled.`: no `OnLoginFailed`, `OnSessionRestoreFailed` or `OnRegisterFailed` fires, as after `Logout`. A browser wait and a sign-in held for the terms answer at once, and the terms prompt closes; a call already on its way to the server answers when its answer lands, and the player is not signed in by it. A game that started the sign-in from the Crowdy SDK Subsystem, which passes no `OnError`, reads `IsSignInPending` instead.
+- A new sign-in (password, registration, email link or social) saves its session as soon as the server accepts it, before the app token is minted, and that replaces any session saved before. Cancelling it after that point ends the new session on the server and deletes it from disk, so the next launch restores nobody rather than an account the player backed out of.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`CancelPendingSignIn` is what the Cancel button calls. The answer arrives on the `HandleSignInFailed` the sign-in itself bound.
+
+<CppSnippet id="auth-cancel" />
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+The Cancel button's event gets the **Crowdy Authentication** subsystem, branches on **Is Sign in Pending**, and calls **Cancel Sign In** on the true pin.
+
+<Blueprint src="auth-cancel" title="OnCancelSignInPressed, Crowdy Authentication, Is Sign in Pending, Branch, Cancel Sign In" />
+
+</TabItem>
+</Tabs>
 
 ## Account settings
 
