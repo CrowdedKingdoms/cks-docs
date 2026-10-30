@@ -194,7 +194,7 @@ See [Call an event on it, from Blueprint](./from-blueprint/call-an-event-on-it.m
 
 ## Commands and switches
 
-Every `crowdy.mass.*` command and variable is compiled out of Shipping builds, so none of them exists in a shipped game. The four `CrowdyMass.` commands in the first table are not guarded that way. They help when rows draw but their shadows or animation look wrong, and when you are asked for their output in a bug report.
+Every `crowdy.mass.*` command and variable is compiled out of Shipping builds, so none of them exists in a shipped game. The four `CrowdyMass.` commands in the first table are also left out of Shipping builds, so they exist in development builds only, and they print their results as ordinary log lines, not warnings. They help when rows draw but their shadows or animation look wrong, and when you are asked for their output in a bug report.
 
 ### Commands
 

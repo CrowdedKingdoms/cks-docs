@@ -1,0 +1,920 @@
+# Crowdy Unreal SDK
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/intro
+
+# Crowdy Unreal SDK
+
+The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, voice chat, teams, channels, and avatars.
+
+This guide describes **SDK 2.22**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+
+:::note[This guide is written for Unreal Engine 5.8 and a C++ project.]
+Gameplay can be driven entirely from Blueprint, but the plugin itself compiles as C++, so your project needs a C++ target. See [Installation](./installation.md).
+:::
+
+## The two planes
+
+Everything the SDK replicates lives on one of two planes, and the whole guide leans on the split.
+
+1. **The view plane (CrowdyState).** Fast, client-owned state such as movement, animation, and transient effects. The client that owns an entity writes its state and everyone else sees it. Nothing here is checked by a server.
+2. **The elected host is a convention.** One client is elected host to coordinate the view plane. It is a helper for shared logic, not a rule enforcer.
+3. **The truth plane (your server code).** Server-owned gameplay state such as hit points, stats, and inventory, held by your app's code on [ck-exec](/exec/intro). Clients ask the server for it and ask the server to change it; the server decides. This is the only place a rule is enforced. The SDK reaches it from C++ through [Server Logic](./exec/overview.md).
+4. **The planes touch in one way.** A client asks the server's code for a change and is told the result. No gameplay value ever flows from the view plane into the truth plane as trusted input.
+
+Read [The Two Planes](./concepts/two-planes.md) before you decide where a new piece of state belongs.
+
+:::caution[The host is a convention the SDK helps you follow, not a server that enforces rules.]
+:::
+
+## Entities
+
+Almost everything on the view plane is an **entity**: an actor with a `UCrowdyEntityComponent` that has a shared identity (`NetID`) on every client, one owner, and a remote proxy everywhere else. Events (RPC calls) are aimed at entities, and replicated properties belong to them. [Entities, Identity, and Ownership](./concepts/entities-identity-ownership.md) covers the details.
+
+## How to read this guide
+
+Work through it in order the first time.
+
+1. **Start**: [Installation](./installation.md) and the [Quickstart](./quickstart.md).
+2. **Concepts**: [The Two Planes](./concepts/two-planes.md), [Entities, Identity, and Ownership](./concepts/entities-identity-ownership.md), [Sessions and Presence](./concepts/sessions-and-presence.md), [The Host Is a Convention](./concepts/host-is-a-convention.md).
+3. **Crowdy Studio**: [sign in and connect your app](./studio/overview.md) from inside the editor.
+4. **Runtime (view plane)**: [map profiles](./runtime/map-profile.md), entities, RPC events, Crowdy State.
+5. **Server Logic (truth plane)**: [server-owned state on ck-exec and the code that changes it](./exec/overview.md), from Blueprint or C++.
+6. **Services**: [voice chat](./services/voice-chat.md), [teams](./services/teams.md), [avatars](./services/avatars.md).
+7. **Guides** and **Reference**: [best practices](./guides/best-practices.md), the [sample project](./guides/sample-project.md), [packaging](./guides/packaging.md), and lookup tables such as [console variables](./reference/console-cvars.md).
+
+:::tip[Do Crowdy Studio first]
+Nothing on the network works until your project knows which app it belongs to. Sign in and run [Config Sync](./studio/config-sync.md) before anything else.
+:::
+
+## What is next
+
+Add the plugin with [Installation](./installation.md), connect your app in [Crowdy Studio](./studio/overview.md), then follow the [Quickstart](./quickstart.md) to put your player, one entity, one event, and one replicated property on screen.
+
+# Installation
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/installation
+
+# Installation
+
+This page adds the CrowdySDK plugin to your project, enables it, adds the module dependencies your code needs, and points the project at your app.
+
+## Prerequisites
+
+- Unreal Engine 5.8.
+- A C++ project (Visual Studio 2022 with the Desktop C++ workload). Gameplay can be driven entirely from Blueprint, but the plugin compiles as C++.
+
+:::caution[The plugin compiles C++ modules, so a Blueprint only project cannot use it.]
+Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes a C++ project.
+:::
+
+## Step 1: Get the release
+
+Download the `v2.22.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+
+:::note[The release you install must match the version this guide describes (2.22).]
+:::
+
+## Step 2: Place the plugin at `Plugins/CrowdySDK`
+
+Unpack the release into your project's `Plugins` folder so the plugin descriptor sits at:
+
+```
+YourProject/Plugins/CrowdySDK/CrowdySDK.uplugin
+```
+
+Create the `Plugins` folder if it does not exist. The first time you open the project afterwards, the editor offers to build the plugin's modules; accept.
+
+:::warning[Keep it under Plugins. Do not reach it through an external plugin directory.]
+A plugin mounted from anywhere else (for example through `AdditionalPluginDirectories` in the `.uproject`) is an External plugin, and Unreal silently drops the config it ships in `Plugins/CrowdySDK/Config/*.ini`. That config is load-bearing:
+
+- `CoreRedirects` that repoint content saved against the SDK's older single-module layout to the current modules, so older assets still load.
+- `AssetRegistry` cook-tag exclusions that keep editor-only tags, left on assets saved by an older SDK, out of a packaged build's asset registry.
+- A packaging entry that cooks the plugin's shipped map profile (the per-map data asset that switches the SDK on; see [Map profiles](./runtime/map-profile.md)), without which a packaged build is inactive on any map that configured nothing.
+
+Once the project opens in the editor (after Step 5), check the Output Log for `Mounting Project plugin CrowdySDK`. If the line says External, move the plugin.
+:::
+
+## Step 3: Enable the plugin
+
+From the editor: open the project, go to **Edit, Plugins**, search for `CrowdySDK`, tick **Enabled**, and restart when asked.
+
+![The Plugins window with CrowdySDK found and enabled](/img/unreal-sdk/plugins-window.png)
+
+Or add it to your `.uproject` by hand:
+
+```json
+{
+  "Name": "CrowdySDK",
+  "Enabled": true
+}
+```
+
+Enabling `CrowdySDK` brings in all twelve modules in this table, including the two Mass modules, and the engine plugins they need (MassGameplay and MassCrowd). You never enable them one by one, and there is no separate Mass plugin to add. The engine marks MassGameplay and MassCrowd experimental, and they bring in the engine plugins they depend on (among them MassAI, ZoneGraph, SmartObjects, StateTree and PoseSearch), so every project with the SDK carries them and the engine's Mass processing runs each frame, even on maps that draw no crowd rows; the SDK's own Mass work runs only on maps whose profile selects the Mass backend. That holds since v2.19.0; on v2.18.0 and earlier CrowdyMass was a separate plugin, which a project upgrading removes from its `.uproject`. See [What's Changed](./guides/whats-changed.md#2026-10-12-sdk-v2190).
+
+| Module | Type | What it holds |
+|---|---|---|
+| `CrowdySDK` | Runtime | The top-level subsystem: login, connection, voice toggle. |
+| `CrowdyReplication` | Runtime | Entities, RPC events, Crowdy State, map profiles, project settings. |
+| `CrowdyServices` | Runtime | Authentication, teams, channels, avatars, host election. |
+| `CrowdyNet` | Runtime | The UDP transport, the API client, and the routing enums. |
+| `CrowdyVoice` | Runtime | Microphone capture, encode and decode, playback. |
+| `CKSharedTypes` | Runtime | Shared data types used across modules. |
+| `CrowdyCppBridge` | Runtime | The vendored native client the transport is built on. You never include it directly. |
+| `CrowdyMass` | Runtime | The Crowdy Mass Rendering Backend, which draws remote entities as crowd rows. See [Draw a crowd with Mass](./mass/draw-a-crowd-with-mass.md). |
+| `CrowdyNodes` | UncookedOnly | The compiler checks for Crowdy-replicated variables. |
+| `CrowdyMassNodes` | UncookedOnly | The editor-side Blueprint nodes for crowd rows. |
+| `CrowdySDKEditor` | Editor | Turns event and state markers into Blueprint authoring surfaces and bakes them for cooked builds. |
+| `CrowdyStudio` | Editor | Crowdy Studio, the management console: sign-in, apps, Config Sync, authoring pages. |
+
+The SDK has no Game Model API: the game API no longer serves game models, and the SDK dropped
+its side of them in v2.19.0. Keep the state your game must trust in
+your server code on [ck-exec](/exec/intro); see
+[Move from Game Models](./exec/move-from-game-models.md) and [the two planes](./concepts/two-planes.md).
+
+## Step 4: Add the module dependencies
+
+In your game module's `Build.cs`, add the modules your code calls. Most projects need these four:
+
+```csharp
+PrivateDependencyModuleNames.AddRange(new string[]
+{
+    "CrowdySDK",
+    "CrowdyReplication",
+    "CrowdyServices",
+    "CrowdyNet"
+});
+```
+
+:::note[Add CrowdyVoice only if your code calls the voice capture module directly.]
+The voice toggle on the SDK subsystem does not need it. `CKSharedTypes` arrives through the public dependencies of the four modules above, so it rarely needs listing.
+:::
+
+## Step 5: Recompile
+
+Regenerate project files and build:
+
+- **Rider or Visual Studio**: right-click the `.uproject`, choose *Generate project files*, then build.
+- **Unreal Editor**: accept the prompt to recompile on the next launch.
+
+Or from a command line, which is what a build machine runs:
+
+```text
+"C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat" YourProjectEditor Win64 Development -Project="C:\Path\To\YourProject.uproject" -WaitMutex
+```
+
+The first build compiles the whole plugin and takes a few minutes. The log ends with `Link [x64] UnrealEditor-CrowdyStudio.dll` and `Result: Succeeded`. Expect a few warnings from a third-party header inside the plugin (a `C4324` padding warning from the vendored client's `spsc.hpp`); they are harmless and repeat on every build.
+
+Once it compiles, the SDK subsystems are available in both C++ and Blueprint.
+
+## Step 6: Connect your app
+
+Open Crowdy Studio inside the editor, sign in, pick your app, and run Config Sync. It writes the connection settings into the project for you.
+
+Until you run Config Sync for the first time, the project has no Backend of its own, so it dials the tier the plugin release you downloaded was built for: Production for a tagged GitHub release. See [Project settings](./reference/project-settings.md#the-default-backend).
+
+:::warning[Do not type your app id and API URLs into Project Settings by hand.]
+The network settings on `UCrowdySDKDeveloperSettings` (`AppID`, `OrgId`, `Environment`, `DiscoveryUrl`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`, `HostPollIntervalSeconds`) are read-only in Project Settings on purpose (they live under **Project Settings, Plugins, Crowdy SDK**). Crowdy Studio owns them; a value you type elsewhere is overwritten by the next sync. See [Config Sync](./studio/config-sync.md).
+:::
+
+## Related
+
+- [Crowdy Studio overview](./studio/overview.md): open the console and sign in.
+- [Quickstart](./quickstart.md): your first entity, event, replicated property, and server-owned value.
+- [Map profiles](./runtime/map-profile.md): every playable map needs one before anything replicates.
+
+# Quickstart
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/quickstart
+
+# Quickstart
+
+This page puts you on the wire, then builds one small thing, a lantern, with one of each SDK idea on it: an entity, an RPC event, and a Crowdy State property. Each step is a few lines of C++ or a few Blueprint nodes, and each ends with something you can see. A single Play in Editor client is enough for all of it.
+
+Two words you will meet on every step. An **entity** is an actor other players can see: an actor with a Crowdy Entity Component, which gives it a shared identity and one **owner**, the client that simulates it; every other client holds a **proxy** that plays back what the owner sends. A **map profile** is a small data asset (`UCrowdyMapProfile`) that switches the SDK on for one map; it is assigned per map under **Project Settings, Plugins, Crowdy SDK, Map Profiles**.
+
+One fact shapes the order of the steps. The server knows a client by the actor updates it sends: your player pawn, as an entity, is what makes you present, and a client with no fresh actor is at no position on the map and receives no spatial event. So the pawn comes first, the lantern after.
+
+## Before you start
+
+1. [Install the plugin](./installation.md) into a project whose player already moves, the Third Person template or your own game, and confirm it compiles. Step 1 adds a component to the character you have; a bare Character has no body and no input, so start from one that walks.
+2. Open Crowdy Studio, [sign in](./studio/sign-in.md), pick your app on the Project page, and press **Sync to project** on its Configuration tab. See [Config Sync](./studio/config-sync.md).
+3. Optional: give your test map a [map profile](./runtime/map-profile.md) of its own. Without one it runs on the SDK's shipped default, which is enough for this page.
+4. Know that nothing on this page reaches another client until your own pawn is sending updates (step 1). An event sent before that goes to nobody.
+
+![The Project page's Configuration tab, with the diff and the Sync to project button](/img/unreal-sdk/qs-config-sync.png)
+
+:::caution[If you skip the sync, the SDK has no app id or Game API URLs to connect with, and nothing replicates.]
+:::
+
+:::note[A map with no profile of its own runs on the SDK's shipped default.]
+Config Sync points the project at an app; a map profile decides what the SDK does on a map. With none assigned, the shipped default applies (networking on, the actor pool drawing remote entities with the shipped transform policy), so every step below works without authoring one. Author a profile when you need per-map settings; see [Map profiles](./runtime/map-profile.md).
+:::
+
+## About the code on this page
+
+The C++ steps build three small things. Step 0 is the Game Instance, `LanternGameInstance.h` and `LanternGameInstance.cpp`. Step 1 is your player, `LanternPlayer.h` and `LanternPlayer.cpp`, with a Game Mode, `LanternGameMode.h` and `LanternGameMode.cpp`, that spawns it at the right moment. Steps 3 to 5 build one actor, `ALantern`, in `Lantern.h` and `Lantern.cpp`: step 3 gives you both files, each later step is what you add to them, and the finished actor is at the end of the page. The first comment line of each block names the file it goes in. The usual boilerplate is left out so the SDK parts stand out: add `#pragma once`, `#include "CoreMinimal.h"`, and the base class include (`GameFramework/Actor.h`, `GameFramework/Character.h`, `GameFramework/GameModeBase.h`, `Components/ActorComponent.h`, or `Engine/GameInstance.h`) at the top of each header yourself. Everything else, including the `.generated.h` line, is in the block.
+
+The Blueprint steps build the same things with one difference: the sign-in lives in the Game Mode Blueprint, not in a Game Instance, so there is a Game Mode Blueprint, a Character Blueprint, and one Actor Blueprint for the lantern. The lantern needs two components before you start: a **Sphere Collision** (the trigger a player walks into) and a **Point Light** named `Light`, the thing every lantern graph drives. Every Blueprint figure can be panned with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+
+## 0. Sign the player in
+
+Nothing connects by itself. The SDK requests its realtime connection only after a player signs in, so the game signs the player in once, at startup (from its Game Instance in C++, from its Game Mode in Blueprint): call `Login` (or `Register` for a new account) on the Crowdy SDK subsystem and wait for two events: **On Login** (the account is signed in) and then **On UDP Connection Success** (the realtime connection is up). Every entity, event, and property below depends on that connection.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+```cpp
+// LanternGameInstance.h
+#include "Subsystem/CrowdySDKSubsystem.h"
+#include "LanternGameInstance.generated.h"
+
+UCLASS(Config = Game)
+class ULanternGameInstance : public UGameInstance
+{
+	GENERATED_BODY()
+
+public:
+	virtual void Init() override;
+
+	// A development account read from Config/DefaultGame.ini. Never ship credentials in a game.
+	UPROPERTY(Config)
+	FString Email;
+
+	UPROPERTY(Config)
+	FString Password;
+
+private:
+	UFUNCTION()
+	void HandleLogin(bool bSuccess, FString Message);
+
+	UFUNCTION()
+	void HandleConnected();
+};
+
+// LanternGameInstance.cpp
+#include "LanternGameInstance.h"
+
+void ULanternGameInstance::Init()
+{
+	Super::Init();
+	UCrowdySDKSubsystem* Sdk = GetSubsystem<UCrowdySDKSubsystem>();
+	Sdk->OnLogin.AddDynamic(this, &ULanternGameInstance::HandleLogin);
+	Sdk->OnUDPConnectionSuccess.AddDynamic(this, &ULanternGameInstance::HandleConnected);
+	Sdk->Login(Email, Password);
+}
+
+void ULanternGameInstance::HandleLogin(bool bSuccess, FString Message)
+{
+	UE_LOG(LogTemp, Log, TEXT("Login %s %s"), bSuccess ? TEXT("ok") : TEXT("failed:"), *Message);
+}
+
+void ULanternGameInstance::HandleConnected()
+{
+	// From here on entities register on the wire and a host is elected.
+	UE_LOG(LogTemp, Log, TEXT("Connected to the app"));
+}
+```
+
+Make it the project's Game Instance under **Project Settings, Maps & Modes, Game Instance Class**, then give it a test account in `Config/DefaultGame.ini` (`YourModule` is your game module's name):
+
+```ini
+[/Script/YourModule.LanternGameInstance]
+Email=you@example.com
+Password=your-test-password
+```
+
+A package ships `DefaultGame.ini`, so remove these two lines before you package the game.
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+Create a Blueprint with **Game Mode Base** as its parent class and make it the project's default under **Project Settings, Maps & Modes, Default Modes, Default GameMode**, or set it as the test map's Game Mode Override in World Settings. In its event graph, **Event BeginPlay** gets the **Crowdy Authentication** subsystem and branches on its **Is Signed In**, so a map the player travels to later does not sign in again; when it is false, the latent **Login** node runs, with **On Success** and **On Error** pins. Fill in a test account.
+
+[Blueprint snippet: qs-login, see /bp/unreal-sdk/qs-login.txt]
+
+Sign in from the Game Mode, not from a Game Instance Blueprint's **Event Init**: that event runs before the SDK's subsystems exist, so **Login** would fail at once. [Authentication](./services/authentication.md#signing-in) says why.
+
+</TabItem>
+</Tabs>
+
+**Success signal.** The log reports `Login ok`, then `Connected to the app` (the two handlers in the C++ block; in Blueprint, bind **On UDP Connection Success** on the Crowdy SDK Subsystem for the second moment). From then on `Get UDP Connection State` on the subsystem reads connected. See [Authentication](./services/authentication.md) for the sign-in link and provider flows, and for restoring a saved session so a returning player types nothing.
+
+:::caution[A test account belongs in a config file or a pin default, never in shipped code.]
+:::
+
+## 1. Make your player a Crowdy entity
+
+Your player pawn is the first entity, before any lantern, because it is what makes you exist to the server. A pawn with a `UCrowdyEntityComponent` in **Dynamic** mode sends an actor update every replication interval (ten a second on the shipped profile), and a heartbeat at least once a second while it stands still; the server registers your position from those updates, and from then on you are a recipient of everything sent near you. The component needs three settings changed from their defaults: **Mode** Dynamic (the continuous channel; the default, Static, is for things that do not move), **Identity Policy** Player Derived (the identity is derived from the signed-in account, so it is the same on every client and on every launch; only valid on the locally controlled pawn), and **Ownership** Local Client (this client simulates the pawn; a pawn the Game Mode spawns is owned by the client that spawned it whatever this reads, so Local Client is the honest value; the default, Host, is for a level-placed world entity, which sends nothing until the elected host is known). Leave **State Executor** empty: the SDK's default executor snapshots the pawn's location and rotation, which is all this page needs.
+
+The identity is derived once and nothing re-derives it later: at `BeginPlay` when the pawn already has a controller, otherwise inside its first possession, which for a pawn the Game Mode spawns during play is the `RestartPlayer` call that spawned it. A pawn spawned by the Game Mode on the first frame begins play before the sign-in has answered, and its first updates leave before the server is ready for them, so the Game Mode starts players as spectators and the connected handler spawns the pawn instead. **On UDP Connection Success** fires once the server has assigned you and its readiness wait has elapsed (the SDK times that, you never do), and every update the pawn sends after it counts.
+
+Where the account id becomes readable. The engine possesses a pawn spawned during play only after its `BeginPlay`, so the component waits and registers inside that first possession, after the pawn's own **Possessed** and **Controller Changed** events; the first controller of any kind completes it, and an AI-possessed pawn takes the random-id fallback with its warning. A respawn that leaves the old pawn standing hands the account id to the new one, and the old pawn's component stops replicating. Read the id from the component's **On Crowdy Ownership Assigned** (`OnCrowdyOwnershipAssigned`) or the entity subsystem's `OnEntityRegistered`, never from `BeginPlay` or **Possessed**; **Is Locally Owned** on the pawn reads false until that registration, so a pawn graph that gates on it at `BeginPlay` runs nothing.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`ALanternPlayer` is a Character with a `Torch` point light and the entity component. `ALanternGameMode` names it as the default pawn, starts players as spectators, binds **On UDP Connection Success** in its own `BeginPlay`, and spawns the pawn with `RestartPlayer` when the event fires. The event fires again after a re-assignment, and `RestartPlayer` keeps a pawn the player already has, so a reconnect does not respawn you.
+
+```cpp
+// LanternPlayer.h
+#include "Components/PointLightComponent.h"
+#include "Replication/Components/CrowdyEntityComponent.h"
+#include "LanternPlayer.generated.h"
+
+UCLASS()
+class ALanternPlayer : public ACharacter
+{
+	GENERATED_BODY()
+
+public:
+	ALanternPlayer();
+
+	UPROPERTY(VisibleAnywhere, Category = "Lantern")
+	TObjectPtr<UPointLightComponent> Torch;
+
+	UPROPERTY(VisibleAnywhere, Category = "Crowdy")
+	TObjectPtr<UCrowdyEntityComponent> CrowdyEntity;
+};
+
+// LanternPlayer.cpp
+#include "LanternPlayer.h"
+
+ALanternPlayer::ALanternPlayer()
+{
+	Torch = CreateDefaultSubobject<UPointLightComponent>(TEXT("Torch"));
+	Torch->SetupAttachment(RootComponent);
+
+	// Dynamic sends the transform every interval, Player Derived names the entity after the signed-in user, Local Client makes this client its sender.
+	CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
+	CrowdyEntity->Mode = ECrowdyEntityMode::Dynamic;
+	CrowdyEntity->IdentityPolicy = ECrowdyIdentityPolicy::PlayerDerived;
+	CrowdyEntity->Ownership = ECrowdyOwnership::LocalClient;
+}
+```
+
+```cpp
+// LanternGameMode.h
+#include "LanternGameMode.generated.h"
+
+// Spawns the Lantern Player only once the app connection is up, so its first update carries the signed-in identity.
+UCLASS()
+class ALanternGameMode : public AGameModeBase
+{
+	GENERATED_BODY()
+
+public:
+	ALanternGameMode();
+	virtual void BeginPlay() override;
+
+private:
+	UFUNCTION()
+	void HandleConnected();
+};
+
+// LanternGameMode.cpp
+#include "LanternGameMode.h"
+
+#include "LanternPlayer.h"
+#include "Subsystem/CrowdySDKSubsystem.h"
+
+ALanternGameMode::ALanternGameMode()
+{
+	DefaultPawnClass = ALanternPlayer::StaticClass();
+	bStartPlayersAsSpectators = true;
+}
+
+void ALanternGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	GetGameInstance()->GetSubsystem<UCrowdySDKSubsystem>()->OnUDPConnectionSuccess.AddDynamic(this, &ALanternGameMode::HandleConnected);
+}
+
+void ALanternGameMode::HandleConnected()
+{
+	// The pawn's updates from here on are what make this client present to the server; on a reconnect the player keeps the pawn it has.
+	RestartPlayer(GetWorld()->GetFirstPlayerController());
+}
+```
+
+`ALanternPlayer` has no mesh and no input of its own, so keep the body and the movement you already have: open the template's `BP_ThirdPersonCharacter` (or your own Character), set its **Parent Class** to `Lantern Player` under **Class Settings**, then create a Blueprint whose parent is `Lantern Game Mode` and set its **Default Pawn Class** to that character, overriding the C++ class the constructor names. Make that Game Mode Blueprint the project's default under **Project Settings, Maps & Modes, Default Modes, Default GameMode**, or set it as the test map's Game Mode Override in World Settings. The Game Instance from step 0 is unchanged.
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+One more Blueprint, the Character, and the Game Mode from step 0.
+
+1. **The Character.** Open the template's `BP_ThirdPersonCharacter`, or your own Character that already moves; a new Blueprint with **Character** as its parent has no body and no input, so do not start from one. In the Components panel click **Add** and choose **Crowdy Entity Component**. In its Details panel, under **Crowdy SDK, Entity Component**, set **Mode** to **Dynamic**, **Identity Policy** to **Player Derived**, and **Ownership** to **Local Client**. Two rows appear once Mode is Dynamic, **State Executor** and **Auto Register**: leave the executor at None and Auto Register ticked; a third, **Host Override**, appears once Ownership is Local Client: leave it at Allow. Add a **Point Light** named `Torch` while you are there; a later page drives it.
+2. **The Game Mode.** Open the Game Mode Blueprint from step 0. Set **Default Pawn Class** to your Character and tick **Start Players as Spectators** under **Game Mode**.
+3. **The spawn.** In the same Game Mode's event graph, from **Event BeginPlay**, get the **Crowdy SDK Subsystem** and **Bind Event to On UDP Connection Success** to a custom event `OnConnected` (the same **Bind Event** shape the [Authentication](./services/authentication.md#after-sign-in) page uses for On Login). A graph has one **Event BeginPlay** and step 0 already uses it, so run the event into a **Sequence** node: the bind on its first pin, the sign-in from step 0 on its second. `OnConnected` calls **Restart Player** with **Get Player Controller** (index 0) on its New Player pin. In a map the player travels to later, the connection is already up and On UDP Connection Success does not fire again, so on a third Sequence pin check **Get UDP Connection State** and, when it is **Connected**, call **Restart Player** the same way.
+
+![The entity component's Details panel at its defaults: change Mode, Identity Policy, and Ownership](/img/unreal-sdk/entity-mode-identity.png)
+
+[Blueprint snippet: qs-player-spawn, see /bp/unreal-sdk/qs-player-spawn.txt]
+
+</TabItem>
+</Tabs>
+
+**Success signal.** Press Play. The map sits still under a fixed camera until `Connected to the app`, then your character spawns at a Player Start and you can move it. With `crowdy.entity.trace 1` on, the log shows the pawn's entity registering on the wire right after the connection comes up.
+
+:::caution[A pawn that begins play before the sign-in has answered derives its identity from user id 0.]
+Nothing warns. Two such clients conflate into one player, and the host cannot be found by its avatar. Keep the pawn's spawn behind **On UDP Connection Success**, as the block does: the pawn then registers under your account's id inside the possession that `RestartPlayer` performs.
+:::
+
+## 2. See yourself
+
+Walk forward. Within a second or two a second copy of your character appears where you were a moment ago and follows you around at a small delay (if you kept a bare Character with no mesh, the copy is the torch light alone). That is not a local mirror: your updates went to the server, the server fanned them back to every client in range, you included, and the actor pool on this client drew the result as a proxy of your own class, interpolated to about 100 milliseconds plus one round trip behind you. The shipped profile keeps that echo because **Enable Owner Tracking** on the map profile defaults to on; turning it off drops your own echo and nothing else.
+
+What it means: the server received your updates, so you exist to it. The same updates are what make you a recipient of the lantern's event in step 4. In a shipped game you hide one side of the pair yourself (`SetActorHiddenInGame` on the local pawn when `IsLocallyOwned()`, or leave the echo off); for this page, keep it: it is the proof.
+
+{/* Screenshot pending: qs-own-reflection (window shot, user-driven; steps in the shot manifest). */}
+
+The other way to see the same thing is two real clients. Open two Play in Editor windows signed into two different accounts, as [Testing locally](./guides/testing-locally.md#two-pie-client-setup) describes; each window shows the other's pawn as a proxy, moving as its owner moves.
+
+**Success signal.** A second character follows you. If none appears, check in this order: the log shows `Connected to the app`; the pawn spawned after it, not on the first frame; the map's profile (or the shipped default) has its actor tracker on; `crowdy.entity.trace 1` shows the registration.
+
+## 3. Light a lantern
+
+An entity is an actor with a `UCrowdyEntityComponent`. Two of the component's defaults are what most level-placed things want: **Static** mode (event-only; the other mode, **Dynamic**, streams a state snapshot every replication interval, as your pawn does) and a **Stable** identity every client derives the same way. This example changes the third: it sets **Ownership** to Local Client, so the client that placed the lantern owns it the moment it registers. With the default, Host, an entity is owned by the elected host, and `IsLocallyOwned()` stays false until the host is known, which happens after the sign-in above completes.
+
+The lantern is a sphere trigger with a point light on it. On the client that owns it, the light turns blue; on every other client it keeps its default colour. That is the ownership question, asked once at `BeginPlay`.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+```cpp
+// Lantern.h
+#include "Components/PointLightComponent.h"
+#include "Components/SphereComponent.h"
+#include "Replication/Components/CrowdyEntityComponent.h"
+#include "Lantern.generated.h"
+
+UCLASS()
+class ALantern : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	ALantern();
+
+	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere, Category = "Lantern")
+	TObjectPtr<USphereComponent> Trigger;
+
+	UPROPERTY(VisibleAnywhere, Category = "Lantern")
+	TObjectPtr<UPointLightComponent> Light;
+
+	// Makes the actor an entity: every client in the session sees it, one of them owns it.
+	UPROPERTY(VisibleAnywhere, Category = "Crowdy")
+	TObjectPtr<UCrowdyEntityComponent> CrowdyEntity;
+};
+
+// Lantern.cpp
+#include "Lantern.h"
+
+ALantern::ALantern()
+{
+	Trigger = CreateDefaultSubobject<USphereComponent>(TEXT("Trigger"));
+	Trigger->InitSphereRadius(100.f);
+	SetRootComponent(Trigger);
+	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("Light"));
+	Light->SetupAttachment(Trigger);
+
+	// The client that places the lantern owns it at once; a host-owned entity waits for the host election.
+	CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
+	CrowdyEntity->Ownership = ECrowdyOwnership::LocalClient;
+}
+
+void ALantern::BeginPlay()
+{
+	Super::BeginPlay();
+	if (CrowdyEntity->IsLocallyOwned())
+	{
+		Light->SetLightColor(FLinearColor(0.4f, 0.7f, 1.f));
+	}
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+In the Actor Blueprint, click **Add** in the Components panel and choose **Crowdy Entity Component**, then set its **Ownership** to **Local Client** in the Details panel. In the event graph:
+
+[Blueprint snippet: qs-entity, see /bp/unreal-sdk/qs-entity.txt]
+
+</TabItem>
+</Tabs>
+
+**Success signal.** Place the lantern in the map and press Play. Its light is blue, because this client owns it. The component also broadcasts `OnCrowdyOwnershipAssigned` on every client on the tick after the entity registers, with `bIsLocallyOwned` true on the owner; bind to it when you need the answer from an event rather than a poll. Once the sign-in has connected, `crowdy.entity.trace 1` logs the entity's registration on the wire.
+
+## 4. Send one RPC event
+
+An RPC event is a function you mark with `CrowdyEvent`. You call it like any function; the SDK runs the matching receiver on the other clients. The recipient decides who: `SpatialMulticast` (everyone in range, the default), `Multicast` (everyone on the session channel), `OwningClient`, or `Host`. A spatial event is addressed by position, and a client's position is the one its pawn's updates registered: this works now because step 1 put you on the map, and it reaches only clients whose pawns did the same.
+
+The lantern's event is `Flicker`: walking into the lantern blinks its light off and on for a moment, and every client in range sees the blink. Only the owning client reacts to the overlap; on a `SpatialMulticast` event the owner runs the body itself and sends it to everyone in range, so a proxy's copy of the overlap must not send a second one.
+
+In C++ the pattern has two halves. The **receiver** is a normal `UFUNCTION` you declare yourself, named `<Name>_Implementation` and tagged with the `CrowdyEvent` meta; it is what runs on every recipient. The **call site** is `CROWDY_EVENT(<Name>)`, a macro placed inside the class body (no trailing semicolon) that generates `<Name>(...)`: calling it marshals the arguments and sends them. The receiver has to be a real `UFUNCTION` because the header tool does not expand macros when it scans for reflected functions.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+```cpp
+// Lantern.h
+#include "Replication/RPC/CrowdyEvent.h"
+
+virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+// The receiver runs on every client in range, the caller included; Flicker() is the call that sends it.
+UFUNCTION(meta = (CrowdyEvent, CrowdyRecipient = "SpatialMulticast"))
+void Flicker_Implementation();
+CROWDY_EVENT(Flicker)
+
+// Lantern.cpp
+#include "TimerManager.h"
+
+void ALantern::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+	if (!CrowdyEntity->IsLocallyOwned())
+	{
+		return;
+	}
+	Flicker();
+}
+
+void ALantern::Flicker_Implementation()
+{
+	Light->ToggleVisibility();
+	FTimerHandle Handle;
+	GetWorldTimerManager().SetTimer(Handle, FTimerDelegate::CreateWeakLambda(this, [this] { Light->ToggleVisibility(); }), 0.2f, false);
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+A replicated event is a Custom Event with **Crowdy Replicates** ticked in its Details panel and a **Recipient** chosen there. The figure is the receiver. Call it by name from any graph on the actor, exactly like a local custom event: from **Event ActorBeginOverlap**, behind the same **Is Locally Owned** branch as step 3; the call node is the ordinary one the editor offers for any custom event.
+
+[Blueprint snippet: qs-event, see /bp/unreal-sdk/qs-event.txt]
+
+</TabItem>
+</Tabs>
+
+**Success signal.** Walk your pawn into the lantern: the light blinks. With one client there is nobody else to receive the event (a sender never receives its own event from the network); to see the send and the receive on the wire, loop it back to yourself:
+
+```text
+crowdy.rpc.loopback 1
+crowdy.rpc.trace 1
+```
+
+Now the blink comes from the looped-back receive instead of the local run, and the trace logs the send and the receive (function, entity, addressing, parameter bytes). Turn both off before you measure anything.
+
+## 5. Replicate one property
+
+A Crowdy State property is a `UPROPERTY` marked `CrowdyState`. On the lantern, which step 3 made Local Client owned, the owner assigns and stops: the SDK diffs the property every tick, ships the change to every proxy, then runs the `CrowdyOnRep` function there. That is the client-owned pattern, in either entity mode, Static or Dynamic. A host-owned entity is different: the lantern post on the [identity page](./concepts/entities-identity-ownership.md#example), or any placed actor left at **Ownership** = Host, never ships a plain assignment; mark the property `CrowdyManualDirty` and call `MarkStateDirty` on the entity component after each write (or give it `CrowdyHeartbeat`), as [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) explains.
+
+The flicker in step 4 is a moment: a client that joins afterwards never sees it. The lantern's lit state is different, it has to be the same on every client, late joiners included, so it is a replicated property, `bLit`. Walking out of the lantern flips it, and `OnRep_Lit` applies it to the light wherever the value lands. The SDK runs the owner's notify too, on the tick that ships the change; calling it here as well makes the light react on the same frame. That is safe because `OnRep_Lit` only applies the current value.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+```cpp
+// Lantern.h
+virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
+
+// View state: a wrong value is a visual glitch, not a cheat, so it belongs on the Crowdy State plane.
+UPROPERTY(meta = (CrowdyState, CrowdyOnRep = "OnRep_Lit"))
+bool bLit = true;
+
+UFUNCTION()
+void OnRep_Lit();
+
+// Lantern.cpp
+void ALantern::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorEndOverlap(OtherActor);
+	if (!CrowdyEntity->IsLocallyOwned())
+	{
+		return;
+	}
+	// On a client-owned entity, assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself. A host-owned entity needs CrowdyManualDirty and MarkStateDirty.
+	bLit = !bLit;
+	OnRep_Lit();
+}
+
+void ALantern::OnRep_Lit()
+{
+	Light->SetVisibility(bLit);
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+There is no node for this; it is a setting on the variable.
+
+1. Add a Boolean variable named `Lit` to the Actor Blueprint, default true.
+2. Select it in **My Blueprint** and find the **Crowdy Replication** dropdown in the Details panel.
+3. Set it to **Replicated**. A **RepNotify** field appears; the editor creates an `OnRep_Lit` function for you. In it, call **Set Visibility** on `Light` with `Lit`.
+4. Compile. The variable's Get and Set nodes now show the replication badge in their corner.
+
+From **Event ActorEndOverlap**, behind the same **Is Locally Owned** check, set `Lit` to NOT `Lit` and call `OnRep_Lit`. That is the client-owned pattern, the lantern's. On a host-owned actor (Ownership left at Host) a plain Set ships nothing: tick **Update manually** in the same dropdown and call **Mark Crowdy State Dirty** with the variable on its Property Name pin after each Set; see [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push). See [Crowdy State](./runtime/crowdy-state.md) for the other toggles in that dropdown.
+
+</TabItem>
+</Tabs>
+
+:::warning[Crowdy State and Unreal replication are mutually exclusive on one variable.]
+A Blueprint variable that is both natively Replicated and Crowdy Replicated fails to compile with an error in the Message Log. In C++, keep `Replicated` off a `CrowdyState` property. Pick one.
+:::
+
+**Success signal.** Walk through the lantern: the light goes out, and stays out; walk through again and it comes back. A single client owns the property but has no proxy to receive it, so to see the delivery, spawn a local mirror:
+
+```text
+crowdy.state.loopback 1
+crowdy.state.trace 1
+```
+
+The trace logs each delta and its size, and `OnRep_Lit` runs on the mirror. Turn both off afterwards.
+
+## 6. The finished lantern
+
+The two lantern files after steps 3 to 5, for comparison with your own:
+
+```cpp
+// Lantern.h
+#include "Components/PointLightComponent.h"
+#include "Components/SphereComponent.h"
+#include "Replication/Components/CrowdyEntityComponent.h"
+#include "Replication/RPC/CrowdyEvent.h"
+#include "Lantern.generated.h"
+
+UCLASS()
+class ALantern : public AActor
+{
+	GENERATED_BODY()
+
+public:
+	ALantern();
+
+	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere, Category = "Lantern")
+	TObjectPtr<USphereComponent> Trigger;
+
+	UPROPERTY(VisibleAnywhere, Category = "Lantern")
+	TObjectPtr<UPointLightComponent> Light;
+
+	// Makes the actor an entity: every client in the session sees it, one of them owns it.
+	UPROPERTY(VisibleAnywhere, Category = "Crowdy")
+	TObjectPtr<UCrowdyEntityComponent> CrowdyEntity;
+
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+	// The receiver runs on every client in range, the caller included; Flicker() is the call that sends it.
+	UFUNCTION(meta = (CrowdyEvent, CrowdyRecipient = "SpatialMulticast"))
+	void Flicker_Implementation();
+	CROWDY_EVENT(Flicker)
+
+	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
+
+	// View state: a wrong value is a visual glitch, not a cheat, so it belongs on the Crowdy State plane.
+	UPROPERTY(meta = (CrowdyState, CrowdyOnRep = "OnRep_Lit"))
+	bool bLit = true;
+
+	UFUNCTION()
+	void OnRep_Lit();
+};
+
+// Lantern.cpp
+#include "Lantern.h"
+#include "TimerManager.h"
+
+ALantern::ALantern()
+{
+	Trigger = CreateDefaultSubobject<USphereComponent>(TEXT("Trigger"));
+	Trigger->InitSphereRadius(100.f);
+	SetRootComponent(Trigger);
+	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("Light"));
+	Light->SetupAttachment(Trigger);
+
+	// The client that places the lantern owns it at once; a host-owned entity waits for the host election.
+	CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity"));
+	CrowdyEntity->Ownership = ECrowdyOwnership::LocalClient;
+}
+
+void ALantern::BeginPlay()
+{
+	Super::BeginPlay();
+	if (CrowdyEntity->IsLocallyOwned())
+	{
+		Light->SetLightColor(FLinearColor(0.4f, 0.7f, 1.f));
+	}
+}
+
+void ALantern::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+	if (!CrowdyEntity->IsLocallyOwned())
+	{
+		return;
+	}
+	Flicker();
+}
+
+void ALantern::Flicker_Implementation()
+{
+	Light->ToggleVisibility();
+	FTimerHandle Handle;
+	GetWorldTimerManager().SetTimer(Handle, FTimerDelegate::CreateWeakLambda(this, [this] { Light->ToggleVisibility(); }), 0.2f, false);
+}
+
+void ALantern::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorEndOverlap(OtherActor);
+	if (!CrowdyEntity->IsLocallyOwned())
+	{
+		return;
+	}
+	// On a client-owned entity, assign and stop: the SDK ships the change to every proxy; the owner runs the notify itself. A host-owned entity needs CrowdyManualDirty and MarkStateDirty.
+	bLit = !bLit;
+	OnRep_Lit();
+}
+
+void ALantern::OnRep_Lit()
+{
+	Light->SetVisibility(bLit);
+}
+```
+
+## Gotchas
+
+- No login, no connection. Until `Get UDP Connection State` reads connected, every step looks dead.
+- No pawn, no presence. The server knows you by your pawn's updates; a client whose pawn is not sending is at no position and receives no spatial event, and its own spatial sends reach nobody. A `Multicast` event is the exception: it goes by session channel membership, which connecting joins.
+- Spawn the pawn after **On UDP Connection Success**. Before it, the identity derives from user id 0 and the first updates leave before the server is ready to take them; nothing is queued or replayed, the next interval's update is the recovery. A pawn spawned after it registers inside its first possession, so read its id from **On Crowdy Ownership Assigned**, not at `BeginPlay`.
+- The Game Mode binds the event in its own `BeginPlay`. A map opened after the connection is already up never sees it; check **Get UDP Connection State** at `BeginPlay` first and restart the player at once when it reads connected, or bind in the Game Instance and spawn from there.
+- A map whose `MapProfiles` row or `DefaultProfile` names an asset that did not load is inactive; the warning names the asset. Check that before any code. A map with no row at all runs on the shipped default.
+- The loopback variables are test aids. Leave them off in a normal session; they change what a single client sees.
+- An RPC receiver must be a real `UFUNCTION` you declare yourself; the `CROWDY_EVENT` macro only generates the call site.
+
+## Next steps
+
+- [The Two Planes](./concepts/two-planes.md): decide where each new piece of state goes.
+- [Entities, Identity, and Ownership](./concepts/entities-identity-ownership.md): owner, proxy, host, and what Ownership chooses.
+- [Sessions and presence](./concepts/sessions-and-presence.md): what the server counts as a present player, and when it stops.
+- [Continuous state](./runtime/continuous-state.md): what your pawn sends every interval, and how to send more than the transform.
+- [Entities and spawning](./runtime/entities-and-spawning.md): spawn entities at runtime and receive them on remote clients.
+- [RPC events in C++](./runtime/rpc-events-cpp.md) and [in Blueprint](./runtime/rpc-events-blueprint.md).
+- [Crowdy State](./runtime/crowdy-state.md): the five metadata keys and what each does.
+
+# For AI Agents
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/for-ai-agents
+
+# For AI Agents
+
+This page is the routing layer for a coding agent working inside a studio's Unreal project. It does not re-explain the SDK; every row links the page that owns the fact, and the text of every page is available as plain-text files, one per section. Read this page, then pull only the pages a task needs.
+
+Machine-readable files sit beside the docs. This page is where they are described. Start at the index, pull one section file, and check the slim symbol index before the full manifest.
+
+| File | Size | Use it when |
+|---|---|---|
+| [`/helpers/unreal-sdk/llms.txt`](pathname:///helpers/unreal-sdk/llms.txt) | about 42 KB | You are starting a task. Every page with its URL and a one-line description, grouped into sections, each with the URL and size of its section file. |
+| `/helpers/unreal-sdk/llms-<section>.txt`: [`start`](pathname:///helpers/unreal-sdk/llms-start.txt), [`concepts`](pathname:///helpers/unreal-sdk/llms-concepts.txt), [`studio`](pathname:///helpers/unreal-sdk/llms-studio.txt), [`runtime`](pathname:///helpers/unreal-sdk/llms-runtime.txt), [`mass`](pathname:///helpers/unreal-sdk/llms-mass.txt), [`exec`](pathname:///helpers/unreal-sdk/llms-exec.txt), [`services`](pathname:///helpers/unreal-sdk/llms-services.txt), [`guides`](pathname:///helpers/unreal-sdk/llms-guides.txt), [`reference`](pathname:///helpers/unreal-sdk/llms-reference.txt) | 20 to 430 KB each | You know which part of the SDK the task touches. Every page of that section as plain text, with C++ snippets inlined and a pointer line for each Blueprint graph. A section over 200 KB is split by subfolder: `exec` and `mass` also have `llms-exec-from-blueprint.txt`, `llms-exec-from-cpp.txt`, `llms-exec-examples.txt` and the same three for `mass`; `llms-exec.txt` then holds only the section's top-level pages. The index lists every file with its size. |
+| [`/helpers/unreal-sdk/sdk-surface-index.jsonl`](pathname:///helpers/unreal-sdk/sdk-surface-index.jsonl) | about 340 KB | You need to know whether a symbol exists, which module and header it lives in, or where to look. One line per symbol: name, kind, module, header, and the first sentence of its help text where the manifest has one (console variables only today). Line one names the columns. |
+| [`/helpers/unreal-sdk/sdk-surface.json`](pathname:///helpers/unreal-sdk/sdk-surface.json) | about 3 MB | The index is not enough: you need a function's specifiers and return type, a struct's metadata, an enum's values or a delegate's signature. Too large to read whole; query it with `jq` or a script. See [SDK surface manifest](./reference/sdk-surface.md). |
+| [`/helpers/unreal-sdk/llms-full.txt`](pathname:///helpers/unreal-sdk/llms-full.txt) | about 1.6 MB | A tool wants every page in one file. About 400,000 tokens, so it does not fit a context window. Prefer the section files. |
+| [`/helpers/unreal-sdk/AGENTS.md`](pathname:///helpers/unreal-sdk/AGENTS.md) | under 8 KB | A drop-in for a project root, `CLAUDE.md`, or `.cursorrules`: the locked rules and one example per marker. |
+
+## Where does this state go
+
+Ask one question: can a malicious client benefit from lying about this value? If yes, it belongs on the truth plane, in your app's server code on [ck-exec](/exec/intro), which the SDK reaches from C++ or Blueprint through [Server Logic](./exec/overview.md). If no, it is view state. [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) owns the rule and every row but the door's; that one applies the same test.
+
+| State | Plane | Mechanism | Owning page |
+|---|---|---|---|
+| Movement | View | Dynamic entity mode, continuous state channel | [Continuous state](./runtime/continuous-state.md) |
+| Animation blend state | View | `meta=(CrowdyState)` property, diffed on change | [Crowdy State](./runtime/crowdy-state.md) |
+| A one-shot trigger (muzzle flash, impact) | View | `meta=(CrowdyEvent)` RPC, not a state field | [RPC events](./runtime/rpc-events-cpp.md) |
+| Hit points, inventory, currency | Truth | Your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) |
+| Match score | Truth | A hub for the match in your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) |
+| A chat line | View | `CrowdyEvent` with the `Multicast` recipient, session channel | [Channels](./runtime/channels.md) |
+| A door's open flag | View | `CrowdyState` boolean: a lie is a visual glitch. A placed door is host-owned, so the flag is also `CrowdyManualDirty` and the host calls `MarkStateDirty` after each write. If the door gates progress (a lock), the lock state belongs in your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes), [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) |
+| A player's display name | View | `CrowdyState` property; route it through the avatars service if it must persist | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes), [Avatars](./services/avatars.md) |
+
+:::danger[Authoritative or cheat-sensitive state never belongs in Crowdy State.]
+Crowdy State is written by the owning client and believed by everyone else. Low latency is not a reason to move a value to the view plane; predict locally and let the server's confirmed value overwrite the prediction. [The Two Planes](./concepts/two-planes.md#gotchas).
+:::
+
+## The marker vocabulary
+
+Two of the three are `meta=(...)` keys; the entity is a component. One canonical example each, all from the same lantern the [Quickstart](./quickstart.md) builds; the snippet id names the file the docs render.
+
+| Marker | Goes on | Canonical example | Owning page |
+|---|---|---|---|
+| `CrowdyEntity` | A `UCrowdyEntityComponent` on an `AActor` (the component is the marker; set `Ownership`) | `qs-entity` | [Entities, identity, ownership](./concepts/entities-identity-ownership.md) |
+| `CrowdyState` (+ `CrowdyOnRep`) | A `UPROPERTY` on an entity actor. On a client-owned entity (`Ownership` = Local Client, the lantern) the owner assigns and calls the notify itself; on a host-owned entity (`Ownership` = Host, the default a placed actor keeps) a plain assignment never ships: add `CrowdyManualDirty` and call `MarkStateDirty` after each write, or add `CrowdyHeartbeat` | `qs-state` | [Crowdy State](./runtime/crowdy-state.md#mark-a-property), [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) |
+| `CrowdyEvent` + `CrowdyRecipient` | A `UFUNCTION` named `X_Implementation`, plus `CROWDY_EVENT(X)`; recipient is one of `SpatialMulticast`, `Multicast`, `OwningClient`, `Host` | `qs-event` | [RPC events](./runtime/rpc-events-cpp.md#routing-keys) |
+
+Four rules the examples assume: the first thing a client needs is its own pawn as a `Dynamic`, `PlayerDerived`, `LocalClient` entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; that pawn registers inside its first possession, since the engine possesses a runtime spawn after its `BeginPlay`, so read its id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned`, not at `BeginPlay`; a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); a `CrowdyOnRep` function takes no parameters, read the property for the new value ([Crowdy State](./runtime/crowdy-state.md)); and the lantern's assign-and-stop is the client-owned pattern, because the Quickstart sets its `Ownership` to Local Client: a host-owned entity (`Ownership` = Host, the default a placed actor keeps: Static, Stable, level-placed) never ships a plain `CrowdyState` write, so mark the property `CrowdyManualDirty` and call `MarkStateDirty` after each write, or give it `CrowdyHeartbeat` ([the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push)).
+
+## Three things that break silently in a cooked build
+
+Editor and Play in Editor hide all three. Only a packaged build shows them.
+
+| Break | Why it is silent | Fix | Owning page |
+|---|---|---|---|
+| Reading `HasMetaData` at runtime | Cooked and Shipping builds strip UObject metadata; the check answers `false` and marker-driven code goes dark with no error | Read `UCrowdyBakedRegistry`; the SDK already does this for RPC and Crowdy State metadata | [Packaging](./guides/packaging.md#1-rebuild-the-baked-registry) |
+| A marker added after the last cook | The baked registry is a snapshot taken at cook time; a new marker is invisible until it is rebaked | Cook again: the cook rebakes the registry at its start, so the break is a package cooked before the marker existed. **Tools > Rebuild Crowdy Registry** or Studio's **Rebuild (Deep Scan)** only refresh the in-editor view of the bake | [Packaging](./guides/packaging.md#1-rebuild-the-baked-registry), [Inspector and Registry](./studio/inspector-and-registry.md) |
+| A placement guid read at `BeginPlay` | The engine releases the per-placement guid before `BeginPlay` in a cooked build; the editor keeps it alive | Read placement data at `OnRegister`, never at `BeginPlay` | [Stable identity in a packaged build](./concepts/entities-identity-ownership.md#stable-identity-in-a-packaged-build) |
+
+A fourth hazard is loud, not silent: Shipping sets `WITH_DEV_AUTOMATION_TESTS` to 0, and a target that forces dev tests back on can then fail to compile a test file through a `!UE_BUILD_SHIPPING` region it reaches via a header. [What Shipping strips](./guides/packaging.md#5-what-shipping-strips).
+
+## Settings never to hand-edit
+
+Config Sync in Crowdy Studio writes the Network category of `UCrowdySDKDeveloperSettings` into `Config/DefaultGame.ini` under `[/Script/CrowdyReplication.CrowdySDKDeveloperSettings]`. The fields are read-only in Project Settings on purpose; a hand-pasted value is overwritten by the next sync, and a drifted project fails to connect with no obvious error.
+
+| Never hand-type | Owned by you (fine to edit) | Owning page |
+|---|---|---|
+| `Environment`, `DiscoveryUrl`, `AppID`, `OrgId`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`, `HostPollIntervalSeconds` | `MapProfiles`, `DefaultProfile`, `BakedRegistry`, `PreloadedEntityClasses`, `IDOverrides`, `ClassIDOverrides` | [Config Sync](./studio/config-sync.md#what-config-sync-writes-and-what-you-own), [Project settings](./reference/project-settings.md) |
+
+Do not copy the plugin's `[CoreRedirects]` into the project's `DefaultEngine.ini` either; `Plugins/CrowdySDK/Config/DefaultCrowdySDK.ini` already carries them. [Packaging](./guides/packaging.md#6-coreredirects-ship-with-the-plugin).
+
+## Drive the editor without a window
+
+An agent cannot press editor buttons. Two commandlets do what the Server Compute panel and Crowdy Studio's Project page do, from a shell:
+
+```
+UnrealEditor-Cmd.exe <Project>.uproject -run=CrowdyServerCompute -op=<op> [switches] [-out=result.json]
+UnrealEditor-Cmd.exe <Project>.uproject -run=CrowdyStudio -op=<op> [switches] [-out=result.json]
+```
+
+Exit code 0 is success, 1 is a refusal or a failure, and `-out=` writes the result as JSON (`ok`, `error`, and the op's own fields). An op that changes the project or the app needs `-yes`; without it the op says what it would do and changes nothing. A commandlet run with an unknown or no `-op` prints every op it has.
+
+Close the Unreal Editor first. It holds the project's Server Object types and settings in memory and saves its own copy over what an op wrote, so an op that writes the project refuses while an editor runs unless you pass `-editoropen`.
+
+| Step | Op | Owning section |
+|---|---|---|
+| Check the sign-in and the project's app | `-run=CrowdyServerCompute -op=whoami` | [From the command line](./exec/deploy-with-server-compute.md#from-the-command-line) |
+| List organizations, apps and datacenters | `-run=CrowdyStudio -op=apps` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
+| Create an app | `-run=CrowdyStudio -op=createapp -org=<id> -name="My Game" -slug=my-game -datacenter=<code> -yes` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
+| Point the project at an app | `-run=CrowdyStudio -op=sync -app=<id> -yes` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
+| Read every entity class's CrowdyEvent routing and CrowdyState flags | `-run=CrowdyStudio -op=registry [-class=<substring>] [-norebuild] [-out=file]` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
+| Add Game Kit starters | `-op=addstarter -starter=<name>` | [Add a starter](./exec/use-game-kit-starters.md#add-a-starter) |
+| Define a Server Object type | `-op=exporttype -spec=type.json` (a template), `-op=newtype -spec=@type.json`, `-op=edittype -type=T -spec=@type.json -yes` | [Define a type from a file](./exec/deploy-with-server-compute.md#define-a-type-from-a-file) |
+| Generate its server code | `-op=generate -type=T`, or `-op=generate -yes` for every type that is out of date | [From the command line](./exec/deploy-with-server-compute.md#from-the-command-line) |
+| Remove or rename a type | `-op=removetype -type=T -yes`, `-op=renametype -type=T -to=/Game/Path/NewName -yes` (without `-yes` they only say what they would do) | [From the command line](./exec/deploy-with-server-compute.md#from-the-command-line) |
+| Write its logic | Edit `Server/<Type Name>/src/logic.rs` | [Write logic.rs](./exec/write-server-logic.md#write-logicrs) |
+| Deploy, call and read back | `-op=deploy -yes`, `-op=call -type=T -fn=F -key=K -inputs=@in.json -yes`, `-op=logs [-level=errors]`, `-op=instances` | [From the command line](./exec/deploy-with-server-compute.md#from-the-command-line) |
+| Move running Server Objects to the new deploy | `-op=restart -type=T -yes`, or `-op=restart -yes` for every type with an instance on older code | [From the command line](./exec/deploy-with-server-compute.md#from-the-command-line) |
+| Set up access features, teams, channels and grids | `-run=CrowdyStudio -op=features`, `-op=definefeature`, `-op=createteam`, `-op=createchannel`, `-op=creategrid`, `-op=grantgrid` and more (comma lists without spaces: `-keys=a,b`) | [Access, teams, channels and grids](./studio/config-sync.md#access-teams-channels-and-grids) |
+
+`-op=generate` reports, per type, the functions `logic.rs` is missing and the ones it defines that the type no longer has, so the next edit is known. `-op=batch -ops=<file>` runs many ops in one editor start.
+
+Who owns which file:
+
+| File | Owner |
+|---|---|
+| `Server/<Type Name>/src/logic.rs`, and any `src/logic/<name>.rs` it declares with `mod <name>;` | You |
+| `Cargo.toml`, `src/lib.rs`, `src/types.rs` in the same folder | Generate rewrites them; never edit |
+| `Server/<Type Name>/revisions.json` | Server Compute: every kept deploy's code in full, so a restore is a copy |
+| `GameKitWorld`, `GameKitActorStarters`, `PreloadedEntityClasses` and the map profiles in `Config/DefaultGame.ini` | You |
+| The Network settings in `Config/DefaultGame.ini` | Config Sync, or `-run=CrowdyStudio -op=sync` |
+
+Two things still need a person. Crowdy Studio's sign-in is once per machine and again when it expires; `-op=whoami` says whether it is there. The Blueprint-only editors (the Crowdy Replication variable panel, Crowdy Replicates events) have no text form; write the [C++ markers](#the-marker-vocabulary) instead. The `sbx.*` console commands exist only in the SDK's own Sandbox project, not in yours.
+
+## Testing without a second client
+
+Both switches are off by default. Turn them back off before testing real two-client routing. [Testing locally](./guides/testing-locally.md).
+
+| Console variable | What it does | Owning section |
+|---|---|---|
+| `crowdy.rpc.loopback 1` | A sent `CrowdyEvent` is also delivered to your own receive path, once; a call made from inside the replayed body does not loop again | [Single-client RPC loopback](./guides/testing-locally.md#single-client-rpc-loopback) |
+| `crowdy.state.loopback 1` | A state delta for an owned entity is decoded onto a lazily spawned local mirror (`RemoteProxy` role, its own NetID), so `OnRep` fires with one client. The mirror's trace line always says `(targeted)`; that label is cosmetic | [Single-client Crowdy State loopback](./guides/testing-locally.md#single-client-crowdy-state-loopback) |
+
+For a headless smoke test in a development build, `crowdy.auth.signin.file <path>` signs in a test account from a JSON file (`{"email": "...", "password": "..."}`; never type a password on a console line), and `crowdy.auth.status` reports `SignedIn=true` once it has finished: poll it before player-side commands. [Sign in from the console](./guides/testing-locally.md#sign-in-from-the-console).
+
+## Trace console variables
+
+Every area exposes `crowdy.<area>.trace`, off by default; warnings and errors print regardless. The four to reach for first, and the two to leave alone:
+
+| Console variable | Shows | Owning page |
+|---|---|---|
+| `crowdy.rpc.trace` | Every `CrowdyEvent` send and receive: function, entity, addressing, owned or delegated | [Testing locally](./guides/testing-locally.md#trace-console-variables) |
+| `crowdy.state.trace` | Owned-entity diffing, delta emission, datagram sizes | [Testing locally](./guides/testing-locally.md#trace-console-variables) |
+| `crowdy.entity.trace` | Registry add and remove, event routing and dispatch, actor tracking | [Testing locally](./guides/testing-locally.md#trace-console-variables) |
+| `crowdy.net.trace` | UDP transport: socket open and close, sends and receives, pool churn | [Testing locally](./guides/testing-locally.md#trace-console-variables) |
+| `crowdy.serialize.scopes`, `crowdy.state.scopes` | CPU trace scopes around every message decode, a real per-message cost; leave off unless reading that timing | [Console variables](./reference/console-cvars.md#trace-gates) |
+
+The full table, including behavior switches and diagnostic commands, is on [Console variables](./reference/console-cvars.md); which log category pairs with which trace is on [Log categories](./reference/log-categories.md).
+
+## Locked rules in one place
+
+| Rule | Owning page |
+|---|---|
+| Every id is `int64`; the app id travels as a JSON string and the SDK encodes it, never you | [The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code) |
+| The host is a convention, not enforcement; never gate cheat-sensitive state on it | [Host is a convention](./concepts/host-is-a-convention.md), [Host authority](./runtime/host-authority.md) |
+| Presence is the player's actor: a client with no fresh actor is at no position and receives no spatial event | [Sessions and presence](./concepts/sessions-and-presence.md#presence-is-the-players-actor) |
+| A world subsystem null-checks `GetGameInstance()` in `Initialize()`; it is null in the transient world at engine start | [Host authority](./runtime/host-authority.md#the-host-subsystem), [Replicated subsystems](./runtime/replicated-subsystems.md) |
+| An array parameter on a delegate handler is `const TArray<T>&`; a by-value parameter does not match and `AddDynamic` will not compile | [Teams](./services/teams.md) |
+| A `Multicast` call has a 1024-byte payload budget and is dropped loudly, never truncated; large payloads go on `SpatialMulticast` | [RPC events](./runtime/rpc-events-cpp.md#containers-and-their-bounds) |
+
+## Related
+
+- [Quickstart](./quickstart.md): the lantern every example above comes from.
+- [Best Practices](./guides/best-practices.md): the four rules stated in the abstract.
+- [Packaging](./guides/packaging.md): the checklist before a cooked build.

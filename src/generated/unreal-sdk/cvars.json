@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-29T06:42:10Z",
-  "sdk_version": "2.21.2",
+  "generated_from": "2026-10-30T06:52:35Z",
+  "sdk_version": "2.22.0",
   "table": "cvars",
   "columns": [
     {
@@ -239,7 +239,7 @@
       "kind": "variable",
       "role": "trace",
       "trace": true,
-      "help": "When non-zero, logs CrowdyVoice activity: voice chat subsystem, capture/playback service, and audio device monitoring. Off by default.",
+      "help": "When non-zero, logs CrowdyVoice activity: microphone, playback and audio device changes. Off by default.",
       "module": "CrowdyVoice",
       "editor": false,
       "allowlist": ""

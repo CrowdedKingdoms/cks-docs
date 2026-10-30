@@ -2,6 +2,29 @@
   {
     "_comment": "Symbols from static/helpers/unreal-sdk/sdk-surface.json that check-unreal-surface.mjs must not report as undocumented. Each real entry is {\"id\": \"<surface id, e.g. UCrowdyTeams::GetMyTeamById or UCrowdySDKDeveloperSettings::AppId>\", \"reason\": \"internal|deprecated|mass|editor\", \"note\": \"<why a reader does not need it>\"}. A settings class id covers every property of that class. Entries without an id, like this one, are ignored."
   },
+  { "id": "UCrowdyPersistenceSubsystem::DeriveInstanceKey", "reason": "internal", "note": "The persistence subsystem's per-instance key for a pushed struct, public so headless tests can check it without a world." },
+  { "id": "IsRecognisedCrowdyRecipient", "reason": "editor", "note": "The Blueprint compiler's check that a replicated event's Recipient is a known name; it warns on the node when not." },
+  { "id": "IsRecognisedCrowdyRoutingValue", "reason": "editor", "note": "The Blueprint compiler's check that a replicated event's Decay Rate or Replication Distance is a known name." },
+  { "id": "FCrowdyCppVoiceEncoder", "reason": "internal", "note": "The Opus voice encoder the voice subsystem uses to turn microphone frames into packets; the voice nodes and UVoiceChatSubsystem drive it." },
+  { "id": "FCrowdyCppVoiceEncoder::Encode", "reason": "internal", "note": "Encodes one microphone frame into a voice packet; the voice nodes and UVoiceChatSubsystem call it." },
+  { "id": "FCrowdyCppVoiceEncoder::IsValid", "reason": "internal", "note": "Whether the Opus encoder accepted its settings; the voice nodes and UVoiceChatSubsystem check it before sending." },
+  { "id": "FCrowdyCppVoiceEncoder::Skip", "reason": "internal", "note": "Advances the encoder's stream past silent frames that are not sent; the voice nodes and UVoiceChatSubsystem call it." },
+  { "id": "FCrowdyCppVoiceReceiver", "reason": "internal", "note": "Puts received voice packets in order per speaker, decodes them and conceals losses; the voice nodes and UVoiceChatSubsystem use it." },
+  { "id": "EPushResult", "reason": "internal", "note": "What the voice receiver made of one packet (buffered, late, duplicate or malformed); the voice nodes and UVoiceChatSubsystem count it." },
+  { "id": "FCrowdyCppVoicePlayout", "reason": "internal", "note": "One decoded voice frame ready to play, with its speaker and talk-spurt flags; the voice nodes and UVoiceChatSubsystem consume it." },
+  { "id": "FCrowdyCppVoiceReceiver::Forget", "reason": "internal", "note": "Drops one speaker's buffered frames and decoder; the voice nodes and UVoiceChatSubsystem call it when a stream is released." },
+  { "id": "FCrowdyCppVoiceReceiver::GetConcealedFrames", "reason": "internal", "note": "The voice receiver's running count of frames filled in by concealment; UVoiceChatSubsystem reads it into its stats." },
+  { "id": "FCrowdyCppVoiceReceiver::GetDuplicatePackets", "reason": "internal", "note": "The voice receiver's running count of duplicate packets it dropped; the voice nodes and UVoiceChatSubsystem read it." },
+  { "id": "FCrowdyCppVoiceReceiver::GetLatePackets", "reason": "internal", "note": "The voice receiver's running count of packets that arrived too late to play; the voice nodes and UVoiceChatSubsystem read it." },
+  { "id": "FCrowdyCppVoiceReceiver::GetMalformedPackets", "reason": "internal", "note": "The voice receiver's running count of packets it could not read; UVoiceChatSubsystem reads it into its stats." },
+  { "id": "FCrowdyCppVoiceReceiver::NumSpeakers", "reason": "internal", "note": "How many speakers the voice receiver is holding; UVoiceChatSubsystem reads it into its stats." },
+  { "id": "FCrowdyCppVoiceReceiver::Poll", "reason": "internal", "note": "Collects every voice frame now due to play, in order per speaker; UVoiceChatSubsystem calls it each tick." },
+  { "id": "FCrowdyCppVoiceReceiver::Push", "reason": "internal", "note": "Hands one received voice packet to the receiver for ordering and decoding; UVoiceChatSubsystem calls it for each incoming packet." },
+  { "id": "FCrowdyVoiceSettings", "reason": "internal", "note": "The voice requests that outlive one map (microphone wanted, echo, timeout), which UCrowdySDKSubsystem keeps and applies to each map's UVoiceChatSubsystem." },
+  { "id": "FCrowdyVoiceSettings::ApplyTo", "reason": "internal", "note": "Applies the kept voice requests to a new map's UVoiceChatSubsystem; UCrowdySDKSubsystem calls it as each map loads." },
+  { "id": "FCrowdyVoiceSettings::ClampStreamTimeout", "reason": "internal", "note": "Clamps the stream timeout to 0.5 seconds up to 1 hour; Set Voice Chat Stream Timeout Threshold goes through it and the page states the range." },
+  { "id": "FCrowdyVoiceSpeakerStream", "reason": "internal", "note": "One remote speaker's playback (a procedural wave and a 2D audio component) that UVoiceChatSubsystem keeps for itself." },
+  { "id": "CrowdyVoiceTrace::Voice", "reason": "internal", "note": "Whether crowdy.voice.trace is on, so the voice code logs its info lines; the page documents the CVar." },
   { "id": "FKindActors", "reason": "internal", "note": "The Crowdy Kit Actor subsystem's private list of one kind's kit actors; Get Kit Actor and ViewKitActors read it." },
   { "id": "FKitSlot", "reason": "internal", "note": "The Crowdy Kit Actor subsystem's private record of where one kit actor is held; nothing outside the class sees it." },
   { "id": "FKitEventRequest", "reason": "internal", "note": "The wire form of a Game Kit client event such as an emote; Send Emote builds and sends it." },
@@ -633,22 +656,12 @@
     "note": "Wire-format message struct the transport encodes and decodes; a game never builds one."
   },
   {
-    "id": "FClientAudioBody::AppendBody",
-    "reason": "internal",
-    "note": "Wire-format message struct the transport encodes and decodes; a game never builds one."
-  },
-  {
     "id": "FClientAudioNotification",
     "reason": "internal",
     "note": "Wire-format message struct the transport encodes and decodes; a game never builds one."
   },
   {
     "id": "FClientAudioPacketMessageRequest",
-    "reason": "internal",
-    "note": "Wire-format message struct the transport encodes and decodes; a game never builds one."
-  },
-  {
-    "id": "FClientAudioPacketMessageRequest::GetAccumulatedMessageSize",
     "reason": "internal",
     "note": "Wire-format message struct the transport encodes and decodes; a game never builds one."
   },
@@ -671,11 +684,6 @@
     "id": "FCrowdyActorUpdate::ResolveState",
     "reason": "internal",
     "note": "Accessor on a data struct the SDK fills."
-  },
-  {
-    "id": "FCrowdyAudioFrame",
-    "reason": "internal",
-    "note": "Wire-format message struct the transport encodes and decodes; a game never builds one."
   },
   {
     "id": "FCrowdyBakedRepLayoutHash",
@@ -3328,117 +3336,7 @@
     "note": "Router subscription the SDK's own services use; a game receives through CrowdyEvents, the reception layer or the entity component."
   },
   {
-    "id": "AWinAudioDeviceMonitor::GetAvailableAudioDevices",
-    "reason": "internal",
-    "note": "Private, non-exported actor the voice subsystem spawns for itself; a game cannot include or reference it."
-  },
-  {
-    "id": "AWinAudioDeviceMonitor::InitializeAudioDeviceMonitoring",
-    "reason": "internal",
-    "note": "Private, non-exported actor the voice subsystem spawns for itself; a game cannot include or reference it."
-  },
-  {
-    "id": "AWinAudioDeviceMonitor::ShutdownAudioDeviceMonitoring",
-    "reason": "internal",
-    "note": "Private, non-exported actor the voice subsystem spawns for itself; a game cannot include or reference it."
-  },
-  {
-    "id": "AWinAudioDeviceMonitor::OnAudioDeviceConnected",
-    "reason": "internal",
-    "note": "Private, non-exported actor the voice subsystem spawns for itself; a game cannot include or reference it."
-  },
-  {
-    "id": "AWinAudioDeviceMonitor::OnAudioDeviceDisconnected",
-    "reason": "internal",
-    "note": "Private, non-exported actor the voice subsystem spawns for itself; a game cannot include or reference it."
-  },
-  {
-    "id": "FVoiceChatService::CleanupDecoder",
-    "reason": "internal",
-    "note": "Opus capture and playback service driven by UCrowdySDKSubsystem's six voice calls; not a game surface."
-  },
-  {
-    "id": "FVoiceChatService::CompressAudioData",
-    "reason": "internal",
-    "note": "Opus capture and playback service driven by UCrowdySDKSubsystem's six voice calls; not a game surface."
-  },
-  {
-    "id": "FVoiceChatService::DecompressAudioData",
-    "reason": "internal",
-    "note": "Opus capture and playback service driven by UCrowdySDKSubsystem's six voice calls; not a game surface."
-  },
-  {
-    "id": "FVoiceChatService::HandleClientAudioNotification",
-    "reason": "internal",
-    "note": "Opus capture and playback service driven by UCrowdySDKSubsystem's six voice calls; not a game surface."
-  },
-  {
-    "id": "FVoiceChatService::SendAudioData",
-    "reason": "internal",
-    "note": "Opus capture and playback service driven by UCrowdySDKSubsystem's six voice calls; not a game surface."
-  },
-  {
-    "id": "FVoiceChatService::SetVoiceChatManagerReference",
-    "reason": "internal",
-    "note": "Opus capture and playback service driven by UCrowdySDKSubsystem's six voice calls; not a game surface."
-  },
-  {
-    "id": "UVoiceChatSubsystem::HandleAudioGeneration",
-    "reason": "internal",
-    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
-  },
-  {
-    "id": "UVoiceChatSubsystem::HandleIncomingAudio",
-    "reason": "internal",
-    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
-  },
-  {
-    "id": "UVoiceChatSubsystem::InitializeAudioCapture",
-    "reason": "internal",
-    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
-  },
-  {
-    "id": "UVoiceChatSubsystem::InitializeVoiceChatSubsystem",
-    "reason": "internal",
-    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
-  },
-  {
-    "id": "UVoiceChatSubsystem::ManagePlaybackBuffer",
-    "reason": "internal",
-    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
-  },
-  {
-    "id": "UVoiceChatSubsystem::ProcessAudioDataThread",
-    "reason": "internal",
-    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
-  },
-  {
     "id": "UVoiceChatSubsystem::SetStreamTimeoutThreshold",
-    "reason": "internal",
-    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
-  },
-  {
-    "id": "UVoiceChatSubsystem::SetVoiceChatService",
-    "reason": "internal",
-    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
-  },
-  {
-    "id": "UVoiceChatSubsystem::StartVoiceCapture",
-    "reason": "internal",
-    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
-  },
-  {
-    "id": "UVoiceChatSubsystem::StopTicking",
-    "reason": "internal",
-    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
-  },
-  {
-    "id": "UVoiceChatSubsystem::StopVoiceCapture",
-    "reason": "internal",
-    "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
-  },
-  {
-    "id": "UVoiceChatSubsystem::TickPlayback",
     "reason": "internal",
     "note": "Capture and playback plumbing behind UCrowdySDKSubsystem's six voice calls; voice-chat documents the reachable members."
   },

@@ -1,0 +1,686 @@
+# Crowdy Studio Overview
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/studio/overview
+
+# Crowdy Studio Overview
+
+Crowdy Studio is the management console for your app, and it runs inside the Unreal Editor as a dockable tab. You use it to point your project at an app, and to author the server-side pieces your runtime reads: teams, channels, and grids.
+
+Use it when you:
+
+- Start a project: sign in, pick the app, and write its ids and endpoints into the project with Config Sync.
+- Author server-side data ahead of play: teams, channels, grids.
+- Debug: watch a running Play in Editor session in the Inspector, or check the baked registry.
+- Manage your own account: your name, your password, and your sessions.
+
+:::tip[Start here before you write any runtime code.]
+Most setup mistakes come from a project pointed at the wrong app, or one that never ran Config Sync. Both are fixed on the Project page.
+:::
+
+## Open Crowdy Studio
+
+Two ways:
+
+- The Tools menu: **Tools, Crowdy SDK, Crowdy Studio**.
+- The **Crowded Kingdoms** wordmark button on the level editor toolbar, next to Play.
+
+The tab is called **Crowdy Studio**. Dock it anywhere, or float it on a second monitor, and it reopens from your saved layout.
+
+![The Home page of Crowdy Studio: account, organization, active app, and project sync status cards](/img/unreal-sdk/studio-home.png)
+
+## Editor-only, one-way
+
+Crowdy Studio is an editor module and never ships in a packaged build. It writes settings and server data; the runtime reads those on its own and never talks to Studio.
+
+:::info[Studio is editor-only and has no runtime API.]
+Studio writes three things into your project: the connection settings in `DefaultGame.ini` (Config Sync and the Connection tab), the baked registry asset under `Content/CrowdySDK` (the Registry page), and a per-user session file under `Saved/`. Your game reads the settings and the registry at startup. Everything else Studio authors lives on the server.
+:::
+
+## Native pages and the Web Console
+
+Studio has two surfaces.
+
+**Native pages** are Slate UI built into the editor. They cover the work you do while building: choosing an app, syncing config, checking the app's features and tier grants, authoring teams, channels and grids, and reading live state.
+
+**The Web Console** is an embedded browser for account and organization administration: members, billing, tokens, secrets. It signs you in with the session you already have in Studio. The sidebar's bottom button opens it on your organization's overview.
+
+## The sidebar
+
+The sidebar on the left lists the pages. A toggle at the top folds it to icons (hover an icon for its label) and remembers your choice.
+
+| Page | Group | Needs sign-in | What it is for |
+|---|---|---|---|
+| **Setup Wizard** | | No | The guided first run: sign in, pick an app, sync. Studio lands here after you sign in. |
+| **Home** | | Yes | Status cards: account, organization, active app, project sync. |
+| **Account** | | Yes, with your account | Your own name, password and sessions; an organization token has no account of its own. See [Your account](./sign-in.md#your-account). |
+| **Project** | CONFIGURE | Yes | Pick the app, create one, and run [Config Sync](./config-sync.md). See [Projects and Apps](./projects-and-apps.md). |
+| **Access** | CONFIGURE | Yes | The selected app's feature keys, and which access tiers grant each one. See [The Access page](#the-access-page). |
+| **Teams** | AUTHORING | Yes | Author teams, members, roles, and the team policy. See [Teams and Channels](./teams-and-channels.md). |
+| **Channels** | AUTHORING | Yes | Author named channels and the session channel. |
+| **Grid** | AUTHORING | Yes | Author spatial permission regions. See [Grids](./grids.md). |
+| **Inspector** | DEBUG | No | A read-only view of a running Play in Editor session. See [Inspector and Registry](./inspector-and-registry.md). |
+| **Registry** | DEBUG | No | The baked metadata that ships in packaged builds, and the button that rebuilds it. |
+| **Server Compute** | COMPUTE | Yes | Deploy your Server Object types and run them: versions, switching off and on, restarts. See [Deploy it with Server Compute](../exec/deploy-with-server-compute.md). |
+| **Web Console** | | Yes | Pinned at the bottom: opens the browser console for admin surfaces. |
+
+## The Access page
+
+**Access** sits in the Configure group, under **Project**, and works on the app selected on the Project page. A feature is a key that server logic checks a player's access tier for (`ctx.players().features(player)`, see [World and platform data](/exec/world-and-platform-data)); the tiers themselves are created in the web console.
+
+- The list on the left holds the app's features, with a search box. Each row shows the key, its description and how many tiers grant it.
+- Select a feature to see every access tier on the right, marked **GRANTED** where it has the feature, with a **Grant** or **Revoke** button on each.
+- **Define feature** opens a form for a new key and an optional description. A key is 1 to 64 letters, digits, underscores, hyphens and dots, the same rule a Server Object's **Required Feature** follows. Defining a key that exists updates its description.
+
+The page loads its lists the first time you open it for the selected app, not when Studio starts. Press **Refresh** to read them again. Features work with a sign-in with your account or with an organization token. A Server Object function uses them through [Required Feature](../exec/access-members-and-timers.md#required-feature).
+
+From a script, `-op=features`, `-op=definefeature`, `-op=grantfeature` and `-op=revokefeature` do the same work; see [Access, teams, channels and grids](./config-sync.md#access-teams-channels-and-grids).
+
+## Signing in
+
+Sign in with your account: email and password, a sign-in link sent by email, or a social provider. That gives you full authoring. An organization token gives management-only access: it can browse apps and run Config Sync, but not author teams, channels or grids. See [Signing In](./sign-in.md).
+
+:::caution[If an authoring page looks read-only, check which credential you signed in with.]
+Token sign-in is the usual cause.
+:::
+
+## Where to go next
+
+- New project: [sign in](./sign-in.md), then [pick your app](./projects-and-apps.md) and run [Config Sync](./config-sync.md).
+- Building gameplay: [Entities and Spawning](../runtime/entities-and-spawning.md).
+- Shipping a build: [Packaging](../guides/packaging.md), and rebuild the [registry](./inspector-and-registry.md) first.
+
+# Signing In
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/studio/sign-in
+
+# Signing In
+
+Crowdy Studio opens on its Sign In page. You sign in once; Studio remembers the session across editor launches until you sign out.
+
+## The sign-in page, top to bottom
+
+![The Sign In page: backend selector, email and password, sign-in link, organization token; the provider buttons appear above the form when the backend offers them](/img/unreal-sdk/studio-sign-in.png)
+
+1. **Backend.** A selector above the form. Leave it at its default unless Crowded Kingdoms told you otherwise.
+2. **Continue with ...** buttons, one per social provider your backend offers: Google, GitHub, Discord, Apple, or Microsoft. The section is hidden when none is offered. A provider sign-in opens your system browser, never an embedded web view, and returns to Studio when it completes.
+3. **Email** and **Password**, with **Log In**.
+4. **Email me a sign-in link.** Uses the email you typed above and sends a one-time link. Click the link in your mail client and this Studio window signs you in, no password needed.
+5. **Use an organization token instead.** A toggle at the bottom that reveals a token field and **Sign In with Token**.
+
+Options 2, 3, and 4 are all account sign-ins and end in the same place: a session that can author everything.
+
+## What each credential grants
+
+**An account sign-in** (email and password, a sign-in link, or a provider) gives you full authoring: Config Sync, teams, channels, grids, and the Web Console.
+
+**An organization token** gives management-only access. It can browse apps, run Config Sync, and reach the Web Console, but it cannot author game-plane data.
+
+:::caution[An organization token cannot author teams, channels, or grids.]
+Those pages need an account sign-in. If you signed in with a token and an authoring page looks read-only, sign out and sign in with your account. The token is the right choice for a build machine that syncs config and must not hold authoring credentials.
+:::
+
+After a successful sign-in Studio lands on the Setup Wizard, so the guided path is the first thing you see.
+
+## Agreeing to the terms
+
+When Studio asks the server for its access to your app and the account has not yet agreed to the current terms and age confirmation, Studio opens a small window titled **Crowdy Studio: terms and age** over the editor. It is the same prompt a player sees in your game: the documents as links, two check boxes, **Accept** and **Decline**. **Accept** carries on where Studio left off. **Decline**, or closing the window, stops there and Studio reports `Studio needs the terms and the age confirmation accepted for this account.` You see the prompt again only when a document gets a new version. How the same prompt works in a game, and how to draw your own, is on [Authentication](../services/authentication.md#let-the-player-agree-to-the-terms).
+
+## Where the session is kept
+
+Studio stores the signed-in session in a per-user file under your project's `Saved/CrowdyStudio/` folder, never under `Config/` and never in anything you would commit. The stored record remembers whether it was an account or a token sign-in, so a remembered account session comes back with its full authoring rights.
+
+:::info[On Windows the stored session is encrypted for your user account with the operating system's data protection (DPAPI). On other platforms it is written in the clear, and Studio warns about it.]
+Treat the `Saved` folder on a shared macOS or Linux machine as you would a credential file.
+:::
+
+## Your account
+
+The **Account** page, under **Home** in the sidebar, is for the account Studio is signed in with: yours, not a player's. It needs an account sign-in; an organization token has no account of its own, and the page says so. **Refresh** reads your name and email again, and **Web console** opens your account on the web, where sign-in methods and connected apps are managed.
+
+![The Account page: the name card with email, gamertag and disambiguation, then the Password tab](/img/unreal-sdk/studio-account.png)
+
+- **The name card** shows your gamertag, its disambiguation and your user id (with a copy button), and your email. **Edit name** turns it into two fields; **Save** changes both, and a pair another account has is refused.
+- **Password**: pick **I have a password** to change it, with your current password and a new one; your other devices are signed out while Studio stays signed in. Pick **I don't have one yet** to add one to an account made by magic link or social sign-in; it works at once, and a security email goes to your address.
+- **Sessions**: **Sign out everywhere** ends every session of your account, on every device and in every game, Studio's included, and returns Studio to the Sign In page.
+
+What a player can change from inside your game is on [Authentication](../services/authentication.md#account-settings) and [Player Names](../services/player-names.md).
+
+## Signing out
+
+Press **Sign Out** in the Studio header. It ends the session on the server, clears the stored session, clears the Web Console's browser session too, and returns you to the Sign In page. A token sign-in is only forgotten: the token stays valid, since others may use it.
+
+## Gotchas
+
+- The provider buttons come from the backend. A provider you expect but do not see is not enabled for that backend.
+- A sign-in link arrives by email. Check the address you typed if nothing comes.
+- Token sign-in is silent about what it cannot do until you open an authoring page. The page subtitle tells you it needs an account sign-in.
+- The backend selector is remembered with the project. Changing it changes which servers Config Sync writes into the project.
+
+## Related
+
+- [Projects and Apps](./projects-and-apps.md): pick or create the app after signing in.
+- [Config Sync](./config-sync.md): write the app's ids and endpoints into the project.
+- [Crowdy Studio overview](./overview.md): the sidebar and what needs a sign-in.
+
+# Projects and Apps
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/studio/projects-and-apps
+
+# Projects and Apps
+
+An **app** is one Crowded Kingdoms backend application: it has an id, an organization, a datacenter, a status, a visibility, and Game API endpoints. Your **project** is this Unreal project. The Project page points the project at exactly one app, then [Config Sync](./config-sync.md) writes that app's ids and endpoints into it.
+
+:::note[Since 2.14]
+The Project page is a single split view: the app list on the left, the selected app's details and its Configuration and Connection tabs on the right.
+:::
+
+## The Project page
+
+Open Crowdy Studio, sign in, and pick **Project** in the sidebar (the CONFIGURE group).
+
+![The Project page: organization filter and app list on the left, the selected app's details and Configuration tab on the right](/img/unreal-sdk/studio-projects.png)
+
+The left rail:
+
+- An **organization** combo box, with **All organizations** at the top. This is a filter for the list; it does not by itself change which organization new resources are created in.
+- A **Search apps** box.
+- A status strip: **All**, **Live**, **Draft**, **Archived**. It opens on All.
+- The app list, each row showing the app's name, its URL identifier, and its status. The count under the list says how many apps match, and how many free app slots the organization has used when one organization is selected.
+
+:::tip[Picking an organization in the filter narrows the list.]
+It does not move where a new app is created until you also pick or create an app there.
+:::
+
+Select an app and the right pane shows its details.
+
+## The app details
+
+The header card shows the app's name, a status pill (Draft or Live), a visibility pill (Private, Unlisted, or Public), a copyable app id, a copyable URL identifier, the organization, and creation and update dates.
+
+Below it, a fact grid: **Datacenter**, **Runtime** (the app's current runtime status), **Deployment**, **Game API URL**, **Game API WS URL**, **Org ID**, **Reserved UDP** (bytes per second), and **Reserved GraphQL** (operations per second).
+
+The action row:
+
+- **Edit details**: rename the app or change its description inline.
+- **Status**: Draft or Live.
+- **Visibility**: Private, Unlisted, or Public.
+- **Web console**: opens the organization's Apps tab in the browser console.
+- **Archive**: reversible.
+
+:::caution[Create, Edit details, Status, Visibility, and Archive need the manage_apps permission on the organization.]
+Without it the controls are disabled. That is a permission on your account or token, not a Studio setting.
+:::
+
+Under the details are two tabs, **Configuration** and **Connection**, which are the subject of [Config Sync](./config-sync.md).
+
+## Create an app
+
+Press **Create app** in the page header. It needs an organization to create in: pick one in the filter, or have an app of that organization selected. The dialog opens inside the page in two steps.
+
+![The Create app dialog, step 1: name, URL identifier preview, datacenter cards, advanced options](/img/unreal-sdk/studio-create-app.png)
+
+**Step 1, Name your app.** Type a name; the URL identifier (lowercase letters, digits, hyphens) is derived from it, and **Advanced options** lets you override it and add a description. Pick a datacenter card. The first available datacenter is preselected.
+
+**Step 2, Review.** The name, identifier, and organization, the datacenter with its permanence notice, and the organization's free app slots. Press **Create app**. The Game API connection is available immediately; there is no provisioning wait.
+
+:::note[The datacenter is chosen once, at creation, and cannot be changed later.]
+Everything the app stores lives in that one datacenter. Pick the one closest to your players. Status and visibility are not asked at creation; the server defaults them and the details pane changes them afterwards.
+:::
+
+## Gotchas
+
+- The organization filter and the selected app are separate things. Picking an app never changes the filter; picking an organization is remembered.
+- The strip opens on All. Pick Draft to see only unpublished apps.
+- The URL identifier must be lowercase letters, digits, and hyphens; the dialog refuses anything else.
+- Archive is reversible, but an archived app disappears from Live and Draft. Look under Archived.
+
+## Related
+
+- [Config Sync](./config-sync.md): write the selected app into the project.
+- [Signing In](./sign-in.md): the account or token you need.
+- [Crowdy Studio overview](./overview.md).
+
+# Config Sync
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/studio/config-sync
+
+# Config Sync
+
+Config Sync writes the selected app's ids and endpoints into your project's settings, so connecting a game to an app is one button instead of copying ids and URLs by hand. It lives on the Project page's **Configuration** tab.
+
+:::caution[If you never run it, the SDK has no app id or Game API URLs to connect with, and nothing replicates.]
+:::
+
+## Run a sync
+
+1. Open Crowdy Studio, [sign in](./sign-in.md), and pick **Project** in the sidebar.
+2. Select the app the project should talk to.
+3. Open the **Configuration** tab under the app's details. It shows every value the sync would write. A value that differs from what the project holds is drawn in gold with the current value on a "was" line beneath it, and a badge beside the tab strip reads **IN SYNC** or **N TO CHANGE**.
+4. Read the diff, then press **Sync to project**.
+
+![The Configuration tab with a pending change: gold values, the N TO CHANGE badge, and the Sync to project button](/img/unreal-sdk/studio-config-sync.png)
+
+The rows are **App ID**, **Org ID**, **Game API HTTP URL**, **Game API WS URL**, and a read-only **Shared origin**, which comes from the backend selector on the Sign In page rather than from the app.
+
+:::tip[A running Play in Editor session picks the change up without a restart.]
+Sync pushes the new values into any running PIE or standalone session; a fresh Play always reads them. The **Connection** tab works differently: its UDP knobs and its Server Object timeouts are written the moment you change them, with no Sync button. The UDP knobs reach a running session at once; the Server Object timeouts apply from the next Play.
+:::
+
+## Sync from the command line
+
+For a script or a coding agent, the same steps run without the editor window. [Sign in](./sign-in.md) to Crowdy Studio on the machine once; the commands use that sign-in, and no token goes on the command line:
+
+```text
+UnrealEditor-Cmd.exe Oakford.uproject -run=CrowdyStudio -op=apps
+```
+
+| Operation | What it does |
+|---|---|
+| `-op=apps` | Reads, and changes nothing. The account's organizations and their apps, each with its id, name, slug, datacenter, status and whether it is archived; the datacenters an app can be placed in; who is signed in; and the project's current Network settings. |
+| `-op=createapp -org=<id> -name="My Game" -slug=my-game -datacenter=<code> [-description="..."] -yes` | Creates an app, as the Create app sheet on the Project page does, and prints the new app's id. The organization must be one of the account's, and the datacenter one of the codes `-op=apps` lists, written with the same capitals. The datacenter cannot be changed later. |
+| `-op=sync -app=<id> -yes` | Writes the app's id, its organization and its game endpoints into `Config/DefaultGame.ini`, exactly what **Sync to project** writes. `Environment` and the shared origin stay as they are. An app the project is already synced to succeeds without `-yes` and changes nothing. A write that fails, for example because the file is read only, fails the operation. |
+| `-op=registry [-class=<substring>] [-norebuild] [-out=<file>]` | Rebuilds the baked registry, then prints every entity class's CrowdyEvents (recipient, decay, distance) and CrowdyState properties (owner-only, manual dirty, heartbeat, OnRep) as JSON. `-class=` keeps only the classes whose path contains the text; `-norebuild` reads the saved registry as it is. It needs no sign-in. It needs `-yes` only when the project has no registry asset yet and the rebuild would create it. See [Inspector and Registry](./inspector-and-registry.md). |
+
+`createapp` and `sync` only say what they would do, and exit with code 1, until you pass `-yes`. Add `-out=<file>` to get the result as JSON. The sign-in token is never printed.
+
+`sync -yes` refuses while an Unreal Editor is running, since the editor holds its own copy of the settings and would write it over the synced app. Close the editor first, or pass `-editoropen` to write anyway.
+
+A typical run on a new project:
+
+```text
+UnrealEditor-Cmd.exe Oakford.uproject -run=CrowdyStudio -op=apps -out=Saved/apps.json
+UnrealEditor-Cmd.exe Oakford.uproject -run=CrowdyStudio -op=createapp -org=1234 -name="Oakford" -slug=oakford -datacenter=<code> -yes
+UnrealEditor-Cmd.exe Oakford.uproject -run=CrowdyStudio -op=sync -app=<the new id> -yes
+```
+
+The [Server Compute](../exec/deploy-with-server-compute.md#from-the-command-line) operations then use the app you synced; its `-op=whoami` checks the sign-in and the app.
+
+The command line never changes which app Crowdy Studio opens on in the editor.
+
+### Access, teams, channels and grids
+
+The same commandlet does what the Access, Teams, Channels and Grid pages do, so a script can set up an app without the editor window. Every operation below follows the same rules:
+
+- It runs against `-app=<id>`, or against the app the project is synced to when you leave `-app` out. The result says which app it used.
+- It needs `-yes` to change anything. Without it, it says what it would do, changes nothing and exits with code 1.
+- When nothing would change, it succeeds and the result says `changed:false`.
+- After a write it reads the result back from the server to check it, and fails if the server does not hold what was written.
+- A list of values is written with commas and no spaces: `-keys=a,b`. Quotes are not needed (the engine drops them from a value with no spaces). A list with a space after a comma, `-keys=a, b`, is refused rather than cut short.
+
+**Access.** See [The Access page](./overview.md#the-access-page). A feature key is 1 to 64 letters, digits, `_`, `-` and `.`.
+
+| Operation | What it does |
+|---|---|
+| `-op=features` | Reads, and changes nothing. The app's feature keys. |
+| `-op=definefeature -key=<key> [-description="..."] -yes` | Defines a feature key, like **Define feature**. |
+| `-op=grantfeature -tier=<id> -key=<key> -yes` | Grants the feature to an access tier, like **Grant**. The key must be defined first. Needs `manage_apps`. |
+| `-op=revokefeature -tier=<id> -key=<key> -yes` | Takes it away again, like **Revoke**. The same rules. |
+
+**Teams and channels.** See [Teams and Channels](./teams-and-channels.md#from-the-command-line). These need a sign-in with your account, not an organization token. `-kind=` is `team` or `channel`, `-group=` the team's or channel's id, and `-user=` a user id.
+
+| Operation | What it does |
+|---|---|
+| `-op=teams`, `-op=channels` | Read the app's teams or channels. |
+| `-op=groupdetail -kind=team -group=<id>` | Reads one team or channel, with its members and their roles. |
+| `-op=createteam -name="Oakford Guild" [-description="..."] [-policy=<policy>] -yes` | Creates a team. `-policy=` is `open`, `request`, `invite` or `admin`. |
+| `-op=createchannel -name=oakford-chat [-description="..."] [-policy=<policy>] [-memberscansend=<true or false>] -yes` | Creates a channel. |
+| `-op=updategroup -kind= -group= [-name=] [-description=] [-policy=] -yes` | Changes a team or channel. |
+| `-op=deletegroup -kind= -group= -yes` | Deletes it, with its members and roles. This cannot be undone. |
+| `-op=addmember`, `-op=removemember` with `-kind= -group= -user= -yes` | Adds a user to a team or channel, or removes them. |
+| `-op=setroles -kind= -group= -user= -roles=1,2 -yes` | Sets a member's roles by role id. `-noroles` in place of `-roles=` clears them. |
+| `-op=createrole -kind= -group= -name= [-perms=manage_members,invite_members] [-rank=] -yes` | Creates a custom role. A team role can grant `manage_group`, `manage_members`, `manage_roles` and `invite_members`; a channel role can also grant `send_messages`, which decides who may post. `-op=updaterole` and `-op=deleterole` change and delete one. |
+| `-op=setteampolicy`, `-op=setchannelpolicy` | Write the app-wide policy, like **Set Policy**. They take `-creation=` (`admin`, `member` or `anyone`), `-membership=`, `-maxmembers=` and `-maxgroupsperuser=`, all optional, and `-yes`. 0 for a maximum means unlimited. |
+
+Creating a team or channel whose name already exists succeeds with `changed:false` when the existing one matches what you asked for, and fails naming the differences when it does not.
+
+**Grids.** See [Grids](./grids.md#from-the-command-line). Corners and regions are chunk coordinates written `x,y,z`, with no spaces.
+
+| Operation | What it does |
+|---|---|
+| `-op=grids -low=x,y,z -high=x,y,z [-user=]` | Reads the grids a region touches, like **Scan for grids**. |
+| `-op=creategrid -corner1=x,y,z -corner2=x,y,z -yes` | Creates a grid, like **Create grid**. A grid cannot be deleted from the command line. |
+| `-op=grantgrid -grid= -user= -keys=a,b -yes` | Grants permission keys on a grid to a user. Give `-group=` and an optional `-role=` in place of `-user=` to grant them to a team or channel; the group must be one of the app's teams or channels. |
+| `-op=revokegrid -grid= -user= -keys=a,b -yes` | Takes keys away again, with `-group=` in place of `-user=` for a group. `-all` in place of `-keys=` takes all of them. Checked by reading the keys back. |
+| `-op=gridlimits -grid= -keys=a,b -yes` | Sets the grid's permission whitelist. `-nolimit` in place of `-keys=` removes the limit. |
+| `-op=gridgrants -grid= -group=` | Reads a group's grants on a grid. |
+| `-op=gridpermissions -grid= [-user=]` | Reads the permissions a user has on a grid. |
+
+## What Config Sync writes, and what you own
+
+All of it lands on one settings class, `UCrowdySDKDeveloperSettings`, which you can see under **Project Settings, Plugins, Crowdy SDK**. The network fields are shown there read-only.
+
+![Project Settings, Plugins, Crowdy SDK after a sync: the network fields filled in and greyed out](/img/unreal-sdk/dev-settings-after-sync.png)
+
+**Written by Crowdy Studio** (category Network; read-only in Project Settings):
+
+| Property | Written from |
+|---|---|
+| `Environment` | The backend selector on the Sign In page. |
+| `DiscoveryUrl` | The shared origin, used when the backend is Custom. |
+| `AppID` | The selected app. |
+| `OrgId` | The selected app's organization. |
+| `GameApiHttpUrl` | The app's own routing. |
+| `GameApiWsUrl` | The same endpoint with a WebSocket scheme. |
+| `UDPProtocol` | The Connection tab. |
+| `UDPTimeoutSeconds` | The Connection tab (6 to 120 seconds). |
+| `HostPollIntervalSeconds` | The Connection tab (1 to 60 seconds). |
+| `ServerObjectCallTimeoutSeconds` | The Connection tab, under Server Objects, as **Call Timeout** (11 to 120 seconds, default 20). |
+| `ServerObjectOpenTimeoutSeconds` | The Connection tab, under Server Objects, as **Open Timeout** (1 to 60 seconds, default 10). |
+
+Under a **Server Objects** heading, the Connection tab holds two timeouts for [Server Object](../exec/overview.md) connections:
+
+- **Call Timeout** is how long a Server Object call waits for the platform's answer before it fails with a `Timeout`. It runs from 11 to 120 seconds, 20 by default, and stays above the longest **Time per Call** a type may have (10 seconds), so a call the server is allowed to finish is not given up on. A **Call** node's **Timeout** can shorten it for one call; see [Give up sooner](../exec/from-blueprint/call-functions.md#give-up-sooner).
+- **Open Timeout** is how long opening the Server Object connection waits before the attempt fails, from 1 to 60 seconds, 10 by default.
+
+Both apply from the next Play, and to the editor's developer connections. A dropped Server Object connection is always reopened, and has no setting.
+
+**Owned by you** (editable in Project Settings):
+
+| Property | What it does |
+|---|---|
+| `MapProfiles`, `DefaultProfile` | Per-map SDK configuration and the fallback when a map has no entry. See [Map profiles](../runtime/map-profile.md). |
+| `BakedRegistry` | The cooked snapshot of Crowdy metadata. See [Inspector and Registry](./inspector-and-registry.md). |
+| `PreloadedEntityClasses` | Entity classes to preload so a class nobody has spawned yet can still resolve off the wire. |
+| `IDOverrides`, `ClassIDOverrides` | Populate only when the log reports a type id hash collision. |
+
+:::warning[Never hand-type the network settings.]
+They are read-only in Project Settings on purpose, so that Crowdy Studio is the one source of truth. A value pasted into `DefaultGame.ini` by hand is overwritten by the next sync, and a project whose settings drift from its app fails to connect with no obvious error.
+:::
+
+### The runtime setters
+
+The same goes for the two runtime setters on `UCrowdySDKSubsystem`: `SetDiscoveryUrl` stores a shared origin for this session and is read only when `Environment` is Custom (it warns otherwise), and `SetGameApiUrl` stores one Game API HTTP endpoint for this session, an address that is normally resolved from the origin rather than typed. `ReloadEndpointsFromSettings` is deprecated and does nothing, so remove it from your graphs and code; it is kept only so existing call sites still compile: the API client re-reads both endpoints from the settings on every call, so a sync already reaches a running session.
+
+`RequestVersionInfo` asks the server for its version before or after sign-in and answers on `OnVersionInfo` (`FOnVersionInfo`, two `FGameVersion` parameters: the server's version and, in `ClientVersion`, the minimum client version it still accepts). Both arrive as zeroes when the query fails.
+
+## Where the settings land
+
+The class is `Config=Game`, so the values are written to `Config/DefaultGame.ini` under:
+
+```ini
+[/Script/CrowdyReplication.CrowdySDKDeveloperSettings]
+```
+
+Commit that file as usual; it holds ids and URLs, not secrets.
+
+## When to sync again
+
+The **N TO CHANGE** badge tells you. It goes non-zero whenever the values the selected app would write differ from what the project holds: you selected a different app, changed the backend selector, or the app's endpoints moved. Press **Sync to project** again. Updating the plugin does not require a sync: the values live in `DefaultGame.ini` and the badge stays **IN SYNC**. Sync again only when the badge says so.
+
+:::warning[Config Sync does not decide what a map does; the map profile does.]
+Config Sync points the project at an app. A map with no [map profile](../runtime/map-profile.md) of its own runs on the SDK's shipped default; a `MapProfiles` row or `DefaultProfile` naming an asset that fails to load resolves to no profile, and on that map the entity subsystem, the auto replicator, and the actor manager do nothing, so replication looks dead even though the connection is fine. The warning in the log names the asset.
+:::
+
+## The Setup Wizard
+
+If you prefer a guided path, the **Setup Wizard** page walks through the same steps in order: sign in, pick an organization and app, run the sync. Studio lands on it after you sign in. Once you know the flow, the Project page does each step directly.
+
+## Gotchas
+
+- The Configuration tab writes on **Sync to project**. The Connection tab writes on every edit.
+- The shared origin is not per app. Change it on the Sign In page's backend selector, then sync.
+- A PIE session that was already running picks up a sync; a packaged build needs the new `DefaultGame.ini` cooked in.
+- An organization token is enough to run Config Sync. It is not enough to author teams, channels, or grids, from the pages or from the command line.
+- A Studio sign-in with an organization token is cleared only when the server rejects the token. A network error no longer signs you out.
+
+## Related
+
+- [Projects and Apps](./projects-and-apps.md): picking and creating the app.
+- [Map profiles](../runtime/map-profile.md): the second half of "make replication work".
+- [Project settings reference](../reference/project-settings.md): every property on the settings class.
+
+# Teams and Channels
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/studio/teams-and-channels
+
+# Teams and Channels
+
+Teams group players together: guilds, parties, factions. Channels are named groups your runtime sends reliable events and messages over. Both live on the game server, and the Teams and Channels pages in Crowdy Studio author them ahead of play.
+
+The same create, update, delete, role, and policy operations exist at runtime through `UCrowdyTeams` and `UCrowdyChannels`. Use Studio to set things up ahead of time or to do admin work in the editor; use the runtime APIs when your game creates teams or channels on the fly. The runtime side is on the [Teams](../services/teams.md) and [Channels](../runtime/channels.md) pages.
+
+:::note[Authoring teams and channels needs an account sign-in.]
+Sign in with your account (email and password, a sign-in link, or a provider). An organization token gives management-only access and these pages stay empty. The page subtitle says so when that is the case.
+:::
+
+## Open the pages
+
+Open Crowdy Studio (**Tools, Crowdy SDK, Crowdy Studio**), sign in, and select your app on the Project page. Then pick **Teams** or **Channels** in the AUTHORING group of the sidebar. Press **Refresh** if the list is empty.
+
+## Teams
+
+![The Teams page: the team list with Refresh, the Create team card, and the Team policy card](/img/unreal-sdk/studio-teams.png)
+
+The page has three cards plus the detail view, top to bottom: the list, the detail view for the selected row, Create team, Team policy.
+
+**Teams.** Every team in the app, one row each: the name, an id chip, the team's membership policy, and a status badge. Select a row to open its detail view.
+
+**Create team.** A name, an optional description, and a **Default membership** choice (Open, Request, Invite, or Admin) that decides how players enter this team at runtime. Press **Create Team** and the row appears in the list.
+
+**Team policy.** The app-wide rules for teams:
+
+- **Creation policy**: who may create a team. Admin, Member, or Anyone.
+- **Default membership**: the membership policy a new team starts with. Open, Request, Invite, or Admin.
+- **Max members per team** and **Max teams per user**. Blank means unlimited.
+
+Press **Set Policy** to write it. The current policy is echoed above the controls once loaded; before a Refresh it reads "Current policy not loaded".
+
+## Channels
+
+![The Channels page: the channel list, the Create channel card, and the Channel policy card](/img/unreal-sdk/studio-channels.png)
+
+The Channels page mirrors Teams: a **Channels** list, a **Create channel** card with a name, a description, and a **Members can send** checkbox (on by default), and a **Channel policy** card with the same four settings as the team policy.
+
+:::caution[A channel name authored here is the exact string gameplay code references.]
+It is the value of the `CrowdyChannel` meta on a Multicast `CrowdyEvent`, and the target of a raw channel publish. Keep the name stable once code uses it.
+:::
+
+### The session channel
+
+Every client of the app joins one reliable channel on connect, named `__crowdy_session_<appId>`. Multicast events with no channel named ride it. The runtime creates it on demand, so you never have to.
+
+The Channels page has a **Create session channel** button that creates it ahead of time with the settings it wants: creation by members, open membership, members can send. The policy card repeats those three settings as a hint.
+
+:::tip[Create the session channel once per app if you want to see it in the list right away.]
+If you do not, the runtime still creates it the first time a client connects. Either way it behaves like any other channel you author here.
+:::
+
+## The detail view
+
+Select a team or channel row and the detail view opens beneath the list. It is the same widget for both.
+
+**Edit team** (or **Edit channel**): name, description (blank keeps the current one), a membership choice with **Keep** as the default, and **Save Changes**.
+
+**Members.** Add a member by user id, remove one, and see who is in. A pending join request shows **Approve** and **Reject**; an active member shows **Remove**. Select a member to edit their roles.
+
+**Roles.** A role is a named, ranked permission set you assign to members. Create one with a name, a rank (higher is more senior), and a checklist of the permissions its kind of group has. A team's are **Manage Team**, **Manage Members**, **Manage Roles** and **Invite Members**; a channel's are **Send Messages**, **Manage Channel**, **Manage Members**, **Manage Roles** and **Invite Members**. A role badged `system` (the leader role, for example) is read-only; a `custom` role can be edited and deleted.
+
+:::note[Group roles are membership permissions, not gameplay permissions.]
+The keys above decide who may manage the team or channel, who may invite to it and who may send on a channel. The spatial permission keys a grid checks (see [Grids](./grids.md)) are a separate catalog. A team can be granted grid permissions, but the two lists never mix.
+:::
+
+**Danger zone.** Delete the whole team or channel. Deleting a team removes all its members and roles and revokes any grid grants it conferred, and it cannot be undone.
+
+## From the command line
+
+A script can do the same work without the editor window: create and delete teams and channels, add and remove members, set roles, and write the policies. It needs a sign-in with your account, and every change needs `-yes`. The operations are listed under [Access, teams, channels and grids](./config-sync.md#access-teams-channels-and-grids) on the Config Sync page.
+
+## What a policy is
+
+A **policy** is four settings that apply to every team (or channel) in the app: who may create one, the membership policy a new one starts with, and two optional caps. A **membership policy** on an individual team or channel decides how a player gets in: Open (anyone joins), Request (a member approves), Invite (a member invites), or Admin. Runtime joins go through `UCrowdyTeams::JoinTeam`, and the server applies the policy you set here.
+
+## Gotchas
+
+- Nothing loads until an app is selected on the Project page. The list stays empty otherwise.
+- Refresh is manual. After another client changes a team at runtime, press it to see the change.
+- Deleting a team also deletes its grid grants. Check the Grid page first if the team carried any.
+- A `system` role cannot be edited or deleted. Create a `custom` role for anything you want to change later.
+
+## Related
+
+- [Teams](../services/teams.md): join, query, and read membership at runtime.
+- [Channels](../runtime/channels.md): send channel messages and receive them at game time.
+- [Grids](./grids.md): grant a team permissions inside a region.
+
+# Grids
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/studio/grids
+
+# Grids
+
+A grid is a region of your world, in chunk coordinates, that carries a permission whitelist and per-user or per-team grants. When a client acts inside the region, the server checks the grid and allows or refuses the action. You author grids on the **Grid** page in Crowdy Studio.
+
+## Grids are server-side only
+
+- Every grid operation requires the `manage_apps` permission on the organization.
+- There is no player-scoped grid query. Game code cannot list or read grids at runtime, and there is no runtime grid API in the SDK. The one runtime call that touches grids is `Request Teleport Permission` on the Crowdy SDK subsystem, which asks the server whether the player may enter a chunk and answers on `On Teleport Permission` (`OnTeleportPermission`, an `FOnTeleportPermission` with one `bAllowed` parameter).
+- Enforcement is server-side. When a client tries to act inside a region, the server checks the whitelist and the grants, then allows or rejects. The client never receives the grid definition.
+
+:::warning[Do not try to drive grid operations from gameplay code.]
+The only surface is this Studio page. Sign in with your account; the page's subtitle tells you if the credential you used is not enough.
+:::
+
+## Open the Grid page
+
+Open Crowdy Studio, sign in, select your app on the Project page, then pick **Grid** in the AUTHORING group of the sidebar.
+
+![The Grid page: Create grid, Create grid from selection, Scan for grids, Visualize in viewport, and Effective permissions cards](/img/unreal-sdk/studio-grids.png)
+
+The page is a column of cards. Top to bottom:
+
+## Create grid
+
+Type the two corners of the region (**Corner 1** and **Corner 2**, each X, Y, Z in chunk coordinates) and press **Create**. **Reset** clears the boxes. Use this when you know the bounds you want, for example a region that lines up with a named area of your level.
+
+## Create grid from selection
+
+Select one or more actors in the level, then press **Create grid from selection**. Studio derives the region from the chunks the actors occupy. The **Map by actor location (one chunk each)** checkbox chooses between mapping each actor to the single chunk it stands in (on, which matches the runtime) and covering every chunk the actor's collision bounds touch (off).
+
+With no session running, the editor uses the preview grid size from the Visualize card below, which may differ from a session's configured chunk size.
+
+## Scan for grids
+
+Grids have no list-all query. To discover the ones that exist, type a user id and a region (**lowX** to **highZ**) and press **Scan**. The results list shows every grid that region touches; select one to populate the **Selected grid** card.
+
+Scanning also loads the app's runtime permission catalog, which the whitelist and grants below pick from.
+
+## Visualize in viewport
+
+Tick **Show grids in viewport** to draw debug boxes in the level, in the editor and in Play in Editor: red for the grid you are about to create (from the corners above), cyan for the existing grids from the last scan.
+
+**Preview grid size** scales those boxes at edit time only. The real chunk size is set on the game session at runtime, and while Play in Editor runs the live session's size is used instead.
+
+## Effective permissions (what-if)
+
+Pick a user id and an access tier to simulate (the dropdown reads **No tier (grants only)** by default), then press **Simulate**. The card lists every permission key the user would have on the selected grid and where each comes from: the tier, or a grid grant. The grid's whitelist is applied last: effective permissions are the tier's keys plus the user's grants, restricted to the whitelist. Admins bypass all of this on the server.
+
+## Selected grid
+
+Once a scan result is selected:
+
+- **Permission whitelist**: a checklist of runtime permission keys. Nothing checked means no restriction.
+- **User grants**: grant, revoke, or read a user's keys on this grid.
+- **Group grants**: assign a team (optionally with a role) to a set of keys, with an expiry shown per grant. **List Grants** reads the current ones.
+
+:::note[Teams themselves are authored on the Teams page.]
+A group grant references a team by id. Create the team first; see [Teams and Channels](./teams-and-channels.md). Deleting a team revokes every grid grant it conferred.
+:::
+
+## From the command line
+
+A script can scan for grids, create one, grant and revoke keys for a user or a team, set a grid's whitelist, and read the grants and effective permissions, all without the editor window. Every change needs `-yes`. The operations are listed under [Access, teams, channels and grids](./config-sync.md#access-teams-channels-and-grids) on the Config Sync page.
+
+## Gotchas
+
+- There is no list of all grids. Scan a region to find them, and scan again after you create one.
+- Chunk coordinates, not world units. The preview grid size only affects the debug boxes.
+- An empty whitelist means no limit, not no access.
+- The what-if simulation reads the grants and whitelist from the server; it is a preview of what the server would decide, not a change.
+
+## Related
+
+- [Crowdy Studio overview](./overview.md)
+- [Teams and Channels](./teams-and-channels.md)
+
+# Inspector and Registry
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/studio/inspector-and-registry
+
+# Inspector and Registry
+
+The two pages in the sidebar's DEBUG group. Neither needs a sign-in.
+
+- The **Inspector** is a read-only view of the running Play in Editor session.
+- The **Registry** shows the baked metadata a packaged build reads, and rebuilds it.
+
+Open Crowdy Studio (**Tools, Crowdy SDK, Crowdy Studio**) and pick either page in the sidebar.
+
+## Inspector
+
+The Inspector reads the live state of the current Play in Editor session and shows it as text. Nothing here changes the game. Press **Refresh** after the session connects or fetches data, or tick **Auto-refresh** and pick an interval (1, 2, or 5 seconds).
+
+:::note[Start a Play in Editor session first.]
+With none running the page reads "No running session".
+:::
+
+What it lists:
+
+- **Session**: the app id, your user id, the game token id, your UUID, the host id, and whether a game token is held (never its value).
+- **Teams (N)**: the teams the local player is in, from the runtime cache. Until the game has fetched teams it says so.
+- **Channels (N)**: the channels the client has joined, whether the reliable RPC channels are ready, and the session channel's id.
+- **Avatars (N)**: the local player's avatars, from the cache.
+- **Entities**: the local player id, the host id, and the entities this client owns, by actor name. There is no every-entity list; the owned slice is the one that confirms spawns and ownership while you debug.
+
+![The Inspector page with no session running](/img/unreal-sdk/studio-inspector.png)
+
+:::tip[If the Inspector is empty while you are playing, check the map profile.]
+A [map profile](../runtime/map-profile.md) row that names an asset that failed to load resolves to no profile; the entity subsystem then does nothing on that map and the session looks dead. The log warning names the asset. A map with no row runs on the shipped default.
+:::
+
+To change teams, channels, or entity state, use the runtime APIs in your game: [Teams](../services/teams.md), [Channels](../runtime/channels.md), [Entities and Spawning](../runtime/entities-and-spawning.md).
+
+## Registry
+
+Every marker you write (`CrowdyEvent` and its routing keys, `CrowdyState` and its keys) is Unreal metadata, and a cooked build strips metadata. The SDK therefore bakes what it needs into an asset, `UCrowdyBakedRegistry` at `/Game/CrowdySDK/CrowdyBakedRegistry`, and a packaged build reads that instead. The editor and Play in Editor read live metadata, so the page can look stale until you rebuild.
+
+![The Registry page: Rebuild (Deep Scan), Refresh View, the summary pills, and one card per class](/img/unreal-sdk/registry-panel.png)
+
+:::warning[Shipped code never reads metadata. It reads the baked registry.]
+If your own game code reads a Crowdy marker at runtime, read it through the registry, never through `HasMetaData`; in a packaged build the metadata is gone and the call returns nothing.
+:::
+
+### The two buttons
+
+**Rebuild (Deep Scan)** regenerates the registry from every C++ class and Blueprint in the project, then refreshes the view. It is the authoritative bake, and packaging runs the same thing automatically at cook time. It runs asynchronously (assets stream in; the editor does not freeze) and shows "Rebuilding registry..." while it works. If the button is disabled, the CrowdySDK editor module is not loaded.
+
+**Refresh View** re-reads the already-baked asset and redraws the page without re-baking anything. Use it after something else changed the asset on disk, such as a cook.
+
+:::note[Rebuild is optional for a correct package.]
+The cook rebakes on its own, so a packaged build is right even if you forget. Press Rebuild to verify the bake before a long cook, or to bring the in-editor view up to date.
+:::
+
+### What the page shows
+
+Three summary pills: classes, functions, and replicated properties. A search box filters by class, function, or property name, and a **Cards** / **Table** toggle picks the layout.
+
+In Cards view, each class is an expandable card with an **RPC FUNCTIONS** section and a **REPLICATED PROPERTIES** section. Expand an RPC function for its function id, recipient, decay rate, distance, whether its parameters are plain data, and whether it is replicated. Expand a replicated property for its property id, layout order, owner-only flag, manual update flag, and rep-notify function. The class header shows a layout hash and, where the class has an entity component, its Ownership and Host Override, read live from the class defaults rather than baked.
+
+In Table view the same data is one flat table: type, name, routing or notify, flags, id.
+
+To read the baked registry from the console instead, type `crowdy.registry.dump` in a non-shipping build. It logs every entry the cook baked in, one line each: the structs and their layout hashes, the CrowdyState properties, and the CrowdyEvent functions, with their ids. See [Console variables and commands](../reference/console-cvars.md).
+
+### When to press Rebuild
+
+- After you add or change a `CrowdyEvent` receiver, or its recipient, channel, or other routing key.
+- After you change a container or any Crowdy-tagged struct.
+- Before you cook, if you want to check the bake first.
+
+:::note[The baked asset is generated.]
+It is rewritten by every Rebuild and every cook. Ignore it in your version control rather than committing it.
+:::
+
+For the full packaging flow, see the [Packaging guide](../guides/packaging.md).
+
+## Gotchas
+
+- The Inspector's team, channel, and avatar lists come from the runtime caches. An empty list with a "not populated yet" note means the game has not fetched, not that there is nothing.
+- Refresh View does not rebake. If a marker you just added is missing, press Rebuild.
+- Ownership and Host Override on a class card are live values, not part of the bake.
+
+## Related
+
+- [Packaging](../guides/packaging.md)
+- [Crowdy Studio overview](./overview.md)

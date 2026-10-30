@@ -38,7 +38,7 @@ You know the shape of what you need (send an event, read a team, elect a host) b
   UCrowdyChannels: "Create and manage channels, channel membership, and raw channel messages.",
   UCrowdyHostSubsystem: "Host election and the server-validated host query.",
   UCrowdyTeams: "Create, join, leave, and query teams and roles at runtime.",
-  UVoiceChatSubsystem: "The voice capture and playback engine, reached directly or through UCrowdySDKSubsystem.",
+  UVoiceChatSubsystem: "The voice capture and playback of one map. A world subsystem; use the voice nodes on UCrowdySDKSubsystem, which carry their settings from map to map.",
   UCrowdyMassEntitySubsystem: "The crowd rows of a map that draws with Mass: targets, traces, events and fields. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
   UCrowdyMassServerRecordsSubsystem: "The Server Object records of crowd rows, and a callback when one changes. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
 }} notesLabel="What it is for" />

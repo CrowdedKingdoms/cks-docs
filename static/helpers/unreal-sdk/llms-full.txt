@@ -5,7 +5,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/intro
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.21**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.22**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
 
 :::note[This guide is written for Unreal Engine 5.8 and a C++ project.]
 Gameplay can be driven entirely from Blueprint, but the plugin itself compiles as C++, so your project needs a C++ target. See [Installation](./installation.md).
@@ -67,9 +67,9 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 ## Step 1: Get the release
 
-Download the `v2.21.2` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+Download the `v2.22.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
 
-:::note[The release you install must match the version this guide describes (2.21).]
+:::note[The release you install must match the version this guide describes (2.22).]
 :::
 
 ## Step 2: Place the plugin at `Plugins/CrowdySDK`
@@ -768,15 +768,18 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/for-ai-agents
 
 # For AI Agents
 
-This page is the routing layer for a coding agent working inside a studio's Unreal project. It does not re-explain the SDK; every row links the page that owns the fact, and the full text of every page is available as one file for your context window. Read this page, then pull only the pages a task needs.
+This page is the routing layer for a coding agent working inside a studio's Unreal project. It does not re-explain the SDK; every row links the page that owns the fact, and the text of every page is available as plain-text files, one per section. Read this page, then pull only the pages a task needs.
 
-Three machine-readable files sit beside the docs. This page is where they are described:
+Machine-readable files sit beside the docs. This page is where they are described. Start at the index, pull one section file, and check the slim symbol index before the full manifest.
 
-| File | What it is |
-|---|---|
-| [`/helpers/unreal-sdk/llms-full.txt`](pathname:///helpers/unreal-sdk/llms-full.txt) | Every page in this section as plain text, in sidebar order, with every C++ snippet inlined and a pointer line for every Blueprint graph. |
-| [`/helpers/unreal-sdk/sdk-surface.json`](pathname:///helpers/unreal-sdk/sdk-surface.json) | The generated inventory of every reflected symbol the plugin ships. Check it before you go looking through headers; see [SDK surface manifest](./reference/sdk-surface.md). |
-| [`/helpers/unreal-sdk/AGENTS.md`](pathname:///helpers/unreal-sdk/AGENTS.md) | The drop-in for a project root, `CLAUDE.md`, or `.cursorrules`: the locked rules and one example per marker, under 8 KB. |
+| File | Size | Use it when |
+|---|---|---|
+| [`/helpers/unreal-sdk/llms.txt`](pathname:///helpers/unreal-sdk/llms.txt) | about 42 KB | You are starting a task. Every page with its URL and a one-line description, grouped into sections, each with the URL and size of its section file. |
+| `/helpers/unreal-sdk/llms-<section>.txt`: [`start`](pathname:///helpers/unreal-sdk/llms-start.txt), [`concepts`](pathname:///helpers/unreal-sdk/llms-concepts.txt), [`studio`](pathname:///helpers/unreal-sdk/llms-studio.txt), [`runtime`](pathname:///helpers/unreal-sdk/llms-runtime.txt), [`mass`](pathname:///helpers/unreal-sdk/llms-mass.txt), [`exec`](pathname:///helpers/unreal-sdk/llms-exec.txt), [`services`](pathname:///helpers/unreal-sdk/llms-services.txt), [`guides`](pathname:///helpers/unreal-sdk/llms-guides.txt), [`reference`](pathname:///helpers/unreal-sdk/llms-reference.txt) | 20 to 430 KB each | You know which part of the SDK the task touches. Every page of that section as plain text, with C++ snippets inlined and a pointer line for each Blueprint graph. A section over 200 KB is split by subfolder: `exec` and `mass` also have `llms-exec-from-blueprint.txt`, `llms-exec-from-cpp.txt`, `llms-exec-examples.txt` and the same three for `mass`; `llms-exec.txt` then holds only the section's top-level pages. The index lists every file with its size. |
+| [`/helpers/unreal-sdk/sdk-surface-index.jsonl`](pathname:///helpers/unreal-sdk/sdk-surface-index.jsonl) | about 340 KB | You need to know whether a symbol exists, which module and header it lives in, or where to look. One line per symbol: name, kind, module, header, and the first sentence of its help text where the manifest has one (console variables only today). Line one names the columns. |
+| [`/helpers/unreal-sdk/sdk-surface.json`](pathname:///helpers/unreal-sdk/sdk-surface.json) | about 3 MB | The index is not enough: you need a function's specifiers and return type, a struct's metadata, an enum's values or a delegate's signature. Too large to read whole; query it with `jq` or a script. See [SDK surface manifest](./reference/sdk-surface.md). |
+| [`/helpers/unreal-sdk/llms-full.txt`](pathname:///helpers/unreal-sdk/llms-full.txt) | about 1.6 MB | A tool wants every page in one file. About 400,000 tokens, so it does not fit a context window. Prefer the section files. |
+| [`/helpers/unreal-sdk/AGENTS.md`](pathname:///helpers/unreal-sdk/AGENTS.md) | under 8 KB | A drop-in for a project root, `CLAUDE.md`, or `.cursorrules`: the locked rules and one example per marker. |
 
 ## Where does this state go
 
@@ -850,6 +853,7 @@ Close the Unreal Editor first. It holds the project's Server Object types and se
 | List organizations, apps and datacenters | `-run=CrowdyStudio -op=apps` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
 | Create an app | `-run=CrowdyStudio -op=createapp -org=<id> -name="My Game" -slug=my-game -datacenter=<code> -yes` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
 | Point the project at an app | `-run=CrowdyStudio -op=sync -app=<id> -yes` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
+| Read every entity class's CrowdyEvent routing and CrowdyState flags | `-run=CrowdyStudio -op=registry [-class=<substring>] [-norebuild] [-out=file]` | [Sync from the command line](./studio/config-sync.md#sync-from-the-command-line) |
 | Add Game Kit starters | `-op=addstarter -starter=<name>` | [Add a starter](./exec/use-game-kit-starters.md#add-a-starter) |
 | Define a Server Object type | `-op=exporttype -spec=type.json` (a template), `-op=newtype -spec=@type.json`, `-op=edittype -type=T -spec=@type.json -yes` | [Define a type from a file](./exec/deploy-with-server-compute.md#define-a-type-from-a-file) |
 | Generate its server code | `-op=generate -type=T`, or `-op=generate -yes` for every type that is out of date | [From the command line](./exec/deploy-with-server-compute.md#from-the-command-line) |
@@ -1485,6 +1489,7 @@ UnrealEditor-Cmd.exe Oakford.uproject -run=CrowdyStudio -op=apps
 | `-op=apps` | Reads, and changes nothing. The account's organizations and their apps, each with its id, name, slug, datacenter, status and whether it is archived; the datacenters an app can be placed in; who is signed in; and the project's current Network settings. |
 | `-op=createapp -org=<id> -name="My Game" -slug=my-game -datacenter=<code> [-description="..."] -yes` | Creates an app, as the Create app sheet on the Project page does, and prints the new app's id. The organization must be one of the account's, and the datacenter one of the codes `-op=apps` lists, written with the same capitals. The datacenter cannot be changed later. |
 | `-op=sync -app=<id> -yes` | Writes the app's id, its organization and its game endpoints into `Config/DefaultGame.ini`, exactly what **Sync to project** writes. `Environment` and the shared origin stay as they are. An app the project is already synced to succeeds without `-yes` and changes nothing. A write that fails, for example because the file is read only, fails the operation. |
+| `-op=registry [-class=<substring>] [-norebuild] [-out=<file>]` | Rebuilds the baked registry, then prints every entity class's CrowdyEvents (recipient, decay, distance) and CrowdyState properties (owner-only, manual dirty, heartbeat, OnRep) as JSON. `-class=` keeps only the classes whose path contains the text; `-norebuild` reads the saved registry as it is. It needs no sign-in. It needs `-yes` only when the project has no registry asset yet and the rebuild would create it. See [Inspector and Registry](./inspector-and-registry.md). |
 
 `createapp` and `sync` only say what they would do, and exit with code 1, until you pass `-yes`. Add `-out=<file>` to get the result as JSON. The sign-in token is never printed.
 
@@ -1594,7 +1599,7 @@ They are read-only in Project Settings on purpose, so that Crowdy Studio is the 
 
 ### The runtime setters
 
-The same goes for the two runtime setters on `UCrowdySDKSubsystem`: `SetDiscoveryUrl` stores a shared origin for this session and is read only when `Environment` is Custom (it warns otherwise), and `SetGameApiUrl` stores one Game API HTTP endpoint for this session, an address that is normally resolved from the origin rather than typed. `ReloadEndpointsFromSettings` is kept for existing call sites and does nothing: the API client re-reads both endpoints from the settings on every call, so a sync already reaches a running session.
+The same goes for the two runtime setters on `UCrowdySDKSubsystem`: `SetDiscoveryUrl` stores a shared origin for this session and is read only when `Environment` is Custom (it warns otherwise), and `SetGameApiUrl` stores one Game API HTTP endpoint for this session, an address that is normally resolved from the origin rather than typed. `ReloadEndpointsFromSettings` is deprecated and does nothing, so remove it from your graphs and code; it is kept only so existing call sites still compile: the API client re-reads both endpoints from the settings on every call, so a sync already reaches a running session.
 
 `RequestVersionInfo` asks the server for its version before or after sign-in and answers on `OnVersionInfo` (`FOnVersionInfo`, two `FGameVersion` parameters: the server's version and, in `ClientVersion`, the minimum client version it still accepts). Both arrive as zeroes when the query fails.
 
@@ -3791,7 +3796,7 @@ The policy is what moves a remote player's proxy. Continuous state is how pawns,
 
 #### The sample ring
 
-Both the shipped policy and the example below keep their per-slot history in `TInterpolatedField<T, Capacity>`, a small ring buffer the SDK ships in `Data/TInterpolatedField.h`, 32 samples deep by default. `TInterpolatedField::Push(Value, TimestampMs)` stores one sample with the server timestamp the update carried. `TInterpolatedField::Sample(RenderTimeMs, LerpFn)` finds the two samples that bracket the render time by binary search and blends between them with the function you pass (`FMath::Lerp` for a location; a quaternion slerp for a rotation). When the render time runs past the newest sample, `Sample` extrapolates from the last two by calling the same function with an alpha above 1, for at most 0.2 seconds beyond the newest; after that it holds the value extrapolated to 0.2 seconds. A render time older than the oldest sample takes the same path backwards from the newest pair, with no cap; a slot is in that state only briefly after activation, until the render time, which runs one interpolation delay behind, catches up with the samples already held. A location follows that extrapolation in full; the rotation slerp clamps its alpha to 1.2, so a rotation extrapolates by at most a fifth of a step. With one sample it returns that sample; with none, the default you pass. `PhysicalIndex` is the ring's own index arithmetic, nothing you call.
+Both the shipped policy and the example below keep their per-slot history in `TInterpolatedField<T, Capacity>`, a small ring buffer the SDK ships in `Data/TInterpolatedField.h`, 32 samples deep by default. `TInterpolatedField::Push(Value, TimestampMs)` stores one sample with the server timestamp the update carried. `TInterpolatedField::Sample(RenderTimeMs, LerpFn)` finds the two samples that bracket the render time by binary search and blends between them with the function you pass (`FMath::Lerp` for a location; a quaternion slerp for a rotation). When the render time runs past the newest sample, `Sample` extrapolates from the last two by calling the same function with an alpha above 1, for at most 0.2 seconds beyond the newest; after that it holds the value extrapolated to 0.2 seconds. The step is measured over at least the average gap of the last four samples (50 ms when only two are held), so two updates that arrive almost together after a sender hitch extrapolate at the sender's normal pace instead of throwing the proxy far ahead for a frame. A render time older than the oldest sample holds the oldest sample; a slot is in that state only briefly after activation, until the render time, which runs one interpolation delay behind, catches up with the samples already held. A location follows that extrapolation in full; the rotation slerp clamps its alpha to 1.2, so a rotation extrapolates by at most a fifth of a step. With one sample it returns that sample; with none, the default you pass. `PhysicalIndex` is the ring's own index arithmetic, nothing you call.
 
 The reason a proxy built on it does not jitter is the render time itself: the actor manager renders at the estimated server time minus the interpolation delay (100 ms), so the proxy is always drawn a little behind the newest sample, between two samples it already holds, and never snaps to the latest one as it lands. Extrapolation only runs when an update is late, and its cap keeps a lost stream from sliding a proxy across the map.
 
@@ -6670,7 +6675,7 @@ See [Call an event on it, from Blueprint](./from-blueprint/call-an-event-on-it.m
 
 ## Commands and switches
 
-Every `crowdy.mass.*` command and variable is compiled out of Shipping builds, so none of them exists in a shipped game. The four `CrowdyMass.` commands in the first table are not guarded that way. They help when rows draw but their shadows or animation look wrong, and when you are asked for their output in a bug report.
+Every `crowdy.mass.*` command and variable is compiled out of Shipping builds, so none of them exists in a shipped game. The four `CrowdyMass.` commands in the first table are also left out of Shipping builds, so they exist in development builds only, and they print their results as ordinary log lines, not warnings. They help when rows draw but their shadows or animation look wrong, and when you are asked for their output in a bug report.
 
 ### Commands
 
@@ -12267,9 +12272,9 @@ Players see the variables their [definition](../create-a-type.md) marks **Visibl
 
 **Get Oil** has one output pin, **Oil**, typed as the variable is. It reads the object's current value each time the node is used. Before the server has sent the values it reads the variable's default from the asset. A **Get** with nothing behind it, such as a **Target** that holds no object for that asset, gives the default too.
 
-To tell a real zero from "the server has not answered yet", use the node's advanced pin, **Oil Has Value**. It is collapsed by default: click the small arrow at the bottom of the node to show it. It is false until the server has sent this Server Object's values, and true after. A variable that is an optional in C++ has a **Has Value** pin that is always shown, and it is false when the optional is empty or the values have not arrived; see [What the pins are](./pins-for-every-type.md#what-the-pins-are).
+To tell a real zero from "the server has not answered yet", use the node's advanced pin, **Oil Is Ready**. It is collapsed by default: click the small arrow at the bottom of the node to show it. It is false until the server has sent this Server Object's values, and true after. A variable that is an optional in C++ has a **Has Value** pin that is always shown, and it is false when the optional is empty or the values have not arrived; see [What the pins are](./pins-for-every-type.md#what-the-pins-are).
 
-**Get Server State** is the same for every visible variable at once, with one advanced **Has Values** pin that is false until the server has sent the values. It is not offered for a Server Object whose State has no variable visible to players, such as the Game Kit `CSO_Kit_Npcs`; a **Get Server State** already placed on one fails to compile with a message saying so.
+**Get Server State** is the same for every visible variable at once, with one advanced **Is Ready** pin that is false until the server has sent the values. It is not offered for a Server Object whose State has no variable visible to players, such as the Game Kit `CSO_Kit_Npcs`; a **Get Server State** already placed on one fails to compile with a message saying so.
 
 The nodes work whether the definition takes its variables from a struct or you [added them in the asset](../create-a-type.md#variables-inputs-and-outputs-or-a-struct) (the List form): **Get**, **Get Server State** and **On Changed** read and follow a variable added in the asset with the same pins.
 
@@ -12504,7 +12509,7 @@ A client never changes a Server Object's values. It calls one of the Server Func
 
 **Call FeedBeacon** has an execution pin and a pin for each input on the left. On the right it has **Then**, **On Success** and **On Failed**, then a pin for each output. It is a latent node, so it goes in an event graph. **On Success** or **On Failed** runs, one of them and only once, when the server answers.
 
-**Outcome**, **Reason**, **Retryable**, **Code** and **Timeout** are in the node's advanced area: click the small arrow at the bottom of the node to show them. **Timeout** is an input, explained in [Give up sooner](#give-up-sooner). **Code** is an output that only a [Game Kit starter](../use-game-kit-starters.md#refusals-and-their-codes) fills, with its refusal code, such as `full`; it is None for every other type. A pin you have already wired stays visible when the area is collapsed.
+**Outcome** and **Reason** are shown on the node, after the function's outputs. **Retryable**, **Code** and **Timeout** are in the node's advanced area: click the small arrow at the bottom of the node to show them. **Timeout** is an input, explained in [Give up sooner](#give-up-sooner). **Code** is an output that only a [Game Kit starter](../use-game-kit-starters.md#refusals-and-their-codes) fills, with its refusal code, such as `full`; it is None for every other type. A pin you have already wired stays visible when the area is collapsed.
 
 - **On Success** runs with the outputs set. Wire them straight from their pins.
 - **On Failed** runs with **Outcome**, **Reason**, **Retryable** and **Code**. **Outcome** is one of the [call outcomes](../troubleshooting.md#outcomes). A call the server refuses by a rule in the asset, such as **Callable By**, arrives as **Denied** with the reason to show, and a call inside a **Cooldown** as **Denied** with **Retryable** true; see [What a refused player sees](../access-members-and-timers.md#what-a-refused-player-sees). A call to a server, or a type, that is switched off or paused arrives as **Paused** with **Retryable** true, so a Switch on **Outcome** has a **Paused** pin: try again later or show a paused message. A Game Kit starter's refusal for a reason of the game's, such as a full match, arrives as **Refused** with its **Code**, so the Switch has a **Refused** pin too. A call made after the player's access ended, or still waiting when it did, arrives as **Access Ended**, not retryable, so the Switch has an **Access Ended** pin too: show **Reason** and send the player back to sign in; see [When access ends](../troubleshooting.md#when-access-ends). A call that times out says in **Reason** whether the server's own limit or the connection gave up; see [Timeout](../troubleshooting.md#outcomes).
@@ -12550,7 +12555,7 @@ It never opens a connection. With no Server Object connection open, such as befo
 
 ## By name
 
-The generic **Call Server Function** under **Server Objects** has a **Function** dropdown that lists every function of every asset, for when you would rather pick than type. Its pins are laid out like a **Call** node's, with **Outcome**, **Reason**, **Retryable** and **Code** in the advanced area. The nodes below work by name and by type instead, for a graph that calls whichever function it is told to.
+The generic **Call Server Function** under **Server Objects** has a **Function** dropdown that lists every function of every asset, for when you would rather pick than type. Its pins are laid out like a **Call** node's, with **Outcome** and **Reason** shown and **Retryable** and **Code** in the advanced area. The nodes below work by name and by type instead, for a graph that calls whichever function it is told to.
 
 ### Feed the beacon by name
 
@@ -12680,7 +12685,7 @@ The C++-only types are carried on the nearest pin that holds every value. A valu
 
 An optional input is sent only when its **Has Value** is true; an optional output's **Has Value** says whether the server set it. On a **Get**, an optional's **Has Value** is false when it is empty and also before the server has sent the values.
 
-A variable, input or output whose name is one a node uses for its own pin gets no node, and the Blueprint compile says to rename it. The names are `Team Id`, `Instance Id`, `Value Changed`, `Has Values`, `then`, `execute`, `self`, `Server Function`, `Call Outcome`, `Call Reason`, `Call Retryable`, `On Success`, `On Failed`, and another value's name followed by ` Has Value`. Rename it in the asset; the nodes follow. `Call Outcome`, `Call Reason` and `Call Retryable` are the pins a **Call** node shows as **Outcome**, **Reason** and **Retryable** in its advanced area, under the small arrow at the bottom of the node.
+A variable, input or output whose name is one a node uses for its own pin gets no node, and the Blueprint compile says to rename it. The names are `Team Id`, `Instance Id`, `Value Changed`, `Has Values`, `then`, `execute`, `self`, `Server Function`, `Call Outcome`, `Call Reason`, `Call Retryable`, `On Success`, `On Failed`, and another value's name followed by ` Has Value`. Rename it in the asset; the nodes follow. `Call Outcome`, `Call Reason` and `Call Retryable` are the pins a **Call** node shows as **Outcome**, **Reason** and **Retryable**; **Retryable** is in its advanced area, under the small arrow at the bottom of the node. `Has Values` and another value's name followed by ` Has Value` are the pins the **Get Server State** and **Get Server Variable** nodes label **Is Ready**; the pin is the same, only its label changed.
 
 Two other things have no pin. An Array, Set, Map or optional inside another one cannot be held in a Blueprint, and neither can a C++ struct or enum that is not marked `BlueprintType`. The compile says which variable and why, for example "the struct FRelic is not BlueprintType; mark it BlueprintType", and the node is not offered in the menu until it does. Blueprint structs and enums you made in the editor already work.
 
@@ -15766,7 +15771,7 @@ Players group up, talk, wave at each other and watch each other's matches. The S
 - **An emote** is a short name, such as `wave`, that a player sends to the players near them, optionally aimed at one actor.
 - **A spectator** is a player with no avatar in the world who still receives what happens near the place they watch.
 
-Parties, guilds and chat are in the **Crowdy|Game Kit|Social** category, emotes in **Crowdy|Game Kit|Emotes** and the spectator in **Crowdy|Game Kit|Spectate**.
+Parties, guilds and chat are in the **Crowdy SDK|Game Kit|Social** category, emotes in **Crowdy SDK|Game Kit|Emotes** and the spectator in **Crowdy SDK|Game Kit|Spectate**.
 
 ## Make a party and talk in it
 
@@ -16137,33 +16142,42 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/services/voice-chat
 
 # Voice Chat
 
-Voice chat is a thin, opt-in add-on: capture your microphone, encode it, send it over the SDK's own UDP transport, decode and play back what other players send. The two-plane model does not apply here. There is no server truth for voice, only a live stream the server relays between clients and never stores.
+Voice chat is a small, opt-in add-on. It opens your microphone, sends what you say over the SDK's own UDP transport, and plays back what other players send. The two-plane model does not apply here. There is no server truth for voice, only a live stream the server relays between clients and never stores.
 
 ## When you touch this
 
-When your game wants live player-to-player audio alongside its gameplay: push-to-talk, an always-on party channel, or a quick way to confirm a build's audio path with owner echo before anyone else connects.
+When your game wants live player-to-player audio next to its gameplay: push-to-talk, an always-on party channel, a "who is talking" indicator, or a quick check of a build's audio path with owner echo before anyone else connects.
 
-## The functions
+:::caution[Every player needs this SDK version for voice.]
+Voice uses the voice packet format shared with the CrowdyJS and CrowdyCPP SDKs: Opus audio in 20 ms frames, with reordering and loss concealment. Players on an earlier SDK version cannot hear players on this one, and the reverse. Update every client that should take part in voice. See [What's Changed](../guides/whats-changed.md#2026-10-30-sdk-v2220).
+:::
 
-All six live on `UCrowdySDKSubsystem` (Game Instance subsystem, module CrowdySDK, category **CrowdySDK > Communication**). There is no separate wrapper to write: get the subsystem and call them. They need only `CrowdySDK` in your module's Build.cs; you list `CrowdyVoice` only to reach the voice classes directly, below.
+## The nodes
 
-| Call | Does |
-|---|---|
-| `StartVoiceChat()` | Begins capturing your microphone. |
-| `StopVoiceChat()` | Stops capturing. |
-| `PlayVoiceChat()` | Enables local playback of other players. |
-| `MuteVoiceChat()` | Disables local playback. |
-| `SetVoiceChatStreamTimeoutThreshold(float InSeconds)` | How long a silent remote stream is kept before it is dropped. |
-| `ToggleOwnerEcho(bool bEnable)` | Loops your own captured audio back to you, for confirming capture without a second client. |
+Everything lives on the **Crowdy SDK Subsystem** (`UCrowdySDKSubsystem`, a Game Instance subsystem, category **Crowdy SDK > Voice**). There is no wrapper to write: get the subsystem and call it. Your module needs only `CrowdySDK` in its Build.cs.
 
-Capture and playback are independent: you can send without listening, listen without sending, or both. Internally all six forward to `UVoiceChatSubsystem` and `FVoiceChatService`. Neither is exposed to Blueprint; from C++ `UVoiceChatSubsystem` is a world subsystem in the `CrowdyVoice` module, so you reach it only if your Build.cs lists `CrowdyVoice`, and the six calls above are the supported way in.
+| Blueprint | C++ | Does |
+|---|---|---|
+| **Start Voice Chat** | `StartVoiceChat()` | Opens your microphone and sends your voice while you speak. |
+| **Stop Voice Chat** | `StopVoiceChat()` | Closes your microphone. Other players see you stop talking. |
+| **Play Voice Chat** | `PlayVoiceChat()` | Lets you hear other players. |
+| **Mute Voice Chat** | `MuteVoiceChat()` | Stops you hearing other players. |
+| **Set Voice Chat Stream Timeout Threshold** | `SetVoiceChatStreamTimeoutThreshold(float InSeconds)` | How long a silent player's stream is kept before it is released. Default 2 seconds; the value is clamped to 0.5 seconds up to 1 hour. |
+| **Toggle Owner Echo** | `ToggleOwnerEcho(bool bEnable)` | Plays your own voice back to you, as other players hear it. |
+| **Get Voice Mic State** | `GetVoiceMicState()` | What your microphone is doing right now. |
+| **On Voice Mic State Changed** | `OnVoiceMicStateChanged` | Fires when that state changes. |
+| **On Voice Speaker Talking** | `OnVoiceSpeakerTalking` | Fires when a player starts or stops talking. |
+
+Sending and hearing are independent. You can send without listening, listen without sending, or do both. Other players' voices are muted until you call **Play Voice Chat**, so a game that wants to hear anyone calls it once, for example when it starts.
+
+**Toggle Owner Echo** is a normal exec node: wire it into your graph like any other call. Earlier SDK versions never ran it from Blueprint.
 
 ## A push-to-talk toggle
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
 
-`StartTalking` and `StopTalking` bind to an Enhanced Input action's Started and Completed triggers in `SetupPlayerInputComponent`, the same "fetch the game instance subsystem" pattern every page in this section uses: capture starts while the action is held and stops on release.
+`StartTalking` and `StopTalking` bind to an Enhanced Input action's Started and Completed triggers in `SetupPlayerInputComponent`, using the same "fetch the game instance subsystem" pattern every page in this section uses. The microphone opens when the action starts and closes on release.
 
 ```cpp
 // LanternPlayer.h
@@ -16209,67 +16223,158 @@ void ALanternPlayer::StopTalking()
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-Two custom events stand for the input action's Started and Completed pins. **OnTalkStarted** calls **Start Voice Chat**; **OnTalkCompleted** calls **Stop Voice Chat**; one **Crowdy SDK Subsystem** node feeds both calls.
+Two custom events stand for the input action's Started and Completed pins. **OnTalkStarted** calls **Start Voice Chat**; **OnTalkCompleted** calls **Stop Voice Chat**. One **Crowdy SDK Subsystem** node feeds both calls.
 
 [Blueprint snippet: voice-toggle, see /bp/unreal-sdk/voice-toggle.txt]
 
 </TabItem>
 </Tabs>
 
-`StartTalking` and `StopTalking` also brighten and dim the `Torch` (`SetIntensity(8000.f)` /
-`SetIntensity(2000.f)`), so the example has a visible signal beyond the console trace described below.
+`StartTalking` and `StopTalking` also brighten and dim the `Torch` (`SetIntensity(8000.f)` / `SetIntensity(2000.f)`), so the example has a visible signal as well.
+
+## Showing who is talking
+
+**On Voice Speaker Talking** gives you two values: **Speaker Uuid**, the talking player's actor id as text, and **Talking**, true when that player starts and false when they stop. "Talking" means their voice rose above a silence gate. It ends about 0.3 seconds after they stop. A microphone that is open but quiet sends nothing, so it does not count as talking.
+
+The event fires whether or not you called **Play Voice Chat**, so a talk indicator works even while you have others muted.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`WatchVoice` binds `OnVoiceSpeakerTalking` with `AddDynamic` to a `UFUNCTION` that takes the speaker id and the talking flag, then calls `PlayVoiceChat()`. The handler turns the torch green while a player talks and white when they stop.
+
+```cpp
+// LanternPlayer.h
+#include "Subsystem/CrowdySDKSubsystem.h"
+
+void WatchVoice();
+
+UFUNCTION()
+void HandleSpeakerTalking(FString SpeakerUuid, bool bTalking);
+
+// LanternPlayer.cpp
+void ALanternPlayer::WatchVoice()
+{
+	// Other players' voices stay muted until Play Voice Chat; On Voice Speaker Talking fires either way.
+	UCrowdySDKSubsystem* Voice = GetGameInstance()->GetSubsystem<UCrowdySDKSubsystem>();
+	Voice->OnVoiceSpeakerTalking.AddDynamic(this, &ALanternPlayer::HandleSpeakerTalking);
+	Voice->PlayVoiceChat();
+}
+
+void ALanternPlayer::HandleSpeakerTalking(FString SpeakerUuid, bool bTalking)
+{
+	// Talking means that player's microphone is open; the torch turns green while anyone nearby has theirs open.
+	Torch->SetLightColor(bTalking ? FLinearColor::Green : FLinearColor::White);
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+Event BeginPlay binds a custom event, **OnSpeakerTalking** (with **SpeakerUuid** and **bTalking**), to **On Voice Speaker Talking** on the **Crowdy SDK Subsystem**, then calls **Play Voice Chat**. The custom event branches on **bTalking** and sets the **Torch** light color to green or white.
+
+[Blueprint snippet: voice-notify, see /bp/unreal-sdk/voice-notify.txt]
+
+</TabItem>
+</Tabs>
+
+The example keeps no list of speakers, so with several people talking the torch follows whichever event arrived last. For a real roster, keep a set keyed by **Speaker Uuid** and add or remove on each event.
+
+## Reading the microphone
+
+**Get Voice Mic State** returns one of five values, and **On Voice Mic State Changed** fires with the new one.
+
+| State | Means |
+|---|---|
+| **Off** | Voice chat is not using the microphone. |
+| **Starting** | The microphone is open and its first audio has not arrived yet. |
+| **Capturing** | The microphone is live. This does not mean you are speaking; silence is not sent. |
+| **No Device** | No microphone was found. Voice chat opens one as soon as it is available. |
+| **Error** | The microphone could not be used, or this platform cannot capture audio. Check that it is connected and that the OS lets this app use it, then call **Start Voice Chat** again. |
+
+A map change closes and reopens the microphone, so you see **Off** then **Starting** again. That is expected. A microphone that opens but delivers no audio for about three seconds goes to **Error**, with a log warning that points at the OS microphone permission. The usual cause is a denied permission.
 
 ## Confirming capture with owner echo
 
-Turn on owner echo, speak, and you should hear yourself:
+Call **Start Voice Chat**, then **Toggle Owner Echo** with Enable set to true, and speak. You should hear yourself, a little late: your voice goes to the server and comes back like any other player's. While echo is on, your own **Speaker Uuid** also shows up in **On Voice Speaker Talking**.
 
-```cpp
-UCrowdySDKSubsystem* Voice = GetGameInstance()->GetSubsystem<UCrowdySDKSubsystem>();
-Voice->StartVoiceChat();
-Voice->ToggleOwnerEcho(true);
-```
+You need **Play Voice Chat** for this too, since echo is played like anyone else's voice.
 
 :::caution[Turn owner echo back off once capture is confirmed.]
-Leaving `ToggleOwnerEcho(true)` on means the player hears their own microphone continuously, not just during the check.
+Leaving it on means the player hears their own microphone continuously, not just during the check. The setting carries across map changes, so it stays on until you turn it off.
 :::
+
+## What to expect
+
+- **No pawn needed.** Voice works in any map once the player is connected, with or without a player character. Your voice is sent from the chunk your player stands in, and frames are dropped until the connection is up and your player has an id.
+- **Settings carry across maps.** Whether your microphone is on, play or mute, owner echo, and the timeout all stay as you set them when the next map loads. You do not call anything again after a map change.
+- **A missing microphone is not a failure.** The state reads **No Device**, and voice chat opens the microphone as soon as one is available. On Windows a newly connected microphone is noticed right away; elsewhere voice chat looks again every couple of seconds.
+- **A changed default microphone restarts capture on Windows.** If the player unplugs a headset or picks another default device, voice chat reopens the microphone by itself.
+- **Up to 16 speakers are heard at once.** A seventeenth speaker is not played until one of the others is released.
+- **Received voice plays about 120 ms behind.** The delay absorbs uneven delivery, and it is on top of the network time.
+- **Lost packets are concealed.** Short gaps are filled in rather than heard as clicks.
+
+## Platforms
+
+- **Windows:** full support, including the default-device watch above.
+- **Mac:** a packaged game needs the `NSMicrophoneUsageDescription` key in its Info.plist. The engine's own editor Info.plist has it; the engine's Mac template for game targets (`Build/Mac/Resources/Info.Template.plist` in the engine) does not include `NSMicrophoneUsageDescription`. To add it, open **Project Settings > Platforms > Xcode Projects**, and under **Plist Files** press **Restore Info.plist to default** once. That copies the engine template into your project's `Build/Mac/Resources/` folder and points **Mac: Info.plist Template** at it. Then add the `NSMicrophoneUsageDescription` key to that file with a short sentence for the player, such as "This game uses the microphone for voice chat."
+- **Linux:** the engine has no audio capture on Linux, so voice capture reports that it is not supported there: **Start Voice Chat** leaves the state at **Error** and logs a warning. The same happens in a build that runs with audio turned off.
+
+## From C++ beyond the nodes
+
+The nodes above are the normal way in, and the Crowdy SDK subsystem keeps your settings across maps. C++ code that wants the per-map voice object can use these instead.
+
+`ECrowdyVoiceMicState` is the enum behind **Get Voice Mic State**: `Off`, `Starting`, `Capturing`, `NoDevice` (shown as **No Device**) and `Error`. Each means what the table under [Reading the microphone](#reading-the-microphone) says.
+
+On `UCrowdySDKSubsystem` the two Blueprint events have delegate types you can bind from C++ with `AddDynamic`:
+
+| Delegate type | Property | Parameters |
+|---|---|---|
+| `FOnVoiceMicStateChanged` | `OnVoiceMicStateChanged` | `ECrowdyVoiceMicState State` |
+| `FOnVoiceSpeakerTalking` | `OnVoiceSpeakerTalking` | `FString SpeakerUuid`, `bool bTalking` |
+
+`UVoiceChatSubsystem` is the voice chat of one map: a world subsystem, so `GetWorld()->GetSubsystem<UVoiceChatSubsystem>()` gives you the one for the current map, and it ends with the map. Its members:
+
+| Member | Does |
+|---|---|
+| `GetMicState()` | The current `ECrowdyVoiceMicState`. |
+| `IsCapturing()` | True while the state is `Capturing`. |
+| `IsPlaying()` | True while other players' voices are being played, after `PlayVoiceChat()` and before `MuteVoiceChat()`. |
+| `SetOwnerEcho(bool bEnable)` | Plays your own voice back to you, as **Toggle Owner Echo** does. |
+| `GetStats()` | Returns an `FCrowdyVoiceStats` of running counters for this map; see [Watching activity](#watching-activity). |
+| `OnMicStateChanged` | Native multicast delegate (`FOnCrowdyVoiceMicStateChanged`) with the new `ECrowdyVoiceMicState`. Fires on the game thread, and also when the map ends with the microphone open. |
+| `OnSpeakerTalking` | Native multicast delegate (`FOnCrowdyVoiceSpeakerTalking`) with the speaker's actor id as an `FString` and a `bool` for talking. Fires on the game thread. |
+
+The native delegates are bound with `AddUObject` or `AddLambda`, not `AddDynamic`, and a binding on `UVoiceChatSubsystem` is gone when the map is. The subsystem's start, stop, play and mute calls are better made through the nodes, so your settings carry to the next map.
 
 ## Watching activity
 
-There is no Blueprint event for incoming voice, so nothing to show in a graph; the tool is a console variable. `crowdy.voice.trace 1` (read in code through `CrowdyVoiceTrace::Voice`) gates `LogCrowdyVoice` info logging for the voice subsystem, the capture and playback service, and the device monitor. Use it as a troubleshooting knob, not as a gameplay hook.
+The tool for troubleshooting is a console variable. `crowdy.voice.trace 1` turns on `LogCrowdyVoice` info logging for the microphone, playback and device changes. Warnings and errors are always on. Use it as a troubleshooting knob, not as a gameplay hook; for gameplay, bind **On Voice Speaker Talking** and **On Voice Mic State Changed**.
 
-## The device monitor (Windows only)
-
-The SDK spawns an audio device monitor for its own use when the voice subsystem starts. It watches audio devices connect and disconnect on Windows only; on every other platform it logs "Audio device monitoring is only supported on Windows" and does nothing. It is a private class with nothing for a game to call or bind.
-
-## Reaching the voice subsystem from C++
-
-`UVoiceChatSubsystem` is not exposed to Blueprint. From C++ it is an ordinary world subsystem: add `CrowdyVoice` to your module's `PublicDependencyModuleNames` and call `GetWorld()->GetSubsystem<UVoiceChatSubsystem>()`. `IsCapturing()` is true only while the capture device stream is open and delivering samples, so a `StartVoiceChat()` that found no microphone reads false.
-
-It declares four delegates: `OnAudioNotify` (`FAudioNotify`, no parameters), `OnAudioDataGenerated` (`FOnAudioDataGenerated`), `OnAudioDataReceived` (`FOnAudioDataReceived`), and `OnStreamTimeout` (`FOnStreamTimeout`). Only `OnAudioNotify` fires, once per decoded incoming voice frame from any remote player; bind it with `AddDynamic` to a `UFUNCTION` with no parameters. The other three are declared and never broadcast in the current build.
-
-:::caution[This is not a supported binding surface.]
-`OnAudioNotify` is the one voice delegate that fires; the other three never do, and none carries a player id or the audio itself. Treat a bind on it as a talk indicator at most, and the trace CVar above as the observation tool.
-:::
+From C++, `UVoiceChatSubsystem::GetStats()` (a world subsystem, so `GetWorld()->GetSubsystem<UVoiceChatSubsystem>()`) returns running counters for the current map: packets sent, silent frames the gate skipped, packets received, frames played, frames concealed for loss, frames dropped because a speaker's playback was full, malformed packets, and the number of speakers heard right now. A debug overlay or a soak test can read them; they are not a Blueprint node.
 
 ## How the transport works
 
-Captured audio is compressed with Opus (`FVoiceChatService` owns the encoder and decoder pair, one decoder per remote player) and sent as an ordinary `FClientAudioPacketMessageRequest` over the same UDP channel every other RPC uses, not a separate connection. The service decodes each incoming frame and hands the samples to a per-player playback buffer, `FAudioChatTrack`, which is why device output uses a procedural sound wave rather than a fixed asset.
+Your voice is cut into 20 ms frames, compressed with Opus, and sent as an ordinary audio message over the same UDP connection every other message uses, not a separate one. Frames go out only while you speak, and the last one of a burst tells listeners you stopped.
 
-The `CrowdyVoice` module links `AudioCapture`, `AudioCaptureCore`, `AudioMixer`, and `Voice` purely to read the local microphone. A project that only plays back other players and never calls `StartVoiceChat()` does not need capture hardware access, though `UCrowdySDKSubsystem` always depends on `CrowdyVoice` since the six calls live there regardless.
+On the receiving side the SDK puts each player's packets back in order, decodes them, conceals lost frames, and plays them through a 2D audio component per speaker, so voice is not positional and needs no sound asset. The `CrowdyVoice` module holds all of this and is a public dependency of `CrowdySDK`, so you do not list it yourself. Apart from the members listed under [From C++ beyond the nodes](#from-c-beyond-the-nodes), the voice classes inside it are internal, and the nodes above are the supported way in.
 
 ## Gotchas
 
-- Voice is relayed live like any other RPC; the server stores nothing, so there is no truth to check it against.
-- The six calls need only `CrowdySDK` in Build.cs; `UVoiceChatSubsystem` needs `CrowdyVoice`, and of its four delegates only `OnAudioNotify` fires.
-- The device monitor is the SDK's own; it does something on Windows only and exposes nothing to a game.
-- `ToggleOwnerEcho(true)` is a one-time check, not a setting to leave on.
-- `SetVoiceChatStreamTimeoutThreshold` only affects how long a silent stream is kept; it does not mute or drop active audio.
+- Every player needs the same SDK version for voice. A mixed group splits into players who hear each other and players who hear nothing.
+- Others are muted until **Play Voice Chat**. A game that never calls it hears nobody, though **On Voice Speaker Talking** still fires.
+- **Capturing** means the microphone is live, not that the player is speaking.
+- **Toggle Owner Echo** true is a one-time check, not a setting to leave on, and it survives map changes.
+- **Set Voice Chat Stream Timeout Threshold** only affects how long a silent stream is kept; it does not mute or cut off active audio. A value outside 0.5 seconds to 1 hour is clamped and logged.
+- A packaged Mac game needs `NSMicrophoneUsageDescription` in its Info.plist, and the engine's Mac template does not include it.
+- The old voice events `OnAudioNotify`, `OnAudioDataGenerated`, `OnAudioDataReceived` and `OnStreamTimeout` are gone. Use **On Voice Speaker Talking** for who is talking.
 
 ## Related
 
 - [Authentication](./authentication.md): the subsystem-fetch pattern this page reuses.
 - [Connection and reconnect](../runtime/connection-and-reconnect.md): the shared UDP transport voice rides on.
 - [Troubleshooting](../guides/troubleshooting.md): the trace CVar pattern used above.
+- [Blueprint Delegates](../reference/delegates.md): the two voice events in the delegate table.
 
 # Host Election
 Source: https://docs.crowdedkingdoms.com/unreal-sdk/services/host-election
@@ -17319,7 +17424,7 @@ Calling `SetObjectLocation(NewLocation)` runs the body on the owner and announce
 `ASampleVoiceSwitch` toggles voice chat on `UCrowdySDKSubsystem`:
 
 - `StartVoiceChat` and `StopVoiceChat` control the microphone.
-- `PlayVoiceChat` and `MuteVoiceChat` control hearing others.
+- `PlayVoiceChat` and `MuteVoiceChat` control hearing others. Others are muted until `PlayVoiceChat`.
 
 No wrapper is needed; the subsystem methods are BlueprintCallable.
 
@@ -17433,11 +17538,89 @@ The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, ea
 
 ## When you come here
 
-You built against the SDK in July, you are updating the plugin to 2.15 or later (2.21.2 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), in 2.15.0 the array delegates, in 2.19.0 the removal of the Game Model API (see [its entry](#2026-10-12-sdk-v2190)), and in 2.20.0 the renamed pin delegates of the Channels, Teams, Avatars and sign-in nodes, which a C++ `AddDynamic` handler binds to (see [On Error](#2026-10-16-sdk-v2200)). In 2.21.0, a C++ `AddDynamic` handler bound to the **Call Server Function** action's **On Success** or **On Failed** needs one more parameter, `FName Code` (see [its entry](#2026-10-26-sdk-v2210)).
+You built against the SDK in July, you are updating the plugin to 2.15 or later (2.22.0 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), in 2.15.0 the array delegates, in 2.19.0 the removal of the Game Model API (see [its entry](#2026-10-12-sdk-v2190)), and in 2.20.0 the renamed pin delegates of the Channels, Teams, Avatars and sign-in nodes, which a C++ `AddDynamic` handler binds to (see [On Error](#2026-10-16-sdk-v2200)). In 2.21.0, a C++ `AddDynamic` handler bound to the **Call Server Function** action's **On Success** or **On Failed** needs one more parameter, `FName Code` (see [its entry](#2026-10-26-sdk-v2210)). In 2.22.0, voice chat changes its packet format, so every player needs the new SDK version for voice, and a C++ handler bound to `OnAudioNotify` or the other old voice delegates no longer compiles (see [Voice chat](#voice-chat)).
 
 :::caution[The Game Model entries below no longer reach a server, and the API is removed.]
 The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The entries that describe it are kept as history. Do not adopt it: v2.18.0, the release that adds Server Objects, deprecates it, and v2.19.0 removes it, as described under [2026-10-12 (SDK v2.19.0)](#2026-10-12-sdk-v2190). Its replacement is [Server Objects](../exec/overview.md), described under [2026-10-07 (SDK v2.18.0)](#2026-10-07-sdk-v2180); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
 :::
+
+## 2026-10-30 (SDK v2.22.0)
+
+:::caution[Voice breaks between SDK versions: every player needs the new version.]
+Voice chat has a new packet format, shared with the CrowdyJS and CrowdyCPP SDKs. Players on an earlier SDK version cannot hear players on this one, and the reverse. Update every client that should take part in voice.
+:::
+
+### Voice chat
+
+- **Voice is rewritten on the shared voice format.** It uses Opus in 20 ms frames, with reordering and loss concealment, and it needs no player pawn, so it works in any map. The microphone and the Play, Mute, owner echo and timeout settings carry across map changes. Up to 16 speakers are heard at once, and received voice plays about 120 ms behind. **What you do:** update every client that should take part in voice; your existing voice graphs keep working. See [Voice Chat](../services/voice-chat.md).
+- **New nodes to see the microphone and who is talking.** **Get Voice Mic State** returns Off, Starting, Capturing, No Device or Error, and **On Voice Mic State Changed** fires when it changes. **On Voice Speaker Talking** gives a **Speaker Uuid** and **Talking**: talking means voice above a silence gate, and it ends about 0.3 seconds after the speaker stops. A silent microphone sends nothing. In C++ they are `GetVoiceMicState()`, `OnVoiceMicStateChanged` and `OnVoiceSpeakerTalking` on `UCrowdySDKSubsystem`. **What you do:** nothing, unless you want a talk indicator. See [Showing who is talking](../services/voice-chat.md#showing-who-is-talking).
+- **Toggle Owner Echo is now an exec node.** Earlier versions never ran it from Blueprint. **What you do:** wire it into a graph if you called it there, and turn it off again after the check. See [Confirming capture with owner echo](../services/voice-chat.md#confirming-capture-with-owner-echo).
+- **Other players are muted until Play Voice Chat.** The six existing voice nodes keep their names. **What you do:** call **Play Voice Chat** once if your game should hear others. **Set Voice Chat Stream Timeout Threshold** now clamps its value to 0.5 seconds up to 1 hour.
+- **The old voice delegates are removed.** `OnAudioNotify`, `OnAudioDataGenerated`, `OnAudioDataReceived` and `OnStreamTimeout` on `UVoiceChatSubsystem` are gone, and so are the two delegates of the audio device monitor. This breaks a C++ build that binds one of them. **What you do:** bind `OnVoiceSpeakerTalking` on `UCrowdySDKSubsystem` instead of `OnAudioNotify`. See [Blueprint Delegates](../reference/delegates.md).
+- **Microphone handling.** A missing microphone shows No Device and voice chat opens it as soon as one is available. On Windows a changed default microphone restarts capture by itself. A microphone that delivers nothing goes to Error with a hint about the OS microphone permission. **What you do:** nothing.
+- **Platform notes.** Linux has no engine audio capture, so voice capture reports it is not supported there. A packaged Mac game needs `NSMicrophoneUsageDescription` in its Info.plist, which the engine's Mac template does not include. **What you do:** on Mac, add the key; see [Platforms](../services/voice-chat.md#platforms).
+- **Voice counters for C++.** `UVoiceChatSubsystem::GetStats()` returns packets sent and received, frames played, concealed and dropped, and the speakers heard right now. **What you do:** nothing; read it from a debug overlay or a soak test if useful. See [Watching activity](../services/voice-chat.md#watching-activity).
+
+### Warnings where things used to fail silently
+
+- **A bad `CrowdyRecipient`, `CrowdyDecay` or `CrowdyDistance` value now warns.** A meta value that is not a valid name logs a warning that lists the valid names, and the default is used. A Blueprint replicated event gets a compiler warning on the node. **What you do:** fix the name the warning shows. See [Recipients and routing](../runtime/recipients-and-routing.md) and [RPC meta keys](../reference/rpc-meta-keys.md).
+- **A Multicast or SpatialMulticast event on an actor with no registered entity now warns.** The warning differs when the Crowdy Entity Component exists but has not registered yet, for example on a pawn before it is possessed: call the event after registration. If the actor has no component, add one. **What you do:** read the warning; the advice depends on which case it is. See [RPC events in Blueprint](../runtime/rpc-events-blueprint.md).
+- **Mark Crowdy State Dirty warns once per world.** It warns when the actor has no Crowdy Entity Component, or when the property name is not one the class has. **What you do:** add the component, or fix the name. See [CrowdyState](../runtime/crowdy-state.md).
+- **Get Server Value and Set Server Value warn once** when the name is not a value of the struct. **What you do:** fix the name. See [Call its functions, from Blueprint](../exec/from-blueprint/call-functions.md).
+
+### Crash fixes
+
+- **No crash without a game instance.** **Get Chunk Coordinate At Location** and **Crowdy Is Connected To Server** no longer crash when called where there is no game instance, such as an editor world or a construction script. **What you do:** nothing. See [Recipients and routing](../runtime/recipients-and-routing.md).
+
+### Remote movement
+
+- **No more one-frame flicks after a sender hitches.** When a player's game stalled and its next two updates arrived almost together, the actor pool's shipped policy extrapolated their tiny gap up to 200 times, so other players saw that player flick far away for one frame. Extrapolation now measures the step over the recent average gap, so it continues at the sender's normal pace. A custom policy built on `TInterpolatedField` gets the same fix. **What you do:** nothing. See [The sample ring](../runtime/rendering-backends.md#the-sample-ring).
+
+### Quieter logs
+
+- **Fewer lines for things that are fine.** Event payload registration no longer logs a Warning per struct. A send refused while connecting is reported once per second, with a count of the ones suppressed. A map with networking off no longer logs Errors at load. "Host not set yet" and the missing host subsystem message are trace-gated. **What you do:** nothing; a log filter you wrote for the old lines will not match. See [Log categories](../reference/log-categories.md).
+- **The `CrowdyMass.*` diagnostic commands are for development builds.** The four commands are no longer in Shipping builds, and they print normal output, not warnings. **What you do:** nothing. See [Mass troubleshooting](../mass/troubleshooting.md#commands-and-switches).
+
+### Clearer messages
+
+- **Server Object refusals name the Blueprint nodes.** **Get Server Object** says it needs a Definition or an Owner; an empty Instance Id is named; an unknown function lists the type's functions; wrong parameters point at **Make Inputs**. **What you do:** nothing. See [Get a Server Object](../exec/from-blueprint/get-a-server-object.md) and [Troubleshooting](../exec/troubleshooting.md).
+- **Definition validation says what to fix.** It names the Timer, Message or Function that has no Name, and says how to fix a reserved name. See [Create a type](../exec/create-a-type.md).
+- **"Payload not registered" errors name the struct** and say how it registers. See [RPC events in C++](../runtime/rpc-events-cpp.md).
+- **Studio connection errors say what to check.** See [Projects and apps](../studio/projects-and-apps.md).
+
+### Blueprint
+
+- **Call Server Function shows Outcome and Reason on the node.** They no longer sit under the small arrow; **Retryable** and **Code** still do. Wires you made keep working. See [Call its functions, from Blueprint](../exec/from-blueprint/call-functions.md).
+- **The ready pin on Get Server Variable and Get Server State reads "Is Ready".** It is the same pin, so existing wires keep working. An optional variable's own **Has Value** pin is unchanged. See [Get a variable](../exec/from-blueprint/read-and-follow-variables.md#get-a-variable).
+- **Struct field tooltips show on Server Object value pins.** See [What the pins are](../exec/from-blueprint/pins-for-every-type.md#what-the-pins-are).
+- **Crowdy SDK nodes sit under one "Crowdy SDK" palette category.** Search works as before and no graph changes. **What you do:** nothing; the paths in the docs now read `Crowdy SDK|...`.
+- **More tooltips.** Dispatch Game Event's target, decay and distance values have tooltips. The network statistics tooltips state their units, and **Dropped Client Notifies** is now **Client Notifies In Flight**. **What you do:** nothing, unless a graph or a note refers to the old name.
+
+### Deprecated
+
+- **Reload Endpoints From Settings and Set Expected Actor Update State Size.** The first was already a no-op, and the second had no effect. Both still work. **What you do:** remove them from your graphs. See [Project settings](../reference/project-settings.md#setting-endpoints-at-runtime).
+
+### Saved state
+
+- **A level-placed actor's fallback key no longer includes the PIE prefix.** The path-based key now matches between Play In Editor and packaged builds, except on World Partition maps. State saved from PIE under the old key is not read back. **What you do:** nothing for packaged data; expect PIE to start without the state it saved before. See [Persistence](#persistence).
+
+### Studio
+
+- **Enter submits** the sign-in form and the first step of Create App.
+- **More confirmations.** Revoking all of a user's or group's grid grants, revoking a tier feature, and switching a Live app to Draft now ask first.
+- **Tooltips and feedback.** Registry badges and grid buttons have tooltips, and **Tools > Rebuild Crowdy Registry** shows a result notification.
+
+See [Sign in](../studio/sign-in.md), [Grids](../studio/grids.md), [Projects and apps](../studio/projects-and-apps.md) and [Inspector and Registry](../studio/inspector-and-registry.md).
+
+### Mass
+
+- **An area spawner stops at the first failed spawn** and logs one line. **What you do:** read the log line and fix what it names, then spawn again. See [Turn Mass on for a map](../mass/turn-mass-on-for-a-map.md).
+- **Spatial-grid settings are greyed out** when the grid is off.
+
+### For AI agents
+
+- **New `registry` op.** `-run=CrowdyStudio -op=registry [-class=substring] [-norebuild] [-out=file]` rebuilds the baked registry and prints every entity class's CrowdyEvents (recipient, decay, distance) and CrowdyState properties (owner-only, manual dirty, heartbeat, OnRep) as JSON. **What you do:** use it instead of reading the sources when you need an event's routing. See [Sync from the command line](../studio/config-sync.md#sync-from-the-command-line).
+- **The docs' AI helper files come as an index plus per-section files and a slim symbol index.** See [For AI Agents](../for-ai-agents.md).
 
 ## 2026-10-29 (SDK v2.21.2)
 
@@ -17823,7 +18006,7 @@ You know the shape of what you need (send an event, read a team, elect a host) b
   UCrowdyChannels: "Create and manage channels, channel membership, and raw channel messages.",
   UCrowdyHostSubsystem: "Host election and the server-validated host query.",
   UCrowdyTeams: "Create, join, leave, and query teams and roles at runtime.",
-  UVoiceChatSubsystem: "The voice capture and playback engine, reached directly or through UCrowdySDKSubsystem.",
+  UVoiceChatSubsystem: "The voice capture and playback of one map. A world subsystem; use the voice nodes on UCrowdySDKSubsystem, which carry their settings from map to map.",
   UCrowdyMassEntitySubsystem: "The crowd rows of a map that draws with Mass: targets, traces, events and fields. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
   UCrowdyMassServerRecordsSubsystem: "The Server Object records of crowd rows, and a callback when one changes. A world subsystem that exists only when the map profile selects the Crowdy Mass Rendering Backend; check it for null.",
 }} notesLabel="What it is for" />
@@ -17904,13 +18087,13 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/reference/delegates
 
 # Blueprint Delegates
 
-A dynamic multicast delegate is what you bind with **Bind Event to** or **Assign** in Blueprint, or `AddDynamic` in C++. The SDK exposes 167 of them; 2 belong to a private actor a game cannot reference and are dropped from this table, and 1 more, `UCrowdyConnectionMonitor::OnConnectionStateChanged`, is left out because the SDK reconnects on its own. So 164 rows render below.
+A dynamic multicast delegate is what you bind with **Bind Event to** or **Assign** in Blueprint, or `AddDynamic` in C++. The table below lists the ones a game can bind, grouped by the owner class. It leaves out `UCrowdyConnectionMonitor::OnConnectionStateChanged`, because the SDK reconnects on its own. The voice ones are `OnVoiceMicStateChanged` and `OnVoiceSpeakerTalking` on `UCrowdySDKSubsystem`.
 
 ## When you come here
 
 You have a delegate bound and want to know what its parameters mean, or you know roughly what you want to react to and want the class that fires it.
 
-All 164 delegates below fire on the game thread. This is a constant fact about every dynamic multicast delegate the SDK broadcasts, never a per-delegate choice, so it is stated once here instead of as a column that would read the same value 164 times: your handler runs like any other Blueprint event or `UFUNCTION`, with no thread-safety code of your own to write.
+Every delegate below fires on the game thread. This is a constant fact about every dynamic multicast delegate the SDK broadcasts, never a per-delegate choice, so it is stated once here instead of as a column that would read the same value on every row: your handler runs like any other Blueprint event or `UFUNCTION`, with no thread-safety code of your own to write.
 
 <SurfaceTable table="delegates" group="owner" />
 
@@ -17922,7 +18105,7 @@ All 164 delegates below fire on the game thread. This is a constant fact about e
 
 - A delegate's owner class must be reachable before you can bind it: a game instance subsystem's delegate is safe to bind in a C++ Game Instance's `Init` after `Super::Init()`, and in Blueprint from the Game Mode's Event BeginPlay (the Game Instance's Event Init runs before the subsystems exist); a world subsystem's needs a valid world first.
 - Binding twice fires your handler twice. Unbind (`Remove Dynamic` or `RemoveDynamic`) before a re-bind on a path that can run more than once, such as a widget that reconstructs.
-- Two delegates on `AWinAudioDeviceMonitor` exist in the SDK but are not shown here: that actor is private and spawned by the voice subsystem for itself, so a game never has a reference to bind against. See [Voice chat](../services/voice-chat.md).
+- The voice delegates live on `UCrowdySDKSubsystem`, which stays alive across maps, so you bind them once and they keep firing after a map change. The earlier voice delegates (`OnAudioNotify`, `OnAudioDataGenerated`, `OnAudioDataReceived`, `OnStreamTimeout`) and the audio device monitor's two are gone. See [Voice chat](../services/voice-chat.md).
 
 ## Related
 
@@ -18145,7 +18328,7 @@ default no longer applies.
 Two runtime setters on `UCrowdySDKSubsystem` look like a way to configure these values in code, but they
 are session-only overrides, not writes to the settings class: `SetDiscoveryUrl` stores a shared origin for
 the current session and is only read when `Environment` is Custom, and `SetGameApiUrl` stores one Game API
-HTTP endpoint for the session. `ReloadEndpointsFromSettings` is kept for old call sites and does nothing;
+HTTP endpoint for the session. `ReloadEndpointsFromSettings` is deprecated: it is kept so old call sites still compile and does nothing, so remove it from your graphs and code;
 the API client already re-reads both endpoints from the settings on every call.
 
 ### Server Object gateway domains

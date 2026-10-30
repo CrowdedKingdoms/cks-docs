@@ -1,6 +1,6 @@
 {
-  "generated_from": "2026-10-29T06:42:10Z",
-  "sdk_version": "2.21.2",
+  "generated_from": "2026-10-30T06:52:35Z",
+  "sdk_version": "2.22.0",
   "table": "enums",
   "columns": [
     {
@@ -153,38 +153,6 @@
       "allowlist": ""
     },
     {
-      "id": "ECrowdyDecayRate",
-      "name": "ECrowdyDecayRate",
-      "values": [
-        "No_Decay",
-        "Exponential_Decay",
-        "Linear_50",
-        "Linear_25",
-        "Linear_10",
-        "Linear_5"
-      ],
-      "module": "CrowdyNet",
-      "header": "ECrowdyMessageType.h",
-      "page": "runtime/recipients-and-routing",
-      "editor": false,
-      "allowlist": ""
-    },
-    {
-      "id": "ECrowdyEventRecipient",
-      "name": "ECrowdyEventRecipient",
-      "values": [
-        "SpatialMulticast",
-        "Multicast",
-        "OwningClient",
-        "Host"
-      ],
-      "module": "CrowdyNet",
-      "header": "ECrowdyMessageType.h",
-      "page": "runtime/recipients-and-routing",
-      "editor": false,
-      "allowlist": ""
-    },
-    {
       "id": "ECrowdyEventScope",
       "name": "ECrowdyEventScope",
       "values": [
@@ -194,42 +162,6 @@
       "module": "CrowdyNet",
       "header": "ECrowdyTarget.h",
       "page": "runtime/entity-component",
-      "editor": false,
-      "allowlist": ""
-    },
-    {
-      "id": "ECrowdyReplicationDistance",
-      "name": "ECrowdyReplicationDistance",
-      "values": [
-        "None",
-        "One_Chunk",
-        "Two_Chunks",
-        "Three_Chunks",
-        "Four_Chunks",
-        "Five_Chunks",
-        "Six_Chunks",
-        "Seven_Chunks",
-        "Eight_Chunks"
-      ],
-      "module": "CrowdyNet",
-      "header": "ECrowdyMessageType.h",
-      "page": "runtime/recipients-and-routing",
-      "editor": false,
-      "allowlist": ""
-    },
-    {
-      "id": "ECrowdyTarget",
-      "name": "ECrowdyTarget",
-      "values": [
-        "Everyone",
-        "Entity",
-        "Owner",
-        "Host",
-        "AllExceptSender"
-      ],
-      "module": "CrowdyNet",
-      "header": "ECrowdyTarget.h",
-      "page": "runtime/recipients-and-routing",
       "editor": false,
       "allowlist": ""
     },

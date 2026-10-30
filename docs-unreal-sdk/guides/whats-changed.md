@@ -2,7 +2,7 @@
 slug: whats-changed
 sidebar_position: 6
 title: What's Changed
-description: "A changelog for a project that integrated the Unreal SDK at 2.0 or 2.1 and is updating to 2.15 or later: the Game Models section and sessions, bundled sends, the teams rename, the retired connection monitor, the removed dev sign-in bypass, the deprecated persistence subsystem, the array-delegate signature change in 2.15.0, the Crowdy Studio live-values panel, the Game Model deprecation, the Game Model removal, and Server Objects that keep a record per entity, with This Actor's Area, Reads World Data and server values on crowd rows, and the sign-in prompt for the terms and the player's age, then the Platform Data settings, the platform's own refusal reasons, the Server Limits settings, Restart on Server Compute, Server messages with Listen To, and Server Function Libraries with Can Call Any Type, and in 2.21.0 the Game Kit starters as Server Object types with the Refused outcome and its Code, deploys built in parts, parties, chat, emotes and spectating, and driving the editor from a shell."
+description: "A changelog for a project that integrated the Unreal SDK at 2.0 or 2.1 and is updating to 2.15 or later: the Game Models section and sessions, bundled sends, the teams rename, the retired connection monitor, the removed dev sign-in bypass, the deprecated persistence subsystem, the array-delegate signature change in 2.15.0, the Crowdy Studio live-values panel, the Game Model deprecation, the Game Model removal, and Server Objects that keep a record per entity, with This Actor's Area, Reads World Data and server values on crowd rows, and the sign-in prompt for the terms and the player's age, then the Platform Data settings, the platform's own refusal reasons, the Server Limits settings, Restart on Server Compute, Server messages with Listen To, and Server Function Libraries with Can Call Any Type, and in 2.21.0 the Game Kit starters as Server Object types with the Refused outcome and its Code, deploys built in parts, parties, chat, emotes and spectating, and driving the editor from a shell, then in 2.22.0 the rewritten voice chat, which every player needs the new SDK version for."
 ---
 
 # What's Changed
@@ -11,11 +11,89 @@ The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, ea
 
 ## When you come here
 
-You built against the SDK in July, you are updating the plugin to 2.15 or later (2.21.2 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), in 2.15.0 the array delegates, in 2.19.0 the removal of the Game Model API (see [its entry](#2026-10-12-sdk-v2190)), and in 2.20.0 the renamed pin delegates of the Channels, Teams, Avatars and sign-in nodes, which a C++ `AddDynamic` handler binds to (see [On Error](#2026-10-16-sdk-v2200)). In 2.21.0, a C++ `AddDynamic` handler bound to the **Call Server Function** action's **On Success** or **On Failed** needs one more parameter, `FName Code` (see [its entry](#2026-10-26-sdk-v2210)).
+You built against the SDK in July, you are updating the plugin to 2.15 or later (2.22.0 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), in 2.15.0 the array delegates, in 2.19.0 the removal of the Game Model API (see [its entry](#2026-10-12-sdk-v2190)), and in 2.20.0 the renamed pin delegates of the Channels, Teams, Avatars and sign-in nodes, which a C++ `AddDynamic` handler binds to (see [On Error](#2026-10-16-sdk-v2200)). In 2.21.0, a C++ `AddDynamic` handler bound to the **Call Server Function** action's **On Success** or **On Failed** needs one more parameter, `FName Code` (see [its entry](#2026-10-26-sdk-v2210)). In 2.22.0, voice chat changes its packet format, so every player needs the new SDK version for voice, and a C++ handler bound to `OnAudioNotify` or the other old voice delegates no longer compiles (see [Voice chat](#voice-chat)).
 
 :::caution[The Game Model entries below no longer reach a server, and the API is removed.]
 The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The entries that describe it are kept as history. Do not adopt it: v2.18.0, the release that adds Server Objects, deprecates it, and v2.19.0 removes it, as described under [2026-10-12 (SDK v2.19.0)](#2026-10-12-sdk-v2190). Its replacement is [Server Objects](../exec/overview.md), described under [2026-10-07 (SDK v2.18.0)](#2026-10-07-sdk-v2180); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
 :::
+
+## 2026-10-30 (SDK v2.22.0)
+
+:::caution[Voice breaks between SDK versions: every player needs the new version.]
+Voice chat has a new packet format, shared with the CrowdyJS and CrowdyCPP SDKs. Players on an earlier SDK version cannot hear players on this one, and the reverse. Update every client that should take part in voice.
+:::
+
+### Voice chat
+
+- **Voice is rewritten on the shared voice format.** It uses Opus in 20 ms frames, with reordering and loss concealment, and it needs no player pawn, so it works in any map. The microphone and the Play, Mute, owner echo and timeout settings carry across map changes. Up to 16 speakers are heard at once, and received voice plays about 120 ms behind. **What you do:** update every client that should take part in voice; your existing voice graphs keep working. See [Voice Chat](../services/voice-chat.md).
+- **New nodes to see the microphone and who is talking.** **Get Voice Mic State** returns Off, Starting, Capturing, No Device or Error, and **On Voice Mic State Changed** fires when it changes. **On Voice Speaker Talking** gives a **Speaker Uuid** and **Talking**: talking means voice above a silence gate, and it ends about 0.3 seconds after the speaker stops. A silent microphone sends nothing. In C++ they are `GetVoiceMicState()`, `OnVoiceMicStateChanged` and `OnVoiceSpeakerTalking` on `UCrowdySDKSubsystem`. **What you do:** nothing, unless you want a talk indicator. See [Showing who is talking](../services/voice-chat.md#showing-who-is-talking).
+- **Toggle Owner Echo is now an exec node.** Earlier versions never ran it from Blueprint. **What you do:** wire it into a graph if you called it there, and turn it off again after the check. See [Confirming capture with owner echo](../services/voice-chat.md#confirming-capture-with-owner-echo).
+- **Other players are muted until Play Voice Chat.** The six existing voice nodes keep their names. **What you do:** call **Play Voice Chat** once if your game should hear others. **Set Voice Chat Stream Timeout Threshold** now clamps its value to 0.5 seconds up to 1 hour.
+- **The old voice delegates are removed.** `OnAudioNotify`, `OnAudioDataGenerated`, `OnAudioDataReceived` and `OnStreamTimeout` on `UVoiceChatSubsystem` are gone, and so are the two delegates of the audio device monitor. This breaks a C++ build that binds one of them. **What you do:** bind `OnVoiceSpeakerTalking` on `UCrowdySDKSubsystem` instead of `OnAudioNotify`. See [Blueprint Delegates](../reference/delegates.md).
+- **Microphone handling.** A missing microphone shows No Device and voice chat opens it as soon as one is available. On Windows a changed default microphone restarts capture by itself. A microphone that delivers nothing goes to Error with a hint about the OS microphone permission. **What you do:** nothing.
+- **Platform notes.** Linux has no engine audio capture, so voice capture reports it is not supported there. A packaged Mac game needs `NSMicrophoneUsageDescription` in its Info.plist, which the engine's Mac template does not include. **What you do:** on Mac, add the key; see [Platforms](../services/voice-chat.md#platforms).
+- **Voice counters for C++.** `UVoiceChatSubsystem::GetStats()` returns packets sent and received, frames played, concealed and dropped, and the speakers heard right now. **What you do:** nothing; read it from a debug overlay or a soak test if useful. See [Watching activity](../services/voice-chat.md#watching-activity).
+
+### Warnings where things used to fail silently
+
+- **A bad `CrowdyRecipient`, `CrowdyDecay` or `CrowdyDistance` value now warns.** A meta value that is not a valid name logs a warning that lists the valid names, and the default is used. A Blueprint replicated event gets a compiler warning on the node. **What you do:** fix the name the warning shows. See [Recipients and routing](../runtime/recipients-and-routing.md) and [RPC meta keys](../reference/rpc-meta-keys.md).
+- **A Multicast or SpatialMulticast event on an actor with no registered entity now warns.** The warning differs when the Crowdy Entity Component exists but has not registered yet, for example on a pawn before it is possessed: call the event after registration. If the actor has no component, add one. **What you do:** read the warning; the advice depends on which case it is. See [RPC events in Blueprint](../runtime/rpc-events-blueprint.md).
+- **Mark Crowdy State Dirty warns once per world.** It warns when the actor has no Crowdy Entity Component, or when the property name is not one the class has. **What you do:** add the component, or fix the name. See [CrowdyState](../runtime/crowdy-state.md).
+- **Get Server Value and Set Server Value warn once** when the name is not a value of the struct. **What you do:** fix the name. See [Call its functions, from Blueprint](../exec/from-blueprint/call-functions.md).
+
+### Crash fixes
+
+- **No crash without a game instance.** **Get Chunk Coordinate At Location** and **Crowdy Is Connected To Server** no longer crash when called where there is no game instance, such as an editor world or a construction script. **What you do:** nothing. See [Recipients and routing](../runtime/recipients-and-routing.md).
+
+### Remote movement
+
+- **No more one-frame flicks after a sender hitches.** When a player's game stalled and its next two updates arrived almost together, the actor pool's shipped policy extrapolated their tiny gap up to 200 times, so other players saw that player flick far away for one frame. Extrapolation now measures the step over the recent average gap, so it continues at the sender's normal pace. A custom policy built on `TInterpolatedField` gets the same fix. **What you do:** nothing. See [The sample ring](../runtime/rendering-backends.md#the-sample-ring).
+
+### Quieter logs
+
+- **Fewer lines for things that are fine.** Event payload registration no longer logs a Warning per struct. A send refused while connecting is reported once per second, with a count of the ones suppressed. A map with networking off no longer logs Errors at load. "Host not set yet" and the missing host subsystem message are trace-gated. **What you do:** nothing; a log filter you wrote for the old lines will not match. See [Log categories](../reference/log-categories.md).
+- **The `CrowdyMass.*` diagnostic commands are for development builds.** The four commands are no longer in Shipping builds, and they print normal output, not warnings. **What you do:** nothing. See [Mass troubleshooting](../mass/troubleshooting.md#commands-and-switches).
+
+### Clearer messages
+
+- **Server Object refusals name the Blueprint nodes.** **Get Server Object** says it needs a Definition or an Owner; an empty Instance Id is named; an unknown function lists the type's functions; wrong parameters point at **Make Inputs**. **What you do:** nothing. See [Get a Server Object](../exec/from-blueprint/get-a-server-object.md) and [Troubleshooting](../exec/troubleshooting.md).
+- **Definition validation says what to fix.** It names the Timer, Message or Function that has no Name, and says how to fix a reserved name. See [Create a type](../exec/create-a-type.md).
+- **"Payload not registered" errors name the struct** and say how it registers. See [RPC events in C++](../runtime/rpc-events-cpp.md).
+- **Studio connection errors say what to check.** See [Projects and apps](../studio/projects-and-apps.md).
+
+### Blueprint
+
+- **Call Server Function shows Outcome and Reason on the node.** They no longer sit under the small arrow; **Retryable** and **Code** still do. Wires you made keep working. See [Call its functions, from Blueprint](../exec/from-blueprint/call-functions.md).
+- **The ready pin on Get Server Variable and Get Server State reads "Is Ready".** It is the same pin, so existing wires keep working. An optional variable's own **Has Value** pin is unchanged. See [Get a variable](../exec/from-blueprint/read-and-follow-variables.md#get-a-variable).
+- **Struct field tooltips show on Server Object value pins.** See [What the pins are](../exec/from-blueprint/pins-for-every-type.md#what-the-pins-are).
+- **Crowdy SDK nodes sit under one "Crowdy SDK" palette category.** Search works as before and no graph changes. **What you do:** nothing; the paths in the docs now read `Crowdy SDK|...`.
+- **More tooltips.** Dispatch Game Event's target, decay and distance values have tooltips. The network statistics tooltips state their units, and **Dropped Client Notifies** is now **Client Notifies In Flight**. **What you do:** nothing, unless a graph or a note refers to the old name.
+
+### Deprecated
+
+- **Reload Endpoints From Settings and Set Expected Actor Update State Size.** The first was already a no-op, and the second had no effect. Both still work. **What you do:** remove them from your graphs. See [Project settings](../reference/project-settings.md#setting-endpoints-at-runtime).
+
+### Saved state
+
+- **A level-placed actor's fallback key no longer includes the PIE prefix.** The path-based key now matches between Play In Editor and packaged builds, except on World Partition maps. State saved from PIE under the old key is not read back. **What you do:** nothing for packaged data; expect PIE to start without the state it saved before. See [Persistence](#persistence).
+
+### Studio
+
+- **Enter submits** the sign-in form and the first step of Create App.
+- **More confirmations.** Revoking all of a user's or group's grid grants, revoking a tier feature, and switching a Live app to Draft now ask first.
+- **Tooltips and feedback.** Registry badges and grid buttons have tooltips, and **Tools > Rebuild Crowdy Registry** shows a result notification.
+
+See [Sign in](../studio/sign-in.md), [Grids](../studio/grids.md), [Projects and apps](../studio/projects-and-apps.md) and [Inspector and Registry](../studio/inspector-and-registry.md).
+
+### Mass
+
+- **An area spawner stops at the first failed spawn** and logs one line. **What you do:** read the log line and fix what it names, then spawn again. See [Turn Mass on for a map](../mass/turn-mass-on-for-a-map.md).
+- **Spatial-grid settings are greyed out** when the grid is off.
+
+### For AI agents
+
+- **New `registry` op.** `-run=CrowdyStudio -op=registry [-class=substring] [-norebuild] [-out=file]` rebuilds the baked registry and prints every entity class's CrowdyEvents (recipient, decay, distance) and CrowdyState properties (owner-only, manual dirty, heartbeat, OnRep) as JSON. **What you do:** use it instead of reading the sources when you need an event's routing. See [Sync from the command line](../studio/config-sync.md#sync-from-the-command-line).
+- **The docs' AI helper files come as an index plus per-section files and a slim symbol index.** See [For AI Agents](../for-ai-agents.md).
 
 ## 2026-10-29 (SDK v2.21.2)
 

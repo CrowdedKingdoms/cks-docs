@@ -109,18 +109,18 @@ CROWDY_EVENT(Flicker)
 ## WITHOUT THE EDITOR WINDOW
 
 `UnrealEditor-Cmd.exe <Project>.uproject -run=<CrowdyServerCompute|CrowdyStudio> -op=<op>
-[-out=result.json]`. Exit 0 is success; a change needs -yes (without it the op only says
-what it would do); close the editor first or it saves over what an op wrote. No -op
-lists every op.
+[-out=result.json]`. Exit 0 is success; a change needs -yes (else the op only reports);
+close the editor first or it overwrites what an op wrote. No -op lists every op.
 - App: CrowdyStudio `apps`, `createapp -org= -name= -slug= -datacenter= -yes`,
-  `sync -app=<id> -yes`. CrowdyServerCompute `whoami` checks sign-in (a person signs in
-  to Crowdy Studio once per machine).
+  `sync -app=<id> -yes`. CrowdyServerCompute `whoami` checks sign-in (a person signs in to
+  Studio once per machine).
 - A type: `exporttype -spec=t.json` (a template), `newtype -spec=@t.json`,
   `edittype -type=T -spec=@t.json -yes`, then `generate -type=T`, then write
   Server/<T>/src/logic.rs (yours; Generate owns lib.rs, types.rs, Cargo.toml), then
   `deploy -yes`, `call -type=T -fn=F -key=K -inputs=@in.json -yes`, `logs`.
   Game Kit starters: `addstarter -starter=<name>`. Also `removetype`, `renametype`,
-  `restart`; CrowdyStudio `features`, `teams`, `creategrid`, `grantgrid`.
+  `restart`; CrowdyStudio `features`, `teams`, `creategrid`, `grantgrid`, `registry`
+  (per-class events, state).
   https://docs.crowdedkingdoms.com/unreal-sdk/for-ai-agents#drive-the-editor-without-a-window
 
 ## TEST WITHOUT A SECOND CLIENT
@@ -130,17 +130,18 @@ https://docs.crowdedkingdoms.com/unreal-sdk/guides/testing-locally
 - `crowdy.rpc.loopback 1`: a sent CrowdyEvent is also delivered to your own receiver,
   once. Set it back to 0 before testing two-client routing.
 - `crowdy.state.loopback 1`: decodes your own deltas onto a local mirror entity so OnRep
-  fires in one PIE client. Off by default.
-- Trace gates, off by default, warnings always print: `crowdy.rpc.trace`,
+  fires in one PIE client.
+- Trace gates (off by default): `crowdy.rpc.trace`,
   `crowdy.state.trace`, `crowdy.entity.trace`, `crowdy.net.trace`. Full table:
   https://docs.crowdedkingdoms.com/unreal-sdk/reference/console-cvars
 - Headless: `crowdy.auth.signin.file <json>`, then poll `crowdy.auth.status`.
-- Build the editor target with Engine/Build/BatchFiles/Build.bat and read the log to
-  `Link ...dll` and `Result: Succeeded`.
 
 ## FULL DOCS
 
 - Quickstart: https://docs.crowdedkingdoms.com/unreal-sdk/quickstart
 - Agent page: https://docs.crowdedkingdoms.com/unreal-sdk/for-ai-agents
-- Every page as text: https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-full.txt
-- Surface manifest: https://docs.crowdedkingdoms.com/helpers/unreal-sdk/sdk-surface.json
+- Index, start here: https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms.txt
+- Section files: llms-<section>.txt, see the index
+- Symbol lookup, 340 KB: https://docs.crowdedkingdoms.com/helpers/unreal-sdk/sdk-surface-index.jsonl
+- Full manifest, 3 MB, query it: https://docs.crowdedkingdoms.com/helpers/unreal-sdk/sdk-surface.json
+- https://docs.crowdedkingdoms.com/helpers/unreal-sdk/llms-full.txt: 1.6 MB, too big to read

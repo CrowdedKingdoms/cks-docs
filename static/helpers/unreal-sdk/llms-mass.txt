@@ -1,0 +1,2173 @@
+# Draw a crowd with Mass
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/draw-a-crowd-with-mass
+
+# Draw a crowd with Mass
+
+:::note[Part of the SDK since v2.19.0.]
+Since v2.19.0 CrowdyMass is part of the SDK; on v2.18.0 and earlier it was the separate CrowdyMass plugin, as [What's Changed](../guides/whats-changed.md#2026-10-12-sdk-v2190) explains.
+:::
+
+Crowds with Mass is a way to draw many remote players, or other Dynamic entities, without spawning an actor for each one. The other players on a map become rows of a crowd that the engine draws and animates in bulk. This page tells you what that means, when it is the right choice, and where to read next. If you learn by doing, follow [Market night in Oakford](./examples/market-night-in-oakford.md).
+
+## What it is
+
+Crowds with Mass is a [rendering backend](../runtime/rendering-backends.md). A rendering backend decides what a machine puts on screen for an entity that belongs to someone else. The default backend, the actor pool, spawns a real actor of the entity's class. The **Crowdy Mass Rendering Backend** (`UCrowdyMassRenderingBackend`) draws the same entity as one row of a crowd instead: a position, an animation state and a few numbers in a table that Unreal's Mass framework updates in bulk and draws as instanced skinned meshes. No actor exists for that row.
+
+![A crowd of pale animated mannequins walking and jogging across a tiled floor, every one of them drawn as a Mass crowd row rather than as an actor](/img/unreal-sdk/mass-crowd-rows.png)
+
+You do not need to know Mass to use it. Everything here is Blueprint and assets except three jobs that need C++: registering the fields a graph reads by name, writing your own fragment, trait and processor, and registering an event handler that adds an effect while the row keeps playing its action. [Add your own crowd data](./add-your-own-crowd-data.md), [Read and write its fields, from Blueprint](./from-blueprint/read-and-write-its-fields.md) and [Receive its events, from C++](./from-cpp/receive-its-events.md) say where.
+
+Crowds with Mass is part of the CrowdySDK plugin. There is nothing to install and nothing to enable beyond the plugin you already use. A map opts in by choosing the backend on its map profile.
+
+:::note[Your own player is always a real actor.]
+Every player is a real actor on their own machine, whatever backend the map uses. A crowd row is how someone else's machine draws that player, never how you see yourself.
+:::
+
+## Why you would use it
+
+The actor pool spawns one actor for every remote entity in range. Each actor carries its components, its animation graph and its tick, which is the right cost for a few players and the wrong one for a square full of them.
+
+A crowd row costs a table entry instead of an actor. It draws through an instanced skinned mesh. It plays its animation from a bank shared by every row of the same character. A few hundred to a few thousand remote players can stay on screen at a steady frame rate.
+
+On market night in Oakford the village square fills with players, far more than the actor pool should draw. The Oakford map profile selects Mass, and every other player in the square is a crowd row.
+
+## When not to use it
+
+- **You expect few remote entities.** With a dozen or so players in range, the actor pool is simpler and costs you no extra authoring.
+- **Every remote entity must be a full actor everywhere.** A crowd row has no components, no physics body of its own and no animation graph. Code that lives on the actor does not run for a row. An event body runs on a stand-in instead, and it has limits; see [Run your code on a crowd row](./run-your-code-on-a-crowd-row.md).
+- **You want full actors only up close.** That is possible: a character can opt into a near tier, and the closest entities, up to a ceiling you set, are drawn as real actors. See [Promote close entities to actors](./promote-close-entities-to-actors.md). Everything beyond the ceiling stays a row.
+
+| Question | Actor pool | Crowds with Mass |
+|---|---|---|
+| How you choose it | It is the default; set nothing | Set **Backend Class** on the map profile |
+| How a remote entity is drawn | A pooled actor of its class | A crowd row; an actor only when close, and only for a class that opts in |
+| What the cost grows with | The number of actors | The number of rows, each far cheaper than an actor |
+| Animation | The actor's own animation graph | An anim set and bank you author, shared by every row |
+| Your code on a remote entity | Runs on the actor as usual | An event body runs on a per-class stand-in; component code does not run |
+| A good fit for | Tens of remote entities | Hundreds to thousands |
+| Extra work | None | A flagged material, an anim set, optionally a near tier shell |
+
+## Where it sits
+
+The backend is chosen per map, by the **Backend Class** on the map profile. A map that chooses nothing runs on the actor pool, and a project can use the actor pool on one map and Mass on another. Choosing Mass changes how remote entities are drawn; it does not change how they are sent, found or owned. Entity identity, [Crowdy State](../runtime/crowdy-state.md), [events](../runtime/rpc-events-blueprint.md) and [continuous state](../runtime/continuous-state.md) work the same way under both backends.
+
+[Turn Mass on for a map](./turn-mass-on-for-a-map.md) shows the setting.
+
+## Three ways one entity is drawn
+
+One entity can be drawn three ways on one machine, and every call you author has to be correct on all three.
+
+| Representation | When | What runs your code |
+|---|---|---|
+| A real actor | Always for the player on their own machine; for every entity everywhere, on an actor pool map | Your actor, as usual |
+| A near tier actor | A row that comes within **Near Tier Distance** of the camera, for a class that opted in | The per-class stand-in, as for a row; the near tier actor only draws the entity and plays its actions |
+| A crowd row | The default for a remote entity under Mass | Fragments and processors, and the per-class stand-in for event bodies; no actor exists |
+
+A near tier actor is a pooled copy of the shell you build, bound to one entity while it is close. The stand-in is an object the SDK makes for each class to run your event bodies on when no real actor exists.
+
+## Author once, on the actor class
+
+You never author a "Mass version" of your character. You author the character, and on another machine the SDK draws it as a row. Everything is declared once, on your own actor class:
+
+- the Crowdy entity component and the state it sends, on `ALanternPlayer`;
+- the replicated `Stance` property that drives a pose, and the `WaveTorch` event that drives an action;
+- the anim set the crowd animates from, named by a component on the class;
+- the near tier shell, if you want close players drawn as actors.
+
+## Two planes, kept apart
+
+The SDK keeps two kinds of state and Crowds with Mass does not mix them.
+
+| | View state | Server values |
+|---|---|---|
+| What it is | Crowdy State, continuous state and events | A Server Object, with a record per entity |
+| Owned by | The client being observed | The server |
+| Carries | Movement, stance, animation, anything cosmetic | Health, stats, inventory, anything that decides an outcome |
+| Trust | Forgeable | Authoritative |
+| Reaches a crowd row by | A field you register, then a fragment on the row | A read from the entity's record, on demand |
+
+:::caution[View state decides what is drawn. Server values decide what is true.]
+Anything a peer sends about itself can be forged, so a crowd row may use it to look right and never to decide an outcome. Put anything a peer must not be able to influence in a Server Object. A row reads those values in place; see [Read its server values, from Blueprint](./from-blueprint/read-its-server-values.md) and [Read its server values, from C++](./from-cpp/read-its-server-values.md), and [Keep a record per entity](../exec/keep-a-record-per-entity.md) for the Server Object itself.
+:::
+
+## The example in this section
+
+The pages follow one world, the village of Oakford. Players are `ALanternPlayer`, a character that sends `FLanternPlayerState` through its own executor, `ULanternPlayerExecutor`; `BP_LanternPlayer` is your Blueprint subclass of it. On market night every other player in the square is drawn as a crowd row. The raiders on the north road, from [Raiders on the north road](../exec/examples/raiders-on-the-north-road.md), show server values on rows. [Market night in Oakford](./examples/market-night-in-oakford.md) puts the whole thing together.
+
+## Before you start
+
+You need a signed-in project with a Dynamic Crowdy entity, usually the player pawn, and a character with a skeletal mesh: a row is built from that mesh, so a bare Character with no mesh produces no row. The [Entity Component](../runtime/entity-component.md) page lists the entity settings, and [Continuous State](../runtime/continuous-state.md#a-custom-executor) builds the custom executor that `ALanternPlayer` uses. The [Quickstart](../quickstart.md) gets a project connected first.
+
+## Read this section in order
+
+1. [Turn Mass on for a map](./turn-mass-on-for-a-map.md): choose the backend, set its options and project settings, flag the material.
+2. [Make a character draw as a crowd row](./make-a-character-draw-as-a-crowd-row.md): the entity component, the state struct, the mesh and where the entity config comes from.
+3. [Set up the animation set](./set-up-the-animation-set.md): the bank, the **Crowdy Mass Anim Set**, gaits and the rule that an index must change.
+4. [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md): a replicated enum becomes a held pose, and an event becomes a one-shot action.
+5. [Promote close entities to actors](./promote-close-entities-to-actors.md): the near tier shell, pooling and distances.
+6. [Run your code on a crowd row](./run-your-code-on-a-crowd-row.md): what an event body does when the observer holds a row.
+7. [Add your own crowd data](./add-your-own-crowd-data.md): your own fragment, trait and processor, and the state fields that feed them.
+8. From Blueprint: [Target an entity](./from-blueprint/target-an-entity.md), [Call an event on it](./from-blueprint/call-an-event-on-it.md), [Receive its events](./from-blueprint/receive-its-events.md), [Read and write its fields](./from-blueprint/read-and-write-its-fields.md), [Read its server values](./from-blueprint/read-its-server-values.md).
+9. From C++: the same five pages, [Target an entity](./from-cpp/target-an-entity.md), [Call an event on it](./from-cpp/call-an-event-on-it.md), [Receive its events](./from-cpp/receive-its-events.md), [Read and write its fields](./from-cpp/read-and-write-its-fields.md) and [Read its server values](./from-cpp/read-its-server-values.md).
+10. [Fix a crowd that does not look right](./troubleshooting.md): symptoms first, then the diagnostics you may use.
+11. [Market night in Oakford](./examples/market-night-in-oakford.md): the worked example from end to end.
+
+## Related
+
+- [Rendering Backends](../runtime/rendering-backends.md): the actor pool, and what a backend is.
+- [Map Profiles](../runtime/map-profile.md): where **Backend Class** and **Backend Config** live.
+- [Crowdy State](../runtime/crowdy-state.md): the view state that reaches a row.
+- [The Two Planes](../concepts/two-planes.md): why view state and server values stay apart.
+- [Keep a record per entity](../exec/keep-a-record-per-entity.md): the server side of a row's values.
+
+# Turn Mass on for a map
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/turn-mass-on-for-a-map
+
+# Turn Mass on for a map
+
+Mass is a rendering backend, so you turn it on per map, on the map profile. This page sets **Backend Class**, shows the options the backend reads, lists the project settings you are likely to touch, and walks the material change every crowd needs. By the end the Oakford map draws every other player as a crowd row.
+
+## When you need this
+
+When a map should draw its remote players as a crowd. A map that sets nothing keeps the actor pool, and nothing on this page changes it.
+
+## Pick the backend on the map profile
+
+The switch is on a **Crowdy Map Profile** data asset, under **Actor Management**. For Oakford:
+
+1. In the Content Browser, **Add**, **Miscellaneous**, **Data Asset**, pick **Crowdy Map Profile**, and name it `DA_OakfordProfile`.
+2. Open it. Under **Actor Management**, set **Backend Class** to **Crowdy Mass Rendering Backend**.
+3. Leave **Backend Config** empty for now. The backend then reads everything from the project settings below.
+4. Open **Project Settings, Plugins, Crowdy SDK**, find **Map Profiles**, and add the Oakford map with `DA_OakfordProfile` as its profile. Use **Default Profile** instead to draw every map through Mass.
+
+![The DA_OakfordProfile Details panel with Actor Management expanded, Backend Class set to CrowdyMassRenderingBackend, Backend Config set to None, and Enable Networking ticked](/img/unreal-sdk/mass-map-profile-backend.png)
+
+The map profile page covers the asset and how a profile is found: [Create the asset](../runtime/map-profile.md#create-the-asset) and [Assign the profile](../runtime/map-profile.md#assign-the-profile).
+
+| Field | Set it to |
+|---|---|
+| **Backend Class** | **Crowdy Mass Rendering Backend**. The default is **Actor Pool Rendering Backend**. |
+| **Backend Config** | A **Crowdy Mass Backend Config**, or leave it empty. |
+
+:::caution[Nothing draws as a crowd until a profile selects the Mass backend.]
+Installing or updating the SDK changes no map. A project that sets no profile runs on the profile the SDK ships, and that profile draws actors.
+:::
+
+:::caution[The crowd nodes work only on a map that selects the Mass backend.]
+The Mass subsystems are created only in a Play In Editor or game world whose map profile has **Backend Class** set to **Crowdy Mass Rendering Backend**. On an actor pool map, the Crowdy Mass nodes and C++ calls that need them do nothing, quietly. A **Crowdy Mass Area Spawner** spawns nothing and warns once. **Set Crowdy Mass Hit Zone Table** warns once and hits use the default zone. **Receive Crowdy Event on Entity** and **Receive Server Values Changed on Entity** log once and receive nothing. **Play Crowdy Mass Action** still works, because it reads the actor's class.
+
+The rest of the Mass module stays out of the way on such a map too. Its two per-frame processors sit out that world, and a **Crowdy Mass Near Tier** component does not tick there until something binds it.
+:::
+
+In C++, `UCrowdySDKDeveloperSettings::ProfileDrawsCrowdRows(Profile)` tells you whether a profile selects a backend that draws crowd rows.
+
+**Backend Class** and **Backend Config** are greyed out when `bUseCrowdyActorTracker` is off on the profile. Without the tracker there is no backend at all.
+
+:::caution[Backend Config must match the Backend Class.]
+The Mass backend ignores a **Backend Config** of another class without a word and reads the project settings instead, so none of its overrides apply. (The actor pool backend is the one that refuses a mismatched config and then draws nothing.) Pair **Crowdy Mass Rendering Backend** with a **Crowdy Mass Backend Config** or with nothing.
+:::
+
+**Success signal.** Two clients on the Oakford map: the other player appears as a crowd row and moves. If nothing appears, start at "Nothing appears at all" on [Fix a crowd that does not look right](./troubleshooting.md).
+
+## Start from the shipped profile
+
+`/CrowdySDK/Mass/Data/DA_CrowdyMassDefaultProfile` is a ready-made profile that selects the Mass backend with an empty **Backend Config** and **Enable Networking** on. Use it as a starting point, or to try Mass before you author your own.
+
+Nothing registers it for you. Point **Map Profiles** at it, as the **Default Profile** to draw every map through Mass or as the entry for one map, and that map is on Mass.
+
+## Set the backend's options
+
+A **Crowdy Mass Backend Config** (`UCrowdyMassRenderingBackendConfig`) is created inline on the profile's **Backend Config** field. Its properties are under **Mass Backend**:
+
+| Label | Default | What it does |
+|---|---|---|
+| **Remote Entity Config Override** (`RemoteEntityConfigOverride`) | unset | The Mass entity config for every class this backend does not bind by name. Unset means the project-wide **Remote Entity Config**. It must include the Crowdy Remote Entity trait. |
+| **Per Class Entity Configs** (`PerClassEntityConfigs`) | empty | Rows of **Entity Class** and **Entity Config** (`FCrowdyMassEntityConfigBinding`). A class in a row is built from the config beside it. Subclasses inherit the row. |
+| **Smoothing Duration Override** (`SmoothingDurationOverride`) | -1.0 | Seconds a movement segment is replayed over. A negative value uses the project's **Default Smoothing Duration**. |
+| **Render Local Owner** (`bRenderLocalOwner`), under **Mass Backend, Debug** | off | Also draw your own entity as a crowd row, overlapping your real pawn. A single-client check; leave it off in a shipped game. |
+
+Which config a class is built from, and how to author one, is on [Make a character draw as a crowd row](./make-a-character-draw-as-a-crowd-row.md#where-the-entity-config-comes-from). Most projects leave all of this at its default.
+
+:::caution[A per-class row with one half filled in is not skipped silently.]
+A row with only **Entity Class** or only **Entity Config** logs `per-class entity config entry ignored, class '<class>' and config '<config>' must both resolve`, and that class falls back to the next config. A row with both empty is skipped without a word. Swapping the backend replaces the whole set of rows; they are never merged.
+:::
+
+## Tune the project settings
+
+**Project Settings, Plugins, Crowdy Mass** (`UCrowdyMassDeveloperSettings`) holds the project-wide defaults, saved to `Config/DefaultGame.ini` under `[/Script/CrowdyMass.CrowdyMassDeveloperSettings]`. The backend config above overrides a few of them per map profile. The ones you are likely to touch:
+
+![The Crowdy Mass page in Project Settings showing the Remote Entities, Near Tier, Trace and Cache categories with their default values](/img/unreal-sdk/mass-settings.png)
+
+**Remote Entities**
+
+| Label | Default | What it does |
+|---|---|---|
+| **Remote Entity Config** (`RemoteEntityConfig`) | unset | The Mass entity config for every class no per-class row or backend override answers. Unset means each class is built from itself. |
+| **Default Smoothing Duration** (`DefaultSmoothingDuration`) | 0.1 s | Seconds a movement segment is replayed over until an arrival interval has been measured, and for every update when adaptive smoothing is off. |
+| **Adaptive Smoothing** (`bAdaptiveSmoothing`) | on | Replay each segment over the interval measured between arrivals instead of a fixed time. |
+| **Smoothing Interval Overshoot** (`SmoothingIntervalOvershoot`) | 1.2 | How much longer than the measured interval a segment is replayed over. Above 1 removes the stall at the cost of sitting slightly behind. Only used with adaptive smoothing. |
+| **Min Smoothing Duration** (`MinSmoothingDuration`) | 0.05 s | Shortest span a measured segment may be replayed over. |
+| **Max Smoothing Duration** (`MaxSmoothingDuration`) | 0.5 s | Longest span any segment may be replayed over, including one a sender asked for. |
+
+**Near Tier**
+
+**Near Tier Distance** (`NearTierDistance`), **Near Tier Visible Distance** (`NearTierVisibleDistance`) and **Max Near Tier Actors** (`MaxNearTierActors`) decide when a close row becomes a real actor. They are described, with their defaults, on [Promote close entities to actors](./promote-close-entities-to-actors.md).
+
+**Trace**
+
+Traces and overlaps against the crowd find candidates through a spatial grid first, then test exact shapes. The defaults suit a ground-based crowd.
+
+| Label | Default | What it does |
+|---|---|---|
+| **Enable Spatial Grid** (`bEnableSpatialGrid`) | on | Use the grid. Off, every trace scans all tracked entities. |
+| **Spatial Grid Mode** (`SpatialGridMode`, `ECrowdyMassSpatialGridMode`) | **2D (X/Y)** | Split the grid on X and Y only, or on X, Y and Z (**3D (X/Y/Z)**). |
+| **Spatial Grid Cell Size** (`SpatialGridCellSize`) | 1600 cm | Smaller cells give fewer candidates but make a long trace visit more cells. |
+| **Spatial Grid Entity Bounds Radius** (`SpatialGridEntityBoundsRadius`) | 250 cm | The radius used to place an entity in the grid. Exact mesh bounds still decide hits. |
+| **Spatial Grid Trace Query Radius** (`SpatialGridTraceQueryRadius`) | 0 cm | Extra radius around a ray when collecting cells. |
+| **Spatial Grid Max Ray Cells** (`SpatialGridMaxRayCells`) | 4096 | The most cells one trace or overlap visits, and the most one entity may cover. A straight trace longer than this, or a sweep whose radius or end points are not finite or are out of range, is not answered from the grid: it tests every tracked entity instead, which is slower but finds far entities it used to miss. |
+| **Spatial Grid Max Entity Sweep Radius** (`SpatialGridMaxEntitySweepRadius`) | 12800 cm | Ceiling on the radius one position update may claim, so a forged jump cannot cover unbounded cells. |
+| **Enable Trace Instance Cache** (`bEnableTraceInstanceCache`) | off | Cache each entity's visual instance lookup, at a small memory cost per entity. |
+| **Enable Physics Asset Trace Metadata Cache** (`bEnablePhysicsAssetTraceMetadataCache`) | off | Cache trace metadata per mesh and physics asset pair. Turn it off while you edit physics assets live. |
+
+The four settings under **Trace, Debug** (`SpatialGridDebugColor`, `SpatialGridDebugLineThickness`, `SpatialGridDebugTwoDimensionalHeightPadding`, `SpatialGridDebugTwoDimensionalCornerLineHalfLength`) only change how the grid is drawn when a trace node's **Draw Spatial Grid Cells** is on.
+
+In a Development build, `crowdy.mass.interp.adaptive`, `crowdy.mass.interp.overshoot`, `crowdy.mass.interp.min` and `crowdy.mass.interp.max` change the four smoothing values in a running session. A negative value (for `crowdy.mass.interp.adaptive`, -1) leaves the setting in charge. See [Fix a crowd that does not look right](./troubleshooting.md).
+
+## Flag the material
+
+This is the most common reason a crowd looks wrong, and it is a material setting, not a Mass one.
+
+A material draws through the instanced skinned mesh path only if its base material carries the instanced skinned usage flag. Without it the engine silently draws the default material: the row spawns, animates and can be hit, and it is grey.
+
+1. Open the parent **Material** of the character's materials, not a material instance. Instances inherit the flag.
+2. Under **Usage**, tick **Used with Instanced Skinned Mesh**.
+3. Save the material. A flag that is set in the editor and never saved is gone on the next launch.
+
+![The Usage category of the M_LanternPlayer material with Used with Skeletal Mesh and Used with Instanced Skinned Mesh ticked and every other usage flag clear](/img/unreal-sdk/mass-material-usage-flag.png)
+
+The SDK checks the flag for you. When it builds a crowd row from a class it logs, once per material, how many material slots are not flagged and which base material to flag, and `crowdy.mass.derive` prints the same verdict. The flag's evidence is in `LogMaterial`; no crowd log line reports the substitution itself, because the engine does it quietly.
+
+If you author the entity config yourself, its mesh was chosen for a crowd and its material was prepared with it. The check matters most for a class the SDK derives a config from, since an ordinary character material has no reason to carry the flag.
+
+## The engine's animation pass
+
+The SDK hands each row's animation to the renderer itself, in place of the engine's own pass. With both running, every row is handed over twice and the animation of one row can land on another. The CrowdyMass module turns the engine's pass off when the game starts, so your project does not need a `DefaultMass.ini` for it.
+
+If the project uses the MetaHuman crowd plugin, that plugin's own pass is left alone. To turn it off as well, add this to `Config/DefaultMass.ini`, with the editor closed:
+
+```ini
+[/Script/MetaHumanCrowd.MetaHumanMassSimpleAnimationProcessor]
+bAutoRegisterWithProcessingPhases=False
+```
+
+Write the file rather than unticking the setting in the editor: the checkbox is not saved and is back on at the next launch.
+
+**Success signal.** With `crowdy.mass.anim.dump 1`, `LogCrowdyMass` reports as many animation entries as instances on each crowd mesh. If it warns, once a second, that more than one processor is filling the batch, something turned the engine's pass back on; see [Fix a crowd that does not look right](./troubleshooting.md).
+
+:::caution[A Mass crowd of your own that stands still gets no animation.]
+The SDK's pass animates moving skinned rows. The engine's pass, now off, also animated skinned entities Mass keeps as stationary instances. If your project runs its own Mass crowd of stationary skinned characters, they hold their last pose. Crowdy crowd rows are not affected.
+:::
+
+## Add the module dependency
+
+A Blueprint-only project needs no Build.cs change. A C++ module that uses the Mass types of Crowds with Mass lists the `CrowdyMass` module:
+
+```csharp
+PublicDependencyModuleNames.AddRange(new string[]
+{
+    "Core", "CoreUObject", "Engine",
+    "CrowdySDK", "CrowdyNet", "CrowdyReplication", "CrowdyServices", "CrowdyMass",
+});
+```
+
+`CrowdyMass` brings `MassCore`, `MassEntity` and `MassSpawner` with it. List them yourself only if your module declares Mass types of its own; see [Add your own crowd data](./add-your-own-crowd-data.md).
+
+## Check it with one client
+
+The Mass backend skips your own entity on purpose, so on one client you see nothing. Two ways to see a crowd:
+
+**Draw yourself as a row.** Give the profile a **Crowdy Mass Backend Config** and tick **Render Local Owner**. Your own pawn is then also drawn as a crowd row, overlapping it. Render Local Owner exists only on the backend config, so with an empty **Backend Config** the option is off.
+
+**Place a Crowdy Mass Area Spawner.** Drop a **Crowdy Mass Area Spawner** (`ACrowdyMassAreaSpawner`) in the level of a map that selects Mass. It spreads entities on an even grid over its **Spawn Area** box, a box with extent 1000 x 1000 x 100 (2000 by 2000 by 200 cm) by default. They stand where they are placed; they do not move.
+
+Set **Entity Class** to the actor class they stand for. A spawner entity with no class renders from the fallback config, and no Crowdy event can ever be sent to it.
+
+| Label | Default | What it does |
+|---|---|---|
+| **Spawn Area** (`SpawnArea`) | box extent 1000 x 1000 x 100 | The box entities are spread over. Resize and move it in the level. |
+| **Entity Count** (`EntityCount`) | 100 | How many to spawn. |
+| **Entity Class** (`EntityClass`) | none | The actor class the entities stand for. Set it for anything you intend to trace or send events to. |
+| **Spawn on Begin Play** (`bSpawnOnBeginPlay`) | on | Spawn when the level begins play. |
+| **Destroy Spawned on End Play** (`bDestroySpawnedOnEndPlay`) | on | Destroy the entities when play ends. |
+| **Clear Before Spawn** (`bClearBeforeSpawn`) | on | Destroy what this spawner made before spawning again. |
+| **Position Jitter** (`PositionJitter`), under **Distribution** | 0.0 | Moves each entity off its grid point by up to this fraction of a cell, from 0 to 1. |
+| **Use Deterministic Seed** (`bUseDeterministicSeed`) | off | Use **Random Seed** so the layout is the same every run. |
+| **Random Seed** (`RandomSeed`) | 1337 | The seed, when **Use Deterministic Seed** is on. |
+| **Randomize Yaw** (`bRandomizeYaw`) | off | Give each entity a random facing. |
+| **Project to Ground** (`bProjectToGround`), under **Grounding** | off | Drop each entity onto the first surface a line trace finds. |
+| **Ground Trace Distance** (`GroundTraceDistance`) | 10000 | How far above and below each entity the ground trace reaches. |
+| **Ground Trace Channel** (`GroundTraceChannel`) | **WorldStatic** | The collision channel the ground trace uses. |
+
+The spawner also has Blueprint-callable functions. **Spawn Entities** and **Respawn Entities** return the number spawned, **Destroy Spawned Entities** removes them, and **Get Spawned UUIDs** and **Get Spawned Entities** list them.
+
+**Success signal.** In play, a grid of crowd rows stands in the spawn box, drawn from the entity class you set.
+
+## Gotchas
+
+- Map profile matching is by the map's short name. `/Game/Maps/Oakford` and `/Game/Test/Oakford` both match the key `Oakford`; give two maps different names.
+- A **Default Profile** or map row that names an asset that fails to load does not fall through to the shipped default. It resolves to nothing and the SDK is inactive on that map; see [Assign the profile](../runtime/map-profile.md#assign-the-profile).
+- The Mass entity subsystem exists only in a Play In Editor or game world whose map profile selects the Mass backend, so nothing here runs in the editor viewport or on an actor pool map.
+
+## Related
+
+- [Map Profiles](../runtime/map-profile.md): the asset, the Project Settings entries and how a profile is found.
+- [Rendering Backends](../runtime/rendering-backends.md): the actor pool, and what a backend is.
+- [Make a character draw as a crowd row](./make-a-character-draw-as-a-crowd-row.md): the entity, its payload and its mesh.
+- [Promote close entities to actors](./promote-close-entities-to-actors.md): the Near Tier settings and what they apply to.
+- [Fix a crowd that does not look right](./troubleshooting.md): the crowd is grey, nothing appears, and the diagnostics.
+
+# Make a character draw as a crowd row
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/make-a-character-draw-as-a-crowd-row
+
+# Make a character draw as a crowd row
+
+A character becomes a crowd row on other machines without a second version of it. You make the class a Dynamic Crowdy entity, send a state struct whose field names the crowd can read, give the class a skinned mesh, and check the result with one console command. By the end `ALanternPlayer` appears in Oakford's square as a moving row on every other player's machine.
+
+## When you need this
+
+When a map selects Mass (see [Turn Mass on for a map](./turn-mass-on-for-a-map.md)) and you want a class, usually the player pawn, drawn as a row. This page starts from `ALanternPlayer`, a character whose `ULanternPlayerExecutor` sends `FLanternPlayerState`, built as in [Continuous State](../runtime/continuous-state.md#a-custom-executor). `BP_LanternPlayer` is your Blueprint subclass of `ALanternPlayer`.
+
+## Make the class a Dynamic entity
+
+Add a **Crowdy Entity Component** to `ALanternPlayer`, or to `BP_LanternPlayer` if you work in Blueprint, and set:
+
+| Setting | Value | Why |
+|---|---|---|
+| **Mode** | **Dynamic** | Streams the executor's snapshot every replication interval. **Static** is event-only and moves nothing. |
+| **Identity Policy** | **Player Derived** | For a player pawn: the id comes from the signed-in account, so only one actor per client can use it, the locally controlled primary pawn. |
+| **Ownership** | **Local Client** | This client owns the entity. The options are **Local Client** and **Host**, and **Host** is the default. |
+| **State Executor** | An executor whose state struct has the fields below | Builds the snapshot sent every interval. Unset means the SDK's transform-only default. |
+| **Auto Register** | on | Joins the continuous channel at `BeginPlay`. |
+
+Every setting is described on [Entity Component](../runtime/entity-component.md), and the executor on [Continuous State](../runtime/continuous-state.md#a-custom-executor).
+
+## Send a payload the crowd can read
+
+The crowd binds a row's position by reflecting over the field names of the struct your executor sends. The names are the contract:
+
+- a field called `Transform`, or
+- a field called `Location` (or `Position`) plus a field called `Rotation`.
+
+The default executor's `FCrowdyActorState` already has `Location` and `Rotation`. A struct of your own needs the same names. `FLanternPlayerState` below keeps them and adds `bTorchLit`.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+```cpp
+// LanternPlayer.h
+#include "Replication/Executor/ActorUpdateExecutor.h"
+
+// The custom snapshot: the transform the default carries, plus one field of your own.
+USTRUCT()
+struct FLanternPlayerState
+{
+	GENERATED_BODY()
+	UPROPERTY() FVector Location = FVector::ZeroVector;
+	UPROPERTY() FRotator Rotation = FRotator::ZeroRotator;
+	UPROPERTY() bool bTorchLit = true;
+};
+
+UCLASS()
+class ULanternPlayerExecutor : public UActorUpdateExecutor
+{
+	GENERATED_BODY()
+
+public:
+	virtual FInstancedStruct GetActorState_Implementation(const UActorComponent* UpdateComponent) const override;
+	virtual UScriptStruct* GetStateStruct_Implementation() const override;
+};
+
+// LanternPlayer.cpp
+CrowdyEntity->StateExecutor = CreateDefaultSubobject<ULanternPlayerExecutor>(TEXT("Executor"));
+
+FInstancedStruct ULanternPlayerExecutor::GetActorState_Implementation(const UActorComponent* UpdateComponent) const
+{
+	FLanternPlayerState State;
+	if (const ALanternPlayer* Player = UpdateComponent ? Cast<ALanternPlayer>(UpdateComponent->GetOwner()) : nullptr)
+	{
+		State.Location = Player->GetActorLocation();
+		State.Rotation = Player->GetActorRotation();
+		State.bTorchLit = Player->Torch->IsVisible();
+	}
+	return FInstancedStruct::Make(State);
+}
+
+UScriptStruct* ULanternPlayerExecutor::GetStateStruct_Implementation() const
+{
+	return FLanternPlayerState::StaticStruct();
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+1. Create a Structure asset with a **Vector** variable named `Location` and a **Rotator** variable named `Rotation`. Add any extra fields after them.
+2. Create a Blueprint with **Actor Update Executor** as its parent class. Override **Get State Struct** to return your structure, and override **Get Actor State** to build it from the owning actor with **Make InstancedStruct**.
+3. Set the character's **State Executor** to the new executor class.
+
+</TabItem>
+</Tabs>
+
+:::caution[A payload whose fields have other names binds nothing, and the row stands at the world origin.]
+`LogCrowdyMass` names the struct by its full path once, lists both accepted spellings with the types they need, and says what each lookup found. Read that warning before you suspect anything else about the row's position.
+:::
+
+:::caution[Add fields at the end of the struct and never reorder it.]
+The struct is read in declared order. Appending keeps an older client's shorter payload readable, and reordering silently reads bytes as the wrong field. Give every field a safe default, because a truncated or older payload keeps it.
+:::
+
+That is movement done. Poses, actions and your own fields are separate steps: [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md) and [Add your own crowd data](./add-your-own-crowd-data.md).
+
+## Give the class a mesh
+
+A row is built from a skinned mesh found on the class's default object. The class needs:
+
+- a `USkinnedMeshComponent`, which a **Skeletal Mesh Component** is,
+- with a mesh asset assigned,
+- and a base material that carries **Used with Instanced Skinned Mesh**; see [Flag the material](./turn-mass-on-for-a-map.md#flag-the-material).
+
+The component can be declared in C++, added in the Blueprint, or inherited from a parent class that the Blueprint overrides. All three work, and the check below names which one answered.
+
+Components are not read most-derived first. Every component declared in C++ is read before any Blueprint component, and the most-derived rule only applies among the Blueprint routes. A component that lists no mesh is skipped, so a C++ base class can expose a mesh slot that a Blueprint child fills.
+
+## Check it before you run
+
+`crowdy.mass.derive` says what a row of a class would be made of, without spawning anything:
+
+```
+crowdy.mass.derive BP_LanternPlayer
+```
+
+It takes a short class name, an asset path or a full object path, and it logs one line on `LogCrowdyMass` naming:
+
+- the mesh and which of the three routes supplied it,
+- the collision object type the row is traced as,
+- the material verdict: how many slots are not flagged, and which base material to flag,
+- the anim set and where it came from,
+- and whether an authored config would be used instead of any of it.
+
+The line is a warning when the mesh is missing, when any material is not flagged, or when an authored config wins. Otherwise it is an ordinary log line.
+
+The editor world can answer the mesh, route, collision and material parts. The config and animation parts need a Play In Editor or game world, on a map whose profile selects the Mass backend, because the Mass entity subsystem exists only there; without it the line says the config answer is unknown.
+
+When no mesh resolves, the line gives the reason and the fix. The mesh reasons are:
+
+- no class was given,
+- the class is not an Actor class,
+- the class has no class default object yet because it is still loading,
+- it has a skinned mesh component with no mesh assigned,
+- it has no skinned mesh component at all.
+
+The command can also fail before the class is known: the name is not found, the name is ambiguous (it lists the paths that match), the asset registry is still scanning, or the path will not load.
+
+**Success signal.** For `BP_LanternPlayer`, one line that names the mesh, shows no unflagged material, and names an anim set once you have one.
+
+## Where the entity config comes from
+
+Every crowd row is built from a Mass entity config (`UMassEntityConfigAsset`): what the row is made of, its mesh, its animation and its collision. There are five places a class's config can come from. They are consulted in this order. The first one that is set answers; if what it names does not load, the class is derived from itself rather than trying the next place:
+
+1. A per-class binding in the **Per Class Entity Configs** of the map profile's **Backend Config**, matching the class exactly.
+2. An inherited per-class binding: the nearest bound ancestor of the class.
+3. The backend's **Remote Entity Config Override**.
+4. The project-wide **Remote Entity Config** in **Project Settings, Plugins, Crowdy Mass**.
+5. A config the SDK works out from the class itself, called derivation.
+
+Most characters use the fifth and never author a config.
+
+### Per-class bindings are inherited
+
+A binding on a base class also covers every class that derives from it, and the nearest bound ancestor wins. Bind a base character and also one of its Blueprint children, and the child uses its own row while every other child uses the base's row.
+
+Two consequences follow. If you bind a broad base class, you have bound its whole subtree. And if one variant should look different, give it its own row. Do not delete the ancestor's row to get there, because that changes every class beneath it.
+
+When a warning says an authored config is overriding something your class declares, it names the class that actually carries the row. If nothing binds your class, it says so and names what answered instead.
+
+### What derivation builds
+
+With nothing authored, the SDK builds a config in memory from your class, in this order:
+
+1. `UCrowdyMassRemoteEntityTrait`: transform, actor, velocity, viewer information, identity and interpolation.
+2. `UCrowdyMassViewPoseTrait`: the fragment a replicated pose lands in.
+3. `UMassMovableVisualizationTrait` with the mesh found above, every level of detail set to a skinned mesh instance. The mesh is placed where the class places it: the mesh component's location and rotation become the mesh entry's **Local Transform**, so a character whose mesh sits 90 cm below its capsule centre, turned a quarter, stands on the ground and faces forward as a row too. A mesh nested under other components is placed by the whole chain up to the actor's root, and a mesh that is the root gets no placement of its own. When the class's anim set names a **Bank**, the mesh gets that bank as its transform provider.
+4. `UCrowdyMassTraceCollisionTrait`, with an object type taken from a capsule component or from the mesh's physics asset.
+5. `UCrowdyMassAnimationTrait`, only if the class names an anim set.
+6. The traits your class declares, last. See [Add your own crowd data](./add-your-own-crowd-data.md).
+
+The **Crowdy Mass Trace Collision** trait keeps its settings in an `FCrowdyMassTraceCollisionSettings` under **Trace Collision**:
+
+| Label | Default | What it does |
+|---|---|---|
+| **Enable Trace Collision** | on | Lets traces hit the row. |
+| **Object Type** | **WorldDynamic** | What sort of thing the row is, for traces that look for one object type. |
+| **Default Response** | **Ignore** | The response to a channel with no override. |
+| **Response Overrides** | **Camera** blocks | A list of `FCrowdyMassCollisionResponseOverride`, each a **Channel** and a **Response**. |
+
+A config you assemble in code can set only the object type, with `UCrowdyMassTraceCollisionTrait::SetObjectType`.
+
+The result is cached per class, and one summary line names the mesh, the route and the material verdict.
+
+If no mesh resolves, nothing is derived and the row does not appear. The log says `nothing configures a Mass entity config for` the class, `and one could not be worked out from the class, so entities of it will not appear`, followed by what is missing and what to change.
+
+A class with a **Crowdy Mass Anim Set** component whose set names a **Bank** animates with nothing else authored. A class with no anim set, or a set with no **Bank**, is not a failure: the log says it was built from the class itself with no animation, and its rows render in their bind pose. To give them a set and a bank, see [Set up the animation set](./set-up-the-animation-set.md); if rows stand in bind pose when they should animate, see [Fix a crowd that does not look right](./troubleshooting.md).
+
+### Author a config by hand
+
+You rarely need to. Author one when you want level-of-detail distances, spawn counts or representation types that a derived config does not give you. Make a Mass Entity Config asset with these traits: **Crowdy Remote Entity**, **Crowdy Mass Trace Collision** if the row must be traceable, and **Crowdy Mass Animation** to animate it. Then bind it on the **Backend Config** or set it as the **Remote Entity Config**.
+
+An authored config keeps control of its own mesh description. In its visualization trait, the **Skinned Mesh Instance Desc** entry under **Meshes** names the **Transform Provider** itself, and it should be the same bank as the anim set's **Bank**, because the set's rows and its validation index into that **Bank**. See [Connect the bank to the crowd's mesh](./set-up-the-animation-set.md#connect-the-bank-to-the-crowds-mesh). The entry's **Local Transform** is yours to set too: give it the location and rotation the class's mesh component has, or the rows float by the mesh's drop and face a quarter turn away.
+
+:::caution[An authored config takes over completely.]
+The **Crowdy Mass Entity Traits** component on the class is not read at all, and you get one warning per class saying so. The Near Tier project settings do not apply; the config's own level-of-detail settings win.
+:::
+
+:::caution[A config with no animation trait draws in bind pose, even when the class has an anim set.]
+The class's **Crowdy Mass Anim Set** component is still found, so poses and actions resolve their names, but nothing renders the set. Rows stand in bind pose and the log says `nothing renders that set` and names the set. `crowdy.mass.derive` reports the same. Add a **Crowdy Mass Animation** trait that names the set to the config.
+:::
+
+To compare a derived row against your setup without unwinding it, set the console variable:
+
+```
+crowdy.mass.derive.force 1
+```
+
+With it on, every class is built from itself. It pushes aside per-class bindings, the backend override, the project-wide config, and the anim set that an authored config's animation trait names; the class's own **Crowdy Mass Anim Set** component is used instead. Rows already spawned keep the config they were built from, and every class's animation answer is worked out again.
+
+## Gotchas
+
+- The Mass backend skips your own locally owned entity. Use **Render Local Owner** or an area spawner to see a row on one client; see [Check it with one client](./turn-mass-on-for-a-map.md#check-it-with-one-client).
+- An update names its class by id, and an observer resolves only classes that were loaded when the SDK started. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, or a spectator, or an observer that has not spawned one itself, may not resolve it. The log warns when an id does not resolve, and the entity is not drawn; see [A Dynamic entity can appear with no spawn event at all](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all) on Entities and Spawning. Check this before suspecting a pose or a field.
+- `crowdy.mass.derive` and `crowdy.mass.derive.force` are compiled out of Shipping builds; see [Fix a crowd that does not look right](./troubleshooting.md).
+
+## Related
+
+- [Turn Mass on for a map](./turn-mass-on-for-a-map.md): the backend, its config and the material flag.
+- [Set up the animation set](./set-up-the-animation-set.md): the anim set a row animates from.
+- [Add your own crowd data](./add-your-own-crowd-data.md): your own traits on a derived config.
+- [Entity Component](../runtime/entity-component.md): every setting of the component used above.
+- [Continuous State](../runtime/continuous-state.md): the executor and the snapshot it sends.
+- [Fix a crowd that does not look right](./troubleshooting.md): a row at the origin, in bind pose, or missing.
+
+# Set up the animation set
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/set-up-the-animation-set
+
+# Set up the animation set
+
+A crowd row has no animation graph, so it cannot play a clip the way an actor does. Instead you author one asset, a Crowdy Mass Anim Set, that lists what the rows of your character class can look like: how they move at each speed, which held poses they can take, and which one-shot actions they can play. This page builds `DA_LanternPlayerAnims`, the anim set for the Oakford player, and `TP_LanternPlayer`, the bank of clips it indexes into.
+
+## What a crowd row can show
+
+A row shows one of three things at a time, and the set has a section for each.
+
+| Kind | What it is | What chooses it |
+|---|---|---|
+| Gait | Locomotion by speed: idle, walk, run | The observer, from how fast the row is moving. You send nothing. |
+| Pose | A held state: sitting, fallen, mounted | A replicated enum on your character. See [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md). |
+| Action | A one-shot that plays once and returns: a wave, a swing | An event, or Send Crowdy Action. See [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md). |
+
+A class with no set, or a set with no **Bank**, stands in bind pose. That is the not-yet-authored state, not a failure.
+
+## The set and the bank
+
+You author two assets.
+
+**The anim set** is a Data Asset of class `UCrowdyMassAnimSet`. In the Content Browser choose **Add**, **Miscellaneous**, **Data Asset**, then pick **Crowdy Mass Anim Set** and name it `DA_LanternPlayerAnims`. It holds rows that name clips.
+
+**The bank** is a `UAnimSequenceTransformProviderData`, the engine asset the crowd's mesh draws through. It is a flat list of animation clips, and `TP_LanternPlayer` is the one the Oakford crowd uses. The renderer does not take a clip. It takes an index into that list. [Create the bank](#create-the-bank) below builds it and sets it as the set's **Bank**.
+
+The set's **Bank** field names the bank the crowd's mesh draws through. A config the SDK builds from your class gives its mesh that bank, so a class whose set names a **Bank** animates with nothing else authored. The editor also checks your rows against the same **Bank** while you work.
+
+### The renderer only reacts when the index changes
+
+This one engine behavior shapes how you author everything else.
+
+:::caution[Hand the renderer the index it already has and nothing happens.]
+The renderer starts a new animation only when the index it is given changes. Ask for the same index again and the animation does not restart and does not blend. It stays where it is.
+:::
+
+Three authoring rules follow from it.
+
+- **An action needs two bank slots holding the same clip.** Playing the action alternates between them, so the index always changes and the clip always restarts. Playing a wave twice in a row only works because of the second slot.
+- **A pose needs a bank slot of its own.** If a pose shares a slot with the animation the row returns to, the renderer is handed the index it already has when the pose ends. The row stays frozen in the pose.
+- **Two gaits may not share a clip.** They would resolve to the same slot, and switching between them would change nothing.
+
+[Sync actions into the bank](#sync-actions-into-the-bank) does the first rule for you. [Validation](#check-the-rows-against-the-bank) checks all three.
+
+## Create the bank
+
+The bank is an asset you create in the editor, fill with clips, and set as the anim set's **Bank**. Do these three steps once for each character mesh.
+
+### Create the asset
+
+1. In the Content Browser choose **Add**, **Miscellaneous**, then **Transform Provider Data**. The editor opens a class picker titled **Pick Transform Provider Data Class**.
+2. Choose **Anim Sequence Transform Provider Data** and name the asset `TP_LanternPlayer`.
+3. Open it and set **Skinned Asset** to the Skeletal Mesh your character class draws with.
+
+The Skeletal Mesh must have **Optimize for Instancing** switched on in its build settings. Validating the bank reports an error naming the mesh when it does not.
+
+### Add the clips
+
+Leave **Sequence List** empty and add one entry under **Sequences** for each clip a gait or pose will use. For `TP_LanternPlayer` those are the Idle, Walk, Run, Sitting and Fallen clips. Each entry has a **Sequence**, a **Play Rate** and a **Position**.
+
+- An entry with no **Sequence** is a validation error, and the engine treats a bank with such an entry, or with no entries, as switched off.
+- Every clip must be for the mesh's skeleton, or for one the engine can map onto it. Validation reports a clip whose skeleton it cannot map.
+- A clip is found by its position in the list, so add new clips at the end. Removing or reordering entries changes the slot number every action row already holds.
+
+You do not add the action clips by hand. [Sync actions into the bank](#sync-actions-into-the-bank) appends them.
+
+### Connect the bank to the crowd's mesh
+
+Open `DA_LanternPlayerAnims` and set **Bank**, in the set's **Bank** section, to `TP_LanternPlayer`. That is the only step a class needs.
+
+The bank reaches the crowd through the mesh description of the class's Mass entity config. Each entry of the description has an **Asset**, the Skeletal Mesh, and a **Transform Provider**, the bank. When the first row of a description is drawn, Mass creates one instanced skinned mesh component for each entry, gives it the **Asset**, and sets the **Transform Provider** as the component's bank. Every row that shares the description shares that bank.
+
+A config the SDK builds from your class fills in the mesh description for you. It gives the crowd's mesh the set's **Bank** as its transform provider, so a class with a **Crowdy Mass Anim Set** component whose set names a **Bank** animates with nothing else authored. A set with no **Bank**, or a class with no anim set, stands in bind pose, and the log says the mesh carries no bank so nothing can be animated.
+
+An authored Mass Entity Config keeps control of its own mesh description, so it names the bank itself:
+
+1. Author a Mass Entity Config for the class, as [Make a character draw as a crowd row](./make-a-character-draw-as-a-crowd-row.md) describes, and give it a visualization trait.
+2. In the trait's **Skinned Mesh Instance Desc**, add one entry under **Meshes**. Set its **Asset** to the character's Skeletal Mesh and its **Transform Provider** to `TP_LanternPlayer`, the same bank as the set's **Bank**.
+3. Add a **Crowdy Mass Animation** trait to the config and set its **Anim Set** to `DA_LanternPlayerAnims`.
+4. Bind the config to the class on the **Backend Config**, or set it as the **Remote Entity Config**.
+
+:::caution[An authored config's mesh should name the same bank as the set's Bank.]
+The set's rows and its validation index into the set's **Bank**. If the mesh entry's **Transform Provider** is a different bank, those indices point into a list the crowd never draws with, and validation reports no problem, because the set cannot see which mesh description will render it.
+:::
+
+The animation pass reads the bank back from the mesh description. If a description carries two different banks it warns and uses the first, because a slot number would mean a different clip in each. The first time the animation pass pairs the set with the bank in a running game, it runs the validation checks and logs each failure.
+
+## Bind the set to the class
+
+A set does nothing until a class names it. Add a **Crowdy Mass Anim Set** component (`UCrowdyMassAnimSetComponent`) to `BP_LanternPlayer` and point its **Anim Set** property at `DA_LanternPlayerAnims`.
+
+| Label | Default | What it does |
+|---|---|---|
+| **Anim Set** | None | The set this class's crowd rows render through. Read off the class, before anything spawns. The component has no runtime behavior and no tick. |
+
+![The Crowdy Mass Anim Set component on the character with its Anim Set property set to DA_LanternPlayerAnims](/img/unreal-sdk/mass-anim-set-component.png)
+
+The entity config the SDK works out from your class gains a Crowdy Mass Animation trait from this component. The trait names the set, and the config's mesh gets the set's **Bank**. See [Connect the bank to the crowd's mesh](#connect-the-bank-to-the-crowds-mesh).
+
+- A component with an empty **Anim Set** is reported as a component with nothing in it. That is a different message from a class with no component at all: one is a slot to fill, the other is a component to add.
+- If you authored an entity config for the class by hand, name the set on that config's Crowdy Mass Animation trait, and name the same bank on its mesh entry. The trait wins. The component is still found when the config carries no animation trait, but nothing renders the set, so rows stand in bind pose and the log says so.
+
+## The Oakford set
+
+`DA_LanternPlayerAnims` holds these rows. The sections below explain each setting.
+
+| Section | Rows |
+|---|---|
+| Gaits | `Idle`, `Walk`, `Run` |
+| Poses | `Sitting` (Below Actions), `Fallen` (Above Actions, Hold Last Frame) |
+| Actions | `Wave` (id 1), `Cheer` (id 2) |
+
+`TP_LanternPlayer` holds the five clips the gaits and poses name, as [Create the bank](#create-the-bank) builds it. You do not add the action slots by hand, because [Sync actions into the bank](#sync-actions-into-the-bank) appends them.
+
+![DA_LanternPlayerAnims in the Details panel with the Sync Actions Into Bank button, the bank TP_LanternPlayer, and three gaits: Idle at 0 and 0, Walk at 100 and 60, and Run at 400 and 330, each with its clip, followed by the smoothing and blend settings at their defaults](/img/unreal-sdk/mass-anim-set-gaits.png)
+
+## The asset, section by section
+
+Every setting is on the asset itself or on one of the three row structs, `FCrowdyMassGaitEntry`, `FCrowdyMassActionEntry` and `FCrowdyMassPoseEntry`.
+
+| Section | Label | Default | What it does |
+|---|---|---|---|
+| Gaits | **Gaits** | Empty | Rows of `FCrowdyMassGaitEntry`. Author them slowest first. Row order decides which gait a row speeds up into. |
+| Gaits | **Speed Smoothing Time Seconds** | `0.3` | How long the smoothed speed takes to follow a change in real speed. Keep it above one position-update interval. The default suits the 10 Hz updates remote players arrive on. |
+| Gaits | **Max Smoothing Step Seconds** | `0.1` | The longest frame the smoothing treats as real. Without it, one long frame drops the whole crowd to the slowest gait. |
+| Gaits | **Blend Seconds** | `0.2` | Blend time when a gait or a pose changes. Does not apply to actions. Zero snaps. |
+| Actions | **Actions** | Empty | Rows of `FCrowdyMassActionEntry`. Action id N is row N, counting from 1. Id 0 means no action. |
+| Bank | **Bank** | None | The bank the crowd's mesh draws through, a `UAnimSequenceTransformProviderData`. A config the SDK builds from the class gives its mesh this bank. Validation and **Sync Actions Into Bank** work against it. |
+| Bank | **Sync Actions Into Bank** (`UCrowdyMassAnimSet::SyncActionsIntoBank`) | Button | Gives each action row its two bank slots in the **Bank**. |
+| Pose State | **Pose State Enum Is** | **Native By Name** | Whether the state enum is declared in C++ (**Native By Name**) or is a Blueprint Enumeration asset (**Blueprint Asset**). Chosen with `ECrowdyMassPoseStateEnumSource`. |
+| Pose State | **Pose State Enum** | Empty | The enum the pose rows name. A dropdown of every byte-wide enum compiled into the build for **Native By Name**, or an object picker for **Blueprint Asset**. Only one of the two shows. |
+| Pose State | **Poses** | Empty | Rows of `FCrowdyMassPoseEntry`. Authored in [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md#hold-a-pose-from-replicated-state). |
+
+One set may hold at most `CrowdyMassMaxGaits` gaits and `CrowdyMassMaxPoses` poses, both 255. Ids are one byte and 0 means none, so row 256 would take an id that wraps to 0 and clear instead of set. Rows past the limit are refused and validation reports it.
+
+:::note[Row 0 of Gaits is the floor.]
+The first gait row is what every other gait falls back to. Its **Enter Speed** and **Exit Speed** are never read.
+:::
+
+## Check the rows against the bank
+
+With a **Bank** set, saving or validating the asset checks what would otherwise stay invisible until a crowd is on screen:
+
+- an action whose two slots are identical, out of range, or hold two different clips
+- a gait or pose whose clip is not in the bank
+- an action whose Sequence (the clip an actor plays) disagrees with the clip its slots render for the crowd
+- a pose that shares a bank slot with a gait, another pose, or an action
+
+The last one is easy to miss. Every row involved is correct on its own, so only a check that sees the bank can catch it. The message says what will happen:
+
+```text
+so an entity leaving that pose is handed the index it already has and stays frozen in the pose. Give the pose a sequence of its own in the bank.
+```
+
+With no **Bank**, validation gives one warning, and only when the set has action rows. It says the slot pair on each action row cannot be checked, because a slot pair is raw numbers that mean nothing without the bank they index. Gait and pose rows name clips as assets, so their row-level checks still run without a bank, but the slot collision checks do not. A named bank that fails to load is an error, not a warning.
+
+## Sync actions into the bank
+
+An action is authored as a name plus a clip. The **Sync Actions Into Bank** button works out the two slots.
+
+1. Set **Bank**.
+2. Give the action row an **Action Name** and a **Sequence**. Leave **Primary Index** and **Alternate Index** alone.
+3. Press **Sync Actions Into Bank** on the asset.
+
+The button follows four rules.
+
+- It only appends. It never reorders or removes bank entries, so every index your gaits and poses already use keeps its meaning.
+- It never hands an action the slot a gait or pose already resolves to, even when the clip is the same. It appends a fresh pair instead.
+- Running it twice changes nothing the second time, even when a row already names its pair in the other order.
+- Ctrl+Z restores both the set and the bank.
+
+It leaves alone the rows it cannot help and names them in the log. A row with no **Sequence** is a crowd-only action whose slots you author yourself. A row whose clip will not load is reported as a fault. The button finishes with a line like this:
+
+```text
+CrowdyMassAnimSet DA_LanternPlayerAnims: Sync Actions Into Bank appended 4 slot(s) to 'TP_LanternPlayer' and moved the slot pair on 2 action row(s).
+```
+
+For `Wave` and `Cheer` that is two new slots each, four in all, and both rows moved. The button writes to the bank asset, so it runs only when you press it.
+
+The same function can be called from an editor Python script or a Blueprint editor utility, for a batch of sets or a build step. In Python it is `anim_set.sync_actions_into_bank()`, on the loaded set. It follows the same four rules and logs the same line. It refuses while a game or a Play in Editor world is running, so stop Play first.
+
+## Gaits
+
+A gait is locomotion selected by speed. The animation pass smooths each row's 2D velocity into one speed and picks the gait whose band contains it. Selection is local to each observer. Nothing on the sending side changes, and no gait is ever replicated.
+
+Each row of `FCrowdyMassGaitEntry` has these settings:
+
+| Label | Default | What it does |
+|---|---|---|
+| **Gait Name** | None | A name for authoring and messages. Selection uses the row's position and never searches by name. |
+| **Sequence** | None | The clip. It must already be in the bank. The row matches the clip by asset and does not add it. |
+| **Enter Speed** | `0.0` | The smoothed speed above which this gait may be entered. Ignored on row 0. |
+| **Exit Speed** | `0.0` | The speed below which a row leaves this gait for the one below it. Author it below **Enter Speed**. |
+| **Play Rate** | `1.0` | Applied once, when the gait is entered. The renderer reads playback settings only when the index changes, so a rate cannot track speed continuously. |
+
+The gap between **Enter Speed** and **Exit Speed** is the hysteresis band. It stops a row hovering at a boundary from swapping clips every frame. Make it wider than the ripple the smoothing leaves behind, because a remote player's speed arrives as bursts of movement between position updates.
+
+The Oakford player uses three rows. Speeds are in Unreal units per second.
+
+| Row | **Gait Name** | **Enter Speed** | **Exit Speed** |
+|---|---|---|---|
+| 0 | `Idle` | 0 | 0 |
+| 1 | `Walk` | 100 | 60 |
+| 2 | `Run` | 400 | 330 |
+
+### What validation rejects
+
+These are errors, reported when the asset is saved or validated.
+
+- A gait row with no **Gait Name**, with a duplicate name, or with no **Sequence**.
+- A **Sequence** that does not load, such as a deleted asset.
+- Two gaits sharing a **Sequence**. Both resolve to the same slot and the per-gait **Play Rate** is discarded.
+- On any row after row 0, an **Exit Speed** above the **Enter Speed**, or equal to it once the **Enter Speed** is above zero.
+- From row 2 on, an **Enter Speed** below the row before it. The row can never be shown. Author slowest first.
+
+One case is a warning. A row after row 0 with an **Enter Speed** of zero or less is entered at any speed, so every slower row, the floor row included, can never be shown.
+
+## Look rows up from code
+
+The set carries lookups for tools and tests. None of them belongs in a per-row loop.
+
+| Blueprint name | What it returns |
+|---|---|
+| **Find Pose Id** (`FindPoseId`) | The id of a pose by name. 0 for an unauthored name or `None`. |
+| **Find Pose Id by State Value** (`FindPoseIdByStateValue`) | The id a state enum value selects. A value no row names gives 0, which clears the pose. |
+| **Find Action Id** (`FindActionId`) | The id of an action by name. 0 for an unauthored name. |
+| **Find Action Sequence** (`FindActionSequence`) | The clip an actor plays for an action id, or none for a crowd-only row. |
+| **Get Action Duration Seconds** (`GetActionDurationSeconds`) | An action's length, read through its **Primary Index** slot of a bank you pass in. |
+| **Resolve Gait** (`ResolveGait`), **Resolve Pose** (`ResolvePose`) | An `FCrowdyMassResolvedSequence` for a row against a bank you pass in. |
+| **Validate Action** (`ValidateAction`), **Validate Against Bank** (`ValidateAgainstBank`) | The bank checks above, at runtime. Both return false if anything failed. **Validate Against Bank** logs each failure. **Validate Action** checks one action's slot pair and does not log. |
+
+An action or pose id is a position in one class's set, so it means nothing across two sets. Resolve it against the set of the class you are asking about.
+
+## Gotchas
+
+- **The set is shared.** One asset serves every entity of every class that names it. Two classes can map the same enum value to different clips by naming different sets.
+- **Rows past the limit are lost.** Ids wrap, so the 256th gait or pose is refused rather than risk clearing.
+- **A wide enum cannot carry a pose.** A pose value rides one byte. A pose row that names an enum entry outside 0 to 255 is an error, and a property declared over a wider enum is not read as the pose. The log says to declare the enum as `enum class` with `: uint8`.
+
+## Related
+
+- [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md): drive the pose and action rows from your character.
+- [Make a character draw as a crowd row](./make-a-character-draw-as-a-crowd-row.md): the mesh and entity config the bank belongs to.
+- [Promote close entities to actors](./promote-close-entities-to-actors.md): how the same set drives a near tier actor.
+- [Fix a crowd that does not look right](./troubleshooting.md#rows-stand-in-bind-pose): rows that stand in bind pose or stay frozen in a pose.
+
+# Play poses and one-shot actions
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/play-poses-and-one-shot-actions
+
+# Play poses and one-shot actions
+
+A crowd row has no animation graph, so you cannot tell it to sit or wave from a graph of its own. You tell it from your character class instead. A held pose rides a replicated enum property. A one-shot action rides a Crowdy event.
+
+Both are authored once on the actor class. Every observer that draws the player as a crowd row animates it from the rows of your anim set; [Set up the animation set](./set-up-the-animation-set.md) builds it. This page makes the Oakford player sit, fall, wave and cheer.
+
+## Pose or action
+
+| | Pose | Action |
+|---|---|---|
+| What it is | A held state: sitting, fallen, mounted | A one-shot: a wave, a swing, a flinch |
+| Driven by | A replicated enum property | An event, or Send Crowdy Action |
+| Late joiners | See it, once the heartbeat re-sends it | Miss it. An action is a moment. |
+| Row in the set | **Poses**, matched by enum entry name | **Actions**, matched by id |
+
+:::danger[Everything on this page is view state, and a client can send any value.]
+A pose value, an action id and a play rate come from the observed client. They decide what is drawn, never what is true. Whether a player is really fallen is a hit-point question that belongs to your server code. The owning client sets `Stance` from that truth. See [The Two Planes](../concepts/two-planes.md).
+:::
+
+## Hold a pose from replicated state
+
+A pose is not derived from motion, so something has to say which pose a player is in. That something is one replicated enum property on your character. The SDK matches the arriving value against the enum your anim set names and shows the row that value selects.
+
+### Declare the enum and the property
+
+The Oakford stance is `ELanternStance`, with the entries `Standing`, `Sitting` and `Fallen`. The `Stance` property on `ALanternPlayer` is marked `CrowdyState` and `CrowdyHeartbeat`.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+```cpp
+// LanternPlayer.h
+UENUM(BlueprintType)
+enum class ELanternStance : uint8
+{
+	Standing,
+	Sitting,
+	Fallen
+};
+
+UPROPERTY(BlueprintReadOnly, Category = "Lantern", meta = (CrowdyState, CrowdyHeartbeat))
+ELanternStance Stance = ELanternStance::Standing;
+```
+
+The type is the contract and the name is yours. The SDK binds its pose writer to whichever `CrowdyState` property is declared as the enum your anim set names.
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+1. Add a variable named `Stance` to `BP_LanternPlayer`. Make its type the `ELanternStance` enum. A project with no C++ enum creates a Blueprint Enumeration asset and uses that.
+2. In the variable's details, set **Replication** under **Crowdy Replication** to **Replicated**. **Keyframe heartbeat** is ticked by default for a newly replicated variable. Leave it ticked.
+3. Compile.
+
+![The Details panel for the Stance variable, with Replication set to Replicated under Crowdy Replication and the variable type set to ELanternStance](/img/unreal-sdk/mass-stance-variable.png)
+
+</TabItem>
+</Tabs>
+
+:::caution[The enum must be one byte wide.]
+Declare it as `enum class ELanternStance : uint8`. The value rides one byte on the wire, so a wider enum cannot carry a pose. A Blueprint Enumeration is always one byte.
+:::
+
+Declare only one property of that enum on the class. Two properties ask for the same pose rows: the first declared drives the pose, the other is never read, and the log names both. A class whose anim set names no enum, or that has no property of that enum, binds no pose, and the log says which of the two it is.
+
+### Keep the heartbeat on
+
+`CrowdyHeartbeat` is not optional in practice. Crowdy State rides unreliable multicast, and an enum is held state: it is sent when it changes and never again. One dropped delta leaves a fallen player standing on every other screen until something else changes the value. The heartbeat re-sends the value on a timer so observers converge.
+
+Two other settings must allow it:
+
+- The map profile's **State Keyframe Interval (Seconds, 0 = off)** must not be 0. It defaults to `2.0`.
+- The entity component's **State Heartbeat** must not be **Off**. The default, **Inherit**, follows the map profile.
+
+The SDK warns once per property for any Crowdy State enum outside the heartbeat. `crowdy.state.heartbeat.advisories` lists them all. See [The metadata keys](../runtime/crowdy-state.md#the-metadata-keys), [What ships, and when](../runtime/crowdy-state.md#what-ships-and-when) and [Settings](../runtime/entity-component.md#settings) for the keys and the cadence.
+
+### Name the enum on the set and author the rows
+
+Open `DA_LanternPlayerAnims`. In **Pose State**, leave **Pose State Enum Is** on **Native By Name**, the default and the right answer for a C++ enum, and pick `ELanternStance` from the **Pose State Enum** dropdown. For a Blueprint Enumeration, switch the first field to **Blueprint Asset** and pick the asset. Then add rows to **Poses**. Each row is an `FCrowdyMassPoseEntry`:
+
+| Label | Default | What it does |
+|---|---|---|
+| **Pose Name** | None | A dropdown of the enum's entries. The row shows when the arriving value is that entry. |
+| **Sequence** | None | The clip. It must already be in the bank, in a slot no gait, other pose or action uses. |
+| **Rank** | **Below Actions** | `ECrowdyMassPoseRank`. **Above Actions** makes the pose beat a one-shot action while it is held. See [Pose rank](#pose-rank). |
+| **Hold Last Frame** | Off | Stops on the last frame instead of looping. Tick it for a fall or a corpse. |
+| **Play Rate** | `1.0` | Playback rate. Cannot be negative. |
+
+The Oakford set authors two rows:
+
+| **Pose Name** | **Rank** | **Hold Last Frame** |
+|---|---|---|
+| `Sitting` | **Below Actions** | Off |
+| `Fallen` | **Above Actions** | On |
+
+![DA_LanternPlayerAnims showing the Wave action with Primary Index 5 and Alternate Index 6 and the Cheer action with 7 and 8, each with its clip, then Pose State Enum Is set to Native By Name, Pose State Enum set to ELanternStance, and the Sitting pose ranked Below Actions and the Fallen pose ranked Above Actions with Hold Last Frame ticked](/img/unreal-sdk/mass-anim-set-poses-actions.png)
+
+Row order is free. A value's meaning comes from your enum, and the row's id is worked out for you. A value no row names clears the pose and drops the row through to locomotion. That is why `Standing` has no row: a standing player walks, runs or idles.
+
+The class must also name the set, with a **Crowdy Mass Anim Set** component on `BP_LanternPlayer`. See [Bind the set to the class](./set-up-the-animation-set.md#bind-the-set-to-the-class). A class without it, or whose set names no **Bank**, stands in bind pose.
+
+### What validation rejects
+
+- **Poses** has rows but **Pose State Enum** is empty. The error reads: `Poses has rows but no state enum is set, so no replicated state value can select any of them and this set cannot pose a crowd entity at all.`
+- A **Pose State Enum** name that no enum matches, or a Blueprint Enumeration named as a string instead of picked under **Blueprint Asset**. A string leaves nothing referencing the asset, so a cooked game would not find it.
+- A **Pose Name** that is not an entry of the enum, or left empty.
+- Two rows on the same entry, or on two entries that share one value.
+- A row with no **Sequence**, or a **Sequence** that does not load.
+- A pose entry whose value falls outside 0 to 255.
+
+Two cases are warnings. A row on enum value 0 means entities in the resting state never walk or run, because a pose that resolves always outranks locomotion. A pose ranked **Above Actions** without **Hold Last Frame** loops, which is rarely what a fall or a stun wants.
+
+### Set the pose
+
+Write the property on the machine that owns the player. The owning client diffs it and ships the change, and every observer applies it. There is no pose id to look up and no set to have loaded. The Oakford sit key, X, toggles `Stance` between `Standing` and `Sitting`. The C++ `OnSit` below also sets the player's torch brightness, 0.3 while seated and 1.0 standing. That part belongs to [Add your own crowd data](./add-your-own-crowd-data.md), and the Blueprint steps leave it out.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+```cpp
+// LanternPlayer.cpp
+#include "LanternPlayer.h"
+
+void ALanternPlayer::OnSit()
+{
+	Stance = Stance == ELanternStance::Sitting ? ELanternStance::Standing : ELanternStance::Sitting;
+	// A seated player's torch burns low, here and on every crowd row that draws this player.
+	TorchBrightness = Stance == ELanternStance::Sitting ? 0.3f : 1.f;
+	Torch->SetIntensity(TorchBrightness * 2000.f);
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+1. In `BP_LanternPlayer`, add a key event for the **X** key, the sit key.
+2. From the event, call **Is Crowdy Entity Locally Controlled** and feed a **Branch**, so only the owner writes.
+3. On the true pin, feed a second **Branch** from an **Equal (Enum)** that compares **Get Stance** to `Sitting`.
+4. On its true pin call **Set Stance** with `Standing`. On its false pin call **Set Stance** with `Sitting`.
+
+[Blueprint snippet: mass-sit-stance, see /bp/unreal-sdk/mass-sit-stance.txt]
+
+Pan a Blueprint figure with the right mouse button. Press **Copy nodes**, then Ctrl+V in your own event graph.
+
+</TabItem>
+</Tabs>
+
+On an observer drawing the player as a row, the byte arrives, is matched against `ELanternStance` because that is the enum the set names, becomes a pose row id, and lands on the row's pose. The animation pass picks it up on its next run. The observer's own machine holds a real actor, so it does not need any of this to see its own player sit.
+
+### Set a pose locally, by name
+
+**Set Crowdy Mass Entity Pose** (`UCrowdyMassTargetLibrary::SetEntityPose`) puts one row in a pose by name and replicates nothing. It is for presentation on your own machine: a held pose in a menu, a cutscene, a test. The next update that carries a pose overwrites it.
+
+| Pin | What it takes |
+|---|---|
+| **Target** | The row, from a Crowdy Mass trace or an event. See [Target an entity, from Blueprint](./from-blueprint/target-an-entity.md). |
+| **Pose Name** | An authored pose name. `None` clears the pose. |
+
+The name is resolved against the anim set of the class the target stands for, never the caller's class. The node returns false when it refused: off the game thread (an error in the log), while Mass is processing, or when the target's class is not yet known and you named a pose. Add the class to **Preloaded Entity Classes** under **Project Settings, Plugins, Crowdy SDK, Replication**; see [Entities and Spawning](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all). `UCrowdyMassEntitySubsystem::SetEntityPose` does the same thing addressed by entity UUID.
+
+:::caution[A pose name the class's set does not author clears the pose.]
+It resolves to id 0, and 0 is the value that clears. The node still returns true. An entity with no recorded class is refused instead, so a misspelled name on a known class is the case to watch.
+:::
+
+## Play a one-shot action
+
+An action is a row in the set's **Actions** array. **Action ids start at 1 and follow the row order, and 0 means no action.** In `DA_LanternPlayerAnims`, `Wave` is id 1 and `Cheer` is id 2. Only the id travels on the wire. Each observer resolves it against the set of the class the player is, so ids mean nothing across two different sets.
+
+### Author the action rows
+
+Each row is an `FCrowdyMassActionEntry`:
+
+| Label | Default | What it does |
+|---|---|---|
+| **Action Name** | None | The name **Send Crowdy Action** resolves to an id. |
+| **Primary Index** | `-1` | A bank slot. Filled in by Sync Actions Into Bank. |
+| **Alternate Index** | `-1` | The second slot, holding the same clip. |
+| **Play Rate** | `1.0` | The row's rate. A crowd row plays at the rate the event carries, not this one. |
+| **Sequence** | None | The clip an actor plays. Unset means crowd only. |
+
+**Primary Index** and **Alternate Index** must be two different slots holding the same clip. An unsynced row has both at `-1`, which is the same error as identical slots: `retriggering it will not restart playback`. Press **Sync Actions Into Bank** on the asset, as [Set up the animation set](./set-up-the-animation-set.md#sync-actions-into-the-bank) describes. Set **Sequence** too if actors should play the action, as [Play it on an actor](#play-it-on-an-actor) explains.
+
+### Send an action by name
+
+If all you want is a row to play a named action on everyone's screen, you do not need to declare an event. **Send Crowdy Action** takes a target and an action name. The Oakford player aims at another player's row and presses C to cheer it on.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+`TracedTarget` is the member the trace in [Target an entity, from C++](./from-cpp/target-an-entity.md) fills in.
+
+```cpp
+// LanternPlayer.cpp
+#include "LanternPlayer.h"
+#include "Target/CrowdyMassTargetLibrary.h"
+
+void ALanternPlayer::OnCheer()
+{
+	if (!UCrowdyMassTargetLibrary::IsTargetLive(TracedTarget))
+	{
+		return;
+	}
+	UCrowdyMassTargetLibrary::SendEntityAction(TracedTarget, TEXT("Cheer"), 0, 1.0f);
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+1. Get a **Target** with **Crowdy Mass Line Trace Single**, and keep the hit's **Target** in a variable named `TracedTarget` when **Hit Mass Entity** is true. See [Target an entity, from Blueprint](./from-blueprint/target-an-entity.md).
+2. Add a key event for the **C** key, the cheer key. Call **Is Crowdy Mass Target Live** with `TracedTarget` and feed its result into a **Branch**, so a stale target sends nothing.
+3. On the true pin, call **Send Crowdy Action** (`UCrowdyMassTargetLibrary::SendEntityAction`). Plug `TracedTarget` into **Target** and type `Cheer` into **Action Name**.
+4. Under the node's advanced pins, **Variant** defaults to 0 and **Play Rate** to 1.0.
+
+[Blueprint snippet: mass-send-action, see /bp/unreal-sdk/mass-send-action.txt]
+
+</TabItem>
+</Tabs>
+
+The name is resolved here against the set of the class the target is recorded as, and only the resolved id is sent. Everyone who draws that player as a crowd row or as a near tier actor sees the action, this client included.
+
+:::caution[Send Crowdy Action does not reach a machine that holds the player as a real actor.]
+A player's own machine holds a real `ALanternPlayer`, not a row, so the cheered player does not see the cheer on themselves. It reaches only machines that draw the player as a row or a near tier actor. For an action the sender's own pawn also shows, declare an event.
+:::
+
+The node returns false and logs when it did not send. It logs each of these reasons once per class and name:
+
+- The class is not yet known on this client. List the class under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**, as [Entities and Spawning](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all) describes.
+- The class names no anim set.
+- The set authors no action with that name.
+
+It refuses in two more cases and logs an error: when it is called off the game thread, and while Mass is processing. A target that names no live entity returns false without a log, because a held target hits that every frame. There is no ownership check: any client may play an action on any row. It is a visual.
+
+### Declare an event an action
+
+To run your own code with the action as well, such as a sound or a spark, declare a Crowdy event and mark it an action. Then a client that draws the player as a row starts the matching action with nothing to register and no graph to author.
+
+The Oakford event is `WaveTorch`. It is a `SpatialMulticast` event on `ALanternPlayer` taking `ActionId`, `Variant` and `PlayRate`.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+The `CrowdyAction` meta key joins the [routing keys](../runtime/rpc-events-cpp.md#routing-keys) on the receiver.
+
+```cpp
+// LanternPlayer.h
+#include "Replication/RPC/CrowdyEvent.h"
+
+UFUNCTION(meta = (CrowdyEvent, CrowdyRecipient = "SpatialMulticast", CrowdyAction))
+void WaveTorch_Implementation(int32 ActionId, int32 Variant, float PlayRate);
+CROWDY_EVENT(WaveTorch)
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+1. Add a Custom Event named `WaveTorch` to `BP_LanternPlayer` and tick **Crowdy Replicates**.
+2. Leave **Recipient** on **Spatial Multicast**. See [Pick the recipient](../runtime/rpc-events-blueprint.md#pick-the-recipient).
+3. Tick **Is A One-Shot Action**, the row below **Crowdy Replicates**.
+4. Press **Add Parameters**. It creates the three pins the SDK reads: `ActionId`, `Variant` and `PlayRate`.
+5. Compile.
+
+![The Details panel for the WaveTorch custom event with Crowdy Replicates ticked and showing Replicated (3 parameters), Is A One-Shot Action ticked, Recipient set to Spatial Multicast, and the inputs ActionId, Variant and PlayRate](/img/unreal-sdk/mass-one-shot-action.png)
+
+**Is A One-Shot Action** is visible only once a map profile assigned in **Project Settings, Plugins, Crowdy SDK** (a **Map Profiles** entry or the **Default Profile**) selects a backend that draws crowd rows, and **Crowdy Replicates** is ticked. A project whose maps all use the actor pool never sees it.
+
+</TabItem>
+</Tabs>
+
+An observer drawing the player as a row reads `ActionId` off the arriving call and starts the matching row of that class's set. The parameters are read by name. Like every `FName` match, the match ignores case.
+
+| Parameter | Type | Rules |
+|---|---|---|
+| `ActionId` | `int32` input | Required. A missing one, an `int64`, or a value of 0 or less starts nothing. |
+| `Variant` | `int32` | Clamped to 0 to `CrowdyMassMaxActionVariant` (63). A missing one reads 0. It selects nothing. Pass 0. |
+| `PlayRate` | `float` or `double` | Clamped to `CrowdyMassMinActionPlayRate` (0.1) to `CrowdyMassMaxActionPlayRate` (4.0). A value that is not a finite number becomes 1.0. A missing one reads 1.0. |
+
+The clamps exist because every one of these values came off the network from the observed client and is forgeable. `CrowdyMassClampActionPlayRate` applies the same clamp if you write your own handler.
+
+An event that spells the parameters differently still works, but needs a registered handler built with `CrowdyMassMakeActionEventHandler` and the three names.
+
+A handler registered in C++ replaces both the event body and the automatic action write. A handler you register for an action event, such as `WaveTorch`, must write the action itself. A bound **Receive Crowdy Event on Entity** node replaces the body only, and the row still plays the declared action. See [Receive its events, from C++](./from-cpp/receive-its-events.md), [Receive its events, from Blueprint](./from-blueprint/receive-its-events.md) and [Run your code on a crowd row](./run-your-code-on-a-crowd-row.md).
+
+An event marked an action that carries no `int32` `ActionId` starts nothing, and the SDK reports that once per function. From the outside it looks exactly like an event nobody sent.
+
+:::caution[In Blueprint, recompile after ticking Is A One-Shot Action.]
+The marker lives on the node and is read from the compiled function. If the box is ticked but the class was not recompiled, the event replicates and its body runs, and no crowd row ever animates from it. Check with `crowdy.rpc.dumpfn BP_LanternPlayer_C WaveTorch` on the sender and on the receiver. Both should print `action=1`.
+:::
+
+### Play it on an actor
+
+Marking an event an action animates the crowd. It does not animate an actor, because an actor has a body and the body has to play the same clip, or the two representations of one event drift apart. `UCrowdyMassActionLibrary::PlayCrowdyMassAction` closes that. It takes the clip from the same authored row the crowd renders. The `WaveTorch` body calls it, and the input handler that waves calls `WaveTorch`.
+
+<Tabs groupId="lang">
+<TabItem value="cpp" label="C++">
+
+```cpp
+// LanternPlayer.cpp
+#include "LanternPlayer.h"
+#include "Mass/CrowdyMassActionLibrary.h"
+
+void ALanternPlayer::WaveTorch_Implementation(int32 ActionId, int32 Variant, float PlayRate)
+{
+	UCrowdyMassActionLibrary::PlayCrowdyMassAction(GetMesh(), ActionId, Variant, PlayRate);
+}
+
+void ALanternPlayer::OnWave()
+{
+	// Action ids are one-based rows of the anim set, and Wave is its first action.
+	WaveTorch(1, 0, 1.f);
+}
+```
+
+</TabItem>
+<TabItem value="bp" label="Blueprint">
+
+1. In the `WaveTorch` event, call **Play Crowdy Mass Action** (`PlayCrowdyMassAction`). Plug the event's pins into **Action Id**, **Variant** and **Play Rate**, and the character's `Mesh` into **Mesh**.
+2. For the sender, add an input action event for the wave key. Call **Is Crowdy Entity Locally Controlled** into a **Branch** so only the owner sends.
+3. On the true pin, call `WaveTorch` with **Action Id** set to 1, `Wave`'s id. To look it up by name instead, call **Find Action Id** on `DA_LanternPlayerAnims` with `Wave`.
+
+The figure shows the body from step 1: the `WaveTorch` event feeds **Play Crowdy Mass Action**, with its three pins plugged in and the character's `Mesh` as the target mesh. The sender in steps 2 and 3 is not in the figure.
+
+[Blueprint snippet: mass-wave-body, see /bp/unreal-sdk/mass-wave-body.txt]
+
+</TabItem>
+</Tabs>
+
+That one call is right on every machine:
+
+| The machine holds the player as | What plays the action |
+|---|---|
+| Its own pawn, or any real actor | The body runs, and this call plays the clip. |
+| A crowd row | The row starts the same action from the arriving event. |
+| A near tier actor drawn in place of the row | The body runs on the stand-in, as for a row, and the row starts the action. The near tier actor then plays it through its animation Blueprint. See [Promote close entities to actors](./promote-close-entities-to-actors.md). |
+
+On a machine that draws the player as a row or as a near tier actor, your body runs on a stand-in with no animation instance, so the call finds nothing to play on and does nothing. That is expected. See [Run your code on a crowd row](./run-your-code-on-a-crowd-row.md).
+
+An action id is a row position in one class's set, so the call resolves the set of the class of the actor it was given and never a class-less lookup. The full signature quoted from the library:
+
+```text
+PlayCrowdyMassAction(USkeletalMeshComponent* Mesh, int32 ActionId, int32 Variant = 0, float PlayRate = 1.0f, FName SlotName = TEXT("DefaultSlot"), float BlendInSeconds = 0.1f, float BlendOutSeconds = 0.1f, float StartSecondsIntoAction = 0.0f)
+```
+
+| Pin | Default | What it does |
+|---|---|---|
+| **Mesh** | Self | The skeletal mesh to play on. The action's set comes from this mesh's owning class. |
+| **Action Id** | | The row to play. |
+| **Variant**, **Play Rate** | `0`, `1.0` | As above. The rate is clamped. |
+| **Slot Name** (advanced) | `DefaultSlot` | The slot node the montage plays through. |
+| **Blend in Seconds**, **Blend Out Seconds** (advanced) | `0.1`, `0.1` | Blend times. |
+| **Start Seconds Into Action** (advanced) | `0.0` | Seeks the clip forward before it starts. |
+
+`UCrowdyMassActionLibrary::PlayCrowdyMassActionFromSet(Mesh, AnimSet, ActionId, Variant, PlayRate, SlotName, BlendInSeconds, BlendOutSeconds, StartSecondsIntoAction)` is the C++ twin that takes the `UCrowdyMassAnimSet` as an argument instead of working it out from the mesh's owner. Use it when the actor stands in for an entity of a different class, so the action id is looked up in the set it was authored in. It returns the `UAnimMontage` it started, or null, so you can stop it again.
+
+Both calls read the actor's class, not the Mass subsystem, so they work on an actor pool map too.
+
+The action plays as a dynamic montage into a slot, never through `PlayAnimation`, which would put the component into single-node mode and discard your animation Blueprint for good.
+
+:::caution[The mesh's animation graph needs a Slot node named like **Slot Name**.]
+The engine default is `DefaultSlot`, which the stock mannequin animation Blueprint already has. Without a slot of that name you get a warning of this shape: `'<mesh name>' refused action <id>; its animation graph has no 'DefaultSlot' slot node.`
+:::
+
+The call returns false, with one warning per action id, when the class names no anim set, when the id names no row, or when the row authored no **Sequence**. For an unauthored row the log says the crowd may still render it from its slot pair. If a row's **Sequence** disagrees with the clip its **Primary Index** slot holds, validation reports an authoring error, because that would show one player a wave and another an emote for the same event. `FindCrowdyMassActionSequence` returns the clip an actor of a class would play, for a body that does something other than play it into a slot.
+
+### Pose rank
+
+`ECrowdyMassPoseRank` decides what happens when an action starts while a pose is held. A pose ranked **Below Actions**, the default, lets the action play over it and the pose returns after. A pose ranked **Above Actions** overrides actions for as long as it is set. The composition order on a crowd row is: an **Above Actions** pose, then an active action, then any pose, then the gait.
+
+So `Sitting` lets a seated player wave. `Fallen` does not, so a fallen player cannot wave from the ground.
+
+:::caution[A near tier actor does not apply pose rank.]
+On a near tier actor the action plays into its slot whatever the pose, so a pose that should suppress actions there has to be handled in the animation Blueprint itself. See [Promote close entities to actors](./promote-close-entities-to-actors.md).
+:::
+
+## Check it in Oakford
+
+Run two clients on a map whose profile selects the Crowdy Mass Rendering Backend. Each client draws the other as a row.
+
+1. On client A, press X to sit. Client B sees A's row take the `Sitting` pose and hold it. Press it again and the row returns to idle, walk or run.
+2. On client A, press the wave key. Client B sees A's row play `Wave` once. A's own screen plays it through the `WaveTorch` body.
+3. Aim at B's row from A and press C to cheer. Only machines that draw B as a row or a near tier actor see `Cheer`, so A sees it and B does not, because B holds its own player as a real actor.
+
+## Gotchas
+
+- **A pose and a field cannot share one property.** A `CrowdyState` property can feed your own state fragment field or the pose, not both. The log says so. See [Add your own crowd data](./add-your-own-crowd-data.md).
+- **An action is a moment.** A player who arrives after the wave sees nothing. Use a pose for anything a late joiner must see.
+- **Unauthored means no animation.** A class with no set, a set with no **Bank**, or a set with no row for an arriving value, shows locomotion or bind pose. That is not an error.
+
+## Related
+
+- [Set up the animation set](./set-up-the-animation-set.md): the set, the bank and **Sync Actions Into Bank**.
+- [Run your code on a crowd row](./run-your-code-on-a-crowd-row.md): what an event body does on a machine that draws a row.
+- [Promote close entities to actors](./promote-close-entities-to-actors.md): the animation Blueprint side of poses and actions.
+- [Call an event on it, from Blueprint](./from-blueprint/call-an-event-on-it.md) and [Call an event on it, from C++](./from-cpp/call-an-event-on-it.md): **Send Crowdy Action** and **Call Crowdy Event on Entity**.
+- [Crowdy State](../runtime/crowdy-state.md) and [RPC Events in C++](../runtime/rpc-events-cpp.md): the properties and events these use.
+
+# Promote close entities to actors
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/promote-close-entities-to-actors
+
+# Promote close entities to actors
+
+A crowd row has no bones you can reach, no animation Blueprint and no attachments. That is fine at a distance and wrong up close. The near tier promotes a crowd row that comes close to the camera into a real, pooled actor, the near tier actor, and turns it back into a row when it moves away. On this page you build the shell, `BP_LanternPlayer_Shell`, point `ALanternPlayer` at it, and write the animation Blueprint it uses.
+
+## When you need this
+
+Use a near tier when players that come within a few metres of the camera should look like a full character: a real animation graph, a held torch attached to a hand socket, a material you change at runtime. Skip it when a crowd row is good enough at every distance. Promotion is opt-in per class. A class that declares no shell is drawn as a row at every distance and costs nothing extra.
+
+Everything on this page is an observer-side picture. The entity stays the thing that exists: it keeps its identity, its state and its place in the crowd, and the near tier actor only shows it. It never owns state and never sends anything. It does not receive events either. An event aimed at a promoted entity runs on the per-class stand-in exactly as it does for a row, and the near tier actor shows any action through its animation Blueprint. See [Run your code on a crowd row](./run-your-code-on-a-crowd-row.md).
+
+## The three pieces
+
+1. **The class declares a shell.** `BP_LanternPlayer` gets a **Crowdy Mass Near Tier Shell** component (`UCrowdyMassNearTierShellComponent`) whose **Near Tier Actor Class** names the actor to promote to.
+2. **The shell is an actor class you build.** The easy path is a Blueprint subclass of **Crowdy Mass Near Tier Actor** (`ACrowdyMassNearTierActor`), which already carries everything the shell needs.
+3. **The shell carries a Crowdy Mass Near Tier component** (`UCrowdyMassNearTierComponent`). It joins the spawned actor to its entity and drives it every frame. `ACrowdyMassNearTierActor` has one already, called `NearTier`.
+
+The shell declaration is read from the class defaults before anything is spawned, so the answer is worked out once per class, not once per entity.
+
+## Build the shell
+
+1. In the Content Browser, create a Blueprint whose parent class is **Crowdy Mass Near Tier Actor**. Name it `BP_LanternPlayer_Shell`.
+2. Open it. It already has three components:
+
+   | Component | Type | What it is |
+   |---|---|---|
+   | `Root` | `USceneComponent` | The pivot the actor is placed by. It draws nothing. |
+   | `Mesh` | `USkeletalMeshComponent` | What the actor draws, under the pivot. |
+   | `NearTier` | `UCrowdyMassNearTierComponent` | The component that follows the entity. |
+
+3. Select `Mesh`. Set its **Skeletal Mesh** to the mesh `BP_LanternPlayer` uses, and set its **Anim Class** to `ABP_LanternPlayer_Shell`, the animation Blueprint you build for the shell (see [What to put in the AnimBP](#what-to-put-in-the-animbp)). Do not use the character's own animation Blueprint.
+4. Leave the event graph empty. An empty shell is the normal shape.
+5. Compile and save.
+6. Open `BP_LanternPlayer`. In the Components panel choose **Add**, then **Crowdy Mass Near Tier Shell**. Select it and set **Near Tier Actor Class** to `BP_LanternPlayer_Shell`.
+7. Compile and save.
+
+![The BP_LanternPlayer_Shell Blueprint editor with the components Root, Mesh and Near Tier listed, the Mesh component selected, and its Details showing Anim Class set to ABP_LanternPlayer_Shell and a Skeletal Mesh assigned](/img/unreal-sdk/mass-near-tier-shell.png)
+
+![The Crowdy Mass Near Tier Shell component on BP_LanternPlayer with Near Tier Actor Class set to BP_LanternPlayer_Shell](/img/unreal-sdk/mass-near-tier-shell-component.png)
+
+The class named on the shell component is loaded once per class, when its entity configuration is first worked out. The component itself does nothing at runtime.
+
+:::caution[The shell is a picture, not a second copy of your character.]
+Its near tier actors are created and released constantly as players walk in and out of range. Give it a mesh and the things that decorate a mesh, and nothing that owns state or talks to the network.
+
+- **Do not add a movement component or a colliding capsule.** The entity's transform is written onto the near tier actor every frame, and a movement component would fight that write.
+- **Do not add a Crowdy Entity Component, and do not implement the Crowdy event source interface.** The entity already has its own registered participant, and a second one for the same id is refused.
+- **Do not add a Crowdy Mass Anim Set component to the shell.** If the shell's class names a different anim set from the entity's, actions are refused for that pairing and the log names both sets. Motion and pose keep working. A shell that names no anim set of its own is the correct case.
+:::
+
+:::caution[A shell with no mesh asset draws nothing, and the player vanishes until it has one.]
+The crowd stops drawing a row the moment a promotion is decided, so a near tier actor that is not ready leaves a hole, not a fade. Assign a skeletal mesh asset on the shell before you test. If your shell class adds its own skeletal mesh instead of filling in `Mesh`, readiness, hiding and action playback all use whichever skeletal mesh actually has an asset. Only `Mesh` is placed to match the crowd.
+:::
+
+### Entity transform offset
+
+**Entity Transform Offset** (`EntityTransformOffset`, in the shell's Class Defaults) says where the shell's root belongs relative to the entity. It points from the entity to the root, in the entity's own space, so it turns with the entity.
+
+The default is zero, and zero is right for the shape you built above. The entity's transform is the location the owning client replicates, which for a Character is the middle of its capsule. The shell's root sits there, and its `Mesh` takes the crowd's placement, which already carries the character's drop to its feet. Set an offset only for a shell whose root belongs somewhere other than that location. If a promoted player floats or sinks by a fixed amount while its row stands correctly, this is the value to look at.
+
+A C++ shell can override `GetEntityTransformOffset`, which is also a pure node (**Get Entity Transform Offset**), when the offset is computed rather than fixed.
+
+### Correct the mesh, not the placement
+
+When a near tier actor is bound to an entity, its `Mesh` is placed to match the crowd's own placement of that character, so a promoted player faces the same way the row did. What you set on the shell's `Mesh` transform is a correction on top of that placement, not the whole placement. Author only the difference. An unauthored `Mesh` takes the crowd's placement unchanged.
+
+If a promoted player turns or drops compared with its row, the difference is what to author on `Mesh`. To read both halves, run `crowdy.mass.neartier.trace 1`: the log prints where the near tier actor placed its mesh, where the crowd places it, and what the actor added on top.
+
+## Pooling
+
+`ACrowdyMassNearTierActor` is already pooled. Promotions reuse near tier actors instead of spawning and destroying one each time, and you set nothing to get that.
+
+If you promote to an actor class of your own instead of a subclass of **Crowdy Mass Near Tier Actor**, that class needs a Crowdy Mass Near Tier component. It should also implement the engine's `IMassActorPoolableInterface` (`CanBePooled`, `PrepareForPooling`, `PrepareForGame`). Without it every promotion is a real spawn and a real destroy, with no warning, which is the cost the near tier exists to avoid.
+
+`crowdy.mass.neartier.trace 1` prints a line when an actor is taken from the pool, when one had to be spawned because the pool had none to give, and when one goes back. That log is the only evidence that pooling is happening.
+
+## Distances and counts
+
+Three settings in **Project Settings, Plugins, Crowdy Mass** (`UCrowdyMassDeveloperSettings`), under **Near Tier**, decide when a row becomes an actor.
+
+| Label | Default | What it does |
+|---|---|---|
+| **Near Tier Distance** | 1000 | How close an entity must be, in centimetres, before it is promoted while it is not on screen. |
+| **Near Tier Visible Distance** | 2000 | How close an entity the camera can see must be before it is promoted. Normally larger than **Near Tier Distance**, because a visible crowd is worth more. |
+| **Max Near Tier Actors** | 50 | The most entities that may be near tier actors at once. The nearest win. The rest stay crowd rows however close they get. |
+
+Only classes that declare a shell are ever promoted.
+
+If you ask for distances that reach past the band beyond them, the SDK cuts them back and logs a warning naming the values it used. Lower them to remove the warning.
+
+:::note[These settings apply only when the entity configuration is built from your class.]
+If you authored a Mass entity configuration for the class yourself, its own level distances and ceiling decide when promotion happens, and the near tier settings above are left alone. The log says so when it builds the configuration. See [Make a character draw as a crowd row](./make-a-character-draw-as-a-crowd-row.md) for where the configuration comes from.
+
+- A configuration that already promotes to an actor wins. The shell declaration is never read, and the log warns once per class.
+- A configuration that names an actor while its nearest level is still drawn as an instance promotes nothing by itself. The declared shell replaces that actor in a per-class copy of the configuration, the class does promote, and the log warns. If the configuration names another representation actor management class, the SDK also swaps in `UCrowdyMassRepresentationActorManagement` and warns, because only that class hides, places and readies a near tier actor the way the handover needs.
+- The engine also logs `Overriding <trait> with another instance` as that copy builds. That line is this working.
+:::
+
+## How a near tier actor animates
+
+Nothing pushes variables into your animation Blueprint. The SDK does not set AnimBP variables, does not call an event on it and does not need an interface or a special base class. The near tier component reads the entity's data every frame, after physics, and exposes it as read-only getters. Your animation Blueprint reads them.
+
+Every getter is a pure node in the **Crowdy Mass|Near Tier** category and is safe to call from an animation graph's thread-safe update.
+
+| Node | C++ name | Returns | Notes |
+|---|---|---|---|
+| **Is Bound to Entity** | `IsBoundToEntity` | bool | False means there is no answer yet. It is not an error. |
+| **Get Entity UUID** | `GetEntityUUID` | `FGuid` | The id of the entity this near tier actor stands for. |
+| **Get Smoothed Speed** | `GetSmoothedSpeed` | float | Drive locomotion from this. |
+| **Get World Velocity** | `GetWorldVelocity` | vector | |
+| **Get Local Velocity** | `GetLocalVelocity` | vector | The same velocity in the near tier actor's own space, for a strafing blend space. |
+| **Get Gait Id** | `GetGaitId` | integer | One-based row in the anim set's gaits. 0 means no gait. |
+| **Get Gait Name** | `GetGaitName` | name | The authored gait name, `None` when there is no gait. |
+| **Get Pose Id** | `GetPoseId` | integer | One-based row in the anim set's poses. 0 means no pose. |
+| **Get Pose Name** | `GetPoseName` | name | The authored pose name, `None` when there is no pose. |
+| **Has Pose** | `HasPose` | bool | True when the pose id is not 0. |
+| **Get Action Id** | `GetActionId` | integer | 0 while no action is playing. |
+| **Get Action Variant** | `GetActionVariant` | integer | |
+| **Get Action Play Rate** | `GetActionPlayRate` | float | |
+| **Get Action Serial** | `GetActionSerial` | integer | Goes up on every trigger, including a repeat of the same action. |
+| **Get Action Elapsed Seconds** | `GetActionElapsedSeconds` | float | How far into the action the entity is. |
+
+:::caution[Drive blend spaces from Get Smoothed Speed, never from the length of the velocity.]
+A remote entity's velocity comes from interpolating between position updates, so it reads the speed of one segment and then exactly zero until the next update arrives. Fed into a blend space, that makes a near tier actor stutter between walking and standing while the crowd behind it moves smoothly.
+:::
+
+:::note[A gait id or pose id of 0 means no gait or no pose.]
+The component does not nudge a missing gait to row 1. Treat 0, and **Is Bound to Entity** being false, as "no answer yet". An id is a row position in one anim set. It means nothing across two classes. Branch on **Get Gait Name** and **Get Pose Name** when one animation Blueprint serves more than one character.
+:::
+
+The one thing the near tier does push into your graph is a one-shot action. It plays the action as a dynamic montage in the slot named by **Action Slot Name**, as described below.
+
+### The near tier component's settings
+
+Select the `NearTier` component in the shell, or any Crowdy Mass Near Tier component you add yourself.
+
+| Label | Default | What it does |
+|---|---|---|
+| **Action Slot Name** | `DefaultSlot` | The Slot node your animation graph exposes for one-shot actions. A graph with no slot of this name plays nothing and says so once. |
+| **Action Blend in Seconds** | 0.1 | How long an action blends in. An action picked up already running gets no blend. |
+| **Action Blend Out Seconds** | 0.1 | How long an action blends out. |
+| **Drive Owner Transform** | on | Moves the near tier actor to the entity's transform every frame. Leave it on. |
+| **Apply Trace Collision** | on | Lets the entity's trace collision setting decide the actor's collision object type and channel responses, so a row and a near tier actor answer traces the same way. The promoted shell takes that collision only on its character mesh and on components tagged `CrowdyTraceCollision`; a held weapon, a hat or other decoration is left as authored and cannot be hit. Tag a hand-made hit box with `CrowdyTraceCollision` to keep it hittable. |
+
+**Drive Owner Transform** is what keeps a near tier actor with its entity. Nothing else moves a near tier actor after it is placed, so turning it off leaves the actor standing where it was born while the entity walks away. Turn it off only for an actor that moves itself from somewhere else and wants only the animation inputs.
+
+The component also carries **Get Server Value** and the **On Server Values Changed** event for reading an entity's record. See [Read its server values, from Blueprint](./from-blueprint/read-its-server-values.md).
+
+## What to put in the AnimBP
+
+The shell's `Mesh` uses an animation Blueprint of its own, `ABP_LanternPlayer_Shell`. It reads the near tier getters above, not a character. **Get Owning Actor** returns the near tier actor, which is not your character and has no character movement component. A copy of the character's animation Blueprint that casts to the character fails the cast, and the graph stands in its default pose. Create a new animation Blueprint for the same skeleton and build it from the getters.
+
+If the class uses one-shot actions, the graph needs exactly one thing: a **Slot** node whose slot name matches **Action Slot Name**. The default is `DefaultSlot`, which is also the engine's own default and what the stock mannequin animation Blueprint already has.
+
+For `ABP_LanternPlayer_Shell`, build the graph like this.
+
+1. In **Event Blueprint Initialize Animation**, call **Get Owning Actor**, then **Get Component By Class** with **Crowdy Mass Near Tier**, and keep the result in a variable named `NearTier`. The component belongs to the near tier actor, so it is the same for every player that actor stands for.
+2. In **Blueprint Thread Safe Update Animation**, set two variables from `NearTier`: a `Speed` float from **Get Smoothed Speed**, and a `bFallen` bool that is true when **Has Pose** is true and **Get Pose Name** equals `Fallen`. Drive the locomotion blend space from `Speed`. For a strafe axis, use **Get Local Velocity**.
+3. Choose the locomotion state from **Get Gait Name**, comparing against `Idle`, `Walk` and `Run`, or ignore gaits and use `Speed` alone.
+4. Choose the held pose from **Get Pose Name**, comparing against `Sitting` and `Fallen`. Do not compare ids.
+5. Treat **Is Bound to Entity** false, and a gait id of 0, as "no answer yet". Do not read them as the first gait.
+6. Route the locomotion output through a **Slot** node named `DefaultSlot`. Actions such as `Wave` and `Cheer` play over whatever the graph shows.
+7. `Fallen` is authored **Above Actions**, so it should suppress actions. The near tier component does not apply that rank for you. Add a **Blend Poses by bool** after the Slot node. Plug the Slot node into **False Pose**, a sequence player for the `Fallen` clip into **True Pose**, and drive **Active Value** from `bFallen`. Then plug the blend into **Output Pose**. While the player is down the graph shows the fallen clip and skips the Slot node, so no action plays over it. Set `bFallen` in the update step, as step 2 does, because reading the component inside the AnimGraph itself is not thread safe and the compiler warns about it.
+
+![The AnimGraph of ABP_LanternPlayer_Shell: the Speed variable feeds the Speed input of the BS_Idle_Walk_Run blend space player, which goes through Slot 'DefaultSlot' into the False Pose of a Blend Poses by bool node, an A_LanternFallen sequence player feeds its True Pose, a Fallen bool variable feeds Active Value, and the blend goes to Output Pose](/img/unreal-sdk/mass-shell-animgraph.png)
+
+A C++ animation instance does the same: find the component with `FindComponentByClass<UCrowdyMassNearTierComponent>()` once, then call the getters.
+
+### An action that is already running
+
+A player does not wait to be promoted before it waves. When a promotion happens in the middle of an action, the near tier component starts the montage at the position the action has already reached. The near tier actor then shows the same frame the row was showing. An action that joins mid-clip gets no blend, because easing into a mid-swing pose from the graph's default pose would show a pose the character never holds. An action that starts at its beginning keeps its authored blend.
+
+## What you see at the handover
+
+When a row becomes a near tier actor, it appears already in the right pose: its speed, gait, pose and any running action are applied before its first drawn frame. An actor taken from the pool starts from a fresh animation graph, so you never see a bind pose or the previous player's pose for a frame. You author nothing for this. The actor is shown as a whole, so a component you deliberately left hidden stays hidden.
+
+## If a class does not promote
+
+Promotion needs a class that declares a shell, a shell that loads as an actor and carries a Crowdy Mass Near Tier component, and a free place under **Max Near Tier Actors**. A class with a shell but no assigned **Near Tier Actor Class** is drawn as a row at every distance. For the ordered checklist and the log line each cause prints, see the section "A class never promotes" in [Fix a crowd that does not look right](./troubleshooting.md).
+
+## Demotion and release
+
+When an entity moves out of the near band, a class whose configuration the SDK builds from the class releases its near tier actor back to the pool: the actor is hidden, unbound and has its collision off. If the entity comes back, it takes an actor from the pool again, so it may not be the same one. An authored configuration follows its own level settings.
+
+A release also stops the montage with no blend and gives back the trace collision the actor was pushing. An entity destroyed while promoted goes straight to the pool the same way, so a hidden actor never sits at the dead entity's last position and blocks traces and camera sweeps through a point where nothing is drawn.
+
+## C++ members
+
+Everything above is available from Blueprint. A C++ shell or game system can also use these.
+
+| Member | What it does |
+|---|---|
+| `UCrowdyMassNearTierComponent::BindToEntity`, `UnbindFromEntity` | Join or leave an entity by hand, for an actor class of your own. Promotion calls them for you. |
+| `GetBoundEntity`, `GetResolvedAnimSet` | Read the bound entity and the anim set it renders through. |
+| `ReadServerValueInto`, `OnServerValuesChanged` (`FCrowdyMassNearTierServerValuesChanged`) | Read a server value of the bound entity, and listen for changes. |
+| `ACrowdyMassNearTierActor::IsReadyForRepresentation` | Virtual. Answer true as soon as there is something to draw. |
+
+## Related
+
+- [Set up the animation set](./set-up-the-animation-set.md): the gaits, poses and actions the near tier actor reads by name.
+- [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md): how a pose or an action reaches the entity.
+- [Run your code on a crowd row](./run-your-code-on-a-crowd-row.md): what an event body does for a row and for a promoted entity.
+- [Read its server values, from Blueprint](./from-blueprint/read-its-server-values.md) and [Read its server values, from C++](./from-cpp/read-its-server-values.md): the near tier component's server value nodes.
+- [Fix a crowd that does not look right](./troubleshooting.md): symptoms first, with the diagnostic commands.
+
+# Run your code on a crowd row
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/run-your-code-on-a-crowd-row
+
+# Run your code on a crowd row
+
+A Crowdy event body is where you write what a reaction looks like: a swing, a flinch, a flare of light. On a machine that holds the entity as a real actor of its class, the body runs on that actor. On a machine that draws it as a crowd row, or as a promoted near tier actor, there is no such actor, so the SDK runs the same body on a stand-in. This page tells you what that stand-in is, what a body can and cannot do on it, and when to register a handler of your own instead.
+
+## When you need this
+
+You wrote a Crowdy event on `ALanternPlayer`, such as `WaveTorch`, and the map selects the **Crowdy Mass Rendering Backend**. The player who waves runs the body on a real actor. Everyone else may hold that player as a row. Read this page to know that the body is correct in both places.
+
+Declaring and calling events works the same under every backend. That is covered once, in [RPC Events in Blueprint](../runtime/rpc-events-blueprint.md), [RPC Events in C++](../runtime/rpc-events-cpp.md) and [Recipients and Routing](../runtime/recipients-and-routing.md). This page covers only what is different on a row.
+
+## Which events reach a row
+
+Only the two multicast recipients ever reach a crowd row. An entity drawn as a promoted near tier actor is routed the same way.
+
+| Recipient | Reaches a row? |
+|---|---|
+| `SpatialMulticast` (the default) | Yes. |
+| `Multicast` | Yes. |
+| `OwningClient` | No. It is delivered to the entity's owner, who holds the entity as a real actor. |
+| `Host` | No. It is delivered to the elected host as a request addressed to an actor. |
+
+An `OwningClient` or `Host` event that arrives for an entity a client holds as a row is dropped, and the log says so at most once a second. The routing rules for all four recipients are on [Recipients and Routing](../runtime/recipients-and-routing.md#the-four-recipients).
+
+## What runs when one arrives
+
+When a multicast event arrives for a row, the SDK decides what to do in this order.
+
+| What you did | The stand-in runs your body | The action is started on the row |
+|---|---|---|
+| Nothing. The event is not marked a one-shot action. | Yes. | Not applicable. |
+| The event is marked a one-shot action (`CrowdyAction`, or **Is A One-Shot Action** in Blueprint). | Yes. | Yes. |
+| You registered a handler for the event, or bound **Receive Crowdy Event on Entity** to it. | No. | No. Your handler decides. |
+
+The body and the action are different halves of one event. The action is the animation. The body is everything else you do in world space. A marked event with no handler gets both, which is what one body on a real actor does. See [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md) for the action half.
+
+A promoted near tier actor changes none of this. The body still runs on the stand-in, and the near tier actor plays the action from the row's data through its animation Blueprint. It runs no body of its own.
+
+## The stand-in
+
+The stand-in is an object of the entity's own class that exists only to run bodies. It is built once per class, not once per entity: three character classes mean three stand-ins whether two players or two thousand are on screen. It is never spawned into the level, so nothing about it exists in the world.
+
+What your body sees on it:
+
+- **Position.** Before each body runs, the stand-in is moved to the entity's transform. `Get Actor Location` and `Get Actor Rotation` return where the row is, so a body that works in world space at its own location works.
+- **Parameters.** They arrive on the event's pins as usual.
+- **A world.** Nodes that need one, such as spawning an effect or playing a sound, work.
+- **Class defaults.** Every variable on the class is reset to its class default before each body runs. A body reads defaults, not the values the owner's actor holds, and anything it writes is discarded before the next event.
+- **No Blueprint components.** Only spawning runs a construction script, so components you add in the Blueprint do not exist on the stand-in. Native components, such as a C++ mesh, exist but are never registered.
+
+Because of that, a body that depends on its own components or on its own earlier state cannot do its work there, and this page lists exactly which kinds.
+
+## A body written for both
+
+`WaveTorch` is the Oakford event: a `SpatialMulticast` event marked as a one-shot action, taking `ActionId`, `Variant` and `PlayRate`. Its body calls `UCrowdyMassActionLibrary::PlayCrowdyMassAction` on the actor's mesh. The declaration and the body are on [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md).
+
+On the owner's machine, and on any machine that holds the player as a real actor, the call plays the clip on the mesh. On a row, the stand-in has no animation graph, so the call plays nothing and says nothing. The row's clip comes from the action half, which the SDK starts for you. One body, one declaration, and each representation plays the same clip.
+
+To add a flare at the player's position, add **Play Sound at Location** (or **Spawn System at Location**) after the call and feed **Get Actor Location** into the location pin. In C++ that is `UGameplayStatics::PlaySoundAtLocation` with `GetActorLocation()`. It works on the stand-in because it needs only a world and a point.
+
+To see the row path with one client, use the single-client check on [Turn Mass on for a map](./turn-mass-on-for-a-map.md).
+
+## What cannot work on the stand-in
+
+Two kinds of work cannot survive on the stand-in. **The Blueprint compiler warns you about both.**
+
+**Work that resumes after the body returns.** A **Delay** or any other latent call, a **Timeline**, an async action, or **Set Timer** on self. The stand-in is reset and moved to the next entity as soon as the body returns, so the continuation would resume against a stand-in for somebody else. Do the work in a single pass.
+
+**A call on one of the actor's own components.** A crowd row is drawn from data by processors and owns no per-entity components. The call reaches either a native component that was never registered or one the construction script never made. It succeeds and changes nothing. Present in world space at the entity's location instead, with a particle system, a sound or a decal, and drive animation through a one-shot action.
+
+:::caution[These are warnings, not errors.]
+The same body is correct wherever the entity is a real actor: always on its owner, always under the actor pool, and in every other place a real actor exists. Which representation an observer uses is chosen by the map profile, not by anything on your class, so the compiler cannot know whether your class will be drawn as a row. It warns, and you decide.
+:::
+
+The warnings are scoped to one event's body, followed along execution from the event node. A **Delay** in an ordinary function beside a multicast event is correct and is not reported. An event with no recipient chosen is in scope, because the default recipient is Spatial Multicast.
+
+The **Is A One-Shot Action** checkbox, and the warnings on a class with a Crowdy Entity component, appear once a map profile assigned in **Project Settings, Plugins, Crowdy SDK** (a **Map Profiles** entry or the **Default Profile**) selects the **Crowdy Mass Rendering Backend**. A project whose maps all use the actor pool sees neither.
+
+:::danger[An event declared on a component, or on the entity avatar object, cannot run on a stand-in.]
+The stand-in is an object of the entity's own class, so an event declared on a component of that class, or on `UCrowdyMassEntity`, has nothing to run on there. It lands on a machine that holds the entity as a real actor, which is why this is easy to miss, and nothing lands on a row. The log reports it once per declaring class. Declare the event on the entity's own class, or register a handler for it.
+:::
+
+An abstract class cannot have a stand-in at all. The log reports it once per class, and its events do not run their bodies on rows.
+
+## Register a handler instead
+
+If you would rather decide what an event does to a row yourself, register a handler. `RegisterEventHandler` takes the event's receiver function and a function to run, and **Receive Crowdy Event on Entity** is the Blueprint version. See [Receive its events, from Blueprint](./from-blueprint/receive-its-events.md) and [Receive its events, from C++](./from-cpp/receive-its-events.md). `CrowdyMassMakeActionEventHandler` builds a ready-made handler for an action event, and `CrowdyMassWriteAction` is the call that starts an action on a row.
+
+:::caution[A registered C++ handler replaces the body and the automatic action write.]
+The stand-in is a fallback. It runs only when nothing you registered took the call, and a bound **Receive Crowdy Event on Entity** node counts as a registered handler for the body. A game that registered something has already said what the event means for a row, and running your body as well would do the work twice. For a C++ handler on a marked action, a second writer would also start the action twice from one event, so your handler writes the action itself. A bound Blueprint node does not replace the action: the row still plays it.
+:::
+
+In Oakford, the C++ handler for `WaveTorch` flares the row's torch (`TargetBrightness = 1`) and writes the wave action with `CrowdyMassWriteAction`, action id 1. The Blueprint node does the flare and the row still waves on its own. The same applies to a promoted entity: a C++ handler that does not write the action leaves the near tier actor with nothing to play.
+
+A registration belongs to one exact function object and one world. A Blueprint recompiled in the editor makes a new function, so register again. Registering the same function twice adds a second handler, and both run, in registration order.
+
+## The rate limit
+
+Inbound events are capped at 30 per second for each target entity, with a burst of 60. The cap is applied before the event's parameters are decoded, because decoding is the expensive half. A cap that is reached drops the event and logs it at a low level.
+
+This is CPU protection. It is not anti-cheat. The limit sits well above normal play, so only a flood of events reaches it.
+
+Two checks happen before the cap and cost no allowance: whether the event is meant for this kind of entity at all, and, when nothing is registered and the event is not an action, whether a body could run at all. An event aimed at the wrong kind of entity cannot spend the allowance of a right one.
+
+## What does not belong in an event
+
+- **Fire-and-forget visuals.** Hit reactions, swings, deaths, flares, sounds. Anything that is fine to miss.
+- **Anything that decides an outcome.** Every parameter is chosen by the sender, and a body runs with those parameters on every observer. Any peer can aim an event at any entity, so neither the values nor the claim that the owner sent them can be trusted. A body is for deciding what is drawn.
+- **Persistent truth.** Health, stats, inventory and anything cheat-sensitive belong on the server, in a Server Object (see [Keep a record per entity](../exec/keep-a-record-per-entity.md)), and a row reads them from there. Never carry them in an event parameter, and never in a fragment. See the two planes on [Draw a crowd with Mass](./draw-a-crowd-with-mass.md).
+
+## Measure or switch off the stand-in
+
+`crowdy.mass.event.proxy 0` turns the stand-in dispatch off. With it off, an event nothing registered a handler for lands nothing on a row, beyond the action write a marked action gets. Use it to measure what the stand-in costs, or to find a body that misbehaves on observers only. The default is 1. It exists in Editor and Development builds.
+
+`crowdy.rpc.trace 1` prints one line per event delivered to the stand-in, naming the entity, the stand-in, where it was moved to and whether the world will run a body. If the body never seems to run, read that line first. [Fix a crowd that does not look right](./troubleshooting.md) lists the diagnostic commands.
+
+## Gotchas
+
+- A body that works in a one-player test can fail on observers only, because the owner always holds a real actor. Test with a second player or the single-client check.
+- A **Delay** or a timer in the body is the usual cause of an effect that fires on the owner and never on a row.
+- An event with a typo in `CrowdyRecipient` silently takes the default recipient. The Blueprint dropdown cannot get this wrong. C++ can.
+
+## Related
+
+- [RPC Events in Blueprint](../runtime/rpc-events-blueprint.md) and [RPC Events in C++](../runtime/rpc-events-cpp.md): declaring and calling events.
+- [Recipients and Routing](../runtime/recipients-and-routing.md): the four recipients and how far a spatial event travels.
+- [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md): the action half of a marked event, and the `WaveTorch` declaration and body.
+- [Promote close entities to actors](./promote-close-entities-to-actors.md): what a close entity draws as.
+- [Receive its events, from Blueprint](./from-blueprint/receive-its-events.md) and [Receive its events, from C++](./from-cpp/receive-its-events.md): handlers.
+- [Fix a crowd that does not look right](./troubleshooting.md): symptoms first, with the diagnostic commands.
+
+# Add your own crowd data
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/add-your-own-crowd-data
+
+# Add your own crowd data
+
+A crowd row carries the data the SDK needs to draw it: a transform, a pose, an action. It has no place for a value that belongs to your game. This page adds one. You write a small Mass fragment to hold the value, a trait that puts the fragment on the row, and a processor that acts on it each frame. Then you land a replicated Crowdy State property on the fragment, so the value an actor would read from its own property arrives on the row too.
+
+:::note[This page needs C++.]
+The fragment, the trait, the processor and the field registration are C++. A Blueprint graph can read the result afterwards; see [Read and write its fields, from Blueprint](./from-blueprint/read-and-write-its-fields.md).
+:::
+
+The page is about crowd data, not Mass in general. For the engine model of fragments, traits and processors, read Epic's [Mass Entity documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/mass-entity-in-unreal-engine).
+
+## When you need this
+
+On a machine that holds a remote player as a real actor, a replicated view value is free. The SDK writes it onto the actor's property and your code reads the property. On a machine that holds the same player as a crowd row there is no actor, so the value has nowhere to go. It is decoded and then dropped, unless you registered a field for it and the row carries a fragment to land it in.
+
+Reach for this page when:
+
+- A Crowdy State property such as `TorchBrightness` on `ALanternPlayer` should change how the row looks, and the row has no pose, action or transform to carry it.
+- You want something per row that a processor eases, counts down or draws from, such as a torch that fades toward the replicated brightness instead of snapping.
+
+Do not use it for anything the game must trust. Every value that reaches a row this way came off the observed player's own client, so it is a visual and can be a lie. Health, loot and the like belong in a record the server keeps; see [Read its server values, from Blueprint](./from-blueprint/read-its-server-values.md) and [Keep a record per entity](../exec/keep-a-record-per-entity.md#crowd-rows).
+
+The Oakford example: on market night every other player in the square is a crowd row of `ALanternPlayer`. Each player's torch has a brightness, replicated as the `float` property `TorchBrightness`. You will put it on `FLanternTorchFragment`, ease it with `ULanternTorchFadeProcessor`, and add the fragment through `ULanternTorchTrait`.
+
+## Write the fragment, the trait and the processor
+
+A game module that declares Mass types lists `"MassCore"`, `"MassEntity"` and `"MassSpawner"` next to `"CrowdyMass"` in its `Build.cs`:
+
+```csharp
+PublicDependencyModuleNames.AddRange(new string[] { "CrowdyMass", "MassCore", "MassEntity", "MassSpawner" });
+```
+
+### The fragment
+
+A fragment is plain data. `TargetBrightness` is the value the replicated property lands on. `Brightness` is the value the row shows now, and the processor eases it toward the target.
+
+```cpp
+// LanternCrowd.h
+#include "CoreMinimal.h"
+#include "Mass/EntityElementTypes.h"
+#include "LanternCrowd.generated.h"
+
+// Wider members come first: this fragment is read for every crowd row every frame.
+USTRUCT()
+struct FLanternTorchFragment : public FMassFragment
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	float TargetBrightness = 1.f;
+
+	UPROPERTY()
+	float Brightness = 1.f;
+};
+
+static_assert(sizeof(FLanternTorchFragment) == sizeof(float) + sizeof(float),
+	"FLanternTorchFragment has gained padding. Declare wider members before narrower ones.");
+```
+
+- **Derive from `FMassFragment`.** It comes from `Mass/EntityElementTypes.h`, which lives in MassCore, not MassEntity. `FTransformFragment` comes from `Mass/EntityFragments.h`.
+- **Declare wider members before narrower ones** and pin the layout with a `static_assert` written in terms of the members. A processor reads this struct for every row every frame, so padding is a cost on every row.
+- **Mark a member `UPROPERTY()` if you want to reach it by name.** A plain C++ member of a `USTRUCT` has no reflection entry, so nothing can find it by name. Registering one is refused up front. You need this for the Blueprint field nodes below.
+- **Never make "is this active" a Mass tag.** Adding or removing a tag moves the row to another archetype, which is the dominant per-row cost. Use a sentinel value in a field instead, the way the SDK's action fragment treats an action id of 0 as no action.
+
+### The trait
+
+A trait is what puts the fragment on a row.
+
+```cpp
+// LanternCrowd.h
+#include "CoreMinimal.h"
+#include "MassEntityTraitBase.h"
+#include "LanternCrowd.generated.h"
+
+UCLASS(EditInlineNew, CollapseCategories, meta = (DisplayName = "Lantern Torch"))
+class ULanternTorchTrait : public UMassEntityTraitBase
+{
+	GENERATED_BODY()
+
+public:
+	virtual void BuildTemplate(FMassEntityTemplateBuildContext& BuildContext, const UWorld& World) const override;
+
+	// Copied onto every entity built from this trait.
+	UPROPERTY(EditAnywhere, Category = "Lantern")
+	float StartingBrightness = 1.f;
+};
+
+// LanternCrowd.cpp
+#include "LanternCrowd.h"
+#include "MassEntityTemplateRegistry.h"
+
+void ULanternTorchTrait::BuildTemplate(FMassEntityTemplateBuildContext& BuildContext, const UWorld& World) const
+{
+	FLanternTorchFragment& Torch = BuildContext.AddFragment_GetRef<FLanternTorchFragment>();
+	Torch.TargetBrightness = StartingBrightness;
+	Torch.Brightness = StartingBrightness;
+}
+```
+
+`BuildTemplate` adds the fragment. Two rules to know:
+
+- The trait's `.cpp` includes `MassEntityTemplateRegistry.h`, which is where `FMassEntityTemplateBuildContext` is defined (module MassSpawner). The header only needs `MassEntityTraitBase.h`.
+- **Add what you own, require what another trait owns.** `AddFragment` puts your fragment on the row. `RequireFragment` asks for a fragment another trait adds, and a missing requirement fails template validation with a message naming the trait and the type. Adding a fragment another trait already added only logs at Info. Adding the same tag from several traits is fine.
+
+The trait class needs `EditInlineNew` so it shows up in the picker described in the next section, and a `DisplayName` meta if you want a friendlier label than the class name. Properties you put on the trait are authored once and copied onto every row built from it.
+
+### The processor
+
+A processor is what makes the fragment do something each frame. This one eases `Brightness` toward `TargetBrightness`.
+
+```cpp
+// LanternCrowd.h
+#include "CoreMinimal.h"
+#include "MassEntityQuery.h"
+#include "MassProcessor.h"
+#include "LanternCrowd.generated.h"
+
+UCLASS()
+class ULanternTorchFadeProcessor : public UMassProcessor
+{
+	GENERATED_BODY()
+
+public:
+	ULanternTorchFadeProcessor();
+
+protected:
+	virtual void ConfigureQueries(const TSharedRef<FMassEntityManager>& EntityManager) override;
+	virtual void Execute(FMassEntityManager& EntityManager, FMassExecutionContext& Context) override;
+
+private:
+	FMassEntityQuery EntityQuery;
+};
+
+// LanternCrowd.cpp
+#include "LanternCrowd.h"
+#include "MassExecutionContext.h"
+
+ULanternTorchFadeProcessor::ULanternTorchFadeProcessor()
+	: EntityQuery(*this)
+{
+	// A dedicated server has nothing to draw.
+	ExecutionFlags = static_cast<int32>(EProcessorExecutionFlags::Client | EProcessorExecutionFlags::Standalone);
+	ProcessingPhase = EMassProcessingPhase::PrePhysics;
+	bRequiresGameThreadExecution = false;
+}
+
+void ULanternTorchFadeProcessor::ConfigureQueries(const TSharedRef<FMassEntityManager>& EntityManager)
+{
+	EntityQuery.AddRequirement<FLanternTorchFragment>(EMassFragmentAccess::ReadWrite);
+}
+
+void ULanternTorchFadeProcessor::Execute(FMassEntityManager& EntityManager, FMassExecutionContext& Context)
+{
+	EntityQuery.ForEachEntityChunk(Context, [](FMassExecutionContext& Context)
+	{
+		const TArrayView<FLanternTorchFragment> Torches = Context.GetMutableFragmentView<FLanternTorchFragment>();
+		const float DeltaTimeSeconds = Context.GetDeltaTimeSeconds();
+		for (FMassExecutionContext::FEntityIterator EntityIt = Context.CreateEntityIterator(); EntityIt; ++EntityIt)
+		{
+			FLanternTorchFragment& Torch = Torches[EntityIt];
+			Torch.Brightness = FMath::FInterpConstantTo(Torch.Brightness, Torch.TargetBrightness, DeltaTimeSeconds, 2.f);
+		}
+	});
+}
+```
+
+The processor follows these rules in UE 5.8:
+
+- **Override `ConfigureQueries(const TSharedRef<FMassEntityManager>& EntityManager)`.** The no-argument overload is `final`, so overriding it does not compile.
+- **Build the query in the constructor's initializer list**, as `EntityQuery(*this)`.
+- **Set `ExecutionFlags` to `Client | Standalone`** for a processor that only feeds a visual. A dedicated server has nothing to draw.
+- **Set `bRequiresGameThreadExecution` to true** for anything that touches a world subsystem or the representation subsystem. This processor touches only its own fragment, so it leaves it false.
+- **Never change an archetype inline.** Adding or removing a tag or fragment from inside the loop goes through the command buffer: `Context.Defer()`.
+- **Do per-row work per chunk.** Fetch the fragment view once for the chunk and index it. No allocation and no `Cast` in the per-row loop.
+
+Processor ordering and query pruning are engine behavior; see Epic's Mass Entity documentation above.
+
+## Put the trait on the entity
+
+You do not have to author a whole Mass entity config to add one trait. The SDK works out a config from the actor class (mesh, transform, trace collision, animation), and the **Crowdy Mass Entity Traits** component (`UCrowdyMassEntityTraitsComponent`) adds your traits to it. It is read off the class, so every row of that class gets them.
+
+1. Open `BP_LanternPlayer`.
+2. In **Components**, choose **Add**, then **Crowdy Mass Entity Traits**.
+3. In the **Details** panel, under **Crowdy Mass|Traits**, find **Traits** and add an element.
+4. Pick your trait class in the element's dropdown, here **Lantern Torch**, and set its properties inline.
+
+![The Crowdy Mass Entity Traits component with its Traits array holding one element, Lantern Torch, expanded inline to show Starting Brightness at 1.0 and Valid Target Config set to All Net Modes](/img/unreal-sdk/mass-traits-component.png)
+
+| Label | Default | What it does |
+|---|---|---|
+| **Traits** | empty | The traits added to the config worked out for this class, in the order listed. Each row is an inline object with its own settings, not an asset reference. |
+
+:::caution[A class with an authored Mass entity config ignores this component.]
+A class whose config you authored by hand is built from that config alone, and the component is not read. The log says so once per class. If you author the config, add your trait to it directly.
+:::
+
+How the component combines with the derived config:
+
+- **Your traits are added last.** Mass combines a config's traits by class and keeps the last of each class, so a trait of the same class as a derived one replaces it. That is how you change a derived trait as well as extend the config.
+- **The config holds a copy of your trait**, not the instance on the component. Editing the trait in the editor drops the cached config so the next one picks the change up.
+- **A second visualization trait of a different class is refused**, with a message. Both would build, and only the first to write the representation parameters keeps them. A visualization trait of the same class as the derived one is allowed and warned about, because it takes the mesh, the level-of-detail table and near tier promotion with it.
+- **Put every trait on one component.** The first component that lists anything answers and the rest are counted and warned about. A component declared in C++ is read before one added in a Blueprint, whatever the inheritance order.
+- **An empty list and a row set to none are different mistakes** and get different messages. A class with no component at all says nothing, because that is the ordinary case.
+
+## Land a Crowdy State property on the fragment
+
+The fragment is on the row. Now the replicated value has to reach it.
+
+### Mark the property
+
+Declare the property on `ALanternPlayer` and mark it `CrowdyState`. Add `CrowdyHeartbeat` so a player who arrives late is sent the current value on the next keyframe instead of waiting for it to change. The keyframe needs the map profile's **State Keyframe Interval (Seconds, 0 = off)** to be non-zero. [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md) covers the heartbeat in full.
+
+In Oakford the sit key (`OnSit`) is the only thing that sets `TorchBrightness`: 0.3 while the player sits and 1.0 while they stand.
+
+:::caution[A `CrowdyOwnerOnly` property never reaches a crowd.]
+An owner-only value goes only to the entity's own owning client, and an observer drawing a row is never the owner. Registering a field for it reads nothing. Drop `CrowdyOwnerOnly` if the crowd should see the value, or read it on the actor representation. The log says this once per class and property.
+:::
+
+### Register the field
+
+Register once per world, from a world subsystem, because the registration lives on the world's `UCrowdyMassEntitySubsystem` and a new world starts empty. `ULanternCrowdSubsystem` does it in `Initialize`, when the world's subsystems start. It asks the collection for the Mass entity subsystem with `Collection.InitializeDependency<UCrowdyMassEntitySubsystem>()` first, so that subsystem exists when the call is made.
+
+The entity subsystem exists only in a world whose map profile selects the **Crowdy Mass Rendering Backend**. Gate your own subsystem the same way, in `ShouldCreateSubsystem`: return `Super::ShouldCreateSubsystem(Outer) && GetDefault<UCrowdyMassEntitySubsystem>()->ShouldCreateSubsystem(Outer)`. Your subsystem then exists only on maps that draw crowd rows. On an actor pool map it is never created, and the log stays free of the engine's "Failed to initialize subsystem dependency" line, which a bare `InitializeDependency` would print there. The snippet still checks the result for null, as a guard.
+
+```cpp
+// LanternCrowd.h
+#include "CoreMinimal.h"
+#include "Subsystems/WorldSubsystem.h"
+#include "LanternCrowd.generated.h"
+
+UCLASS()
+class ULanternCrowdSubsystem : public UWorldSubsystem
+{
+	GENERATED_BODY()
+
+public:
+	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
+};
+
+// LanternPlayer.h
+UPROPERTY(BlueprintReadOnly, Category = "Lantern", meta = (CrowdyState, CrowdyHeartbeat))
+float TorchBrightness = 1.f;
+
+// LanternCrowd.cpp
+#include "LanternCrowd.h"
+#include "Subsystems/CrowdyMassEntitySubsystem.h"
+#include "Target/CrowdyMassFieldAccess.h"
+
+bool ULanternCrowdSubsystem::ShouldCreateSubsystem(UObject* Outer) const
+{
+	// Only where the Mass subsystem is created: a play world whose map profile selects the Mass backend.
+	return Super::ShouldCreateSubsystem(Outer) && GetDefault<UCrowdyMassEntitySubsystem>()->ShouldCreateSubsystem(Outer);
+}
+
+void ULanternCrowdSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+	// The transient world at engine start has no game instance yet.
+	if (!GetWorld()->GetGameInstance())
+	{
+		return;
+	}
+	UCrowdyMassEntitySubsystem* Mass = Collection.InitializeDependency<UCrowdyMassEntitySubsystem>();
+	if (!Mass || Mass->IsStateFragmentFieldRegistered(TEXT("TorchBrightness")))
+	{
+		return;
+	}
+	Mass->RegisterStateFragmentField(TEXT("TorchBrightness"), ECrowdyMassStateFieldType::Float,
+		[](const void* PropertyValuePtr, const FCrowdyMassViewStateContext& Context)
+		{
+			FLanternTorchFragment* Torch = Context.GetFragment<FLanternTorchFragment>();
+			if (!Torch || !PropertyValuePtr)
+			{
+				return;
+			}
+			Torch->TargetBrightness = *static_cast<const float*>(PropertyValuePtr);
+		});
+	CrowdyMassFields::RegisterField<FLanternTorchFragment>(TEXT("TorchBrightness"), TEXT("TargetBrightness"));
+}
+```
+
+The ingestor writes `TargetBrightness`, the value that arrived. `ULanternTorchFadeProcessor` eases `Brightness` toward it every frame. The same `ULanternCrowdSubsystem` also registers the `WaveTorch` handler in `OnWorldBeginPlay`, shown on [Receive its events, from C++](./from-cpp/receive-its-events.md). Declare both functions on the one class.
+
+`RegisterStateFragmentField(PropertyName, FieldType, Ingestor)` takes the name of the Crowdy State property, the `ECrowdyMassStateFieldType` it is declared as, and an ingestor: a `FCrowdyMassViewStateIngestor` that runs for each arriving value with a pointer to it and an `FCrowdyMassViewStateContext`. The pointer already has the property's offset applied, so the ingestor never sees the containing struct. The context's `GetFragment` returns the row's fragment of that type, or null if the row does not carry it.
+
+- **Check `IsStateFragmentFieldRegistered` first.** A registration cannot be removed. A second one under the same name is accepted, warned about with a line saying the earlier one keeps the field, and never called.
+- **Hold your owner weakly** if the ingestor captures one. The registration lives on a world subsystem, and a game-instance object can be shut down before the world is cleaned up while its pointer still looks alive.
+- **Register before values arrive if you can.** Registering later works, because it drops the cached per-class resolution. It does not replay values already received, so the fragment holds what arrives from then on.
+- **The name must match the property name**, and the type must match the property's declared type. Names are claimed per world, across every class, and each carries one type.
+
+### Types that can land
+
+`ECrowdyMassStateFieldType` has six values. An enum is read as the type it is declared over, so `enum class EMyStance : uint8` is a `UInt8` field.
+
+| Registered as | A property declared as | Notes |
+|---|---|---|
+| `UInt8` | `uint8`, `TEnumAsByte<E>`, or `enum class E : uint8` | One byte exactly. An enum declared over something wider is refused. |
+| `Int32` | `int32`, or `enum class E : int32` | |
+| `Int64` | `int64` | |
+| `Float` | `float` | |
+| `Double` | `double` | |
+| `Bool` | a plain `bool` member | A bitfield `bool` is not accepted here. A Blueprint field read by name does accept one. |
+
+### What is refused
+
+- **A name match with the wrong type.** The property is skipped and the log names the registered type, what the property is declared as, and the fix. Where the property reads as an accepted type, the line tells you to register for that one.
+- **A bitfield.** It shares its byte with the flags beside it. Declare it as a plain `bool` member, or read it on the actor representation.
+- **Anything else**, such as a struct, an `FName`, an `FString`, an `FVector` or an `int16`. Read it on the actor representation, or split it into properties that do land.
+- **Two classes that declare the same name as different types.** Only one binds. Give the other property a name of its own.
+
+### The pose collision
+
+:::caution[Registering a field for your pose property takes the pose away.]
+A field you register by name is offered every property before the SDK's own pose field, whatever the registration order. If the property is the enum your anim set names as its pose state, such as `Stance`, your field claims it and nothing poses rows of that class. The log reports it. Register your field against a second property, or drop it and let the pose do its job.
+:::
+
+If a class replicates two properties of the pose enum, only one drives the pose and the other is never read. The log names both. See [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md).
+
+### The rules every ingestor obeys
+
+An ingestor runs per arriving value, on the game thread, for a value that came from another player's machine.
+
+- **Never change the row's archetype.** No adding or removing a fragment or a tag, no destroying the row, no trace collision changes. The context remembers the fragment pointers for the rest of the update. After an archetype move a later field writes into the archetype the row just left, and after a destroy the next lookup crashes.
+- **Never keep the fragment pointer past the call.** Mass moves a row's data whenever its archetype changes.
+- **Only produce a visual.** Every byte is forgeable. A player who lies about `TorchBrightness` decides what their torch looks like on your screen and nothing else. Nothing mechanical may be decided from it.
+- **Keep it small.** Do not loop over other rows.
+
+### Check it with `crowdy.mass.state.verdict`
+
+A property that no registered field claims is decoded and then dropped. The log warns once per class and property, names the call to make and the type to give it. Ignore the warning if the property is only meant for actors.
+
+To see the whole picture, run this in a play session, on a client that holds rows:
+
+```
+crowdy.mass.state.verdict
+```
+
+It prints one block. Paste the whole block when you report a problem.
+
+- Every Crowdy State property no fragment field claims, with its class and how many times it was decided. A property you registered a field for leaves the list, so you confirm the fix by its absence.
+- How many rows are held, how many have a recorded class, and how many fields are registered.
+- Deltas claimed, applied and delivered, and how many were not claimed.
+- Each drop reason: class id mismatch, no layout, no buffer, decode failed.
+- Deltas claimed but refused because the row has no recorded class. This is the one refusal that does not mean something is broken.
+- The pose writes, and how many carried a real pose rather than the 0 that means no pose.
+
+`IsStateFragmentFieldRegistered` answers whether your own registration ran at all, which is otherwise silent. The command is a diagnostic for development builds; [Fix a crowd that does not look right](./troubleshooting.md) says which builds.
+
+Landing a value makes it available, not visible. Acting on it takes a processor like the one above, or a Blueprint field read.
+
+## Read a value that rides your position payload
+
+`RegisterViewStateField(PropertyName, Ingestor)` is the other way in. It reads a named byte off the wire struct your state executor sends, such as `FLanternPlayerState`, instead of off a Crowdy State property. It takes no type: the field must be a single byte (`uint8`, `TEnumAsByte`, or an `enum class` over `uint8`), and a property of that name that is anything else is skipped with a warning. It matches per struct, `IsViewStateFieldRegistered` is its check, and it obeys every rule above.
+
+Use it when the value already rides the position payload and a second property would be a second thing to replicate. Use `RegisterStateFragmentField` for everything else: it is typed and it works per class. The SDK's own pose arrives on the Crowdy State road, so a byte called `PoseId` on your wire struct is ignored unless you register that name yourself.
+
+## Read the field from a Blueprint
+
+A graph reads and writes the fragment through the Blueprint field nodes, which find a field by name. Register that name in C++ beside the ingestor with `CrowdyMassFields::RegisterField`, which binds a name to one `UPROPERTY` of one fragment. The snippet above binds `TorchBrightness` to `TargetBrightness`, the member the ingestor writes. A graph that reads `TorchBrightness` gets the target. A graph that writes it sets a new target, and the crowd eases toward that until the next replicated value replaces it.
+
+The rules for what can be registered, and the fact that a registered field gives a graph write access, are on [Read and write its fields, from C++](./from-cpp/read-and-write-its-fields.md). [Read and write its fields, from Blueprint](./from-blueprint/read-and-write-its-fields.md) has the nodes and their pins.
+
+## Gotchas
+
+- A fragment is local. The same field on the same row holds different values on two machines, because each machine runs its own processors.
+- A value you land is only as fresh as the last delta. A property that rarely changes needs `CrowdyHeartbeat` so a late joiner is not left on the fragment's default.
+
+## Related
+
+- [Make a character draw as a crowd row](./make-a-character-draw-as-a-crowd-row.md): the entity component, the mesh and the config the traits are added to
+- [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md): the pose road and the heartbeat
+- [Run your code on a crowd row](./run-your-code-on-a-crowd-row.md): what an event does to a row
+- [Read and write its fields, from Blueprint](./from-blueprint/read-and-write-its-fields.md): the Blueprint field nodes
+- [Read and write its fields, from C++](./from-cpp/read-and-write-its-fields.md): the rules for registering a field
+- [Read its server values, from Blueprint](./from-blueprint/read-its-server-values.md): values the server owns
+- [Fix a crowd that does not look right](./troubleshooting.md): symptoms and the diagnostics reference
+
+# Fix a crowd that does not look right
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/mass/troubleshooting
+
+# Fix a crowd that does not look right
+
+Find the symptom, then work down its list in order. Each list is ordered so a step rules out the layer below it, and each step points to the page that explains the setting. The last two sections list the console commands and switches that help, and the order in which to check a new setup.
+
+## The crowd is grey
+
+The entities spawn, move and can be hit, but they draw in the engine's default grey material.
+
+1. Flag the character's parent material, not a material instance: tick **Used with Instanced Skinned Mesh** under **Usage**. [Turn Mass on for a map](./turn-mass-on-for-a-map.md) has the steps.
+2. Resave the material. A flag the editor sets on the fly and nobody saves is gone on the next launch.
+3. Run `crowdy.mass.derive` on the class. When a slot is not flagged, the line says how many checked slots are not flagged for instanced skinned meshes and names the slot, the material instance and the base material to flag.
+4. Look in `LogMaterial`. The engine substitutes the default material there, so no Crowdy Mass line mentions it.
+
+See [Make a character draw as a crowd row](./make-a-character-draw-as-a-crowd-row.md) for `crowdy.mass.derive`.
+
+## Nothing appears at all
+
+1. Check that a map profile for this map selects **Crowdy Mass Rendering Backend** as its **Backend Class** and has **Enable Networking** ticked. Check that the profile is assigned under **Project Settings, Plugins, Crowdy SDK, Map Profiles**. See [Assign the profile](../runtime/map-profile.md#assign-the-profile).
+2. Check that the Mass entity subsystem is running. It exists in Play In Editor and game worlds whose map profile selects the Mass backend, not in the editor world and not on an actor pool map. See [Crowd nodes do nothing on this map](#crowd-nodes-do-nothing-on-this-map).
+3. Run `crowdy.mass.derive` on the class and check that a mesh resolves.
+4. Check whether you are the only client. The backend does not draw your own entity as a row, so on one client you see nothing. Tick **Render Local Owner**, which lives under **Mass Backend, Debug** on the **Crowdy Mass Backend Config**, or place a **Crowdy Mass Area Spawner** in the level. See [Turn Mass on for a map](./turn-mass-on-for-a-map.md).
+5. Search the log for `nothing configures a Mass entity config`. That line says no config could be worked out from the class, and it names what is missing.
+6. Search the log for a warning that an entity named a class id this client cannot resolve to a loaded class. If it appears, add the class to **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**. See [Entities and Spawning](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all).
+7. If the rows stand at the world origin instead, name the transform fields of the state struct your executor sends `Transform`, or `Location` (or `Position`) plus `Rotation`. `LogCrowdyMass` names the struct once and lists the accepted spellings. See [Make a character draw as a crowd row](./make-a-character-draw-as-a-crowd-row.md).
+
+## Crowd nodes do nothing on this map
+
+A Crowdy Mass node or call runs without an error, but nothing happens. A **Crowdy Mass Area Spawner** spawns nothing, a trace finds no entity, or a bound event never fires.
+
+1. Open the map's profile and check **Backend Class**. The Mass subsystems are created only when it is **Crowdy Mass Rendering Backend**. On **Actor Pool Rendering Backend** they do not exist, and the nodes and calls that need them do nothing. See [Pick the backend on the map profile](./turn-mass-on-for-a-map.md#pick-the-backend-on-the-map-profile).
+2. Check that the profile is the one the map uses: a **Map Profiles** entry for the map's short name, or the **Default Profile**. A map with no entry runs on the profile the SDK ships, which draws actors. See [Assign the profile](../runtime/map-profile.md#assign-the-profile).
+3. Look in the log for the one-time line. A **Crowdy Mass Area Spawner** warns once that it spawned nothing, **Set Crowdy Mass Hit Zone Table** warns once and hits keep the default zone, and **Receive Crowdy Event on Entity** and **Receive Server Values Changed on Entity** log once and receive nothing.
+4. Remember what still works on an actor pool map. **Play Crowdy Mass Action** and the action id lookup read the actor's class, so they work there.
+5. In C++, get the entity subsystem with `World->GetSubsystem<UCrowdyMassEntitySubsystem>()` and check for null before you use it. A world subsystem of your own that needs it should gate itself in `ShouldCreateSubsystem`, so it exists only on maps that draw crowd rows; see [Add your own crowd data](./add-your-own-crowd-data.md). `UCrowdySDKDeveloperSettings::ProfileDrawsCrowdRows(Profile)` answers whether a profile draws crowd rows.
+
+## Rows stand in bind pose
+
+The rows are drawn, but they stand in the mesh's bind pose and do not walk, pose or play actions. Work down the list in order.
+
+1. Run `crowdy.mass.derive` on the class in a Play In Editor or game world on a Mass map. Check what it says for the anim set. An answer of nothing means the class names no set.
+2. Check that the class has a **Crowdy Mass Anim Set** component whose **Anim Set** is filled in, and that the set names a **Bank**. Without the component the log says the class names no animation set and its entities render in their bind pose. See [Set up the animation set](./set-up-the-animation-set.md).
+3. Check the log for a line saying the set did not load. Fix the reference it names; until then the class renders in bind pose.
+4. If you authored a Mass entity config for the class, check that its visualization trait's mesh entry (**Skinned Mesh Instance Desc**, **Meshes**) names a **Transform Provider**, the same bank as the set's **Bank**. When the mesh carries no bank the log says so, and nothing can be animated. See [Set up the animation set](./set-up-the-animation-set.md#connect-the-bank-to-the-crowds-mesh).
+5. If you authored a config, also add a **Crowdy Mass Animation** trait that names the set. The class's own **Anim Set** component is still found, so pose and action names resolve, but nothing renders the set. The log says `nothing renders that set` and names it. See [Make a character draw as a crowd row](./make-a-character-draw-as-a-crowd-row.md).
+6. Check that the **Bank** holds the clips the set indexes; saving the set runs its checks. See [Set up the animation set](./set-up-the-animation-set.md).
+7. Set `crowdy.mass.anim.force` to a bank index to force that clip on every row, then set it back to -1. Turn on `crowdy.mass.anim.trace 1` to log every animation index written, per row.
+
+## Rows float, sink or face sideways
+
+The rows animate, but they stand above or below the ground by a fixed amount, or face a quarter turn away from where they walk.
+
+1. A row draws its mesh where the class places it. Open the class and check the mesh component's location and rotation: a character's mesh usually sits half the capsule's height below the capsule's centre, turned -90 degrees. A config the SDK builds from the class copies that placement, so fix it on the class.
+2. If you authored a Mass entity config, set its mesh entry's **Local Transform** to the same location and rotation. An authored config is not given the class's placement. See [Author a config by hand](./make-a-character-draw-as-a-crowd-row.md#author-a-config-by-hand).
+3. For a near tier actor that floats or sinks while the rows look right, see **Entity Transform Offset** on [Promote close entities to actors](./promote-close-entities-to-actors.md#entity-transform-offset).
+
+## Animation lands on the wrong row
+
+Rows play each other's clips, or `LogCrowdyMass` warns once a second that a mesh batched more animation entries than instances, so more than one processor is filling its animation batch. The SDK turns the engine's own animation pass off at startup, so something has turned it back on.
+
+1. Open **Project Settings, Mass** and check that the engine's instanced skinned mesh animation pass is not ticked.
+2. Open `Config/DefaultMass.ini` if the project has one. If it sets `bAutoRegisterWithProcessingPhases=True` for `MassConsumeInstancedSkinnedMeshAnimationProcessor`, remove that line.
+3. If the project uses the MetaHuman crowd plugin, its own pass is left alone and also fills an animation batch. To turn it off, set `bAutoRegisterWithProcessingPhases=False` under `[/Script/MetaHumanCrowd.MetaHumanMassSimpleAnimationProcessor]` in `Config/DefaultMass.ini`.
+
+See [The engine's animation pass](./turn-mass-on-for-a-map.md#the-engines-animation-pass).
+
+## The crowd moves but never poses
+
+1. Name a pose state enum on the anim set. **Poses** with rows and no **Pose State Enum** is a validation error.
+2. Declare a property of that enum on your class and mark it `CrowdyState`. It must be that enum, not any enum. The type is the contract; the name is yours.
+3. Declare the enum as `enum class : uint8`. A wider enum cannot ride the one byte a pose uses.
+4. Check that no fragment field is registered under the name of that same property. A field claimed by name takes the property from the pose, and the log says nothing poses entities of that class. Register the field against a second property, or drop it. See [Add your own crowd data](./add-your-own-crowd-data.md).
+5. Drop `CrowdyOwnerOnly` from the property. A crowd observer is never the owner, so it never receives the value.
+6. Add the property to the heartbeat. An enum is held state, sent when it changes. Without `CrowdyHeartbeat`, one dropped change leaves the pose wrong until something else changes. The heartbeat also needs a non-zero **State Keyframe Interval (Seconds, 0 = off)** on the map profile and a **State Heartbeat** that is not **Off** on the entity component.
+7. Run `crowdy.mass.state.verdict` in a play session. Check whether the property is in the dropped list, and whether the pose writes from CrowdyState move at all.
+8. Check that the observer resolves the class. An update names its class by id, and a client resolves only the ids of classes that were loaded when the SDK started. Add the class to **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes**. Until then the log warns that the entity named a class id this client cannot resolve, and the client falls back to guessing from the state struct. The guess works only once a component of that class has begun play on that machine, and it fails for two classes that share one struct. See [Entities and Spawning](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all). Do this before you suspect the pose path.
+
+See [Play poses and one-shot actions](./play-poses-and-one-shot-actions.md) and [Set up the animation set](./set-up-the-animation-set.md).
+
+## An event arrives and nothing animates
+
+The body of the event runs, which makes it look as if everything worked, but the row does not play the action.
+
+1. Mark the event an action. In C++ that is the `CrowdyAction` meta key. In Blueprint it is the **Is A One-Shot Action** box on the custom event. Recompile after you tick it, because the marker is read off the compiled function.
+2. Run `crowdy.rpc.dumpfn <ClassName> <FunctionName>` and look for `action=1`. Run it on the receiving machine as well as the sender. A Blueprint class name ends in `_C`.
+3. Give the event an `int32` input named `ActionId`. Without it nothing starts, and the log says so once per function. The names `ActionId`, `Variant` and `PlayRate` are read by name, and case does not matter; an event that spells them differently needs a registered handler.
+4. Check whether something registered a C++ handler for the event with `RegisterEventHandler`. It replaces both the event's body and the automatic action write on a row, so the handler must write the action itself with `CrowdyMassWriteAction`. A bound **Receive Crowdy Event on Entity** node replaces the body only, and the row still plays the action. See [Run your code on a crowd row](./run-your-code-on-a-crowd-row.md).
+5. If the **Is A One-Shot Action** box is missing, assign a map profile that selects the Crowdy Mass Rendering Backend under **Project Settings, Plugins, Crowdy SDK**, as a **Map Profiles** entry or the **Default Profile**. The box stays hidden until one does. See [Mark the event](../runtime/rpc-events-blueprint.md#mark-the-event).
+
+## An action does not restart on a repeat
+
+The first play works, and sending the same action again while it plays does nothing.
+
+1. Open the anim set and check the action row. **Primary Index** and **Alternate Index** must be two different bank slots that hold the same clip. Equal values, or both still `-1`, are a validation error.
+2. Set the set's **Bank**, then press **Sync Actions Into Bank**. It adds the clip to the bank twice and writes both indices.
+3. If the class uses an authored config, check that its mesh entry names the same bank as the set's **Bank**. Nothing can catch a different one: validation checks the indices against the set's **Bank**.
+
+See [Set up the animation set](./set-up-the-animation-set.md).
+
+## An entity is stuck in a pose
+
+An entity keeps its pose after the replicated value changes back.
+
+1. Check whether the pose shares a bank slot with a gait, another pose or an action. Leaving the pose then hands the renderer the index it already has, and nothing changes on screen.
+2. Set the set's **Bank**. Validation names the collision and tells you to give the pose a sequence of its own in the bank.
+3. If you set the pose with **Set Crowdy Mass Entity Pose**, use a pose name the class's anim set authors. A name it does not author clears the pose instead of setting it.
+
+See [Set up the animation set](./set-up-the-animation-set.md).
+
+## A replicated variable does nothing on the crowd
+
+`CrowdyState` alone lands nothing on a crowd row, because there is no actor to write onto. The value is decoded and then dropped unless a fragment field claims it.
+
+1. Run `crowdy.mass.state.verdict`. It lists every replicated property that no field claims, and the log message for each names the call to make.
+2. Call `IsStateFragmentFieldRegistered` with the property name. If it answers false, your registration never ran.
+3. Register the field with the type the property is declared as. A name match with a wrong type is refused, with a line naming both.
+4. Check whether the property is a struct, an `FName`, an `FString`, an `FVector`, an `int16` or a bitfield `bool`. None of these can be bound to a fragment field. Read them on the actor representation, or declare a plain `bool`.
+5. Drop `CrowdyOwnerOnly` from the property if the crowd should see it. A crowd observer never receives an owner-only value.
+6. Check that the name is not already claimed in this world for another type. Names are claimed per world and carry one type.
+7. Check that the row carries a fragment to land the value in, and that something reads it. A landed value is stored, not shown. Showing it takes a processor, a near tier AnimBP, or a Blueprint field read.
+
+See [Add your own crowd data](./add-your-own-crowd-data.md) and [A field that silently does nothing](../runtime/crowdy-state.md#a-field-that-silently-does-nothing).
+
+## A row gets no server values
+
+**Get Server Value** answers false for a crowd row, or **Receive Server Values Changed on Entity** never runs.
+
+1. Check that the entity's actor class carries a **Crowdy Server Object** component whose type holds **A Record per Entity**. The class is read once, from the class default object.
+2. Set the component's **Instance Mode** to one the rows can follow: **Only One Instance** (a setting of the type, and it wins over every Instance Mode), **Instance Id** with an id typed, or **This Actor's Area**. Any other mode logs one warning for the class and the rows get nothing.
+3. Check that the server holds a record whose id is the entity's id, as 32 hex digits. A row finds its record by that id and by nothing else.
+4. With **This Actor's Area**, check that the local player has a pawn or a camera to follow. With none, no area is followed.
+5. Check that the variable is visible to the player. **Owner Only** and **Team Only** values reach only a player who may see them, and they arrive later than **Everyone** values.
+6. Check that the name is the variable's name in the Server Object asset, and that the type you connect to **Value** matches the variable's type.
+7. Ask later if you ask too early. A row drawn the moment a player enters an area reads nothing until the object has been read.
+
+See [Read its server values, from Blueprint](./from-blueprint/read-its-server-values.md) and [Keep a record per entity](../exec/keep-a-record-per-entity.md#crowd-rows).
+
+## A class never promotes
+
+A class has a near tier shell, and its entities stay crowd rows however close they get. Reasons 1 to 4 are logged once per class, except a class with no shell component at all, which is the ordinary case and says nothing.
+
+1. Declare the shell on the class. It needs a **Crowdy Mass Near Tier Shell** component with **Near Tier Actor Class** filled in. A component with an empty slot is reported differently from no component.
+2. Give the shell class a **Crowdy Mass Near Tier** component. A shell without one is refused, because nothing would drive it from the entity. A Blueprint subclass of **Crowdy Mass Near Tier Actor** has one already.
+3. Check whether an authored Mass entity config already promotes. If it names a high-resolution actor and its nearest level spawns it, that decision wins, the shell declaration is never read, and you get one warning.
+4. Check whether the config carries more than one visualization trait of different classes. That is refused and named.
+5. Check that the entity is inside **Near Tier Distance** (off screen) or **Near Tier Visible Distance** (on screen), and that fewer than **Max Near Tier Actors** are already promoted. The nearest entities win the limited places. These settings apply only when the config was derived from the class. This reason is not logged.
+6. Turn on `crowdy.mass.neartier.trace 1` to see each promotion, pool checkout and release.
+
+A config that names an actor while its nearest level still draws an instance is not a reason. It promotes nothing by itself, so the declared shell replaces the actor it names, the class is promoted after all, at the config's own distances, and the log warns.
+
+See [Promote close entities to actors](./promote-close-entities-to-actors.md).
+
+## A near tier actor stands still
+
+Turn **Drive Owner Transform** back on if it is off on the shell's **Crowdy Mass Near Tier** component. Nothing else moves a near tier actor. Also check that the shell has no movement component or colliding capsule: the transform is written every frame, and a movement component fights it.
+
+See [Promote close entities to actors](./promote-close-entities-to-actors.md).
+
+## A near tier actor plays no actions
+
+1. Check that the shell's Mesh uses its own animation Blueprint, such as `ABP_LanternPlayer_Shell`, that reads the near tier getters. A copy of the character's animation Blueprint casts to the character, the cast fails on the near tier actor, and the graph stays in its default pose.
+2. Add a Slot node to the shell's animation graph whose name matches **Action Slot Name** on the near tier component. The default is `DefaultSlot`. Without one, a single warning says the graph has no such slot.
+3. Remove any **Crowdy Mass Anim Set** component from the shell that names a different set from the entity's. Actions are refused for that pairing, and the message names both sets.
+4. Check the pose that should suppress actions. If it is ranked **Above Actions**, the near tier does not honour that rank, so the graph has to bypass the slot itself while **Has Pose** is true.
+
+See [Promote close entities to actors](./promote-close-entities-to-actors.md).
+
+## A Blueprint field read always answers false
+
+**Get Crowdy Mass Field** or **Set Crowdy Mass Field** returns false every time.
+
+1. Register the name in C++, then call **Is Crowdy Mass Field Registered** with the **Field Name** once at startup. An unregistered name fails every read and write. The log warns `Nothing is registered as '<name>'` at most once every five seconds per name.
+2. Check **Is Crowdy Mass Target Live** first, and do not keep a stored target across a respawn.
+3. Match the node's type to the member. **Integer** is exactly `int32`, **Float** takes `float` or `double`, **Byte** takes `uint8` or a byte-wide enum, and **Boolean** takes `bool` including a bitfield.
+4. Do not access a field while Mass is processing. That is refused and logged, an Error for a write and a Warning for a read, at most once every 5 seconds per field name. Move the work to a phase-end delegate or a deferred broadcast.
+
+See [Read and write its fields, from Blueprint](./from-blueprint/read-and-write-its-fields.md).
+
+## The event dropdown is empty
+
+The **Event** dropdown on **Call Crowdy Event on Entity** or **Receive Crowdy Event on Entity** lists nothing.
+
+1. Open the dropdown again. While the asset registry is still scanning, the list is incomplete.
+2. Check that the class you want is one the list holds: the classes the Mass rendering backend is configured for, loaded classes that carry a Crowdy Entity component, and the SDK's own events under **Any Crowd Entity**.
+3. Turn on `crowdy.mass.nodes.trace 1` in the editor. It logs where each entry came from.
+
+See [Call an event on it, from Blueprint](./from-blueprint/call-an-event-on-it.md).
+
+## Commands and switches
+
+Every `crowdy.mass.*` command and variable is compiled out of Shipping builds, so none of them exists in a shipped game. The four `CrowdyMass.` commands in the first table are also left out of Shipping builds, so they exist in development builds only, and they print their results as ordinary log lines, not warnings. They help when rows draw but their shadows or animation look wrong, and when you are asked for their output in a bug report.
+
+### Commands
+
+| Command | Takes | What it tells you |
+|---|---|---|
+| `crowdy.mass.derive` | A class: a short name, an asset path or a full object path | What a Mass entity config built from that class would contain, without spawning anything. It names the mesh, which of the three routes supplied it, the trace collision object type and the material verdict. In a Play In Editor or game world on a Mass map it also names the anim set and whether an authored config would be used instead. It logs a warning when the mesh cannot be resolved, a material is not flagged, or an authored config wins. In the editor world with no play session, the animation answer is left out and the config answer says it is unknown. |
+| `crowdy.mass.state.verdict` | Nothing; needs a play session | One block saying whether Crowdy State is reaching crowd entities: every replicated property no fragment field claims, how many deltas were claimed and applied, every drop reason, and which road wrote the pose. A property you fix leaves the list. Paste the whole block when you report a problem. |
+| `CrowdyMass.LogSkinnedMeshShadowDiagnostics` | Nothing | Logs the shadow and render flags of the crowd's instanced skinned mesh components in the current world. |
+| `CrowdyMass.RecreateSkinnedMeshRenderState` | Nothing | Marks the render state of those components dirty, so they rebuild. |
+| `CrowdyMass.ForceSkinnedMeshAlwaysAnimate` | Nothing | Sets those components to always animate at the component level and recreates their render state. |
+| `CrowdyMass.LogRepresentationAnimationDiagnostics` | Nothing | Logs the Mass representation, level of detail, velocity and animation state of the crowd's remote entities. |
+
+### Commands from the rest of the SDK that this page uses
+
+These belong to the SDK as a whole and are listed on [Console Variables](../reference/console-cvars.md).
+
+| Command or variable | Default | What it does here |
+|---|---|---|
+| `crowdy.rpc.dumpfn <Class> <Function>` | none | Prints how this process routes one event, including `action=` for a function marked an action. |
+| `crowdy.state.heartbeat.advisories` | none | Lists every Crowdy State enum property that is outside the keyframe heartbeat. |
+| `crowdy.rpc.loopback` | 0 | Delivers your own sends back to you, so one Play In Editor client can exercise a receive path. |
+
+### Switches
+
+| Variable | Default | What it does |
+|---|---|---|
+| `crowdy.mass.neartier.trace` | 0 | Logs when a crowd entity gains a near tier actor, whether the actor was built or taken from the pool, and when it goes back. Also prints where the near tier actor placed its mesh. |
+| `crowdy.mass.event.proxy` | 1 | Runs an inbound event's own body on a per-class stand-in for an entity held as a row. Set 0 to compare: an event nothing registered a handler for then lands only the action write a declared action gets. |
+| `crowdy.mass.derive.force` | 0 | Builds every remote entity from a Mass entity config made out of its own class. It pushes aside per-class bindings, the backend override, the project **Remote Entity Config**, and the anim set an authored config's animation trait names; the class's own **Crowdy Mass Anim Set** component is used instead. Entities already spawned keep their config. |
+| `crowdy.mass.anim.force` | -1 | Forces one animation bank index on every Mass entity. A negative value turns forcing off. |
+| `crowdy.mass.anim.trace` | 0 | Logs every animation sequence index written, per entity. |
+| `crowdy.mass.anim.dump` | 0 | While 1, logs once a second a summary of the anim sets in use and of the instance batches handed to each instanced skinned mesh component. |
+| `crowdy.mass.interp.adaptive` | -1 | Replays each remote segment over the observed arrival interval. 1 on, 0 off for a fixed duration, -1 follows **Adaptive Smoothing** in the project settings. |
+| `crowdy.mass.interp.overshoot` | -1.0 | How much longer than the observed arrival interval a segment is replayed over. Negative follows **Smoothing Interval Overshoot**. |
+| `crowdy.mass.interp.min` | -1.0 | Shortest span, in seconds, a segment may be replayed over. Negative follows **Min Smoothing Duration**. |
+| `crowdy.mass.interp.max` | -1.0 | Longest span, in seconds, a segment may be replayed over. Negative follows **Max Smoothing Duration**. |
+| `crowdy.mass.nodes.trace` | 0 | Editor only. Logs where the entries of the **Call Crowdy Event on Entity** dropdown came from. |
+
+## Check a new setup in this order
+
+Each step rules out the layer below it.
+
+1. Run `crowdy.mass.derive` on your class. Check that it resolves the mesh you expect and reports every material flagged.
+2. On one client with **Render Local Owner** on, check that your own pawn draws as a row, stands on the ground, moves, and takes its pose when you change the pose property.
+3. On two clients, check that the other player's row is visible, moving and posing on the other machine.
+4. On two clients, send an event to an owning client and check that it arrives there.
+5. On two clients, send a multicast event and check that it runs your body on the observer's stand-in and that the declared action animates the row.
+7. On two clients, call **Get Server Value** on a row and check that it answers with the value the server holds.
+
+## Related
+
+- [Draw a crowd with Mass](./draw-a-crowd-with-mass.md): what the backend does and when to use it
+- [Turn Mass on for a map](./turn-mass-on-for-a-map.md): the profile, the settings and the material flag
+- [Market night in Oakford](./examples/market-night-in-oakford.md): a worked example that exercises each step above
+- [Console Variables](../reference/console-cvars.md): the SDK's own `crowdy.*` switches
