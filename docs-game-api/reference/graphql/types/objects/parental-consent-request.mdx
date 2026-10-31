@@ -1,0 +1,48 @@
+---
+id: parental-consent-request
+title: ParentalConsentRequest
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The answer to requestParentalConsent.
+
+
+```graphql
+type ParentalConsentRequest {
+  appId: BigInt!
+  feature: ParentalConsentFeature!
+  status: ParentalConsentRequestStatus!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentRequest.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentRequest.<b>feature</b></code>](#feature)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ParentalConsentFeature!</b></code>](/reference/graphql/types/enums/parental-consent-feature.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #feature */} 
+The medium asked for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentRequest.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ParentalConsentRequestStatus!</b></code>](/reference/graphql/types/enums/parental-consent-request-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #status */} 
+Whether a request went to the parent.
+
+
+
+
+### Returned By
+
+[`requestParentalConsent`](/reference/graphql/operations/mutations/request-parental-consent.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

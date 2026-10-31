@@ -1,0 +1,43 @@
+---
+id: contact-request-direction
+title: ContactRequestDirection
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+INCOMING: the other player asked you (acceptContact or removeContact answers it). OUTGOING: you asked them (removeContact cancels it).
+
+
+```graphql
+enum ContactRequestDirection {
+  INCOMING
+  OUTGOING
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ContactRequestDirection.<b>INCOMING</b></code>](#incoming) {/* #incoming */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ContactRequestDirection.<b>OUTGOING</b></code>](#outgoing) {/* #outgoing */} 
+
+
+
+
+
+### Member Of
+
+[`ContactRequest`](/reference/graphql/types/objects/contact-request.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

@@ -1,0 +1,39 @@
+---
+id: app-required-documents
+title: appRequiredDocuments
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An app's own documents (its rules, an addendum), which its players accept on top of the platform's (recordPlayerConsents with the appId) before their next mint. Empty when the app requires none. Public.
+
+
+```graphql
+appRequiredDocuments(
+  appId: BigInt!
+): [LegalDocument!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>appRequiredDocuments.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app (BigInt as a decimal string).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>LegalDocument</b></code>](/reference/graphql/types/objects/legal-document.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A document players (or developers) accept: its id, the version currently required, its title and where to read it. appId is set for an app’s own document and null for the platform’s.

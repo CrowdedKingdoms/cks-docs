@@ -1,0 +1,43 @@
+---
+id: accepted-document-input
+title: AcceptedDocumentInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A document the player accepted: its id and the version they saw.
+
+
+```graphql
+input AcceptedDocumentInput {
+  documentId: String!
+  version: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AcceptedDocumentInput.<b>documentId</b></code>](#document-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #document-id */} 
+The document id, as playerLegalDocuments or appRequiredDocuments name it.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AcceptedDocumentInput.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #version */} 
+The version the player accepted.
+
+
+
+
+### Member Of
+
+[`SignInWithMinecraftInput`](/reference/graphql/types/inputs/sign-in-with-minecraft-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/>

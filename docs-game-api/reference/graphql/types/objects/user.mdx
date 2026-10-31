@@ -38,6 +38,8 @@ type User {
   permissionsForOrg(
     orgId: BigInt!
   ): [String!]
+  ageBracket: String
+  country: String
 }
 ```
 
@@ -110,11 +112,19 @@ The user's effective permission keys on the given org (empty if not a member; fu
 Organization id (BigInt sent as a decimal string) to evaluate the user against.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>ageBracket</b></code>](#age-bracket)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #age-bracket */} 
+The player's age bracket now: 'unknown' (no age given yet: recordPlayerAge), 'under&#x005F;13', '13&#x005F;15', '16&#x005F;17' or '18&#x005F;plus'. A CK account's comes from its birth month (counted from the month's last day, so it moves on that date); a managed player's from its organization. Private: null unless the caller is this user, a super-admin or an operator.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>User.<b>country</b></code>](#country)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #country */} 
+The country the player declared, or its organization asserted (ISO 3166-1 alpha-2); null when none was given. Private: null unless the caller is this user, a super-admin or an operator.
+
+
 
 
 ### Returned By
 
-[`me`](/reference/graphql/operations/queries/me.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setEarlyAccessOverride`](/reference/graphql/operations/mutations/set-early-access-override.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setOperator`](/reference/graphql/operations/mutations/set-operator.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setSuperAdmin`](/reference/graphql/operations/mutations/set-super-admin.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateGamertag`](/reference/graphql/operations/mutations/update-gamertag.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateUserState`](/reference/graphql/operations/mutations/update-user-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateUserType`](/reference/graphql/operations/mutations/update-user-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`user`](/reference/graphql/operations/queries/user.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
+[`me`](/reference/graphql/operations/queries/me.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`recordPlayerAge`](/reference/graphql/operations/mutations/record-player-age.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setEarlyAccessOverride`](/reference/graphql/operations/mutations/set-early-access-override.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setOperator`](/reference/graphql/operations/mutations/set-operator.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`setSuperAdmin`](/reference/graphql/operations/mutations/set-super-admin.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateGamertag`](/reference/graphql/operations/mutations/update-gamertag.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateUserState`](/reference/graphql/operations/mutations/update-user-state.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`updateUserType`](/reference/graphql/operations/mutations/update-user-type.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`user`](/reference/graphql/operations/queries/user.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>
 
 ### Member Of
 

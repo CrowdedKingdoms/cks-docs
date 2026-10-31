@@ -1,0 +1,48 @@
+---
+id: record-player-age-input
+title: RecordPlayerAgeInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A player’s birth date, country and (under 18) parental agreement. Kept as the year and month only.
+
+
+```graphql
+input RecordPlayerAgeInput {
+  birthDate: String!
+  country: String!
+  parentalConfirmation: Boolean
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>RecordPlayerAgeInput.<b>birthDate</b></code>](#birth-date)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #birth-date */} 
+Birth date, YYYY-MM-DD (YYYY-MM is accepted too). Only the year and month are kept, and the age is counted from the last day of that month.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RecordPlayerAgeInput.<b>country</b></code>](#country)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #country */} 
+The country the player lives in: ISO 3166-1 alpha-2, such as US.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>RecordPlayerAgeInput.<b>parentalConfirmation</b></code>](#parental-confirmation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #parental-confirmation */} 
+True when a player under 18 confirms that a parent or guardian agreed to their account. Required true under 18; ignored at 18 or over.
+
+
+
+
+### Member Of
+
+[`recordPlayerAge`](/reference/graphql/operations/mutations/record-player-age.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

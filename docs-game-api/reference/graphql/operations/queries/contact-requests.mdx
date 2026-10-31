@@ -1,0 +1,39 @@
+---
+id: contact-requests
+title: contactRequests
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Contact requests waiting in the app: INCOMING ones other players sent the caller, then OUTGOING ones it sent, newest first. Game plane: send the app-scoped token for this app to the app’s datacenter.
+
+
+```graphql
+contactRequests(
+  appId: BigInt!
+): [ContactRequest!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>contactRequests.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ContactRequest</b></code>](/reference/graphql/types/objects/contact-request.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A contact request waiting for an answer.

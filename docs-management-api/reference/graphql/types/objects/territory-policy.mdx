@@ -1,0 +1,48 @@
+---
+id: territory-policy
+title: TerritoryPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A country Crowded Kingdoms lists: 'blocked' refuses its players (TERRITORY&#x005F;NOT&#x005F;SUPPORTED), and minAge raises the youngest age admitted there. A country not listed is open at the platform's minimum.
+
+
+```graphql
+type TerritoryPolicy {
+  countryCode: String!
+  status: String!
+  minAge: Int!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>TerritoryPolicy.<b>countryCode</b></code>](#country-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #country-code */} 
+ISO 3166-1 alpha-2 country code, such as KR.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TerritoryPolicy.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #status */} 
+'open' or 'blocked'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TerritoryPolicy.<b>minAge</b></code>](#min-age)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #min-age */} 
+The youngest age admitted in the country (13 to 18); the platform's and the app's minimums still apply when higher.
+
+
+
+
+### Returned By
+
+[`territoryPolicies`](/reference/graphql/operations/queries/territory-policies.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

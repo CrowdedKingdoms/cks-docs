@@ -1,0 +1,39 @@
+---
+id: record-developer-consents
+title: recordDeveloperConsents
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Store acceptance of the current developer documents (developerLegalDocuments: the API Terms, SDK Developer Terms and Free Tier and Billing Basis). acceptDeveloperTerms must be true; false stores nothing and is refused with LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED. The developer documents admit adults only: an account with no age is refused AGE&#x005F;REQUIRED (recordPlayerAge first) and one under 18 AGE&#x005F;REQUIREMENT&#x005F;NOT&#x005F;MET. Idempotent. Requires a session token.
+
+
+```graphql
+recordDeveloperConsents(
+  acceptDeveloperTerms: Boolean!
+): Boolean!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>recordDeveloperConsents.<b>acceptDeveloperTerms</b></code>](#accept-developer-terms)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #accept-developer-terms */} 
+True when the developer agrees to the current developer documents.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> 
+The `Boolean` scalar type represents `true` or `false`.

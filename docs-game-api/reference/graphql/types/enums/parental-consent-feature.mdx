@@ -1,0 +1,43 @@
+---
+id: parental-consent-feature
+title: ParentalConsentFeature
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What a parent consents to for a player under 18 in one app: VOICE (voice chat and channel audio) or VIDEO (webcam video).
+
+
+```graphql
+enum ParentalConsentFeature {
+  VOICE
+  VIDEO
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentFeature.<b>VOICE</b></code>](#voice) {/* #voice */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentFeature.<b>VIDEO</b></code>](#video) {/* #video */} 
+
+
+
+
+
+### Member Of
+
+[`ParentalConsentRequest`](/reference/graphql/types/objects/parental-consent-request.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/><Bullet />[`requestParentalConsent`](/reference/graphql/operations/mutations/request-parental-consent.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

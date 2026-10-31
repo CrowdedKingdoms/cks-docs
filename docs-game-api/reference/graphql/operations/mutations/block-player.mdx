@@ -1,0 +1,44 @@
+---
+id: block-player
+title: blockPlayer
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Block another player of the app: nothing of any kind (voice, video, text, direct messages) passes between the two, either way, enforced by the realtime servers for every session of both within a second, and hubs can ask (players.blocked). It also removes any contact or request between them. The blocked player is not told, and its contact requests to the caller are dropped. Blocking again changes nothing. At most 1,000 blocks per app (SOCIAL&#x005F;LIMIT&#x005F;REACHED). NOT&#x005F;FOUND for a player the app does not know. Game plane: send the app-scoped token for this app to the app’s datacenter.
+
+
+```graphql
+blockPlayer(
+  appId: BigInt!
+  userId: BigInt!
+): PlayerBlock!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>blockPlayer.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>blockPlayer.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The player to block.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerBlock</b></code>](/reference/graphql/types/objects/player-block.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A player the caller blocked in the app. Nothing of any kind passes between the two, either way, while the block stands; the blocked player is not told.

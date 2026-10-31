@@ -1,0 +1,58 @@
+---
+id: safety-report-capture
+title: SafetyReportCapture
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What a safety report’s capture holds in the preservation store: both players’ identities, the reported player’s last-known address, the recorded inputs of the sessions the report covers, and each player’s hub data on ck-exec. Each object is kept under a legal hold while the report is open.
+
+
+```graphql
+type SafetyReportCapture {
+  status: SafetyCaptureStatus!
+  objects: Int!
+  expected: Int!
+  bytes: Float!
+  retainUntil: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportCapture.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SafetyCaptureStatus!</b></code>](/reference/graphql/types/enums/safety-capture-status.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #status */} 
+Where the copy stands.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportCapture.<b>objects</b></code>](#objects)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #objects */} 
+Objects copied.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportCapture.<b>expected</b></code>](#expected)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #expected */} 
+Objects the complete copy has.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportCapture.<b>bytes</b></code>](#bytes)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Float!</b></code>](/reference/graphql/types/scalars/float.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #bytes */} 
+Bytes copied.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportCapture.<b>retainUntil</b></code>](#retain-until)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #retain-until */} 
+Until when the copy is kept under COMPLIANCE retention (an escalated report: a year from the CyberTipline submission); null while it is kept by a legal hold.
+
+
+
+
+### Member Of
+
+[`SafetyReport`](/reference/graphql/types/objects/safety-report.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
