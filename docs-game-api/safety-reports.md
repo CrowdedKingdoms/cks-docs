@@ -88,6 +88,11 @@ mutation Moderators($orgId: BigInt!) {
 organization's apps, and read the recorded sessions a report covers, and nothing else of the safety
 log. Every such read is audited.
 
+In Studio, a role with **Moderate safety reports** is made under the organization's **Team &
+Access**, and a member who holds it sees the app's **Safety reports** tab: the reports, each
+reported session's recorded inputs (read one at a time, on request), resolving with an outcome and
+recording a CyberTipline report.
+
 ## Reviewing
 
 With the moderator's identity session token, sent to the app's datacenter:

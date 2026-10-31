@@ -20,8 +20,8 @@ refusal lists what is missing.
   age-of-majority attestation, and every player accepts them at their next mint. Developers accept
   their own documents before creating or administering an organization. The Org-Managed Players
   Addendum gets a new version, which every organization accepts again.
-- **Not yet:** Studio's hosted sign-in shows the platform's documents only
-  ([below](#hosted-sign-in-and-your-apps-documents)).
+- **In Studio:** the hosted sign-in asks for your app's documents with the platform's
+  ([below](#hosted-sign-in-and-your-apps-documents)), and the app's page sets them.
 
 :::
 
@@ -112,11 +112,11 @@ again. Retrying without that cannot succeed.
 
 ## Hosted sign-in and your app's documents
 
-Studio's hosted sign-in (`/authorize`) asks for the platform's documents before it issues the code,
-and does not show an app's own documents yet. Until it does, a browser game that signs its players
-in through it should not require documents of its own: the code would be refused
-`LEGAL_ACCEPTANCE_REQUIRED`. A first-party or native client, an SDK sign-up form or an in-game
-screen records them itself with `recordPlayerConsents(appId)`.
+Studio's hosted sign-in (`/authorize`) asks for the platform's documents and your app's own before
+it issues the code, lists the ones a refusal named, and records them with your app. A first-party
+or native client, an SDK sign-up form or an in-game screen records them itself with
+`recordPlayerConsents(appId)`. Set your app's documents in Studio, on the app's page under
+**Settings > Players' documents**, or with `setAppRequiredDocuments`.
 
 ## Developer documents
 
