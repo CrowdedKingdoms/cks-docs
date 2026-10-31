@@ -148,6 +148,21 @@ belongs to the studio:
 `appPlayerUsage` (`view_compute_diagnostics`) shows per-player consumption;
 `appPlayerMarkupAccrued` (`view_billing`) totals accrued markup income.
 
+### c.3 Decide who the game is for
+
+Crowded Kingdoms is opening to players aged 13 to 17. From that opening, every app whose minimum
+age is under 18 admits them, and must keep its safety log on, give players the communication
+controls and name moderators. A game for adults sets its minimum age now:
+
+```graphql
+mutation { updateApp(appId: "42", input: { minPlayerAge: 18 }) { effectiveMinPlayerAge } }
+```
+
+See **[Players under 18 and player safety](/overview/player-safety)** for what changes and what a
+game needs, and **[Age, country and who may play](/management-api/age-and-territory)** for the
+checks every sign-in passes. Documents of your app's own, which its players accept on top of the
+platform's, are set with `setAppRequiredDocuments` ([Legal documents](/management-api/legal-documents)).
+
 ### d. Choose where the app runs
 
 Your app needs a **Game API** to serve runtime traffic, and there is one way to get it: the **shared platform**. Publish with `publishAppToShared` and the app is immediately served by that tier's shared Game API fleet, scoped by your `appId`, in the datacenter you chose when you created it. You do not provision VMs or wait for a stack.
@@ -281,6 +296,7 @@ Two things about that call, both of which return a clear error rather than faili
 2. **`run_server_code` at both scopes**, if players run [mods](/exec/mods) at all.
 3. **The Studio agent policy**, if you use the agent: it is fail-closed on a rebuilt fleet and reports `AGENT_APP_KILLED` until an operator enables it for your app.
 4. **The org runtime wallet** — `app(appId){ runtimeStatus runtimeDenialReason }`. A denied wallet stops server code independently of every permission above, with its own message.
+5. **Who the game is for** — `app(appId){ minPlayerAge effectiveMinPlayerAge replayLoggingEnabled }`. An app that admits players under 18 keeps its safety log on ([c.3](#c3-decide-who-the-game-is-for)).
 
 ---
 

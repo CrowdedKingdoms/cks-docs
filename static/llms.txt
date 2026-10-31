@@ -8,6 +8,7 @@
 - [Best practices](https://docs.crowdedkingdoms.com/overview/best-practices): authority in your server code on ck-exec (hubs and spokes), tokens and hosts.
 - [Overview / client workflow](https://docs.crowdedkingdoms.com/overview/client-workflow): one endpoint, two token types, and how an app's datacenter endpoint is discovered.
 - [Before you ship](https://docs.crowdedkingdoms.com/overview/before-you-ship): public hosts and aliases, and the SDK default origins a shipped client needs.
+- [Players under 18 and player safety](https://docs.crowdedkingdoms.com/overview/player-safety): Crowded Kingdoms opens to players aged 13 to 17 at one moment; what is live, what switches on at the opening, and what a game needs before it admits players under 18 (age screen, safety log, communication controls, reports and moderators, hub hooks).
 - [Discord community support](https://discord.gg/x7tMKGwHf): ask questions and get help from the Crowded Kingdoms community.
 
 ## Schema (downloadable SDL)
@@ -31,6 +32,8 @@
 - [GraphQL reference (operations & types)](https://docs.crowdedkingdoms.com/management-api/reference/graphql-overview)
 - [Management API best practices](https://docs.crowdedkingdoms.com/management-api/best-practices) · [Shared environment](https://docs.crowdedkingdoms.com/management-api/shared-environment) · [Game setup](https://docs.crowdedkingdoms.com/management-api/game-setup)
 - [Org-managed players: an organization signs its own players in (org tokens, signed assertions, the Org-Managed Players Addendum)](https://docs.crowdedkingdoms.com/management-api/org-managed-players)
+- [Age, country and who may play](https://docs.crowdedkingdoms.com/management-api/age-and-territory): the checks at every sign-up, mint and refresh (TERRITORY_NOT_SUPPORTED, AGE_REQUIRED, AGE_REQUIREMENT_NOT_MET), birthDate/country/parentalConfirmation, recordPlayerAge, the neutral age screen, minPlayerAge, territoryPolicies, managed players' ageYears and country.
+- [Legal documents](https://docs.crowdedkingdoms.com/management-api/legal-documents): the platform's player documents, an app's own (setAppRequiredDocuments, appRequiredDocuments), recordPlayerConsents(appId), extensions.missingDocuments, the developer documents.
 
 ## Game surface (world data + realtime UDP proxy) — same endpoint
 
@@ -40,8 +43,9 @@
 - [GraphQL UDP-proxy API (subscriptions + spatial sends)](https://docs.crowdedkingdoms.com/game-api/graphql-udp-proxy-api)
 - [Host discovery](https://docs.crowdedkingdoms.com/game-api/host-discovery) · [Permissions](https://docs.crowdedkingdoms.com/game-api/permissions) · [Grids & permissions](https://docs.crowdedkingdoms.com/game-api/grids-and-permissions)
 - [Teams](https://docs.crowdedkingdoms.com/game-api/teams) · [Channels](https://docs.crowdedkingdoms.com/game-api/channels) · [Avatar state](https://docs.crowdedkingdoms.com/game-api/avatar-state) · [Actor state](https://docs.crowdedkingdoms.com/game-api/actor-state)
+- [Voice, video, contacts and blocks](https://docs.crowdedkingdoms.com/game-api/communication): per-player send and receive settings per medium, contacts, blocks, parental consent for players under 18, and what the realtime servers refuse or drop · [Safety reports and moderation](https://docs.crowdedkingdoms.com/game-api/safety-reports): fileSafetyReport, moderate_safety, safetyReports, resolve and escalate, what a report preserves
 - [Game Kit (starter hubs on ck-exec and typed clients for them in every SDK)](https://docs.crowdedkingdoms.com/game-kit/intro) · [The kit protocol (messages, action ids, refusal codes, shard keys, realtime events)](https://docs.crowdedkingdoms.com/game-kit/protocol) · [The starter hubs](https://docs.crowdedkingdoms.com/game-kit/starters) · [The clients](https://docs.crowdedkingdoms.com/game-kit/clients) · [Deploying the starters](https://docs.crowdedkingdoms.com/game-kit/deploy) · [Genres and the kit (which starters a kind of game begins from)](https://docs.crowdedkingdoms.com/game-kit/genres) · [The economy and its limits (hub state, not a ledger)](https://docs.crowdedkingdoms.com/game-kit/economy)
-- [ck-exec (your server code: hubs, spokes and players' mods)](https://docs.crowdedkingdoms.com/exec/intro) · [CLIENT halves (a mod's browser code)](https://docs.crowdedkingdoms.com/exec/client-halves) · [From the legacy engines (game models, automations, compute modules, player code)](https://docs.crowdedkingdoms.com/exec/from-the-legacy-engines)
+- [ck-exec (your server code: hubs, spokes and players' mods)](https://docs.crowdedkingdoms.com/exec/intro) · [CLIENT halves (a mod's browser code)](https://docs.crowdedkingdoms.com/exec/client-halves) · [From the legacy engines (game models, automations, compute modules, player code)](https://docs.crowdedkingdoms.com/exec/from-the-legacy-engines) · [Players' data, blocks and reports (the erasure and export hooks, players.blocked, safety.report, age brackets)](https://docs.crowdedkingdoms.com/exec/players-and-safety)
 - [Agentic Crowdy Studio game integration (allowlisted development)](https://docs.crowdedkingdoms.com/game-api/agentic-crowdy-studio): durable sessions/events, bounded host tools, approvals, leases, takeover, and reconnect. Verify the published SDK with `npm view @crowdedkingdoms/crowdyjs dist-tags`. Allowlisted development only; no production or real-money autonomy claim.
 - [GraphQL reference (operations & types)](https://docs.crowdedkingdoms.com/game-api/reference/graphql-overview)
 
@@ -54,6 +58,7 @@
 - [Send and receive](https://docs.crowdedkingdoms.com/replication-api/send-and-receive)
 - [HMAC](https://docs.crowdedkingdoms.com/replication-api/hmac)
 - [Operations & error codes](https://docs.crowdedkingdoms.com/replication-api/operations)
+- [Input logging and the safety log](https://docs.crowdedkingdoms.com/replication-api/input-logging): recording what clients send, reading it back, the voice and video switches, and the safety log an app that admits players under 18 keeps
 - [Best practices](https://docs.crowdedkingdoms.com/replication-api/best-practices)
 - [Troubleshooting](https://docs.crowdedkingdoms.com/replication-api/troubleshooting)
 - [Load testing your integration (open-source cks-loadtest)](https://docs.crowdedkingdoms.com/replication-api/load-testing)

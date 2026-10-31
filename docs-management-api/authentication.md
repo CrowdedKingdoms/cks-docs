@@ -213,7 +213,13 @@ Two behaviours to code against, because both are easy to meet by accident:
   `LEGAL_ACCEPTANCE_REQUIRED` before any account exists. A request with no
   `Origin` may omit them, but no gameplay token is issued until they are recorded
   with `recordPlayerConsents`. See
-  [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+  [Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
+- **`register` takes the player's birth date and country** (`birthDate`, `country`, and
+  `parentalConfirmation` under 18; Game API v2.60.0). Every sign-up is refused
+  `TERRITORY_NOT_SUPPORTED` from a country Crowded Kingdoms does not serve, and one whose birth
+  date is too young `AGE_REQUIREMENT_NOT_MET`, before any account exists. When Crowded Kingdoms
+  opens to players 13 and over, a browser sign-up must give the birth date, and the attestation
+  is no longer asked. See [Signing up](/management-api/age-and-territory#signing-up).
 
 ## Managing passwords
 

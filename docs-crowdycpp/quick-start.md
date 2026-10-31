@@ -53,7 +53,7 @@ if (!identity.auth().playerLegalAcceptance()) {
 }
 ```
 
-See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-age-and-country).
 
 ## 2. App token and per-game client
 

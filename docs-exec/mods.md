@@ -97,6 +97,10 @@ a call, 20 calls a second, and a module of at most 4 MiB.
 - **Nothing else**: a mod calls no other node, subscribes to no topic, and sends no realtime
   events. Only players call it.
 
+Like the app's own hubs, a mod hears a player's erasure and data export (`on_player_erased`,
+`on_player_export`), even while it is switched off: a mod that keeps anything about the players
+who visit implements them. See [players' data, blocks and reports](players-and-safety).
+
 ## CLIENT halves
 
 A mod can carry one **CLIENT half**: WebAssembly built on the platform from a

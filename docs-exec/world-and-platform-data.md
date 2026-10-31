@@ -7,8 +7,9 @@ title: World and platform data
 
 A hub or spoke reads and writes the platform's own data through the **node API**. This covers
 the world's chunks and voxels, who is standing where, grids and their permissions, players' access
-to the app, and players' tier features, group permissions and app state. Every operation works
-inside the instance's own app.
+to the app, players' tier features, group permissions and app state, blocks between players, and
+safety reports. Every operation works inside the instance's own app. What your hubs must do when a
+player's account is erased is on [players' data, blocks and reports](players-and-safety).
 
 ## Scopes
 
@@ -25,7 +26,7 @@ A node type asks for what it needs in the manifest. Its instances can use only t
 
 | Scope | What it allows |
 |---|---|
-| `players.read` | A player's identity (players in the app now), tier features, group membership and permissions, and app state; an avatar's app state. |
+| `players.read` | A player's identity (players in the app now) and age bracket, tier features, group membership and permissions, app state, and whether two players have blocked each other; an avatar's app state. |
 | `players.write` | Replacing a player's app state (players with access to the app). |
 | `world.read` | Chunks, the voxels written into them (with who wrote each), and the actors in or near a chunk. |
 | `world.write` | Writing voxels and a chunk's state. |
@@ -34,6 +35,7 @@ A node type asks for what it needs in the manifest. Its instances can use only t
 | `permissions.write` | Granting and revoking grid permissions. |
 | `access.read` | A player's access to the app: status, tier, expiry and suspension (ck-exec 0.15). |
 | `access.write` | Granting, revoking and suspending a player's access to the app (ck-exec 0.15). |
+| `safety.write` | Filing a safety report for a player about another (ck-exec 0.20.0). |
 
 `grids.write` and `access.write` give your code what an app admin can do in Studio over grids and
 players' access, for your app only; declare them only on types that need them. Players'
@@ -76,7 +78,8 @@ fn plant(ctx: &Ctx, at: ChunkPos, player: u64) -> Result<()> {
 | `ctx.grids().set_open_permissions(grid, &keys)` | `grids.write` | Grants keys on a grid to every player with access, as `setGridOpenPermissions` does: never a player-code key or the world grid, at most 32 open grids per app; an empty list closes it. |
 | `ctx.grids().at(at, pick)` | `grids.read` | The grid covering a chunk. Where grids nest, `Smallest` is the most specific one (the smallest box; of equal boxes, the lowest id), the grid that decides voxel writes there; `First` is the lowest id and `Largest` the biggest box. |
 | `ctx.grids().check_permission(grid, player, key)` | `grids.read` | Whether the player holds the key on the grid, directly or through a group, unexpired. |
-| `ctx.players().get(player)` | `players.read` | Gamertag and disambiguation (`Option`: most players have none), for players in the app now. |
+| `ctx.players().get(player)` | `players.read` | Gamertag and disambiguation (`Option`: most players have none), for players in the app now, and the player's age bracket (`age_bracket`, ckx-sdk 0.13.0; see [age brackets](players-and-safety#age-brackets)). |
+| `ctx.players().blocked(player, other)` | `players.read` | Whether either player has blocked the other in the app. Check it before your code carries one player's words to another: see [blocks](players-and-safety#blocks) (ckx-sdk 0.13.0). |
 | `ctx.players().features(player)` | `players.read` | The feature keys the player's access tier grants. |
 | `ctx.players().check_permission(player, group, key)` | `players.read` | Membership of one of the app's groups (teams, channels), or a permission within it. |
 | `ctx.players().state(player)` / `set_state(player, bytes)` | `players.read` / `players.write` | The player's app state, the same blob game clients read with CrowdyJS `client.state` (up to 256 KiB). |
@@ -87,6 +90,7 @@ fn plant(ctx: &Ctx, at: ChunkPos, player: u64) -> Result<()> {
 | `ctx.access().grant(player, tier)` | `access.write` | Grants access, on one of the app's tiers when named. |
 | `ctx.access().revoke(player)` | `access.write` | Revokes access, as `revokeAppAccess` does: the player's realtime and ck-exec sessions end at once (code `4403`), their mods in the app stop, and their calls into the app are refused. |
 | `ctx.access().suspend(player, seconds)` / `unsuspend(player)` | `access.write` | A ban that lifts by itself, 1 second to 365 days, with the same cut as a revoke; signing in is refused with `ACCESS_SUSPENDED` until then. Returns when it ends. |
+| `ctx.safety().report(&report)` | `safety.write` | Files a [safety report](players-and-safety#reports) for one of the app's players about another; returns its `report_id` (ckx-sdk 0.13.0). |
 
 Grid and access changes reach every Game API server within a moment. The realtime layer holds a
 grid decision for up to 15 seconds; suspensions and revocations end the player's sessions there at

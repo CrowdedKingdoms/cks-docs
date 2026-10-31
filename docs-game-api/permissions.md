@@ -99,9 +99,9 @@ Grid and tier permissions use these runtime keys:
 | `access` | Entering / moving / sending events in an area |
 | `teleport` | Teleporting within the app (wire enforcement may depend on the client path) |
 | `update_voxel_data` | Editing voxels (building) |
-| `use_voice_chat` | Voice audio |
+| `use_voice_chat` | Voice audio. From the replication server release after v0.42.0, hearing it too. |
 | `use_text_chat` | Nearby text (`sendTextPacket`, opcode 136) and channel messages (`sendChannelMessage`, `sendRangedChannelMessage`; opcodes 17 and 32). In every tier that grants `access` unless you pass `applyCommunicationDefaults: false`. Bit index **10**; app-level only (`appliesToGrid` false). |
-| `use_direct_messages` | Messages to one player (`sendSingleActorMessage`, opcode 142). In every tier that grants `access` unless you pass `applyCommunicationDefaults: false`. Bit index **11**; app-level only. |
+| `use_direct_messages` | Messages to one player (`sendSingleActorMessage`, opcode 142). In every tier that grants `access` unless you pass `applyCommunicationDefaults: false`. Bit index **11**; app-level only. From the replication server release after v0.42.0 a player under 18 never holds it, whatever the tier. |
 | `use_video_chat` | Webcam video (`sendVideoPacket` / wire opcode 143). **Opt-in:** not in a new app's default tier, because every receiver in range pays the egress for every frame — grant it on a tier deliberately. Bit index **9**; `appliesToApp` and `appliesToGrid` both true. |
 | `write_server_code` | Authoring/deploying server code in owned grids |
 | `run_server_code` | Running admitted server code in owned grids |
@@ -163,7 +163,10 @@ inside a grid where the sender holds that key. A player without `access` to a
 region can't act there, building requires `update_voxel_data`, voice requires
 `use_voice_chat`, text and channel messages require `use_text_chat` on the app, and
 messages to one player require `use_direct_messages` on the app; anything else is
-rejected with `UNAUTHORIZED`. Building is
+rejected with `UNAUTHORIZED`. From the replication server release after v0.42.0 the receiving
+side is checked too: voice, video, text and direct messages reach only players who hold the
+matching key, and each player's [voice and video settings, contacts and blocks](communication)
+decide the rest. Building is
 checked against the chunk's **most specific** covering grid only (the smallest
 box; of equal boxes, the lowest `gridId`), and against the app's
 [wilderness](grids-and-permissions#wilderness) setting when that grid is the
@@ -188,6 +191,8 @@ a chunk) to see exactly what a player has where.
 - [Teams](teams) — teams, roles, delegation, and assigning teams to grids.
 - [Channels](channels) — app-wide message channels, the `send_messages` role,
   and publishing/receiving channel messages over the realtime UDP path.
+- [Voice, video, contacts and blocks](communication) — each player's settings, contacts and
+  blocks, and the defaults for players under 18.
 - [Mods](/exec/mods) — players' server code on grids they own, the code keys
   it needs, and the app's code admission.
 - [Avatar state](avatar-state) and [Actor state](actor-state) — owner-exclusive

@@ -58,7 +58,7 @@ without `await`.
    linking each document, then call `auth.record_player_consents` as above.
    `auth.register(..., accept_legal=True, attest_age_of_majority=True)` creates
    an account that starts accepted. See
-   [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+   [Terms and age of majority](/management-api/portals-and-app-tokens#terms-age-and-country).
 3. Build one identity client and one client per game. The game client points
    at the app's datacenter (`game_api_url`), and `discovery_url` lets it find
    the app again if that instance stops answering.
