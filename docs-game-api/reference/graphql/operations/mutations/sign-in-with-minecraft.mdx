@@ -1,0 +1,39 @@
+---
+id: sign-in-with-minecraft
+title: signInWithMinecraft
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Sign a Minecraft player in to one of Crowded Kingdoms' own apps, as a player its organization manages (no Crowded Kingdoms account): the same app token mintManagedPlayerToken returns, refreshed with refreshAppToken. ck-api asks Mojang whether `username` joined with `serverId` (minecraftChallenge) and admits the player only on a yes; the player is identified by its Minecraft account, not its name. Refusals: MINECRAFT&#x005F;VERIFICATION&#x005F;FAILED (extensions.reason: malformed, forged, expired, not&#x005F;joined, replayed: start again from minecraftChallenge), MINECRAFT&#x005F;VERIFICATION&#x005F;UNAVAILABLE (Mojang did not answer; retryable), TERRITORY&#x005F;NOT&#x005F;SUPPORTED (the declared country or the network's), AGE&#x005F;REQUIREMENT&#x005F;NOT&#x005F;MET (under 13, or under the app's or the country's minimum age), LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED (acceptedDocuments misses one in extensions.missingDocuments), and ORG&#x005F;LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED for an organization that has not accepted the Org-Managed Players Addendum. The accepted documents are recorded with method IN&#x005F;GAME. Public; rate-limited per address.
+
+
+```graphql
+signInWithMinecraft(
+  input: SignInWithMinecraftInput!
+): AppTokenResponse!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>signInWithMinecraft.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SignInWithMinecraftInput!</b></code>](/reference/graphql/types/inputs/sign-in-with-minecraft-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AppTokenResponse</b></code>](/reference/graphql/types/objects/app-token-response.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A short-lived, app-scoped gameplay token (Overworld portal). Confined to a single app: usable only against that app's Game API + Buddy realtime surface (plus read-only `me` and same-app `refreshAppToken`). It CANNOT perform management operations and CANNOT mint tokens for other apps, so a game stack that receives it never gets the player's full identity session.

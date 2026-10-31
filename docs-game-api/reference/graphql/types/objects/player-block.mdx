@@ -1,0 +1,43 @@
+---
+id: player-block
+title: PlayerBlock
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A player the caller blocked in the app. Nothing of any kind passes between the two, either way, while the block stands; the blocked player is not told.
+
+
+```graphql
+type PlayerBlock {
+  userId: BigInt!
+  createdAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerBlock.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The blocked player.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerBlock.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #created-at */} 
+When it was blocked.
+
+
+
+
+### Returned By
+
+[`blockPlayer`](/reference/graphql/operations/mutations/block-player.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`myBlocks`](/reference/graphql/operations/queries/my-blocks.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

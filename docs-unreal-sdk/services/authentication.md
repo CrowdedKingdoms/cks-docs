@@ -162,7 +162,7 @@ A server can disable or rename a provider; a hard-coded button then opens a cons
 
 ## Let the player agree to the terms
 
-The server hands out no gameplay token until the signed-in player has agreed to the current terms and confirmed they are at least 18, or the age of majority where they live if that is higher. A new version of a document asks again. What the server requires and how it is stored is on [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority); this section is what the SDK does about it and what you can change.
+The server hands out no gameplay token until the signed-in player has agreed to the current terms and confirmed they are at least 18, or the age of majority where they live if that is higher. A new version of a document asks again. What the server requires and how it is stored is on [Terms and age of majority](/management-api/portals-and-app-tokens#terms-age-and-country); this section is what the SDK does about it and what you can change.
 
 ### What the player sees by default
 

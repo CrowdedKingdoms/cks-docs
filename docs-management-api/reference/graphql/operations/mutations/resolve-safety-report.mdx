@@ -1,0 +1,49 @@
+---
+id: resolve-safety-report
+title: resolveSafetyReport
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Resolve an open report with its outcome: its preserved copy is deleted and the legal hold its reported account got on deletion, if any, is released (a deferred erasure then resumes). Resolving it again changes nothing; an escalated report cannot be resolved (BAD&#x005F;REQUEST). Requires 'moderate&#x005F;safety' on the app (an org role, or the org's admins); super admins bypass. Send the identity session to the app's datacenter.
+
+
+```graphql
+resolveSafetyReport(
+  appId: BigInt!
+  reportId: BigInt!
+  outcome: String!
+): SafetyReport!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>resolveSafetyReport.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>resolveSafetyReport.<b>reportId</b></code>](#report-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #report-id */} 
+The report.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>resolveSafetyReport.<b>outcome</b></code>](#outcome)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #outcome */} 
+What was decided and done (at most 1,000 characters).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>SafetyReport</b></code>](/reference/graphql/types/objects/safety-report.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A report about a player, filed by another player (fileSafetyReport) or by the app’s hub (the node API’s safety.report). Moderators (moderate&#x005F;safety on the app) read and decide it.

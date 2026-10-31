@@ -1,0 +1,39 @@
+---
+id: my-contacts
+title: myContacts
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The caller’s accepted contacts in the app, most recent first (at most 1,000). Contacts are mutual, per app, and what a CONTACTS scope admits. Game plane: send the app-scoped token for this app to the app’s datacenter.
+
+
+```graphql
+myContacts(
+  appId: BigInt!
+): [PlayerContact!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>myContacts.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerContact</b></code>](/reference/graphql/types/objects/player-contact.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Another player in the caller’s contacts list for the app. Contacts are mutual: an accepted contact is in both players’ lists, and it is what a CONTACTS scope admits.

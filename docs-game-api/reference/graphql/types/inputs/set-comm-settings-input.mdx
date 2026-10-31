@@ -1,0 +1,53 @@
+---
+id: set-comm-settings-input
+title: SetCommSettingsInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The player’s choices; a field left out keeps its current choice. A choice above what policy allows is kept and takes effect only up to the cap (see CommSettings.voiceAllowed), so a player can only ever lower what it sends and receives.
+
+
+```graphql
+input SetCommSettingsInput {
+  voiceSend: CommScope
+  voiceReceive: CommScope
+  videoSend: CommScope
+  videoReceive: CommScope
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCommSettingsInput.<b>voiceSend</b></code>](#voice-send)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CommScope</b></code>](/reference/graphql/types/enums/comm-scope.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #voice-send */} 
+Whom the player’s voice may reach.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCommSettingsInput.<b>voiceReceive</b></code>](#voice-receive)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CommScope</b></code>](/reference/graphql/types/enums/comm-scope.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #voice-receive */} 
+Whose voice the player may hear.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCommSettingsInput.<b>videoSend</b></code>](#video-send)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CommScope</b></code>](/reference/graphql/types/enums/comm-scope.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #video-send */} 
+Whom the player’s video may reach.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetCommSettingsInput.<b>videoReceive</b></code>](#video-receive)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CommScope</b></code>](/reference/graphql/types/enums/comm-scope.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #video-receive */} 
+Whose video the player may see.
+
+
+
+
+### Member Of
+
+[`setMyCommSettings`](/reference/graphql/operations/mutations/set-my-comm-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

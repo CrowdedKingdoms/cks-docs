@@ -52,6 +52,54 @@ Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-31-sd
 - **Audio that is not the microphone**, for C++: `FeedVoicePcm` sends it through the microphone's own
   gate and encoder.
 
+## 2026-10-30 (dev: players under 18 and player safety)
+
+On the dev environment: Game API v2.60.0, and ck-exec 0.20.0 with `ckx-sdk` 0.13.0 and the dev
+kit 0.6.0. Crowded Kingdoms opens to players aged 13 to 17 at one moment, once this baseline is
+live in production; until then every player is 18 or older. See
+[Players under 18 and player safety](/overview/player-safety).
+
+- **Breaking, for every player: countries Crowded Kingdoms does not serve are refused.** Every
+  sign-up, mint and refresh checks the country the player gave, the one their connection comes
+  from, or the one their organization sends, and answers `TERRITORY_NOT_SUPPORTED`.
+  `territoryPolicies` lists them. See [Countries](/management-api/age-and-territory#countries).
+- **Age:** `register` takes `birthDate`, `country` and `parentalConfirmation`; `recordPlayerAge`
+  gives an account its age once; `me { ageBracket country }`; managed players carry `ageYears` and
+  `country`, on `mintManagedPlayerToken` and as assertion claims; `App.minPlayerAge` and
+  `effectiveMinPlayerAge`. New codes `AGE_REQUIRED` and `AGE_REQUIREMENT_NOT_MET`. See
+  [Age, country and who may play](/management-api/age-and-territory).
+- **Documents:** an app's own required documents (`setAppRequiredDocuments`,
+  `appRequiredDocuments`); `playerLegalDocuments`; `recordPlayerConsents` takes `appId` and
+  `method`, and `attestAgeOfMajority` is optional in the schema (still required until the
+  opening); `playerLegalAcceptance(appId)`; `LEGAL_ACCEPTANCE_REQUIRED` lists
+  `extensions.missingDocuments`; the developer documents (`developerLegalDocuments`,
+  `recordDeveloperConsents`, `developerLegalAcceptance`), empty until the opening. See
+  [Legal documents](/management-api/legal-documents).
+- **Communication:** voice and video settings per player and app (`myCommSettings`,
+  `setMyCommSettings`), contacts, blocks, and `requestParentalConsent` through Kids Web Services;
+  `SOCIAL_LIMIT_REACHED` and `PARENTAL_CONSENT_UNAVAILABLE`. The replication server release after
+  v0.42.0, not released yet, enforces them, and checks every receiving player's permission keys
+  too: a tier without `use_voice_chat` will no longer hear voice. See
+  [Voice, video, contacts and blocks](/game-api/communication).
+- **The safety log:** `replayLoggingRecordsVoice` and `replayLoggingRecordsVideo` (the media switch
+  sets both), `App.recording` for the notice and the indicator, and `SAFETY_LOG_REQUIRED` on an app
+  that admits players under 18. See [the safety log](/replication-api/input-logging#the-safety-log).
+- **Reports:** `fileSafetyReport`; the organization permission `moderate_safety`; `safetyReports`,
+  `resolveSafetyReport` and `escalateSafetyReport`; each report preserves both players' recorded
+  sessions, accounts and hub data; deleting a reported account sets a legal hold. See
+  [Safety reports and moderation](/game-api/safety-reports).
+- **Account deletion** also erases the player's communication settings, contacts and blocks, and
+  what the app's ck-exec hubs hold of them.
+- **ck-exec 0.20.0, `ckx-sdk` 0.13.0:** `Hub::on_player_erased` and `Hub::on_player_export`,
+  `ctx.players().blocked`, `ctx.safety().report` with the scope `safety.write`, `age_bracket` on
+  `players.get`, and `TestHub::erase` and `export`, in the dev kit from 0.6.0. See
+  [Players' data, blocks and reports](/exec/players-and-safety).
+- **Minecraft sign-in** for Crowded Kingdoms' own apps: `minecraftChallenge` and
+  `signInWithMinecraft`, with `MINECRAFT_VERIFICATION_FAILED` and
+  `MINECRAFT_VERIFICATION_UNAVAILABLE`.
+- The SDKs do not wrap the new fields yet; call them as GraphQL from any of them.
+- Every new code is on [Error codes](/overview/error-codes).
+
 ## 2026-10-30 (Unreal SDK v2.22.0: voice chat on the shared voice format; no flicks after a hitch; UX fixes)
 
 Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-30-sdk-v2220).
@@ -1030,7 +1078,7 @@ Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-10-07-sd
     `playerLegalAcceptance` says whether that is still needed.
   - A browser `register` must send `acceptLegal` and `attestAgeOfMajority`.
 
-  See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+  See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-age-and-country).
 - **CrowdyJS 18.4.0** (dev): `client.auth.recordPlayerConsents`,
   `client.auth.playerLegalAcceptance`, the two fields on `auth.register`, and
   `isLegalAcceptanceRequiredError`.

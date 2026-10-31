@@ -1,0 +1,68 @@
+---
+id: safety-report-reason
+title: SafetyReportReason
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Why a player is reported. CHILD&#x005F;SAFETY reports come first in the moderation queue.
+
+
+```graphql
+enum SafetyReportReason {
+  CHILD_SAFETY
+  HARASSMENT
+  SEXUAL_CONTENT
+  HATE
+  SELF_HARM
+  CHEATING
+  OTHER
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportReason.<b>CHILD&#x005F;SAFETY</b></code>](#child-safety) {/* #child-safety */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportReason.<b>HARASSMENT</b></code>](#harassment) {/* #harassment */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportReason.<b>SEXUAL&#x005F;CONTENT</b></code>](#sexual-content) {/* #sexual-content */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportReason.<b>HATE</b></code>](#hate) {/* #hate */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportReason.<b>SELF&#x005F;HARM</b></code>](#self-harm) {/* #self-harm */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportReason.<b>CHEATING</b></code>](#cheating) {/* #cheating */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportReason.<b>OTHER</b></code>](#other) {/* #other */} 
+
+
+
+
+
+### Member Of
+
+[`FileSafetyReportInput`](/reference/graphql/types/inputs/file-safety-report-input.mdx)  <Badge class="badge badge--secondary badge--relation" text="input"/><Bullet />[`SafetyReport`](/reference/graphql/types/objects/safety-report.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

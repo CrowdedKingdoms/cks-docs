@@ -76,6 +76,12 @@ Every machine-readable index is at [`/llms.txt`](pathname:///llms.txt).
   the [Org-Managed Players Addendum](https://crowdedkingdoms.com/managed-players-addendum.html)
   in Studio. Until then those calls answer `ORG_LEGAL_ACCEPTANCE_REQUIRED`, which neither the
   player nor a retry can fix. See [Org-managed players](/management-api/org-managed-players).
+- **Who may play (Game API v2.60.0):** every sign-up, mint and refresh checks the player's
+  country, then their age, then their documents: `TERRITORY_NOT_SUPPORTED`, `AGE_REQUIRED`,
+  `AGE_REQUIREMENT_NOT_MET`, and `LEGAL_ACCEPTANCE_REQUIRED` with `extensions.missingDocuments`.
+  None is fixed by retrying, and an age refusal is shown to the player without naming an age.
+  Crowded Kingdoms opens to players 13 and over at one moment; until then every player is 18 or
+  older. See [Players under 18 and player safety](/overview/player-safety).
 - **`BigInt`** is transmitted as a **decimal string** in both directions (e.g. `"123"`),
   never a JSON number — this avoids precision loss. IDs (`appId`, `orgId`, `userId`) are
   `BigInt`.

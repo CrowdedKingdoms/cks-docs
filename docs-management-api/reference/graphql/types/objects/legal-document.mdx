@@ -1,0 +1,58 @@
+---
+id: legal-document
+title: LegalDocument
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A document players (or developers) accept: its id, the version currently required, its title and where to read it. appId is set for an app’s own document and null for the platform’s.
+
+
+```graphql
+type LegalDocument {
+  documentId: String!
+  version: String!
+  title: String!
+  url: String!
+  appId: BigInt
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>LegalDocument.<b>documentId</b></code>](#document-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #document-id */} 
+Stable id, such as 'player-terms' or an app's 'rules'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LegalDocument.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #version */} 
+The version currently required, usually the page’s date. A new version asks every player again at their next mint.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LegalDocument.<b>title</b></code>](#title)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #title */} 
+Title to show the player.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LegalDocument.<b>url</b></code>](#url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #url */} 
+https URL where the document can be read.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LegalDocument.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app whose own document this is (BigInt as a decimal string); null for a platform document.
+
+
+
+
+### Returned By
+
+[`appRequiredDocuments`](/reference/graphql/operations/queries/app-required-documents.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`developerLegalDocuments`](/reference/graphql/operations/queries/developer-legal-documents.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`playerLegalDocuments`](/reference/graphql/operations/queries/player-legal-documents.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setAppRequiredDocuments`](/reference/graphql/operations/mutations/set-app-required-documents.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

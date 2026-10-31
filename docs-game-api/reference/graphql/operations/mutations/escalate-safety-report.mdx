@@ -1,0 +1,49 @@
+---
+id: escalate-safety-report
+title: escalateSafetyReport
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Record that an open report was submitted to NCMEC's CyberTipline, under the CyberTipline report's id: its preserved copy is kept under COMPLIANCE retention for a year from now (nobody can delete it sooner), and the reported account's legal hold, if any, for as long. Escalating it again under the same id changes nothing; under another id is CONFLICT; a resolved report cannot be escalated (BAD&#x005F;REQUEST). Requires 'moderate&#x005F;safety' on the app (an org role, or the org's admins); super admins bypass. Send the identity session to the app's datacenter.
+
+
+```graphql
+escalateSafetyReport(
+  appId: BigInt!
+  reportId: BigInt!
+  ncmecReportId: String!
+): SafetyReport!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>escalateSafetyReport.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>escalateSafetyReport.<b>reportId</b></code>](#report-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #report-id */} 
+The report.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>escalateSafetyReport.<b>ncmecReportId</b></code>](#ncmec-report-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #ncmec-report-id */} 
+The CyberTipline report id NCMEC gave the submission.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>SafetyReport</b></code>](/reference/graphql/types/objects/safety-report.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A report about a player, filed by another player (fileSafetyReport) or by the app’s hub (the node API’s safety.report). Moderators (moderate&#x005F;safety on the app) read and decide it.

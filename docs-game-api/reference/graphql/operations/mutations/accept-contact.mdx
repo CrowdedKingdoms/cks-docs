@@ -1,0 +1,44 @@
+---
+id: accept-contact
+title: acceptContact
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Accept another player’s contact request: both become each other’s contacts, and both players’ live sessions learn it within a second. NOT&#x005F;FOUND when that player has not asked. Game plane: send the app-scoped token for this app to the app’s datacenter.
+
+
+```graphql
+acceptContact(
+  appId: BigInt!
+  userId: BigInt!
+): PlayerContact!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>acceptContact.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>acceptContact.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The player whose request to accept.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerContact</b></code>](/reference/graphql/types/objects/player-contact.mdx) <Badge class="badge badge--secondary " text="object"/> 
+Another player in the caller’s contacts list for the app. Contacts are mutual: an accepted contact is in both players’ lists, and it is what a CONTACTS scope admits.

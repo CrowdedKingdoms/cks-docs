@@ -1,0 +1,44 @@
+---
+id: set-app-required-documents
+title: setAppRequiredDocuments
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set the documents the app's players accept before playing, replacing the list: documents not named stop being required, and a new version of one asks every player of the app again at their next mint or refresh (LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED until they accept it). At most 10; ids may not reuse the platform's. Requires the 'manage&#x005F;apps' permission on the app; super admins bypass.
+
+
+```graphql
+setAppRequiredDocuments(
+  appId: BigInt!
+  documents: [AppRequiredDocumentInput!]!
+): [LegalDocument!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setAppRequiredDocuments.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app (BigInt as a decimal string).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setAppRequiredDocuments.<b>documents</b></code>](#documents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AppRequiredDocumentInput!]!</b></code>](/reference/graphql/types/inputs/app-required-document-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #documents */} 
+The complete list of documents the app requires.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>LegalDocument</b></code>](/reference/graphql/types/objects/legal-document.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A document players (or developers) accept: its id, the version currently required, its title and where to read it. appId is set for an app’s own document and null for the platform’s.

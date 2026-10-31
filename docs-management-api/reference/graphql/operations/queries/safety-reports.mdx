@@ -1,0 +1,49 @@
+---
+id: safety-reports
+title: safetyReports
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The app's safety reports, newest first, with open CHILD&#x005F;SAFETY reports ahead of the rest; only those with the given status if one is given. At most `first` (default 50, at most 200). Requires 'moderate&#x005F;safety' on the app (an org role, or the org's admins); super admins bypass. Send the identity session to the app's datacenter.
+
+
+```graphql
+safetyReports(
+  appId: BigInt!
+  status: SafetyReportStatus
+  first: Int = 50
+): [SafetyReport!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>safetyReports.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>safetyReports.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SafetyReportStatus</b></code>](/reference/graphql/types/enums/safety-report-status.mdx) <Badge class="badge badge--secondary " text="enum"/> {/* #status */} 
+Only reports with this status.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>safetyReports.<b>first</b></code>](#first)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #first */} 
+How many (1 to 200).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>SafetyReport</b></code>](/reference/graphql/types/objects/safety-report.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A report about a player, filed by another player (fileSafetyReport) or by the app’s hub (the node API’s safety.report). Moderators (moderate&#x005F;safety on the app) read and decide it.

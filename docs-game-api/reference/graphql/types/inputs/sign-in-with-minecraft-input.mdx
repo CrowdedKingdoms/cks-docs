@@ -1,0 +1,68 @@
+---
+id: sign-in-with-minecraft-input
+title: SignInWithMinecraftInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A Minecraft player signing in to one of Crowded Kingdoms’ own apps (signInWithMinecraft).
+
+
+```graphql
+input SignInWithMinecraftInput {
+  appId: BigInt!
+  username: String!
+  serverId: String!
+  birthDate: String!
+  country: String!
+  parentalConfirmation: Boolean
+  acceptedDocuments: [AcceptedDocumentInput!]!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SignInWithMinecraftInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app (BigInt as a decimal string): the one minecraftChallenge was asked for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SignInWithMinecraftInput.<b>username</b></code>](#username)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #username */} 
+The Minecraft account name the client is signed in with (1-16 letters, digits and underscores).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SignInWithMinecraftInput.<b>serverId</b></code>](#server-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #server-id */} 
+The serverId from minecraftChallenge, after the client joined it through Mojang’s session service.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SignInWithMinecraftInput.<b>birthDate</b></code>](#birth-date)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #birth-date */} 
+The player’s birth date, YYYY-MM-DD (YYYY-MM is accepted too), from the mod’s age screen. Only the age bracket is kept, counted from the last day of the month.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SignInWithMinecraftInput.<b>country</b></code>](#country)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #country */} 
+The country the player lives in: ISO 3166-1 alpha-2, such as US.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SignInWithMinecraftInput.<b>parentalConfirmation</b></code>](#parental-confirmation)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #parental-confirmation */} 
+True when a player under 18 confirms that a parent or guardian agreed. Required true under 18; ignored at 18 or over.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SignInWithMinecraftInput.<b>acceptedDocuments</b></code>](#accepted-documents)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[AcceptedDocumentInput!]!</b></code>](/reference/graphql/types/inputs/accepted-document-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #accepted-documents */} 
+The documents the player accepted in game: every one playerLegalDocuments and appRequiredDocuments(appId) name, at those versions. They are recorded with method IN&#x005F;GAME.
+
+
+
+
+### Member Of
+
+[`signInWithMinecraft`](/reference/graphql/operations/mutations/sign-in-with-minecraft.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

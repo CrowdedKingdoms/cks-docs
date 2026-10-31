@@ -74,8 +74,9 @@ fn a_visitor_is_welcomed() {
   starts a spoke. `call` and `call_typed` call it as a player, a developer or another instance.
   `advance` and `advance_to` move the test's clock, and each timer that falls due on the way runs
   as the platform runs it. `topic`, `presence`, `session` and `world` deliver the platform's
-  events. `persist` takes the snapshot, `restart` starts the hub again from it, and `upgrade`
-  loads it into your next version.
+  events, and since kit 0.6.0 (`ckx-sdk` 0.13.0) `erase` and `export` deliver a player's
+  [erasure and data export](players-and-safety). `persist` takes the snapshot, `restart` starts the
+  hub again from it, and `upgrade` loads it into your next version.
 - **Observe.** `logs`, `published`, `calls`, `sent`, `emitted`, `node_requests`, `watching`,
   `timers` and `persist_asked` say what the node did.
 - **Answer.** For an app's own hubs and spokes, `answer_calls(type, …)` scripts what other types

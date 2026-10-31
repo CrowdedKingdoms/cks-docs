@@ -39,24 +39,35 @@ sign-in on the CK GraphQL API — email + password, magic link, or social. Brief
 is in **[Sign in](/management-api/authentication)**. Hold the
 session token on your identity origin and mint app tokens from it as below.
 
-## Terms and age of majority
+<a id="terms-and-age-of-majority"></a>
 
-No gameplay token is issued until the player has agreed to the current required
-legal documents — the [Game Terms](https://crowdedkingdoms.com/game-terms.html),
+## Terms, age and country
+
+No gameplay token is issued to a player Crowded Kingdoms may not admit. Every mint, refresh
+and hosted sign-in checks the player's country, then their age, then the documents they have
+accepted (Game API v2.60.0): see [Age, country and who may play](/management-api/age-and-territory)
+for the first two, which answer `TERRITORY_NOT_SUPPORTED`, `AGE_REQUIRED` and
+`AGE_REQUIREMENT_NOT_MET`, and [Legal documents](/management-api/legal-documents) for the third,
+including documents of your app's own.
+
+Until Crowded Kingdoms opens to players 13 and over, the documents are the
+[Game Terms](https://crowdedkingdoms.com/game-terms.html),
 [API Terms](https://crowdedkingdoms.com/api-terms.html),
 [SDK Developer Terms](https://crowdedkingdoms.com/sdk-terms.html),
 [Free Tier and Billing Basis](https://crowdedkingdoms.com/billing-basis.html) and
-[Overworld Privacy Policy](https://crowdedkingdoms.com/overworld-privacy.html) — and
-attested that they are at least 18, or the age of majority where they live if that is
+[Overworld Privacy Policy](https://crowdedkingdoms.com/overworld-privacy.html), and the player
+also attests that they are at least 18, or the age of majority where they live if that is
 higher. Until both are stored, `mintAppToken`, `createPortalAuthorizationCode` and
-`refreshAppToken` answer **`LEGAL_ACCEPTANCE_REQUIRED`** (403). ck-api v2.35.0.
+`refreshAppToken` answer **`LEGAL_ACCEPTANCE_REQUIRED`** (403), listing what is missing in
+`extensions.missingDocuments`. ck-api v2.35.0. From the opening the documents are the Player
+Terms and the Player Privacy Policy, and the age comes from the player's birth date.
 
 - **A browser game on its own domain** does nothing new: Studio's hosted `/authorize`
-  asks for both before it issues the code. When a refresh is refused this way, retrying
-  cannot succeed; send the player back through hosted sign-in. That also happens when
-  a required document gets a new version.
-- **A native or first-party client** shows its own two checkboxes, linking each
-  document, and records the player's answer with the session token:
+  asks for the platform's documents before it issues the code. When a refresh is refused
+  this way, retrying cannot succeed; send the player back through hosted sign-in. That also
+  happens when a required document gets a new version.
+- **A native or first-party client** shows its own checkboxes, linking each document, and
+  records the player's answer with the session token:
 
 ```graphql
 query Accepted { playerLegalAcceptance }            # false: ask before minting
@@ -66,12 +77,14 @@ mutation Accept {
 }
 ```
 
-Both arguments must be `true`, and repeating the call is harmless. It records the
-player's own agreement, so call it only after they ticked both boxes. `register`
-takes the same two fields (`acceptLegal`, `attestAgeOfMajority`): a browser request
-must send both, and the account starts accepted. A request with no browser origin may
-omit them and record them before its first mint. The SDKs wrap both calls (CrowdyJS
-`client.auth.recordPlayerConsents` / `playerLegalAcceptance`, and
+`acceptLegal` must be `true`, and so must `attestAgeOfMajority` until the opening; after it,
+the attestation is ignored. Pass the app's `appId` to record its own documents too. Repeating
+the call is harmless. It records the player's own agreement, so call it only after they ticked
+the boxes. `register` takes the same fields, and the birth date and country
+([Signing up](/management-api/age-and-territory#signing-up)): a browser request must send
+`acceptLegal` and `attestAgeOfMajority`, and the account starts accepted. A request with no
+browser origin may omit them and record them before its first mint. The SDKs wrap both calls
+(CrowdyJS `client.auth.recordPlayerConsents` / `playerLegalAcceptance`, and
 `isLegalAcceptanceRequiredError` for the refusal).
 
 ## Minting an app token
@@ -250,7 +263,7 @@ Send the current app token as the Bearer. Switching to a **different** app alway
 goes back through the identity origin (hosted sign-in, or your launcher) for a fresh
 per-app token. A refresh refused with
 `LEGAL_ACCEPTANCE_REQUIRED` needs the player's consents first
-([above](#terms-and-age-of-majority)).
+([above](#terms-age-and-country)).
 
 **Native clients that hold a UDP session:** pass `currentServer` (the `ip4` +
 `clientPort` that `serverWithLeastClients` gave you) and read `authorizedServer`
@@ -273,8 +286,14 @@ requires the identity session token and returns `SCOPE_MISSING` for an app token
 ## Errors
 
 - `LEGAL_ACCEPTANCE_REQUIRED` on `mintAppToken`, `createPortalAuthorizationCode` or
-  `refreshAppToken` — the player's consents are not stored. See
-  [Terms and age of majority](#terms-and-age-of-majority).
+  `refreshAppToken` — the player's consents are not stored; `extensions.missingDocuments` says
+  which. See [Legal documents](/management-api/legal-documents).
+- `TERRITORY_NOT_SUPPORTED`, `AGE_REQUIRED` and `AGE_REQUIREMENT_NOT_MET` on the same three, and
+  on `exchangePortalCode` — Crowded Kingdoms is not available where the player is, their age is
+  not known, or they are younger than the app allows there. See
+  [Age, country and who may play](/management-api/age-and-territory).
+- `SAFETY_LOG_REQUIRED` — a player under 18, in an app whose safety log is off. See
+  [the safety log](/replication-api/input-logging#the-safety-log).
 - `ACCESS_NOT_GRANTED`, `ACCESS_REVOKED`, `ACCESS_SUSPENDED` (with
   `extensions.suspendedUntil`) on `mintAppToken`, `refreshAppToken` or
   `exchangePortalCode` — the player has no access, the app revoked it, or the app

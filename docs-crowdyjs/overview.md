@@ -157,7 +157,7 @@ your game only sends the player back through `portal.signIn` when a refresh is
 refused that way. On the other two, show your own two checkboxes, then call
 `client.auth.recordPlayerConsents({ acceptLegal: true, attestAgeOfMajority: true })`
 before minting; `client.auth.playerLegalAcceptance()` says whether that is still
-needed. See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+needed. See [Terms and age of majority](/management-api/portals-and-app-tokens#terms-age-and-country).
 
 `client.portal` wraps hosted sign-in, minting, **and consent**:
 

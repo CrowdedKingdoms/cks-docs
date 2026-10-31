@@ -99,11 +99,15 @@ Send `Authorization: Bearer <session token>`. Free/open apps auto-grant on first
 mint; paid apps need an entitlement (else `FORBIDDEN`). The session token stays in
 your secure store to mint/refresh; the **app token** drives gameplay.
 
-**Ask for the terms first.** The mint answers `LEGAL_ACCEPTANCE_REQUIRED` until the
+**Ask for the age and the terms first.** The mint answers `LEGAL_ACCEPTANCE_REQUIRED` until the
 player has agreed to the current required documents and attested the age of majority.
-A native client shows its own two checkboxes and calls `recordPlayerConsents` with the
+A native client shows its own checkboxes and calls `recordPlayerConsents` with the
 session token; `playerLegalAcceptance` says whether that is still needed. See
-[Terms and age of majority](/management-api/portals-and-app-tokens#terms-and-age-of-majority).
+[Terms, age and country](/management-api/portals-and-app-tokens#terms-age-and-country).
+When Crowded Kingdoms opens to players 13 and over, the age comes from the player's birth
+date instead of the attestation: an account with none is refused `AGE_REQUIRED`, and the client
+asks for it as [the age screen](/management-api/age-and-territory#the-age-screen) describes and
+records it with `recordPlayerAge`.
 
 ### B. Native launcher → child game (local handoff)
 
@@ -198,7 +202,8 @@ If a token lapses mid-session, Buddy drops the session and emits **`TOKEN_EXPIRE
 always gets a fresh per-app token (pattern A/B/C again). A refresh refused with
 `LEGAL_ACCEPTANCE_REQUIRED` cannot succeed on retry: the player has not stored the terms,
 or a required document has a new version. Ask for them, record them with the session
-token, and mint again. See
+token, and mint again. Neither can `TERRITORY_NOT_SUPPORTED` or `AGE_REQUIREMENT_NOT_MET`:
+tell the player, naming no age. See
 [Error codes](/overview/error-codes).
 
 ## Security checklist for native clients

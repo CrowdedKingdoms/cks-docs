@@ -24,6 +24,8 @@ input MintManagedPlayerTokenInput {
   externalId: String!
   gamertag: String
   sessionTtlSeconds: Int
+  ageYears: Int
+  country: String
 }
 ```
 
@@ -44,6 +46,14 @@ Display name (at most 64 characters, none of them control, line-break or bidirec
 
 #### [<code style={{ fontWeight: 'normal' }}>MintManagedPlayerTokenInput.<b>sessionTtlSeconds</b></code>](#session-ttl-seconds)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #session-ttl-seconds */} 
 How long this sign-in lasts, in seconds (default and maximum: the org's settings). The app token refreshes (refreshAppToken) until then; after it, sign the player in again.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>MintManagedPlayerTokenInput.<b>ageYears</b></code>](#age-years)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #age-years */} 
+The player's age in whole years, as your organization knows it. Stored as a bracket (under&#x005F;13, 13&#x005F;15, 16&#x005F;17, 18&#x005F;plus), which hubs read and which sets a minor's defaults; a player under 13, or under the app's or the country's minimum, is refused AGE&#x005F;REQUIREMENT&#x005F;NOT&#x005F;MET before it is created or signed in. Optional while every player is 18 or older under the Org-Managed Players Addendum (omitted, the player counts as 18&#x005F;plus); required once players 13 and over are admitted (AGE&#x005F;REQUIRED without it).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>MintManagedPlayerTokenInput.<b>country</b></code>](#country)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #country */} 
+The country the player lives in, ISO 3166-1 alpha-2 (such as US). A country Crowded Kingdoms does not serve is refused TERRITORY&#x005F;NOT&#x005F;SUPPORTED, and a country's own minimum age applies. Stored on the player; optional until players 13 and over are admitted, required after.
 
 
 

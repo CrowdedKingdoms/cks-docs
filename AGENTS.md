@@ -60,8 +60,9 @@ So a docs fix is three acts, and only the third is visible to anybody:
 
 ```bash
 # 1. land it on prod (PR required. A code-owner review is required only for the paths
-#    this repo's .github/CODEOWNERS actually owns -- /.github/ and /scripts/ci/ --
-#    and a docs page is not one of them. Wrapper docs/HANDOFF-OPEN-ITEMS.md 3.1a)
+#    this repo's .github/CODEOWNERS actually owns -- all of /.github/ and /scripts/ --
+#    and a docs page is not one of them; scripts/management-surface.json is.
+#    Wrapper docs/HANDOFF-OPEN-ITEMS.md 3.1a)
 # 2. tag the commit on prod; the tag must be REACHABLE from origin/prod or the
 #    guard job refuses it
 git tag -a prod/v0.1.2 <sha-on-prod> -m "docs: <what changed>"

@@ -1,0 +1,53 @@
+---
+id: set-territory-policy-input
+title: SetTerritoryPolicyInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+An operator’s change to one country’s policy.
+
+
+```graphql
+input SetTerritoryPolicyInput {
+  countryCode: String!
+  status: String!
+  minAge: Int
+  reason: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SetTerritoryPolicyInput.<b>countryCode</b></code>](#country-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #country-code */} 
+ISO 3166-1 alpha-2 country code.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetTerritoryPolicyInput.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #status */} 
+'open' or 'blocked'.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetTerritoryPolicyInput.<b>minAge</b></code>](#min-age)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #min-age */} 
+The youngest age admitted there, 13 to 18 (default 13).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetTerritoryPolicyInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 
+Why, for the record (at most 500 characters).
+
+
+
+
+### Member Of
+
+[`setTerritoryPolicy`](/reference/graphql/operations/mutations/set-territory-policy.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

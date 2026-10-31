@@ -1,0 +1,63 @@
+---
+id: file-safety-report-input
+title: FileSafetyReportInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A report about another player of the app.
+
+
+```graphql
+input FileSafetyReportInput {
+  appId: BigInt!
+  reportedUserId: BigInt!
+  reportedActorUuid: String
+  reason: SafetyReportReason!
+  details: String
+  occurredAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>FileSafetyReportInput.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FileSafetyReportInput.<b>reportedUserId</b></code>](#reported-user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reported-user-id */} 
+The player reported.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FileSafetyReportInput.<b>reportedActorUuid</b></code>](#reported-actor-uuid)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #reported-actor-uuid */} 
+The reported player’s actor id, if the client knows it: the 32-character id the realtime wire uses, in hex digits as the SDKs make them.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FileSafetyReportInput.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SafetyReportReason!</b></code>](/reference/graphql/types/enums/safety-report-reason.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #reason */} 
+Why.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FileSafetyReportInput.<b>details</b></code>](#details)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #details */} 
+What happened, in the reporter’s words (at most 1,000 characters).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>FileSafetyReportInput.<b>occurredAt</b></code>](#occurred-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #occurred-at */} 
+When it happened (within the past year). The report covers both players’ recorded sessions from 15 minutes before this to now.
+
+
+
+
+### Member Of
+
+[`fileSafetyReport`](/reference/graphql/operations/mutations/file-safety-report.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

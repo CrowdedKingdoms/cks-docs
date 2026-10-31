@@ -1,0 +1,44 @@
+---
+id: set-my-comm-settings
+title: setMyCommSettings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Set the caller’s voice and video choices in the app; fields left out keep their choice. The effective scopes are the choices capped by policy, so a player can only lower what it sends and receives; the change reaches its live sessions within a second. Game plane: send the app-scoped token for this app to the app’s datacenter.
+
+
+```graphql
+setMyCommSettings(
+  appId: BigInt!
+  input: SetCommSettingsInput!
+): CommSettings!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setMyCommSettings.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>setMyCommSettings.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetCommSettingsInput!</b></code>](/reference/graphql/types/inputs/set-comm-settings-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+The choices to change.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CommSettings</b></code>](/reference/graphql/types/objects/comm-settings.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A player’s voice and video settings in one app. The four scopes are the EFFECTIVE ones, which the realtime servers enforce on both sending and receiving: the player’s choice, never more than policy allows. An adult may choose anything (EVERYONE by default). For a player under 18 each medium is OFF until a parent consents to it (requestParentalConsent), and then at most CONTACTS. A block always wins: nothing passes between two players while either has blocked the other.

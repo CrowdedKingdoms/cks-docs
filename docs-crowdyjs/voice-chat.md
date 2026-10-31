@@ -17,9 +17,14 @@ on the grid under the target chunk. A new app's default tier already carries
 this key. A send without it is refused with `UNAUTHORIZED` (error code 7) on
 the `genericError` / `errors` lane.
 
+From the replication server release after v0.42.0, a listener needs `use_voice_chat` too, and
+each player's voice settings, contacts and blocks decide who hears whom; a player under 18 has
+voice off until a parent consents. See [Voice, video, contacts and blocks](/game-api/communication).
+
 If the app has [replay logging](/replication-api/input-logging) on, voice is recorded with
-the player's other inputs unless the app leaves voice and video out
-(`replayLoggingRecordsMedia: false`).
+the player's other inputs unless the app leaves it out (`replayLoggingRecordsVoice: false`).
+While it records voice, your game shows players a notice and an indicator
+([the safety log](/replication-api/input-logging#the-safety-log)).
 
 ## Sending: `udp.sendAudioPacket`
 

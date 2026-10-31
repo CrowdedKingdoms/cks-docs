@@ -1,0 +1,49 @@
+---
+id: request-parental-consent
+title: requestParentalConsent
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+For a player under 18: ask a parent, through the consent service (Kids Web Services), to allow one medium (VOICE or VIDEO) in this app. The service emails parentEmail; once the parent consents, the medium opens up to CONTACTS (see myCommSettings). The address goes to the service and is not stored by Crowded Kingdoms. NOT&#x005F;REQUIRED for a player 18 or over, ALREADY&#x005F;GRANTED if a parent has consented. Errors: PARENTAL&#x005F;CONSENT&#x005F;UNAVAILABLE while the service is not configured on this deployment; RATE&#x005F;LIMITED after three requests in an hour. Game plane: send the app-scoped token for this app to the app’s datacenter.
+
+
+```graphql
+requestParentalConsent(
+  appId: BigInt!
+  feature: ParentalConsentFeature!
+  parentEmail: String!
+): ParentalConsentRequest!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>requestParentalConsent.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>requestParentalConsent.<b>feature</b></code>](#feature)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ParentalConsentFeature!</b></code>](/reference/graphql/types/enums/parental-consent-feature.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #feature */} 
+The medium to ask for.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>requestParentalConsent.<b>parentEmail</b></code>](#parent-email)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #parent-email */} 
+The parent or guardian’s email address.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>ParentalConsentRequest</b></code>](/reference/graphql/types/objects/parental-consent-request.mdx) <Badge class="badge badge--secondary " text="object"/> 
+The answer to requestParentalConsent.

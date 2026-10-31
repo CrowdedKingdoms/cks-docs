@@ -1,0 +1,39 @@
+---
+id: minecraft-challenge
+title: minecraftChallenge
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Start a Minecraft sign-in: a one-time server id for the app, good for two minutes. The client mod joins it through Mojang's session service as the account signed in to the game (the request a client makes to join any online-mode server), then calls signInWithMinecraft. Ask for it yourself: never join a server id something else hands you. Open only to Crowded Kingdoms' own apps (FORBIDDEN otherwise; FEATURE&#x005F;DISABLED on a tier without Minecraft sign-in). Public; rate-limited per address.
+
+
+```graphql
+minecraftChallenge(
+  appId: BigInt!
+): MinecraftChallenge!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>minecraftChallenge.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app to sign in to (BigInt as a decimal string).
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>MinecraftChallenge</b></code>](/reference/graphql/types/objects/minecraft-challenge.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A one-time server id for signInWithMinecraft. The Minecraft client joins it through Mojang’s session service (as for any server) as the account signed in to the game, then signs in with it before expiresAt.

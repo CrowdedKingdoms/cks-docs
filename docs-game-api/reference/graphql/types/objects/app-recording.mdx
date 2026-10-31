@@ -1,0 +1,48 @@
+---
+id: app-recording
+title: AppRecording
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+What an app's safety log (replay logging) records now. A client shows players a notice before they speak or appear on camera while voice or video is recorded, and an indicator while it is.
+
+
+```graphql
+type AppRecording {
+  enabled: Boolean!
+  voice: Boolean!
+  video: Boolean!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRecording.<b>enabled</b></code>](#enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #enabled */} 
+Whether the safety log is on (App.replayLoggingEnabled): the app's client messages are recorded, text chat and direct messages included.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRecording.<b>voice</b></code>](#voice)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #voice */} 
+Whether voice and channel audio are recorded. Until every realtime server records voice and video separately (the release that reads replayLoggingRecordsVoice and replayLoggingRecordsVideo), either switch records both media, so this reads true whenever either is on.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRecording.<b>video</b></code>](#video)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #video */} 
+Whether webcam video is recorded, by the same rule as voice.
+
+
+
+
+### Member Of
+
+[`App`](/reference/graphql/types/objects/app.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>

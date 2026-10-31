@@ -48,7 +48,12 @@ type App {
   wildernessWritesOpen: Boolean!
   replayLoggingEnabled: Boolean!
   replayLoggingRecordsMedia: Boolean!
+  replayLoggingRecordsVoice: Boolean!
+  replayLoggingRecordsVideo: Boolean!
+  recording: AppRecording!
   claimOwnerKeys: [String!]!
+  minPlayerAge: Int
+  effectiveMinPlayerAge: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
   org: Organization
@@ -174,11 +179,31 @@ Whether replay logging is on: the realtime servers record every client message t
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>replayLoggingRecordsMedia</b></code>](#replay-logging-records-media)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #replay-logging-records-media */} 
-Whether replay logging records the app's voice, webcam video and channel audio messages too. True (the default) records them with every other message; false leaves them out of the input log while everything else is still recorded. Applies only while replayLoggingEnabled is on. Set with updateApp (manage&#x005F;apps).
+Whether replay logging records the app's voice, webcam video and channel audio messages too: true when either replayLoggingRecordsVoice or replayLoggingRecordsVideo is (the realtime servers record both media while this is true, until they read the two separately). Setting it sets both. Applies only while replayLoggingEnabled is on. Set with updateApp (manage&#x005F;apps).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>replayLoggingRecordsVoice</b></code>](#replay-logging-records-voice)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #replay-logging-records-voice */} 
+Whether replay logging records the app's voice and channel audio. True by default. Set with updateApp (manage&#x005F;apps).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>replayLoggingRecordsVideo</b></code>](#replay-logging-records-video)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #replay-logging-records-video */} 
+Whether replay logging records the app's webcam video. True by default. Set with updateApp (manage&#x005F;apps).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>recording</b></code>](#recording)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>AppRecording!</b></code>](/reference/graphql/types/objects/app-recording.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #recording */} 
+What the safety log records for this app right now, for the notice and the recording indicator a client shows players. Readable with the app's own app token (app(appId)).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>claimOwnerKeys</b></code>](#claim-owner-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #claim-owner-keys */} 
 Grid permission keys a player's claim grants its owner on the claimed grid (claimGridOwnership), beside the player-code keys the owner's tier carries; for example update&#x005F;voxel&#x005F;data makes a claim buildable without a hub granting it. Never a player-code key; the grid's permission limits still cap them. Empty by default. Set with updateApp (manage&#x005F;apps).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>minPlayerAge</b></code>](#min-player-age)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #min-player-age */} 
+The youngest age the app admits, 13 to 18, when it asks more than the platform's minimum; null for the platform's minimum. Set with updateApp (manage&#x005F;apps).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>App.<b>effectiveMinPlayerAge</b></code>](#effective-min-player-age)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int!</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #effective-min-player-age */} 
+The youngest age the app admits now: the higher of minPlayerAge and the platform's minimum (18 until players 13 and over are admitted, then 13). A player's country can require more (territoryPolicies); younger players are refused AGE&#x005F;REQUIREMENT&#x005F;NOT&#x005F;MET at mint.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>App.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #created-at */} 

@@ -89,7 +89,13 @@ const res = await fetch('https://ck.prod.crowdedkingdoms.com/graphql', {
       }
     }`,
     variables: {
-      i: { appId: APP_ID, externalId: account.id, gamertag: account.displayName },
+      i: {
+        appId: APP_ID,
+        externalId: account.id,
+        gamertag: account.displayName,
+        ageYears: account.ageYears, // whole years, from your own records
+        country: account.country,   // ISO 3166-1 alpha-2, such as "US"
+      },
     },
   }),
 });
@@ -109,6 +115,10 @@ game.portal.adoptAppToken(access);
 
 CrowdyCPP: `client.portal().adoptAppToken(response)`. CrowdyPy:
 `client.set_app_token(client.portal.adopt_app_token(response))`.
+
+`ageYears` and `country` are the player's age and country as your organization knows them
+([below](#age-country-and-minors)): optional until Crowded Kingdoms opens to players 13 and
+over, required from then.
 
 `externalId` should be your own stable account id, not an email address: 1 to 256 characters,
 no control characters. `gamertag` (at most 64 characters) is set when the player is created;
@@ -152,6 +162,8 @@ mutation {
 | `iat`, `exp` | issued-at and expiry, Unix seconds; `exp` at most 300 seconds after `iat` |
 | `jti` | a fresh unique id: each assertion works once |
 | `gamertag` | optional; used when the player is created |
+| `ageYears` | the player's age in whole years ([below](#age-country-and-minors)); optional until the opening to players 13 and over, required from it |
+| `country` | where the player lives, ISO 3166-1 alpha-2; the same |
 
 ```ts
 // Your sign-in service (Node), with an Ed25519 key
@@ -197,9 +209,10 @@ To stop a player:
   its sign-ins until you enable it again.
 - `deleteManagedPlayer(orgId, externalId)` deletes it: its sessions end, its `externalId` and
   gamertag are removed from its account, and within minutes its content in your apps is erased:
-  its projects, libraries and mods, its actors, avatars and saved state, its access, and its team
-  and channel memberships (a team or channel it created that others are in stays, without an
-  owner). Its edits to your worlds stay, under the account's id, and so do its recorded inputs
+  its projects, libraries and mods, what your apps' [hubs](/exec/players-and-safety#erasure) hold
+  of it, its actors, avatars and saved state, its communication settings, contacts and blocks,
+  its access, and its team and channel memberships (a team or channel it created that others are
+  in stays, without an owner). Its edits to your worlds stay, under the account's id, and so do its recorded inputs
   until their retention ends and its usage records. The `externalId` is free again, so a later
   sign-in with it creates a new player.
 - **To keep a player's data**, for example while a dispute or a legal matter is open, disable
@@ -250,8 +263,9 @@ The player also needs the keys on its access tier: the code keys for mods and
 
 When an app has [input logging](/replication-api/input-logging) on, a managed player's inputs
 are recorded like any player's, voice and video included unless the app leaves them out
-(`updateApp(appId, input: { replayLoggingRecordsMedia: false })`), and kept for the published
-retention (7 days). The player reads its own with its app token: `game.inputLog.sessions(appId)` lists
+(`updateApp(appId, input: { replayLoggingRecordsVoice: false, replayLoggingRecordsVideo: false })`),
+and kept for the published retention (7 days). An app that admits players under 18 keeps it on:
+it is that app's [safety log](/replication-api/input-logging#the-safety-log). The player reads its own with its app token: `game.inputLog.sessions(appId)` lists
 its sessions and `game.inputLog.messages(appId, gameTokenId)` pages one (`inputLogSessions` and
 `inputLogMessages` in GraphQL). It never sees another player's. An org admin with `manage_apps`
 on the app reads every session, and each read of another player's inputs is recorded.
@@ -260,17 +274,43 @@ A managed player has no Crowded Kingdoms page to read them on: if your players s
 recordings, your client shows them. Your privacy notice must tell your players what is
 recorded, voice and video included unless you leave them out (API Terms §6.4a).
 
-## Age and communication
+## Age, country and minors
 
-Every managed player must be 18 or older, or the age of majority where they live if that is
-older. Your organization warrants that under the addendum (§2.3); Crowded Kingdoms does not ask
-your players to confirm their age and stores no age or age band for any player.
+Until Crowded Kingdoms opens to players 13 and over, every managed player must be 18 or older, or
+the age of majority where they live if that is older: your organization warrants that under the
+addendum (§2.3). The addendum's new version, which comes with the opening, changes that.
 
-To limit what a player may do, give it an access tier (`grantAppAccess` with a tier) that leaves
+At every sign-in, send the player's age and country: `ageYears` and `country` on
+`mintManagedPlayerToken`, or as claims of the assertion (Game API v2.60.0).
+
+- Crowded Kingdoms keeps the age as a bracket (`under_13`, `13_15`, `16_17` or `18_plus`), never
+  the age itself, and the country on the player, and checks them against its own rules. A country
+  it does not serve is refused `TERRITORY_NOT_SUPPORTED`; a player under 13, or under the app's or
+  the country's minimum age (18 for everyone until the opening), `AGE_REQUIREMENT_NOT_MET`; both
+  before the player is created or signed in. A refresh is refused once the stored bracket is wholly
+  below the app's minimum.
+- The country checked is the one you send, not your server's address.
+- Until the opening both are optional, and a player signed in without an age counts as 18 or
+  older. From the opening both are required: no age is `AGE_REQUIRED`, no country `BAD_REQUEST`.
+  A server that sends no age is refused from that day.
+- If your server asks players their age, [the age screen](/management-api/age-and-territory#the-age-screen)
+  applies to it.
+
+For a player under 18, Crowded Kingdoms applies the minors' defaults itself, whatever your tier
+grants:
+
+- voice and video off in both directions until a parent consents through Kids Web Services, then
+  contacts only ([Voice, video, contacts and blocks](/game-api/communication));
+- no direct messages;
+- the app keeps its [safety log](/replication-api/input-logging#the-safety-log) on, or the player
+  is refused `SAFETY_LOG_REQUIRED`.
+
+To limit what any player may do, give it an access tier (`grantAppAccess` with a tier) that leaves
 out what it may not use. The realtime servers check `use_voice_chat` (voice), `use_video_chat`
 (webcam video), `use_text_chat` (nearby text and channel messages) and `use_direct_messages`
-(messages to one player) on every send. A tier that grants `access` has the last two unless you
-leave them out: pass `applyCommunicationDefaults: false` with the tier's `permissionKeys`. See
+(messages to one player) on every send, and from the replication server release after v0.42.0
+on every receiving player too. A tier that grants `access` has the last two unless you leave them
+out: pass `applyCommunicationDefaults: false` with the tier's `permissionKeys`. See
 [Permissions](/game-api/permissions).
 
 ## The Construct
@@ -329,7 +369,12 @@ sign-ins of new players answer `MANAGED_PLAYER_LIMIT`.
 | `MANAGED_PLAYER_LIMIT` | Your organization is at its player cap. |
 | `MANAGED_PLAYER_NOT_ALLOWED` | A managed player asked for a wallet, or for mods where your organization has not switched them on. |
 | `ACCOUNT_BLOCKED` | The player is disabled. |
-| `LEGAL_HOLD` | A legal hold covers your organization or the player, so `deleteManagedPlayer` is refused (409). Disable the player instead. |
+| `LEGAL_HOLD` | A legal hold covers your organization or the player, so `deleteManagedPlayer` is refused (409). Disable the player instead. An open or escalated [safety report](/game-api/safety-reports) about the player sets one. |
+| `TERRITORY_NOT_SUPPORTED` | The country you sent (`extensions.country`) is one Crowded Kingdoms does not serve. |
+| `AGE_REQUIREMENT_NOT_MET` | The player is under 13, or under the app's or the country's minimum age. Tell the player, naming no age. |
+| `AGE_REQUIRED` | From the opening to players 13 and over: the sign-in carried no `ageYears`. |
+| `SAFETY_LOG_REQUIRED` | A player under 18, in an app whose safety log is off. |
+| `BAD_REQUEST` | `ageYears` outside 0 to 130, a `country` that is not a two-letter code, or, from the opening, no `country`. |
 | `TIER_ACCESS_REQUIRED` | Only on `dev` and `test`, Crowded Kingdoms' internal environments: none of your organization's members may use that environment. A managed player's own requests there also answer it while your organization's managed players are switched off. Production never returns it. |
 
 See [Error codes](/overview/error-codes) for every code.

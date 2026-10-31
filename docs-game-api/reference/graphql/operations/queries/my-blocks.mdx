@@ -1,0 +1,39 @@
+---
+id: my-blocks
+title: myBlocks
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The players the caller blocked in the app, most recent first (at most 1,000). Game plane: send the app-scoped token for this app to the app’s datacenter.
+
+
+```graphql
+myBlocks(
+  appId: BigInt!
+): [PlayerBlock!]!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>myBlocks.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>PlayerBlock</b></code>](/reference/graphql/types/objects/player-block.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A player the caller blocked in the app. Nothing of any kind passes between the two, either way, while the block stands; the blocked player is not told.
