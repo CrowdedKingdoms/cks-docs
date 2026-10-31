@@ -298,6 +298,15 @@ const config: Config = {
     [
       '@docusaurus/plugin-content-docs',
       {
+        id: 'minecraft',
+        path: 'docs-minecraft',
+        routeBasePath: '/minecraft',
+        sidebarPath: './sidebars/minecraft.ts',
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
         id: 'crowdyjs',
         path: 'docs-crowdyjs',
         routeBasePath: '/crowdyjs',
@@ -516,6 +525,13 @@ const config: Config = {
           label: 'Portal',
         },
         {
+          type: 'docSidebar',
+          docsPluginId: 'minecraft',
+          sidebarId: 'sidebar',
+          position: 'left',
+          label: 'Minecraft server (in beta)',
+        },
+        {
           type: 'dropdown',
           label: 'SDKs',
           position: 'left',
@@ -584,6 +600,12 @@ const config: Config = {
             {label: 'CrowdyPy', to: '/crowdypy/intro'},
             {label: 'Build a game', to: '/build-a-game/intro'},
             {label: 'Unreal SDK', to: '/unreal-sdk/intro'},
+          ],
+        },
+        {
+          title: 'Games',
+          items: [
+            {label: 'Minecraft server (in beta)', to: '/minecraft/intro'},
           ],
         },
         {

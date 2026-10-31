@@ -88,6 +88,10 @@
 - [SDK surface inventory (JSON)](https://docs.crowdedkingdoms.com/helpers/unreal-sdk/sdk-surface.json): every Blueprint-callable function, delegate, async action, subsystem, struct, enum, setting, console variable, metadata key, log category and C++ type the plugin exports, with module and header.
 - Blueprint clipboard text: one plain-text file per Blueprint graph referenced from the docs, at `https://docs.crowdedkingdoms.com/bp/unreal-sdk/<graph>.txt` (for example [qs-entity](https://docs.crowdedkingdoms.com/bp/unreal-sdk/qs-entity.txt)), named as the pointer lines in `llms-full.txt` name them, ready to paste into the editor.
 
+## Minecraft
+
+- [Minecraft server (in beta)](https://docs.crowdedkingdoms.com/minecraft/intro): a Fabric server hosts one shared world that vanilla Java clients join. Install the server jar, set the fixed seed, and split that world by chunk range.
+
 ## Changelog
 
 - [Releases & changelog](https://docs.crowdedkingdoms.com/releases/intro)
