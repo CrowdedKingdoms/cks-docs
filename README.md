@@ -1,6 +1,6 @@
 # Crowded Kingdoms documentation site
 
-Public [Docusaurus v3](https://docusaurus.io/) site at [docs.crowdedkingdoms.com](https://docs.crowdedkingdoms.com). Each docs instance has its own navbar tab and sidebar: Overview (`docs/`), Management API, Game API, Replication API, ck-exec (`docs-exec/`), CrowdyJS, CrowdyCPP, CrowdyPy, Unreal SDK, Management UI, Build a game and Releases — twelve, one per `docs*/` folder, each registered in `docusaurus.config.ts`. Each tier has its own site (`DOCS_TIERS` in `docusaurus.config.ts`); `CKS_DOCS_TIER` picks it at build time.
+Public [Docusaurus v3](https://docusaurus.io/) site at [docs.crowdedkingdoms.com](https://docs.crowdedkingdoms.com). Each docs instance has its own navbar tab and sidebar: Overview (`docs/`), Management API, Game API, Replication API, ck-exec (`docs-exec/`), Game Kit, Minecraft server, CrowdyJS, CrowdyCPP, CrowdyPy, Unreal SDK, Management UI, Build a game and Releases — fourteen, one per `docs*/` folder, each registered in `docusaurus.config.ts`. Each tier has its own site (`DOCS_TIERS` in `docusaurus.config.ts`); `CKS_DOCS_TIER` picks it at build time.
 
 ## Local preview
 
@@ -80,7 +80,7 @@ The site is held to an agent-readiness standard so external AI agents / integrat
 
 - **Published SDL.** `npm run sdl:gen` (chained from `prebuild`) copies each sibling `schema.gql` to `static/schema/<product>.graphql`, served at `/schema/management-api.graphql`, `/schema/game-api.graphql`, `/schema/crowdyjs.graphql`. Committed so it ships even though CI builds with `docusaurus build` (which skips `prebuild`).
 - **`static/llms.txt`** is the agent index — keep its links current when SDL URLs or the cross-cutting guides change. Write its links with the prod origin (`https://docs.crowdedkingdoms.com`); the `tier-origin` plugin (`src/plugins/tier-origin/`) rewrites that origin to the tier's own in every built `.txt` and `.md` file, so the dev site's `llms.txt` points at the dev site.
-- **Cross-cutting agent guides** live in the Overview tab: `docs/for-ai-agents.md`, `docs/error-codes.md`, `docs/pagination.md`, `docs/rate-limits.md`. The consumer changelog is `docs-releases/intro.md`.
+- **Cross-cutting agent guides** live in the Overview tab: `docs/for-ai-agents.md`, `docs/error-codes.md`, `docs/pagination.md`, `docs/rate-limits.md`, and `docs/player-safety.md` (players under 18: what is live, what switches on at the opening, what a game needs). The consumer changelog is `docs-releases/intro.md`.
 - **CI guard.** `npm run lint:schema` (in [`.github/workflows/docs-ci.yml`](.github/workflows/docs-ci.yml)) fails a PR if any public root field / non-`input` argument in the Management or Game SDL lacks a description (CrowdyJS is warn-only). The PR build also enforces `onBrokenLinks: 'throw'`. Live example smoke (`npm run test:examples`) is **not** a Docs CI gate — run it on the builder with `CKS_DOCS_GRAPHQL_URL` / `CKS_DOCS_TOKEN` (and optionally `CKS_DOCS_APP_TOKEN` / `CKS_DOCS_APP_ID`) if you want to hit a live GraphQL endpoint.
 
 ## Maintainers: Management UI screenshots
