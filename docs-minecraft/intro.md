@@ -8,6 +8,12 @@ title: Minecraft server (in beta)
 
 **NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.**
 
+One Minecraft world runs on many servers. Each server owns a part of the map and runs the players
+connected to it, and the mobs and blocks on that ground. Crowded Kingdoms draws the rest of the
+crowd as avatars on the client, the people on another server and the others sharing the world, so
+a crowd can stand close together on that ground. Walk into the next server's part of the map and
+the vanilla game connects you there.
+
 Made and published by Crowded Kingdom Studios. Contact: hello@crowdedkingdoms.com.
 
 A Fabric server running the Crowded Kingdoms server mod hosts a shared world that vanilla
