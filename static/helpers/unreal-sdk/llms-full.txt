@@ -5,7 +5,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/intro
 
 The Crowdy Unreal SDK is an Unreal Engine plugin that connects your game to the Crowded Kingdoms platform. It gives you a small surface you can drive from C++ or Blueprint: real-time networking for large numbers of players, voice chat, teams, channels, and avatars.
 
-This guide describes **SDK 2.23**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
+This guide describes **SDK 2.24**. Open `Plugins/CrowdySDK/CrowdySDK.uplugin` and check `VersionName` before you rely on a feature described here.
 
 :::note[This guide is written for Unreal Engine 5.8 and a C++ project.]
 Gameplay can be driven entirely from Blueprint, but the plugin itself compiles as C++, so your project needs a C++ target. See [Installation](./installation.md).
@@ -67,10 +67,12 @@ Add a C++ class to a Blueprint project once (File, New C++ Class) and it becomes
 
 ## Step 1: Get the release
 
-Download the `v2.23.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
+Download the `v2.24.0` release of the plugin from the public repository, `CrowdedKingdoms/CrowdySDK-Unreal` on GitHub.
 
-:::note[The release you install must match the version this guide describes (2.23).]
+:::note[The release you install must match the version this guide describes (2.24).]
 :::
+
+From 2.24.0 the plugin root also carries a `MIGRATION.md` that lists, per release, what changed and the exact steps to migrate; read it when you update an existing project. The packaged zip of 2.24.0 is the first to include the plugin's `Config/` folder (see [What's Changed](./guides/whats-changed.md#2026-11-02-sdk-v2240)).
 
 ## Step 2: Place the plugin at `Plugins/CrowdySDK`
 
@@ -2196,8 +2198,8 @@ Any Actor Blueprint can spawn; nothing on the spawner needs a component. In the 
 A plain `SpawnActor` never broadcasts the spawn event. The component still registers locally, so the actor looks like an entity on the spawning client and exists nowhere else.
 :::
 
-:::caution[The spawn event is a one-shot spatial send. A late joiner or a distant client never sees a runtime-spawned Static entity.]
-It reaches the clients within eight chunks of the spawn point at that moment and is never replayed. A client that joins afterwards, or stands further away, has no copy unless you re-announce the spawn yourself; a Dynamic entity is rebuilt from its position updates instead (below), and anything that must exist for everyone from the start is level-placed.
+:::caution[A Dynamic entity's spawn event is a one-shot spatial send, so a client that joins later never receives its `InitialState`.]
+It reaches the clients within eight chunks of the spawn point at that moment and is never replayed. A client that joins afterwards, or comes into range later, still draws a Dynamic entity from its position updates, but with no spawn event `OnCrowdySpawned` does not fire there. A Static entity is different: its owner repeats the spawn event every 4 seconds (below), so a late joiner gets the actor, its owner, and `OnCrowdySpawned` with the `InitialState`. Anything a late joiner must see on a Dynamic entity belongs in class defaults or in replicated state, and anything that must exist for everyone from the start is level-placed.
 :::
 
 **Success signal.** On a second client the proxy appears and its `OnCrowdySpawned` fires with `bIsLocallyOwned` false. A single client can only confirm the send: `crowdy.entity.trace 1` logs the registration and the spawn event; `crowdy.rpc.loopback` replays RPC calls, not spawn events, so no proxy appears.
@@ -2212,7 +2214,7 @@ Three calls converge on the same path: broadcast a destroy event, then destroy t
 | `UCrowdyUtilities::DestroyCrowdyEntity(WorldContextObject, TargetEntity)` | The static form with a world context pin; the Blueprint node. `TargetEntity` defaults to self. |
 | `UCrowdyEntityComponent::DestroyEntity()` | The component, on itself. See [Entity component](./entity-component.md). |
 
-On every client `OnCrowdyDestroyed` fires first, with `bIsLocallyOwned` true on the client that called the destroy and false everywhere else; nothing stops a non-owner from destroying an entity. The actor goes after the delay. A `DestroyDelay` above zero is for a dissolve or a fade the actor plays out before it disappears.
+On every client `OnCrowdyDestroyed` fires first, with `bIsLocallyOwned` true on the client that called the destroy and false everywhere else; nothing stops a non-owner from destroying an entity. The actor goes after the delay. A `DestroyDelay` above zero is for a dissolve or a fade the actor plays out before it disappears. The entity stops sending updates when the destroy is called, not when the actor goes, and other clients do not draw updates that arrive in the half second after the destroy event, so an update already on its way does not bring the entity back.
 
 <Tabs groupId="lang">
 <TabItem value="cpp" label="C++">
@@ -2257,13 +2259,17 @@ The player picks up a lantern of their own that has gone out: in C++ the charact
 
 A remote client that receives the spawn event spawns the named class, injects the identity as `RemoteProxy`, finishes spawning, and broadcasts `OnCrowdySpawned` with the `InitialState` from the event. The event carries the class path, so a class that is not loaded yet is streamed in and spawned when it arrives; a destroy event that lands during the load cancels the spawn. If the class ships without a `UCrowdyEntityComponent`, the SDK adds one so the lifecycle callbacks have a home.
 
+That actor is the one players see: the actor pool draws it rather than a pooled copy, so whatever your `OnCrowdySpawned` handler set on it stays. When the entity's first update arrives before its spawn event, the pool draws it at once and the spawn event then hands its `InitialState` to that actor instead of spawning a second one. Either way `OnCrowdySpawned` fires once per entity on each client.
+
 :::note[The spawn and destroy payloads are wire format, not something you build.]
 `FCrowdyEntitySpawnEvent`, `FCrowdyEntityDestroyEvent`, and the registry's `FCrowdyEntityRecord` are Blueprint-visible types because they cross a delegate, but you never construct one. `InitialState` is the only payload you author.
 :::
 
-### A Dynamic entity can appear with no spawn event at all
+### An entity can appear with no spawn event at all {#a-dynamic-entity-can-appear-with-no-spawn-event-at-all}
 
-A Dynamic-mode entity (see [Continuous state](./continuous-state.md)) streams position updates, and each update carries the class id and the state struct type. The `UCrowdyActorManager` resolves the class from that (`RegisterStateClass` is filled in for you by each entity component's `BeginPlay`) and asks the rendering backend to draw a proxy, so a moving entity shows up on a client that joined late without any spawn round trip. A Static entity has no updates to be found by, so it always needs the spawn event.
+A Dynamic-mode entity (see [Continuous state](./continuous-state.md)) streams position updates, and each update carries the class id and the state struct type. The `UCrowdyActorManager` resolves the class from that (`RegisterStateClass` is filled in for you by each entity component's `BeginPlay`) and asks the rendering backend to draw a proxy, so a moving entity shows up on a client that joined late without any spawn round trip.
+
+A Static entity spawned with `SpawnEntity` sends no updates, so its owner repeats the spawn event instead: every 4 seconds while a client owns it, that client sends the spawn event again, from where the entity is now, naming its owner and carrying its `InitialState`. A client that joins later builds the entity from a repeat exactly as if it had seen the spawn, and its `OnCrowdySpawned` fires there. A client that already has the entity ignores repeats, and `OnCrowdySpawned` never fires twice. A repeat costs about 280 bytes plus your `InitialState`: about 70 bytes per second of upload per entity on its owner, and the same in download for each client within eight chunks. A spawn event for an entity destroyed less than 10 seconds earlier is ignored, so a repeat already on its way cannot bring it back; an owner that never received the destroy keeps repeating, and the entity reappears after those 10 seconds. A Static entity placed in the level, or registered with `RegisterStaticEntity`, sends nothing.
 
 :::warning[Preloaded Entity Classes is empty by default, and an observer on this path needs it.]
 This path resolves the class by id against loaded classes; a spawn event carries the class path and loads it for you, this does not. The startup scan walks loaded classes, and a Blueprint entity class that nobody on this client has spawned yet is not loaded, so an observer that meets it first over the network cannot name it. The actor manager warns `cannot resolve to a loaded class ... Preload the entity class or give it a ClassIDOverride` and the entity stays undrawn. List every Blueprint entity class a client can be shown before it spawns one itself under **Project Settings, Plugins, Crowdy SDK, Replication, Preloaded Entity Classes** (`PreloadedEntityClasses` on `UCrowdySDKDeveloperSettings`). Classes already loaded for another reason need no entry, and a duplicate costs nothing.
@@ -2296,7 +2302,7 @@ The tracker's events, all on the game thread: `OnRemoteEntityAppeared` (an id se
 
 - `IsLocallyOwned` means two different things: on the subsystem it takes a NetID and asks the record; on the component it takes nothing and asks whether this client is the entity's authority, host-owned included. See [Entity component](./entity-component.md).
 - A spawned entity is owned by its spawner, full stop. To hand it over, use [Ownership transfer](./ownership-transfer.md).
-- `InitialState` reaches `OnCrowdySpawned` on the actor the spawn event creates. On the actor-pool backend a Dynamic entity's pooled proxy replaces that actor and never sees the payload; see [Rendering backends](./rendering-backends.md).
+- `InitialState` reaches `OnCrowdySpawned` once on each client that receives the spawn event, on the actor that client draws. A late joiner receives it for a Static entity (from a repeat) but not for a Dynamic one.
 - Two unrelated participants can derive the same NetID (a NetID has 32 bits of real entropy). The incumbent keeps it and the newcomer is refused with a log line; a system that binds state to an id should register through `TryRegisterEntity` and give up its claim when the `ECrowdyEntityRegistration` it returns is `RefusedIdHeldByLiveParticipant` (or `RefusedInvalidNetID` for a record with no usable id) rather than `Registered`.
 - `UHelperFunctions` has the id helpers a custom identity scheme would reach for: `GetDeterministicID(Seed)` turns a seed into the same `FGuid` on every client, with those same 32 bits of entropy, and `GetNewID` and `GetNewUUID` mint random ones. Prefer the component's identity policies; these exist for code that already has a seed.
 
@@ -3746,7 +3752,7 @@ A rendering backend turns the [continuous state](./continuous-state.md) a remote
 
 ## When you touch this
 
-When a Dynamic entity moves on its owner and not on anyone else, when you want your own state struct applied to a proxy, or when pooled actors of the entity's class are the wrong way to draw a crowd; see [Draw a crowd with Mass](../mass/draw-a-crowd-with-mass.md). A Static entity never comes through here: its proxy is spawned by the spawn event and driven by Crowdy State and events.
+When a Dynamic entity moves on its owner and not on anyone else, when you want your own state struct applied to a proxy, or when pooled actors of the entity's class are the wrong way to draw a crowd; see [Draw a crowd with Mass](../mass/draw-a-crowd-with-mass.md). A Static entity never comes through here: its proxy is the actor its spawn event made, driven by Crowdy State and events, and a client that joined after the spawn builds it from a repeat of that event.
 
 ## The default: the actor pool
 
@@ -3773,6 +3779,9 @@ The fallback arrived in 2.15.0. On 2.14.0 and earlier an empty Backend Config, o
 | `DefaultPoolSizePerClass` | 8 | Pools are created lazily per entity class with this many actors made up front. |
 | `PerClassPoolOverrides` | empty | A per-class up-front size; a class listed here is also pre-warmed at map load. |
 | `MaxPoolSizePerClass` | 256 | How far a class's pool may grow. When every actor is in use, the pool spawns one more, up to this cap (never below the up-front size). |
+| `bRenderLocalOwner` | off | Also draw a pooled copy of entities this client owns, driven by the server's echo of its own updates. Off, the owner sees only its real actor. Turn it on to watch the round trip on a single client. |
+
+When an entity's spawn event already made an actor of the entity's class, the pool draws that actor and takes nothing from the pool, so what `OnCrowdySpawned` set on it stays. When ownership of a drawn entity moves to this client, the pool lets go of the actor, which this client now moves; when it moves away, the pool draws this client's actor from the new owner's updates.
 
 A pool that is full grows by one actor at a time, spawned during play with collision off until it is activated. At the cap, a new entity of that class waits: it is activated as soon as another entity of the class leaves, or, if its spawn event already made an actor for it, that actor is kept and drawn instead of being replaced. Nothing is dropped. The cap is there so a flood of made-up entity ids from a misbehaving peer cannot make your client spawn without limit; raise it if you legitimately expect more than 256 live remote entities of one class.
 
@@ -16624,6 +16633,10 @@ Reading `IsHost` or the elected id for ordinary view-plane logic is the common c
 | `OnHostElected` (`FOnCrowdyHostElected`, `HostID`, `PreviousHostID`) | Fires on the game thread when the elected host changes, the first result included (0 to the first host); a poll that repeats the same host does not fire it. |
 | `CheckEntityIsHost(Entity, Callback)` | The server-validated check, C++ entry point; see below. |
 
+### After sign-out
+
+When the player signs out, the host is cleared before `OnLogout` fires, on whichever map the player is: `IsHostSet()` is false, `GetHostID()` is an invalid `FGuid`, and `IsHost()` is false. When a host had been elected on the current map, `OnHostElected` also fires once, on the next frame, with an invalid `HostID` and the previous host as `PreviousHostID`. The host subsystem belongs to the world, so it starts again after every level travel: the first election on each map fires `OnHostElected` with an invalid `PreviousHostID`, which does not mean a new session started. While nobody is signed in, a host poll answer is ignored, so a poll still in flight at sign-out cannot elect a host afterwards. If you bind `OnHostElected`, treat an invalid `HostID` or `PreviousHostID` as "no host". This is the behaviour from SDK 2.24; on the tagged v2.23.0 plugin, sign-out left `IsHostSet()` true and `GetHostID()` returned an id that belongs to no player (or the previous host, after a level travel), and the first election's `PreviousHostID` was that made-up id (see [What's Changed](../guides/whats-changed.md#2026-11-02-sdk-v2240)).
+
 :::note[Under normal operation the server agrees with the local view.]
 `IsHost()` and the server-validated `CheckEntityIsHost` answer the same question at different trust levels, and day to day they say the same thing. The server check exists for the moment you cannot assume the caller is running an unmodified client, not because the local view is usually wrong.
 :::
@@ -17369,7 +17382,7 @@ on purpose. Raise `CrowdyDistance` (values run `None` to `Eight_Chunks`, default
 If you need delivery at any distance, switch to `Multicast` with a `CrowdyChannel`, or use `OwningClient` or
 `Host` for targeted delivery.
 
-:::note[The owner of a SpatialMulticast event runs the body locally and announces to the others. The owner never runs its own `Name_Implementation` from the network: an event is not delivered back to its sender, even where a Dynamic entity's owner sees its own echoed proxy.]
+:::note[The owner of a SpatialMulticast event runs the body locally and announces to the others. The owner never runs its own `Name_Implementation` from the network: an event is not delivered back to its sender, even where a Dynamic entity's owner draws its own echoed proxy (Render Local Owner on the actor pool).]
 :::
 
 ### The event was never registered, or the receiving function cannot be found
@@ -17762,11 +17775,30 @@ The customer-visible changes to the Unreal SDK since 2.0 / 2.1, newest first, ea
 
 ## When you come here
 
-You built against the SDK in July, you are updating the plugin to 2.15 or later (2.23.0 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), in 2.15.0 the array delegates, in 2.19.0 the removal of the Game Model API (see [its entry](#2026-10-12-sdk-v2190)), and in 2.20.0 the renamed pin delegates of the Channels, Teams, Avatars and sign-in nodes, which a C++ `AddDynamic` handler binds to (see [On Error](#2026-10-16-sdk-v2200)). In 2.21.0, a C++ `AddDynamic` handler bound to the **Call Server Function** action's **On Success** or **On Failed** needs one more parameter, `FName Code` (see [its entry](#2026-10-26-sdk-v2210)). In 2.22.0, voice chat changes its packet format, so every player needs the new SDK version for voice, and a C++ handler bound to `OnAudioNotify` or the other old voice delegates no longer compiles (see [Voice chat](#voice-chat)).
+You built against the SDK in July, you are updating the plugin to 2.15 or later (2.24.0 is current), and you want the list of things that compile differently, behave differently, or no longer exist, before you open the editor. Read top to bottom once. The entries that can break a C++ build are the teams rename (between 2.1.0 and 2.12.0), the removed `DevLogin` (2026-08-30), in 2.15.0 the array delegates, in 2.19.0 the removal of the Game Model API (see [its entry](#2026-10-12-sdk-v2190)), and in 2.20.0 the renamed pin delegates of the Channels, Teams, Avatars and sign-in nodes, which a C++ `AddDynamic` handler binds to (see [On Error](#2026-10-16-sdk-v2200)). In 2.21.0, a C++ `AddDynamic` handler bound to the **Call Server Function** action's **On Success** or **On Failed** needs one more parameter, `FName Code` (see [its entry](#2026-10-26-sdk-v2210)). In 2.22.0, voice chat changes its packet format, so every player needs the new SDK version for voice, and a C++ handler bound to `OnAudioNotify` or the other old voice delegates no longer compiles (see [Voice chat](#voice-chat)).
 
 :::caution[The Game Model entries below no longer reach a server, and the API is removed.]
 The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The entries that describe it are kept as history. Do not adopt it: v2.18.0, the release that adds Server Objects, deprecates it, and v2.19.0 removes it, as described under [2026-10-12 (SDK v2.19.0)](#2026-10-12-sdk-v2190). Its replacement is [Server Objects](../exec/overview.md), described under [2026-10-07 (SDK v2.18.0)](#2026-10-07-sdk-v2180); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
 :::
+
+## 2026-11-02 (SDK v2.24.0)
+
+No breaking change and nothing deprecated. From this release the plugin's `MIGRATION.md` lists the same changes with the exact steps to take.
+
+### Sign-out, packaged installs and MIGRATION.md
+
+- **No phantom host after sign-out.** On sign-out the SDK told the host subsystem there was no host by setting the host user id to 0, and the subsystem turned that 0 into a valid-looking id. **Is Host Set** stayed true, **Get Host ID** returned an id that belongs to no player, and **On Host Elected** fired with a host that does not exist. After a level travel, or on a map without networking, sign-out could also leave the host set. Now sign-out clears the host before **On Logout** fires, and user id 0 gives an empty (invalid) id: **Is Host Set** is false, **Get Host ID** is invalid, and **Is Host** is false (as before). When a host had been elected on the current map, **On Host Elected** also fires once, on the next frame, with an invalid `HostID` and the previous host as `PreviousHostID`. The first election on each map (the host subsystem belongs to the world, so it starts again after a level travel) fires **On Host Elected** with an invalid `PreviousHostID`, where it used to carry the same made-up id. A host poll answer that arrives while nobody is signed in, such as one still in flight at sign-out, is ignored, so it can no longer elect a host again after sign-out. **What you do:** if you bind **On Host Elected**, treat an invalid `HostID` or `PreviousHostID` as "no host". See [Host Election](../services/host-election.md#after-sign-out).
+- **Packaged plugin zips now carry the plugin's `Config/` folder.** The plugin's `Config/FilterPlugin.ini` held only comments, so a plugin built with UAT BuildPlugin (which is what the package script runs) left `Config/` out of the zip. `Config/DefaultCrowdySDK.ini`, which holds the SDK's own CoreRedirects, was missing from those installs. The filter now includes `/Config/...`, `/MIGRATION.md`, `/README.md` and the license file. **What you do:** if you install from a packaged zip, take the 2.24.0 package. CoreRedirects you copied into your own `DefaultEngine.ini` as a workaround may stay; duplicates are harmless. See [Installation](../installation.md#step-1-get-the-release).
+- **The plugin builds with UAT BuildPlugin again.** Packaging the plugin with `RunUAT BuildPlugin` (as a Fab submission or a prebuilt-binaries release does) failed: UHT requires an explicit `Category` on every editor- or Blueprint-exposed property when it builds a plugin that way, and its game target compiles each file without a precompiled header, which exposed files that relied on one for engine types. Every exposed property now has a `Category`, and every file includes what it uses. The Teams and Channels permission structs' fields moved from the `Crowdy|Teams` and `Crowdy|Channels` categories to `Crowdy SDK|Teams` and `Crowdy SDK|Channels`; that only changes how the editor groups them. **What you do:** nothing; if you package the plugin yourself, `BuildPlugin` now succeeds.
+- **New: `MIGRATION.md` at the plugin root.** It ships in the plugin and in the public CrowdySDK-Unreal repository. For each release it lists what changed and the exact steps to migrate, laid out so a person or an AI agent can follow it. From now on every user-visible SDK change adds an entry there along with its docs. **What you do:** when you update the plugin, read the entries for the releases between your version and the new one. See [Installation](../installation.md#step-1-get-the-release).
+
+### Spawned entities appear once
+
+- **Spawn data reaches the actor players see.** The actor pool replaced the actor a spawn event made with a pooled one, so what **On Crowdy Spawned** set on it was lost, and when an update arrived before the spawn event, **On Crowdy Spawned** never fired at all. Now the pool draws the spawn event's own actor, and **On Crowdy Spawned** fires once per entity on each client that receives the spawn event, in either arrival order. **What you do:** nothing; per-instance appearance passed in `InitialState` now shows on other clients that were there for the spawn. See [Entities and spawning](../runtime/entities-and-spawning.md#receiving-a-spawn-on-a-remote-client).
+- **Static entities reach late joiners, spawn data and owner included.** A Static entity spawned with **Spawn Crowdy Entity** sent nothing after its spawn event, so a player who joined later never saw it. Now its owner repeats the spawn event every 4 seconds, from where the entity is now. A late joiner builds it as if it had seen the spawn: the actor, its owner, and **On Crowdy Spawned** with the spawn data. Clients that already have it ignore the repeats, and a repeat that arrives after the entity's destroy cannot bring it back. Each repeat is about 280 bytes plus your spawn data, about 70 bytes per second per entity. **What you do:** budget the traffic if you spawn many Static entities. See [Entities and spawning](../runtime/entities-and-spawning.md#a-dynamic-entity-can-appear-with-no-spawn-event-at-all).
+- **No second copy of your own entities.** The client that spawned an entity also drew a pooled copy of it, driven by the server's echo of its own updates. That copy is gone by default. **What you do:** if a single-client demo relies on it, turn on **Render Local Owner** on the map profile's Actor Pool Backend Config. See [Rendering backends](../runtime/rendering-backends.md#the-default-the-actor-pool).
+- **A destroyed entity stays destroyed.** An update that arrived just after an entity's destroy event drew it again for about 12 seconds, and **Destroy Crowdy Entity** kept sending updates for the length of **Destroy Delay**. Now sending stops when the destroy is called, and updates in the half second after a destroy event are not drawn. **What you do:** nothing. See [Entities and spawning](../runtime/entities-and-spawning.md#destroying).
+- **Ownership moves redraw the entity.** When ownership of an entity moves to or from your client, the actor pool sets its drawing up again on the next update: you stop seeing an entity you handed away frozen, and an entity handed to you is no longer pulled back to the echo of your own updates. **What you do:** nothing.
 
 ## 2026-10-31 (SDK v2.23.0)
 

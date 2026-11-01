@@ -14,7 +14,7 @@ A rendering backend turns the [continuous state](./continuous-state.md) a remote
 
 ## When you touch this
 
-When a Dynamic entity moves on its owner and not on anyone else, when you want your own state struct applied to a proxy, or when pooled actors of the entity's class are the wrong way to draw a crowd; see [Draw a crowd with Mass](../mass/draw-a-crowd-with-mass.md). A Static entity never comes through here: its proxy is spawned by the spawn event and driven by Crowdy State and events.
+When a Dynamic entity moves on its owner and not on anyone else, when you want your own state struct applied to a proxy, or when pooled actors of the entity's class are the wrong way to draw a crowd; see [Draw a crowd with Mass](../mass/draw-a-crowd-with-mass.md). A Static entity never comes through here: its proxy is the actor its spawn event made, driven by Crowdy State and events, and a client that joined after the spawn builds it from a repeat of that event.
 
 ## The default: the actor pool
 
@@ -41,6 +41,9 @@ The fallback arrived in 2.15.0. On 2.14.0 and earlier an empty Backend Config, o
 | `DefaultPoolSizePerClass` | 8 | Pools are created lazily per entity class with this many actors made up front. |
 | `PerClassPoolOverrides` | empty | A per-class up-front size; a class listed here is also pre-warmed at map load. |
 | `MaxPoolSizePerClass` | 256 | How far a class's pool may grow. When every actor is in use, the pool spawns one more, up to this cap (never below the up-front size). |
+| `bRenderLocalOwner` | off | Also draw a pooled copy of entities this client owns, driven by the server's echo of its own updates. Off, the owner sees only its real actor. Turn it on to watch the round trip on a single client. |
+
+When an entity's spawn event already made an actor of the entity's class, the pool draws that actor and takes nothing from the pool, so what `OnCrowdySpawned` set on it stays. When ownership of a drawn entity moves to this client, the pool lets go of the actor, which this client now moves; when it moves away, the pool draws this client's actor from the new owner's updates.
 
 A pool that is full grows by one actor at a time, spawned during play with collision off until it is activated. At the cap, a new entity of that class waits: it is activated as soon as another entity of the class leaves, or, if its spawn event already made an actor for it, that actor is kept and drawn instead of being replaced. Nothing is dropped. The cap is there so a flood of made-up entity ids from a misbehaving peer cannot make your client spawn without limit; raise it if you legitimately expect more than 256 live remote entities of one class.
 

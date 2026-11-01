@@ -2315,6 +2315,10 @@ Reading `IsHost` or the elected id for ordinary view-plane logic is the common c
 | `OnHostElected` (`FOnCrowdyHostElected`, `HostID`, `PreviousHostID`) | Fires on the game thread when the elected host changes, the first result included (0 to the first host); a poll that repeats the same host does not fire it. |
 | `CheckEntityIsHost(Entity, Callback)` | The server-validated check, C++ entry point; see below. |
 
+### After sign-out
+
+When the player signs out, the host is cleared before `OnLogout` fires, on whichever map the player is: `IsHostSet()` is false, `GetHostID()` is an invalid `FGuid`, and `IsHost()` is false. When a host had been elected on the current map, `OnHostElected` also fires once, on the next frame, with an invalid `HostID` and the previous host as `PreviousHostID`. The host subsystem belongs to the world, so it starts again after every level travel: the first election on each map fires `OnHostElected` with an invalid `PreviousHostID`, which does not mean a new session started. While nobody is signed in, a host poll answer is ignored, so a poll still in flight at sign-out cannot elect a host afterwards. If you bind `OnHostElected`, treat an invalid `HostID` or `PreviousHostID` as "no host". This is the behaviour from SDK 2.24; on the tagged v2.23.0 plugin, sign-out left `IsHostSet()` true and `GetHostID()` returned an id that belongs to no player (or the previous host, after a level travel), and the first election's `PreviousHostID` was that made-up id (see [What's Changed](../guides/whats-changed.md#2026-11-02-sdk-v2240)).
+
 :::note[Under normal operation the server agrees with the local view.]
 `IsHost()` and the server-validated `CheckEntityIsHost` answer the same question at different trust levels, and day to day they say the same thing. The server check exists for the moment you cannot assume the caller is running an unmodified client, not because the local view is usually wrong.
 :::
