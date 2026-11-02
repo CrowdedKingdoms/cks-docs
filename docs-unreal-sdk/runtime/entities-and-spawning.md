@@ -90,7 +90,7 @@ That actor is the one players see: the actor pool draws it rather than a pooled 
 `FCrowdyEntitySpawnEvent`, `FCrowdyEntityDestroyEvent`, and the registry's `FCrowdyEntityRecord` are Blueprint-visible types because they cross a delegate, but you never construct one. `InitialState` is the only payload you author.
 :::
 
-### An entity can appear with no spawn event at all {#a-dynamic-entity-can-appear-with-no-spawn-event-at-all}
+### A Dynamic entity can appear with no spawn event at all
 
 A Dynamic-mode entity (see [Continuous state](./continuous-state.md)) streams position updates, and each update carries the class id and the state struct type. The `UCrowdyActorManager` resolves the class from that (`RegisterStateClass` is filled in for you by each entity component's `BeginPlay`) and asks the rendering backend to draw a proxy, so a moving entity shows up on a client that joined late without any spawn round trip.
 
