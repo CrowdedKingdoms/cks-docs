@@ -15,7 +15,7 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-OPERATOR ONLY. Block or open a country, or set its minimum age, with the reason on record. Every instance applies it within a minute; players already signed in there are refused at their next refresh.
+OPERATOR ONLY. Block or open a country or (with regionCode) one of its regions, or set its minimum age, with the reason on record. Every instance applies it within a minute; players already signed in there are refused at their next refresh.
 
 
 ```graphql
@@ -36,4 +36,4 @@ setTerritoryPolicy(
 ### Type
 
 #### [<code style={{ fontWeight: 'normal' }}><b>TerritoryPolicy</b></code>](/reference/graphql/types/objects/territory-policy.mdx) <Badge class="badge badge--secondary " text="object"/> 
-A country Crowded Kingdoms lists: 'blocked' refuses its players (TERRITORY&#x005F;NOT&#x005F;SUPPORTED), and minAge raises the youngest age admitted there. A country not listed is open at the platform's minimum.
+A country, or a region of one, that Crowded Kingdoms lists: 'blocked' refuses its players (TERRITORY&#x005F;NOT&#x005F;SUPPORTED), and minAge raises the youngest age admitted there. A country not listed is open at the platform's minimum. A country with a region listed is checked by region: a connection from it whose region cannot be told is refused, and so is an organization's player there sent without a region.

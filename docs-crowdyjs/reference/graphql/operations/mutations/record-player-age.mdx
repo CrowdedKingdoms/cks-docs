@@ -1,0 +1,38 @@
+---
+id: record-player-age
+title: recordPlayerAge
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Record the signed-in player's birth date and country, and under 18 that a parent or guardian agreed, for an account whose age is not known yet (me.ageBracket is 'unknown'). Only the year and month are kept. Refused with CONFLICT when the account already has an age, TERRITORY&#x005F;NOT&#x005F;SUPPORTED for a country Crowded Kingdoms does not serve (the declared one or the network's), and AGE&#x005F;REQUIREMENT&#x005F;NOT&#x005F;MET under 13, in which case the account keeps the bracket under&#x005F;13 and the answer cannot be changed by asking again. Whether the player may play a given app (its minimum age, the country's) is decided at the mint. Returns the account; read ageBracket and country. Requires a session token.
+
+
+```graphql
+recordPlayerAge(
+  input: RecordPlayerAgeInput!
+): User!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>recordPlayerAge.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>RecordPlayerAgeInput!</b></code>](/reference/graphql/types/inputs/record-player-age-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>User</b></code>](/reference/graphql/types/objects/user.mdx) <Badge class="badge badge--secondary " text="object"/>
