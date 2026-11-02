@@ -15,12 +15,13 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-A country Crowded Kingdoms lists: 'blocked' refuses its players (TERRITORY&#x005F;NOT&#x005F;SUPPORTED), and minAge raises the youngest age admitted there. A country not listed is open at the platform's minimum.
+A country, or a region of one, that Crowded Kingdoms lists: 'blocked' refuses its players (TERRITORY&#x005F;NOT&#x005F;SUPPORTED), and minAge raises the youngest age admitted there. A country not listed is open at the platform's minimum. A country with a region listed is checked by region: a connection from it whose region cannot be told is refused, and so is an organization's player there sent without a region.
 
 
 ```graphql
 type TerritoryPolicy {
   countryCode: String!
+  regionCode: String
   status: String!
   minAge: Int!
 }
@@ -31,6 +32,10 @@ type TerritoryPolicy {
 
 #### [<code style={{ fontWeight: 'normal' }}>TerritoryPolicy.<b>countryCode</b></code>](#country-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #country-code */} 
 ISO 3166-1 alpha-2 country code, such as KR.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>TerritoryPolicy.<b>regionCode</b></code>](#region-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #region-code */} 
+ISO 3166-2 code of the region this rule is for, such as UA-43; null for the country's own rule.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>TerritoryPolicy.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #status */} 

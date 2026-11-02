@@ -28,7 +28,10 @@ input UpdateAppInput {
   wildernessWritesOpen: Boolean
   replayLoggingEnabled: Boolean
   replayLoggingRecordsMedia: Boolean
+  replayLoggingRecordsVoice: Boolean
+  replayLoggingRecordsVideo: Boolean
   claimOwnerKeys: [String!]
+  minPlayerAge: Int
 }
 ```
 
@@ -60,15 +63,27 @@ Open (true) or close (false) the app's wilderness to voxel and chunk writes: chu
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>replayLoggingEnabled</b></code>](#replay-logging-enabled)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #replay-logging-enabled */} 
-Turn replay logging on (true) or off (false): record every client message the realtime servers accept for this app (keep-alives included), kept for the input log's published retention and billed as stored input logs (input&#x005F;log&#x005F;storage&#x005F;byte&#x005F;hours, no free allowance). Turning it ON is refused with INPUT&#x005F;LOG&#x005F;FUNDS&#x005F;NEEDED unless the org's wallet can spend at least the projected cost of keeping one retention period of the app's recent traffic, or the org is billing-exempt; turning it off always succeeds, and what was already recorded goes on billing until it ages out. Recording starts and stops within about 15 seconds. Omit to leave unchanged.
+Turn replay logging (the safety log) on (true) or off (false): record every client message the realtime servers accept for this app (keep-alives included), kept for the input log's published retention and billed as stored input logs (input&#x005F;log&#x005F;storage&#x005F;byte&#x005F;hours, no free allowance). Turning it ON is refused with INPUT&#x005F;LOG&#x005F;FUNDS&#x005F;NEEDED unless the org's wallet can spend at least the projected cost of keeping one retention period of the app's recent traffic, or the org is billing-exempt. Turning it off is refused with SAFETY&#x005F;LOG&#x005F;REQUIRED while the app admits players under 18 (its minimum player age, or the platform's, is under 18); otherwise it succeeds, and what was already recorded goes on billing until it ages out. Recording starts and stops within about 15 seconds. Omit to leave unchanged.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>replayLoggingRecordsMedia</b></code>](#replay-logging-records-media)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #replay-logging-records-media */} 
 With replay logging on, record the app's voice (sendAudioPacket), webcam video (sendVideoPacket) and channel audio (sendChannelAudio) too (true, the default) or leave them out of the input log (false); every other message is recorded either way. Takes effect within about 15 seconds; what was already recorded stays until it ages out. Omit to leave unchanged.
 
 
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>replayLoggingRecordsVoice</b></code>](#replay-logging-records-voice)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #replay-logging-records-voice */} 
+With replay logging on, record the app's voice (sendAudioPacket) and channel audio (sendChannelAudio) (true, the default) or leave them out (false). Overrides replayLoggingRecordsMedia for voice when both are given; replayLoggingRecordsMedia then reads true if voice or video is recorded. Omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>replayLoggingRecordsVideo</b></code>](#replay-logging-records-video)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #replay-logging-records-video */} 
+With replay logging on, record the app's webcam video (sendVideoPacket) (true, the default) or leave it out (false). Overrides replayLoggingRecordsMedia for video when both are given; replayLoggingRecordsMedia then reads true if voice or video is recorded. Omit to leave unchanged.
+
+
 #### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>claimOwnerKeys</b></code>](#claim-owner-keys)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>[String!]</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="list"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #claim-owner-keys */} 
 Grid permission keys a player's claim grants its owner on the claimed grid (at most 8; active grid keys; never a player-code key). An empty list grants none. Applies to claims made from now on. Omit to leave unchanged.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>UpdateAppInput.<b>minPlayerAge</b></code>](#min-player-age)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Int</b></code>](/reference/graphql/types/scalars/int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #min-player-age */} 
+The youngest age the app admits, 13 to 18. It only ever raises the platform's minimum (18 until players 13 and over are admitted, then 13), never lowers it; younger players are refused AGE&#x005F;REQUIREMENT&#x005F;NOT&#x005F;MET at their next mint or refresh. null returns the app to the platform's minimum. Omit to leave unchanged.
 
 
 

@@ -1,0 +1,39 @@
+---
+id: my-comm-settings
+title: myCommSettings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+The caller’s voice and video settings in the app: the effective scopes the realtime servers enforce, what the player picked, and what policy allows (a player under 18 needs a parent’s consent per medium and is capped at CONTACTS). Game plane: send the app-scoped token for this app to the app’s datacenter.
+
+
+```graphql
+myCommSettings(
+  appId: BigInt!
+): CommSettings!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>myCommSettings.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>CommSettings</b></code>](/reference/graphql/types/objects/comm-settings.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A player’s voice and video settings in one app. The four scopes are the EFFECTIVE ones, which the realtime servers enforce on both sending and receiving: the player’s choice, never more than policy allows. An adult may choose anything (EVERYONE by default). For a player under 18 each medium is OFF until a parent consents to it (requestParentalConsent), and then at most CONTACTS. A block always wins: nothing passes between two players while either has blocked the other.

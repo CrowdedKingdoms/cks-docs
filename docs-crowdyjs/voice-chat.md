@@ -17,9 +17,11 @@ on the grid under the target chunk. A new app's default tier already carries
 this key. A send without it is refused with `UNAUTHORIZED` (error code 7) on
 the `genericError` / `errors` lane.
 
-From the replication server release after v0.42.0, a listener needs `use_voice_chat` too, and
+From replication server v0.43.0, a listener needs `use_voice_chat` too, and
 each player's voice settings, contacts and blocks decide who hears whom; a player under 18 has
-voice off until a parent consents. See [Voice, video, contacts and blocks](/game-api/communication).
+voice off until a parent consents. `game.safety.commSettings(appId)` says what applies to the
+player now, and `game.safety.setCommSettings` lowers it (CrowdyJS 18.24.0). See
+[Voice, video, contacts and blocks](/game-api/communication).
 
 If the app has [replay logging](/replication-api/input-logging) on, voice is recorded with
 the player's other inputs unless the app leaves it out (`replayLoggingRecordsVoice: false`).

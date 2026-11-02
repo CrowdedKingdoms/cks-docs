@@ -126,6 +126,11 @@ The kit, `ckx-sdk` and `crowdy-client-sdk` are released with the platform's comp
 toolchain release it was copied from. Use the latest release: versions ending in `-dev.N` or
 `-test.N` are for our internal environments.
 
+Kit 0.6.0 carries `ckx-sdk` 0.13.0 (compute toolchain v1.16.0, ck-exec 0.20.0): a player's
+[erasure and data export hooks](players-and-safety), `players.blocked`, `safety.report` and the
+`age_bracket` on `players.get`. A crate on an older `ckx-sdk` builds and runs, and its hubs answer
+"not implemented" to the erasure and the export.
+
 ## Contributing
 
 Issues and pull requests are welcome in the kit's repository. The SDKs, the checks, the meter
