@@ -152,7 +152,8 @@ belongs to the studio:
 
 Crowded Kingdoms is opening to players aged 13 to 17. From that opening, every app whose minimum
 age is under 18 admits them, and must keep its safety log on, give players the communication
-controls and name moderators. A game for adults sets its minimum age now:
+controls and appoint a moderator (a member holding a role with `moderate_safety`; an admin alone
+does not count). A game for adults sets its minimum age now:
 
 ```graphql
 mutation { updateApp(appId: "42", input: { minPlayerAge: 18 }) { effectiveMinPlayerAge } }

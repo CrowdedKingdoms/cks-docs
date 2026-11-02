@@ -21,9 +21,11 @@ deliberately (`appAccess.updateTier`); the default world grid and a player's
 self-claimed chunk then follow the tier. A send without it is refused with
 `UNAUTHORIZED` (error code 7) on the `genericError` / `errors` lane.
 
-From the replication server release after v0.42.0, a viewer needs `use_video_chat` too, and
+From replication server v0.43.0, a viewer needs `use_video_chat` too, and
 each player's video settings, contacts and blocks decide who sees whom; a player under 18 has
-video off until a parent consents. See [Voice, video, contacts and blocks](/game-api/communication).
+video off until a parent consents. `game.safety.commSettings(appId)` says what applies to the
+player now, and `game.safety.setCommSettings` lowers it (CrowdyJS 18.24.0). See
+[Voice, video, contacts and blocks](/game-api/communication).
 
 If the app has [replay logging](/replication-api/input-logging) on, video is recorded with
 the player's other inputs unless the app leaves it out (`replayLoggingRecordsVideo: false`).

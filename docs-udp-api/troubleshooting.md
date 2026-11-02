@@ -71,7 +71,19 @@ never reach your handler. Use one socket for both directions, and **accept datag
 from the Buddy host IP regardless of the exact source** — a server may reply from a
 different internal interface than the one you addressed.
 
-### 6. If everything above checks out — it's server-side
+### 6. Is the other player allowed to receive it?
+
+From replication server v0.43.0, some traffic is dropped at the receiver, silently, and the sender
+hears nothing: communication between two players when either has blocked the other (movement and
+world edits still pass); voice, video, text or a direct message to a player who lacks the matching
+permission key (`use_voice_chat`, `use_video_chat`, `use_text_chat`, `use_direct_messages`); voice
+and video that the two players' settings do not admit; and a direct message to a player under 18.
+If one receiver gets nothing while others do, check that player's tier keys and
+`myCommSettings`. Voice or video sent with its send setting off, a minor's direct message and a
+send under another player's actor are refused instead, with `UNAUTHORIZED` (7). See
+[Voice, video, contacts and blocks](/game-api/communication#what-the-realtime-servers-do).
+
+### 7. If everything above checks out — it's server-side
 
 If you have a clean `serverWithLeastClients` (no errors, `ReadyForClients`), waited,
 are sending HMAC-valid `ACTOR_UPDATE_REQUEST_2` to `ip4:clientPort`, and listening on

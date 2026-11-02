@@ -134,3 +134,18 @@ Only an adult may accept them: an account with no age is refused `AGE_REQUIRED` 
 [`recordPlayerAge`](age-and-territory#an-account-with-no-age-recordplayerage)), and one under 18
 `AGE_REQUIREMENT_NOT_MET`. Until they are accepted, `createOrganization` and the organization's and
 apps' administration answer `LEGAL_ACCEPTANCE_REQUIRED`.
+
+## In the SDKs
+
+- **CrowdyJS 18.24.0:** `client.auth.playerLegalDocuments()`, `appRequiredDocuments(appId)`,
+  `recordPlayerConsents({ acceptLegal, attestAgeOfMajority, appId, method })` and
+  `playerLegalAcceptance({ appId })`; `legalAcceptanceRequiredOf(err).missingDocuments` reads the
+  refusal; an app admin calls `client.apps.setRequiredDocuments(appId, documents)`; a developer
+  `developerLegalDocuments()`, `recordDeveloperConsents()` and `developerLegalAcceptance()`.
+- **CrowdyCPP 0.75.0:** `auth().recordPlayerConsents(PlayerConsents)` with `appId` and `method`
+  (`LegalAcceptanceMethod::IN_GAME` on your own screen), `auth().playerLegalAcceptance(appId)`,
+  `playerLegalDocuments()`, `appRequiredDocuments(appId)` and
+  `admin().apps().setRequiredDocuments(appId, documents)`.
+- **CrowdyPy 0.23.0:** `auth.record_player_consents(accept_legal=True, app_id=…, method=…)`,
+  `auth.player_legal_acceptance(app_id=…)`, `auth.player_legal_documents()`,
+  `auth.app_required_documents(app_id)` and `apps.set_required_documents(app_id, documents)`.

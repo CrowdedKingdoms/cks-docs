@@ -121,9 +121,14 @@ unless both are players of the app.
 
 **Check it before your code carries one player's words, voice or media to another**: mail,
 private messages, a chat line your hub emits for a player, friend requests, trades, duels and
-invites. The realtime servers stop everything between two players when either has blocked the
-other, but what your code emits has no sending player, so they pass it, block or no block. Tell
-the blocked player nothing.
+invites. The realtime servers stop communication between two players when either has blocked the
+other (movement and world edits still pass, so both see the same world), but what your code emits
+has no sending player, so they pass it, block or no block. Tell the blocked player nothing.
+
+**Never pass one player's direct message to a minor as your hub's own.** The realtime servers drop
+a player's direct message to a player under 18, and pass what your code sends, so a hub that
+forwards a private message would deliver what the platform refuses. Read the recipient's
+[age bracket](#age-brackets) first.
 
 ## Reports
 

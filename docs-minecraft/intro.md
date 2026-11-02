@@ -129,9 +129,11 @@ The month and year stay on that server. Crowded Kingdoms is told the age in whol
 A player under 13 is disconnected with "You can't play on this server." and turned away each time
 they return. The server does not keep the month they gave.
 
-A player from 13 to 17 is turned away from the shared world. Crowded Kingdoms does not yet take an
-age at sign-in, and the organization still answers for its players being 18 or older. The server
-tells them "You can't enter the shared world from this server."
+A player from 13 to 17 is turned away from the shared world. Crowded Kingdoms takes each player's
+age and country at sign-in and applies its own minimum ages, but until it opens to players 13 and
+over the organization still answers for its players being 18 or older, so this server keeps them
+out itself. The server tells them "You can't enter the shared world from this server." See
+[Players under 18 and player safety](/overview/player-safety).
 
 Put a country database at `geoip.countryDatabase`, as in the file above. The path is relative to
 the server folder, or absolute. A replaced file is read again within a minute. Either

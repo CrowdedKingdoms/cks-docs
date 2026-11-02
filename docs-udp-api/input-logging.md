@@ -72,9 +72,10 @@ mutation TextOnly($appId: BigInt!) {
 - `replayLoggingRecordsMedia`, the older switch, sets both, and reads `true` while either is on.
   In Crowdy Studio it is the **Record voice and video** switch under **Replay logging**. An
   explicit voice or video switch in the same update wins for its medium. (Game API v2.60.0.)
-- **Until the replication servers record the two separately** (the release after v0.42.0),
-  either switch on records both media. `App.recording` reports what is really recorded, so a
-  medium reads as recorded while either switch is on.
+- **From replication server v0.43.0 each switch records its own medium** (before it, either
+  switch on recorded both). `App.recording` still reads a medium as recorded while either switch
+  is on (Game API v2.61.0), so it never says less than is recorded: show the notice for what it
+  reports.
 
 A change takes effect shortly after you make it and deletes nothing already recorded. Voice and
 video are usually most of what an app records, so leaving them out also cuts what recording costs.
@@ -95,8 +96,9 @@ Kingdoms opens to players 13 and over, no app does; from the opening, every app 
 
 - **Live** (Game API v2.60.0): the requirement below, the separate voice and video switches,
   `App.recording`, moderators' reads, and the copies reports preserve.
-- **Being built:** on an app that admits players under 18, only moderators read other players'
-  records, and every read of a player's own records is audited too.
+- **Live** (Game API v2.61.0): on an app that admits players under 18, only moderators read other
+  players' records, only those a report covers, and every read is audited, a player's reads of
+  their own included.
 
 :::
 
@@ -116,12 +118,14 @@ Kingdoms opens to players 13 and over, no app does; from the opening, every app 
 
   `enabled` is the safety log itself, which always includes text; `voice` and `video` are each
   medium.
-- **Who reads it.** A player reads the records of their own sessions, which hold only what their
-  client sent. An app admin (`manage_apps`) reads every session. A moderator (`moderate_safety`)
-  reads only the sessions an open or escalated report covers. Every read of another player's
-  records is audited. Being built: on an app that admits players under 18, only moderators read
-  other players' records, and only those a report covers, while app admins keep full reads on
-  apps for adults; and a player's reads of their own records are audited too.
+- **Who reads it** (Game API v2.61.0). A player lists and reads their own sessions, which hold
+  only what their client sent. A holder of `moderate_safety` (an appointed moderator, or the
+  organization's admins) lists and reads only the sessions an open or escalated report covers.
+  `manage_apps` gives nothing more: another player's list is `FORBIDDEN` and their session
+  `NOT_FOUND`. Every list and read is audited before it is served, a player's own included.
+- **A minor's session stays covered.** On an app for adults, `manage_apps` lists and reads every
+  session but a player under 18's, so raising a minimum age opens no recording made while minors
+  played.
 - **How long.** The input log's [retention](#retention), 7 days. A report copies the records
   around it into a secure store until it is resolved, or for a year after a CyberTipline report
   ([What a report preserves](/game-api/safety-reports#what-a-report-preserves)).
@@ -180,12 +184,12 @@ Both queries are game plane. Send them with an **app-scoped token** for the app 
 datacenter ([Datacenter routing](/game-api/datacenter-routing); the SDKs follow a
 `WRONG_DATACENTER` refusal for you). An identity session token is refused.
 
-**Who sees what.** A player sees only their own sessions and inputs. A holder of
-`manage_apps` on the app sees every session and can filter by player. A moderator
-(`moderate_safety`) reads the inputs of the sessions an open or escalated safety report covers,
-which the report lists (`SafetyReport.sessions`), and no others. Each read of another player's
-session is audited. On an app that admits players under 18 this is changing: see
-[who reads the safety log](#the-safety-log).
+**Who sees what.** A player sees only their own sessions and inputs. On an app for adults, a
+holder of `manage_apps` on the app sees every session but a player under 18's and can filter by
+player. A moderator (`moderate_safety`) reads the inputs of the sessions an open or escalated
+safety report covers, which the report lists (`SafetyReport.sessions`), and no others. Each read
+of another player's session is audited. On an app that admits players under 18, `manage_apps`
+gives nothing more and every read is audited: see [who reads the safety log](#the-safety-log).
 
 List the recorded sessions, newest first:
 
@@ -345,8 +349,8 @@ app's byte-hours and the bytes it holds now; the full basis is in
 | `INPUT_LOG_TEMPORARILY_UNAVAILABLE` | `inputLogMessages` could not read the log just now (its readers were busy, or the store was briefly unreachable). Retryable: retry shortly with the same cursor; nothing is lost. 503. |
 | `INPUT_LOG_RATE_LIMITED` | An earlier `inputLogMessages` read was still running when this one's wait ran out, or freed its share with too little of this read's deadline left to read: each server runs one read per user, and two per app and per organization, at a time. Retryable: retry shortly with the same cursor. 429. |
 | `INPUT_LOG_READ_ABORTED` | An `inputLogMessages` read stopped because its HTTP request closed (you aborted it). Nobody receives this answer: your request has already ended with your own abort. It shows in usage figures as a client error. 499. |
-| `FORBIDDEN` | `inputLogSessions` was asked for another player's sessions without `manage_apps`. |
-| `NOT_FOUND` | `inputLogMessages` was asked for a session that is not yours, without `manage_apps` (or, for a moderator, one no open or escalated report covers), or that does not exist. |
+| `FORBIDDEN` | `inputLogSessions` was asked for another player's sessions without `manage_apps` (on an app that admits players under 18, by anyone but a moderator narrowing the reported sessions). |
+| `NOT_FOUND` | `inputLogMessages` was asked for a session that is not yours, without `manage_apps` (or, for a moderator, one no open or escalated report covers; on an app that admits players under 18, or for a minor's session, `manage_apps` does not count), or that does not exist. |
 | `BAD_USER_INPUT` | `inputLogMessages` was given a malformed cursor or one from another session; a connection cursor points past 10,000,000 rows; or a filter is out of range. (`inputLogSessions` treats a malformed cursor as the first page.) |
 
 All error codes are on [Error codes](/overview/error-codes).
