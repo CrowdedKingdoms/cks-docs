@@ -3,11 +3,11 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/guides/best-practices
 
 # Best Practices
 
-Four rules decide most of the design questions you will meet with this SDK: which plane a field lives on, who decides an outcome, what code that runs once per entity may do, and what the host is for. Every feature page shows one of them on one feature; this page states them plainly so you can apply them to a feature no page covers.
+Four rules decide most of the design questions you will meet with this SDK: which plane a field lives on, who decides an outcome, what code that runs once per entity may do, and what the Leader is for. Every feature page shows one of them on one feature; this page states them plainly so you can apply them to a feature no page covers.
 
 ## When you come here
 
-Before you add a replicated variable and are not sure whether it is a `CrowdyState` property or belongs on the server. Before you write the code that resolves a fight, a capture, or a purchase. When a loop over your networked entities is slower than it should be. When you are about to write `if (IsHost())` around something that matters.
+Before you add a replicated variable and are not sure whether it is a `CrowdyState` property or belongs on the server. Before you write the code that resolves a fight, a capture, or a purchase. When a loop over your networked entities is slower than it should be. When you are about to write `if (IsLocalLeader())` around something that matters.
 
 ## Where state goes
 
@@ -27,7 +27,7 @@ Only you know whether a value gates a reward, so the SDK cannot choose the plane
 
 ## Requesting versus deciding
 
-A client requests a change and presents the confirmed result. It does not decide the authoritative outcome, not from local prediction, not from a peer's event, and not because it happens to be the host.
+A client requests a change and presents the confirmed result. It does not decide the authoritative outcome, not from local prediction, not from a peer's event, and not because it happens to be the Leader.
 
 When the client already knows the target, it asks the server's code for the change: deal damage, heal, capture a camp, change ownership, assign a team. The server validates and applies it, including any immediate dependent state. When the target or the process has to be discovered or coordinated, finding or creating a team, searching, resetting a match, fanning out work, that work belongs in server code too. The site-wide [API best practices](/overview/best-practices) page states this split for every API.
 
@@ -45,33 +45,53 @@ Resolve once, outside the loop. Anything that allocates, copies a container, sea
 Resolve the component, the ownership, and the property you need once, into a plain value, and let the loop index that. If the loop needs to know who owns each entity, that is a bool per entity computed once, not a `FindComponentByClass` and a `Cast<>` per entity per frame.
 :::
 
-The entity component is built to be read this way. `GetOwnership()`, `GetRole()`, and `IsLocallyOwned()` are cheap getters over values the component already holds, and `OnCrowdyOwnershipAssigned` tells you the moment they change, so an owner flag can be computed at `BeginPlay` and updated from that event rather than re-derived every frame. The same applies on the send side: a `MarkStateDirty` or an RPC issued inside a loop over many entities is a per-entity cost your own tick pays before the SDK ever sees the data. Ship one event that names many entities before you ship many events that each name one. [The Entity Component](../runtime/entity-component.md) lists the getters.
+The entity component is built to be read this way. `OwnedBy`, `GetRole()`, and `IsLocallyOwned()` are cheap getters over values the component already holds, and `OnCrowdyOwnershipAssigned` tells you the moment they change, so an owner flag can be computed at `BeginPlay` and updated from that event rather than re-derived every frame. The same applies on the send side: a `MarkStateDirty` or an RPC issued inside a loop over many entities is a per-entity cost your own tick pays before the SDK ever sees the data. Ship one event that names many entities before you ship many events that each name one. [The Entity Component](../runtime/entity-component.md) lists the getters.
 
-## What to do on the host
+<a id="what-to-do-on-the-host"></a>
 
-One client of your app is elected host. The host is a convenience for "which client runs shared setup once": driving world entities that belong to nobody, spawning the things a level needs, running the one-time step that should not happen on every client at once.
+## What the Leader is for
 
-It is not a security boundary. Election happens on the view plane and nothing on the server prevents a modified client from claiming the role or from writing as if it held it. Even the SDK's own host-owned entity path, the `HostOverride` policy read through `GetHostOverridePolicy()`, is precedence by convention: it decides whose write wins on a well-behaved client, not whether a write is true.
+One client of your app is the [Leader](../runtime/leader.md), chosen by a Server Object the SDK deploys. The Leader writes replicated subsystems. It is a convenience for "which client writes shared state": a village clock, a weather phase. No client writes an entity Owned By World, so keep what changes about it in a Server Object.
 
-:::warning[The host is a convention, not an anti-cheat boundary.]
-Do not put HP, currency, inventory, captures, or team assignment behind a host check. A host check decides who runs a piece of view-plane work; your server code decides whether a change is allowed. [The Host Is a Convention](../concepts/host-is-a-convention.md) explains why.
+It is not a security boundary. The server picks the Leader and nothing on the server prevents a modified client from claiming the role or from writing as if it held it.
+
+:::warning[The Leader is a convention, not an anti-cheat boundary.]
+Do not put HP, currency, inventory, captures, or team assignment behind a Leader check. Such a check decides who runs a piece of view-plane work; your server code decides whether a change is allowed. [A Coordinator Is a Convention](../concepts/host-is-a-convention.md) explains why.
 :::
 
-Two checks answer "am I the host", at two trust levels. `UCrowdyHostSubsystem::IsHost()`, `GetHostID()`, and `GetHostUserID()` are the local view, free and immediate, and right for choosing which client runs setup. `UCrowdyHostSubsystem::CheckEntityIsHost` is the server-validated sibling of the client-derived `UCrowdyUtilities::IsCrowdyEntityHost` compare: for the local player it asks the server directly, and for another actor it resolves that actor's owner on the server and compares it to the elected host. Use it when the caller cannot afford a spoofed or stale answer, and remember that even its answer only tells you who is host; the gate itself still lives in your server code. [Host Authority](../runtime/host-authority.md) has the calls, [Host Election](../services/host-election.md) the server-validated check in full.
+To ask "do I lead", use `UCrowdyLeaderSubsystem::IsLocalLeader()`; to ask "do I write this entity", use `IsCrowdyEntityLocallyOwned`. [The Leader](../runtime/leader.md) has the calls. The deprecated elected host and its checks are described under [Deprecated](#deprecated).
+
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](./deprecated.md) lists each item and what replaces it.
+:::
+
+### The elected host and its checks
+
+The Leader and `IsLocalLeader()` replace the elected host and its checks, and the gate itself belongs in your server code; [Host Election (Deprecated)](../services/host-election.md) has the server-validated check in full.
+
+On a project that sets Leader Source to **Elected Host (Deprecated)**, the elected host takes the Leader's job and also drives world entities. The deprecated host functions report the Leader by default. Two checks answer "am I the host" under Elected Host, at two trust levels. `UCrowdyHostSubsystem::IsHost()`, `GetHostID()`, and `GetHostUserID()` are the local view, free and immediate, and right for choosing which client runs setup. `UCrowdyHostSubsystem::CheckEntityIsHost` is the server-validated sibling of the client-derived `UCrowdyUtilities::IsCrowdyEntityHost` compare: for the local player it asks the server directly, and for another actor it resolves that actor's owner on the server and compares it to the elected host. Use it when the caller cannot afford a spoofed or stale answer, and remember that even its answer only tells you who is host. A host check is no more an anti-cheat boundary than a Leader check.
+
+Under Elected Host, `IsLocallyOwned()` fails closed for a World entity while no host is elected yet.
+
+### Host Override
+
+`HostOverride` has no replacement: state that must be protected belongs in your server code.
+
+The `HostOverride` policy, read through `GetHostOverridePolicy()`, is precedence by convention: it decides whose write wins on a well-behaved client, not whether a write is true. An honest client sends a host correction only under Elected Host. It is authored configuration, identical on every client. It is not sent on the wire and it is not checked by the server.
 
 ## Gotchas
 
 - A field lives on one plane. Decide which one it is before you mark it.
-- `IsLocallyOwned()` fails closed for a host-owned entity while no host is elected yet. Bind `OnCrowdyOwnershipAssigned` instead of assuming an answer at `BeginPlay`.
-- `HostOverride` is authored configuration, identical on every client. It is not sent on the wire and it is not checked by the server.
+- `IsLocallyOwned()` is false for an entity Owned By World on every client. For a replicated subsystem it is false until the Leader is known. Bind `OnCrowdyOwnershipAssigned` instead of assuming an answer at `BeginPlay`.
 - A per-entity cost you cannot see in one PIE client is still there. Measure with the entity count you ship, not the one you test with; [Testing Locally](./testing-locally.md) covers the loopback switches for that.
 
 ## Related
 
 - [The Two Planes](../concepts/two-planes.md): the split, field by field.
 - [ck-exec overview](/exec/intro): where the truth plane's code runs.
-- [Host Authority](../runtime/host-authority.md): the host calls and host-owned entities.
-- [Host Election](../services/host-election.md): the server-validated host check.
+- [The Leader](../runtime/leader.md): who writes what, and Leader Source.
 - [Testing Locally](./testing-locally.md): loopback and trace switches for a single client.
 
 # Testing Locally
@@ -90,7 +110,7 @@ wrong.
 
 You are iterating on an RPC handler or a Crowdy State property and want to confirm the send and receive
 code paths without launching a second client, you are about to test something that only shows up with two
-real players (host election, ownership, targeted delivery), or something replicated is not showing up and
+real players (who leads, ownership, targeted delivery), or something replicated is not showing up and
 you need to see where the SDK stopped.
 
 ## Single-client RPC loopback
@@ -140,8 +160,8 @@ this yourself, it explains why a mirror exists at all rather than a same-actor r
 
 ## Two-PIE-client setup
 
-The loopback switches cover the common case. Some things only show up with two real clients: which one gets
-elected host, an ownership transfer, a targeted or spatial send that must reach one client and not the
+The loopback switches cover the common case. Some things only show up with two real clients: which one becomes
+the Leader, an ownership transfer, a targeted or spatial send that must reach one client and not the
 other.
 
 :::caution[Two PIE clients need two distinct real accounts.]
@@ -161,8 +181,9 @@ session, so two clients work, but a third would restore the second one's account
 extra ones as packaged clients with `-crowdysession` (below).
 
 Once both clients are running, confirm the setup actually worked before you trust anything else you see:
-each client should report a different local player identity, and exactly one client should be the elected
-host.
+each client should report a different local player identity, and exactly one client should be the
+[Leader](../runtime/leader.md) (`Is Local Leader`). The Leader needs your app's server code deployed once;
+until then there is none.
 
 ### Two packaged or standalone clients
 
@@ -377,7 +398,7 @@ section with the full fix and the trace CVar that confirms it.
 
 | Symptom | Likely cause | Fix | Trace CVar |
 |---|---|---|---|
-| [Nothing replicates on a map](#nothing-replicates-at-all) | A `MapProfiles` row or `DefaultProfile` names an asset that did not load, or networking is off on the resolved profile | Fix the asset path the warning names, or tick Enable Networking | `crowdy.entity.trace` |
+| [Nothing replicates on a map](#nothing-replicates-at-all) | A `MapProfiles` row or `DefaultProfile` names an asset that did not load, or a switch is off on the resolved profile | Fix the asset path the warning names, or tick the profile's switches | `crowdy.entity.trace` |
 | [Actors do not appear at all](#rendering-backend-not-set) | The map profile's Backend Class was cleared | Assign a `UCrowdyRenderingBackend` subclass | `crowdy.entity.trace` |
 | [Entities register but are never drawn](#entities-register-but-are-never-drawn) | Backend Config empty, or its Replication Policy Class unset (2.14.0 and earlier) | Set a Crowdy Actor Pool Backend Config with a policy class | `crowdy.entity.trace` |
 | [Only some remote entities of a class appear](#only-some-remote-entities-of-a-class-appear) | The actor pool never grew past 8 per class (2.16.0 and earlier), or it is at `MaxPoolSizePerClass` | Update to 2.17.0; raise the cap if it warns | `crowdy.pool.trace` |
@@ -393,7 +414,8 @@ section with the full fix and the trace CVar that confirms it.
 
 A project that configures nothing runs on the SDK's shipped default map profile, so "no profile" is not
 the nothing-configured state. The map is inactive when a `MapProfiles` row or the `DefaultProfile` points
-at an asset that did not load, or when **Enable Networking** is off on the profile that resolved.
+at an asset that did not load, or when its switches (**Handle Events and Spawns**, **Draw Remote Entities**,
+**Send Movement**, **Replicate Crowdy State**) are off on the profile that resolved.
 
 With no profile resolved for the current map, the entity subsystem, the auto replicator, and the actor
 manager do nothing. You get one warning in the log and otherwise no errors, so replication just looks dead.
@@ -404,10 +426,10 @@ Fix:
    "did not load; check that the asset still exists and is packaged". Fix the path, or the cook, first.
 2. Open Project Settings, Plugins, Crowdy SDK, Map Profiles, and confirm the row for this map (or
    `DefaultProfile`) points at a `UCrowdyMapProfile` asset that opens.
-3. On that profile, confirm `bEnableNetworking` is true. Keep the other defaults: Actor Pool backend and
-   the auto replicator on.
+3. On that profile, confirm the four switches are ticked. Keep the other defaults: Actor Pool backend and
+   movement sending on.
 4. A map with no row and no `DefaultProfile` runs on the shipped default; if that map should be inactive,
-   give it a profile of its own with **Enable Networking** off.
+   give it a profile of its own with the four switches off.
 
 The profile is resolved by `UCrowdySDKDeveloperSettings::ResolveProfileForWorld`. If no profile resolves,
 the SDK logs "map resolved no map profile, so the SDK is inactive on it: no entity registration" and stays
@@ -490,7 +512,7 @@ CrowdyEntity = CreateDefaultSubobject<UCrowdyEntityComponent>(TEXT("CrowdyEntity
 
 ### The entity is not registered, or the dispatch drops it
 
-A Dynamic entity needs to register before it can send or receive. Until it registers it has no NetID on the
+A moving entity needs to register before it can send or receive. Until it registers it has no NetID on the
 network, and a call aimed at an unregistered entity logs "target is not a registered entity, event dropped"
 from `DispatchGameEvent` and goes nowhere.
 
@@ -504,17 +526,20 @@ Check the `CrowdyRecipient` on the receiver function. The recipient decides who 
 - `SpatialMulticast` (default): spatial and decay-thinned. Remote clients only run the event if they are in
   range.
 - `Multicast`: a named channel, any distance, no decay.
-- `OwningClient`: only the entity's owner.
-- `Host`: only the elected host.
+- `OwningClient`: only the client that writes the entity. With a text parameter it is a direct message: it can be
+  lost with no message while the entity crosses a chunk border, and is refused without `use_direct_messages`. See
+  [Recipients and routing](../runtime/recipients-and-routing.md#targeted-owningclient).
+
+The deprecated `Host` recipient is described under [Deprecated](#deprecated).
 
 If you used the default `SpatialMulticast` and the other client is out of range, the event is thinned away
 on purpose. Raise `CrowdyDistance` (values run `None` to `Eight_Chunks`, default `Eight_Chunks`) or relax
 `CrowdyDecay` (default `No_Decay`). Decay and distance apply only to `SpatialMulticast`.
 
-If you need delivery at any distance, switch to `Multicast` with a `CrowdyChannel`, or use `OwningClient` or
-`Host` for targeted delivery.
+If you need delivery at any distance, switch to `Multicast` with a `CrowdyChannel`, or use `OwningClient` for
+targeted delivery.
 
-:::note[The owner of a SpatialMulticast event runs the body locally and announces to the others. The owner never runs its own `Name_Implementation` from the network: an event is not delivered back to its sender, even where a Dynamic entity's owner draws its own echoed proxy (Render Local Owner on the actor pool).]
+:::note[The owner of a SpatialMulticast event runs the body locally and announces to the others. The owner never runs its own `Name_Implementation` from the network: an event is not delivered back to its sender, even where the owner of an entity that replicates movement draws its own echoed proxy (Render Local Owner on the actor pool).]
 :::
 
 ### The event was never registered, or the receiving function cannot be found
@@ -616,7 +641,7 @@ The SDK is split across modules. Reference the right one for the API you call:
 
 - `CrowdyReplication`: the entity subsystem (`UCrowdyEntitySubsystem`), the entity component, RPC events.
 - `CrowdyServices`: high-level subsystems and statics: `UCrowdyUtilities`, `UCrowdyTeams`,
-  `UCrowdyAvatars`, `UCrowdyChannels`, `UCrowdyHostSubsystem`.
+  `UCrowdyAvatars`, `UCrowdyChannels`.
 - `CrowdySDK`: `UCrowdySDKSubsystem` (including voice).
 
 Fix:
@@ -651,6 +676,26 @@ symptom with one client, and [Log categories](../reference/log-categories.md) fo
 A `LogHttp` `ConnectionError` burst against a backend host, with otherwise clean local connectivity, points
 at your own network path, not the SDK. Check your route to the backend before filing a bug.
 
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](./deprecated.md) lists each item and what replaces it.
+:::
+
+### An event with the Host recipient is not received
+
+`OwningClient` replaces `Host`; see [The recipient does not include this client](#the-recipient-does-not-include-this-client).
+
+A receiver with `CrowdyRecipient = "Host"` runs on the Leader on a replicated subsystem. On an actor it is
+dropped with a warning that names Leader Source, unless Leader Source is **Elected Host (Deprecated)**, where
+only the elected host runs it. See [Recipients and routing](../runtime/recipients-and-routing.md#deprecated).
+
+### Where the host subsystem lives
+
+`UCrowdyLeaderSubsystem` replaces `UCrowdyHostSubsystem`; see [The Leader](../runtime/leader.md).
+`UCrowdyHostSubsystem` lives in `CrowdyServices`, so a call into it needs that module in your `Build.cs`, as
+[Module dependency or include errors](#module-dependency-or-include-errors) shows.
+
 ## Gotchas
 
 - A map with nothing configured runs on the shipped default profile. The "resolved no map profile" warning
@@ -682,7 +727,7 @@ Source: https://docs.crowdedkingdoms.com/unreal-sdk/guides/sample-project
 `crowdy-sdk-sample` is a small, real Unreal project that demonstrates the SDK feature by feature. Each feature is a switch you walk into: the switch fires, the feature runs, and you watch the result replicate across two Play in Editor clients.
 
 :::note[This tour targets SDK 2.1.0, not the current SDK]
-The plugin copy bundled in the repo is 2.1.0 (`Plugins/CrowdySDK/CrowdySDK.uplugin`), the release that introduced the current `GetCrowdyHasAuthority` name. It predates this site's own CrowdyState pages. The repo's README documents a few 2.1.0 additions, property replication on CrowdyState, replicated subsystems, host and ownership fields, as already present in the bundled plugin code, but none of the switches below exercise them, so this page does not either. For the current shapes, follow the Lantern in the [Quickstart](../quickstart.md).
+The plugin copy bundled in the repo is 2.1.0 (`Plugins/CrowdySDK/CrowdySDK.uplugin`), the release that introduced the `GetCrowdyHasAuthority` name. It predates this site's own CrowdyState pages. The repo's README documents a few 2.1.0 additions, property replication on CrowdyState, replicated subsystems, host and ownership fields, as already present in the bundled plugin code, but none of the switches below exercise them, so this page does not either. For the current shapes, follow the Lantern in the [Quickstart](../quickstart.md).
 :::
 
 The code lives in the `CrowdySDKTest` module, under `Source/CrowdySDKTest/Public|Private/Sample`.
@@ -725,12 +770,12 @@ Eight switches, each demonstrating one part of the SDK.
 
 | Example | Switch | SDK feature it shows |
 | --- | --- | --- |
-| MimicMe | `ASampleMimicSwitch` | Dynamic entity with a continuous-state executor |
+| MimicMe | `ASampleMimicSwitch` | Entity that replicates movement, with a continuous-state executor |
 | Object spawn-move-rotate-destroy | `ASampleObjectSwitch` | Spawn and destroy, plus RPC events with direct parameters |
 | Ghost | `ASampleGhostSwitch` | Owner tracking: your own state echoed back as a proxy |
 | Voice | `ASampleVoiceSwitch` | Voice chat capture and playback |
 | Channel announce | `ASampleChannelSwitch` | Multicast RPC over a self-provisioned channel |
-| Host spawn | `ASampleHostSwitch` | Host authority gate |
+| Host spawn | `ASampleHostSwitch` | A spawn gate on a deprecated API, under [Deprecated](#deprecated) |
 | Persistence | `ASamplePersistenceSwitch` | Push and pull saved gameplay state |
 | Teams | `ASampleTeamsSwitch` | Find or create a team, join it, leave it on the next interact |
 
@@ -764,7 +809,7 @@ The AutoReplicator polls the executor about ten times a second, only on the owne
 
 ### Object spawn-move-rotate-destroy
 
-`ASampleObjectSwitch` cycles through four actions on `ASampleObjectEntity`, a Static-mode `UCrowdyEntityComponent` actor: spawn, move, rotate, destroy.
+`ASampleObjectSwitch` cycles through four actions on `ASampleObjectEntity`, a `UCrowdyEntityComponent` actor that sends no movement: spawn, move, rotate, destroy.
 
 - Spawn and destroy go through the entity spawn API.
 - Move and rotate are RPC events whose parameters arrive directly, with no payload struct.
@@ -785,7 +830,7 @@ Calling `SetObjectLocation(NewLocation)` runs the body on the owner and announce
 
 `ASampleGhostSwitch` toggles `UCrowdyActorTracker::ToggleOwnerTracking`. With owner tracking on, the server echoes your own state back to you, and the backend draws it as a proxy: a true network round trip of yourself, not a local copy.
 
-:::caution[Your player pawn must be a Dynamic Crowdy entity for there to be any state to echo.]
+:::caution[Your player pawn must be a Crowdy entity that replicates movement for there to be any state to echo.]
 :::
 
 ### Voice
@@ -806,7 +851,7 @@ See [Voice Chat](../services/voice-chat.md).
 
 ### Channel announce
 
-`ASampleChannelSwitch` is a Static entity with a Stable identity policy. On interact it self-provisions its channel: it looks up `SampleWorldChat`, creates it with an Open policy if it does not exist yet, joins it, and registers for reliable RPC on it. `Announce`, its Multicast event, is then routed over that channel.
+`ASampleChannelSwitch` is an entity that sends no movement, with a Stable identity policy. On interact it self-provisions its channel: it looks up `SampleWorldChat`, creates it with an Open policy if it does not exist yet, joins it, and registers for reliable RPC on it. `Announce`, its Multicast event, is then routed over that channel.
 
 The event takes four parameters directly:
 
@@ -819,22 +864,6 @@ CROWDY_EVENT(Announce)
 A matching `BlueprintImplementableEvent OnAnnounceReceived` carries the same four parameters for a Blueprint listener. A Multicast event reaches channel members at any distance with no decay.
 
 For raw channel sends and the membership cache, see [Channels](../runtime/channels.md).
-
-### Host spawn
-
-`ASampleHostSwitch` spawns a world object, but only when `UCrowdyUtilities::GetCrowdyHasAuthority(this)` returns true.
-
-```cpp
-if (UCrowdyUtilities::GetCrowdyHasAuthority(this))
-{
-    UCrowdyUtilities::SpawnCrowdyEntity(this, WorldObjectClass, SpawnTransform, FInstancedStruct());
-}
-```
-
-:::note[The host is a convention, not an enforced server role, so this shows how to gate work to the one elected client.]
-:::
-
-See [Host Authority](../runtime/host-authority.md).
 
 ### Persistence
 
@@ -878,12 +907,34 @@ Read the cache for instant UI and treat the callbacks as eventual truth. See [Te
 
 The sample project is already set up for you. Sign up for a developer account, then log in through Crowdy Studio and again through the game. Sync the app first if it is not already synced. Logging in through the game yields the identity session token; an app-scoped token for the app is minted from it before replication works. See [Authentication](../services/authentication.md).
 
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](./deprecated.md) lists each item and what replaces it.
+:::
+
+<a id="host-spawn"></a>
+
+### Host spawn (deprecated API)
+
+**Switch Is Crowdy Entity Locally Owned**, asked about the entity or subsystem you are about to write, replaces this gate; [Checking who writes an entity](../runtime/leader.md#checking-who-writes-an-entity) on The Leader teaches it. `ASampleHostSwitch` spawns a world object, but only when `UCrowdyUtilities::GetCrowdyHasAuthority(this)` returns true. `GetCrowdyHasAuthority` is deprecated in the current SDK, where it still works and reports the Leader by default, so this gate runs on the Leader.
+
+```cpp
+if (UCrowdyUtilities::GetCrowdyHasAuthority(this))
+{
+    UCrowdyUtilities::SpawnCrowdyEntity(this, WorldObjectClass, SpawnTransform, FInstancedStruct());
+}
+```
+
+:::note[A gate like this is a convention, not an enforced server role.]
+In the 2.1.0 SDK it ran on the one elected client. Work that must be enforced belongs in a [Server Object](../concepts/two-planes.md).
+:::
+
 ## Gotchas
 
 - This repo's `Plugins/CrowdySDK` has no `CrowdyCppBridge` or `CrowdyNodes` module folder. If you go looking for current-SDK modules here, you will not find them; they postdate this vendored copy.
 - Eight examples exist in this repo, not nine. An earlier version of this page named a ninth, `ASampleChannelsSwitch`, that does not exist in `Source` or `Content`.
 - Persistence and Teams have no Blueprint counterpart in `Content/Interactions/`, unlike the other six examples.
-- `GetCrowdyHasAuthority` is already the current name in this sample; there is no rename to make here.
 - If the transform replication policy has no concrete subclass registered on `ReplicationPolicyClass`, replication silently does nothing. There is no error to look for.
 
 ## Related
@@ -893,7 +944,7 @@ The sample project is already set up for you. Sign up for a developer account, t
 - [Entities and Spawning](../runtime/entities-and-spawning.md) for the entity component and the spawn API.
 - [Continuous State](../runtime/continuous-state.md) for the executor pattern behind MimicMe.
 - [RPC Events](../runtime/rpc-events-cpp.md) for the `CrowdyEvent` macro and its recipients.
-- [Host Authority](../runtime/host-authority.md) for what host convention means for gameplay code.
+- [The Leader](../runtime/leader.md) for who writes shared state and what that means for gameplay code.
 - [Channels](../runtime/channels.md) for raw channel sends alongside the Multicast RPC shown here.
 - [Voice Chat](../services/voice-chat.md) and [Teams](../services/teams.md) for the two services switches above use directly.
 - [Authentication](../services/authentication.md) for the sign-in this project needs before anything else works.
@@ -912,6 +963,45 @@ You built against the SDK in July, you are updating the plugin to 2.15 or later 
 :::caution[The Game Model entries below no longer reach a server, and the API is removed.]
 The SDK's Game Model API (containers and attributes, Effects, sessions, pre-seeding) was built on the game API's legacy game-model engine, which ck-exec replaced; the game API no longer serves it. The entries that describe it are kept as history. Do not adopt it: v2.18.0, the release that adds Server Objects, deprecates it, and v2.19.0 removes it, as described under [2026-10-12 (SDK v2.19.0)](#2026-10-12-sdk-v2190). Its replacement is [Server Objects](../exec/overview.md), described under [2026-10-07 (SDK v2.18.0)](#2026-10-07-sdk-v2180); [Move from Game Models](../exec/move-from-game-models.md) says what to change.
 :::
+
+## 2026-11-07 (SDK v2.25.0)
+
+One behaviour change: there is no elected host by default. A project that relies on the host sets **Leader Source** to **Elected Host (Deprecated)**. The entity component's Ownership setting, every host node and the ownership-taking subsystem registration are deprecated: they keep working and warn when you compile. [Deprecated in 2.25](./deprecated.md) lists every deprecated item and what replaces it, and the plugin's `MIGRATION.md` lists the same changes with the steps to take.
+
+- **No elected host by default: a Server Object Leader writes replicated subsystems.** **Project Settings, Plugins, Crowdy SDK, Replication, Leader Source** now defaults to **Server Object**. The SDK stops polling for a host. Each signed-in client with a Player Derived avatar joins the Crowdy SDK's Leader type, a Server Object type every deploy now carries: the first to join leads, the longest member takes over, and the server removes a Leader who leaves the realtime world. The Leader writes replicated subsystems and runs their Host events. World entities have no writer on any client, and a Host event on an actor is dropped with a warning that names the setting. **Get Crowdy Leader Subsystem** gives **Get Leader User ID**, **Is Local Leader** and **On Leader Changed**. The deprecated host functions report the Leader. **What you do:** if a World entity in your game is written by the host, such as a turret or a boss simulated on one client, set Leader Source to **Elected Host (Deprecated)** for now and move that state to Server Objects. Otherwise deploy the app's server code once and restart its root, or replicated subsystems have no writer. See [The Leader](../runtime/leader.md).
+- **Owned By replaces Ownership on the Crowdy Entity Component.** The component's ownership setting is now **Owned By**: **Auto** (the default: World for an actor placed in the level, Player for one spawned during play), **Player**, or **World** (no client writes it). Local Client is Player, Host is Auto, and an asset saved earlier is set from its Ownership when it loads, so nothing behaves differently. **Get Ownership** is deprecated; read **Get Owned By**. **What you do:** in C++, set `OwnedBy` instead of `Ownership`; open and re-save your entity Blueprints. See [Entity component](../runtime/entity-component.md#settings).
+- **Owned By Leader: an NPC the Leader simulates.** **Owned By** has a new value, **Leader**. The client that leads writes the entity, and when the Leader goes the next Leader takes it over: other clients hold the body where it stopped, and it moves on from there. Only the Leader spawns or destroys one, and requests and grants for it are refused with a warning. It is for players who share a map, and for NPCs that need the navmesh or physics, on an actor pool map. A Leader writes only what it has a body for. **What you do:** nothing unless you want one. To move such an NPC off the elected host, set Owned By to Leader and gate its simulation on **Is Crowdy Entity Locally Owned** each tick. For NPCs across maps or a large open world, use Game Kit's hub NPCs. See [An NPC the Leader simulates](../runtime/leader.md#an-npc-the-leader-simulates).
+- **A moving entity keeps its body when it changes hands.** Handing a moving entity to another player made it vanish for everyone about 5 seconds later, because the server keeps an actor id for its first sender. Now each owner sends under an id of its own, every client keeps one body, there and back, and an **Owning Client** event reaches the current owner. A client that joined after the entity spawned can take it too. A grant for a player's avatar is ignored. In C++, `DispatchSingleActorMessageFn` and `UCrowdySDKSubsystem::DispatchSingleActorMessage` take an `FCrowdyActorId`. **What you do:** nothing, unless you call those directly. Upgrade every client together: an older one draws a second body for an entity that changed hands. See [Ownership transfer](../runtime/ownership-transfer.md#what-happens-to-in-flight-state).
+- **Owning Client reaches the client that writes an entity, and Host is deprecated.** An **Owning Client** event on a Leader's entity, on one that changed hands a moment ago, or on an entity that sends no movement went to a realtime id nobody had sent, and vanished with no message. An event at a moving entity was also lost while the entity crossed a chunk border. It now goes as a spatial event around the entity, named for the client that writes it, and over the session channel until that client has been heard under its current id. Every other client ignores it, and a client that has not heard of the change of owner yet holds the call for up to 0.3 seconds. An event with a parameter that can hold text stays a direct message, needs `use_direct_messages`, and never uses the session channel. Whichever way it arrives, the event runs only on the writer. Under Elected Host it reaches the host for a World entity; under Server Object that is dropped with a warning. **Host** is hidden from the dropdowns and warns when compiled, and a saved value keeps working. **Send Event** on the entity component is deprecated: use **Send Crowdy Event**. **What you do:** move Host events to Owning Client or a Server Object. Every client near the target receives a copy, and the session channel reaches every client of the app, so keep these events occasional and treat their parameters as untrusted. In an app that grants access zone by zone, the sender needs `access` in a grid covering the target's chunk. Move private text between players to a Server Function. See [Recipients and Routing](../runtime/recipients-and-routing.md#targeted-owningclient-and-host).
+- **An email sign-in only accepts its own link.** While a sign-in link was awaited, the local listener accepted any callback, so a web page the player opened could sign the game, or Crowdy Studio, in to another account. **Begin Magic Link Sign In** and Studio's email sign-in now use a random callback path for each sign-in, so a link from an earlier attempt no longer completes a new one. **What you do:** nothing, unless you call `RequestLoginLink` yourself: then give each sign-in its own unguessable address. The origin of the SDK's address is unchanged. See [Authentication](../services/authentication.md).
+- **The rest of the host surface is deprecated.** Every remaining host node warns when compiled and keeps working until a later release removes it: **Get Host ID**, **Get Host User ID**, **Is Host**, **Is Host Set**, **On Host Elected**, **On Host ID Updated**, **Crowdy Get Host ID**, **Is Crowdy Entity Host**, **Is Crowdy Entity Host (Server)**, **Grant Ownership To Host** and **Get Host Override Policy**. **Host Override** on the entity component is deprecated too; it stays editable and shows no warning. In C++ the same names, and `UCrowdyHostSubsystem::CheckEntityIsHost`, give a deprecation warning. **What you do:** use **Get Leader User ID**, **Is Local Leader** and **On Leader Changed** on the Crowdy Leader Subsystem. Do not swap **Is Crowdy Entity Host** for **Is Crowdy Entity Locally Owned**: that is a different question, true on every client for its own avatar, so a host-only branch would run everywhere. Anything that must be enforced belongs in a Server Object. Host Override and Grant Ownership To Host have no direct replacement. Under Leader Source **Elected Host (Deprecated)** there is no Leader, so a project that keeps it moves its Leader reads when it leaves that setting. See [The Leader](../runtime/leader.md).
+- **A crowd row follows its owner.** A row kept the owner and role it was created with. Now it follows a change of owner, a send from a row asks the entity registry, and a row goes when its entity becomes this client's. **What you do:** nothing.
+- **A forged channel message can no longer ask for 2 GB.** A Crowdy event on a channel read its size from the message before checking the bytes were there. **What you do:** nothing.
+- **Is Crowdy Entity Locally Owned asks who writes an entity or a replicated subsystem.** The new **Is Crowdy Entity Locally Owned** and **Switch Is Crowdy Entity Locally Owned** take an entity actor or a replicated subsystem and are true on the client that writes it: its owner, or the Leader for a subsystem. **Is Crowdy Entity Locally Controlled** is deprecated in its favour, and so are **Crowdy Has Authority** and **Switch Crowdy Has Authority**, which asked only whether this client is the host. **What you do:** gate a write on the entity or subsystem you write; move logic only the host should run, with nothing to write, into a Server Object. See [The Leader](../runtime/leader.md#checking-who-writes-an-entity).
+- **Register Crowdy Replicated Subsystem has no ownership pin.** A replicated subsystem is always written by one client for everyone, so **Register Replicated Subsystem** and its Ownership pin are deprecated in favour of **Register Crowdy Replicated Subsystem**, and the bases no longer call `GetReplicatedOwnership()`. A destroy event can no longer unregister a replicated subsystem. **What you do:** switch the node, and delete any `GetReplicatedOwnership()` override. See [Replicated subsystems](../runtime/replicated-subsystems.md).
+- **Sign-in asks for a player's age, and the terms are the current ones.** An account with no age is held on an age screen and resumes when the player answers. The terms prompt lists the platform's current documents and the app's own, with one box to agree. A refusal for age or country names no age, ends access and stops token rotation. **What you do:** nothing with the built-in prompt. If you draw your own, bind `OnAgeRequired`, call `RecordPlayerAge`, and show `RequestLegalDocuments`. See [Let the player agree to the terms](../services/authentication.md#let-the-player-agree-to-the-terms).
+- **Crowdy Studio asks for the developer terms and an age.** A new account needs the developer documents before it can create or manage apps, so Studio asks after you sign in, and asks for your age first if the account has none. **What you do:** answer it once. See [Agreeing to the terms](../studio/sign-in.md#agreeing-to-the-terms).
+- **Player safety controls.** The new **Crowdy Safety** subsystem gives a player their voice and video settings, contacts, blocks, a parent's consent and reports to your app's moderators, as Blueprint nodes and C++ calls. **What you do:** nothing to update. A game that offers voice, video or text should add them: see [Player Safety](../services/player-safety.md).
+- **Teams, Avatars, Channels and Kit Social follow the session's app.** They named the app from the project setting, even after **Set App ID** changed the session's app, so a call could name one app under another app's token. They now name the session's app and fall back to the setting. **What you do:** nothing, unless your game calls **Set App ID**, which now reaches these services.
+- **The SDK tells you what your app records.** While an app records voice or video, your game must tell players before they speak and show them while it records. **On Recording State Changed** and **Get Recording State** say what is recorded now, and a log warning fires once if voice opens in an app that records it with nothing listening. **What you do:** if your game offers voice or video, draw the notice and the indicator: see [Telling players when the app records](../services/player-safety.md#telling-players-when-the-app-records).
+- **A converted argument to a C++ event arrives intact.** Calling a `CROWDY_EVENT` with a value that had to be converted to a `const` reference parameter, such as a string literal for a `const FString&`, read that value after it had been freed, so a packaged build could send garbage. **What you do:** nothing.
+- **Under Elected Host, every ownership check gives the same answer.** The C++ `UCrowdyEntitySubsystem::IsLocallyOwned(NetID)` is true on the host for a World entity, as the component's `IsLocallyOwned` already was, so an **Owning Client** event on a World entity runs on the host instead of nowhere. **What you do:** if your code compared that call against false on the host, update it. See [Leader Source](../runtime/leader.md#leader-source-with-or-without-a-host).
+- **On a Mass map, a spawned moving entity has one body.** An entity that replicates movement, spawned with **Spawn Crowdy Entity**, was drawn on other clients as a crowd row and also as the actor its spawn event made, which stood still at the spawn point while the row moved. Now Mass is its only body (its row, and the near-tier shell up close) and the spawn event spawns no actor for it. Its `InitialState` lands in the row through the Crowdy State fragment fields you register with `RegisterStateFragmentField`, matched by property name and type, and **On Crowdy Spawned** does not fire for it there. An entity that sends no movement keeps its actor. **What you do:** on a Mass map, read spawn data from a registered field instead of **On Crowdy Spawned**: give your `InitialState` struct a property with the field's name. See [Land spawn data on the row](../mass/add-your-own-crowd-data.md#land-spawn-data-on-the-row).
+- **Send your own values with the movement.** Mark a Crowdy State property `CrowdyContinuous`, or set a Blueprint variable's **Crowdy Replication** to **Replicated (Continuous)**, and it rides the entity's movement updates, on the actor pool and on Mass rows, with no executor or state struct. Older SDK versions ignore it. **What you do:** nothing unless you want it. See [Send your own values with the movement](../runtime/continuous-state.md#send-your-own-values-with-the-movement).
+- **With no elected host, an owner no longer takes a host correction.** A Crowdy State update carries a host-sourced flag its sender sets, and an owner adopted a host-sourced update into its own entity whatever the Leader Source. Under **Server Object**, the default, no honest client sends one, so a modified client could make an owner keep a forged value in its own entity. Now an owner drops a host-sourced update for an entity it owns unless Leader Source is **Elected Host (Deprecated)**, and the client that writes a World entity or replicated subsystem drops any other client's update for it. Other clients' copies can still show a forged value until the writer's next update: anything that matters belongs in a Server Object. A replicated subsystem keeps taking its Leader's updates. **What you do:** upgrade every client together, since a 2.24 host's correction no longer reaches a 2.25 owner. A `Host Override` of **Owner Only** that you set only to stop this can go. See [Host precedence](../runtime/crowdy-state.md#host-precedence).
+- **A failed HTTP/2 request no longer writes its bearer token to the log.** When an SDK request failed after its headers went out, for example on a server connection rotation, the curl report the engine logged included the token. This affected Windows, Linux and Android in any build with logging on, the editor and Crowdy Studio included. The SDK now holds `LogHttp` at `Error` while its requests are in flight, and logs one line of its own for a failure. **What you do:** nothing. Your own `LogHttp` warnings are hidden while an SDK request runs. If you have logs from earlier builds, treat any you shared as holding a token. See [Console variables](../reference/console-cvars.md).
+- **A Crowdy State update too big to send is no longer recorded as sent.** An update over about 1 KB was refused on the way out but counted as sent, so every client kept the old value until it next changed, and only a generic warning said so. A large update now splits into several, and its properties can land a moment apart. A single property too big for one update stays unsent, a warning names it and its entity once, and it goes when it fits; until then the owner's notify does not run for it. A host push too big to send is dropped with a warning. **What you do:** if a warning names a property, keep it under the limit or move it elsewhere. See [What ships, and when](../runtime/crowdy-state.md#what-ships-and-when).
+- **A forged name can no longer stop a client.** A Crowdy State or event value of type `FName` read from another client could be long enough to stop the receiving game with a fatal check. It is refused now. **What you do:** nothing.
+- **An entity appearing on a Mass map can no longer crash a client.** A remote entity that appeared while Mass was processing hit a fatal check. Appearances now wait for the actor tracker's tick, at most one frame later. **What you do:** nothing.
+- **Preloaded Entity Classes stay loaded.** A class on the list that nothing else referenced was freed by the first level load, so a client could not draw it, and the log said it could not be resolved. **What you do:** nothing.
+- **Replicate Movement replaces Mode, and a character sends its movement with no setup.** The entity component's **Mode** (Static or Dynamic) is now **Replicate Movement**: **Auto** (the default), **On** or **Off**. Auto is on for a pawn with a movement component, a Character for one, and off for anything else; Off sends no movement, and events and Crowdy State work either way. `Mode` and `GetMode()` are deprecated: `GetMode()` still works and reads the setting. The new read is `ReplicatesMovement()`, Blueprint node **Replicates Movement**. The default actor state now also carries `AimPitch`, in degrees, from where a pawn is looking, and a remote character on the actor pool animates with no custom code: an Animation Blueprint that reads velocity and **Get Base Aim Rotation** works unchanged. A proxy plays no jump or fall animation, and its aim pitch reads 0 to 360, so normalize it with **Normalize Axis**. `ShouldReportHostOwnedAutoRegister` now takes `(bInReplicatesMovement, bInAutoRegister, Role)`. **What you do:** a C++ class that set `Mode = Dynamic` replaces that line with `ReplicateMovement = ECrowdyReplicateMovement::On`; do not delete it. A Blueprint child saved before this release, under a C++ parent left at Static, stays off until the parent says On. A native pawn class with no asset that left Mode at Static now sends movement; to keep it quiet, set Off. See [Continuous state](../runtime/continuous-state.md).
+- **A destroyed crowd row goes at once.** A destroy event removed the actor but left the entity's crowd row drawn until its updates stopped arriving, about 5 seconds later. Now the row goes with the destroy. **What you do:** nothing. A custom rendering backend can do the same through the new `ReleaseDestroyedInstance`; see [Rendering backends](../runtime/rendering-backends.md#writing-a-backend).
+- **A proxy drawn before its spawn event knows its owner.** When a moving entity's first update reached a client before its spawn event, the actor pool's copy kept an empty owner: `GetOwnerID()` on it, and the owner **On Crowdy Spawned** reported, were the zero id. Now the spawn event fills it in. **What you do:** nothing.
+- **Rendering backends: two optional hooks.** `UCrowdyRenderingBackend::TakeSpawnData` and `ReleaseDestroyedInstance`, both C++ and both doing nothing by default. **What you do:** nothing, unless you wrote a backend that returns true from `DrawsEntitiesAsCrowdRows()`. See [Rendering backends](../runtime/rendering-backends.md#writing-a-backend).
+- **The interpolation delay is a map profile setting.** The actor pool draws remote entities a fixed time behind the server's clock so it always has two samples to blend between. That was 100 ms on every map; now it is **Interpolation Delay** in the map profile's **Remote Entities** group, still 100 ms by default. Mass-drawn rows keep their own smoothing and ignore it. **What you do:** nothing. Raise it on a map whose players see stutter from late updates. See [Entities and spawning](../runtime/entities-and-spawning.md#the-actor-tracker).
+- **The map profile is grouped, labelled for what it does, and checked when you save.** The Details panel now groups the settings as **Events**, **Remote Entities**, **Movement** and **Crowdy State**, with the tracker's tuning under **Advanced**. Labels say what each setting does: **Enable Networking** is now **Handle Events and Spawns**, because it never stopped movement; **Use Auto Replicator** is **Send Movement**; **Replication Interval (Hertz)** is **Send Rate**, and stays editable while Crowdy State uses it; **Use Crowdy Actor Tracker** is **Draw Remote Entities**. No setting is renamed in C++ or in saved assets, and nothing behaves differently. Saving a profile now reports an idle entity that would go silent long enough for other players to drop it, and a **Backend Config** that does not match its **Backend Class**. The **Crowdy Actor Management Config** data asset, which nothing reads at runtime, is deprecated. **What you do:** nothing. To switch the SDK off on a map, untick all four switches, not only the first. See [Map profiles](../runtime/map-profile.md#create-the-asset).
+- **Assets record a CrowdySDK save version.** A package you save with a **Crowdy Entity Component** in it now records a `CrowdySDK` custom version, so a later release can update the component's saved settings when it loads them. Nothing about how the component behaves changes. An older SDK still opens these packages but logs `Package was saved with a custom version that is not present` for each one. **What you do:** upgrade everyone who shares the project's content together, keep packages saved with an older SDK in version control if you might go back to it, and recook mods and downloadable content with this version.
+- **The plugin packages on its own again.** Building the plugin by itself, as BuildPlugin and Fab packaging do without a project's shared headers, failed on the game target: two files used a function whose header they did not include, and a test helper in a public header compared against a type it only declared. **What you do:** nothing. A project that compiles the plugin inside its own build was not affected.
 
 ## 2026-11-02 (SDK v2.24.0)
 
@@ -1368,3 +1458,65 @@ Changes that shipped between the July plugin and v2.12.0. A project moving from 
 - [Teams](../services/teams.md), [Avatars](../services/avatars.md), [Channels](../runtime/channels.md): the services whose types were renamed and whose array delegates change next release.
 - [Recipients and routing](../runtime/recipients-and-routing.md): the Blueprint reception layer that survives the C++ interface's removal.
 - [Console CVars](../reference/console-cvars.md): `crowdy.net.send.bundle` and the rest.
+
+# Deprecated in 2.25
+Source: https://docs.crowdedkingdoms.com/unreal-sdk/guides/deprecated
+
+# Deprecated in 2.25
+
+Everything on this page still works in this release. Each item warns when you compile it, or is hidden from menus so new
+work does not pick it up, and is removed in a later release, which will say so first. Every other page in these docs
+teaches only the current way; where a page still describes a deprecated item, it does so in a section called
+**Deprecated** at its end.
+
+To find what your project uses, run the searches in the plugin's `MIGRATION.md` (section "Blueprint assets") over your
+`Content` and `Plugins` folders, and build your C++ with the new version: each deprecated symbol names its replacement
+in the compiler warning.
+
+## Who writes shared state
+
+| Deprecated | Use instead | Documented |
+|---|---|---|
+| **Leader Source** set to **Elected Host (Deprecated)** | **Server Object**, the default: a Leader chosen by a Server Object type the SDK deploys. Deploy your server code once and restart its root. | [The Leader](../runtime/leader.md), [Deprecated](../runtime/leader.md#deprecated) |
+| **Get Host ID**, **Get Host User ID**, **Is Host Set**, **Crowdy Get Host ID** | **Get Leader User ID** on **Get Crowdy Leader Subsystem** (0 means no Leader) | [The Leader](../runtime/leader.md), [Host Election (Deprecated)](../services/host-election.md) |
+| **Is Host** | **Is Local Leader** | [The Leader](../runtime/leader.md) |
+| **On Host Elected**, **On Host ID Updated** | **On Leader Changed**, which gives user ids, not entity ids | [The Leader](../runtime/leader.md) |
+| **Is Crowdy Entity Host**, **Is Crowdy Entity Host (Server)**, `CheckEntityIsHost` | **Is Local Leader**; anything that must be enforced belongs in a Server Object | [Host Election (Deprecated)](../services/host-election.md) |
+| **Crowdy Has Authority**, **Switch Crowdy Has Authority** | **Switch Is Crowdy Entity Locally Owned** on the entity or subsystem you write | [The Leader](../runtime/leader.md#checking-who-writes-an-entity) |
+| **Is Crowdy Entity Locally Controlled** | **Is Crowdy Entity Locally Owned** | [Entity component](../runtime/entity-component.md) |
+| Marking Crowdy State dirty on an entity you do not own (the host push) | Write state on the client that owns the entity, or keep it in a Server Object | [Crowdy State](../runtime/crowdy-state.md#deprecated) |
+
+## The entity component
+
+| Deprecated | Use instead | Documented |
+|---|---|---|
+| **Ownership** (`Local Client`, `Host`), **Get Ownership** | **Owned By** (`Auto`, `Player`, `World`, `Leader`), **Get Owned By**. Local Client is Player, Host is Auto. | [Entity component](../runtime/entity-component.md#settings) |
+| **Mode** (`Static`, `Dynamic`), **Get Mode** | **Replicate Movement** (`Auto`, `On`, `Off`), **Replicates Movement**. Dynamic is On, Static is Off. | [Continuous state](../runtime/continuous-state.md), [Entity component](../runtime/entity-component.md#deprecated) |
+| **Host Override**, **Get Host Override Policy** | No replacement. Under Server Object an owner drops every host-sourced update, so it has nothing to refuse; state that must be protected belongs in a Server Object. | [Entity component](../runtime/entity-component.md#deprecated) |
+| **Send Event** on the component, `ECrowdyEventScope` | **Send Crowdy Event** with a Recipient: Everyone is Spatial Multicast, Owner Only is Owning Client | [Recipients and Routing](../runtime/recipients-and-routing.md) |
+
+## Events and ownership
+
+| Deprecated | Use instead | Documented |
+|---|---|---|
+| The **Host** recipient (`CrowdyRecipient="Host"`) | **Owning Client**, which reaches whichever client writes the entity, or a Server Function | [Recipients and Routing](../runtime/recipients-and-routing.md#deprecated) |
+| **Grant Ownership To Host** | No direct replacement: keep the state in a Server Object, or make the entity **Owned By** **Leader**, which refuses grants | [Ownership transfer](../runtime/ownership-transfer.md#deprecated) |
+
+## Replicated subsystems
+
+| Deprecated | Use instead | Documented |
+|---|---|---|
+| **Register Replicated Subsystem** with its Ownership pin | **Register Crowdy Replicated Subsystem** | [Replicated subsystems](../runtime/replicated-subsystems.md) |
+| An override of `GetReplicatedOwnership()` | Nothing: the bases no longer call it, and a replicated subsystem is always written by its Leader | [Replicated subsystems](../runtime/replicated-subsystems.md#deprecated) |
+
+## Assets
+
+| Deprecated | Use instead | Documented |
+|---|---|---|
+| The **Crowdy Actor Management Config** data asset | Set the same values on a map profile; nothing read the asset at runtime | [Map profiles](../runtime/map-profile.md#deprecated) |
+
+## Related
+
+- [What's Changed](./whats-changed.md): what changed in each release and what to do about it.
+- [The Leader](../runtime/leader.md): who writes shared state now.
+- [Host Election (Deprecated)](../services/host-election.md): the elected host, for projects that keep it for now.

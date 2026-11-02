@@ -26,13 +26,13 @@ Ask one question: can a malicious client benefit from lying about this value? If
 
 | State | Plane | Mechanism | Owning page |
 |---|---|---|---|
-| Movement | View | Dynamic entity mode, continuous state channel | [Continuous state](./runtime/continuous-state.md) |
+| Movement | View | Replicate Movement, continuous state channel | [Continuous state](./runtime/continuous-state.md) |
 | Animation blend state | View | `meta=(CrowdyState)` property, diffed on change | [Crowdy State](./runtime/crowdy-state.md) |
 | A one-shot trigger (muzzle flash, impact) | View | `meta=(CrowdyEvent)` RPC, not a state field | [RPC events](./runtime/rpc-events-cpp.md) |
 | Hit points, inventory, currency | Truth | Your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) |
 | Match score | Truth | A hub for the match in your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes) |
 | A chat line | View | `CrowdyEvent` with the `Multicast` recipient, session channel | [Channels](./runtime/channels.md) |
-| A door's open flag | View | `CrowdyState` boolean: a lie is a visual glitch. A placed door is host-owned, so the flag is also `CrowdyManualDirty` and the host calls `MarkStateDirty` after each write. If the door gates progress (a lock), the lock state belongs in your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes), [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) |
+| A door's open flag | View | `CrowdyState` boolean: a lie is a visual glitch. A placed door is Owned By World and no client writes it by default, so the flag belongs in your server code, or on a door a player owns. If the door gates progress (a lock), the lock state belongs in your server code | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes), [The Leader](./runtime/leader.md#who-writes-what) |
 | A player's display name | View | `CrowdyState` property; route it through the avatars service if it must persist | [The Two Planes](./concepts/two-planes.md#deciding-where-a-field-goes), [Avatars](./services/avatars.md) |
 
 :::danger[Authoritative or cheat-sensitive state never belongs in Crowdy State.]
@@ -45,11 +45,11 @@ Two of the three are `meta=(...)` keys; the entity is a component. One canonical
 
 | Marker | Goes on | Canonical example | Owning page |
 |---|---|---|---|
-| `CrowdyEntity` | A `UCrowdyEntityComponent` on an `AActor` (the component is the marker; set `Ownership`) | `qs-entity` | [Entities, identity, ownership](./concepts/entities-identity-ownership.md) |
-| `CrowdyState` (+ `CrowdyOnRep`) | A `UPROPERTY` on an entity actor. On a client-owned entity (`Ownership` = Local Client, the lantern) the owner assigns and calls the notify itself; on a host-owned entity (`Ownership` = Host, the default a placed actor keeps) a plain assignment never ships: add `CrowdyManualDirty` and call `MarkStateDirty` after each write, or add `CrowdyHeartbeat` | `qs-state` | [Crowdy State](./runtime/crowdy-state.md#mark-a-property), [the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push) |
-| `CrowdyEvent` + `CrowdyRecipient` | A `UFUNCTION` named `X_Implementation`, plus `CROWDY_EVENT(X)`; recipient is one of `SpatialMulticast`, `Multicast`, `OwningClient`, `Host` | `qs-event` | [RPC events](./runtime/rpc-events-cpp.md#routing-keys) |
+| `CrowdyEntity` | A `UCrowdyEntityComponent` on an `AActor` (the component is the marker; set `OwnedBy`) | `qs-entity` | [Entities, identity, ownership](./concepts/entities-identity-ownership.md) |
+| `CrowdyState` (+ `CrowdyOnRep`) | A `UPROPERTY` on an entity actor. On a client-owned entity (`OwnedBy` = Player, the lantern) the owner assigns and calls the notify itself; on a world entity (`OwnedBy` = World, or Auto, the default, on a placed actor) no client writes it by default and `MarkStateDirty` on it only logs a warning naming Leader Source, so keep what changes in a Server Object | `qs-state` | [Crowdy State](./runtime/crowdy-state.md#mark-a-property), [The Leader](./runtime/leader.md#who-writes-what) |
+| `CrowdyEvent` + `CrowdyRecipient` | A `UFUNCTION` named `X_Implementation`, plus `CROWDY_EVENT(X)`; recipient is one of `SpatialMulticast`, `Multicast`, `OwningClient` | `qs-event` | [RPC events](./runtime/rpc-events-cpp.md#routing-keys) |
 
-Four rules the examples assume: the first thing a client needs is its own pawn as a `Dynamic`, `PlayerDerived`, `LocalClient` entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; that pawn registers inside its first possession, since the engine possesses a runtime spawn after its `BeginPlay`, so read its id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned`, not at `BeginPlay`; a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); a `CrowdyOnRep` function takes no parameters, read the property for the new value ([Crowdy State](./runtime/crowdy-state.md)); and the lantern's assign-and-stop is the client-owned pattern, because the Quickstart sets its `Ownership` to Local Client: a host-owned entity (`Ownership` = Host, the default a placed actor keeps: Static, Stable, level-placed) never ships a plain `CrowdyState` write, so mark the property `CrowdyManualDirty` and call `MarkStateDirty` after each write, or give it `CrowdyHeartbeat` ([the host push](./runtime/crowdy-state.md#on-an-entity-you-do-not-own-the-host-push)).
+Four rules the examples assume: the first thing a client needs is its own pawn as a movement-replicating (`ReplicateMovement` Auto sends for a Character), `PlayerDerived`, `Player`-owned entity spawned after **On UDP Connection Success** (`qs-player`), because the server knows a client by its actor updates and a `SpatialMulticast` reaches only clients with a fresh actor; that pawn registers inside its first possession, since the engine possesses a runtime spawn after its `BeginPlay`, so read its id and `IsLocallyOwned()` from `OnCrowdyOwnershipAssigned`, not at `BeginPlay`; a `SpatialMulticast` body runs on the caller too, so guard the call with `IsLocallyOwned()` ([RPC events](./runtime/rpc-events-cpp.md#gotchas)); a `CrowdyOnRep` function takes no parameters, read the property for the new value ([Crowdy State](./runtime/crowdy-state.md)); and the lantern's assign-and-stop is the client-owned pattern, because the Quickstart sets its `OwnedBy` to Player: a world entity (`OwnedBy` = World, or Auto, the default, on a placed actor: sending no movement, Stable, level-placed) has no writer by default, so keep what changes about it in a Server Object ([The Leader](./runtime/leader.md#who-writes-what)).
 
 ## Three things that break silently in a cooked build
 
@@ -69,7 +69,7 @@ Config Sync in Crowdy Studio writes the Network category of `UCrowdySDKDeveloper
 
 | Never hand-type | Owned by you (fine to edit) | Owning page |
 |---|---|---|
-| `Environment`, `DiscoveryUrl`, `AppID`, `OrgId`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds`, `HostPollIntervalSeconds` | `MapProfiles`, `DefaultProfile`, `BakedRegistry`, `PreloadedEntityClasses`, `IDOverrides`, `ClassIDOverrides` | [Config Sync](./studio/config-sync.md#what-config-sync-writes-and-what-you-own), [Project settings](./reference/project-settings.md) |
+| `Environment`, `DiscoveryUrl`, `AppID`, `OrgId`, `GameApiHttpUrl`, `GameApiWsUrl`, `UDPProtocol`, `UDPTimeoutSeconds` | `MapProfiles`, `DefaultProfile`, `BakedRegistry`, `PreloadedEntityClasses`, `IDOverrides`, `ClassIDOverrides` | [Config Sync](./studio/config-sync.md#what-config-sync-writes-and-what-you-own), [Project settings](./reference/project-settings.md) |
 
 Do not copy the plugin's `[CoreRedirects]` into the project's `DefaultEngine.ini` either; `Plugins/CrowdySDK/Config/DefaultCrowdySDK.ini` already carries them. [Packaging](./guides/packaging.md#6-coreredirects-ship-with-the-plugin).
 
@@ -146,11 +146,27 @@ The full table, including behavior switches and diagnostic commands, is on [Cons
 | Rule | Owning page |
 |---|---|
 | Every id is `int64`; the app id travels as a JSON string and the SDK encodes it, never you | [The Two Planes](./concepts/two-planes.md#what-the-split-means-for-your-code) |
-| The host is a convention, not enforcement; never gate cheat-sensitive state on it | [Host is a convention](./concepts/host-is-a-convention.md), [Host authority](./runtime/host-authority.md) |
+| The Leader is a convention, not enforcement; never gate cheat-sensitive state on it | [Host is a convention](./concepts/host-is-a-convention.md), [The Leader](./runtime/leader.md) |
 | Presence is the player's actor: a client with no fresh actor is at no position and receives no spatial event | [Sessions and presence](./concepts/sessions-and-presence.md#presence-is-the-players-actor) |
-| A world subsystem null-checks `GetGameInstance()` in `Initialize()`; it is null in the transient world at engine start | [Host authority](./runtime/host-authority.md#the-host-subsystem), [Replicated subsystems](./runtime/replicated-subsystems.md) |
+| A world subsystem null-checks `GetGameInstance()` in `Initialize()`; it is null in the transient world at engine start | [Replicated subsystems](./runtime/replicated-subsystems.md) |
 | An array parameter on a delegate handler is `const TArray<T>&`; a by-value parameter does not match and `AddDynamic` will not compile | [Teams](./services/teams.md) |
 | A `Multicast` call has a 1024-byte payload budget and is dropped loudly, never truncated; large payloads go on `SpatialMulticast` | [RPC events](./runtime/rpc-events-cpp.md#containers-and-their-bounds) |
+
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](./guides/deprecated.md) lists each item and what replaces it.
+:::
+
+Never write new code against these; when you meet them in an existing project, move it to the replacement.
+
+### The Host recipient
+
+`OwningClient` replaces `CrowdyRecipient = "Host"`; see [Recipients and routing](./runtime/recipients-and-routing.md#deprecated). A saved `Host` still routes: it runs on the Leader on a replicated subsystem, and on an actor it is dropped with a warning unless Leader Source is **Elected Host (Deprecated)**.
+
+### The elected host
+
+The [Leader](./runtime/leader.md) and Server Objects replace it, under the default Leader Source, **Server Object**. Only under **Elected Host (Deprecated)** does the elected host write a World entity, through the `CrowdyManualDirty` plus `MarkStateDirty` route; see [Crowdy State](./runtime/crowdy-state.md#deprecated). `HostPollIntervalSeconds` is read only under Elected Host; like the rest of the Network category, Config Sync owns it, so never hand-type it. [Host Election (Deprecated)](./services/host-election.md) has the rest.
 
 ## Related
 

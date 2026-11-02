@@ -2,7 +2,7 @@
 slug: crowdy-state
 sidebar_position: 7
 title: Crowdy State
-description: Mark a property CrowdyState and the owning client diffs it every tick and ships the change to every proxy; the five metadata keys, the notify, the keyframe, what a property may be and what is rejected at discovery, the static Mark Crowdy State Dirty nodes and the host push they become on an entity you do not own, host precedence, and how to see a property that silently dropped out.
+description: Mark a property CrowdyState and the owning client diffs it every tick and ships the change to every proxy; the five metadata keys, the notify, the keyframe, what a property may be and what is rejected at discovery, the static Mark Crowdy State Dirty nodes, how to see a property that silently dropped out, and the deprecated host push and host precedence.
 ---
 
 import Tabs from '@theme/Tabs';
@@ -14,10 +14,10 @@ Mark a `UPROPERTY` with `meta=(CrowdyState)` and the client that owns the entity
 
 ## When to use it
 
-For view state that has to be the same on every client, late joiners included: a lantern's lit flag, an animation stance, a cosmetic colour. It works in either entity mode, Static or Dynamic, and on a [replicated subsystem](./replicated-subsystems.md).
+For view state that has to be the same on every client, late joiners included: a lantern's lit flag, an animation stance, a cosmetic colour. It works whether or not the entity sends movement, and on a [replicated subsystem](./replicated-subsystems.md).
 
 :::danger[Authoritative or cheat-sensitive state never belongs in Crowdy State.]
-This is the view plane. The owner writes a value and every other client believes it; the host's precedence below is a convention the receiver honours, not a check. Hit points, currency, inventory: your server code, always. See [The Two Planes](../concepts/two-planes.md).
+This is the view plane. The owner writes a value and every other client believes it. Hit points, currency, inventory: your server code, always. See [The Two Planes](../concepts/two-planes.md).
 :::
 
 ## Prerequisites
@@ -34,6 +34,7 @@ All on the `UPROPERTY`, all spelled exactly as shown.
 | `CrowdyOnRep` | a function name | A parameterless `UFUNCTION` run after the value is written, on the receiver and on the sender. Read the property for the new value; there is no previous-value argument. |
 | `CrowdyOwnerOnly` | none | Delivered only to the owning client, over the targeted path, never on the spatial broadcast. Scope, not secrecy. |
 | `CrowdyHeartbeat` | none | Opt in to the periodic keyframe: the property is re-sent every `StateKeyframeIntervalSeconds` even when unchanged, so a late or desynced observer converges. Off by default in C++; the Blueprint dropdown turns it on. |
+| `CrowdyContinuous` | none | The value rides the entity's movement updates instead of going as a delta: sent on change and on every keyframe. For a value that changes as often as the movement. See [Send your own values with the movement](./continuous-state.md#send-your-own-values-with-the-movement). |
 | `CrowdyManualDirty` | none | Never auto-diffed. The value ships only when you mark it, with `MarkStateDirty`. For a property that is expensive to compare every tick. See [Marking state from outside the actor](#marking-state-from-outside-the-actor). |
 
 :::warning[An enum without CrowdyHeartbeat can show a stale value to a late joiner.]
@@ -52,9 +53,9 @@ The Quickstart's `bLit` is the plain form: assign, and the change ships. This pa
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-Add an Integer variable `TimesLit`, set its **Replication** dropdown under **Crowdy Replication** to **Replicated**, and tick **Update manually** there (the other two toggles are **Keyframe heartbeat** and **Only send to owner**). From **Event ActorBeginOverlap**, the pure **Is Crowdy Entity Locally Controlled** feeds a **Branch**; on the true side **Get TimesLit** feeds a **+**, **Set TimesLit** stores the result, and the static **Mark Crowdy State Dirty** schedules it with `TimesLit` on the Property Name pin and `Target` left as self (the member form on the component would need a component getter as well). Seven nodes, one of them the owner gate the lantern's C++ overlap handler has: on a proxy the mark is not ignored, it becomes the [host push](#on-an-entity-you-do-not-own-the-host-push) described below.
+Add an Integer variable `TimesLit`, set its **Replication** dropdown under **Crowdy Replication** to **Replicated**, and tick **Update manually** there (the other two toggles are **Keyframe heartbeat** and **Only send to owner**). From **Event ActorBeginOverlap**, the pure **Is Crowdy Entity Locally Owned** feeds a **Branch**; on the true side **Get TimesLit** feeds a **+**, **Set TimesLit** stores the result, and the static **Mark Crowdy State Dirty** schedules it with `TimesLit` on the Property Name pin and `Target` left as self (the member form on the component would need a component getter as well). Seven nodes, one of them the owner gate the lantern's C++ overlap handler has: on a proxy the mark is not ignored.
 
-<Blueprint src="state-mark" title="Event ActorBeginOverlap, Is Crowdy Entity Locally Controlled, Branch, Get TimesLit, +, Set TimesLit, Mark Crowdy State Dirty" />
+<Blueprint src="state-mark" title="Event ActorBeginOverlap, Is Crowdy Entity Locally Owned, Branch, Get TimesLit, +, Set TimesLit, Mark Crowdy State Dirty" />
 
 </TabItem>
 </Tabs>
@@ -90,7 +91,9 @@ Write the notify as the one place the value is applied to the world, the way `On
 
 ## What ships, and when
 
-Only the owning client diffs. A remote proxy never diffs; it applies. The cadence is the map profile's `ReplicationIntervalHz` (1 to 10, default 10), the same clock the continuous channel uses, though the two send independently. Each tick the replicator compares every auto-diffed property of every entity this client drives against a shadow copy of the last sent value and encodes the changed ones into one `FCrowdyStateDelta`; owner-only properties go out as a second, targeted delta. Every `StateKeyframeIntervalSeconds` (default 2, on the map profile; 0 turns it off) each entity also emits a keyframe carrying its `CrowdyHeartbeat` properties, unless the entity's `StateHeartbeat` is Off. A delta travels as far as the profile's `StateRelevanceDistance` (Four Chunks by default), which is tighter than the continuous channel.
+Only the owning client diffs. A remote proxy never diffs; it applies. The cadence is the map profile's `ReplicationIntervalHz` (1 to 10, default 10), the same clock the continuous channel uses, though the two send independently. Each tick the replicator compares every auto-diffed property of every entity this client drives against a shadow copy of the last sent value and encodes the changed ones into an `FCrowdyStateDelta`; owner-only properties go out as a second, targeted delta. Every `StateKeyframeIntervalSeconds` (default 2, on the map profile; 0 turns it off) each entity also emits a keyframe carrying its `CrowdyHeartbeat` properties, unless the entity's `StateHeartbeat` is Off. A delta travels as far as the profile's `StateRelevanceDistance` (Four Chunks by default), which is tighter than the continuous channel.
+
+One delta holds about 1 KB of state: 1029 bytes on an actor, and 969 on a replicated subsystem, which rides the session channel. A larger update is split into several deltas in the same tick, so its properties can land a moment apart. A single property too big for one delta is not sent. It stays pending, clients keep their old value, the owner's notify does not run, and a warning names the property and entity once. It goes as soon as it fits, and the rest of the update does not wait for it. A value that can grow that far belongs elsewhere: see [Where the list you wanted belongs](#where-the-list-you-wanted-belongs).
 
 A struct with a native net serializer (`FVector_NetQuantize`, `FRotator`) rides the engine's own quantized serializer automatically; a plain `FVector` stays exact. Quantization is chosen by type, not by a key. See [What a state property may be](#what-a-state-property-may-be).
 
@@ -172,7 +175,7 @@ Changing one field of a five-field struct re-sends all five. Five scalar propert
 
 Both are `DefaultToSelf` on `Target`: from an actor's own graph you wire nothing and pick the property. From a component graph or a plain object graph, self is not an actor, so wire the actor in; the node shows a "Wire an Actor into Target" hint until you do.
 
-Both are safe no-ops, never a crash, when the target is null, has no entity component, or the map runs no state replicator. On an entity this client does not drive the two differ: **Mark All Crowdy States Dirty** is ignored, while **Mark Crowdy State Dirty** is not a no-op at all; it becomes the host push described below. On an entity this client does drive, marking a property that is auto-diffed anyway is a no-op logged at verbose level as `ignored: not a manual-dirty property`, never an error.
+Both are safe no-ops, never a crash, when the target is null, has no entity component, or the map runs no state replicator. On an entity this client does not drive the two differ: **Mark All Crowdy States Dirty** is ignored, while **Mark Crowdy State Dirty** is not a no-op at all: it becomes the push described under [Deprecated](#deprecated). No client writes an entity Owned By World, so marking one dirty only logs a warning that names Leader Source. On an entity this client does drive, marking a property that is auto-diffed anyway is a no-op logged at verbose level as `ignored: not a manual-dirty property`, never an error.
 
 The example is the same `TimesLit` member [Mark a property](#mark-a-property) added; this is the alternate call site, not a second gameplay moment.
 
@@ -184,9 +187,9 @@ The example is the same `TimesLit` member [Mark a property](#mark-a-property) ad
 </TabItem>
 <TabItem value="bp" label="Blueprint">
 
-From **Event ActorBeginOverlap**, the pure **Is Crowdy Entity Locally Controlled** feeds a **Branch**, and the true side calls **Mark Crowdy State Dirty** with `Target` left unwired (self) and `TimesLit` picked from the Property Name dropdown. No component reference is needed. The branch is the owner gate the C++ caller has: on a proxy the same mark becomes the push described below, which is not what an overlap on a proxy means.
+From **Event ActorBeginOverlap**, the pure **Is Crowdy Entity Locally Owned** feeds a **Branch**, and the true side calls **Mark Crowdy State Dirty** with `Target` left unwired (self) and `TimesLit` picked from the Property Name dropdown. No component reference is needed. The branch is the owner gate the C++ caller has: on a proxy the same mark would still send, which is not what an overlap on a proxy means.
 
-<Blueprint src="state-static-dirty" title="Event ActorBeginOverlap, Is Crowdy Entity Locally Controlled, Branch, Mark Crowdy State Dirty" />
+<Blueprint src="state-static-dirty" title="Event ActorBeginOverlap, Is Crowdy Entity Locally Owned, Branch, Mark Crowdy State Dirty" />
 
 </TabItem>
 </Tabs>
@@ -197,22 +200,6 @@ The Property Name pin carries a dropdown, supplied in the editor by `FCrowdyStat
 
 :::note[If your property is not in the dropdown, it is either auto-diffed already or it failed the type check.]
 An auto-diffed property does not need marking; assign it and it ships. A property that failed the check was omitted from the layout at startup with an error; see [What a state property may be](#what-a-state-property-may-be).
-:::
-
-### On an entity you do not own: the host push
-
-**Mark Crowdy State Dirty** on an entity another client owns is not a no-op. It becomes a one-shot super-user push: the live value of the named property is read on the next replication tick and broadcast once, with no shadow and no ongoing tracking, stamped host-sourced when the caller is the elected host. It works for any Crowdy State property on that entity, not only the manual-dirty ones, because a host override may need to correct anything. An `OwnerOnly` entity refuses it at the source: the push is dropped before it is sent, and a receiver drops one that arrives anyway.
-
-A host-owned world entity is the other case. On the host it is tracked with auto-diff off, so a plain `CrowdyState` property on it never ships on change; the host's mark works only for a `CrowdyManualDirty` property (the `CrowdyHeartbeat` keyframe still restates the rest). Mark a host-owned entity's changing properties manual-dirty, or give them `CrowdyHeartbeat`.
-
-The receiver honours a push by the entity's `HostOverride` policy: `Allow` (the default) adopts a host-sourced value into the owner's baseline. A push from a client that is not the host is not stamped, so the real owner drops it, and every other proxy applies it, so the proxies disagree with the owner until the owner's next change. That is the hazard behind the owner gate above: a mark issued on a proxy by mistake is a push.
-
-:::warning[A push on an entity you do not own is a live correction with no undo.]
-The value on the calling client is broadcast as it stands. There is no shadow to revert to and no acknowledgement. Read the current value first, set what you mean, then mark.
-:::
-
-:::caution[Anyone can call this on any entity. Precedence is a convention, not enforcement.]
-A modified client can stamp its own pushes host-sourced. This orders who wins on the view plane and nothing more; see [Host authority](./host-authority.md) and [The Two Planes](../concepts/two-planes.md).
 :::
 
 ## A field that silently does nothing
@@ -228,11 +215,41 @@ crowdy.state.loopback 1  decode your own deltas onto a local mirror entity, for 
 
 Two read-only diagnostics on `UCrowdyStateReplicator` answer the same questions from code or Blueprint: `IsStateReplicated(Actor)` is true when the actor's class carries at least one accepted property, whichever client drives it, and `GetLastSentStateBytes(Actor)` is the blob size this client last sent for the actor, or -1 when this client does not drive it. `crowdy.state.scopes` adds a CPU trace scope around each delta decode for profiling.
 
-## Host precedence
+## Deprecated
 
-When the local client is the elected host, every delta it sends is stamped host-sourced. A receiver that owns the entity adopts a host-sourced value into its own baseline instead of reverting it on the next diff, provided the entity's `HostOverride` is `Allow` (the default); `OwnerOnly` drops even a host correction. A host-owned world entity is driven by the host alone, and only by explicit pushes: its manual-dirty marks and its keyframe, never a background diff. See [Host authority](./host-authority.md).
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
+:::
 
-:::warning[Host precedence is a convention with no server-side check. A forged host-sourced flag is honoured as real.]
+Both subsections apply only when Leader Source is **Elected Host (Deprecated)**, see [Leader Source](./leader.md#leader-source-with-or-without-a-host).
+
+<a id="on-an-entity-you-do-not-own-the-host-push"></a>
+
+### The host push on an entity you do not own
+
+Nothing replaces the host push, because host corrections end with the elected host: to change a value on an entity another client drives, make this client its owner with [Ownership transfer](./ownership-transfer.md), or keep the value in your server code.
+
+**Mark Crowdy State Dirty** on an entity another client owns is not a no-op. It becomes a one-shot super-user push: the live value of the named property is read on the next replication tick and broadcast once, with no shadow and no ongoing tracking, stamped host-sourced when the caller is the elected host. It works for any Crowdy State property on that entity, not only the manual-dirty ones, because a host override may need to correct anything. An `OwnerOnly` entity refuses it at the source: the push is dropped before it is sent, and a receiver drops one that arrives anyway. A push too big for one delta is dropped with a warning, its notify does not run, and nothing retries it.
+
+A host-owned world entity is the other case. On the host it is tracked with auto-diff off, so a plain `CrowdyState` property on it never ships on change; the host's mark works only for a `CrowdyManualDirty` property (the `CrowdyHeartbeat` keyframe still restates the rest). Mark a host-owned entity's changing properties manual-dirty, or give them `CrowdyHeartbeat`.
+
+The receiver honours a push by the entity's `HostOverride` policy: `Allow` (the default) adopts a host-sourced value into the owner's baseline. A push from a client that is not the host is not stamped, so the real owner drops it, and every other proxy applies it, so the proxies disagree with the owner until the owner's next change. That is the hazard behind the owner gate in [Mark a property](#mark-a-property): a mark issued on a proxy by mistake is a push.
+
+:::warning[A push on an entity you do not own is a live correction with no undo.]
+The value on the calling client is broadcast as it stands. There is no shadow to revert to and no acknowledgement. Read the current value first, set what you mean, then mark.
+:::
+
+:::caution[Anyone can call this on any entity. Precedence is a convention, not enforcement.]
+A modified client can stamp its own pushes host-sourced. This orders who wins on the view plane and nothing more; see [The Leader](./leader.md) and [The Two Planes](../concepts/two-planes.md).
+:::
+
+### Host precedence
+
+Nothing replaces host precedence; [The Leader](./leader.md#who-writes-what) says who writes each entity under the default Leader Source. By default nothing is stamped host-sourced: every client ignores Crowdy State sent for a World entity, and an owner drops a host-sourced update for an entity it owns, since no honest client sends one. A replicated subsystem is the exception: its Leader stamps what it sends.
+
+When the local client is the elected host, every delta it sends is stamped host-sourced. A receiver that owns the entity adopts a host-sourced value into its own baseline instead of reverting it on the next diff, provided the entity's `HostOverride` is `Allow` (the default); `OwnerOnly` drops even a host correction. A host-owned world entity is driven by the host alone, and only by explicit pushes: its manual-dirty marks and its keyframe, never a background diff. See [Host Election](../services/host-election.md#what-the-host-writes).
+
+:::warning[Host precedence is a convention with no server-side check. Under Elected Host, a forged host-sourced flag is honoured as real.]
 It orders who wins on the view plane; it does not make either value trustworthy. If the value matters, it belongs in your server code and the question does not arise.
 :::
 
@@ -250,7 +267,7 @@ It orders who wins on the view plane; it does not make either value trustworthy.
 - `Target` on the static nodes defaults to self only where self is an actor. In a component or widget graph, wire the actor.
 - The push is scheduled, not sent. It goes out on the next replication tick with the value the property holds then.
 - Marking twice in one tick sends once.
-- A host-owned world entity is written only through the host's manual-dirty marks and the keyframe; assigning a plain property on it and waiting does nothing. See [Host authority](./host-authority.md).
+- No client writes an entity Owned By World by default, so assigning a plain property on it ships nothing. See [The Leader](./leader.md#who-writes-what).
 
 ## Related
 
@@ -259,5 +276,6 @@ It orders who wins on the view plane; it does not make either value trustworthy.
 - [State meta keys](../reference/state-meta-keys.md).
 - [RPC events in C++](./rpc-events-cpp.md): containers and object references as event parameters.
 - [The Two Planes](../concepts/two-planes.md): what belongs on the truth plane instead.
-- [Host authority](./host-authority.md): host-owned entities and the host override.
+- [The Leader](./leader.md): who writes what, and Leader Source.
+- [Host Election (Deprecated)](../services/host-election.md): the elected host, host-owned entities and the host override.
 - [Ownership transfer](./ownership-transfer.md): making another client the owner instead of pushing over it.

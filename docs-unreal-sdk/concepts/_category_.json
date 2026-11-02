@@ -4,6 +4,6 @@
   "link": {
     "type": "generated-index",
     "title": "Concepts",
-    "description": "The ideas the rest of the SDK documentation assumes: the two planes of state, entities, sessions, hosts, and how Blueprint and C++ share one surface."
+    "description": "The ideas the rest of the SDK documentation assumes: the two planes of state, entities, sessions, the Leader, and how Blueprint and C++ share one surface."
   }
 }

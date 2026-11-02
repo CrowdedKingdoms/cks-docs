@@ -10,7 +10,7 @@ description: "A tour of crowdy-sdk-sample: the interact-switch pattern, the eigh
 `crowdy-sdk-sample` is a small, real Unreal project that demonstrates the SDK feature by feature. Each feature is a switch you walk into: the switch fires, the feature runs, and you watch the result replicate across two Play in Editor clients.
 
 :::note[This tour targets SDK 2.1.0, not the current SDK]
-The plugin copy bundled in the repo is 2.1.0 (`Plugins/CrowdySDK/CrowdySDK.uplugin`), the release that introduced the current `GetCrowdyHasAuthority` name. It predates this site's own CrowdyState pages. The repo's README documents a few 2.1.0 additions, property replication on CrowdyState, replicated subsystems, host and ownership fields, as already present in the bundled plugin code, but none of the switches below exercise them, so this page does not either. For the current shapes, follow the Lantern in the [Quickstart](../quickstart.md).
+The plugin copy bundled in the repo is 2.1.0 (`Plugins/CrowdySDK/CrowdySDK.uplugin`), the release that introduced the `GetCrowdyHasAuthority` name. It predates this site's own CrowdyState pages. The repo's README documents a few 2.1.0 additions, property replication on CrowdyState, replicated subsystems, host and ownership fields, as already present in the bundled plugin code, but none of the switches below exercise them, so this page does not either. For the current shapes, follow the Lantern in the [Quickstart](../quickstart.md).
 :::
 
 The code lives in the `CrowdySDKTest` module, under `Source/CrowdySDKTest/Public|Private/Sample`.
@@ -53,12 +53,12 @@ Eight switches, each demonstrating one part of the SDK.
 
 | Example | Switch | SDK feature it shows |
 | --- | --- | --- |
-| MimicMe | `ASampleMimicSwitch` | Dynamic entity with a continuous-state executor |
+| MimicMe | `ASampleMimicSwitch` | Entity that replicates movement, with a continuous-state executor |
 | Object spawn-move-rotate-destroy | `ASampleObjectSwitch` | Spawn and destroy, plus RPC events with direct parameters |
 | Ghost | `ASampleGhostSwitch` | Owner tracking: your own state echoed back as a proxy |
 | Voice | `ASampleVoiceSwitch` | Voice chat capture and playback |
 | Channel announce | `ASampleChannelSwitch` | Multicast RPC over a self-provisioned channel |
-| Host spawn | `ASampleHostSwitch` | Host authority gate |
+| Host spawn | `ASampleHostSwitch` | A spawn gate on a deprecated API, under [Deprecated](#deprecated) |
 | Persistence | `ASamplePersistenceSwitch` | Push and pull saved gameplay state |
 | Teams | `ASampleTeamsSwitch` | Find or create a team, join it, leave it on the next interact |
 
@@ -92,7 +92,7 @@ The AutoReplicator polls the executor about ten times a second, only on the owne
 
 ### Object spawn-move-rotate-destroy
 
-`ASampleObjectSwitch` cycles through four actions on `ASampleObjectEntity`, a Static-mode `UCrowdyEntityComponent` actor: spawn, move, rotate, destroy.
+`ASampleObjectSwitch` cycles through four actions on `ASampleObjectEntity`, a `UCrowdyEntityComponent` actor that sends no movement: spawn, move, rotate, destroy.
 
 - Spawn and destroy go through the entity spawn API.
 - Move and rotate are RPC events whose parameters arrive directly, with no payload struct.
@@ -113,7 +113,7 @@ Calling `SetObjectLocation(NewLocation)` runs the body on the owner and announce
 
 `ASampleGhostSwitch` toggles `UCrowdyActorTracker::ToggleOwnerTracking`. With owner tracking on, the server echoes your own state back to you, and the backend draws it as a proxy: a true network round trip of yourself, not a local copy.
 
-:::caution[Your player pawn must be a Dynamic Crowdy entity for there to be any state to echo.]
+:::caution[Your player pawn must be a Crowdy entity that replicates movement for there to be any state to echo.]
 :::
 
 ### Voice
@@ -134,7 +134,7 @@ See [Voice Chat](../services/voice-chat.md).
 
 ### Channel announce
 
-`ASampleChannelSwitch` is a Static entity with a Stable identity policy. On interact it self-provisions its channel: it looks up `SampleWorldChat`, creates it with an Open policy if it does not exist yet, joins it, and registers for reliable RPC on it. `Announce`, its Multicast event, is then routed over that channel.
+`ASampleChannelSwitch` is an entity that sends no movement, with a Stable identity policy. On interact it self-provisions its channel: it looks up `SampleWorldChat`, creates it with an Open policy if it does not exist yet, joins it, and registers for reliable RPC on it. `Announce`, its Multicast event, is then routed over that channel.
 
 The event takes four parameters directly:
 
@@ -147,22 +147,6 @@ CROWDY_EVENT(Announce)
 A matching `BlueprintImplementableEvent OnAnnounceReceived` carries the same four parameters for a Blueprint listener. A Multicast event reaches channel members at any distance with no decay.
 
 For raw channel sends and the membership cache, see [Channels](../runtime/channels.md).
-
-### Host spawn
-
-`ASampleHostSwitch` spawns a world object, but only when `UCrowdyUtilities::GetCrowdyHasAuthority(this)` returns true.
-
-```cpp
-if (UCrowdyUtilities::GetCrowdyHasAuthority(this))
-{
-    UCrowdyUtilities::SpawnCrowdyEntity(this, WorldObjectClass, SpawnTransform, FInstancedStruct());
-}
-```
-
-:::note[The host is a convention, not an enforced server role, so this shows how to gate work to the one elected client.]
-:::
-
-See [Host Authority](../runtime/host-authority.md).
 
 ### Persistence
 
@@ -206,12 +190,34 @@ Read the cache for instant UI and treat the callbacks as eventual truth. See [Te
 
 The sample project is already set up for you. Sign up for a developer account, then log in through Crowdy Studio and again through the game. Sync the app first if it is not already synced. Logging in through the game yields the identity session token; an app-scoped token for the app is minted from it before replication works. See [Authentication](../services/authentication.md).
 
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](./deprecated.md) lists each item and what replaces it.
+:::
+
+<a id="host-spawn"></a>
+
+### Host spawn (deprecated API)
+
+**Switch Is Crowdy Entity Locally Owned**, asked about the entity or subsystem you are about to write, replaces this gate; [Checking who writes an entity](../runtime/leader.md#checking-who-writes-an-entity) on The Leader teaches it. `ASampleHostSwitch` spawns a world object, but only when `UCrowdyUtilities::GetCrowdyHasAuthority(this)` returns true. `GetCrowdyHasAuthority` is deprecated in the current SDK, where it still works and reports the Leader by default, so this gate runs on the Leader.
+
+```cpp
+if (UCrowdyUtilities::GetCrowdyHasAuthority(this))
+{
+    UCrowdyUtilities::SpawnCrowdyEntity(this, WorldObjectClass, SpawnTransform, FInstancedStruct());
+}
+```
+
+:::note[A gate like this is a convention, not an enforced server role.]
+In the 2.1.0 SDK it ran on the one elected client. Work that must be enforced belongs in a [Server Object](../concepts/two-planes.md).
+:::
+
 ## Gotchas
 
 - This repo's `Plugins/CrowdySDK` has no `CrowdyCppBridge` or `CrowdyNodes` module folder. If you go looking for current-SDK modules here, you will not find them; they postdate this vendored copy.
 - Eight examples exist in this repo, not nine. An earlier version of this page named a ninth, `ASampleChannelsSwitch`, that does not exist in `Source` or `Content`.
 - Persistence and Teams have no Blueprint counterpart in `Content/Interactions/`, unlike the other six examples.
-- `GetCrowdyHasAuthority` is already the current name in this sample; there is no rename to make here.
 - If the transform replication policy has no concrete subclass registered on `ReplicationPolicyClass`, replication silently does nothing. There is no error to look for.
 
 ## Related
@@ -221,7 +227,7 @@ The sample project is already set up for you. Sign up for a developer account, t
 - [Entities and Spawning](../runtime/entities-and-spawning.md) for the entity component and the spawn API.
 - [Continuous State](../runtime/continuous-state.md) for the executor pattern behind MimicMe.
 - [RPC Events](../runtime/rpc-events-cpp.md) for the `CrowdyEvent` macro and its recipients.
-- [Host Authority](../runtime/host-authority.md) for what host convention means for gameplay code.
+- [The Leader](../runtime/leader.md) for who writes shared state and what that means for gameplay code.
 - [Channels](../runtime/channels.md) for raw channel sends alongside the Multicast RPC shown here.
 - [Voice Chat](../services/voice-chat.md) and [Teams](../services/teams.md) for the two services switches above use directly.
 - [Authentication](../services/authentication.md) for the sign-in this project needs before anything else works.

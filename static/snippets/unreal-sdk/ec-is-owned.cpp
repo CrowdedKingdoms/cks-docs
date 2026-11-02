@@ -4,7 +4,7 @@ void ShowRole();
 // LanternPost.cpp
 void ALanternPost::ShowRole()
 {
-	// The same client can own, host, or only mirror this post; each reads a different brightness.
+	// A post a player spawned is Owner there and RemoteProxy elsewhere; a level-placed post is HostOwned everywhere.
 	switch (CrowdyEntity->GetRole())
 	{
 	case ECrowdyRole::Owner:     Light->SetIntensity(8000.f); break;

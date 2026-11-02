@@ -39,6 +39,59 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
 
 :::
 
+## 2026-11-07 (Unreal SDK v2.25.0: no elected host by default; movement replicates by default)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-11-07-sdk-v2250); steps to upgrade: the
+plugin's `MIGRATION.md`. One behaviour change: there is no elected host by default. Ownership, Mode, the host check
+nodes and the ownership-taking subsystem registration are deprecated; they warn and still run. Every deprecated item
+and its replacement: [Deprecated in 2.25](/unreal-sdk/guides/deprecated).
+
+- **No elected host by default.** A Leader chosen by a Server Object type the SDK deploys writes replicated
+  subsystems, and World entities have no client writer. Deploy your server code once and restart its root, or set
+  **Leader Source** to **Elected Host (Deprecated)** to keep the host for now. See
+  [The Leader](/unreal-sdk/runtime/leader).
+- **Owned By replaces the entity component's Ownership**, and **Is Crowdy Entity Locally Owned** asks which client
+  writes an entity or a replicated subsystem. See [Entity component](/unreal-sdk/runtime/entity-component#settings).
+- **Owned By Leader** lets the client that leads simulate an NPC for everyone, and the next Leader take it over.
+  See [The Leader](/unreal-sdk/runtime/leader#an-npc-the-leader-simulates).
+- **A moving entity keeps its body when it changes hands**, because each owner now sends under an id of its own.
+  Upgrade every client together. See
+  [Ownership transfer](/unreal-sdk/runtime/ownership-transfer#what-happens-to-in-flight-state).
+- **Owning Client reaches the client that writes an entity**: its owner, the Leader, or the elected host. It goes as
+  a spatial event named for that client, so a chunk border no longer loses it, and an event that carries text stays a
+  direct message. An entity that sends no movement, or that just changed hands, is reached over the session channel.
+  A string literal passed to a C++ event's `const FString&` parameter now arrives intact in a packaged build.
+  **Host** is deprecated and leaves the dropdowns, and **Send Event** gives way to **Send Crowdy Event**. See
+  [Recipients and Routing](/unreal-sdk/runtime/recipients-and-routing#targeted-owningclient-and-host).
+- **Movement replicates by default.** **Replicate Movement** (Auto, On, Off) replaces Mode: a pawn with a movement
+  component sends its movement with no setup, and a remote character on the actor pool animates and aims from it.
+  See [Continuous state](/unreal-sdk/runtime/continuous-state).
+- **Your own values beside the movement**: a property marked `CrowdyContinuous` travels with each movement update.
+  See [Continuous state](/unreal-sdk/runtime/continuous-state).
+- **Sign-in asks for a player's age**: an account with no age is held on an age screen, the terms prompt lists the
+  current documents and the app's own, and a refusal for age or country stops token rotation. See
+  [Let the player agree to the terms](/unreal-sdk/services/authentication#let-the-player-agree-to-the-terms).
+- **Player safety**: contacts, blocks, reports and the recording state. See
+  [Player safety](/unreal-sdk/services/player-safety).
+- **Fixes**: an email sign-in accepts only its own link; a Crowdy State update too big to send is no longer counted
+  as sent; a failed HTTP/2 request no longer writes its token to the log; with no elected host an owner no longer
+  takes a forged host correction; and the plugin packages on its own again.
+- **Register Crowdy Replicated Subsystem** replaces the node with an ownership pin. See
+  [Replicated subsystems](/unreal-sdk/runtime/replicated-subsystems).
+- **Every ownership check gives one answer** under Elected Host. See
+  [Leader Source](/unreal-sdk/runtime/leader#leader-source-with-or-without-a-host).
+- **On a Mass map a spawned moving entity is drawn by Mass alone**, with no frozen actor beside its row, and
+  its spawn data lands in the row's registered Crowdy State fields. A destroyed row goes at once. See
+  [Add your own crowd data](/unreal-sdk/mass/add-your-own-crowd-data#land-spawn-data-on-the-row).
+- **An actor-pool proxy drawn before its spawn event** learns its owner from the spawn event.
+- **The actor pool's interpolation delay is set per map** on the map profile, 100 ms by default as before. See
+  [Entities and spawning](/unreal-sdk/runtime/entities-and-spawning#the-actor-tracker).
+- **The map profile is grouped and labelled for what each setting does**, and saving one reports settings that
+  would make idle entities vanish or a Backend Config that does not match its backend. No setting changes
+  behaviour. See [Map profiles](/unreal-sdk/runtime/map-profile#create-the-asset).
+- **Packages with a Crowdy Entity Component record a CrowdySDK save version**; an older SDK warns when it opens
+  them. Upgrade everyone who shares the content together.
+
 ## 2026-11-06 (production: parental consent reaches Kids Web Services, which refuses requests until it is live)
 
 - **Production:** `requestParentalConsent` now reaches Kids Web Services. It is not live in
@@ -47,22 +100,6 @@ on your own machine, use the open [dev kit](/exec/develop-locally).
   `not_configured`. A player under 18 still cannot turn voice or video on in production. No
   client change is needed: both reasons mean "do not retry as it is". See
   [Parental consent for voice and video](/game-api/communication#parental-consent-for-voice-and-video).
-
-## 2026-11-02 (Unreal SDK v2.24.0: spawned entities appear once; MIGRATION.md)
-
-Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-11-02-sdk-v2240). No breaking change and
-nothing deprecated.
-
-- **Spawned entities appear once** on every client, keep their spawn data in either arrival order, and
-  reach players who join later: a Static entity's owner repeats its spawn every 4 seconds. The owner no
-  longer draws a pooled copy of its own entity unless **Render Local Owner** is set, and **Destroy Crowdy
-  Entity** stops sending at once. See [Entities and spawning](/unreal-sdk/runtime/entities-and-spawning).
-- **No phantom host after sign-out**: **Is Host Set** is false and **Get Host ID** is invalid once the
-  player signs out. See [Host Election](/unreal-sdk/services/host-election#after-sign-out).
-- **Packaged installs**: the plugin zip carries the SDK's `Config/` folder and its CoreRedirects, and the
-  plugin builds with UAT BuildPlugin again.
-- **`MIGRATION.md`** ships at the plugin root: for each release from 2.24.0, what changed and the exact
-  steps to migrate.
 
 ## 2026-11-04 (Crowded Kingdoms admits players from 13)
 
@@ -98,6 +135,22 @@ v0.43.0 and ck-exec 0.20.0, with CrowdyJS 18.25.0, CrowdyCPP 0.76.0 and CrowdyPy
   0.24.0 the same, their consent readers returning the refusal with its reason instead of a
   boolean.
 - **The Minecraft server page is unpublished** until the server mod's release is public.
+
+## 2026-11-02 (Unreal SDK v2.24.0: spawned entities appear once; MIGRATION.md)
+
+Per-item detail: [What's Changed](/unreal-sdk/guides/whats-changed#2026-11-02-sdk-v2240). No breaking change and
+nothing deprecated.
+
+- **Spawned entities appear once** on every client, keep their spawn data in either arrival order, and
+  reach players who join later: a Static entity's owner repeats its spawn every 4 seconds. The owner no
+  longer draws a pooled copy of its own entity unless **Render Local Owner** is set, and **Destroy Crowdy
+  Entity** stops sending at once. See [Entities and spawning](/unreal-sdk/runtime/entities-and-spawning).
+- **No phantom host after sign-out**: **Is Host Set** is false and **Get Host ID** is invalid once the
+  player signs out. See [Host Election](/unreal-sdk/services/host-election#after-sign-out).
+- **Packaged installs**: the plugin zip carries the SDK's `Config/` folder and its CoreRedirects, and the
+  plugin builds with UAT BuildPlugin again.
+- **`MIGRATION.md`** ships at the plugin root: for each release from 2.24.0, what changed and the exact
+  steps to migrate.
 
 ## 2026-11-02 (dev: the safety baseline completed; the realtime rules; the SDKs)
 
@@ -2973,7 +3026,7 @@ These are the only changes that touch an existing 2.0 project; everything above 
   Authority"). The old `CrowdyHasAuthority` name is now the exec/branch variant (Blueprint
   "Switch Crowdy Has Authority"). Update C++ callers from `CrowdyHasAuthority(this)` to
   `GetCrowdyHasAuthority(this)`; Blueprint nodes re-resolve on recompile. See
-  [Host authority](/unreal-sdk/runtime/host-authority#checking-authority).
+  [Host authority](/unreal-sdk/runtime/host-authority#checking-who-writes-an-entity).
 - **`ECrowdyDecayRate` corrected.** Removed the non-functional **`Linear_100`** value (the
   `CrowdyDecay` option on a `SpatialMulticast` CrowdyEvent). It shared an underlying value with
   `Linear_50`, so the two were indistinguishable on the wire. The ladder is now `No_Decay` (0),

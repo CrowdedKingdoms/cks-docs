@@ -44,6 +44,7 @@ const legacyEngineRedirects: {from: string; to: string}[] = JSON.parse(
 // 2026-10-09, and the page became the production client guide.
 const movedPageRedirects: {from: string; to: string}[] = [
   {from: '/management-ui/dev-tier', to: '/management-ui/client-integration'},
+  {from: '/unreal-sdk/runtime/host-authority', to: '/unreal-sdk/runtime/leader'},
 ];
 
 // ---------------------------------------------------------------------------------------

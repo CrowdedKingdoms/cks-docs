@@ -8,7 +8,7 @@
 	{
 		"name": "K2Node_CallFunction_0",
 		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
-		"title": "Is Crowdy Entity Locally Controlled",
+		"title": "Is Crowdy Entity Locally Owned",
 		"title_drawn": true
 	},
 	{

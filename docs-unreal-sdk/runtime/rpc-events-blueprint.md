@@ -41,17 +41,14 @@ Once Crowdy Replicates is ticked, three more rows appear. **Recipient** is the `
 
 - **Spatial Multicast** (the default): everyone in range, over the chunk-based path, thinned by decay.
 - **Multicast**: every member of the app's session channel, whatever the distance, over the channel transport.
-- **Owning Client**: only the target entity's owner; another client's call becomes a request to that owner.
-- **Host**: only the elected host; another client's call becomes a request to the host.
+- **Owning Client**: only the target entity's owner; another client's call becomes a request to that owner. Every client near the target receives the parameters. An event with a text parameter stays a direct message.
+
+An event saved with the deprecated **Host** recipient is described under [Deprecated](#deprecated).
 
 **Decay Rate** and **Replication Distance** sit below the recipient and are greyed out unless the recipient is Spatial Multicast, because only the spatial path reads them. **Channel** appears only for Multicast: type a channel name, or press **Pick** to choose from the app's channels, which the picker fetches live from Crowdy Studio when you are signed in there; free text always works. **Is A One-Shot Action** appears only once a map profile assigned in **Project Settings, Plugins, Crowdy SDK** (a **Map Profiles** entry or the **Default Profile**) selects a backend that draws crowd rows. A project that uses only the actor pool never sees it. See [Play poses and one-shot actions](../mass/play-poses-and-one-shot-actions.md).
 
 :::warning[A channel you type here must already exist. Only the session channel is created for you.]
 A typo, or a channel nobody created, logs a warning at connect time and every call to the event silently reaches nobody. See [Channels](./channels.md).
-:::
-
-:::caution[Host runs the call on whatever instance it holds, regardless of who owns that entity, and tells nobody else.]
-There is no ownership gate on the host. If the rest of the session must see the outcome of a Host event, the host sends a second, Multicast or Spatial Multicast event with the result.
 :::
 
 ## Call it
@@ -68,12 +65,28 @@ What the checkbox generates is a call to `UCrowdyReplicatedEventLibrary::CrowdyD
 
 **Success signal.** With one client, `crowdy.rpc.loopback 1` and `crowdy.rpc.trace 1` show the send and the looped-back receive; the sparkle then comes from the receive rather than the local run.
 
+## Deprecated
+
+:::warning[Deprecated in 2.25. Everything in this section still works and is removed in a later release.]
+[Deprecated in 2.25](../guides/deprecated.md) lists each item and what replaces it.
+:::
+
+### The Host recipient
+
+**Owning Client** replaces **Host**, as listed under [Pick the recipient](#pick-the-recipient); [Recipients and routing](./recipients-and-routing.md#deprecated) has the delivery detail.
+
+**Host** is no longer in the dropdown; a saved value still works and warns when compiled. On a replicated subsystem it runs on the [Leader](./leader.md). On an actor it is dropped with a warning that names Leader Source, unless Leader Source is **Elected Host (Deprecated)**, where only the elected host runs it and another client's call becomes a request to the host. Like Owning Client, the body runs only where the recipient says, so do not add a second local call.
+
+:::caution[Under Elected Host, Host runs the call on whatever instance it holds, regardless of who owns that entity, and tells nobody else.]
+There is no ownership gate on the host. If the rest of the session must see the outcome of a Host event, the host sends a second, Multicast or Spatial Multicast event with the result.
+:::
+
 ## Gotchas
 
 - The checkbox lives on the Custom Event node's Details, not the actor's.
 - A red status line is the fastest signal that a pin type is rejected. Read it before compiling.
 - The Channel field is join-only. Create the channel in Crowdy Studio or at runtime first.
-- The Blueprint event body runs on the caller for Spatial Multicast and Multicast, and only where the recipient says for Owning Client and Host. Do not add a second local call.
+- The Blueprint event body runs on the caller for Spatial Multicast and Multicast, and only where the recipient says for Owning Client. Do not add a second local call.
 - Cheat-sensitive data never rides a CrowdyEvent; it belongs on the [truth plane](../concepts/two-planes.md), in your server code.
 
 ## Related
