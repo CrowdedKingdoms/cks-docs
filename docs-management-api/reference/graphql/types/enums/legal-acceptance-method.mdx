@@ -1,0 +1,43 @@
+---
+id: legal-acceptance-method
+title: LegalAcceptanceMethod
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+How a player accepted documents: CLICKWRAP on a Crowded Kingdoms page or an SDK sign-up form, IN&#x005F;GAME on the app’s own screen (the Minecraft client mod, for example).
+
+
+```graphql
+enum LegalAcceptanceMethod {
+  CLICKWRAP
+  IN_GAME
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>LegalAcceptanceMethod.<b>CLICKWRAP</b></code>](#clickwrap) {/* #clickwrap */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>LegalAcceptanceMethod.<b>IN&#x005F;GAME</b></code>](#in-game) {/* #in-game */} 
+
+
+
+
+
+### Member Of
+
+[`recordPlayerConsents`](/reference/graphql/operations/mutations/record-player-consents.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -17,7 +17,7 @@ Players group up, talk, wave at each other and watch each other's matches. The S
 - **An emote** is a short name, such as `wave`, that a player sends to the players near them, optionally aimed at one actor.
 - **A spectator** is a player with no avatar in the world who still receives what happens near the place they watch.
 
-Parties, guilds and chat are in the **Crowdy|Game Kit|Social** category, emotes in **Crowdy|Game Kit|Emotes** and the spectator in **Crowdy|Game Kit|Spectate**.
+Parties, guilds and chat are in the **Crowdy SDK|Game Kit|Social** category, emotes in **Crowdy SDK|Game Kit|Emotes** and the spectator in **Crowdy SDK|Game Kit|Spectate**.
 
 ## Make a party and talk in it
 

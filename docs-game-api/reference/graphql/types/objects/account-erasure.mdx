@@ -50,7 +50,7 @@ Why it was asked for: SELF&#x005F;DELETE (the player deleted its own account), M
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountErasure.<b>requestedBy</b></code>](#requested-by)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #requested-by */} 
-Who asked: user:&#x003C;id&#x003E;, org&#x005F;token:&#x003C;id&#x003E; or operator:&#x003C;id&#x003E;.
+Who asked: user:&#x003C;id&#x003E;, org&#x005F;token:&#x003C;id&#x003E;, operator:&#x003C;id&#x003E; (requestAccountErasure), operator:&#x003C;id&#x003E;: &#x003C;their reason&#x003E; (eraseAccount), or age&#x005F;gate (an account that declared an age under 13).
 
 
 #### [<code style={{ fontWeight: 'normal' }}>AccountErasure.<b>requestedAt</b></code>](#requested-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #requested-at */} 
@@ -85,4 +85,4 @@ OPERATOR ONLY. While a legal hold defers the erasure, what the account row said 
 
 ### Returned By
 
-[`accountErasure`](/reference/graphql/operations/queries/account-erasure.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`requestAccountErasure`](/reference/graphql/operations/mutations/request-account-erasure.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>
+[`accountErasure`](/reference/graphql/operations/queries/account-erasure.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`eraseAccount`](/reference/graphql/operations/mutations/erase-account.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`requestAccountErasure`](/reference/graphql/operations/mutations/request-account-erasure.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

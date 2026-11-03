@@ -1,0 +1,53 @@
+---
+id: player-contact
+title: PlayerContact
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+Another player in the caller’s contacts list for the app. Contacts are mutual: an accepted contact is in both players’ lists, and it is what a CONTACTS scope admits.
+
+
+```graphql
+type PlayerContact {
+  userId: BigInt!
+  state: ContactState!
+  createdAt: DateTime!
+  acceptedAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerContact.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The other player (resolve its name with playerProfile).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerContact.<b>state</b></code>](#state)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>ContactState!</b></code>](/reference/graphql/types/enums/contact-state.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #state */} 
+PENDING or ACCEPTED (myContacts lists accepted ones only).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerContact.<b>createdAt</b></code>](#created-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #created-at */} 
+When the request was made.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerContact.<b>acceptedAt</b></code>](#accepted-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #accepted-at */} 
+When it was accepted; null while pending.
+
+
+
+
+### Returned By
+
+[`acceptContact`](/reference/graphql/operations/mutations/accept-contact.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/><Bullet />[`myContacts`](/reference/graphql/operations/queries/my-contacts.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`requestContact`](/reference/graphql/operations/mutations/request-contact.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

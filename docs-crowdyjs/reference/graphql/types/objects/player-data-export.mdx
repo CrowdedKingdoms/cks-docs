@@ -1,0 +1,58 @@
+---
+id: player-data-export
+title: PlayerDataExport
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One player's data in one app, for an operator answering a data request.
+
+
+```graphql
+type PlayerDataExport {
+  appId: BigInt!
+  userId: BigInt!
+  exportedAt: DateTime!
+  inputsComplete: Boolean!
+  json: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerDataExport.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerDataExport.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The player.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerDataExport.<b>exportedAt</b></code>](#exported-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #exported-at */} 
+When it was assembled.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerDataExport.<b>inputsComplete</b></code>](#inputs-complete)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #inputs-complete */} 
+Whether every recorded input still kept is in it (false: the export stopped at 50 sessions or 20,000 inputs).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>PlayerDataExport.<b>json</b></code>](#json)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #json */} 
+The export, as one JSON document: `identity` (the account row), `platform` (legal acceptances, avatars, the app's grant, actors, app and avatar state, communication settings, contacts, the player's own blocks, parental consents and the reports the player filed), `recordedInputs` (its sessions in the safety log and their inputs) and `hubs` (each ck-exec hub's share, or why there is none).
+
+
+
+
+### Returned By
+
+[`exportPlayerData`](/reference/graphql/operations/queries/export-player-data.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/>

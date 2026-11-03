@@ -14,6 +14,11 @@ does nothing, so a hub implements only what it uses.
 | `on_topic(ctx, msg)` | Another instance published on a topic this hub subscribes to. |
 | `on_session(ctx, player, Session::Joined / Left)` | A player's connection subscribed to this hub's first topic, or left its last one. |
 | `on_presence(ctx, &presence)` | Root hub only: players entered or left the app's world, or the count changed. |
+| `on_player_erased(ctx, player)` | The player's account is being erased: delete what the hub holds about them. See [erasure](players-and-safety#erasure). |
+| `on_player_export(ctx, player)` | The platform asks what the hub holds about the player, as JSON. See [export](players-and-safety#export). |
+
+The last two default to answering "not implemented" rather than to doing nothing (`ckx-sdk`
+0.13.0).
 
 These arrive as calls with reserved method names starting with `$`. Players and other
 instances cannot call a `$` method, so a hub can trust where these came from.

@@ -1,0 +1,44 @@
+---
+id: erase-account
+title: eraseAccount
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR/DESTRUCTIVE: deletes another account and erases it, on Crowded Kingdoms' own word (a parent's request for a child's account, say): exactly what deleteMyAccount does to it, holds included. An open or escalated safety report about the account holds it first, and under a legal hold the account still closes but its content and identity are kept until the hold is released. The erasure record names you and your reason (AccountErasure.requestedBy is `operator:<your id>: <reason>`), and accountErasure(userId) follows it. Refused for your own account, a staff account (operator or super admin) and an account already deleted (requestAccountErasure runs a deleted account's erasure again); NOT&#x005F;FOUND for an unknown user. Send the identity session; any datacenter answers.
+
+
+```graphql
+eraseAccount(
+  userId: BigInt!
+  reason: String!
+): AccountErasure!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>eraseAccount.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
+The account to delete and erase.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>eraseAccount.<b>reason</b></code>](#reason)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #reason */} 
+Why (1 to 500 characters), kept on the erasure record for operators: the request it answers, such as a support ticket.
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>AccountErasure</b></code>](/reference/graphql/types/objects/account-erasure.mdx) <Badge class="badge badge--secondary " text="object"/> 
+An account erasure: what deleting an account erases (its player-side content) and where that stands. Usage, billing, audit and legal records stay, and so does everything the account owns as a developer.

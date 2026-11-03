@@ -1,0 +1,43 @@
+---
+id: safety-report-receipt
+title: SafetyReportReceipt
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A filed safety report, as its reporter sees it.
+
+
+```graphql
+type SafetyReportReceipt {
+  reportId: BigInt!
+  filedAt: DateTime!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportReceipt.<b>reportId</b></code>](#report-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #report-id */} 
+The report.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SafetyReportReceipt.<b>filedAt</b></code>](#filed-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime!</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #filed-at */} 
+When it was filed.
+
+
+
+
+### Returned By
+
+[`fileSafetyReport`](/reference/graphql/operations/mutations/file-safety-report.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

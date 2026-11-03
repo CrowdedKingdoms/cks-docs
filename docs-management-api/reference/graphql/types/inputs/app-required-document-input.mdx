@@ -1,0 +1,53 @@
+---
+id: app-required-document-input
+title: AppRequiredDocumentInput
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+One document an app requires its players to accept.
+
+
+```graphql
+input AppRequiredDocumentInput {
+  documentId: String!
+  version: String!
+  title: String!
+  url: String!
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRequiredDocumentInput.<b>documentId</b></code>](#document-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #document-id */} 
+1-64 lower-case letters, digits and hyphens, unique in the app and not one of the platform's own ids (player-terms, game-terms, ...).
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRequiredDocumentInput.<b>version</b></code>](#version)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #version */} 
+The version players must accept, 1-128 of letters, digits and . &#x005F; : + - (a date is usual: rules-2026-11-01). Changing it asks every player of the app again.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRequiredDocumentInput.<b>title</b></code>](#title)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #title */} 
+Title shown to players, 1-200 characters.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>AppRequiredDocumentInput.<b>url</b></code>](#url)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #url */} 
+https URL where players read the document.
+
+
+
+
+### Member Of
+
+[`setAppRequiredDocuments`](/reference/graphql/operations/mutations/set-app-required-documents.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

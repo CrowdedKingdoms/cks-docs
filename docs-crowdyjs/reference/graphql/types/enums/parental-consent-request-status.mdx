@@ -1,0 +1,48 @@
+---
+id: parental-consent-request-status
+title: ParentalConsentRequestStatus
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+REQUESTED: the consent service emailed the parent; the medium opens (to contacts) when the parent consents. ALREADY&#x005F;GRANTED: a parent has consented; nothing was sent. NOT&#x005F;REQUIRED: the player is 18 or over and needs no consent; nothing was sent.
+
+
+```graphql
+enum ParentalConsentRequestStatus {
+  REQUESTED
+  ALREADY_GRANTED
+  NOT_REQUIRED
+}
+```
+
+
+### Values
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentRequestStatus.<b>REQUESTED</b></code>](#requested) {/* #requested */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentRequestStatus.<b>ALREADY&#x005F;GRANTED</b></code>](#already-granted) {/* #already-granted */} 
+
+
+
+#### [<code style={{ fontWeight: 'normal' }}>ParentalConsentRequestStatus.<b>NOT&#x005F;REQUIRED</b></code>](#not-required) {/* #not-required */} 
+
+
+
+
+
+### Member Of
+
+[`ParentalConsentRequest`](/reference/graphql/types/objects/parental-consent-request.mdx)  <Badge class="badge badge--secondary badge--relation" text="object"/>
