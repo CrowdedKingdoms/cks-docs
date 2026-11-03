@@ -15,12 +15,13 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-An operator’s change to one country’s policy.
+An operator’s change to the policy of one country, or of one of its regions.
 
 
 ```graphql
 input SetTerritoryPolicyInput {
   countryCode: String!
+  regionCode: String
   status: String!
   minAge: Int
   reason: String!
@@ -32,6 +33,10 @@ input SetTerritoryPolicyInput {
 
 #### [<code style={{ fontWeight: 'normal' }}>SetTerritoryPolicyInput.<b>countryCode</b></code>](#country-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #country-code */} 
 ISO 3166-1 alpha-2 country code.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>SetTerritoryPolicyInput.<b>regionCode</b></code>](#region-code)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #region-code */} 
+ISO 3166-2 code of a region of countryCode (such as UA-43) to set that region's rule instead of the country's. Listing a region makes its country checked by region.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>SetTerritoryPolicyInput.<b>status</b></code>](#status)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>String!</b></code>](/reference/graphql/types/scalars/string.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #status */} 
