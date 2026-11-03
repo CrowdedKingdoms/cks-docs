@@ -1,0 +1,39 @@
+---
+id: set-territory-policy
+title: setTerritoryPolicy
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+OPERATOR ONLY. Block or open a country, or set its minimum age, with the reason on record. Every instance applies it within a minute; players already signed in there are refused at their next refresh.
+
+
+```graphql
+setTerritoryPolicy(
+  input: SetTerritoryPolicyInput!
+): TerritoryPolicy!
+```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>setTerritoryPolicy.<b>input</b></code>](#input)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>SetTerritoryPolicyInput!</b></code>](/reference/graphql/types/inputs/set-territory-policy-input.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="input"/> {/* #input */} 
+
+
+
+
+
+### Type
+
+#### [<code style={{ fontWeight: 'normal' }}><b>TerritoryPolicy</b></code>](/reference/graphql/types/objects/territory-policy.mdx) <Badge class="badge badge--secondary " text="object"/> 
+A country Crowded Kingdoms lists: 'blocked' refuses its players (TERRITORY&#x005F;NOT&#x005F;SUPPORTED), and minAge raises the youngest age admitted there. A country not listed is open at the platform's minimum.

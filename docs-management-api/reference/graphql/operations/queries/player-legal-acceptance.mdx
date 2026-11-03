@@ -15,12 +15,22 @@ export const Badge = (props) => <><span className={props.class}>{props.text}</sp
 
 
 
-Whether the signed-in account has stored the current required legal documents and the age-of-majority attestation. False means createPortalAuthorizationCode and mintAppToken will refuse with LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED until recordPlayerConsents. Requires a session token.
+Whether the signed-in account has stored the platform's current player documents (playerLegalDocuments) and, with appId, the app's own (appRequiredDocuments); while the platform still asks for it, the age-of-majority attestation or a birth date too. False means createPortalAuthorizationCode and mintAppToken will refuse with LEGAL&#x005F;ACCEPTANCE&#x005F;REQUIRED until recordPlayerConsents. Requires a session token.
 
 
 ```graphql
-playerLegalAcceptance: Boolean!
+playerLegalAcceptance(
+  appId: BigInt
+): Boolean!
 ```
+
+
+### Arguments
+
+#### [<code style={{ fontWeight: 'normal' }}>playerLegalAcceptance.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app about to be played (BigInt as a decimal string): its own documents count too. Omit for the platform's alone.
+
+
 
 
 ### Type

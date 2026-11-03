@@ -1,0 +1,93 @@
+---
+id: comm-settings
+title: CommSettings
+---
+
+
+export const Bullet = () => <><span style={{ fontWeight: 'normal', fontSize: '.5em', color: 'var(--ifm-color-secondary-darkest)' }}>&nbsp;●&nbsp;</span></>
+
+export const SpecifiedBy = (props) => <>Specification<a className="link" style={{ fontSize:'1.5em', paddingLeft:'4px' }} target="_blank" href={props.url} title={'Specified by ' + props.url}>⎘</a></>
+
+export const Badge = (props) => <><span className={props.class}>{props.text}</span></>
+
+
+
+
+
+
+A player’s voice and video settings in one app. The four scopes are the EFFECTIVE ones, which the realtime servers enforce on both sending and receiving: the player’s choice, never more than policy allows. An adult may choose anything (EVERYONE by default). For a player under 18 each medium is OFF until a parent consents to it (requestParentalConsent), and then at most CONTACTS. A block always wins: nothing passes between two players while either has blocked the other.
+
+
+```graphql
+type CommSettings {
+  appId: BigInt!
+  isMinor: Boolean!
+  voiceSend: CommScope!
+  voiceReceive: CommScope!
+  videoSend: CommScope!
+  videoReceive: CommScope!
+  choices: CommChoices!
+  voiceAllowed: CommScope!
+  videoAllowed: CommScope!
+  voiceConsent: Boolean!
+  videoConsent: Boolean!
+  updatedAt: DateTime
+}
+```
+
+
+### Fields
+
+#### [<code style={{ fontWeight: 'normal' }}>CommSettings.<b>appId</b></code>](#app-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt!</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #app-id */} 
+The app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CommSettings.<b>isMinor</b></code>](#is-minor)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #is-minor */} 
+Whether the player is under 18 (its age bracket is 13&#x005F;15 or 16&#x005F;17): every scope is capped at CONTACTS and each medium needs a parent’s consent.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CommSettings.<b>voiceSend</b></code>](#voice-send)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CommScope!</b></code>](/reference/graphql/types/enums/comm-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #voice-send */} 
+Whom the player’s voice reaches.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CommSettings.<b>voiceReceive</b></code>](#voice-receive)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CommScope!</b></code>](/reference/graphql/types/enums/comm-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #voice-receive */} 
+Whose voice the player hears.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CommSettings.<b>videoSend</b></code>](#video-send)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CommScope!</b></code>](/reference/graphql/types/enums/comm-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #video-send */} 
+Whom the player’s video reaches.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CommSettings.<b>videoReceive</b></code>](#video-receive)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CommScope!</b></code>](/reference/graphql/types/enums/comm-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #video-receive */} 
+Whose video the player sees.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CommSettings.<b>choices</b></code>](#choices)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CommChoices!</b></code>](/reference/graphql/types/objects/comm-choices.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="object"/> {/* #choices */} 
+What the player picked.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CommSettings.<b>voiceAllowed</b></code>](#voice-allowed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CommScope!</b></code>](/reference/graphql/types/enums/comm-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #voice-allowed */} 
+The most voice may be now: EVERYONE for an adult; for a player under 18, OFF until a parent consents to voice, then CONTACTS.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CommSettings.<b>videoAllowed</b></code>](#video-allowed)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>CommScope!</b></code>](/reference/graphql/types/enums/comm-scope.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="enum"/> {/* #video-allowed */} 
+The most video may be now, by the same rule as voiceAllowed.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CommSettings.<b>voiceConsent</b></code>](#voice-consent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #voice-consent */} 
+Whether a parent has consented to voice in this app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CommSettings.<b>videoConsent</b></code>](#video-consent)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>Boolean!</b></code>](/reference/graphql/types/scalars/boolean.mdx) <Badge class="badge badge--secondary badge--non_null" text="non-null"/> <Badge class="badge badge--secondary " text="scalar"/> {/* #video-consent */} 
+Whether a parent has consented to video in this app.
+
+
+#### [<code style={{ fontWeight: 'normal' }}>CommSettings.<b>updatedAt</b></code>](#updated-at)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #updated-at */} 
+When the settings were last written; null before the player’s first token for the app.
+
+
+
+
+### Returned By
+
+[`myCommSettings`](/reference/graphql/operations/queries/my-comm-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="query"/><Bullet />[`setMyCommSettings`](/reference/graphql/operations/mutations/set-my-comm-settings.mdx)  <Badge class="badge badge--secondary badge--relation" text="mutation"/>

@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 // Concatenates every Unreal SDK page into static/helpers/unreal-sdk/llms-full.txt, one
-// file an agent can read instead of crawling the site.
+// file an agent can read instead of crawling the site. That file is far larger than a
+// context window, so the same pages are also written one file per top-level folder
+// (llms-<folder>.txt, root pages in llms-start.txt; a folder over SPLIT_BYTES is split again
+// into llms-<folder>-<subfolder>.txt) and indexed by llms.txt: a title, a summary, then per
+// file its URL and size and one line per page with the page's front matter description.
+// An agent starts at llms.txt and pulls only the section it needs.
 //
 // Pages come out in sidebar order: root pages first by `sidebar_position`, then each
 // folder by its `_category_.json` position, and inside a folder by `sidebar_position`
@@ -22,7 +27,10 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repo = resolve(here, '..');
 
 const DOCS = 'docs-unreal-sdk';
-const OUT = 'static/helpers/unreal-sdk/llms-full.txt';
+const OUT_DIR = 'static/helpers/unreal-sdk';
+const OUT = `${OUT_DIR}/llms-full.txt`;
+const OUT_INDEX = `${OUT_DIR}/llms.txt`;
+const START_LABEL = 'Start here';
 const SNIPPETS = 'static/snippets/unreal-sdk';
 
 // --- site facts from the config ------------------------------------------------------
@@ -82,7 +90,9 @@ function readPage(file, docsRoot) {
   else if (slug.startsWith('/')) slug = slug.slice(1);
   else slug = dir + slug;
   const title = meta.title || (/^#\s+(.+)$/m.exec(body)?.[1] ?? basename(id));
-  return { file, rel, position: position(meta), title, url: `${prodUrl}${routeBase}/${slug}`, body };
+  const section = rel.includes('/') ? rel.slice(0, rel.indexOf('/')) : 'start';
+  const description = (meta.description ?? '').replace(/\s+/g, ' ').trim();
+  return { file, rel, section, description, position: position(meta), title, url: `${prodUrl}${routeBase}/${slug}`, body };
 }
 
 // Root pages first, then folders by category position; recursion keeps the same rule.
@@ -130,10 +140,88 @@ function rewrite(body) {
 const docsRoot = resolve(repo, DOCS);
 const pages = collect(docsRoot, docsRoot);
 
-const chunks = pages.map((p) => `# ${p.title}\nSource: ${p.url}\n\n${rewrite(p.body)}\n`);
-const out = chunks.join('\n');
+const chunk = (p) => `# ${p.title}\nSource: ${p.url}\n\n${rewrite(p.body)}\n`;
 
-const outPath = resolve(repo, OUT);
-mkdirSync(dirname(outPath), { recursive: true });
-writeFileSync(outPath, out);
+function writeOut(file, text) {
+  const outPath = resolve(repo, file);
+  mkdirSync(dirname(outPath), { recursive: true });
+  writeFileSync(outPath, text);
+}
+
+const out = pages.map(chunk).join('\n');
+writeOut(OUT, out);
 console.log(`[build-unreal-llms] ${OUT}: ${pages.length} page(s), ${out.length} chars`);
+
+// Sections keep the sidebar order the pages came out in: root pages first, then folders.
+const sections = new Map();
+for (const p of pages) {
+  if (!sections.has(p.section)) sections.set(p.section, []);
+  sections.get(p.section).push(p);
+}
+
+function categoryOf(...parts) {
+  const file = resolve(docsRoot, ...parts, '_category_.json');
+  return existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : {};
+}
+
+function sectionLabel(name) {
+  if (name === 'start') return { label: START_LABEL, summary: 'The introduction, installation, quickstart and the page for AI agents.' };
+  const category = categoryOf(name);
+  return { label: category.label ?? name, summary: category.link?.description ?? '' };
+}
+
+// A section file larger than this is split one level deeper: its root pages stay in
+// llms-<section>.txt and each second-level folder gets llms-<section>-<folder>.txt.
+const SPLIT_BYTES = 200 * 1024;
+
+// Pages of a section grouped by second-level folder; '' is the section's own root pages.
+function parts(list) {
+  const groups = new Map();
+  for (const p of list) {
+    const segments = p.rel.split('/');
+    const sub = segments.length > 2 ? segments[1] : '';
+    if (!groups.has(sub)) groups.set(sub, []);
+    groups.get(sub).push(p);
+  }
+  return groups;
+}
+
+const kb = (bytes) => Math.max(1, Math.round(bytes / 1024));
+const helperUrl = (file) => `${prodUrl}/${file.replace(/^static\//, '')}`;
+
+const index = [
+  '# Crowdy Unreal SDK',
+  '',
+  '> The Unreal Engine plugin for Crowded Kingdoms, driven from C++ or Blueprint. Every page is listed below, grouped into sections. Each section is one plain-text file you can read whole, so pull the one a task needs. The file with every section in it is too large for most context windows.',
+];
+let fileCount = 0;
+
+function writePart(file, label, list) {
+  const text = list.map(chunk).join('\n');
+  writeOut(file, text);
+  fileCount += 1;
+  console.log(`[build-unreal-llms] ${file}: ${list.length} page(s), ${text.length} chars`);
+  index.push(`- [${label} as one file (${kb(Buffer.byteLength(text))} KB)](${helperUrl(file)})`);
+  for (const p of list) index.push(`- [${p.title}](${p.url})${p.description ? `: ${p.description}` : ''}`);
+}
+
+for (const [name, list] of sections) {
+  const { label, summary } = sectionLabel(name);
+  index.push('', `## ${label}`, '');
+  if (summary) index.push(summary, '');
+  const whole = list.map(chunk).join('\n');
+  const groups = parts(list);
+  if (Buffer.byteLength(whole) <= SPLIT_BYTES || groups.size === 1) {
+    writePart(`${OUT_DIR}/llms-${name}.txt`, label, list);
+    continue;
+  }
+  index.push(`This section is split into ${groups.size} files, each readable whole.`);
+  for (const [sub, subList] of groups) {
+    const subLabel = sub ? `${label}: ${categoryOf(name, sub).label ?? sub}` : `${label}: top-level pages`;
+    index.push('', `### ${subLabel}`, '');
+    writePart(`${OUT_DIR}/llms-${name}${sub ? `-${sub}` : ''}.txt`, subLabel, subList);
+  }
+}
+index.push('');
+writeOut(OUT_INDEX, index.join('\n'));
+console.log(`[build-unreal-llms] ${OUT_INDEX}: ${sections.size} section(s), ${fileCount} section file(s)`);

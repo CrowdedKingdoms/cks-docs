@@ -31,7 +31,7 @@ input InputLogSessionFilter {
 ### Fields
 
 #### [<code style={{ fontWeight: 'normal' }}>InputLogSessionFilter.<b>userId</b></code>](#user-id)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>BigInt</b></code>](/reference/graphql/types/scalars/big-int.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #user-id */} 
-Only this user's sessions. Without manage&#x005F;apps on the app, only your own user id is accepted (and is the default).
+Only this user's sessions. On an app for adults, without manage&#x005F;apps only your own user id is accepted (and is the default). On an app that admits players under 18, a moderator (moderate&#x005F;safety) may name any player to narrow the reported sessions, and everyone else only their own.
 
 
 #### [<code style={{ fontWeight: 'normal' }}>InputLogSessionFilter.<b>from</b></code>](#from)<Bullet />[<code style={{ fontWeight: 'normal' }}><b>DateTime</b></code>](/reference/graphql/types/scalars/date-time.mdx) <Badge class="badge badge--secondary " text="scalar"/> {/* #from */} 

@@ -1,24 +1,22 @@
 // LanternPlayer.h
-#include "Core/Audio/VoiceChat/VoiceChatSubsystem.h"
+#include "Subsystem/CrowdySDKSubsystem.h"
 
 void WatchVoice();
 
 UFUNCTION()
-void HandleVoiceHeard();
+void HandleSpeakerTalking(FString SpeakerUuid, bool bTalking);
 
 // LanternPlayer.cpp
 void ALanternPlayer::WatchVoice()
 {
-	// A world subsystem in the CrowdyVoice module: list that module in Build.cs to reach it. Not exposed to Blueprint.
-	UVoiceChatSubsystem* Voice = GetWorld()->GetSubsystem<UVoiceChatSubsystem>();
-	if (!Voice)
-	{
-		return;
-	}
-	Voice->OnAudioNotify.AddDynamic(this, &ALanternPlayer::HandleVoiceHeard);
+	// Other players' voices stay muted until Play Voice Chat; On Voice Speaker Talking fires either way.
+	UCrowdySDKSubsystem* Voice = GetGameInstance()->GetSubsystem<UCrowdySDKSubsystem>();
+	Voice->OnVoiceSpeakerTalking.AddDynamic(this, &ALanternPlayer::HandleSpeakerTalking);
+	Voice->PlayVoiceChat();
 }
 
-void ALanternPlayer::HandleVoiceHeard()
+void ALanternPlayer::HandleSpeakerTalking(FString SpeakerUuid, bool bTalking)
 {
-	Torch->SetLightColor(FLinearColor::Green);
+	// Talking means that player's microphone is open; the torch turns green while anyone nearby has theirs open.
+	Torch->SetLightColor(bTalking ? FLinearColor::Green : FLinearColor::White);
 }

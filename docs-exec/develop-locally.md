@@ -74,8 +74,9 @@ fn a_visitor_is_welcomed() {
   starts a spoke. `call` and `call_typed` call it as a player, a developer or another instance.
   `advance` and `advance_to` move the test's clock, and each timer that falls due on the way runs
   as the platform runs it. `topic`, `presence`, `session` and `world` deliver the platform's
-  events. `persist` takes the snapshot, `restart` starts the hub again from it, and `upgrade`
-  loads it into your next version.
+  events, and since kit 0.6.0 (`ckx-sdk` 0.13.0) `erase` and `export` deliver a player's
+  [erasure and data export](players-and-safety). `persist` takes the snapshot, `restart` starts the
+  hub again from it, and `upgrade` loads it into your next version.
 - **Observe.** `logs`, `published`, `calls`, `sent`, `emitted`, `node_requests`, `watching`,
   `timers` and `persist_asked` say what the node did.
 - **Answer.** For an app's own hubs and spokes, `answer_calls(type, …)` scripts what other types
@@ -124,6 +125,11 @@ The kit, `ckx-sdk` and `crowdy-client-sdk` are released with the platform's comp
 `ckx-kit new` writes the exact SDK version its kit matches, and `kit.pin` in the kit names the
 toolchain release it was copied from. Use the latest release: versions ending in `-dev.N` or
 `-test.N` are for our internal environments.
+
+Kit 0.6.0 carries `ckx-sdk` 0.13.0 (compute toolchain v1.16.0, ck-exec 0.20.0): a player's
+[erasure and data export hooks](players-and-safety), `players.blocked`, `safety.report` and the
+`age_bracket` on `players.get`. A crate on an older `ckx-sdk` builds and runs, and its hubs answer
+"not implemented" to the erasure and the export.
 
 ## Contributing
 

@@ -1,0 +1,20 @@
+[
+	{
+		"name": "K2Node_Event_3",
+		"class": "/Script/BlueprintGraph.K2Node_Event",
+		"title": "Event BeginPlay",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_GetSubsystem_0",
+		"class": "/Script/BlueprintGraph.K2Node_GetSubsystem",
+		"title": "Crowdy SDK Subsystem",
+		"title_drawn": true
+	},
+	{
+		"name": "K2Node_CallFunction_0",
+		"class": "/Script/BlueprintGraph.K2Node_CallFunction",
+		"title": "Set Voice Chat Distance\nTarget is Crowdy SDK Subsystem",
+		"title_drawn": true
+	}
+]
