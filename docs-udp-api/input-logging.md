@@ -119,8 +119,9 @@ Kingdoms opens to players 13 and over, no app does; from the opening, every app 
   `enabled` is the safety log itself, which always includes text; `voice` and `video` are each
   medium.
 - **Who reads it** (Game API v2.61.0). A player lists and reads their own sessions, which hold
-  only what their client sent. A holder of `moderate_safety` (an appointed moderator, or the
-  organization's admins) lists and reads only the sessions an open or escalated report covers.
+  only what their client sent; in Crowdy Studio that is **Account > Safety-log records**. A
+  holder of `moderate_safety` (an appointed moderator, or the organization's admins) lists and
+  reads only the sessions an open or escalated report covers.
   `manage_apps` gives nothing more: another player's list is `FORBIDDEN` and their session
   `NOT_FOUND`. Every list and read is audited before it is served, a player's own included.
 - **A minor's session stays covered.** On an app for adults, `manage_apps` lists and reads every

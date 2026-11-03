@@ -180,7 +180,9 @@ The official SDK wraps all of this in `client.portal`: `signIn` /
 page (it throws `PortalConsentRequiredError` for an untrusted app until you
 approve) — see [CrowdyJS](/crowdyjs/intro). A player who presses **Cancel** on
 Studio's consent card is returned to `redirect_uri` with `error=access_denied`
-and no code.
+and no code, when its origin is one of the app's registered redirect URIs or its
+launch URL (the rule a code's `redirect_uri` meets, below). Otherwise Studio keeps
+the player on its page and asks them to go back to the game.
 
 ## Consent and the OAuth client registry
 
